@@ -102,7 +102,7 @@
 			<th style="width:150px"><label for="">订单状态:</label></th>
 				<td >
 														<?php  if($order['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-						<?php  if($order['status'] == 1) { ?><span class="label label-danger" >待发货</span><?php  } ?>
+						<?php  if($order['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
 						<?php  if($order['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
 						<?php  if($order['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
 						<?php  if($order['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>
@@ -310,7 +310,7 @@
 						<a href="<?php echo web_url('order',array('op'=>'confrimpay','id'=>$order['id']));?>" class="btn btn-danger span2" onclick="return confirm('确认付款此订单吗？'); return false;" >确认付款</a>
 					<?php  } ?>
 					
-					<?php if($order['status'] == 1 && isHasPowerToShow('shop','order','confirmsend')) { ?>
+					<?php if($order['status'] == 1 && isHasPowerToShow('shop','order','confirmsend') && $ishowSendBtn) { ?>
 						<a type="button" class="btn btn-primary span2" name="confirmsend" data-toggle="modal" data-target="#modal-confirmsend" value="confirmsend">确认发货</a>
 					
 					<?php  } ?>

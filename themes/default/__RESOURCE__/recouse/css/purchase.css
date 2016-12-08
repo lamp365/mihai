@@ -15,7 +15,7 @@ body{
 
 }*/
 .content-area{
-	background:url(../images/purchase_bg.png) no-repeat center center #7A32ED;
+	background:url(../images/purchase_bg.png) no-repeat center center #65DAC7;
 	width: 100%;
 	height: 600px;
 }
@@ -168,9 +168,11 @@ body{
 	height: 40px;
 	line-height: 40px;
 }
-.main{
-	width: 1020px;
+.wrap .main{
+	margin-left: 31px;
+	width: 1008px;
 	float: left;
+	padding-bottom:20px;
 }
 .wrap .tab{
 	border-bottom: 1px solid #bfbfbf;
@@ -178,19 +180,18 @@ body{
 }
 .wrap .tab p{
 	display: inline-block;
-	padding:5px 10px;
+	padding:6px 10px;
 	font-size: 14px;
     cursor: pointer;
-    background-color: #cdcdcd;
-    border-radius: 3px 3px 0 0;
 }
 .wrap .tab p.on{
-	background-color: #950a00;
+	background-color: #3292DD;
 	color: #fff;
 }
 .tab-div-select{
 	position: relative;
 	margin-top: 15px;
+	font-family: '微软雅黑',Helvetica,STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial;
 }
 .pagenum{
 	position: absolute;
@@ -209,10 +210,10 @@ body{
 .tab-div-select .search{
     display: inline-block;
     width: 78px;
-    height: 31px;
+    height: 33px;
+    line-height: 19px;
     border: 1px solid #ccc;
     cursor: pointer;
-    margin-left: 10px;
     padding-top: 4px;
     box-sizing: border-box;
     font-size: 14px;
@@ -235,7 +236,7 @@ body{
 }
 .tab-div-select label select{
 	height: 33px;
-	padding-left: 5px;
+	padding-left: 2px;
 }
 .tab-div-select input,.tab-div-select select{
 	width: 158px;
@@ -248,11 +249,11 @@ body{
 .product-number{margin-right: 11px;height: 33px;box-sizing: border-box;}
 .tab-div-select select{
     margin-right: 11px;
-    width: 160px;
-    padding: 5.5px 0px;
+    width: 150px;
+    padding: 5.5px 14px 5.5px 0;
 }
 table{
-	width: 1020px;
+	width: 1008px;
 	font-size: 14px;
 	border-collapse: collapse;
 	text-align: center;
@@ -273,16 +274,18 @@ table a{
 }
 .col-label img{
 	vertical-align: middle;
-	width: 20px;
-	height: 20px;
+	width: 16px;
+	height: 16px;
 	cursor: pointer;
 }
 .col-img{
 	text-align: center;
 }
 .col-img img{
-	width: 65px;
-	height: 65px;
+	width: 60px;
+	height: 60px;
+	margin:5px;
+	cursor: pointer;
 }
 .price{
 	color:#e9342a;
@@ -290,6 +293,7 @@ table a{
 .col-name{
 	padding:0 5px;
 	text-align: left;
+	font-family: '微软雅黑',Helvetica,STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial;
 }
 .col-name a{
 	cursor: pointer;
@@ -318,7 +322,7 @@ table a{
     margin-left: 10px;
     display: inline-block;
     text-align: center;
-    background-color: #e65454;
+    background-color: #3292DD;
     color: #fff;
     height: 25px;
     line-height: 25px;
@@ -348,7 +352,6 @@ table a{
 	border-radius: 0!important;
 	background-color: #ddd!important;
 }
-
 .tab-div-select .form-control{
     border: none;
     width: 47px!important;
@@ -412,7 +415,7 @@ table a{
 	overflow: hidden;
 }
  #addresslist{    
- 	width: 1020px;
+ 	width: 1008px;
     overflow: hidden;
     border-top: 1px dashed #afafaf;
     margin-top: 50px;
@@ -561,12 +564,10 @@ input[name="payment"]{
 	display: inline-block;
     width: 80px;
     text-align: center;
-    background-color: #e65454;
-    color: #fff;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 4px;
+    height: 31px;
+    line-height: 31px;
     cursor: pointer;
+    background:url(../images/filter_bg1.png) no-repeat center;
 }
 .total-area .terms-content{
 	font-weight: 400;
@@ -582,10 +583,15 @@ input[name="payment"]{
 	text-align: left;
 }
 .faq{
-	border-top: 1px solid #d2d2d2;
-	margin: 80px 0 50px 0;
+	//border-top: 1px solid #d2d2d2;
+	width: 1200px;
+	margin: 0 auto;
+	padding-left: 190px;
 	height: 450px;
+	margin-top: 50px;
+	    box-sizing: border-box;
 }
+select::-ms-expand { display: none; } 
 select {
   /*统一边框*/
   border: solid 1px #000;
@@ -593,15 +599,23 @@ select {
   appearance:none;
   -moz-appearance:none;
   -webkit-appearance:none;
-  /*替换选择框的最右侧显示小箭头图片*/
-  /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+  -ms-appearance:none;
+  background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+  background:#fff\0;
   padding-right: 14px;
 }
 
+.default_address{
+	display: block!important;
+}
 .faq h3{
-	border-bottom: 1px dashed #d2d2d2;
-	padding-bottom: 9px;
+border-top: 1px solid #d2d2d2;
+    border-bottom: 1px dashed #d2d2d2;
+    padding-bottom: 10px;
     margin-bottom: 25px;
+    width: 1008px;
+    padding-top: 10px;
+    font-size: 23px;
 }
 .question-nav ul{
 	width: 600px;
@@ -641,7 +655,7 @@ select {
 	color: #222;
 }
 .faq-list{
-	width: 1020px;
+	width: 1008px;
 	margin: 0 auto;
 	overflow: hidden;
 	color: #666;
@@ -649,7 +663,7 @@ select {
 }
 .faq-list li{
 	float: left;
-	width: 340px;
+	width: 335px;
 	padding: 20px 20px 20px 0;
     box-sizing: border-box;
 }
@@ -696,4 +710,15 @@ select {
 }
 .confirm-order-address span{
 	padding-right:5px; 
+}
+.add-list-area{
+	display: block;
+}
+.add-list-area-tip{
+	text-align: center;
+	margin-top: 60px;
+}
+.ajax-load{
+	height: 200px;
+    line-height: 200px;
 }

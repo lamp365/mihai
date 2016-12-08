@@ -411,8 +411,6 @@ defined('SYSTEM_IN') or exit('Access Denied');
  {
 	 if(empty($_GP['uid']))
 		 message('对不起，参数有误',refresh(),'error');
-	 if( empty($_GP['rolers_id']))
-		 message('对不起，你没有选择角色',refresh(),'error');
 
 	 //查找之前是否有关联过一些渠道商
 	 isRelationPurchase($_GP['uid']);

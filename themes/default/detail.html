@@ -26,7 +26,7 @@
 <script type="text/javascript" src="__RESOURCE__/recouse/js/utils.js"></script>
 <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="__RESOURCE__/recouse/js/mzp-packed.js"></script>
-
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.qrcode.min.js"></script>
 <!--购物车动画控制-->
 <script src="__RESOURCE__/recouse/js/jquery.fly.min.js"></script>
 <!--为了兼容IE10以下-->
@@ -354,7 +354,7 @@ function point(){
 						<!--@php } @-->
 						
 						<div class="prices" style="position:relative;">
-						    <!--@php if ( !empty($img) ){ @--><div class="Qrcode" style="position:absolute;right:10px;bottom:10px;"><img src="<!--@php echo $img; @-->" width="75" /></div><!--@php } @-->
+						    <div class="Qrcode" style="position:absolute;right:10px;bottom:10px;"></div>
 							<!--@php  if($istime ==1 or $istime ==2 or $istime == 3 ) { @-->
 						<div class="price clearfix" style="margin:0;">
 							<p class="jx-price">
@@ -1086,6 +1086,14 @@ $(window).scroll(function(){
 	}
 		
 });
+
+var qrcode_url ="<!--@php echo 'http://www.hinrc.com'.$_SERVER['REQUEST_URI'];@-->";
+$(".Qrcode").qrcode({
+	width: 75, //宽度
+	height:75, //高度
+	text: qrcode_url
+});
+
 </script>
 
 

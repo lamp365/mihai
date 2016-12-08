@@ -21,7 +21,12 @@
 			 if($_GP['parent_roler_id'] != 0 && $_GP['son_roler_id']==0){
 				 message('对不起，会员身份选择有误！',refresh(),'error');
 			 }
-		 	$url  = empty($_GP['platform_url']) ? '' : 'http://'.trim($_GP['platform_url'],'http://');  //不管加没加http. 可先去掉，再加，确保一定有http
+		 	$url  = empty($_GP['platform_url']) ? '' : $_GP['platform_url'];
+		    if(!empty($url)){
+				if(!strstr($url,'http://') && !strstr($url,'https://')){
+					$url = "http://".trim($url,'http://');
+				}
+			}
 			$datas = array(
 				'realname'=> $_GP['realname'],
 				'mobile'  => $_GP['mobile'],

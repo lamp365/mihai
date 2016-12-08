@@ -167,6 +167,10 @@
 					}
 					unset($g_v);
 				}
+				// 是否抽奖团
+				$list['draw'] = $good['draw'];
+				// 抽奖人数
+				$list['draw_num'] = $good['draw_num'];
 				// 团购有效期
 				$list['team_buy_expiry'] = TEAM_BUY_EXPIRY;
 				// 该商品单个团参团人数上限

@@ -326,14 +326,16 @@
                     mysqld_update('shop_dish', $data, array('id' => $id));
                 }
 				$vip_data = array();
-				foreach ( $_GP['v2'] as $key=>$v2_value ){
-                     if ( !empty($v2_value) && !empty($_GP['vip_price'][$key])){
-                          $vip_data[] = array(
-                                'dish_id' => $id,
-									'v2' => $v2_value,
-						      'vip_price' => $_GP['vip_price'][$key]
-						  );
-					 }
+				if ( is_array($_GP['v2']) && !empty($_GP['v2']) ){
+					foreach ( $_GP['v2'] as $key=>$v2_value ){
+						 if ( !empty($v2_value) && !empty($_GP['vip_price'][$key])){
+							  $vip_data[] = array(
+									'dish_id' => $id,
+										'v2' => $v2_value,
+								  'vip_price' => $_GP['vip_price'][$key]
+							  );
+						 }
+					}
 				}
 				if ( !empty($vip_data) ){
 				    setExtendPrice($vip_data);
@@ -897,7 +899,7 @@
         }else if($operation == 'open_groupbuy'){
             //凑单开关 关闭或者开启
             //先判断是否有虚拟用户
-            $member = mysqld_select("select id from ".table('member')." where dummy=1");
+            $member = mysqld_select("select openid from ".table('member')." where dummy=1");
             if(empty($member))
                 message("对不起，请到会员管理注册批量的虚拟用户",refresh(),'error');
 

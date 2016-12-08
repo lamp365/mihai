@@ -61,11 +61,7 @@
 			  $com_text ='商品评价';
 			  break;
 		}
-		if ( !empty($goodsid) ){
-		   $webUrl    = "http://www.hinrc.com/".mobile_url('detail',array('id'=>$goodsid));
-           $qcode   = new Qrcodeimg();
-           $img     = $qcode->getImgQcode($webUrl,'',$webUrl);
-		}
+
         $goods = get_good($table);
 		if ( $goods['type'] == 1 && $goods['timeend']>time()){
 			//是团购类型，并且团购时间还没过期

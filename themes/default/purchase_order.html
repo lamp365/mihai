@@ -11,13 +11,13 @@
 	<div class="main">
 		<div class="tab">
 			<p class="select on">选择商品</p>
-			<p class="selected">已选商品(<span>0</span>)</p>
+			<p class="selected">已选商品(<span><!--@php echo $max_purchase; @--></span>)</p>
 		</div>
 		<div class="tab-div">
 			<div class="tab-div-select">
 				<form method="post" name="" class="">
 					<label>
-						<select name="cate_1" class="fetchChildarea" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
+						<select name="cate_1" class="fetch-select fetchChildarea" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
 							<option value="0">请选择保税仓</option>
 							<?php  if(is_array($area)) { foreach($area as $row) { ?>
 							<?php  if($row['parentid'] == 0) { ?>
@@ -27,7 +27,7 @@
 						</select>
 					</label>
 					<label>
-						<select name="p1" onchange="fetchChildCategory(this.options[this.selectedIndex].value)" >
+						<select name="p1" class="fetch-select" onchange="fetchChildCategory(this.options[this.selectedIndex].value)" >
 							<option value="0">请选择一级分类</option>
 							<?php  if(is_array($category)) { foreach($category as $row) { ?>
 							<?php  if($row['parentid'] == 0) { ?>
@@ -37,7 +37,7 @@
 						</select>
 					</label>
 					<label>
-						<select id="p2" name="p2" onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" >
+						<select id="p2" class="fetch-select" name="p2" onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" >
 							<option value="0">请选择二级分类</option>
 							<?php  if(!empty($_GP['p1']) && !empty($childrens[$_GP['p1']])) { ?>
 							<?php  if(is_array($childrens[$_GP['p1']])) { foreach($childrens[$_GP['p1']] as $row) { ?>
@@ -69,216 +69,250 @@
 				<table class="product-list" id="product-list" cellspacing="0" cellpadding="0" border="0">
 					<tr>
 						<th width="40px">勾选</th>
-						<th width="110px">商品图片</th>
+						<th width="100px">商品图片</th>
 						<th width="400px">商品信息</th>
 						<th width="110px">价格</th>
 						<th width="160px">数量</th>
 						<th width="110px">商品操作</th>
 					</tr>
-					<tr>
-						<th width="40px" class="th-check col-label"><img src="__RESOURCE__/recouse/images/cart_circle.png"></th>
-						<th colspan="5"><span class="batch-check">批量选择商品</span></th>
-					</tr>
-				</table>
-				<div class="dataTables_paginate paging_simple_numbers">
-					<ul class="pagination">
-						<li><a href="#" class="paginate_button previous">首页</a></li>
-						<li class="paginate_button active"><a href="javascript:;">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">5</a></li>
-						<li><a href="#" class="paginate_button next">下一页»</a></li>
-						<li><a href="#" class="paginate_button next">尾页</a></li>
-					</ul>
-				</div>
-			</div>
-			<div class="tab-div-select" style="display: none;">
-				<p class="select-p">已选商品详情</p>
-				<table class="product-list add-list" cellspacing="0" cellpadding="0" border="0">
-					<tr class="product-list-tr">
-						<th width="110px">图片</th>
-						<th width="400px">商品名称</th>
-						<th width="110px">单价</th>
-						<th width="106px">数量</th>
-						<th width="106px">合计</th>
-						<th width="106px">操作</th>
-					</tr>
-				</table>
-
-					<!--@php  if(!empty($addresslist)) {  @-->
-					<div id="addresslist">
-					    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
-						<div class="address_item <!--@php if (($defaultAddress['isdefault'] == 1 && count($addresslist) > 1 ) || ( count($addresslist) == 1 )) { echo 'this_address'; } @--> address_<!--@php  echo $defaultAddress['id']; @-->" onclick="setaddress(<!--@php echo $defaultAddress['id']; @-->)" address_id = '<!--@php echo $defaultAddress['id']; @-->'>
-						    <div class="addr-bd">				
-							   <strong style="float: left;"><!--@php  echo $defaultAddress['realname'];@--> 收</strong>
-							   <span class="set" onclick="setdefault(<!--@php echo $defaultAddress['id']; @-->)"><!--@php if ($defaultAddress['isdefault'] ==1 ) { echo '默认地址'; }else{ echo '设为默认'; } @--></span>
-							</div>
-							<div class="addr-hd">				
-							<!--@php  echo $defaultAddress['province'];@--> <!--@php  echo $defaultAddress['city'];@--> <!--@php  echo $defaultAddress['area'];@--><!--@php  echo $defaultAddress['address'];@--> 
-							<!--@php  echo $defaultAddress['mobile'];@-->
-							</div>
-							<div  class="dosg">
-								<span class="edit" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax','id'=>$defaultAddress['id']))@-->')">修改</span>
-								<span class="del"  onclick="addressDel(<!--@php  echo $defaultAddress['id']; @-->)">删除</span>
-							</div>
-							<div class="choose">
-							</div>
-						</div>	
-						<!--@php }} @-->
-					</div>					
-					<!--@php  }else{  @-->
-	                <div id="addresslist"></div>
-					<!--@php } @-->
-					<div style="width: 100%;overflow: hidden;">
-						<div class="address_add">
-							<button type="button" class="btn btn-danger" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax'))@-->')"> + 添加收货地址</button>
-						</div>
-					</div>
-				<div class="total-area terms">
-					<label>
-						<input type="checkbox" name="" class="terms-accept"  style="position: absolute;top: 23px;left: 5px;width: 14px;">
-						<div class="terms-content">
-							<p>通过单击 “下单”，我同意接受觅海环球购在线商店条款和条件。</p>
-							<p>请注意以下内容：</p>
-							<p>发货和送达日期为觅海环球购做出的最佳估算时间。就少数订单，由于无法预料的产品短缺或超出我们控制以外的因素，实际时间可能会更长。如有延迟，我们将联系您，您可以选择取消订单及要求全额退款。
-							我们网站上的产品和定价信息在公布前已经过核实。但是，在极少数情形下可能有误。如果我们发现定价错误，我们将通知您，取消您的订单，并对订单金额全额退款。
-							您应仔细阅读条款和条件中有关争议解决的条款，您确认本订单即视为您理解争议将通过仲裁方式解决，仲裁机构及仲裁地点详见条款和条件。</p>
-						</div>
-					</label>
-				</div>
-				<div class="total-area" style="border:none">
-					<p>商品应付金额总计：<span class="total-price"></span>
-						<button class="submit next-step" type="button" >生成订单</button>
-					</p>
-				</div>
-			</div>
-			<div class="faq">
-				<h3>问题</h3>
-				<div class="question-nav">
-					<ul>
-						<li class="list-1 on">交付选项</li>
-						<li class="list-2">送货地址</li>
-						<li class="list-3">付款</li>
-					</ul>
-				</div>
-				<div class="faq-detail faq-detail-01">
-					<ul class="faq-list">
-						<li>
-							<h4>我何时能收到订购的商品？</h4>
-							<p>“送货”时间是将您的产品送达您的收货地址的预计时间。这考虑到了仓库处理时间（即“发货”时间）和承运商的送货时间。 
-							我们会在结帐流程中提供有关派单选项和交付日期的更多信息。了解有关发货与交货的更多信息。</p>
-						</li>
-						<li>
-							<h4>怎样才能免运费？</h4>
-							<p>Apple Store 在线商店对所有订单提供免费运送服务。在结帐时，请选择免费的“标准”运送选项。</p>
-						</li>
-						<li>
-							<h4>Apple 的退货和退款政策是如何规定的？</h4>
-							<p>如果您对所购产品不满意，可以按照相关规定办理退货。了解有关退货和退款的更多信息。</p>
-						</li>
-					</ul>
-					<ul class="faq-list faq-list-2">
-						<li>
-							<h4>我何时能收到订购的商品？</h4>
-							<p>“送货”时间是将您的产品送达您的收货地址的预计时间。这考虑到了仓库处理时间（即“发货”时间）和承运商的送货时间。 
-							我们会在结帐流程中提供有关派单选项和交付日期的更多信息。了解有关发货与交货的更多信息。</p>
-						</li>
-						<li>
-							<h4>怎样才能免运费？</h4>
-							<p>Apple Store 在线商店对所有订单提供免费运送服务。在结帐时，请选择免费的“标准”运送选项。</p>
-						</li>
-						<li>
-							<h4>Apple 的退货和退款政策是如何规定的？</h4>
-							<p>如果您对所购产品不满意，可以按照相关规定办理退货。了解有关退货和退款的更多信息。</p>
-						</li>
-					</ul>
-				</div>
-				<div class="faq-detail">
-					<ul class="faq-list">
-						<li>
-							<h4>如果我不在，无法收到运送的产品怎么办？</h4>
-							<p>我们运送的大多数产品都是贵重物品，因此，承运商在交付产品时会要求您签字。 </p>
-							<p>如果您无法在交货时签字，承运商会留下名片，我们也会通过电子邮件通知您。然后，您可以直接联系承运商约定新的交货时间，也可以修改您的送货地址。</p>
-						</li>
-						<li>
-							<h4>我如何跟踪发货情况？</h4>
-							<p>访问在线订单状态，查看您的订单的最新状态。如果您订购了多件产品，且产品将分开运送，也无需支付额外的运费。</p>
-						</li>
 					
-					</ul>
-				</div>
-				<div class="faq-detail">
-					<ul class="faq-list">
-						<li>
-							<h4>我可以使用哪些付款方式？</h4>
-							<p>所有运送选项均有多种付款方式供您选择，包括信用卡和借记卡。 </p>
-						</li>
-						<li>
-							<h4>何时从我的信用卡中扣款？</h4>
-							<p>在你下订单时，Apple 会立即向你的信用卡公司请求从你的帐户上划取订单金额以完成扣款。</p>
-						</li>
-						<li>
-							<h4>我何时能收到发票？</h4>
-							<p>发票将在订单中的商品发货后开具，而非订购时开具。届时，我们会将 Apple 电子收据发送到你下订单时提供的电子邮件地址。如果你订购了多件产品，我们会在各个产品有货时立即发货，但由于会分批发货，可能会产生多张发票。</p>
-						</li>
-					</ul>
-				</div>
-			</div>
+					<!--@php if ( is_array($dish_list) && !empty($dish_list) ){ foreach ( $dish_list as $dish_list_value ){ @-->
+					<tr>
+						<!-- 未勾选 -->
 
-			<div class='modal fade confirm-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
-				<div class='modal-dialog modal-lg'>
-					<div class='modal-content'>
-						<div class='modal-header'>
-							<button type='button' class='close' data-dismiss='modal'>
-								<span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span>
-							</button>
-							<h4 class='modal-title' id='myModalLabel'>订单详情</h4>
-						</div>
-						<div class='modal-body'>
-							<div class="orderDetail-area">
-								<div class="order_title">	
-									订单号：<span class="confirm-order-num"></span>&nbsp;&nbsp;&nbsp;&nbsp;支付金额：<span class="confirm-order-price false"></span> 	
-									<div class="pull-right">
-								    	<select id="pays" class="form-control" style="float:left;width:100px;height:30px;line-height:15px;font-size:12px;">
-											<option value="weixin"> 微信支付</option>
-											<option value="alipay" selected=""> 支付宝</option>
-										</select>
-										<a href="javascript:;" onclick="topay();" class="btn btn-danger btn-sm" style="float:left;width:100px;margin-left:10px;">立即支付</a>
+						<td class='td-check col-label'>
+							<img class="lazy" data-original='__RESOURCE__/recouse/images/cart_circle.png' src="images/loading.gif">
+						</td>
+
+						<td class='col-img'>
+							<img class="lazy product-img" product_id="<!--@php echo $dish_list_value['dish_id']; @-->" data-original="<!--@php echo $dish_list_value['thumb']; @-->" src="images/loading.gif" >
+						</td>
+						<td class='col-name'>
+							<a class="product-name" product_id="<!--@php echo $dish_list_value['dish_id']; @-->"><!--@php echo $dish_list_value['title']; @--></a>
+							<div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+								<div class='modal-dialog modal-lg'>
+									<div class='modal-content'>
+										<div class='modal-header'> 
+											<button type='button' class='close' data-dismiss='modal'>
+												<span aria-hidden='true'>&times;</span>
+												<span class='sr-only'>Close</span>
+											</button>
+											<h4 class='modal-title' id='myModalLabel'><!--@php echo $dish_list_value['title']; @--></h4>
+										</div>
+										<div class='modal-body'>
+											<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+										</div>
 									</div>
 								</div>
-								<div class="orderdetail">
-									<p class="Address">
-										收货地址：<span class="confirm-order-address"></span>
-									</p>
-								</div>
 							</div>
-							<table class="confirm-table" cellspacing="0" cellpadding="0" border="0">
-								<tr class="confirm-table-tr">
-									<th width="110px">图片</th>
-									<th width="400px">商品名称</th>
-									<th width="90px">单价</th>
-									<th width="90px">数量</th>
-									<th width="90px">合计</th>
-								</tr>
-							</table>
-						
+						</td>
+						<td class='col-price'>
+							<span class='price'>￥<!--@php echo $dish_list_value['vip_price']; @--></span>
+						</td>
+						<td class='col-num' cartid="<!--@php echo $dish_list_value['dish_id']; @-->">
+							<div class='input-group'>
+								<span class='input-group-btn'>
+									<button class='btn btn-default btn-sm' type='button' onclick='reduceNum(<!--@php echo $dish_list_value['dish_id']; @-->)'>-</button>
+								</span>
+								<input type='tel' value="1" class='form-control input-sm pricetotal goodsnum ' cartid="<!--@php echo $dish_list_value['dish_id']; @-->" id='goodsnum_<!--@php echo $dish_list_value['dish_id']; @-->' price="<!--@php echo $dish_list_value['vip_price']; @-->"  maxbuy="<!--@php echo $dish_list_value['total']; @-->">
+								<span class='input-group-btn'>
+									<button class='btn btn-default btn-sm' type='button' onclick='addNum(<!--@php echo $dish_list_value['dish_id']; @-->,<!--@php echo $dish_list_value['total']; @-->)'>+</button>
+								</span>
+							</div>
+						</td>
+						<!--@php if ( $dish_list_value['selected'] == 0 ){ @-->
+						<td class="conl-action"><span class='col-check' id="<!--@php echo $dish_list_value['dish_id']; @-->">选择商品</span></td>
+                         <!--@php  }else{ @-->
+						<td class="conl-action"><span class='col-check added' id="<!--@php echo $dish_list_value['dish_id']; @-->">已选择</span></td>
+						<!--@php } @-->
+					</tr>
+					<!--@php }} @-->
+					<tr>
+						<td width="40px" class="th-check col-label"><img class="lazy" data-original="__RESOURCE__/recouse/images/cart_circle.png" src="images/loading.gif"></td>
+						<td colspan="5"><span class="batch-check" style="margin:10px 0;">批量选择商品</span></td>
+					</tr>
+				</table>
+				<!--@php echo $pager; @-->
+			</div>
+			<div class="tab-div-select" style="display: none;">
+				<div class="add-list-area">
+					<p class="select-p">已选商品详情</p>
+					<table class="product-list add-list" cellspacing="0" cellpadding="0" border="0">
+						<tr class="product-list-tr">
+							<th width="110px">图片</th>
+							<th width="400px">商品名称</th>
+							<th width="110px">单价</th>
+							<th width="106px">数量</th>
+							<th width="106px">合计</th>
+							<th width="106px">操作</th>
+						</tr>
+					</table>
+
+						<!--@php  if(!empty($addresslist)) {  @-->
+						<div id="addresslist">
+						    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
+							<div class="address_item <!--@php if (($defaultAddress['isdefault'] == 1 && count($addresslist) > 1 ) || ( count($addresslist) == 1 )) { echo 'this_address'; } @--> address_<!--@php  echo $defaultAddress['id']; @-->" onclick="setaddress(<!--@php echo $defaultAddress['id']; @-->)" address_id = '<!--@php echo $defaultAddress['id']; @-->'>
+							    <div class="addr-bd">				
+								   <strong style="float: left;"><!--@php  echo $defaultAddress['realname'];@--> 收</strong>
+								   <span class="set" onclick="setdefault(<!--@php echo $defaultAddress['id']; @-->)"><!--@php if ($defaultAddress['isdefault'] ==1 ) { echo '默认地址'; }else{ echo '设为默认'; } @--></span>
+								</div>
+								<div class="addr-hd">				
+								<!--@php  echo $defaultAddress['province'];@--> <!--@php  echo $defaultAddress['city'];@--> <!--@php  echo $defaultAddress['area'];@--><!--@php  echo $defaultAddress['address'];@--> 
+								<!--@php  echo $defaultAddress['mobile'];@-->
+								</div>
+								<div  class="dosg">
+									<span class="edit" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax','id'=>$defaultAddress['id']))@-->')">修改</span>
+									<span class="del"  onclick="addressDel(<!--@php  echo $defaultAddress['id']; @-->)">删除</span>
+								</div>
+								<div class="choose">
+								</div>
+							</div>	
+							<!--@php }} @-->
+						</div>					
+						<!--@php  }else{  @-->
+		                <div id="addresslist"></div>
+						<!--@php } @-->
+						<div style="width: 100%;overflow: hidden;">
+							<div class="address_add">
+								<button type="button" class="btn btn-danger" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax'))@-->')"> + 添加收货地址</button>
+							</div>
+						</div>
+					<div class="tiaokuan" style="border-bottom:1px dotted #ccc;">
+					      <h3>条款与条件</h3>
+					</div>
+					<div class="total-area terms">
+					    
+						<label>
+							<input type="checkbox" name="" class="terms-accept"  style="position: absolute;top: 23px;left: 5px;width: 14px;">
+							<div class="terms-content">
+								<p>通过单击 “下单”，我同意接受觅海供应链在线商店条款和条件。</p>
+								<p>请注意以下内容：</p>
+								<p>发货和送达日期为觅海供应链做出的最佳估算时间。就少数订单，由于无法预料的产品短缺或超出我们控制以外的因素，实际时间可能会更长。如有延迟，我们将联系您，您可以选择取消订单及要求全额退款。
+								我们网站上的产品和定价信息在公布前已经过核实。但是，在极少数情形下可能有误。如果我们发现定价错误，我们将通知您，取消您的订单，并对订单金额全额退款。
+								您应仔细阅读条款和条件中有关争议解决的条款，您确认本订单即视为您理解争议将通过仲裁方式解决，仲裁机构及仲裁地点详见条款和条件。</p>
+							</div>
+						</label>
+					</div>
+					<div class="total-area" style="border:none">
+						<p>商品应付金额总计：<span class="total-price"></span>
+							<button class="submit next-step" type="button" >生成订单</button>
+						</p>
+					</div>
+				</div>
+				<div class="add-list-area-tip">
+					<img class="lazy" src="__RESOURCE__/recouse/images/icon_network_error_retry.png">
+					<p style="margin-top: 40px;color: #cccccc;font-size: 18px;">你还没有选择商品，请选择商品</p>
+				</div>
+
+
+				<div class='modal fade confirm-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+					<div class='modal-dialog modal-lg'>
+						<div class='modal-content'>
+							<div class='modal-header'>
+								<button type='button' class='close' data-dismiss='modal'>
+									<span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span>
+								</button>
+								<h4 class='modal-title' id='myModalLabel'>订单详情</h4>
+							</div>
+							<div class='modal-body'>
+								<div class="orderDetail-area">
+									<div class="order_title">	
+										订单号：<span class="confirm-order-num"></span>&nbsp;&nbsp;&nbsp;&nbsp;支付金额：<span class="confirm-order-price false"></span> 	
+										<div class="pull-right">
+									    	<select id="pays" class="form-control" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;border: 1px solid #ccc!important;line-height:15px;font-size:12px;">
+												<option value="weixin"> 微信支付</option>
+												<option value="alipay" selected=""> 支付宝</option>
+											</select>
+											<a href="javascript:;" onclick="topay();" class="btn btn-danger btn-sm" style="float:left;width:100px;margin-left:10px;">立即支付</a>
+										</div>
+									</div>
+									<div class="orderdetail">
+										<p class="Address">
+											<img src="__RESOURCE__/recouse/images/icon_diary_location.png" style="width: 17px;margin-top: -2px;"><span class="confirm-order-address"></span>
+										</p>
+									</div>
+								</div>
+								<table class="confirm-table" cellspacing="0" cellpadding="0" border="0">
+									<tr class="confirm-table-tr">
+										<th width="110px">图片</th>
+										<th width="400px">商品名称</th>
+										<th width="90px">单价</th>
+										<th width="90px">数量</th>
+										<th width="90px">合计</th>
+									</tr>
+								</table>
+							</div>
+							<div class="modal-footer">
+							     <button class="btn btn-success" type="button" data-dismiss="modal">关闭</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </div>
 
 <iframe src="" class="address"></iframe>
 <div class="iDialogLayout"></div>
+<!--@php include themePage('purchase_footer');@-->
 <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 var order_id = "";
 
 jQuery(function(){
+ 	$("img.lazy").lazyload({
+		 threshold : 50,
+		 failure_limit : 10,
+		 effect : "fadeIn"
+	});
+
+	$("#addresslist .set").each(function(){
+		if($(this).text()=="默认地址"){
+			$("#addresslist .set").hide();
+			$(this).show();
+		}
+	})
+	//点击商品名称显示产品详情
+	$(".product-name").on("click",function(){
+		var content_id = $(this).attr("product_id");
+		var content_this = $(this);
+		$(this).siblings(".product-detail").modal();
+		var content_len = content_this.siblings(".product-detail").find(".modal-body").children().length;		
+		//如何已有详情直接返回
+		if( content_len > 1){
+			return false;
+		}else{
+			$.post("",{type:'get_content',id:content_id},function(data){
+				if(data.errno == 200){
+					$(".ajax-load").hide();
+					content_this.siblings(".product-detail").find(".modal-body").append(data.message.content);
+				}else{
+					$(".ajax-load").hide();
+					alert(data.message);
+				}
+			},'json')
+		};
+	})
+	//点击商品图片显示产品详情
+	$(".product-img").on("click",function(){
+		$(this).parent(".col-img").siblings(".col-name").find(".product-detail").modal();
+		var content_id = $(this).attr("product_id");
+		var content_this = $(this);
+		var content_len = content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").children().length;
+		//如何已有详情直接返回
+		if( content_len > 0){
+			return false;
+		}else{
+			$.post("",{type:'get_content',id:content_id},function(data){
+				if(data.errno == 200){
+					content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").append(data.message.content);
+				}else{
+					alert(data.message);
+				}
+			},'json')
+		};
+	})
 	var index = 0;
 	$(".tab p").on("click",function(){
 		index = $(this).index();
@@ -439,7 +473,7 @@ jQuery(function(){
 			return false;
 		}
 		if(checkedVal){
-			$(".confirm-modal").modal();
+			$(".confirm-modal").modal({backdrop: 'static', keyboard: false});
 			e.stopPropagation();
 			$(".confirm-table").html($(".confirm-table-tr"));
 			$(".confirm-order-address").html("");
@@ -510,32 +544,9 @@ jQuery(function(){
 
     });
  
-	getList();
 }());
-//初始化ajax获取可选择商品
-function getList(){
-	var psize = $(".pagenum select").val();
-	var get_list_html = "";
-	var selected_num = 0;
-	var selected_html = "";
-	$.post("",{page:"1",type:"get_list",psize:psize},function(data){
-		for(var i =0 ;i< 3 ;i++){
-			if(data[i].selected==1){
-				selected_num++;
-				selected_html = "<span class='col-check added' id="+data[i].dish_id+">已选择</span>";
-			}else{
-				selected_html = "<span class='col-check' id="+data[i].dish_id+">选择商品</span>";
-			}
-			get_list_html += "<tr><td class='td-check col-label'><img src='__RESOURCE__/recouse/images/cart_circle.png' ></td><td class='col-img'><img src="+data[i].thumb+" data-toggle='modal' data-target='.modal_"+data[i].dish_id+"'></td><td class='col-name'><a data-toggle='modal' data-target='.modal_"+data[i].dish_id+"'>"+data[i].title+"</a><div class='modal fade modal_"+data[i].dish_id+"' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  <div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'> <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button><h4 class='modal-title' id='myModalLabel'>"+data[i].title+"</h4></div><div class='modal-body'>"+data[i].content+"</div></div></div></div></td>"+"<td class='col-price'><span class='price'>￥"+parseFloat(data[i].vip_price)+"</span></td><td class='col-num' cartid="+data[i].dish_id+"><div class='input-group'><span class='input-group-btn'>"+
-					"<button class='btn btn-default btn-sm' type='button' onclick='reduceNum("+data[i].dish_id+")'>-</button></span><input type='tel' value="+1+" "+
-					"class='form-control input-sm pricetotal goodsnum ' cartid="+data[i].dish_id+" id='goodsnum_"+data[i].dish_id+"' price="+parseFloat(data[i].vip_price)+"  maxbuy="+data[i].total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNum("+data[i].dish_id+","+data[i].total+")'>+</button></span></div></td>"+
-					"<td class='conl-action'>"+selected_html+"</td></tr>";
-		}
 
-		$(".tab .selected span").text(selected_num);
-		$("#product-list tr:last-child").after(get_list_html);
-	},"json");
-}
+
 function getGoods(){
 	var psize = $(".pagenum select").val();
 	var get_goods_html = "";
@@ -543,9 +554,16 @@ function getGoods(){
 	$.post("",{page:"1",type:"get_goods",psize:psize},function(data){
 		$(".tab .selected span").text(data.max_purchase);
 		//0成功
+		if( data.max_purchase == 0){
+			$(".add-list-area").hide();
+			$(".add-list-area-tip").show();
+		}else{
+			$(".add-list-area").show();
+			$(".add-list-area-tip").hide();
+		}
 		if( data.result == 0){
 			$.each(data.purchase,function(n,value){
-			get_goods_html += "<tr><td class='col-img'><img src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'>￥"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
+			get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'>￥"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
 				  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
 				  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
 				  "<td class='col-total'>"+value.price*value.num+"</td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";
@@ -667,9 +685,15 @@ function setaddress(ids){
      $(".this_address").removeClass("this_address");
 	 $(".address_"+ids).addClass("this_address");
      $("#addressval").val(ids);
+     $("#addresslist .set").each(function(){
+		if($(this).text()=="默认地址"){
+			$("#addresslist .set").hide();
+			$(this).show();
+		}
+	});
 }
 function setdefault(ids){			
-     $.post('<!--@php  echo mobile_url("address")@-->', {'id' : ids,'op':'default_ajax'}, function(s) {		
+     $.post('<!--@php  echo mobile_url("purchase_address")@-->', {'id' : ids,'op':'default_ajax'}, function(s) {		
 		   if (s.result == 1){		
 		        $(".default_address").removeClass("default_address");
 				$(".address_"+s.id+" .set").addClass("default_address");
@@ -681,7 +705,7 @@ function setdefault(ids){
 //删除
 function addressDel(addsid){		
 	if(confirm('确认要删除此收货地址吗?')){		
-		$.post("<!--@php  echo mobile_url('address', array('op' =>'remove'))@-->", {'id' : addsid,'del':'del'}, function(s) {
+		$.post("<!--@php  echo mobile_url('purchase_address', array('op' =>'remove'))@-->", {'id' : addsid,'del':'del'}, function(s) {
 			if (s.result == 1){					
 		        $(".address_"+addsid).remove();
 				if (parseInt(s.maxid) > 0){
@@ -703,7 +727,7 @@ function addressDel(addsid){
 }
 function topay() {
 	var paycode = $("#pays").val();
-	window.open("<!--@php  echo mobile_url('pay')@-->&paymentcode="+paycode+"&orderid="+order_id);
+	window.open("<!--@php  echo mobile_url('purchase_pay')@-->&paymentcode="+paycode+"&orderid="+order_id);
 }							
 function openDialog(url){
     $('.address').attr("src",url);

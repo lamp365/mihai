@@ -367,6 +367,21 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 				&nbsp;(还差<!--@php echo $need_group_member; @-->人)
 			</span>
 		</div>
+		<!--@php if($group['status'] ==1){ @-->
+		<!--@php if($dish['draw'] == 0){ @-->
+			<!--@php if($item['isprize'] != 0){ @-->
+			<div class="myoder-express">
+				<span class="express-company">中奖状态：</span>
+				<span class="express-num"><!--@php echo $draw_ln[$item['isprize']]; @--></span>
+			</div>
+			<!--@php } @-->
+		<!--@php }else{ @-->
+			<div class="myoder-express">
+				<span class="express-company">中奖状态：</span>
+				<span class="express-num"><!--@php echo $draw_ln[$item['isprize']]; @--></span>
+			</div>
+		<!--@php } @-->
+		<!--@php } @-->
 		<!--@php  } @-->
 		<!--@php  if(!empty($item['remark'])) { @-->
 		<div class="myoder-express" style='margin-top: 10px;'>

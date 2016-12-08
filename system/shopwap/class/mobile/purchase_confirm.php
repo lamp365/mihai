@@ -6,6 +6,11 @@ header("Expires:0");
 $member=get_vip_member_account(true,true);
 // 获取用户的opeinid;
 $openid =$member['openid'] ;
+// 判断是否存在关联的业务来来决定是否重新获取
+if ( empty( $member['relation_uid'] ) ){
+    $relation =  mysqld_select("SELECT relation_uid FROM ".table('member')." WHERE openid = ".$openid." limit 1");
+    $member['relation_uid'] = $relation['relation_uid'];
+}
 // 初始化订单金额
 $totalprice = 0;
 $purchase_goods = new LtCookie();
@@ -59,6 +64,7 @@ switch ( $_GP['api'] ){
                 'paytype'=> 2,
                 'sendtype' => 0,
                 'paytypecode' => 'alipay',
+				'relation_uid'=> $member['relation_uid'] ,// 业务员的ID
                 'paytypename' => '支付宝',
                 'addressid'=> $defaultAddress['id'],
                 'address_mobile' => $defaultAddress['mobile'],
@@ -114,6 +120,6 @@ switch ( $_GP['api'] ){
 			)	    
 		*/
 		break;
-	default 
+	default :
 		break;
 }

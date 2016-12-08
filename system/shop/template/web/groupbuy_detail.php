@@ -1,9 +1,13 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
 <h3 class="header smaller lighter blue">拼团订单详情&nbsp;&nbsp; <span class="btn btn-xs btn-info return">返回列表</span></h3>
+<p>团购条件：<?php echo $list[0]['goods'][0]['team_buy_count'];?>人团</p>
+<?php if($list[0]['goods'][0]['draw'] == 1) { ?>
+	<p>抽奖说明：该商品已开启抽奖，抽奖人数为<?php echo $list[0]['goods'][0]['draw_num'];?>人</p>
+<?php } ?>
 <h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo count($list) ?></strong></span></h3>
 			<ul class="nav nav-tabs" >
-				<li style="width:7%" class="active"><a href="javascript:;"><?php echo $list[0]['goods'][0]['team_buy_count'];?>人团</a></li>
+				<li style="width:7%" class="active"><a href="javascript:;">团购成员</a></li>
 		</ul>
 		
 
@@ -39,7 +43,11 @@
 									  <div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><?php echo $goods['title']; ?></a></div>
 									  <div>
 										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
-										  &nbsp;&nbsp; <span class="btn btn-xs btn-info">团购商品</span>
+										  <?php if($goods['draw'] == 1) { ?>
+											  &nbsp;&nbsp; <span class="btn btn-xs btn-info">抽奖团</span>
+										  <?php }else{ ?>
+											  &nbsp;&nbsp; <span class="btn btn-xs btn-info">团购商品</span>
+										  <?php } ?>
 									  </div>
 									  <div class="sn">商家编码: <?php echo $goods['goodssn']; ?></div>
 								  </li>
@@ -82,8 +90,17 @@
 						<?php  if($item['paytypecode']=='bank'){?>	<span class="label label-danger" ><?php } ?><?php  echo $item['paytypename'];?><?php  if($item['paytypecode']=='bank'){?>	</span><?php } ?>
 						</td>
 					<td align="center" valign="middle" style="vertical-align: middle;">
-					    <div>
-
+						<div>
+							<?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
+							<?php  if($item['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
+							<?php  if($item['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
+							<?php  if($item['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
+							<?php  if($item['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>
+							<?php  if($item['status'] == -2) { ?><span class="label label-danger">退款中</span><?php  } ?>
+							<?php  if($item['status'] == -3) { ?><span class="label label-danger">换货中</span><?php  } ?>
+							<?php  if($item['status'] == -4) { ?><span class="label label-danger">退货中</span><?php  } ?>
+							<?php  if($item['status'] == -5) { ?><span class="label label-success">已退货</span><?php  } ?>
+							<?php  if($item['status'] == -6) { ?><span class="label  label-success">已退款</span><?php  } ?>
 						</div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看详情</a></div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'identity', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看清关材料</a></div>

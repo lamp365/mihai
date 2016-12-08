@@ -51,10 +51,10 @@
 
 		<div class="col-sm-9">
 			<select name="link_type">
-				<option value='1' <?php  if($appBanner['type'] == 1) { ?>selected="selected" <?php  } ?>>商品详情页</option>
-				<option value='2' <?php  if($appBanner['type'] == 2) { ?>selected="selected" <?php  } ?>>类目列表页</option>
-				<option value='3' <?php  if($appBanner['type'] == 3) { ?>selected="selected" <?php  } ?>>搜索结果页</option>
-				<option value='4' <?php  if($appBanner['type'] == 4) { ?>selected="selected" <?php  } ?>>自定义H5页</option>
+				<option value='1' <?php  if($appBanner['link_type'] == 1) { ?>selected="selected" <?php  } ?>>商品详情页</option>
+				<option value='2' <?php  if($appBanner['link_type'] == 2) { ?>selected="selected" <?php  } ?>>类目列表页</option>
+				<option value='3' <?php  if($appBanner['link_type'] == 3) { ?>selected="selected" <?php  } ?>>搜索结果页</option>
+				<option value='4' <?php  if($appBanner['link_type'] == 4) { ?>selected="selected" <?php  } ?>>自定义H5页</option>
 			</select>
 		</div>
 	</div>
@@ -67,7 +67,7 @@
 			<p class="help-block" id="J_link_example1">【商品详情页链接示例】   http://www.hinrc.com/index.php?dish_id=15</p>
 			<p class="help-block" id="J_link_example2">【类目列表页链接示例】   http://www.hinrc.com/index.php?cate_id=15</p>
 			<p class="help-block" id="J_link_example3">【搜索结果页链接示例】   http://www.hinrc.com/index.php?keyword=test</p>
-			<p class="help-block" id="J_link_example4">【自定义H5页链接示例】   http://www.hinrc.com/h5/test.html</p>
+			<p class="help-block" id="J_link_example4">【自定义H5页链接示例】   http://www.hinrc.com/index.php?mod=mobile&name=addon8&id=28&do=article&is_app=1</p>
 		</div>
 	</div>
 

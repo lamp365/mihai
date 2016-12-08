@@ -1017,17 +1017,53 @@ function remove_ongroup_order($orderlist){
 		foreach($orderlist as $key => $row){
 			if($row['ordertype'] == '1'){
 				//为团购的开始判断该订单是否是组团中的 ，是的话要删掉暂时不显示在待发货中
-				$sql = "select g.status from ".table('team_buy_group')." as g left join ".table('team_buy_member')." as m";
+				$sql = "select g.status,g.dish_id from ".table('team_buy_group')." as g left join ".table('team_buy_member')." as m";
 				$sql .= " on g.group_id=m.group_id where m.order_id = {$row['id']}";
 				$group = mysqld_select($sql);
 				if(!empty($group)){
 					if($group['status'] == '2'){
 						$remove_num ++;
 						unset($orderlist[$key]);
+					}else if($group['status'] == '1'){
+						//组团成功的订单，但是处于开奖中的则要移除掉该订单，不在待发货中显示
+						$dish = mysqld_select("select draw from ".table('shop_dish')." where id={$group['dish_id']}");
+						if(!empty($dish) && $dish['draw'] == 1){
+							$remove_num ++;
+							unset($orderlist[$key]);
+						}
 					}
 				}
 			}
 		}
 	}
 	return array('list'=>$orderlist,'remove_num'=>$remove_num);
+}
+
+/**
+ * @param $order
+ * @return bool
+ * @content 对于团购 已经支付，不能显示发货按钮，同时团购属于开奖中的也不显示发货按钮  不能发货
+ */
+function checkGroupBuyCanSend($order){
+	if($order['ordertype']== '1'){
+		//团购订单  中 组团中的已经支付，不显示发货按钮
+		//组团成功，但是是属于抽奖团的不显示发货按钮
+		$sql = "select g.status,g.dish_id from ".table('team_buy_group')." as g left join ".table('team_buy_member')." as m";
+		$sql .= " on g.group_id=m.group_id where m.order_id = {$order['id']}";
+		$group = mysqld_select($sql);
+		if(!empty($group)){
+			if($group['status'] == '2' && $order['status']==1){
+				//组团中  已付款
+				return false;
+			}else if($group['status'] == '1'){
+				//组团成功的订单，但是处于开奖中  不能发货
+				$dish = mysqld_select("select draw from ".table('shop_dish')." where id={$group['dish_id']}");
+				if(!empty($dish) && $dish['draw'] == 1){
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
 }

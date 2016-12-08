@@ -18,7 +18,7 @@
       {
       	
       	 $condition=$condition.' and mobile like :mobile';
-      	 $conditiondata[':mobile']='%'.$_GP['mobile'].'%';
+      	 $conditiondata[':mobile']='%'.trim($_GP['mobile']).'%';
       }
           if(!empty($_GP['weixinname']))
       {
@@ -62,8 +62,8 @@
       }
       
       $rank_model_list = mysqld_selectall("SELECT * FROM " . table('rank_model')." order by rank_level" );
-  	
-			$list = mysqld_selectall('SELECT * FROM '.table('member')." where parent_roler_id=0 and dummy=0 and `istemplate`=0  and `status`=$status $condition "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
+	  // 不对会员列表进行身份限制，避免无法二次操作。应该在权限哪里进行控制
+			$list = mysqld_selectall('SELECT * FROM '.table('member')." where  dummy=0 and `istemplate`=0  and `status`=$status $condition "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
 	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where parent_roler_id=0 and dummy=0 and `istemplate`=0 $condition ",$conditiondata);
       $pager = pagination($total, $pindex, $psize);
       

@@ -50,7 +50,7 @@
 				font-size: 14px;
 				z-index: 9909
 			}
-			
+
 			select,
 			textarea,
 			input[type="text"],
@@ -323,7 +323,7 @@
 				     var addresslist = $("#addresslist", parent.document); 
 					 var id = $('#addressid').val()?$('#addressid').val():s.message;
 					 var url = '<!--@php  echo mobile_url("purchase_address",array("op"=>"ajax"))@-->'
-				     var newaddress = '<div class="addr-bd"><strong style="float: left;">'+realname+' 收</strong><span class="set" onclick="setdefault('+id+')">默认地址</span></div><div class="addr-hd"> '+province +' '+ city + ' ' + area+' ' + address + ''+mobile+'</div>';
+				     var newaddress = '<div class="addr-bd"><strong style="float: left;">'+realname+' 收</strong><span class="set" onclick="setdefault('+id+')">默认地址</span></div><div class="addr-hd"> '+province +' '+ city + ' ' + area+' ' + address + ' '+mobile+'</div>';
 					 newaddress = newaddress + '<div class="dosg"><span class="edit" onclick="openDialog(\''+url+"&id="+id+'\')">修改</span><span class="del" onclick="addressDel('+id+')">删除</span></div><div class="choose"></div>';
 					 if ($('#addressid').val() != ''){
 					     $(".address_"+$('#addressid').val(), parent.document).html(newaddress);

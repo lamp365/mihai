@@ -161,7 +161,7 @@ function update_group_status($dish_id) {
 	}
 
 	// 进行抽奖判断处理
-	// draw_team_buy($dishinfo);
+	draw_team_buy($dishinfo);
 	//成功状态的团购，修改一些未支付订单的状态 在活动结束时 为关闭
 	//更新该商品类型为一般商品
 	update_timeover_to_normalshop($dishinfo);
@@ -288,11 +288,18 @@ function draw_team_buy($d_info) {
 		if (strtotime($gv['createtime']) > $d_info['timestart']) {
 			$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$gv['group_id']);
 			foreach ($group_member as $gmv) {
-				$all_member[] = $gmv['order_id'];
+				$od_sta = mysqld_select("SELECT status FROM ".table('shop_order')." WHERE id=".$gmv['order_id']);
+				if ($od_sta['status'] == '1') {
+					$all_member[] = $gmv['order_id'];
+				}
 			}
 		}
 	}
+	
 	// 随机抽取
+	if ($d_info['draw_num'] < count($all_member)) {
+		$d_info['draw_num'] = count($all_member);
+	}
 	$isprize = array_rand($all_member, $d_info['draw_num']);
 	// 更新订单中奖状态
 	if (is_array($isprize)) {
@@ -304,14 +311,18 @@ function draw_team_buy($d_info) {
 		mysqld_update('shop_order',array('isprize'=>1),array('id'=>$all_member[$isprize]));
 		unset($all_member[$isprize]);
 	}
-	// 重新排列数组下标
-	$all_member = array_merge($all_member);
-	// 未中奖订单退款
-	foreach ($all_member as $am_v) {
-		update_order_status($am_v, -2, $d_info);
-		// mysqld_update('shop_order_goods',array('status'=>2, 'type'=>3),array('orderid'=>$am_v));
-	}
 
+	if (!empty($all_member)) {
+		// 重新排列数组下标
+		$all_member = array_merge($all_member);
+		// 未中奖订单退款
+		foreach ($all_member as $am_v) {
+			update_order_status($am_v, -2, $d_info);
+			// 更新未中奖订单状态
+			mysqld_update('shop_order',array('isprize'=>2),array('id'=>$am_v));
+		}
+	}
+	
 	// 关闭商品抽奖状态
 	mysqld_update('shop_dish',array('draw'=>0, 'draw_num'=>0),array('id'=>$d_info['id']));
 }

@@ -1,21 +1,10 @@
 
-	<title>我的订单</title>
-	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">   
-	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
+	<!--@php  include themePage('purchase_header');@-->
+	<title>我的订单</title>	
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  	
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">
-	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="__RESOURCE__/mobile/script/bootstrap.min.js"></script>
-	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
-	<link type="text/css" rel="stylesheet" href="__RESOURCE__/style/font-awesome.min.css" />
-	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/common.mobile.css">
-	<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
-	<script type="text/javascript" src="__RESOURCE__/mobile/default/script/jquery.touchwipe.js"></script>
-	<script type="text/javascript" src="__RESOURCE__/mobile/default/script/swipe.js"></script>
-		  
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />	  
 	<style type='text/css'>
 		.main .my_nav ul{display:box;display:-ms-box;display:-webkit-box;display:flex;display:-ms-flexbox;display:-webkit-flex}
 		.main .my_nav li{display:block;flex:1;-ms-flex:1;-webkit-flex:1;box-flex:1;-ms-box-flex:1;-webkit-box-flex:1;
@@ -24,19 +13,24 @@
 		.my_nav a:before{content:'\20';display:block}.layer .action a,.order_head .oh_btn.bg_1{background:#F3F3F3;color:#fff;border:1px solid transparent}
 		.main .my_nav{width:100%;margin-bottom: 20px;}
 		.my_nav ul{overflow:hidden}
-		.my_nav a{position:relative;display:block;height:50px;line-height:52px;text-align:center;color:#666;border-bottom:1px solid #ddd;padding-bottom:2px;font-size:16px;}
-		.my_nav a:before{width:1px;height:20px;position:absolute;left:-1px;top:50%;margin-top:-10px;background:#ddd}
+		.my_nav a{position:relative;display:block;height:40px;line-height:42px;text-align:center;color:#666;padding-bottom:2px;font-size:14px;}
 		.my_nav li.cur a{padding-bottom:0;border-bottom:2px solid #e4393c;color:#e4393c;font-weight:bold;}
 		.btn:empty {
 			display: none;
 		}
 		.myoder .myoder-hd .btn{color:#ffffff;}
+		.modal-body p a img{
+			width: 100%;
+		}
+		.modal-dialog{
+			width: 820px;
+		}
 	</style>
 	
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
 
 
-<!--@php  include themePage('purchase_header');@-->
+
 <div class="viewport">
     <div class="crumbs">
          <span>当前位置：</span>
@@ -106,61 +100,45 @@
 					</div>
 					<ul class="listview">
 		                <li class="h-text h-goods">
+		                	
+		                	<!--弹出的商品详情框-->
+							 <div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+								<div class='modal-dialog modal-lg'>
+									<div class='modal-content'>
+										<div class='modal-header'> 
+											<button type='button' class='close' data-dismiss='modal' style="margin-top: -10px;">
+												<span aria-hidden='true'>&times;</span>
+												<span class='sr-only'>Close</span>
+											</button>
+											<h4 class='modal-title' id='myModalLabel'></h4>
+										</div>
+										<div class='modal-body'>
+											<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+										</div>
+									</div>
+								</div>
+							</div>	
+							
 						    <!--@php  if(count($item['goods'])==1) { @-->  <!--@php  if(is_array($item['goods'])) { foreach($item['goods'] as $goods) { @--> 
 							<div class="img">
-	                            <a href="javascript:;" data-toggle="modal" data-target='.modal_<!--@php  echo $item['ordersn'];@-->'>
+	                            <a href="javascript:;" class="product-img" product_id="<!--@php echo $goods['aid']; @-->" >
 	                            	<img src="<!--@php  echo $goods['thumb'];@-->" width="80" height="80" style="+width: 60px;+height: 60px;">
 	                            </a>
 							</div>
 							<div class="name" style="text-align: left;">
-								<a href="javascript:;" data-toggle="modal" data-target='.modal_<!--@php  echo $item['ordersn'];@-->'>
+								<a href="javascript:;" class="product-name" product_id="<!--@php echo $goods['aid']; @-->" >
 									<p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><!--@php  echo $goods['title'];@--></p>									
 								</a>								
 								<p style=" border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;margin-top: 5px;display: none;"><!--@php  echo $goods['name'];@--></p>
 								<p style="font-size: 12px;margin-top: 5px;display: none;">规格：<span>这里是规格内容</span></p>
 							</div>
-							
-							<!--弹出的商品详情框-->
-							 <div class="modal fade modal_<!--@php  echo $item['ordersn'];@-->" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"> 
-							 	<div class="modal-dialog modal-lg" style="width: 900px;">
-							 		<div class="modal-content">
-							 			<div class="modal-header"> 
-							 				<button type="button" class="close" data-dismiss="modal">
-								 				<span aria-hidden="true">×</span>
-								 				<span class="sr-only">Close</span>
-							 				</button>
-							 				<h4 class="modal-title" id="myModalLabel"><!--@php  echo $goods['title'];@--></h4>
-							 			</div>
-							 			<div class="modal-body">
-							 				<!--这里放商品详情-->
-							 				
-							 			</div>
-							 		</div>
-							 	</div>
-							 </div>
+													
 							<!--@php  } } @-->
 							<!--@php  } else { @-->
 							<!--@php  if(is_array($item['goods'])) { foreach($item['goods'] as $goods) { @-->
-							<!--弹出的商品详情框-->
-							 <div class="modal fade modal_<!--@php  echo $goods['aid'];@--><!--@php  echo $item['ordersn'];@-->" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"> 
-							 	<div class="modal-dialog modal-lg" style="width: 900px;">
-							 		<div class="modal-content">
-							 			<div class="modal-header"> 
-							 				<button type="button" class="close" data-dismiss="modal">
-								 				<span aria-hidden="true">×</span>
-								 				<span class="sr-only">Close</span>
-							 				</button>
-							 				<h4 class="modal-title" id="myModalLabel"><!--@php  echo $goods['title'];@--></h4>
-							 			</div>
-							 			<div class="modal-body">
-							 				<!--这里放商品详情-->
-							 				
-							 			</div>
-							 		</div>
-							 	</div>
-							 </div>
+							
 							<div class="img">
-								<a href="javascript:;" data-toggle="modal" data-target='.modal_<!--@php  echo $goods['aid'];@--><!--@php  echo $item['ordersn'];@-->'>
+								<a href="javascript:;" class="product-img" product_id="<!--@php echo $goods['aid']; @-->" >
 								  <img src="<!--@php  echo $goods['thumb'];@-->" width="80" height="80" style="+width: 60px;+height: 60px;">
 								</a>
 							</div>							
@@ -201,10 +179,6 @@
 	 <!--@php include themePage('purchase_leftmenu');@-->
   </div>
 </div>
-<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript">
-	
-</script>
-
 <script>
 	$(function(){
 		$(".operate").each(function(){
@@ -216,8 +190,51 @@
 				$(".operate a").css("height","60px");
 				$(".operate a").css("line-height","60px");
 			}
+		});
+		//点击商品图片显示产品详情
+		$(".product-img").on("click",function(){	
+			$(this).parent(".img").siblings(".product-detail").modal();		
+			var content_id = $(this).attr("product_id");	
+			console.log(content_id)
+			var content = $(this).parent(".img").siblings(".product-detail").find(".modal-body");			
+			var content_len = content.children().length;		
+			//如何已有详情直接返回
+			if( content_len > 1){
+				return false;
+			}else{				
+				$.post("<!--@php  echo mobile_url('purchase_order')@-->",{type:'get_content',id:content_id},function(data){
+					console.log(data);
+					if(data.errno == 200){
+						content.html(data.message.content);
+					}else{
+						alert(data.message);
+					}
+				},'json')
+			};
+		})
+		//点击商品名称显示产品详情
+		$(".product-name").on("click",function(){	
+			$(this).parent(".name").siblings(".product-detail").modal();		
+			var content_id = $(this).attr("product_id");	
+			var content = $(this).parent(".name").siblings(".product-detail").find(".modal-body");
+			var content_len =content.children().length;				
+			//如何已有详情直接返回
+			if( content_len > 1){
+				return false;
+			}else{
+				$.post("<!--@php  echo mobile_url('purchase_order')@-->",{type:'get_content',id:content_id},function(data){
+					if(data.errno == 200){
+						content.html(data.message.content);
+					}else{
+						alert(data.message);
+					}
+				},'json')
+			};
 		})
 	})
+</script>
+<script>
+
 </script>
 <!--@php include themePage('purchase_footer');@-->
 

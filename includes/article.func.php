@@ -62,5 +62,5 @@ function analyzeShopContent($content,$return_dishid = false){
 
 function getArticleUrl($id,$openid = ''){
     $url = create_url('mobile', array('id' => $id,'name'=>'addon8','do'=>'article','is_app'=>1,'openid'=>$openid));
-    return $url;
+    return WEBSITE_ROOT.$url;
 }

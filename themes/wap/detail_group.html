@@ -548,6 +548,11 @@
         <ul>
             <li>活动时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></li>
             <li>拼团有效时间为30分钟，30分钟后拼团未成功系统将于一两个工作日自动退款到您的付款账户</li>
+            <!--@php if($goods['draw'] == 1) { @-->
+            <li>
+                该商品为抽奖团，可抽奖<!--@php echo $goods['draw_num']; @-->人。
+            </li>
+            <!--@php } @-->
         </ul>
         <img class="detail-spec-img" src="__RESOURCE__/recouse/images/detail_group_step.png">
     </div>

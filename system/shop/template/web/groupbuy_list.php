@@ -27,13 +27,13 @@
     </tr>
     </thead>
     <tbody>
-    <?php  if(is_array($list)) { foreach($list as $item) {  $cur_num=getGoupBuyNum($item['group_id']); ?>
-        <tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;</td></tr>
+    <?php  if(is_array($list)) { foreach($list as $items) {  $cur_num=getGoupBuyNum($items['group_id']); ?>
+        <tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $items['ordersn'];?>&nbsp;&nbsp;</td></tr>
         <tr>
             <td  colspan="4">
                 <?php
-                if ( is_array($item['goods']) ){
-                    foreach ( $item['goods'] as $goods ){
+                if ( is_array($items['goods']) ){
+                    foreach ( $items['goods'] as $goods ){
                         ?>
                         <div class="items">
                             <ul>
@@ -42,7 +42,11 @@
                                     <div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><?php echo $goods['title']; ?></a></div>
                                     <div>
                                         <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
+                                        <?php if($goods['draw'] == 1) { ?>
+                                        &nbsp;&nbsp; <span class="btn btn-xs btn-info">抽奖团</span>
+                                        <?php }else{ ?>
                                         &nbsp;&nbsp; <span class="btn btn-xs btn-info">团购商品</span>
+                                        <?php } ?>
                                     </div>
                                     <div class="sn">商家编码: <?php echo $goods['goodssn']; ?></div>
                                 </li>
@@ -61,35 +65,40 @@
             </td>
 
             <td align="center" valign="middle" style="vertical-align: middle;">
-                <div>收货人：<?php  echo $item['address_realname'];?></div>
-                <div>电话：<?php  echo $item['address_mobile'];?></div>
-                <?php if ( !empty($item['remark'])){ ?>
-                    <div><a type="button" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="<?php echo $item['remark']; ?>"><img src="images/tag.png" /></a></div>
+                <div>收货人：<?php  echo $items['address_realname'];?></div>
+                <div>电话：<?php  echo $items['address_mobile'];?></div>
+                <?php if ( !empty($items['remark'])){ ?>
+                    <div><a type="button" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="<?php echo $items['remark']; ?>"><img src="images/tag.png" /></a></div>
                 <?php } ?>
             </td>
-            <td align="center" valign="middle" style="vertical-align: middle;"><?php  echo $item['group_createtime']?></td>
+            <td align="center" valign="middle" style="vertical-align: middle;"><?php  echo $items['group_createtime']?></td>
             <td align="center" valign="middle" style="vertical-align: middle;">
-
-                <div><a  href="<?php  echo web_url('groupbuy', array('op' => 'detail', 'group_id' => $item['group_id']))?>"><i class="icon-edit"></i>查看详情</a></div>
-                &nbsp;&nbsp;
+                <div>
+                    <?php  if($items['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
+                    <?php  if($items['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
+                    <?php  if($items['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
+                    <?php  if($items['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
+                    <?php  if($items['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>
+                    <?php  if($items['status'] == -2) { ?><span class="label label-danger">退款中</span><?php  } ?>
+                    <?php  if($items['status'] == -3) { ?><span class="label label-danger">换货中</span><?php  } ?>
+                    <?php  if($items['status'] == -4) { ?><span class="label label-danger">退货中</span><?php  } ?>
+                    <?php  if($items['status'] == -5) { ?><span class="label label-success">已退货</span><?php  } ?>
+                    <?php  if($items['status'] == -6) { ?><span class="label  label-success">已退款</span><?php  } ?>
+                </div>
+                <div>
+                    <a  href="<?php  echo web_url('groupbuy', array('op' => 'detail', 'group_id' => $items['group_id']))?>"><i class="icon-edit"></i>查看成员</a>
+                </div>
             </td>
-            <td align="center" valign="middle" style="vertical-align: middle;"><div><?php  echo $item['price'];?> 元 </div><?php  if($item['hasbonus']>0) { ?><div class="label label-success">惠<?php echo $item['bonusprice'];?></div><?php  }?><div style="font-size:10px;color:#999;">(含运费:<?php  echo $item['dispatchprice'];?> 元)</div><div style="font-size:10px;color:#999;">(含进口税:<?php  echo $item['taxprice'];?> 元)</div></td>
+            <td align="center" valign="middle" style="vertical-align: middle;"><div><?php  echo $items['price'];?> 元 </div><?php  if($items['hasbonus']>0) { ?><div class="label label-success">惠<?php echo $items['bonusprice'];?></div><?php  }?><div style="font-size:10px;color:#999;">(含运费:<?php  echo $items['dispatchprice'];?> 元)</div><div style="font-size:10px;color:#999;">(含进口税:<?php  echo $items['taxprice'];?> 元)</div></td>
             <td align="center" valign="middle" style="vertical-align: middle;color: red;font-weight: bolder">
-                <?php echo  round(($item['price']+$item['dispatchprice']+$item['taxprice'])*$cur_num,2)?>元
+                <?php echo  round(($items['price']+$items['dispatchprice']+$items['taxprice'])*$cur_num,2)?>元
             </td>
-            <td align="center" valign="middle" style="vertical-align: middle;"><a type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo !empty($item['retag'])?$item['retag']:'没有标注信息'; ?>"><img src="images/btag<?php echo $item['tag']; ?>.png" /></a></td>
+            <td align="center" valign="middle" style="vertical-align: middle;"><a type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $items['id']))?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo !empty($items['retag'])?$items['retag']:'没有标注信息'; ?>"><img src="images/btag<?php echo $items['tag']; ?>.png" /></a></td>
         </tr>
     <?php  } } ?>
     </tbody>
 </table>
-<script>
-    $(".finish").click(function(){
-        if(confirm('确定进行结束操作')){
-            var url = "<?php echo web_url('groupbuy',array('op'=>'finish'));?>";
-            window.location.href=url;
-        }
-    })
-</script>
+
 <?php  echo $pager;?>
 
 <?php  include page('footer');?>

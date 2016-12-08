@@ -281,6 +281,10 @@ class shopwapAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
+	public function do_purchase_pay()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
     public function do_appdown()
     {
         $this->__mobile(__FUNCTION__);

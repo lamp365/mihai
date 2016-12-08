@@ -17,7 +17,7 @@ if ($operation == 'list') {
 
     $sqlNum = 'SELECT COUNT(t.group_id) FROM ' . table('team_buy_group') . " t left join ". table('team_buy_member') ." as m ";
     $sqlNum .= "  on m.group_id=t.group_id and m.openid=t.creator ";
-    $sqlNum .= " where  t.status={$group_status}";  //组团中
+    $sqlNum .= " where  t.status={$group_status} and finish=0";  //组团中
 
     $total = $pager = '';
     if(!empty($list)){
@@ -29,7 +29,7 @@ if ($operation == 'list') {
                 $item[$key] = $val;
             }
             $sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
-            $sql .= " ,h.team_buy_count,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid from ".table('shop_order_goods')." as o ";
+            $sql .= " ,h.team_buy_count,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid,h.draw from ".table('shop_order_goods')." as o ";
             $sql .= " left join ".table('shop_dish')." as h ";
             $sql .= " on o.goodsid=h.id ";
             $sql .= " where o.orderid={$item['order_id']}";
@@ -49,7 +49,7 @@ if ($operation == 'list') {
     if(!empty($list)){
         foreach ( $list as $id => $item) {
             $sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
-            $sql .= " ,h.team_buy_count,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid from ".table('shop_order_goods')." as o ";
+            $sql .= " ,h.team_buy_count,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid,h.draw,h.draw_num from ".table('shop_order_goods')." as o ";
             $sql .= " left join ".table('shop_dish')." as h ";
             $sql .= " on o.goodsid=h.id ";
             $sql .= " where o.orderid={$item['id']}";

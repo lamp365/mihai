@@ -269,8 +269,12 @@
 								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><?php echo $goods['title']; ?></a></div>
 									  <div>
 										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
-										  &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span>
-									  </div>
+								  		  <?php if($goods['draw'] == 1) { ?>
+										   &nbsp;&nbsp; <span class="label label-success">抽奖团</span>
+										  <?php }else{  ?>
+										   &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span>
+										  <?php } ?>
+								      </div>
 									  <div class="sn">商家编码: <?php echo $goods['goodssn']; ?></div>
 								  </li>
 								  <li class="price"><?php echo $goods['orderprice']; ?></li>
@@ -314,7 +318,7 @@
 					<td align="center" valign="middle" style="vertical-align: middle;">
 					    <div>
 					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-						<?php  if($item['status'] == 1) { ?><span class="label label-danger" >待发货</span><?php  } ?>
+						<?php  if($item['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
 						<?php  if($item['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
 						<?php  if($item['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
 						<?php  if($item['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>

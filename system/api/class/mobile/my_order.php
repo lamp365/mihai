@@ -94,13 +94,13 @@
 	    	if ($status == 3) {
 	    		// 抽奖团只有中奖之后才到待发货
 	    		if ($good['draw'] == '1') {
-	    			if ($l_v['isprize'] == '0') {
+	    			if ($l_v['isprize'] != '1') {
 	    				unset($list[$l_k]);
 	    				$total['total'] -= 1;
 	    				continue;
 	    			}
 	    		}elseif ($good['draw'] == '0') {
-	    			if ($l_v['group_status'] != '1') {
+	    			if ($l_v['group_status'] == '2') {
 	    				unset($list[$l_k]);
 	    				$total['total'] -= 1;
 	    				continue;

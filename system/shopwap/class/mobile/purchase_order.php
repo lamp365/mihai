@@ -1,6 +1,5 @@
 <?php
 $title = '批发采购';
-$settings=globaSetting();
 $is_login = is_vip_account();
 // 获取用户的参数
 $member = get_vip_member_account(true, true);
@@ -12,30 +11,37 @@ if ( empty($member['parent_roler_id']) || !$rolers || empty($member['son_roler_i
      header("location:".mobile_url('vip_logout'));
 }
 $addresslist      =   mysqld_selectall("SELECT * FROM " . table('shop_address') . " WHERE  deleted = 0 and openid = :openid order by isdefault desc ", array(':openid' => $openid));
+$page = max(1, $_GP['page']);
+$psize = max(20,$_GP['psize']);
+$limit =  " limit ".($page-1)*$psize.','.$psize;
+// 根据用户的角色获取产品数据
+$dish_list = mysqld_selectall("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.deleted = 0 and b.status = 1 and a.v1 = ".$member['parent_roler_id']." and a.v2 =  ".$member['son_roler_id'].$limit);
+// 开始进行标记选中事件selected
+$purchase_goods = new LtCookie();
+$purchase = $purchase_goods->getCookie('purchase');
+if ( !empty($purchase) ){
+	$purchase = unserialize($purchase);
+}
+$max_purchase = count($purchase);
+foreach( $dish_list as &$dish_list_value){
+	  if ( isset( $purchase[$dish_list_value['id']] ) ){
+			 $dish_list_value['selected'] = 1;
+	  }else{
+			 $dish_list_value['selected'] = 0;
+	  }
+	  unset($dish_list_value['content']);
+}
+unset($dish_list_value);
+$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table(shop_dish_vip) . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$member['parent_roler_id']." and a.v2 =  ".$member['son_roler_id']." $condition and b.deleted=0  AND b.status = '1' ");
+$pager  = pagination($total, $page, $psize);
 $op = $_GP['type']; 
 switch ( $op ){
-    case 'get_list':
-		$page = max(1, $_GP['page']);
-	    $psize = max(20,$_GP['psize']);
-		$limit =  " limit ".($page-1)*$psize.','.$psize;
-		// 根据用户的角色获取产品数据
-		$dish_list = mysqld_selectall("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE a.v1 = ".$member['parent_roler_id']." and a.v2 =  ".$member['son_roler_id'].$limit);
-		// 开始进行标记选中事件selected
-        $purchase_goods = new LtCookie();
-	    $purchase = $purchase_goods->getCookie('purchase');
-		if ( !empty($purchase) ){
-            $purchase = unserialize($purchase);
-		}
-        foreach( $dish_list as &$dish_list_value){
-              if ( isset( $purchase[$dish_list_value['id']] ) ){
-                     $dish_list_value['selected'] = 1;
-			  }else{
-                     $dish_list_value['selected'] = 0;
-			  }
-		}
-        unset($dish_list_value);
-		echo json_encode($dish_list);
-	    exit;
+	case 'get_content':
+		if ( empty($_GP['id']) ){
+              die(showAjaxMess('1002', '商品参数异常')); 
+     	}
+        $content = mysqld_select("SELECT content FROM ".table('shop_dish')." WHERE id = ".$_GP['id']." limit 1");
+		die(showAjaxMess('200', $content)); 
 		break;
 	case 'add_goods':
 		// 批量添加

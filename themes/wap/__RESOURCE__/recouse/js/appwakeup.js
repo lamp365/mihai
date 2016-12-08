@@ -130,5 +130,5 @@ function app_show_tip(){
     img.style = "width:100%";
     img.src ="images/down_banner.png";
     div.appendChild(img);
-    document.body.appendChild(div);
+    //document.body.appendChild(div);
 }

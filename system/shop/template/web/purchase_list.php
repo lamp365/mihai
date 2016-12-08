@@ -300,7 +300,7 @@
 					<td align="center" valign="middle" style="vertical-align: middle;">
 					    <div>
 					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-						<?php  if($item['status'] == 1) { ?><span class="label label-danger" >待发货</span><?php  } ?>
+						<?php  if($item['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
 						<?php  if($item['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
 						<?php  if($item['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
 						<?php  if($item['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>

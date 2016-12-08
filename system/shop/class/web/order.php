@@ -100,6 +100,7 @@ if ($operation == 'display') {
 	$remove_num = 0;
 	if($status == 1){
 		//移除组团中的订单，组团中,已经支付不要在待发货中显示,仓库人员会以为要发货
+		//移除组团成功还没开奖的订单，不能再待发货中显示
 		$listArr = remove_ongroup_order($list);
 		$list       = $listArr['list'];
 		$remove_num = $listArr['remove_num'];
@@ -117,7 +118,7 @@ if ($operation == 'display') {
 			. " left join ". table('shop_dish'). " h on o.shopgoodsid = h.gid  WHERE o.orderid='{$item['id']}'");
 		***************/
 		$sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
-		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid from ".table('shop_order_goods')." as o ";
+		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid,h.draw from ".table('shop_order_goods')." as o ";
 		$sql .= " left join ".table('shop_dish')." as h ";
 		$sql .= " on o.goodsid=h.id ";
 		$sql .= " where o.orderid={$item['id']}";
@@ -203,7 +204,8 @@ if ($operation == 'display') {
 	$goods = mysqld_selectall("SELECT g.id,o.total, g.title, g.status,g.thumb, g.goodssn,g.productsn,g.marketprice,o.id as order_id,o.total,g.type,o.optionname,o.optionid,o.price as orderprice,o.status as order_status, o.type as order_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
 		. " WHERE o.orderid='{$orderid}'");
 	$order['goods'] = $goods;
-
+	//确认是否可以展示发货按钮  部分团购商品已经支付，不能显示发货按钮
+	$ishowSendBtn = checkGroupBuyCanSend($order);
 	if (checksubmit('reset')) { //确认标记
 		mysqld_update('shop_order', array('tag' => $_GP['tag'], 'retag' => $_GP['retag']), array('id' => $orderid));
 		message('订单操作成功！', refresh(), 'success');
@@ -273,6 +275,10 @@ if ($operation == 'display') {
 
 	if(!isSureSendGoods($orderGoodInfo)){
 		message('不能发货，该订单有部分商品还没处理完!',refresh(),'error');
+	}
+	if(!checkGroupBuyCanSend($order)){
+		//如果不能发货
+		message('不能发货，该团购订单有商品可能还在开奖中！',refresh(),'error');
 	}
 	$res = mysqld_update('shop_order', array(
 		'status'     => 2,
@@ -651,70 +657,75 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 
 		// 批量确认退款
 		foreach ($dataset as $dav) {
-			$o = mysqld_select("SELECT b.id as order_good_id, b.orderid FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE a.ordersn='".$dav."'");
+			$o = mysqld_selectall("SELECT b.id as order_good_id, b.orderid, b.status as bstatus FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE a.ordersn='".$dav."'");
 			if (empty($o)) {
 				continue;
 			}
-			$order_good_id = $o['order_good_id'];
-			$order_id      = $o['orderid'];
-			$aftersales   = mysqld_select("select aftersales_id,refund_price from ". table('aftersales') ." where order_goods_id={$order_good_id}");
-			$orderInfo    = mysqld_select("select * from ". table('shop_order') ." where id={$order_id}");
-
-			if(empty($aftersales)||empty($orderInfo))
-				continue;
-
-			//修改订单状态
-			$res = mysqld_update('shop_order_goods', array('status' => 4), array('id' => $order_good_id));
-			if($res) {
-				//释放商品数量  卖出件数   佣金计算  和账单记录
-				oneUpdateOrderStock($order_good_id, false);
-				//扣除积分    不扣积分  因为是确认收货才给积分 退货说明还没确认收货
-		//			  member_credit($orderInfo['openid'],$orderInfo['credit'],false,'订单:'.$orderInfo['ordersn'].'退货扣除积分');
-
-				$orderAllGood = mysqld_selectall("select id,status,type from ". table('shop_order_goods') ." where orderid={$order_id}");
-				$num = 0;
-				foreach($orderAllGood as $row){
-					if($row['type'] != 0 && $row['status'] == 4)
-						$num ++;
+			foreach ($o as $ok => $ov) {
+				if ($ov['bstatus'] != '2') {
+					continue;
 				}
-				if($num == count($orderAllGood))  //如果商品全部都发生退款退货则，关闭该总订单状态
-					mysqld_update('shop_order', array('status' => -1,'closetime'=>time()), array('id' => $order_id));
+				$order_good_id = $ov['order_good_id'];
+				$order_id      = $ov['orderid'];
+				$aftersales   = mysqld_select("select aftersales_id,refund_price from ". table('aftersales') ." where order_goods_id={$order_good_id}");
+				$orderInfo    = mysqld_select("select * from ". table('shop_order') ." where id={$order_id}");
 
-				//记录售后日志
-				$xinxi = "卖家已经给您退款¥{$aftersales['refund_price']}元";
-				$descript = array('description'=>$xinxi);
-				$data = array(
-					'aftersales_id'  => $aftersales['aftersales_id'],
-					'order_goods_id' => $order_good_id,
-					'status' 		 => 4,
-					'title'          => '财务已经退款',
-					'content'        => serialize($descript),
-					'createtime' 	 => date("Y-m-d H:i:s")
-				);
-				mysqld_insert('aftersales_log',$data);
+				if(empty($aftersales)||empty($orderInfo))
+					continue;
+
+				//修改订单状态
+				$res = mysqld_update('shop_order_goods', array('status' => 4), array('id' => $order_good_id));
+				if($res) {
+					//释放商品数量  卖出件数   佣金计算  和账单记录
+					oneUpdateOrderStock($order_good_id, false);
+					//扣除积分    不扣积分  因为是确认收货才给积分 退货说明还没确认收货
+			//			  member_credit($orderInfo['openid'],$orderInfo['credit'],false,'订单:'.$orderInfo['ordersn'].'退货扣除积分');
+
+					$orderAllGood = mysqld_selectall("select id,status,type from ". table('shop_order_goods') ." where orderid={$order_id}");
+					$num = 0;
+					foreach($orderAllGood as $row){
+						if($row['type'] != 0 && $row['status'] == 4)
+							$num ++;
+					}
+					if($num == count($orderAllGood))  //如果商品全部都发生退款退货则，关闭该总订单状态
+						mysqld_update('shop_order', array('status' => -1,'closetime'=>time()), array('id' => $order_id));
+
+					//记录售后日志
+					$xinxi = "卖家已经给您退款¥{$aftersales['refund_price']}元";
+					$descript = array('description'=>$xinxi);
+					$data = array(
+						'aftersales_id'  => $aftersales['aftersales_id'],
+						'order_goods_id' => $order_good_id,
+						'status' 		 => 4,
+						'title'          => '财务已经退款',
+						'content'        => serialize($descript),
+						'createtime' 	 => date("Y-m-d H:i:s")
+					);
+					mysqld_insert('aftersales_log',$data);
 
 
-				//给买家APP推送消息
-				$order_good = mysqld_select("select * from ". table('shop_order_goods') ." where id={$order_good_id}");
-				$dishInfo   = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$order_good['goodsid']}");
-				$time       = date("Y-m-d H:i:s",$orderInfo['createtime']);
-				//格式必须顶格
-				$msg  = "客官，您好！已经退款成功~~
-		订单编号：{$orderInfo['ordersn']}
-		购买商品：{$dishInfo['title']}
-		退款金额：{$aftersales['refund_price']}
-		下单时间：{$time}";
-				pushOrderImMessage(IM_ORDER_FROM_USER,$orderInfo['openid'],$msg);
-
-				//如果有卖家openid则，则推送APP给卖家说明佣金被扣
-				if(!empty($order_good['seller_openid']) && !empty($order_good['commision'])){
+					//给买家APP推送消息
+					$order_good = mysqld_select("select * from ". table('shop_order_goods') ." where id={$order_good_id}");
+					$dishInfo   = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$order_good['goodsid']}");
+					$time       = date("Y-m-d H:i:s",$orderInfo['createtime']);
 					//格式必须顶格
-					$msg  = "老板，您好！顾客已经退款成功~~
-		订单编号：{$orderInfo['ordersn']}
-		购买商品：{$dishInfo['title']}
-		退款金额：{$aftersales['refund_price']}
-		下单时间：{$time}";
-					pushOrderImMessage(IM_ORDER_FROM_USER,$order_good['seller_openid'],$msg);
+					$msg  = "客官，您好！已经退款成功~~
+订单编号：{$orderInfo['ordersn']}
+购买商品：{$dishInfo['title']}
+退款金额：{$aftersales['refund_price']}
+下单时间：{$time}";
+					pushOrderImMessage(IM_ORDER_FROM_USER,$orderInfo['openid'],$msg);
+
+					//如果有卖家openid则，则推送APP给卖家说明佣金被扣
+					if(!empty($order_good['seller_openid']) && !empty($order_good['commision'])){
+						//格式必须顶格
+						$msg  = "老板，您好！顾客已经退款成功~~
+订单编号：{$orderInfo['ordersn']}
+购买商品：{$dishInfo['title']}
+退款金额：{$aftersales['refund_price']}
+下单时间：{$time}";
+						pushOrderImMessage(IM_ORDER_FROM_USER,$order_good['seller_openid'],$msg);
+					}
 				}
 			}
 		}
