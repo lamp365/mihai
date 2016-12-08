@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+	<title>家乡菜评选投票</title>
+	<meta name="viewport" content="width=device-width,initial-scale=0.8,target-densitydpi=high-dpi;user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">	
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
+<style type='text/css'>
+    #poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;
+        -webkit-border-radius:5px;
+        -moz-border-radius:5px;}
+#poptip_content { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px; height: 27px; color:#fff;text-align:center;font-size:14px;z-index: 9909}
+</style>	
+</head>
+<style  type="text/css">
+body{ background-color:#0cad84;margin:0;padding:0}
+dl,dt,dd,ul{ margin:0;padding:0; list-style-type:none}
+.main{
+	width: 640px;
+	margin: 0 auto;
+	background-color: #0cad84;
+	padding-bottom: 20px;
+	}	
+.top{width:640px;}
+.title{
+	width: 640px;
+	text-align: center
+}
+.top{
+	width: 640px;
+}
+.title img{ margin-left:auto; margin-right:auto;}
+
+.input{
+	width: 640px;
+	height: 74px;
+	background-image: url(__RESOURCE__/recouse/images/ttt.png);
+	margin: 0 auto;
+}
+
+.input1{
+	width: 640px;
+	height: 118px;
+	background-image: url(__RESOURCE__/recouse/images/tt2.png);
+	margin: 0 auto;
+}
+.input1 textarea{
+	border: none;
+	height: 80px;
+	margin-top: 15px;
+	width: 95%;
+	background-color: #f6ce55;
+}
+
+.input input{
+	border: none;
+	height: 40px;
+	margin-top: 15px;
+	width: 95%;
+	background-color: #f6ce55;
+}
+.mt10{
+	margin-bottom: 20px;
+}
+.input4{
+	text-align: left;
+	width: 90%;
+	margin: 0 auto;
+	position: relative;
+}
+.input-file{
+		position: absolute;
+  			opacity:0;
+            filter:alpha(opacity=0);
+            height: 95px;
+            width: 100px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;}
+
+
+.menulist{
+	background-image: url(__RESOURCE__/recouse/images/jxc2.png);
+	height: 1374px;
+	width: 640px;
+	background-repeat: no-repeat;
+	margin: 30px auto auto auto;
+	}
+	.title1{
+	text-align: center;
+	height: 46px;
+}
+	.title1 span{font-size:20px; color:#FFF;}
+	.title2{ text-align:right;}
+	.menuitem{
+	width: 100%;
+	margin: 0px auto;
+}
+	.menuitem ul{ list-style-type:none;margin:0;}
+	.menuitem li{
+	background: url(__RESOURCE__/recouse/images/bg_jxc12.png) 0 0;
+	background-repeat: no-repeat;
+	width: 633px;
+	height: 172px;
+	margin-top: 7px;
+}
+	.menuitem li .imgs{
+	float: left;
+	margin: 10px 15px;
+auto auto;}
+.menuname{
+	float: left;
+	line-height: 40px;
+	font-size: 30px;
+	margin-left: 20px;
+	margin-top: 10px;
+	width: 300px;
+}
+.star{
+	margin-left: 40px;
+	float: left;
+	width: 48px;
+	margin-top: 20px;
+	text-align: center;
+}
+.star span{
+	font-size: 30px;
+	display: inline;
+	font-weight: bold;
+	color: #fb5c35;
+}
+.zhongjiang{
+	width: 640px;
+	background-image: url(__RESOURCE__/recouse/images/bgzj.png);
+	margin: 10px auto;
+	height: 386px;
+}
+
+.zhongjiang3{
+	width: 640px;
+	background-image: url(__RESOURCE__/recouse/images/bg_shangqi.png);
+	margin: 10px auto;
+	height: 288px;
+}
+
+	.title5{
+	text-align: center;
+	height: 46px;
+	margin:10px auto;
+}
+
+.jp{
+	
+	}
+.jp li{
+	float: left;
+	background-image: url(__RESOURCE__/recouse/images/shagnqijp.png);
+	width: 156px;
+	height: 191px;
+	margin-left: 40px;
+}
+.jp li img{
+	margin: 20px auto auto 30px;
+}
+
+
+.jp1{
+	width: 585px;
+	margin: 0 auto;
+	background-image: url(__RESOURCE__/recouse/images/zjbj12.png);
+	height: 118px;
+	}
+.jp1 li{
+	float: left;
+	width: 180px;
+	color: #FFF;
+	font-size: 25px;
+	text-align: center;
+	margin-top: 45px;
+}
+.jp1 li img{
+	margin: 20px auto auto 30px;
+}
+</style>
+<body class="body-gray" style="min-width: 320px;max-width: 640px;margin:0 auto;">
+<div class="main">
+<div class="top">
+<img src="__RESOURCE__/recouse/images/jiaxiangcai2_01.png" alt="" width="640">
+</div>
+<form class="form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);" enctype="multipart/form-data">	
+<div class="title"><img src="__RESOURCE__/recouse/images/jiaxiangcai2_03.png" width="640" height="350" alt=""  ></div>
+
+<div class="menulist">
+	<div class="title2"><a href="<!--@php echo create_url('mobile',array('name' => 'shopwap','do' => 'need'));@-->"><img src="__RESOURCE__/recouse/images/qucaijia.png"  /></a></div>
+	<div class="title1"><img  src="__RESOURCE__/recouse/images/jxcbt.png" width="142" height="46"  />
+	<div style="position: relative; left: 520px; top: -30px; width: 50px;" ><img src="__RESOURCE__/recouse/images/img_11.png" /></div></div>
+    <div class="menuitem">
+    	<ul>
+    	
+    	  <!--@php  if(is_array($list)) { foreach($list as $item) { @-->	
+        	<li>
+            	<img class="imgs" src="<!--@php echo WEBSITE_ROOT;@-->/attachment/<!--@php  echo $item['thumb'];@-->"   onload="setLoadTime1();"/>
+                <div class="menuname">
+                   <dl>
+                   		<dt><b>名称：<!--@php echo $item['title']@--></b></dt>
+                        <dt>家乡：<!--@php echo $item['address']@--></dt>
+                        <dt>推荐：</dt>
+                   </dl>
+                </div>
+                <div class="star"> <a href="javascript:;"  onclick="vote('<!--@php echo $item['id']@-->');"><img src="__RESOURCE__/recouse/images/xing.png" width="48" height="43" style="display: inline; margin-bottom: 10px;" /></a>
+                    <span><!--@php  echo $item['vote'];@--></span>
+                </div>
+            </li>
+             <!--@php  } } @-->          
+        
+        </ul>
+    </div>
+</div>
+
+<div class="zhongjiang">
+	<br/>
+	<div class="title5 mt10"><img  src="__RESOURCE__/recouse/images/shagnqi.png" width="189" height="46"  /></div>    
+    <div class="jp">
+    	<ul>
+        	<!-- <li><img src="__RESOURCE__/recouse/images/test1.png" width="97" height="100" /></li>
+            <li><img src="__RESOURCE__/recouse/images/test1.png" width="97" height="100" /></li>
+            <li><img src="__RESOURCE__/recouse/images/test1.png" width="97" height="100" /></li> -->
+    	</ul>
+    </div>
+    
+    
+</div>
+
+
+<div class="zhongjiang3">
+<br/>
+	<div class="mt10"></div>
+	<div class="title5"><img  src="__RESOURCE__/recouse/images/zhognjian2.png" width="196" height="52"  /></div>
+    
+    <div class="jp1">
+    	<ul>
+        	<!-- <li>爱江山更爱</li>
+            <li>发生发达</li>
+            <li>发大师傅大师傅</li> -->
+    	</ul>
+    </div>
+    
+    
+</div>
+
+<div class="title mt10"></div>
+<div  style="clear:both"></div>
+<div class="title mt10">
+	<a href="<!--@php echo create_url('mobile',array('name' => 'shopwap','do' => 'need'));@-->"><img src="__RESOURCE__/recouse/images/canjia.png"  width="598" height="81"   />    
+</div>
+</form>
+  <script type="text/javascript">
+  function tip(msg,autoClose){
+	     var div = $("#poptip");
+	     var content =$("#poptip_content");
+	     if(div.length<=0){
+	         div = $("<div id='poptip'></div>").appendTo(document.body);
+	         content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+	     }
+	     else{
+	         content.html(msg);
+	         content.show(); div.show();
+	     }
+	     if(autoClose) {
+	        setTimeout(function(){
+	            content.fadeOut(500);
+	            div.fadeOut(500);
+
+	        },1000);
+	     }
+	}
+	function tip_close(){
+	    $("#poptip").fadeOut(500);
+	     $("#poptip_content").fadeOut(500);
+	}
+	
+  function vote(goodid){		           
+	    
+	    tip("正在处理数据...");		        
+	    var url = '<!--@php  echo mobile_url('dishedlist',array('op'=>'vote'),true);@-->' +"&pid="+goodid;
+	    $.getJSON(url, function(s){	 
+			    if(s.result=='faild'){
+			    	tip_close();
+			    	alert("你已经投过票了，一个用户只能投票一次!");
+			    }
+			    else  if(s.result=='success'){
+			        tip_close();
+			        alert("投票成功，感谢成功!");					
+			   }
+			    else if(s.result=='nologin'){
+			    		location.href='/index.php?mod=mobile&name=shopwap&do=login';			    	
+			    	}
+	  	});
+	}
+  
+  
+  </script>  
+</script>
+</div>
+</body>
+</html>

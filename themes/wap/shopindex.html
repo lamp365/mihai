@@ -1,0 +1,387 @@
+   <!--@php  include themePage('header'); @-->
+	<div id="viewport" class="viewport">
+		<div class="slider card card-nomb" style="visibility: visible;">
+			<script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
+			<div id="focus" class="focus">
+				<div class="hd">
+					<ul>
+					</ul>
+				</div>
+				<div class="bd">
+					<ul>
+						<!--@php  if(is_array($advs)) { foreach($advs as $adv) { @-->
+						<li>
+							<a href="<!--@php  if(empty($adv['link'])) { @--><!--@php  } else { @--><!--@php  echo $adv['link'];@--><!--@php  } @-->">
+								<img src="<!--@php  echo $adv['thumb'];@-->"/>
+							</a>
+						</li>
+						<!--@php  } } @-->
+					</ul>
+				</div>
+			</div>
+			<script type="text/javascript">
+				TouchSlide({
+					slideCell : "#focus",
+					titCell : ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+					mainCell : ".bd ul",
+					delayTime : 600,
+					interTime : 4000,
+					effect : "leftLoop",
+					autoPlay : true,//自动播放
+					autoPage : true, //自动分页
+					switchLoad : "_src" //切换加载，真实图片路径为"_src" 
+				});
+				
+				
+			</script>
+		</div>
+		<!--@php  if ( !empty($category) or !empty($shop_menu_list) ){include themePage('nav');  }@-->
+		<style>
+		    .adv_mid {width:100%;overflow:hidden;background:#fff;}
+            .adv_mid li { float:left; width:50%; }
+			.adv_mid li a{ padding:3px; display:block;}
+			.adv_mid li img { width:100%; height:auto; -moz-border-radius: 5px;      /* Gecko browsers */
+    -webkit-border-radius: 5px;   /* Webkit browsers */
+    border-radius:5px;            /* W3C syntax */ }
+    		
+    		/*觅海头条*/
+    		.mhheadline{
+    			width: 100%;    			
+    			text-align: center;
+    			background: #D8D8D8;    		
+    			font-family: hzgb;
+				font-size: 30px;
+				color: #FFFFFF;
+				letter-spacing: 0;
+    		}
+			.per-mhnews{
+				margin-top: 10px;
+				
+			}
+			.per-mhnews ul{
+				overflow: hidden;				
+				width: 100%;
+				padding: 0 2%;
+			}
+			.per-mhnews ul li{
+				width: 47%;
+				margin-right: 2%;
+				overflow: hidden;
+				float: left;				
+				margin-bottom: 5%;
+			}
+			.per-mhnews ul li:first-child{
+				margin-left: 0;
+			}
+			.per-mhnews ul li a img{
+				width: 100%;
+				height: 100px;
+			}
+			.per-mhnews ul li a p{				
+				font-size: 16px;
+				color: #333333;				
+				line-height: 18px;
+				
+				width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				padding-right: 5px;
+				margin-top: 8px;
+			}
+			 .per-mhnews ul li a span{
+				font-family: PingFangSC-Regular;
+				font-size: 14px;
+				color: #999999;
+				letter-spacing: 0;
+				line-height: 18px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				padding-right: 5px;
+				width: 100%;
+				height: 18px;
+				display: inline-block;
+				
+			}
+			.per-mhnews ul li a p:hover{
+				text-decoration: underline;
+			}
+			.per-mhnews ul li a span:hover{
+				text-decoration: underline;
+			}
+			.per-mhnews ul li .hottag{
+				width: 28px;
+				height: 16px;
+				line-height: 16px;
+				font-size: 12px;
+				display: inline-block;
+				border: 1px solid #DC0200;
+				border-radius: 4px;
+				color: #DC0200;
+				float: left;
+				text-align: center;
+			}
+			.per-mhnews ul li .see{
+				display: inline-block;
+				margin-left: 10px;
+				height: 16px;
+				line-height: 16px;
+				float: left;
+				margin-top: 2px;
+			}
+			 .per-mhnews ul li .see img{
+				width: 14px;	
+				float: left;
+				margin-top: 3px;
+			}
+			 .per-mhnews ul li .see .seenum{
+				display: inline-block;
+				float: left;
+				font-family: .PingFang-SC-Regular;
+				font-size: 12px;
+				color: #999999;
+				letter-spacing: 0;
+				line-height: 16px;
+				margin-left: 2px;
+			}
+			.seemore{	
+				width: 90px;
+				height: 30px;
+				line-height: 30px;
+				text-align: center;
+				margin: 0 auto;				
+				border: 1px solid #E53A57;
+				border-radius: 4px;
+				
+			}
+			.seemore a{
+				font-family: PingFangSC-Regular;
+				font-size: 16px;
+				color: #E53A57;
+			}
+		</style>
+        <div class="adv_mid">
+		      <ul>
+                   <!--@php if (!empty($advs_mid)) { $advs_mid_num =0; foreach ($advs_mid as $advs_mid_value ){ $advs_mid_num++; if ($advs_mid_num <=2 ){@-->
+                         <li><a href="<!--@php  if(empty($advs_mid_value['link'])) { @--><!--@php  } else { @--><!--@php  echo $advs_mid_value['link'];@--><!--@php  } @-->"><img src="<!--@php  echo $advs_mid_value['thumb'];@-->" /></a></li>
+				   <!--@php }}} @-->
+			  </ul>
+		</div>
+		<div id="home-page"  style="overflow:hidden;">
+			<div role="main" class="ui-content ">
+				<div class="home-categories">
+					<!--觅海头条-->
+					<div class="category-container" style="padding-bottom: 10px;">
+						<div class="mhheadline" style="display: none;">
+							觅海头条
+						</div>
+						<div class="per-mhnews">    		 
+				    		<ul>    			
+				    		<!--@php if (is_array($article_middle)){ foreach ($article_middle as $val){ @-->
+				    			<li>
+				    				<a target="_blank" href="<!--@php  echo mobile_url('article',array('name'=>'addon8','id'=>$val['id']))@-->">
+				    					<!--文章图片-->
+				    					<img data-original="<!--@php  echo $val['thumb']@-->" class="lazy" src="images/loading.gif"/>
+				    					<!--文章标题-->
+				    					<p><!--@php  echo $val['title']@--></p>
+				    					<!--文章内容-->
+				    					<span><!--@php  echo $val['description']@--></span>
+				    				</a>
+				    				<div style="overflow: hidden;">
+				    					<!--文章的热门标签-->
+					    				<span class="hottag">热门</span>
+					    				<!--查看了文章的人数-->
+					    				<span class="see">
+					    					<img src="__RESOURCE__/recouse/images/seenum.png" />
+					    					<span class="seenum"><!--@php  echo $val['readcount']@--></span>
+					    				</span> 
+				    				</div>
+				    			</li>
+				    			<!--@php }}@-->
+				    		</ul>
+    					</div>
+    					<div class="seemore">
+				    		<a target="_blank" href="<!--@php  echo mobile_url('article_list',array('name'=>'addon8'))@-->" style="color:#E53A57 ;">查看更多</a>    		
+				    	</div>
+					</div>
+					
+                    <!--@php if (!empty($best_goods)) { foreach ($best_goods as $category_best ){ @-->
+					<div class="category-container" >
+					<div class="indextitle"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><!--@php echo $category_best['name']; @--></a></div>
+					<div style="padding:10px 0;"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><img width="100%" data-original="<!--@php echo $category_best['adv_wap']; @-->" class="lazy" src="images/loading.gif"/></a></div>
+					<ul class="os_box_list">	
+						<!--@php foreach($category_best['hots'] as $item){@-->
+						<li>
+							<div class="item" style="position:relative;">
+								<div class="img">
+									<a href="<!--@php echo mobile_url('detail', array('id' => $item['id']))@-->">
+										<img data-original="<!--@php echo $item['small']; @-->" width="100%" alt="" class="lazy" src="images/loading.gif"></a>
+								</div>
+								<div class="hot" style="position:absolute; top:4px; left:4px;">
+                                    	 热卖
+								</div>
+								<div class="txt">
+									<!--@php echo $item['title'];@-->
+								</div>
+								<div class="price">
+									  <em><i>¥</i><!--@php echo $item['marketprice']; @--></em>
+									  <em class="del"><i>¥</i><!--@php echo $item['productprice']; @--></em>
+								</div> 
+							</div>
+						</li>		
+						<!--@php } @-->		
+					</ul>
+					</div>
+					<!--@php }} @-->
+                    <ul class="os_box_view" style="display:none;">	
+						<!--@php foreach($category as $item){ @-->
+						<!--@php if($item['isrecommand']==1 && $item['ishot']!=1){ @-->
+						<li>
+						<a href="<!--@php echo mobile_url('detail', array('id' => $item['id'],'op'=>'yun'))@-->">
+						<div class="item">
+						        <div class="txt">
+									<!--@php echo $item['title'];@-->
+								</div>
+								<div class="names">
+									<!--@php echo $item['names'];@-->
+								</div>
+								<div class="buy">
+                                    立即参与
+								</div>
+								<div class="img">
+								<img
+										data-original="<!--@php echo $item['logo']; @-->"
+										width="100%" alt="" class="lazy" src="images/loading.gif">
+								</div>
+								</div>
+								</a>
+						</li>		
+						<!--@php } @-->
+						<!--@php } @-->
+					</ul>
+				
+			</div>
+		</div>
+	</div>
+		<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		Zepto(function($) {
+			var $nav = $('.global-nav'), $btnLogo = $('.global-nav__operate-wrap');
+			$btnLogo.on('click', function() {
+				if ($btnLogo.parent().hasClass('global-nav--current')) {
+					navHide();
+				} else {
+					navShow();
+				}
+			});
+			var navShow = function() {
+				$nav.addClass('global-nav--current');
+			}
+			var navHide = function() {
+				$nav.removeClass('global-nav--current');
+			}
+
+			$(window).on("scroll", function() {
+				if ($nav.hasClass('global-nav--current')) {
+					navHide();
+				}
+			});
+		})
+		function get_search_box() {
+			try {
+				document.getElementById('get_search_box').click();
+			} catch (err) {
+				document.getElementById('keywordfoot').focus();
+			}
+		}
+		function tip(msg,autoClose){
+			     var div = $("#poptip");
+			     var content =$("#poptip_content");
+			     if(div.length<=0){
+			         div = $("<div id='poptip'></div>").appendTo(document.body);
+			         content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+			     }
+			     else{
+			         content.html(msg);
+			         content.show(); div.show();
+			     }
+			     if(autoClose) {
+			        setTimeout(function(){
+			            content.fadeOut(500);
+			            div.fadeOut(500);
+
+			        },1000);
+			     }
+			}
+			function tip_close(){
+			    $("#poptip").fadeOut(500);
+			     $("#poptip_content").fadeOut(500);
+			}
+		function addtocart(goodid){		            
+		    var total = 1;		        
+		    tip("正在处理数据...");		        
+		    var url = '<!--@php  echo mobile_url('mycart',array('op'=>'add'),true);@-->' +"&optionid=" + "&total=1"+"&id="+goodid;
+		    $.getJSON(url, function(s){
+				    if(s.result==0){
+				        tip("只能购买 " + s.maxbuy + " 件!");
+				    }else{
+				        tip_close();
+						tip("已加入购物车!");				
+						$("#cart_cnt").html(s.total);	
+						//alert("已加入购物车!");		          
+				   }
+		  	});
+		}
+	</script>
+
+
+	<!--@php if ($isNewUserBonus && showNewMemberBonus()){ @-->
+	<!--新手礼-->
+	<style>
+		.bonue_new_member_box{
+			position: fixed;
+			width:100%;
+			height: 100%;
+			display: block;
+			background:#000;
+			opacity: 0.3;
+			filter:alpha(opacity=0.3);
+			z-index: 990;
+			top: 0px;
+			left: 0px;
+		}
+		.bonus_new_memeber{
+			position: fixed;
+			top:27%;
+			left:50%;
+			width: 80%;
+			margin-left: -40%;
+			z-index: 999;
+		}
+		.bonus_new_close{
+			position: absolute;
+			top:-8px;
+			right: -7px;
+			z-index: 995;
+			cursor: pointer;
+		}
+	</style>
+	<div class="bonue_new_member_box"></div>
+	<div class="bonus_new_memeber">
+		<div style="position: relative">
+			<img src="__RESOURCE__/recouse/images/new_member_bouse.png" class="carousel-inner img-responsive img-rounded">
+			<p class="bonus_new_close"><img src="images/close.png" alt=""></p>
+		</div>
+		<div><a href="<!--@php echo mobile_url('bonus',array('op'=>'new_member')); @-->"><img src="__RESOURCE__/recouse/images/new_member_sure.png" class="carousel-inner img-responsive img-rounded"></a></div>
+
+	</div>
+	<script>
+		$(".bonus_new_close").click(function(){
+			$(".bonue_new_member_box").fadeOut(300);
+			$(".bonus_new_memeber").hide();
+		})
+	</script>
+	<!--@php } @-->　
+
+	<!--@php include themePage('footer');@-->

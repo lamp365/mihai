@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>购物车</title>
+	<meta charset="utf-8">
+ <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.min.css">
+	
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/bootstrap.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/common.mobile.css">
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/jquery.touchwipe.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/swipe.js"></script>
+</head>
+
+<body style="padding-top:0px; ">
+ <!--@php  include page('header');@-->
+ <div class="c-progress">
+ <div class="r cart-progress">
+	<ul>
+		<li class="finish finish-01"><i>1</i><span>我的购物车</span><b></b></li>
+		<li><i>2</i><span>确认订单</span><b></b></li>
+		<li><i>3</i><span>付款</span><b></b></li>
+		<li><i>4</i><span>支付成功</span><b></b></li>
+	</ul>
+</div>
+</div>
+<div class="main" style="margin-top: 15px;">
+<script type="text/javascript" src="__RESOURCE__/mobile/images/jquery.gcjs.js"></script>
+<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+<style>
+	.shopcart-footer{margin-bottom:49px;}
+	.topTabbox{display:none}
+	#mallHead{display:none}
+	.nav{background:none}
+	.btn{display: inline-block;}
+	.btn{*display: inline;}
+	.form-control{display: inline-block;+margin:0 -5px ;}
+	.form-control{*display: inline;}
+	.btn-default{+width: 30px;+height: 30px;}
+	.input-group-btn{+width: 27px;}
+	.icon-remove{+width: 11px;}
+  .col-label{
+    width: 23px;
+    height: 23px;
+    margin-top: 10px;
+    margin-left: 10px;
+    line-height: 20px;
+  }
+    .col-label img{
+      width: 23px!important;
+      height: 23px!important;
+      border:none!important;
+    }
+
+  .shopcart-item .col-label{
+    margin-top: 20px;
+  }
+</style>
+
+<div class="shopcart-main">
+<div style='text-align:center;padding:70px 0 70px 0; <!--@php  if(count($list)>0) { @-->display:none<!--@php  } @-->' id='cartempty'>
+    <img src="__RESOURCE__/mobile/images/icon_cart_empty.png" /><br/><br/>
+    <span style='color:#adadad'>您的购物车空空如也，赶紧去
+    	<a href="index.php">选购</a>
+    	吧~~</span>
+</div>
+<!--@php if (is_array($list) && !empty($list)){ @-->
+<div class="shopcart-all">
+        <div class="list-head clearfix">
+            <label class="col col-label checked"><img src="__RESOURCE__/recouse/images/cart_check.png"></label>
+            <div class="col col-img">图片</div>
+            <div class="col col-name">商品名称</div>
+            <div class="col col-price">单价</div>
+            <div class="col col-num">数量</div>
+            <div class="col col-total">小计</div>
+            <div class="col col-action">操作</div>
+        </div>
+
+    <form action="<!--@php  echo mobile_url('mycart',array('op'=>'choose_cart'));@-->" method="post" name="cartform">
+	<!--@php foreach($list as $item) {@-->
+	<!--@php  $price += $item['totalprice'];@-->
+        
+    <!--@php  $goods = $item['goods']@-->
+        <span id="stock_<!--@php  echo $item['id'];@-->" style='display:none'><!--@php  echo $goods['total'];@--></span>
+        <div class="shopcart-item" id="item_<!--@php  echo $item['id'];@-->">
+            <label class="col col-label choose_all checked"><img src="__RESOURCE__/recouse/images/cart_check.png"></label>
+            <input type="checkbox" class="hide_checkbox" checked name="cart_ids[]" value="<!--@php  echo $item['id'];@-->" style="display: none">
+        <div class="col col-img">
+			<a href="<!--@php  echo mobile_url('detail', array('id' => $goods['id'],'op'=>'dish'))@-->" target="_blank">
+				<img data-original="<!--@php  echo $goods['small'];@-->" class="lazy" src="images/loading.gif">
+			</a>
+			
+		</div>
+        <div class="col col-name"> 
+        	<div class="name" style="text-align: center;">
+        		<a href="<!--@php  echo mobile_url('detail', array('id' => $goods['id'],'op'=>'dish'))@-->" target="_blank">
+        			<!--@php  echo $goods['title'];@-->
+        		</a>
+        	
+        	</div> 
+        </div>
+		<div class="col col-price"> <span class="price" ><!--@php  echo $goods['marketprice'];@--> 元</span></div>
+	    <div class="price" style="font-size:12px;"><span id="singleprice_<!--@php  echo $item['id'];@-->" style="display:none;"><!--@php  echo $goods['marketprice'];@--></span></div>
+		<div class="col col-num">	
+			<div class="input-group"style="width: 93px;height: 23px;margin: 0 auto;border: solid 1px gainsboro;">
+				<span class="input-group-btn">
+					<button class="btn btn-default btn-sm" type="button" onclick="reduceNum(<!--@php  echo $item['id'];@-->)" style="height: 23px;width: 23px;border: none;">－</button>
+				</span>
+				<input type="tel" class="form-control input-sm pricetotal goodsnum" style="border: none;width: 48px;height:22px;line-height: 20px;margin: 0px -5px;margin-top: -3px;" value="<!--@php  echo $item['total'];@-->" price="<!--@php  echo $goods['marketprice'];@-->" pricetotal="<!--@php  echo $item['totalprice'];@-->" id="goodsnum_<!--@php  echo $item['id'];@-->" cartid='<!--@php  echo $item['id'];@-->'  maxbuy="<!--@php  echo $goods['total'];@-->" />
+				<span class="input-group-btn">
+					<button class="btn btn-default btn-sm" type="button" onclick="addNum(<!--@php  echo $item['id'];@-->,<!--@php  echo $goods['total'];@-->)" style="border: none;height: 23px;width: 23px;">＋</button>
+				</span>
+			</div>
+		</div>
+		<div class="col col-total"><span class='singletotalprice' id="goodsprice_<!--@php  echo $item['id'];@-->"><!--@php  echo $item['totalprice'];@--></span> 元</div>
+		<div class="col col-action">
+			<a href="javascript:;" onclick="removeCart(<!--@php  echo $item['id'];@-->)" class="shopcart-item-remove" style="width: 43px\9;">
+				<i class="icon-remove"></i>
+				 删除
+			</a>
+		</div>
+	</div>
+                   
+          <!--@php  $n++;@-->
+	<!--@php  } @-->
+</form>
+
+</div>
+
+<div id='cartfooter' class="shopcart-footer" <!--@php  if(count($list)<=0) { @-->style='display:none'<!--@php  } else { @--> style='margin-bottom: 49px;'  <!--@php  } @-->'>
+	<span class="pull-left">
+		合计(不含运费和税率)：
+		<span id="pricetotal">			
+		<!--@php  echo number_format($price,2,'.','');@-->
+		</span> 元
+	</span>
+	<a href="javascript:;" class="btn btn-success pull-right" style="background: #E0312E;color: white;padding: 0px 10px;font-size: 16px;border-radius: 5px;" id="liji_jiesuan">立即结算</a>
+	<a href="javascript:void(0)" onclick="clearCart()" class="bn pull-right" style="font-size:16px; margin-right:20px"><i class="icon-trash"></i> 清空</a>
+</div>
+<!--@php } @-->
+</div>
+</div>
+
+<!--@php if ( is_array($jp_goods) && !empty($jp_goods)){ @-->
+      <div class="main">
+        <div class="viewport" style="margin-top:10px;">
+             <h4 class="newRecomTitle">大家都在买<b>全网最热门的商品推荐</b></h4>
+             <div id="pro_relPur" class="goodslst clearfix">
+			     <!--@php foreach ( $jp_goods as $jp_value ){ @-->
+                    <div class="newRecomItemWrap ">						
+					   <a  href="<!--@php  echo mobile_url('detail', array('id' => $jp_value['id'],'op'=>'dish'))@-->" target="_blank" class="itemImg">	
+					       <img border="0" style="opacity: 1;" data-original="<!--@php echo $jp_value['small']; @-->" class="lazy" src="images/loading.gif" alt="<!--@php echo $jp_value['title']; @-->" title="<!--@php echo $jp_value['title']; @-->">		
+					   </a>						
+					   <p class="itemTitle">							
+					       <a target="_blank" title="<!--@php echo $jp_value['title']; @-->"  href="<!--@php  echo mobile_url('detail', array('id' => $jp_value['id'],'op'=>'dish'))@-->"><!--@php echo $jp_value['title']; @--></a>			
+					   </p>												
+					   <div class="itemInfo clearfix">							
+					        <p class="price">¥<!--@php echo $jp_value['marketprice']; @--><span class="marprice">¥<del><!--@php echo $jp_value['price']; @--></del></span></p>			
+					   </div>		
+					 </div>
+					 <!--@php } @-->
+			 </div>
+		</div>
+	</div>
+		<!--@php } @-->
+
+
+
+
+<!--@php include themePage('footer');@-->
+<script type="text/javascript">
+    $(function(){
+        $(".goodsnum").blur(function(){
+            var id = $(this).attr("cartid");
+            if($(this).isInt()){
+                var num = parseInt( $("#goodsnum_" + id).val() );
+                var maxbuy = parseInt( $(this).attr("maxbuy") );
+                var mb = maxbuy;
+                var stock =$("#stock_" + id).html()==''?-1:parseInt($("#stock_" + id).html());
+                if(mb>stock && stock!=-1){
+                    mb = stock;
+                }
+           
+                if(num>mb && mb>0){
+                    alert("最多只能购买 " + mb + " 件!",true);
+                    $("#goodsnum_" + id).val(mb);
+                    num = mb;
+                    var price = parseFloat( $("#singleprice_"+id).html() ) * num;
+                    $("#goodsprice_" + id).html(price.toFixed(2));
+                    updateCart(id,num);
+                    canculate();
+                    return;
+                }
+                if (num <=0){
+                    $("#goodsnum_" + id).val(1); 
+                    num = 1;
+                    var price = parseFloat( $("#singleprice_"+id).html() ) * num;
+                    $("#goodsprice_" + id).html(price.toFixed(2));
+                }
+                var price = parseFloat( $("#singleprice_"+id).html() ) * num;
+                $("#goodsprice_" + id).html(price.toFixed(2));
+                updateCart(id,num);
+                canculate();
+                //updateCartNum();
+            }else{
+                $(this).val("1");
+                var price = parseFloat( $("#singleprice_"+id).html() ) * 1;
+                $("#goodsprice_" + id).html(price.toFixed(2));
+                updateCart(id,1);
+                canculate();
+                //updateCartNum();
+            }
+            
+        })
+        //勾选的选中与非选中
+        $(".list-head .col-label").on("click",function(){
+          var _this = $(this);
+          //全部取消选中
+          if( _this.hasClass("checked") ){
+            _this.removeClass("checked");
+            $(".shopcart-item .col-label").removeClass("checked");
+            $(".shopcart-item .col-label img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+            $(".shopcart-item .hide_checkbox").attr("checked",false);
+            $("#pricetotal").text(0);
+            //$(".carnum").text(0);
+          }else{
+            _this.addClass("checked");
+            $(".shopcart-item .col-label").addClass("checked");
+            $(".shopcart-item .col-label img").attr("src","__RESOURCE__/recouse/images/cart_check.png");
+            $(".shopcart-item .hide_checkbox").attr("checked",true);
+            canculate();
+            //updateCartNum();
+          }
+        })
+        //勾选单个商品
+        $(".shopcart-item .col-label").on("click",function(){
+          var _this = $(this);
+          var check_num = 0;
+          var col_total_price = 0 ;
+          var chenk_cart_num = 0;//单选框选中的对应的数量的值
+          if( _this.hasClass("checked") ){
+            _this.removeClass("checked");
+            _this.find("img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+            _this.next().attr('checked',false);
+          }else{
+            _this.addClass("checked");
+            _this.next().attr('checked',true);
+            $(".list-head .col-label").addClass("checked");
+            _this.find("img").attr("src","__RESOURCE__/recouse/images/cart_check.png");
+          };
+          $(".shopcart-item .col-label").each(function(index,ele){
+            if($(ele).hasClass("checked")){
+              check_num++;
+              chenk_cart_num +=  parseInt($(ele).siblings(".col-num").find(".goodsnum").val());
+              col_total_price += parseFloat($(ele).siblings(".col-total").find(".singletotalprice").text());
+            }
+          });
+          //$(".carnum").text(chenk_cart_num);       
+          $("#pricetotal").text(col_total_price);
+          if( check_num == 0){
+            $(".list-head .col-label").removeClass("checked");
+            $(".shopcart-item .col-label img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+          }
+        }) 
+    })
+function clearCart(){
+    if (confirm('确定要清空购物车吗？')) {
+        tip("正在处理数据...");
+        $.getJSON('<!--@php  echo mobile_url('mycart',array('op'=>'clear'));@-->', function(s){
+            $(".shopcart-item").remove();
+            $("#cartempty").show();
+            $("#cartfooter").hide();
+            tip_close();
+            //强制刷新页面，可以解决购物车商品全部删除后，购物车列表头部还存在的情况
+            window.location.reload();
+        });
+    }
+}
+function removeCart(id){
+    if (confirm('您确定要删除此商品吗？')) {
+        tip("正在处理数据...");
+        var url  = "<!--@php  echo mobile_url('mycart', array('op'=>'remove'))@-->" + "&id=" + id;
+        $.getJSON(url, function(s){
+            $("#item_" + s.cartid).remove();
+            if($(".shopcart-item").length<=0){
+                $("#cartempty").show();
+                $("#cartfooter").hide();
+            }
+            tip_close();
+            canculate();
+            window.location.reload();
+        });
+    }
+}
+function updateCart(id,num){
+    
+      var url  = '<!--@php  echo mobile_url('mycart', array('op'=>'update'))@-->' + "&id=" + id+"&num=" + num;
+      $.getJSON(url, function(s){
+        
+      });
+}
+function checkMaxBuy(id, maxbuy){
+    
+   
+}
+function addNum(id,maxbuy){	
+     var mb = maxbuy;
+     var stock =$("#stock_" + id).html()==''?-1:parseInt($("#stock_" + id).html());
+              if(mb>stock && stock!=-1){
+                  mb = stock;
+              }
+ 
+    var num = parseInt( $("#goodsnum_" + id).val() ) + 1;
+    if(num>mb && mb>0){
+        alert("最多只能购买 " + mb + " 件!",true);
+        return;
+    }
+    $("#goodsnum_" + id).val(num);
+    var price = parseFloat($("#singleprice_"+id).html() ) * num;
+    $("#goodsprice_" + id).html(price.toFixed(2));
+    canculate();
+    updateCart(id,num);
+    //updateCartNum();
+}
+function reduceNum(id){
+    var num = parseInt( $("#goodsnum_" + id).val() );
+    if(num-1<=0){
+        return;
+    }
+    num--;
+    $("#goodsnum_" + id).val(num);
+    var price = parseFloat( $("#singleprice_"+id).html() ) * num;
+    $("#goodsprice_" + id).html(price.toFixed(2));
+    canculate();
+    updateCart(id,num);
+    //updateCartNum();
+}
+//更新购物车右上角数字
+function updateCartNum(){
+    var cartNum = 0 ; 
+    $(".shopcart-item .col-label").each(function(){
+        if($(this).hasClass("checked")){
+            cartNum += parseInt($(this).siblings(".col-num").find(".goodsnum").val());
+        }
+    })
+    //$(".carnum").text(cartNum);
+}
+//计算合计金额
+function canculate(){
+    var total = 0;    
+    $(".singletotalprice").each(function(){ 
+    	//先判断如果这个商品被勾选了，它的金额才计算进去
+    	if($(this).parent().parent().children(0).hasClass("checked")){
+    		total+=parseFloat( $(this).html() ); 
+    	}               	
+    });
+    total=total.toFixed(2);
+    $("#pricetotal").html(total);
+}
+</script>
+<script language='javascript'>
+    function tip(msg,autoClose){
+     var div = $("#poptip");
+     var content =$("#poptip_content");
+     if(div.length<=0){
+         div = $("<div id='poptip'></div>").appendTo(document.body);
+         content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+     }
+     else{
+         content.html(msg);
+         content.show(); div.show();
+     }
+     if(autoClose) {
+        setTimeout(function(){
+            content.fadeOut(500);
+            div.fadeOut(500);
+
+        },1000);
+     }
+}
+function tip_close(){
+    $("#poptip").fadeOut(500);
+     $("#poptip_content").fadeOut(500);
+}
+
+$("#liji_jiesuan").click(function(){
+    var ok = false;
+    $('.col-label').each(function(){
+        if($(this).hasClass("checked")){
+            ok = true;
+        }
+    })
+    if(ok){
+        $("form[name='cartform']").submit();
+    }else{
+        tip('请选择商品！',1);
+    }
+
+})
+</script>
+<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
+</body>
+</html>

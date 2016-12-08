@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>商品列表</title>
+	 <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css" />
+	<link href="__RESOURCE__/recouse/css/search_new.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/xmapp.css"/>
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<link href="__RESOURCE__/recouse/css/bjlist.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<style>
+         .catitmlst{display:none}
+	</style>
+	<script>
+        $(document).ready(function(){
+			$('.nav2 > ul').mouseover(function(){
+				$('.catitmlst').show();
+			});
+			$('.nav2 > ul').mouseout(function(){
+                $('.catitmlst').hide();
+			});
+		});
+	</script>
+</head>
+<body style="margin:0 auto; padding:0 auto">
+ <!--@php  include page('header');@-->	
+
+		<div id="viewport" class="viewport">
+		<div class="leftab"></div>
+		<div class="tab">	
+<div class="paixu">
+<div class="tab">
+<a <!--@php  if($sort==1) { @-->  class="price on"<!--@php  } else { @-->class="price"<!--@php  } @--> onclick="location.href='<!--@php  echo $sorturl;@-->&sort=1&sortb1=<!--@php  echo $sortb11;@-->'">销量↓</a>
+<a <!--@php  if($sort==0) { @-->  class="time on"<!--@php  } else { @-->class="time"
+                <!--@php  } @-->
+                onclick="location.href='<!--@php  echo $sorturl;@-->&sort=0&sortb0=<!--@php  echo $sortb00;@-->
+                '">时间↓</a>
+<a <!--@php  if($sort==2) { @-->  class="renqi on"<!--@php  } else { @-->class="renqi"<!--@php  } @--> onclick="location.href='<!--@php  echo $sorturl;@-->&sort=2&sortb2=<!--@php  echo $sortb22;@-->'">人气↓</a>
+<a <!--@php  if($sort==3) { @-->  class="click on"<!--@php  } else { @-->class="click"<!--@php  } @--> onclick="location.href='<!--@php  echo $sorturl;@-->&sort=3&sortb3=<!--@php  echo $sortb33;@-->'">价格↓</a>
+
+</div>
+</div>
+
+<div style="padding-top:10px;"></div>	
+	
+	<div class="os_panel">
+                    <ul class="os_box_list" id="m2Con">
+              <!--@php  if(is_array($list)) { foreach($list as $item) { @-->	
+
+                          <li>				  
+						  	<div class="item">       
+                                  <div class="img">
+                                  	<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item">
+	                                  <img src="<!--@php  echo $item['thumb']; @-->" >
+	                                   </a>
+                                  </div>	
+								  <div class="buy">
+                                      <span class="text"><strong><em style="color:#b12704;font-size:21px;font-weight:normal;"> ¥<!--@php echo $item['marketprice'];@--> </em></strong>
+                                      </span>
+									  <span>
+                                           <i class="huanqiugou"></i>
+									  </span>
+                                  </div>
+                                  <div class="txt"><!--@php echo $item['title']@--></div>   
+                                  <div class="txt1"><!--@php echo $item['description']@--></div>        
+								 <div class="txt"><!--@php echo $item['count'];@--></div>
+								  	
+                             
+                              </div>
+                          </li>
+             <!--@php  } } @-->
+                   </ul>
+                  <!--@php echo $pager;@-->
+               </div>
+		</div>
+	</div>
+	</div>
+<!--@php include themePage('footer');@-->
+<script type="text/javascript">
+		function selectcity(cityid){
+            var url = '<!--@php  echo mobile_url('goodlist',array('op'=>'es'),true);@-->' +"&cityid=" + cityid;
+		    $.get(url, function(s){
+			   if ($('.city').text() != s)
+			   {
+			        location.replace(location);
+			   }
+		  	});
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>帮助中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<link href="__RESOURCE__/recouse/css/style.css" rel="stylesheet" type="text/css" />
+		<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />    
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+		 <script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script> 
+		<style>
+			.foot {
+				width: 100%;
+				min-width: 300px;
+				margin-top: 10px;
+				margin-bottom: 30px;
+				padding: 10px 0;
+				color: #555;
+				text-align: center;
+			}
+			
+			.foot a {
+				color: #555;
+				margin: 0 3px;
+			}
+			.n-informctt p a{
+				color: #127BAB;
+			}
+		</style>
+
+	</head>
+
+	<body >
+		<!--@php  include page('header');@-->
+		<div class="viewport">
+			<div class="crumbs">
+		         <span>当前位置：</span>
+		         <a href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a>&gt;
+		         <strong>帮助说明</strong>
+		    </div>
+		    <div class="r-member">
+		    	<div class="personalTitle pT">
+					帮助说明
+				</div>
+				<section class="main animated fadeInDown">
+					<div class="main-box">
+		
+						<!--@php echo $help@-->
+		
+					</div>
+				</section>
+			</div>
+			<div class="l-member"> 
+				 <!--@php include themePage('leftmenu');@-->
+		    </div>	
+		</div>
+		<!--@php include themePage('footer');@-->
+	</body>
+	
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--@php include themePage('header'); @-->
+<link href="__RESOURCE__/recouse/css/search_new.css" rel="stylesheet" type="text/css" />
+<div class="WX_search1" id="mallHead" style="display:none;">
+  
+	<form class="WX_search_frm1" action="mobile.php" id="searchForm" name="searchForm">
+					<input type="hidden" name="mod" value="mobile" />
+		<input type="hidden" name="do" value="goodlist" />
+		<input type="hidden" name="name" value="shopwap" />
+        <input name="keyword" id="search_word" class="WX_search_txt hd_search_txt_null" placeholder="请输入商品名进行搜索！" ptag="37080.5.2" type="search"  AUTOCOMPLETE="off"/>
+      
+   
+    <div class="WX_me">
+        <a href="javascript:;" id="submit" class="WX_search_btn_blue" >搜索</a>
+       
+    </div>
+	 </form>
+</div>
+
+
+
+
+
+<div class="tab">		
+<div class="category">
+	<ul>     	
+		<!--@php  if(is_array($category)) { foreach($category as $item) { @-->
+		<li class="clearfix">
+			<div class="info">
+				<p class="name">
+					<a href="<!--@php  echo mobile_url('goodlist', array('pcate' => $item['id']))@-->" style="color: #F3385F;">						
+					<!--@php  echo $item['name'];@-->
+					</a>
+				</p>
+					<div class="data">
+						<!--@php  if(is_array($children[$item['id']])) { foreach($children[$item['id']] as $child) { @-->
+                    	<a href="<!--@php  echo mobile_url('goodlist', array('p2' => $child['id']))@-->"><img data-original="<!--@php  echo $child['thumb'];@-->" class="lazy" src="images/loading.gif" /><!--@php  echo $child['name'];@--></a>
+						<!--@php  } } @-->
+                    </div>
+			</div>
+		</li>
+		<!--@php  } } @-->
+    </ul>
+</div>
+		</div>
+	</div>
+
+<!--@php  include page('footer');@-->	
+<!--@php include themePage('footer');@-->

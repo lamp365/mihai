@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0,user-scalable=no">
+    <meta name="site" content="<!--@php echo 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']; @-->" />
+    <meta name="title" content="我的店铺：<!--@php echo $shopInfo['shopname']; @-->" />
+    <meta name="description" content="我的店铺：<!--@php echo $shopInfo['shopname']; @--> 客官快进来逛逛，好货多多，有惊奇呦！" />
+    <title><!--@php echo $shopInfo['shopname']; @-->的店铺</title>
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/bootstrap.min.css">
+    <link href="__RESOURCE__/openshop/css/bootstrap-table.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="__RESOURCE__/recouse/share/css/share.min.css">
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/openshop.css">
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+</head>
+<style>
+	.nowrap{
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+    .shophome .show_level img{
+        width: 16px;
+        height: 12px;
+        margin-right: 0px;
+    }
+</style>
+<body  style="margin:0 auto; padding:0 auto">
+<div class="container ontop">
+    <div class="row">
+        <div class="col-sm-3 col-xs-4 pull-left">
+            <a href="javascript:;" class="return"><img src="__RESOURCE__/openshop/images/return.png" width="8px" height="13px" style="margin-top: -3px;"></a>
+        </div>
+        <div class="col-sm-6 col-xs-4 pull-left t-center nowrap">
+            <!--@php echo $shopInfo['shopname']; @-->
+        </div>
+        <div class="col-sm-3 col-xs-4 pull-left">
+            <a href="javascript:;" class="pull-right share"><img src="__RESOURCE__/openshop/images/share.png" width="18px" height="18px"></a>
+        </div>
+    </div>
+</div>
+<div class="shophome">
+    <div class="shoppic">
+        <!--@php if(empty($shopInfo['shoppic'])){ @-->
+        <img src="__RESOURCE__/openshop/images/shop.png" alt="" class="img-responsive">
+        <!--@php }else{ @-->
+        <img src="<!--@php echo $shopInfo['shoppic']; @-->" alt="" class="img-responsive">
+        <!--@php } @-->
+    </div>
+    <div class="shopdesc">
+        <div class="shoplogo">
+            <div class="pic pull-left">
+                <!--@php if(empty($shopInfo['logo'])){ @-->
+                <img src="__RESOURCE__/openshop/images/face.png" alt="">
+                <!--@php }else{ @-->
+                <img src="<!--@php echo $shopInfo['logo']; @-->" alt="">
+                <!--@php } @-->
+            </div>
+            <div class="name pull-left" style="width: 55%;">
+            	<p class="nowrap"><!--@php echo $shopInfo['shopname']; @--> </p>
+                <p class="show_level">
+                    <a href="<!--@php echo mobile_url('openshop_level',array('shopid'=>$shopInfo['id'],'iswap'=>1));@-->" class="love-img">
+
+                    </a>
+                </p>
+            </div>
+            <div class="collect pull-right">
+              <button type='button' id='collect' class='btn btn-danger navbar-btn' data-collecturl="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_action','act'=>'collectshop','openshop_id'=>$shopInfo['id'])); @-->" style="padding: 3px 6px;">收 藏</button>
+            </div>
+        </div>
+    </div>
+    <div class="clean shop_tongji container">
+        <div class="row">
+            <div class="col-sm-4 col-xs-4 pull-left">
+                <div class="all_tongji">
+                    <span><!--@php echo $total; @--></span><span>全部宝贝</span>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xs-4 pull-left t-center area nowrap">
+                <!--@php if(empty($shopInfo['area'])){ echo "地区未知" ; }else{ echo $shopInfo['area']; }@-->
+            </div>
+            <div class="col-sm-4 col-xs-4 pull-left">
+                <a href="javascript:;" class="cat">
+                    <span class="glyphicon glyphicon-list"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="shophome_list clean">
+    <div class="title">
+        最新商品（<!--@php echo $total; @-->）
+    </div>
+
+
+    <div class="container mt_10 mb_15">
+        <div class="row shoplist">
+
+            <!--@php if($is_data == 0){ @-->
+            <p class="no_data"><img src="__RESOURCE__/openshop/images/no_data.png" alt="">对不起，目前没有要卖的商品！</p>
+            <!--@php }else{ $i=0; @-->
+            <!--@php foreach($list as $lData){$i++;  @-->
+
+            <div class="col-sm-6 col-xs-6 pull-left <!--@php if($i%2==1){ echo 'pr_5';}else{ echo 'pl_5'; } @-->">
+                <div class="good">
+                    <div class="pic">
+                        <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'detail','id'=>$lData['goodid'],'accesskey'=>$accesskey)); @-->"><img src="<!--@php echo $lData['thumb']; @-->" alt="" class="img-responsive"></a>
+                    </div>
+                    <div class="descript">
+                        <p class="title"><a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'detail','id'=>$lData['goodid'],'accesskey'=>$accesskey)); @-->" title="<!--@php echo $lData['title']; @-->"><!--@php echo $lData['title']; @--></a></p>
+                        <p class="money">￥<!--@php echo $lData['marketprice']; @--> <span class="pull-right salenum"></span></p>
+                    </div>
+                </div>
+            </div>
+            <!--@php }} @-->
+        </div>
+
+        <!--@php echo $pager;@-->
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="row">
+
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    分享商铺
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="sharejs">
+                    <div id="shareBox" class=""></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<script src="__RESOURCE__/recouse/share/js/jquery.share.min.js"></script>
+<script>
+    $(".return").click(function(){
+        var refer = document.referrer;//没有来源url
+        if(refer.length == 0){
+            var url = "index.php";
+            window.location.href = url;
+        }else{
+            window.history.back(-1);
+        }
+    })
+    $("#collect").click(function(){
+        var url = $(this).data('collecturl');
+        $.get(url,'',function(result){
+            if(result.errno != 200){
+                tip(result.message,1);
+            }else{
+                tip(result.message,1);
+            }
+        },'json')
+    })
+
+    //点击分类
+    $(".cat").click(function(){
+        var url = "<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_list','accesskey'=>$accesskey));@-->";
+        window.location.href = url;
+    })
+
+
+    $(".share").click(function(){
+        //调用分享
+        var shareUrl = $("meta[name='site']").attr("content");
+        var imageUrl = $(".logo img").attr('src');
+        $('#shareBox').share({
+            sites: ['weibo','wechat','qq','qzone','tencent'],
+            url:shareUrl,
+            image:imageUrl
+        });
+        $('#myModal').modal('show')
+    })
+
+    $(document).delegate(".sharejs .icon-wechat",'click',function(){
+//      alert('sss');
+    })
+
+    function tip(msg,autoClose){
+        var div = $("#poptip");
+        var content =$("#poptip_content");
+        if(div.length<=0){
+            div = $("<div id='poptip'></div>").appendTo(document.body);
+            content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+        }
+        else{
+            content.html(msg);
+            content.show(); div.show();
+        }
+        if(autoClose) {
+            setTimeout(function(){
+                content.fadeOut(500);
+                div.fadeOut(500);
+
+            },1000);
+        }
+    }
+    function tip_close(){
+        $("#poptip").fadeOut(1000);
+        $("#poptip_content").fadeOut(1000);
+    }
+
+    $(function(){
+        function myNum(){
+            var store_num = "<!--@php echo $shopInfo['level']; @-->";
+            if( store_num <= 10 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon01.png">');
+            }else if( store_num <= 40 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png">');
+            }else if( store_num <= 90 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png">');
+            }else if( store_num <= 150 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png">');
+            }else if( store_num <= 250 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png"><img src="__RESOURCE__/openshop/images/level_icon01.png">');
+            }else if( store_num <= 500 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon02.png">');
+            }else if( store_num <= 1000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png">');
+            }else if( store_num <= 2000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png">');
+            }else if( store_num <= 5000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png">');
+            }else if( store_num <= 10000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png"><img src="__RESOURCE__/openshop/images/level_icon02.png">');
+            }else if( store_num <= 20000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon03.png">');
+            }else if( store_num <= 50000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png">');
+            }else if( store_num <= 100000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png">');
+            }else if( store_num <= 100000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png">');
+            }else if( store_num <= 500000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png"><img src="__RESOURCE__/openshop/images/level_icon03.png">');
+            }else if( store_num <= 1000000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon04.png">');
+            }else if( store_num <= 2000000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png">');
+            }else if( store_num <= 5000000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png">');
+            }else if( store_num <= 10000000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png">');
+            }else if( store_num > 10000000 ){
+                $(".love-img").html('<img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png"><img src="__RESOURCE__/openshop/images/level_icon04.png">');
+            }
+        }
+        myNum();
+    })
+</script>
+</body>
+</html>

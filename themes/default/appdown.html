@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>觅海掌门人下载</title>
+	<style type="text/css">
+	*{
+		margin: 0 ;
+		padding: 0;
+	}
+	body{
+		min-width: 1265px;
+		margin: 0 auto;
+	}
+	.bg{
+		background: url(__RESOURCE__/recouse/images/pc_load_bg.jpg) no-repeat center;
+		width: 100%;
+		height: 920px;
+		background-size: cover;
+	}
+	.load-area{
+		width: 1265px;
+		height: 650px;
+		margin: 0 auto;
+		padding-top: 150px;
+	}
+	.load-left{
+		float: left;
+		width: 656px;
+		height: 650px;
+	}
+	.load-right{
+		position: relative;
+		float: left;
+		width: 609px;
+		height: 650px;
+		padding-top: 95px;
+	}
+	.load-area .ios{
+		position: absolute;
+	    top: 359px;
+	    left: 0px;
+	    width: 179px;
+	    height: 67px;
+	}
+	.load-area .android{
+		position: absolute;
+	    top: 359px;
+	    left: 212px;
+	    width: 179px;
+	    height: 67px;
+	}
+	.load-area .code{
+		position: absolute;
+	    top: 359px;
+	    left: 423px;
+	    width: 179px;
+	    height: 67px;
+	}
+	.qrcode{
+		position: absolute;
+		display: none;
+	    top: 437px;
+	    left: 427px;
+	    padding: 10px;
+	    border: 1px solid #ddd;
+	    background-color: #fff;
+	}
+	</style>
+</head>
+<body>
+<div class="bg">
+	<div class="load-area">
+		<div class="load-left">
+			<img src="__RESOURCE__/recouse/images/pc_load_left.png">
+		</div>
+		<div class="load-right">
+			<img src="__RESOURCE__/recouse/images/pc_load_right.png">
+			<a class="ios" href="<!--@php if(!empty($app_ios)){ echo $app_ios['url'];}else{ echo 'index.php';}@-->"></a>
+			<a class="android" href="<!--@php if(!empty($app_anzhuo)){ echo $app_anzhuo['url'];}else{ echo 'index.php';}@-->"></a>
+			<a class="code" href="javascript:;"></a>
+			<div class="qrcode"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.qrcode.min.js"></script>
+<script type="text/javascript">
+	$(".code").hover(function(){
+		$(".qrcode").show();
+	},function(){
+		$(".qrcode").hide();
+	})
+	//扫码微信端打开需要带www
+	var url ="<!--@php echo 'http://www.hinrc.com/'.mobile_url('appdown');@-->";
+	$(".qrcode").qrcode({ 
+	    width: 155, //宽度 
+	    height:155, //高度 
+	    text: url //任意内容
+	}); 
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title><!--@php echo $title @--></title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
+<style type='text/css'>
+    #poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;
+        -webkit-border-radius:5px;
+        -moz-border-radius:5px;}
+#poptip_content { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px; height: 27px; color:#fff;text-align:center;font-size:14px;z-index: 9909}
+</style>
+<style>
+.mesWindow{border:#666 1px solid;background:#fff;}
+.mesWindowTop{border-bottom:#eee 1px solid;margin-left:4px;padding:3px;font-weight:bold;text-align:left;font-size:12px;}
+.mesWindowContent{margin:4px;font-size:12px;}
+.mesWindow .close{height:15px;width:28px;border:none;cursor:pointer;text-decoration:underline;background:#fff}
+</style>
+<script type="text/javascript">
+// 对浏览器的UserAgent进行正则匹配，不含有微信独有标识的则为其他浏览器
+var useragent = navigator.userAgent;
+/*if (useragent.match(/MicroMessenger/i) != 'MicroMessenger') {
+    // 这里警告框会阻塞当前页面继续加载
+    alert('已禁止本次访问：您必须用微信打开本页面！');
+    // 以下代码是用javascript强行关闭当前页面
+    var opened = window.open('about:blank', '_self');
+    opened.opener = null;
+    opened.close();
+}
+*/
+jQuery(document).ready(function($) {
+		$(".os_box_list img").lazyload({
+			placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+			threshold : 200, //控制灵敏度
+			effect : "fadeIn"
+		});
+		$("#submit").click(function() {
+			if ($("#search_word").val()) {
+				$("#searchForm").submit();
+			} else {
+				alert("请输入关键词！");
+				return false;
+			}
+		});
+	});
+</script>
+
+<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+</head>
+<body style="margin: 0 auto;">
+	<div class="WX_search1" id="mallHead" style="display:none">
+		<form class="WX_search_frm1" action="index.php" id="searchForm"
+			name="searchForm">
+			<input type="hidden" name="mod" value="mobile" /> <input
+				type="hidden" name="do" value="goodlist" /> <input type="hidden"
+				name="name" value="shopwap" /> <input name="keyword"
+				id="search_word" class="WX_search_txt hd_search_txt_null"
+				placeholder="请输入商品名进行搜索！" ptag="37080.5.2" type="search"
+				AUTOCOMPLETE="off" />
+			<div class="WX_me">
+				<a href="javascript:;" id="submit" class="WX_search_btn_blue">搜索</a>
+
+			</div>
+		</form>
+	</div>
+	<div class="header">
+	      <div class="left">
+            
+		  </div>
+          <div class="tit"><h2><!--@php echo $title @--></h2></div>
+		  <div class="right"><i class="icon-map-marker"></i>
+           <a aria-expanded="true" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#" id="drop3">
+               <span class="city"><!--@php echo $city;@--></span>
+              <span class="caret"></span>
+              </a>
+              <ul aria-labelledby="drop3" class="dropdown-menu">
+			  <li><a href="javascript:void(0)" onclick="selectcity(0)">全国</a></li>
+			  <!--@php if (is_array($children)){foreach($children as $value){@-->
+                <li><a href="javascript:void(0)" onclick="selectcity(<!--@php echo $value['id'];@-->)"><!--@php echo $value['name'];@--></a></li>
+			 <!--@php }}@-->
+              </ul>
+         </div>
+	</div>
+	<div id="viewport" class="viewport">
+		<div class="slider card card-nomb" style="visibility: visible;">
+			<script type="text/javascript"
+				src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
+			<div id="focus" class="focus">
+				<div class="hd">
+					<ul>
+					</ul>
+				</div>
+				<div class="bd">
+					<ul>
+						<!--@php  if(is_array($advs)) { foreach($advs as $adv) { @-->
+						<li><a
+							href="<!--@php  if(empty($adv['link'])) { @--><!--@php  } else { @--><!--@php  echo $adv['link'];@--><!--@php  } @-->">
+								<img
+								src="<!--@php  echo $adv['thumb'];@-->" />
+						</a></li>
+						<!--@php  } } @-->
+					</ul>
+				</div>
+			</div>
+			<script type="text/javascript">
+				TouchSlide({
+					slideCell : "#focus",
+					titCell : ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+					mainCell : ".bd ul",
+					delayTime : 600,
+					interTime : 4000,
+					effect : "leftLoop",
+					autoPlay : true,//自动播放
+					autoPage : true, //自动分页
+					switchLoad : "_src" //切换加载，真实图片路径为"_src" 
+				});
+				
+				
+			</script>
+		</div>
+
+		<!-- 4列广告 -->	
+		<!-- 4列广告 -->
+		<ul style="background-color: #fff;margin-top:15px;" class="custom-nav-4 clearfix">
+			<li><a href="<!--@php  echo mobile_url('goodlist',array('op'=>'yun'))@-->"> <span
+					class="nav-img-wap"> <img class="js-lazy"
+						src="__RESOURCE__/recouse/images/f1.png" style="display: inline;" width="55%">
+				</span> <span class="title">全民云购</span>
+			</a></li>		
+			
+			<li><a
+				href="<!--@php  echo mobile_url('goodlist',array('op'=>$op))@-->">
+					<span class="nav-img-wap"> <img class="js-lazy"
+						src="__RESOURCE__/recouse/images/f3.png" style="display: inline;" width="55%">
+				</span> <span class="title">所有产品</span>
+			</a></li>
+			<!--@php if ( $op=='group'){ @-->
+					<li><a
+				href="<!--@php  echo mobile_url('shopindex',array('op'=>'es'))@-->">
+					<span class="nav-img-wap"> <img class="js-lazy"
+						src="__RESOURCE__/recouse/images/f5.png" style="display: inline;" width="55%">
+				    </span> <span class="title">二手汽车</span>
+		        	</a></li>
+			<!--@php }else{ @-->
+                    <li><a
+				href="<!--@php  echo mobile_url('shopindex',array('op'=>'group'))@-->">
+					<span class="nav-img-wap"> <img class="js-lazy"
+						src="__RESOURCE__/recouse/images/f5.png" style="display: inline;" width="55%">
+				    </span> <span class="title">汽车团购</span>
+		        	</a></li>
+			<!--@php } @-->
+			       <li><a
+				href="<!--@php  echo mobile_url('article',array('name'=>'addon8','id'=>2))@-->" onclick="showTi()">
+					<span class="nav-img-wap"> <img class="js-lazy"
+						src="__RESOURCE__/recouse/images/f4.png" style="display: inline;" width="55%">
+				</span> <span class="title">常见问题</span>
+			</a>
+			</li>		
+		</ul>		
+		<div id="home-page" data-role="page" data-member-sn="ejWCX" style="overflow:hidden;"
+			data-member-subscribe="true">
+			<div role="main" class="ui-content ">
+				<div class="home-categories">		
+					<div class="category-container" >
+					<div class="indextitle"><span><!--@php echo $title;@--></span><span style="float:right;"><a href="<!--@php  echo mobile_url('goodlist',array('op'=>$op))@-->"> 更多</a></span></div>
+					<ul class="os_box_list" >	
+						<!--@php foreach($category as $item){ @-->
+						<!--@php if($item['isrecommand']==1 && $item['ishot']!=1){ @-->
+						<li>
+						<div class="item" style="overflow:hidden;">
+								<div class="img">
+								<a href="<!--@php echo mobile_url('detail', array('id' => $item['id'],'op'=>$op))@-->"><img
+										src="<!--@php echo $item['thumb']; @-->"
+										width="100%" alt=""></a>
+								</div>
+								<div class="txt">
+									<!--@php echo $item['title'];@-->
+								</div>
+								<!--@php if ($op == 'group') {@-->
+								<div class="decs">
+                                       已有<span class="num"><!--@php echo $item['count'];@--></span>人报名
+								</div>
+								<!--@php }else{@-->
+                                <div class="price">
+                                     <div style="height:18px;line-height:18px;"> <img src="images/mini_channel_hui.png" height="18" /> <!--@php echo $item['marketprice'];@--> 万元 </div>
+								</div>
+								<!--@php }@-->
+								</div>
+						</li>		
+						<!--@php } @-->
+						<!--@php } @-->
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--@php include themePage('footer');@-->
+	<script type="text/javascript">
+		function selectcity(cityid){
+            var url = '<!--@php  echo mobile_url('shopindex',array('op'=>$op),true);@-->' +"&cityid=" + cityid;
+		    $.get(url, function(s){
+			   if ($('.city').text() != s)
+			   {
+			        location.replace(location);
+			   }
+		  	});
+		}
+	</script>
+	<!--@php  include page('footer');@-->	
+</body>
+</html>

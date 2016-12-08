@@ -1,0 +1,91 @@
+<?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<form action="<?php echo web_url('user',array('op'=>'menu','act'=>'delete'));?>" method="post" class="del_form">
+<h3 class="header smaller lighter blue" style="display: inline-block;margin-right: 15px;">菜单节点</h3><a href="<?php echo web_url('user',array('op'=>'menu','act'=>'post'))?>" class="btn btn-primary">添加菜单</a> &nbsp;&nbsp;<span class="btn btn-danger delete_menu">&nbsp;删&nbsp;除&nbsp;</span>&nbsp;&nbsp;<a href="<?php echo web_url('user',array('op'=>'cleanMenu'))?>" class="btn btn-danger">清除节点缓存</a>
+<table class="table table-striped table-bordered table-hover" style="margin-top: 15px;;">
+    <thead >
+    <tr>
+        <th style="text-align:center;min-width:20px;"><input type="checkbox" class="btn btn-xs btn-info choose_all"><span class="box_zi">全选</span></th>
+        <th style="text-align:center;min-width:20px;">ID</th>
+        <th style="text-align:center; min-width:130px;">菜单名</th>
+        <th style="text-align:center; min-width:13px;">规则</th>
+        <th style="text-align:center; min-width:30px;">排序</th>       
+        <th style="text-align:center; min-width:130px;">操作</th>
+        
+    </tr>
+    </thead>
+    <tbody>
+   <?php  if(!empty($data)) {
+        foreach($data as $cat_id => $arr) {    ?>
+
+        <tr><td colspan="6"><strong style="margin-left:10px;"><?php echo $arr[0]['cat_name'];?></strong> &nbsp;&nbsp;
+                <span class="btn btn-xs btn-info" data-catid="<?php echo $cat_id?>" onclick="addMenu(this)">添加菜单</span>
+        </td></tr>
+
+    <?php foreach($arr as $item){ ?>
+
+        <tr>
+            <td style="text-align:center;"><input type="checkbox" class="child_box" name="id[]" value="<?php echo $item['id'];?>" ></td>
+            <td style="text-align:center;"><?php echo $item['id'];?></td>
+            <td style="text-align:center;"><?php echo $item['moddescription'];?></td>
+            <td style="text-align:center;"><?php echo rtrim($item['url'],'/');?></td>
+            <td style="text-align:center;">
+            	<input style="text-align: center;width: 60px;" type="number" min="<?php echo $cat_id-10?>" max="<?php echo $cat_id+10?>" value="" name="sort">            		
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'sonMenuList','id' => $item['id']))?>"><i class="icon-edit"></i>子菜单</a>&nbsp;&nbsp;
+                <a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'menu','act'=>'post','id' => $item['id']))?>"><i class="icon-edit"></i>编辑菜单</a>&nbsp;&nbsp;
+                <a class="btn btn-xs btn-danger" href="<?php  echo web_url('user', array('op'=>'menu','act'=>'delete','id' => $item['id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
+            </td>
+        </tr>
+<?php     }  } } ?>
+    </tbody>
+</table>
+</form>
+<?php  include page('footer');?>
+<script>
+    function  addMenu(obj){
+        var cat_id = $(obj).data('catid');
+        var url = "<?php echo web_url('user',array('op'=>'menu','act'=>'post'))?>";
+        url += "&cat_id="+cat_id;
+        window.location.href = url;
+    }
+
+    $(".choose_all").click(function(){
+        if(this.checked){
+            $(".child_box").each(function(){
+                this.checked = true;
+            })
+        }else{
+            $(".child_box").each(function(){
+                this.checked = false;
+            })
+        }
+
+    })
+
+    $(".delete_menu").click(function(){
+        var i = 0;
+        $(".child_box").each(function(){
+            if(this.checked){
+                i++;
+            }
+        })
+        if(i == 0 ){
+            alert('请先选择要删除的菜单选项');
+        }else{
+            $(".del_form").submit();
+        }
+    })    
+    
+  
+	$("input[name=sort]").blur(function(){
+  		//如果输入的值大于设定的最大值，就显示最大值
+  		var maxval = $(this).attr("max");
+  		if($(this).val() > maxval){
+  			$(this).val(maxval);	  				  			
+  		}	  		
+	  	//获取id
+	  	var ID = $(this).parent().parent().children().eq(0).children().val();
+	  		  	
+	})
+</script>

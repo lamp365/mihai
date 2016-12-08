@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/bjcommon.css"/>
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/common.mobile.css">
+		<!--<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">-->
+		<script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<title></title>
+		<style>	
+			/*头部下边框兼容IE7，IE8*/
+			nav{display: block;}
+				
+			.viewport .Today-recommend{
+				width: 1190px;
+				margin: 0 auto;
+				/*padding: 0 5px;*/
+				overflow: hidden;			
+			}
+			.viewport .Today-recommend .per-recommed{
+				background-color: #fff;
+			    float: left;
+			    font-size: 14px;
+			    height: 374px;
+			    margin: 0 7px 20px 0;
+			    overflow: hidden;			    
+			    width: 290px;
+			    /*加这句是因为IE7动画问题*/
+			    position: relative;
+			}
+			.per-brand{
+				background-color: #fff;
+			    float: left;
+			    font-size: 14px;
+			    height: 374px;
+			    margin: 0 25px 20px 0;
+			    overflow: hidden;			    
+			    width: 270px;
+			    /**/
+			    position: relative;
+			}
+			.per-brand .brand-pic{
+				width: 270px;
+				display: block;
+			}
+			.per-brand .brand-pic img{
+				width: 270px;
+				height: 270px;
+			}
+			
+			.viewport .Today-recommend .per-recommed .recommend-pic{
+				width: 290px;
+				display: block;
+			}
+			.viewport .Today-recommend .per-recommed .recommend-pic img{
+				width: 290px;
+				height: 247px;
+			}
+			 .brand-detail{
+			 	width: 270px;
+				height: 180px;
+				display: block;
+				background: #24212A;
+				position: relative;
+			 }
+			  .brand-detail img{
+			  	border-radius: 50%;
+				width: 80px;
+				height: 80px;
+				border: solid 1px #ededed;
+				margin-left: 90px;
+				margin-top: -40px;
+			  }
+			.recommend-detail{
+				width: 290px;
+				height: 180px;
+				display: block;
+				background: #24212A;
+				position: relative;
+			}
+			.recommend-detail img{
+				border-radius: 50%;
+				width: 80px;
+				height: 80px;
+				border: solid 1px #ededed;
+				margin-left: 100px;
+				margin-top: -40px;
+			}
+			.recommend-detail .brandName{				
+			    overflow: hidden;
+			    text-align: center;
+			    margin-top: 10px;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+			    font-size: 16px;
+			    color: #fff;
+			}
+			.brand-detail .brandName{				
+			    overflow: hidden;
+			    text-align: center;
+			    margin-top: 5px;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+			    font-size: 16px;
+			    color: #fff;
+			   
+			}
+			.brand-detail .brandBenefit{
+				color: #999;
+			    font-size: 14px;
+			    overflow: hidden;
+			    
+			    text-align: center;
+			    margin-top: -5px;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+			}
+			.brand-detail .brandBtn{
+			  	background-color: #d22147;
+			    border-radius: 14px;
+			    color: #fff;
+			    cursor: pointer;
+			    display: block;
+			    height: 28px;
+			    line-height: 28px;
+			    margin:20px auto 0;
+			    text-align: center;
+			    text-decoration: none;
+			    width: 124px;
+		 	 }
+			.recommend-detail .brandBenefit{
+				color: #999;
+			    font-size: 14px;
+			    overflow: hidden;
+			    height: 21px;
+			    text-align: center;
+			    margin-top: 10px;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+			}
+		  .recommend-detail	.brandBtn{
+			  	background-color: #d22147;
+			    border-radius: 14px;
+			    color: #fff;
+			    cursor: pointer;
+			    display: block;
+			    height: 28px;
+			    line-height: 28px;
+			    margin:20px auto 0;
+			    text-align: center;
+			    text-decoration: none;
+			    width: 124px;
+		 	 }
+		 	.recommend-detail:hover{
+		 		text-decoration:none ;
+		 	}
+		 	.brand-detail:hover{
+		 		text-decoration:none ;
+		 	}
+		 	.viewport .title{
+		 		font-size: 40px;
+		 		font-weight: bold;
+		 		margin: 100px auto;
+		 		width: 1190px;
+		 		text-align: center;
+		 	}
+		   h3{
+		   	width: 1190px;
+		   	margin: 30px auto;
+		   	text-align: center;
+		    font-size: 20px;
+		    font-weight: normal
+		   }
+		   .tab{
+		   	color: black;
+		    display: inline-block;
+		    float: left;
+		    font-size: 14px;
+		    height: 42px;
+		    width: 130px;
+		    line-height: 42px;
+		    text-align: center;
+		    text-decoration: none;	   
+		   }
+		   .tab span{
+		   	padding: 0 11px 3px
+		   }
+		   .tab:hover{
+		   	color: red;
+		   	text-decoration: none;
+		   }
+		   
+		   .brand_nav{width: 1190px;overflow: hidden;}
+		   .column{
+		   	float: left;
+		    margin-right: 20px;
+		    width: 270px;
+		    overflow: hidden;
+		   }
+		   .column .first-pic{
+		   	margin-bottom: 14px;
+    		width: 270px;
+		   }
+		   .all-brand{
+		   	margin-top: 20px;
+		   	overflow: hidden;
+		   	padding-left:15px ;
+		   }
+		   .noMore{
+		   	margin-top: 50px;
+		   
+		   }
+		   .noMore p{
+		   	border-bottom: 1px solid #464156;
+		    border-top: 1px solid #464156;
+		    font-size: 18px;
+		    height: 43px;
+		    line-height: 43px;
+		    margin: 0 auto;
+		    text-align: center;
+		    width: 166px;
+		   }
+		   .m-totop{
+		   	 background: #fff none repeat scroll 0 0;
+		    border: 1px solid #ddd;
+		    bottom: 10%;
+		    cursor: pointer;
+		    font-size: 12px;
+		    left: 51%;
+		    color: black;
+		    line-height: normal;
+		    margin-left: 565px;
+		    padding: 10px 8px;
+		    position: fixed;
+		    text-align: center;
+		    width: 30px;
+		    z-index: 1001;
+		   }
+		   .m-totop:hover{
+		   	text-decoration: none;
+		   	color: black;
+		   }
+		   .Click{
+				border-bottom: solid 2px red;			
+			}
+			
+		</style>
+		
+		<script>
+		
+		//所有分类的移入移出
+			
+			
+			//每个品牌鼠标移入的动画
+			$(document).ready(function(){
+				$(".recommend-detail").mouseenter(function(){					
+					$(this).stop().animate({bottom:"55px"},300);
+				});
+				$(".recommend-detail").mouseleave(function(){					
+					$(this).stop().animate({bottom:"0px"},300);
+				});
+				$(".brand-detail").mouseenter(function(){					
+					$(this).stop().animate({bottom:"70px"},300);
+				});
+				$(".brand-detail").mouseleave(function(){					
+					$(this).stop().animate({bottom:"0px"},300);
+				});		
+				
+				//导航点击的样式控制
+				$(".brand_nav .tab").click(function(){
+					$(this).addClass("Click");
+					$(this).siblings().removeClass("Click")
+				})
+				//点击了导航的某项，容器内容改变
+				$("#all").click(function(){
+					$(".all").css("display","block");
+					$(".one,.two,.three,.four,.five,.six,.seven,.eight").css("display","none");
+				})
+				$("#one").click(function(){
+					$(".one").css("display","block");
+					$(".all,.two,.three,.four,.five,.six,.seven,.eight").css("display","none");
+				})
+				$("#two").click(function(){
+					$(".two").css("display","block");
+					$(".all,.one,.three,.four,.five,.six,.seven,.eight").css("display","none");
+				})
+				$("#three").click(function(){
+					$(".three").css("display","block");
+					$(".all,.one,.two,.four,.five,.six,.seven,.eight").css("display","none");
+				})
+				$("#four").click(function(){
+					$(".four").css("display","block");
+					$(".all,.one,.two,.three,.five,.six,.seven,.eight").css("display","none");
+				})
+				$("#five").click(function(){
+					$(".five").css("display","block");
+					$(".all,.one,.two,.three,.four,.six,.seven,.eight").css("display","none");
+				})
+				$("#six").click(function(){
+					$(".six").css("display","block");
+					$(".all,.one,.two,.three,.four,.five,.seven,.eight").css("display","none");
+				})
+				$("#seven").click(function(){
+					$(".seven").css("display","block");
+					$(".all,.one,.two,.three,.four,.five,.six,.eight").css("display","none");
+				})
+				$("#eight").click(function(){
+					$(".eight").css("display","block");
+					$(".all,.one,.two,.three,.four,.five,.six,.seven").css("display","none");
+				})
+			})	
+			
+			//返回顶部，的显示隐藏控制
+			$(function(){
+		
+			var windowHeight = window.innerHeight;
+			window.onscroll = function(){
+				
+				var t = document.documentElement.scrollTop || document.body.scrollTop;
+				
+				var index = t/windowHeight;
+				//console.log(index);
+				
+				if(index > 0){
+					$(".m-totop").fadeIn();
+				}else{
+					$(".m-totop").fadeOut();
+				}
+			}
+		})
+			
+		</script>
+	</head>
+
+<body>
+	<!--@php  include page('header');@-->
+	
+	<!--幻灯片大图-->
+	<div class="viewport" style="width:100%;height:400px;">
+       <a target="_blank" href="<!--@php echo $adv['link']; @-->">
+       	<div style="background:url(__RESOURCE__/recouse/images/brands_bg.jpg) no-repeat center center;width:100%;height:400px;margin-top: -18px;"></div>
+       </a>
+	</div>	
+	
+	<div class="viewport" id="wrap" style="margin-top: 50px;">
+		<!--<p class="title">
+			大牌街
+		</p>
+		<h3>今日主打</h3>-->
+		<!--@php if ( !empty($best_brand) && is_array($best_brand) ){ @-->
+		<div class="Today-recommend">	
+		        <!--@php foreach( $best_brand as $best_value ) { @-->
+				<div class="per-recommed">
+					<a href="<!--@php  echo mobile_url('goodlist', array('bid'=>$best_value['id']))@-->" target="_blank" class="recommend-pic">
+						<img data-original="<!--@php echo $best_value['brand_public']; @-->" class="lazy" src="images/loading.gif"/>
+					</a>
+					<a href="<!--@php  echo mobile_url('goodlist', array('bid'=>$best_value['id']))@-->" target="_blank" class="recommend-detail">
+						<img src="<!--@php echo $best_value['icon']; @-->" />
+						<p class="brandName" title="Ryoe 吕"><!--@php echo $best_value['brand']; @--></p>
+						<p class="brandBenefit" title="<!--@php echo $best_value['description']; @-->"><!--@php echo $best_value['description']; @--></p>
+						<span class="brandBtn">进入品牌</span>
+					</a>
+				</div>
+				<!--@php } @-->
+		</div>
+	     <!--@php } @-->
+	     
+	     
+		<!--<h3 style="+margin-top: 150px;">品牌逛不停</h3>	-->
+		
+		<!--导航栏-->
+		<!--<div class="brand_nav">
+			<a class="tab" id="all" href="javascript:void(0)" onfocus="this.blur();"><span>全部</span></a>
+			
+			<a class="tab" id="one" href="javascript:void(0)" onfocus="this.blur();"><span>母婴</span></a>
+			    
+			<a class="tab" id="two" href="javascript:void(0)" onfocus="this.blur();"><span>美容彩妆</span></a>
+			   
+			<a class="tab" id="three" href="javascript:void(0)" onfocus="this.blur();"><span>服饰鞋包</span></a>
+			    
+			<a class="tab" id="four" href="javascript:void(0)" onfocus="this.blur();"><span>家居生活</span></a>
+			   
+			<a class="tab" id="five" href="javascript:void(0)" onfocus="this.blur();"><span>营养保健</span></a>
+			    
+			<a class="tab" id="six" href="javascript:void(0)" onfocus="this.blur();"><span>环球美食</span></a>
+			    
+			<a class="tab" id="seven" href="javascript:void(0)" onfocus="this.blur();"><span>数码家电</span></a>
+			    
+			<a class="tab" id="eight" href="javascript:void(0)" onfocus="this.blur();"><span>海外直邮</span></a>
+		</div>-->
+		
+			
+		
+	</div>
+	<!--@php include themePage('footer');@-->
+</body>
+
+</html>

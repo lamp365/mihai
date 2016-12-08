@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0,user-scalable=no">
+    <title>开店</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/bootstrap.min.css">
+    <link href="__RESOURCE__/openshop/css/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/openshop.css">
+
+
+</head>
+<body>
+<div class="container-fluid header">
+    <div class="row">
+        <h3 class="col-sm-12">账单</h3>
+    </div>
+    <div class="row">
+        <p class="col-sm-12">今日收入<!--@php echo $todayMoney; @-->元</p>
+    </div>
+    <div class="row">
+        <p class="col-sm-12 notice">加油挣钱~~</p>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 pull-left col-xs-4">今日访客 <p class="tongji"><!--@php echo $todayView; @--></p></div>
+        <div class="col-sm-4 pull-left col-xs-4">本月订单 <p class="tongji"><!--@php echo $monthOrder; @--></p></div>
+        <div class="col-sm-4 pull-left col-xs-4">本月收益 <p class="tongji"><!--@php echo $monthMoney; @--></p></div>
+    </div>
+</div>
+
+<div class="container-fluid shopinfo">
+    <div class="row mt_10 mb_10">
+        <div class="col-sm-10 pull-left col-xs-10">
+            <div class="logo pull-left">
+                <img src="__RESOURCE__/openshop/images/dianpu.png" alt="">
+            </div>
+            <div class="pull-left mt_10">
+                <!--@php if($isOpenShop){  echo "<p class='name'>{$shopData['shopname']}</p><p class='name'>{$shopData['area']}</p>"; }else{  echo '<p class="name">店铺名称</p><p class="name">地区未知</p>'; } @-->
+            </div>
+        </div>
+        <div class="col-sm-2 pull-right col-xs-2">
+            <!--@php if($isOpenShop){ @-->
+                <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_home','accesskey'=>$accesskey)); @-->" class='pull-right'><button type='button' name='view' class='btn btn-danger navbar-btn'>预 览</button></a>
+            <!--@php }else{ @-->
+                <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_xieyi')); @-->" class='pull-right'><button name='openshop' type='button' class='btn btn-danger navbar-btn'>开 店</button></a>
+            <!--@php } @-->
+
+        </div>
+    </div>
+</div>
+
+<!--搜索-->
+<div class="search">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-11 pull-left col-xs-10">
+                <form action="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_category','op'=>'list')); @-->" method="post" name="form">
+                    <div class="input-group">
+                            <input type="text" class="form-control" placeholder="搜索你想要的商品" name="keyword">
+                            <span class="input-group-btn">
+                                 <button class="btn btn-default" type="button" id="search">搜索</button>
+                            </span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-1 pull-left col-xs-2">
+                <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_category','op'=>'cat')); @-->" class="cat">
+                    <span class="glyphicon glyphicon-list"></span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--代销赚-->
+<div class="container-fluid mt_10 daixiao">
+    <div class="row">
+        <div class="col-sm-11 pull-left col-xs-10">
+            <ul class="pull-left">
+                <li>通过各社交渠道分享给好友</li>
+                <li>还有下单后您就能赚<span>丰厚佣金</span></li>
+            </ul>
+        </div>
+        <div class="col-sm-1 pull-right col-xs-2">
+            <img src="__RESOURCE__/openshop/images/wenhao.png" width="28px" class="pull-right mt_5" alt="">
+        </div>
+    </div>
+</div>
+
+<!--添加商品-->
+<div class="container addshop">
+    <div class="row">
+        <div class="col-sm-12 col-xs-12">
+            <div class="add">
+                <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_category','op'=>'cat')); @-->">添加商品</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--管理-->
+<div class="container mt_15 mange mb_15">
+    <div class="row">
+        <div class="pull-left t-center" style="width: 25%"><a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_goodmange','op'=>'list')); @-->"><img src="__RESOURCE__/openshop/images/goodmange.png" alt="">商品管理</a></div>
+        <div class="pull-left t-center" style="width: 25%"><a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_mange','op'=>'list')); @-->"><img src="__RESOURCE__/openshop/images/shopmange.png" alt="">店铺管理</a></div>
+        <!--<div class="col-sm-3 col-xs-3 pull-left t-center"><a href="#"><img src="__RESOURCE__/openshop/images/report.png" alt="">报表</a></div>-->
+    </div>
+</div>
+
+<!--尾部-->
+<!--@php include themePage('footer');@-->
+
+<script src="__RESOURCE__/recouse/js/jquery.js"></script>
+<script>
+    $("#search").click(function(){
+        if($('input[name="keyword"]').val() == ''){
+            alert('对不起，搜索内容不能为空！');
+        }else{
+            $('form[name="form"]').submit();
+        }
+    })
+</script>
+</body>
+</html>

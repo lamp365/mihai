@@ -1,0 +1,42 @@
+<div class="my_menu">
+       <ul>
+	         <!--@php  if($is_login){@-->
+			 <li class="title">个人中心</li>
+			 
+			 <li class="perTitle">
+			 	<img src="__RESOURCE__/recouse/images/my-info.png" />
+			 	个人信息
+			 </li>
+			 <li><a href="<!--@php  echo mobile_url('fansindex')@-->"><span class="text">欢迎页</span></a></li>	
+			 <li><a href="<!--@php  echo mobile_url('member')@-->"><span class="text">资料修改</span></a></li>	
+			 <li><a href="<!--@php  echo mobile_url('address',array('from'=>'fansindex'))@-->"><span class="text">管理收货地址</span></a></li>
+			 <li><a href="<!--@php  echo mobile_url('member_pwd')@-->"><span class="text">修改密码</span></a></li>	
+			 <li><a href="<!--@php  echo mobile_url('identity')@-->"><span class="text">我的清关材料</span></a></li>
+			 
+			 <li class="perTitle">
+			 	<img src="__RESOURCE__/recouse/images/charge.png" />
+			 	交易中心
+			 </li>
+             <li class="tiao"><a href="<!--@php  echo mobile_url('myorder',array('status'=>99))@-->" class="menu_1">我的订单</a></li>
+			 <li style="display:none;"><a href="<!--@php  echo mobile_url('rechargegold')@-->"><span class="text">余额充值</span></a></li> 	
+             <li style="display:none;"><a href="<!--@php  echo mobile_url('outchargegold')@-->"><span class="text">余额提现</span></a></li> 		    
+		     <li><a href="<!--@php  echo mobile_url('bonus')@-->"><span class="text">我的优惠券</span></a></li> 	
+  			 			 	
+     		 <li class="perTitle">
+     		 	<img src="__RESOURCE__/recouse/images/help.png" />
+     		 	服务中心
+     		 </li>			 
+			 <li><a href="<!--@php  echo mobile_url('help')@-->"><span class="text">帮助说明</span></a></li>	
+ 	   		 <li><a href="<!--@php  echo mobile_url('logout')@-->"><span class="text">安全退出</span></a></li>
+  		
+  	<!--@php   if(count($fansindex_menu_list)>0) { if(is_array($fansindex_menu_list)) { @-->       	       		
+        	<!--@php foreach($fansindex_menu_list as $item) { @-->
+        	<li><a href="<!--@php  echo $item['url'] @-->"><span class="text"><!--@php  echo $item['tname'] @--></span></a></li>
+				<!--@php  }@-->
+    	<!--@php }  }@-->
+		
+	<!--@php  }@-->
+
+        </ul>
+		</div>
+    </div>

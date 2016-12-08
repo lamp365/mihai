@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0,user-scalable=no">
+
+    <meta name="site" content="<!--@php echo $shoperWebUrl; @-->" />
+    <meta name="title" content="我的店铺：<!--@php echo $shopInfo['shopname']; @-->" />
+    <meta name="description" content="我的店铺：<!--@php echo $shopInfo['shopname']; @--> 客官快进来逛逛，好货多多，有惊奇呦！" />
+    <title> <!--@php echo $shopInfo['shopname']; @-->—店铺设置</title>
+
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__RESOURCE__/recouse/share/css/share.min.css">
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/openshop.css">
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container ontop">
+    <div class="row">
+        <div class="col-sm-3 col-xs-4 pull-left">
+            <a href="javascript:;" class="return"><img src="__RESOURCE__/openshop/images/return.png" width="8px" height="13px" style="margin-top: -3px;"></a>
+        </div>
+        <div class="col-sm-6 col-xs-4 pull-left t-center">店铺设置</div>
+        <div class="col-sm-3 col-xs-4 pull-left">
+            <span class="glyphicon glyphicon-edit" style="color: #6F6F6F;float: right;font-size: 16px;margin-top: 6px;"></span>
+        </div>
+    </div>
+</div>
+
+<div class="openshop_main1" style="">
+    <div style="height: 40px; line-height: 40px;background: #EEEEF3;color: #C5C5C7;padding: 0 10px;margin-top: 33px;">基础设置</div>
+    <div class="openshop_set">
+        <div>
+            <div class="tit" style="line-height: 50px;">店铺头像</div>
+            <div class="show face">
+                <!--@php if(empty($shopInfo['logo'])){ @-->
+                <img src="__RESOURCE__/openshop/images/face.png" alt="">
+                <!--@php }else{ @-->
+                <img src="<!--@php echo $shopInfo['logo']; @-->" alt="">
+                <!--@php } @-->
+            </div>
+        </div>
+        <div>
+            <div class="tit">店铺名称</div>
+            <div class="show"><!--@php echo $shopInfo['shopname']; @--></div>
+        </div>
+        <div>
+            <div class="tit">店铺等级</div>
+            <div class="show"><!--@php echo $shopInfo['level']; @--></div>
+        </div>
+        <div>
+            <div class="tit">联系电话</div>
+            <div class="show"><!--@php echo $shopInfo['mobile']; @--></div>
+        </div>
+        <div>
+            <div class="tit">店铺公告</div>
+            <div class="show"><!--@php echo $shopInfo['notice']; @--></div>
+        </div>
+        <div>
+            <div class="tit">所在地区</div>
+            <div class="show"><!--@php echo $shopInfo['area']; @--></div>
+        </div>
+        <div>
+            <div class="tit">开店时间</div>
+            <div class="show"><!--@php echo date("Y-m-d H:i:s",$shopInfo['createtime']); @--></div>
+        </div>
+    </div>
+    <div style="height: 40px; line-height: 40px;background: #EEEEF3;color: #C5C5C7;padding: 0 10px;">店铺装饰</div>
+    <div class="openshop_set" style="margin-bottom: 30px;">
+        <div>
+            <div class="tit">店铺装饰</div>
+            <div class="show"></div>
+        </div>
+    </div>
+
+    <div class="openshop_set_foot">
+        <div class="view_foot"><img src="__RESOURCE__/openshop/images/view_foot.png" alt=""></div>
+        <div class="erweima_foot" style="border-left: 1px solid #F09380;border-right: 1px solid #F09380"><img src="__RESOURCE__/openshop/images/erweima_foot.png" alt=""></div>
+        <div class="share_foot" ><img src="__RESOURCE__/openshop/images/share_foot.png" alt=""></div>
+    </div>
+</div>
+
+
+<div class="openshop_main2" style="display: none">
+    <div style="height: 40px; line-height: 40px;background: #EEEEF3;color: #C5C5C7;padding: 0 10px;margin-top: 33px;">基础设置</div>
+
+    <form action="<!--@php echo mobile_url('openshop_set',array('op'=>'post'));@-->" method="post" enctype="multipart/form-data">
+
+    <div class="openshop_set">
+        <div>
+            <div class="tit" style="width: 20%;margin-top: 1px;">店铺头像</div>
+            <div class="show" style="width: 75%">
+                <input id="logo" name="logo" type="file">
+            </div>
+        </div>
+        <div>
+            <div class="tit" style="width: 20%;margin-top: 4px;">店铺名称</div>
+            <div class="show form-group" style="width: 75%">
+                    <input type="text" class="form-control" placeholder="店铺名称" value="<!--@php echo $shopInfo['shopname']; @-->" name="shopname">
+            </div>
+        </div>
+        <div>
+            <div class="tit" style="width: 20%;margin-top: 4px;">联系电话</div>
+            <div class="show form-group" style="width: 75%">
+                <input type="text" class="form-control" placeholder="联系电话" value="<!--@php echo $shopInfo['mobile']; @-->" name="mobile">
+            </div>
+        </div>
+        <div>
+            <div class="tit" style="width: 20%;margin-top: 4px;">店铺公告</div>
+            <div class="show form-group" style="width: 75%">
+                <input type="text" class="form-control" placeholder="店铺公告" value="<!--@php echo $shopInfo['notice']; @-->" name="notice">
+            </div>
+        </div>
+        <div>
+            <div class="tit" style="width: 20%;margin-top: 4px;">所在地区</div>
+            <div class="show form-group" style="width: 75%">
+                <input type="text" class="form-control" placeholder="所在地区" value="<!--@php echo $shopInfo['area']; @-->" name="area">
+            </div>
+        </div>
+    </div>
+    <div class="openshop_set_foot">
+        <button type="submit" class="btn btn-danger btn-lg btn-block">确 定</button>
+    </div>
+
+    </form>
+</div>
+
+<!-- 模态框（Modal）分享页面 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    分享店铺
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="sharejs">
+                    <div id="shareBox" class=""></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 二维码页面-->
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 30%">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabe2l">
+                    分享我的店铺二维码
+                </h4>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+
+            </div>
+            <div class="modal-footer" style="">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<script src="__RESOURCE__/recouse/share/js/jquery.share.min.js"></script>
+<script>
+    $(function(){
+        //分享插件的调用
+        $('#shareBox').share({sites: ['weibo','wechat','qq','qzone','tencent']});
+    })
+
+    $(document).delegate(".glyphicon-edit",'click',function(){
+        $(this).removeClass('glyphicon-edit');
+        $(this).addClass('glyphicon-remove');
+        $(".openshop_main1").hide();
+        $(".openshop_main2").show();
+    })
+    $(document).delegate(".glyphicon-remove",'click',function(){
+        $(this).removeClass('glyphicon-remove');
+        $(this).addClass('glyphicon-edit');
+        $(".openshop_main1").show();
+        $(".openshop_main2").hide();
+    })
+    $(document).delegate(".view_foot",'click',function(){
+        var url = "<!--@php echo mobile_url('openshop_home',array('accesskey'=>$accesskey));@-->";
+        window.location.href=url;
+    })
+    $(document).delegate(".erweima_foot",'click',function(){
+        var erweimaUrl = $('#shareBox .qrcode img').attr('src');
+        var imgtag = "<img src='"+erweimaUrl+"' style='margin:0 auto;'/>";
+        $("#myModal2").modal('show');
+        $("#myModal2 .modal-body").html(imgtag);
+    })
+    $(document).delegate(".share_foot",'click',function(){
+        //调用分享
+        $('#myModal').modal('show');
+    })
+    $(".return").click(function(){
+        var refer = document.referrer;//没有来源url
+        if(refer.length == 0){
+           var url = "index.php";
+            window.location.href = url;
+        }else{
+            window.location.href = "<!--@php echo mobile_url('openshop_mange',array('op'=>'list'));@-->";
+        }
+    })
+</script>
+</body>
+</html>

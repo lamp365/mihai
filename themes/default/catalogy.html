@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>商品列表</title>
+<meta name="viewport"  content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+<link href="__RESOURCE__/recouse/css/loadingBox.css"rel="stylesheet" type="text/css">
+<link href="__RESOURCE__/recouse/css/classify.css"	type="text/css" rel="stylesheet">
+<link rel="shortcut icon" href="favicon.ico"/>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.6.2.min.js"></script>
+<title></title>
+<link href="__RESOURCE__/recouse/css/popUpbox.css" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+	src="__RESOURCE__/recouse/js/classify.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/js/utils.js"></script>
+</head>
+<body>
+	<div class="box">
+
+		<div class="header_box">
+			<div class="header">
+				<div class="fh" onclick="javascript:history.back(-1)">
+					<img src="__RESOURCE__/recouse/images/fh.png"> <span>返回</span>
+				</div>
+				<p id="classifyName"><!--@php echo $catalogyname  @--></p>
+				<a href="/" class="home"><img
+					src="__RESOURCE__/recouse/images/home.png"></a>
+			</div>
+		</div>
+		<div class="tj_box">
+			<span class="classify">商品分类</span>
+			<div class="flbt">
+				<p>
+				
+				</p>
+			</div>
+		</div>
+		<div class="scroll_box">
+			<div class="l_nav" id="fenlei" style="height: 738px;">
+				<p id="all" 
+				<!--@php  if($catid==0){ @-->
+						class="currentE"
+				<!--@php  } @-->
+					onclick="turnto('<!--@php  echo mobile_url('catalogy', array('pcate' => 0))@-->')">全部商品</p>				
+			    <!--@php  if(is_array($category)) { foreach($category as $item) { @-->
+				<p  <!--@php  if($catid==$item['id']){ @-->
+						class="currentE"
+					 <!--@php  } @-->	
+					onclick="turnto('<!--@php  echo mobile_url('catalogy', array('pcate' => $item['id']))@-->')"><!--@php  echo $item['name'];@--></p>
+				<!--@php  } } @-->
+			</div>
+			<div class="splb" id="good" style="height: 738px;">
+				 <!--@php  if(is_array($list)) { foreach($list as $item) { @-->	
+				<div class="product">
+					<img src="<!--@php echo WEBSITE_ROOT;@-->/attachment/<!--@php  echo $item['thumb'];@-->" class="pro_img"
+						onclick="turnto('<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->')">
+					<div class="sp">
+						<p class=" bt"
+							onclick="turnto('<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->')"><!--@php echo $item['title']@--></p>
+						<p class="gg"><!--@php echo $item['description']@--></p>
+						<div class="jg">
+							<span class="xj">￥<!--@php  echo $item['marketprice'];@--></span><s class="yj">￥<!--@php  echo $item['productprice'];@--></s>
+						</div>
+					</div>
+					<a class="yd" onclick="addtocart('<!--@php echo $item['id']@-->');"></a>
+				</div>
+				<!--@php  } } @-->				
+				
+			</div>
+		</div>
+
+	</div>
+	<!--悬浮的购物车-->
+	<a href="<!--@php  echo mobile_url('mycart')@-->">
+		<div class="shoppingcart">
+			<img src="__RESOURCE__/recouse/images/dwgwc.png"> <span
+				class="shoppingword">购物车</span> <span class="shoppingnumber"
+				id="cart_cnt"><!--@php echo $carttotal @--></span>
+		</div>
+	</a>
+
+<style type='text/css'>
+    #poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;
+        -webkit-border-radius:5px;
+        -moz-border-radius:5px;}
+#poptip_content { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px; height: 27px; color:#fff;text-align:center;font-size:14px;z-index: 9909}
+</style>
+<script language='javascript'>
+    function tip(msg,autoClose){
+     var div = $("#poptip");
+     var content =$("#poptip_content");
+     if(div.length<=0){
+         div = $("<div id='poptip'></div>").appendTo(document.body);
+         content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+     }
+     else{
+         content.html(msg);
+         content.show(); div.show();
+     }
+     if(autoClose) {
+        setTimeout(function(){
+            content.fadeOut(500);
+            div.fadeOut(500);
+
+        },1000);
+     }
+}
+function tip_close(){
+    $("#poptip").fadeOut(500);
+     $("#poptip_content").fadeOut(500);
+}
+
+
+$(".l_nav p").click(function(){
+	$(".l_nav p").removeClass("currentE");
+	$(this).addClass("currentE")
+	})
+function getheight(){
+	$(".goodimg").height($(".goodimg").width()); 
+}
+
+$("#classifyName").text('<!--@php echo $catalogyname; @-->');
+var key = 'null';
+
+function turnto(url){
+	window.location=url;
+}
+
+function addtocart(goodid){		            
+    var total = 1;		        
+    tip("正在处理数据...");		        
+    var url = '<!--@php  echo mobile_url('mycart',array('op'=>'add'),true);@-->' +"&optionid=" + "&total=1"+"&id="+goodid;
+    $.getJSON(url, function(s){
+		    if(s.result==0){
+		        tip("只能购买 " + s.maxbuy + " 件!");
+		    }else{
+		        tip_close();
+				tip("已加入购物车!");				
+				$("#cart_cnt").html(s.total);	
+				//alert("已加入购物车!");		          
+		   }
+  	});
+}
+
+
+</script>
+
+	<div id="div_loading" style="display: none;">
+		<div class="div_loading_bg"></div>
+		<div class="div_loading_content">
+			<img src="http://www.sqdao.cn/fornt/images/loadingBox3.gif"
+				align="absmiddle"> <span id="div_loading_tips">交易正在处理中，请稍后...</span>
+		</div>
+	</div>
+</body>
+</html>

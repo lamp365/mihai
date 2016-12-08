@@ -1,0 +1,58 @@
+<!--@php  include themePage('purchase_header');@-->
+		<div class="content-area">
+			<div style="width: 1190px;margin: 0 auto;">
+				<div class="login-area">
+					<p class="login-area-p">用户登录</p>
+					<form role="form" method="post" onsubmit="return checkInfo(this);">
+						<input type="hidden"  name="third_login" value="<!--@php echo $_GP['third_login'];@-->" />
+						<div class="login-area-div">
+							<i class="username-icon"><img src="__RESOURCE__/recouse/images/icon_user.png"><span class="i-span"></span></i>
+							<input type="text" id="mobile" name="mobile" value="" class="form-control" placeholder="请输入您的手机号" />
+							<span class="remove"><img src="__RESOURCE__/recouse/images/remove_input_val.png"></span>
+						</div>
+						<div class="login-area-div">
+							<i class="password-icon"><img src="__RESOURCE__/recouse/images/icon_pwd.png"><span class="i-span"></span></i>
+							<input type="password" id="pwd" name="pwd" value="" class="form-control span2" placeholder="请输入密码"/>
+							<span class="remove"><img src="__RESOURCE__/recouse/images/remove_input_val.png"></span>
+						</div>
+						<button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg" style="background:#7A45E5;">立即登录</button>
+					</form>
+				</div>
+			</div>
+		</div>	
+		
+
+<script type="text/javascript">
+	$(function(){
+		$(".login-area-div input").each(function(){
+			if($(this).val()){
+				$(this).siblings(".remove").show();
+			}
+		});
+		$(".login-area-div input").on("input propertychange",function(){
+			if($(this).val()){
+				$(this).siblings(".remove").show();
+			}
+		});
+		$(".login-area-div .remove").on("click",function(){
+			$(this).siblings("input").val("");
+			$(this).hide();
+		});
+	})
+	function checkInfo(form) {
+		var mobile = form['mobile'].value;
+		if (!mobile) {
+			alert('请输入您的手机号码！');
+			return false;
+		}
+		if (mobile.search(/^([0-9]{11})?$/) == -1) {
+			alert('请输入正确的手机号码！');
+			return false;
+		}
+		if (!form['pwd'].value) {
+			alert('请输入登录密码');
+			return false;
+		}
+	}
+</script>
+<!--@php  include themePage('purchase_footer');@-->

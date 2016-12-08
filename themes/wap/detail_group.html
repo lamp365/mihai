@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title><!--@php  echo $goods['title'];@--></title>
+    <meta name="site" content="<!--@php echo 'http://'.$_SERVER['HTTP_HOST'].'/'.mobile_url('detail',array('id'=>$goods['id'])); @-->" />
+    <meta name="title" content="<!--@php echo $goods['title']; @-->" />
+    <meta name="description" content="<!--@php echo $goods['title']; @-->" />
+
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/fontawesome3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/bjdetail.css">
+    <link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="__RESOURCE__/recouse/share/css/share.min.css">
+    <link rel="stylesheet" href="__RESOURCE__/openshop/css/openshop.css">
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script src="__RESOURCE__/recouse/js/jquery.json.js" type="text/javascript"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/common.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/transport.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/utils.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+    <!-- Add fancyBox main JS and CSS files -->
+    <script type="text/javascript" src="__RESOURCE__/recouse/fancybox/jquery.mousewheel.pack.js?v=3.1.3"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
+    <style>
+        .tabBox{
+            background-color: #fff;
+        }
+        .tabBox .hd {
+            height: 37px;
+            line-height: 40px;
+            font-size: 16px;
+            overflow: hidden;
+            background: #ffffff;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e2e2;
+        }
+        .tabBox .bd .liactive p{
+            padding: 0 15px;
+        }
+        .tabBox .hd ul li {
+            float: left;
+            width: 50%;
+            vertical-align: top;
+            text-align: center;
+        }
+        .tabBox .hd .liactive{
+            
+            border-bottom:2px solid #e84263;
+        }
+        .tabBox .hd .liactive a{color: #e84263;}
+        .tabBox .hd ul li.on a {
+            color: #B63B34;
+            display: block;
+            height: 38px;
+            line-height: 38px;
+            border-bottom: 2px solid #B63B34;
+            text-align: center;
+        }
+        .tabBox .bd .con {
+            background: #ffffff;
+        }
+
+        .tabBox .bd li img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        .foot_fix_top{
+            position: fixed;
+            bottom: 100px;
+            right: 8px;
+            width: 35px;
+            height: 35px;
+            z-index: 20;
+            display: none;
+        }
+        .user-name{
+            float: left;
+            width: 50%;
+            margin-bottom: .5em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .date-time{
+            float: left;
+            width: 50%;
+            text-align: right;
+            margin-bottom: .5em;
+            color: #CCCCCC;
+            font-size:12px;
+        }
+        .img-list{
+            overflow: hidden;
+            width: 100%;
+            margin-bottom: .5em;
+        }
+        .img-list li{
+            float: left;
+            width: 50px;
+            margin: 0 .48em .5em 0;
+            border: 1px solid #eaeaea;
+        }
+        .img-list li img{
+            display: block;
+            width: 100%;
+        }
+        .detail-content{
+            color: #000;
+            margin-bottom: .5em;
+            line-height: 1.5;
+            clear: both;
+        }
+        .tempWrap{
+            position:relative;
+        }
+
+        .fancybox-custom .fancybox-skin {
+            box-shadow: 0 0 50px #222;
+        }
+
+        .showcontent ul .put{
+            height: 28px;
+            width: 60px;
+            margin: 0;
+            text-align: center;
+            border-left:none;
+            border-right: none;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        .btn-group-sm>.btn, .btn-sm{padding: 8px 10px;}
+
+        .btn-default{
+            background: #F7F7F7;
+        }
+        .foot_gouwuche{
+            position: fixed;
+            bottom: 56px;
+            right: 8px;
+            background: #ffffff;
+            color: #ffffff;
+            line-height: 20px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+        .foot_gouwuche img{
+            margin-top: 4px;
+            margin-left: 4px;
+        }
+        .show_comment>li{margin: 15px; border-bottom: 1px dashed #E5E5E5}
+        #tabBox1-bd .con{
+            display: none;
+        }
+        #tabBox1-bd .con.liactive{
+            display: block;
+        }
+        .firstRow td{
+            vertical-align: middle;
+            padding: 0 3%;
+        }
+        .tabBox .bd .liactive p{
+            padding: 0!important;
+        }
+        .detail-group-title{
+            background: url('__RESOURCE__/recouse/images/detail_group_title.jpg') no-repeat center;
+            background-size: 100%;
+            width: 100%;
+            height: 45px;
+        }
+        .group-price{
+            float: left;
+            width: 63.2%;
+            color: #fff;
+            font-size: 30px;
+            padding-left: 15px;
+            line-height: 45px;
+            box-sizing: border-box;
+        }
+        .group-num{
+            float: left;
+            width: 36.8%;
+            line-height: 45px;
+            text-align: center;
+            color:#c8b8fd;
+            font-size: 13px;
+        }
+        .group-num span{
+            color: #fff;
+        }
+        .group-price i{
+            font-size: 15px;
+        }
+        .group-price span{
+            text-decoration: line-through;
+            color: #ffb2ca;
+            font-size: 15px;
+            padding-left: 12px;
+        }
+        .detail-spec{
+            background-color: #fff;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+        .detail-spec-1{
+            color: #333;
+            font-size: 14px;
+            padding-top: 13px;
+        }
+        .detail-spec-1 img{
+            padding-right: 5px;
+        }
+        .detail-spec ul li{
+            list-style: initial;
+            color: #717171;
+            font-size: 13px;
+            margin-left: 14px;
+        }
+        .detail-spec-img{
+            width: 100%;
+        }
+        .small-title{
+            font-size: 13px;
+            color: #717171;
+            line-height: 35px;
+        }
+        .groupon-list{
+            overflow: hidden;
+            padding: 0px 15px 0 15px;
+            background-color: #fff;
+        }
+        .groupon-list-left{
+            float: left;
+            width: 17%;
+            height: 60px;
+            border-radius: 4px;
+            border: 1px solid #e84362;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .groupon-list-center{
+            float: left;
+            width: 61%;
+            height: 48px;
+            border-top: 1px solid #e84362;
+            border-bottom: 1px solid #e84362;
+            margin-top: 6px;
+            box-sizing: border-box;
+        }
+        .groupon-list-username{
+            font-size: 14px;
+            color: #333;
+            padding-top: 2px;
+            padding-left: 14px;
+        }
+        .groupon-list-username span{
+            float: right;
+        }
+        .groupon-list-username .name{
+            display: inline-block;
+            text-align: left;
+            width: 50%;
+            color: #333;
+            padding-right:0;
+        }
+        .groupon-list-username span{
+            display: inline-block;
+            text-align: right;
+            width: 50%;
+            color: #f43776;
+            padding-right: 5px;
+            box-sizing: border-box;
+        }
+        .groupon-list-right{
+            position: relative;
+            float: left;
+            width: 22%;
+            height: 48px;
+            line-height: 48px;
+            font-size: 14px;
+            
+            background-color: #e84362;
+            border-radius: 0 48px 48px 0;
+            margin-top: 6px;
+            cursor: pointer;
+            padding-left: 3%;
+            box-sizing: border-box;
+        }
+        .groupon-list-right a{color: #fff;}
+        .groupon-list-time{
+            color: #666;
+            font-size: 14px;
+            text-align: right;
+            padding-left: 14px;
+            padding-right: 5px;
+        }
+        .groupon-list-title{
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+            padding-bottom: 10px;
+            border-bottom: 1px #ddd dashed;
+            margin: 20px 0 10px 10px;
+        }
+        .groupon-list-right img{
+            position: absolute;
+            top: 18px;
+            right: 14px;
+        }
+        .groupon-list-div{
+            width: 100%;
+            overflow: hidden;
+        }
+        @media screen and (max-width: 340px){
+            .groupon-list-username,.groupon-list-time,.groupon-list-right{
+                font-size: 12px;
+            }
+        }
+        @media screen and (min-width: 470px){
+            .groupon-list-right{
+                padding-left: 0;
+                text-align: center;
+            }
+        }
+        .good_price  .pro-groupon-1 {
+            width: 50px;
+            text-align: center;
+            background-color: #ffed64;
+            height: 24px;
+            line-height: 24px;
+            color: red;
+            margin-left: 10px;
+            border-radius: 4px;
+            margin-right: 25px;
+            float: left;
+            margin-top: 11px;
+            padding:0px;
+            text-decoration:none;
+        }
+        .good_price .pro-groupon-2 {
+            margin-right: 17px;
+            font-size: 16px;
+        }
+        .good_price .pro-groupon-2 img{
+            vertical-align: middle;
+            margin-top: -2px;
+            mragin-right:4px;
+        }
+    </style>
+    <script>
+        function countDown(time,id){
+            var end_time = time * 1000,//月份是实际月份-1
+                    sys_second = (end_time-new Date().getTime())/1000;
+            getTime(sys_second,id);
+            var timer = setInterval(function(){
+                if (sys_second > 1) {
+                    sys_second -= 1;
+                    getTime(sys_second,id);
+                } else {
+                    clearInterval(timer);
+                }
+            }, 1000);
+        }
+        function getTime(sys_second,id){
+            var day = Math.floor((sys_second / 3600) / 24);
+            var hour = Math.floor((sys_second / 3600) % 24);
+            var minute = Math.floor((sys_second / 60) % 60);
+            var second = Math.floor(sys_second % 60);
+            if($(id+' .limit_d')){
+                $(id+' .limit_d').text(day<10?"0"+day:day);
+            }
+            if( second <=0 && minute<=0 ){
+                $(id).html("结束");
+            }
+            $(id+' .limit_h').text(hour<10?"0"+hour:hour);    //计算小时
+            $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
+            $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
+        }
+    </script>
+</head>
+<body style="margin: 0px auto 59px;">
+<div class="main">
+    <div class="top_header">
+        <div class="header_left">
+            <a href="javascript:;" class="return" style="margin-top: 4px;"><img src="__RESOURCE__/openshop/images/return.png"  height="18px"></a>
+        </div>
+        <div class="header_title">
+            商品详情
+        </div>
+        <div class="header_right" style="display:none;">
+            <a href="javascript:;" class="pull-right share" style="margin-right: 15px;"><img src="__RESOURCE__/openshop/images/share.png" style="margin-top:13px;"  height="18px"></a>
+        </div>
+    </div>
+    <section class="sp">
+        <div class="product-intro">
+
+            <div id="cont_show">
+                <script type="text/javascript" src="__RESOURCE__/recouse/js/jquery.flexslider-min.js"></script>
+                <script type="text/javascript">
+                    $(function () {
+                        $('.flexslider').flexslider({
+                            animation: "slide",
+                            slideDirection: "horizontal"
+                        });
+                        $("#btn_continue").click(function () {
+                            $("#buy_lay").hide();
+                            $("#buy_lay_frm").hide();
+                        });
+                        $("#btn_check").click(function () {
+                            window.location = 'cart.php';
+                        });
+                        $(document).bind("click", function () {
+                            $("#buy_lay").hide();
+                            $("#buy_lay_frm").hide();
+                        });
+                    });
+                </script>
+
+                <link href="__RESOURCE__/recouse/css/flexslider.css" rel="stylesheet" type="text/css">
+                <div id="viewport" class="viewport">
+                    <div class="show">
+                        <div class="slider card card-nomb" style="visibility: visible;">
+                            <script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
+                            <div id="focus" class="focus">
+                                <div class="hd">
+                                    <ul></ul>
+                                </div>
+                                <div class="bd">
+                                    <ul>
+                                        <!--@php  if(is_array($piclist)) { foreach($piclist as $row) { @-->
+                                        <li>
+                                            <img src="<!--@php  echo $row['attachment'];@-->"/>
+                                        </li>
+                                        <!--@php  } } @-->
+                                    </ul>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                TouchSlide({
+                                    slideCell: "#focus",
+                                    titCell: ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+                                    mainCell: ".bd ul",
+                                    delayTime: 600,
+                                    interTime: 4000,
+                                    effect: "leftLoop",
+                                    autoPlay: true,//自动播放
+                                    autoPage: true, //自动分页
+                                    switchLoad: "_src" //切换加载，真实图片路径为"_src"
+                                });
+                            </script>
+                            <!-- banner轮播End -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="height: 4px;background: #EEEEEE;"></div>
+
+            <div class="detail-group-title">
+                <p class="group-price">
+                     <p class="group-price"><i>￥</i><!--@php echo $goods['timeprice'];@--><span><!--@php  echo $goods['productprice'];@--></span></p>
+                </p>
+                <p class="group-num">
+                    <!--@php if(time() < $goods['timestart']){  @-->
+                        开始<!--@php echo date("Y-m-d H:i",$goods['timestart']);@-->
+                    <!--@php }else{ @-->
+                        已有<span><!--@php echo $goods['allnum']; @--></span>人参团
+                    <!--@php } @-->
+                </p>
+            </div>
+            <div class="good_info">
+                <div class="pingpai">
+                    <dt class="PTags">
+                        <!--商品详情页里面的商品品牌信息-->
+                        <span>
+                            <img src="<!--@php echo $brand['icon']; @-->">
+                            <span><!--@php echo $brand['name']; @--></span>
+                            <span class="split">|</span>
+                            <a class="brand" target="_blank" href="#"><!--@php echo $brand['brand']; @--></a>
+                        </span>
+                    </dt>
+                </div>
+
+                <div class="good_price">
+                    <span class="pro-groupon-2" style="text-decoration: inherit;float: left;">
+                          <img src="__RESOURCE__/recouse/images/group_user.png"><!--@php echo $goods['team_buy_count']; @-->人团
+                    </span>
+                    <span style="font-size: 16px;">单独购买：¥<!--@php echo $goods['marketprice'];@--></span>
+                    <span class="good_cross">跨境</span>
+                </div>
+                <div class="good_title"><!--@php  echo $goods['title'];@--></div>
+                <p class="pro-name1"><strong></strong></p>
+                <div class="good_shuoming">
+                    <p>运 费：<span><!--@php if($goods['issendfree'] == 1){ echo "商家免邮"; }else{ echo $depot['displayorder'].'¥';} @--> (<!--@php echo $promotion['description']; @-->)</span></p>
+                    <p>服 务：<span>本商品由 <u><!--@php echo $goods['depot'];@--></u> 发货</span></p>
+                    <p>税 率：<span><!--@php if(empty($tax)){ echo "本商品适用税率为免费"; }else{ echo $tax;} @--></span></p>
+                    <input type="hidden" class="hide_dish" value="<!--@php echo $_GP['id'];@-->">
+                    <input type="hidden" class="kucun" value="<!--@php echo $goods['total'];@-->">
+                    <input type="hidden" class="has_add" value="0">
+                </div>
+            </div>
+
+
+            <!--有卖家显示卖家信息-->
+            <!--@php if($saller_openid){ @-->
+            <p class="pro-name1"><strong></strong></p>
+            <!-- 商家 -->
+            <div class="good_shoper">
+                <div class="shoper_pic">
+                    <img src="<!--@php if(!empty($shopInfo['logo'])){ echo $shopInfo['logo']; }else{ echo '__RESOURCE__/openshop/images/face.png'; } @-->" alt="">
+                </div>
+                <div class="shop_name">
+                    <p style="margin-top:10px;"><!--@php echo $shopInfo['shopname']; @--></p>
+                    <p><!--@php if(empty($shopInfo['area'])){ echo "地区暂无"; }else{ echo $shopInfo['area'];} @--></p>
+                </div>
+                <div class="go_home">
+                    <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_home','accesskey'=>$_GP['accesskey'])); @-->" class="btn btn-default btn-xs" role="button">进店逛逛</a>
+                </div>
+            </div>
+            <!--@php } @-->
+
+            <!--商家管理的话显示分销说明-->
+            <!--@php if(!empty($toshangjia)){ @-->
+            <p class="pro-name1"><strong></strong></p>
+            <div class="fenxiao_shuoming">
+                <div class="fexiao_l" style="border-right: 1px solid #F5F5F5;"><img src="__RESOURCE__/recouse/images/daixiao.png" class="daixiao_shuoming"><span>代销说明</span></div>
+                <div class="fexiao_r"><img src="__RESOURCE__/recouse/images/peixun.png" alt=""><span>商家培训</span></div>
+            </div>
+            <!--@php } @-->
+        </div>
+    </section>
+
+    <input type="hidden" id="optionid" name="optionid" value="" />
+    <p class="pro-name1"><strong></strong></p>
+    <div class="detail-spec">
+        <p class="detail-spec-1"><img src="__RESOURCE__/recouse/images/group_user.png">团购说明</p>
+        <ul>
+            <li>活动时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></li>
+            <li>拼团有效时间为30分钟，30分钟后拼团未成功系统将于一两个工作日自动退款到您的付款账户</li>
+        </ul>
+        <img class="detail-spec-img" src="__RESOURCE__/recouse/images/detail_group_step.png">
+    </div>
+    <p class="pro-name1"><strong></strong></p>
+    <div class="groupon-list">
+        <div class="small-title">以下小伙伴正在发起团购，您可以直接参与</div>
+    <!--@php if ( is_array($group) && !empty($group) ){ foreach ( $group as $group_value ){ @-->
+        <div class="groupon-list-div">
+            <!--@php if ( !empty( $group_value['avatar'] ) ){ @-->
+            <img src="<!--@php echo $group_value['avatar']; @-->" class="groupon-list-left">
+            <!--@php }else{ @-->
+            <img src="images/userlogo.png" class="groupon-list-left">
+            <!--@php } @-->
+            <div class="groupon-list-center">
+                <p class="groupon-list-username" ><!--@php $groupname = !empty($group_value['nickname'])?$group_value['nickname']:$group_value['mobile']; echo empty($groupname)?'匿名': substr_cut($groupname);@--> <span>还差<!--@php echo $group_value['residue_num'];@-->人成团</span></p>
+                <p class="groupon-list-time" id="myid<!--@php echo $group_value['group_id']; @-->">剩余<span style="color: #e84362;padding: 0 3px;"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></span>结束</p>
+            </div>
+            <div class="groupon-list-right" >
+                <a href="<!--@php  echo mobile_url('groupbuy', array('name'=>'shopwap','id' => $goods['id'],'op'=>'join_group','group_id'=> $group_value['group_id']))@-->">去参团<img src="__RESOURCE__/recouse/images/group_icon.png"></a>
+            </div>
+        </div>
+        <script>
+            countDown(<!--@php echo $group_value['end_time']; @-->,"#myid<!--@php echo $group_value['group_id']; @-->");
+        </script>
+        <!--@php }} @-->
+        
+    </div>
+    <p class="pro-name1"><strong></strong></p>
+    <div class="viewport">
+        <!-- 商品详情和评价 Start  -->
+        <div id="tabBox1" class="tabBox">
+            <div class="hd">
+                <ul>
+                    <li class="liactive"><a href="javascript:void(0)">商品详情</a></li>
+                    <li><a href="javascript:void(0)">商品评价(<!--@php echo $total;@-->)</a></li>
+                </ul>
+            </div>
+            <div class="tempWrap">
+                <div class="bd" id="tabBox1-bd">
+                    <!-- 添加id，js用到 -->
+                    <div class="con liactive" >
+                        <!-- 高度自适应需添加外层 -->
+                        <ul>
+                            <li>
+                                <!--@php  echo $cfg['detail_head'].$goods['content'].$cfg['detail_foot'];@-->
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="con">
+                        <!-- 高度自适应需添加外层 -->
+
+                        <ul class="show_comment">
+                            <!--@php  if(is_array($comments)) { foreach($comments as $key => $row) { @-->
+                            <li>
+                                <div class="user-name">用户名：<!--@php echo getUserFaceAndNameHtml($row['openid'],$row['username']); @--></div>
+                                <span class="date-time">来自 <!--@php echo getSystemType($row['system']);@--> 版</span>
+                                <h4 class="detail-content">
+                                    <!--@php  echo $row['comment']; @-->
+                                </h4>
+                                <!--@php if(!empty($row['piclist'])){ @-->
+                                <ul class="img-list" data-clicked="0" data-key="<!--@php echo $key;@-->">
+                                    <!--@php foreach($row['piclist'] as $picurl){ @-->
+                                    <li>
+                                        <a class="fancybox_<!--@php echo $key;@-->" href="<!--@php echo download_pic($picurl['img'],650);@-->" data-fancybox-group="gallery">
+                                            <img src="<!--@php echo download_pic($picurl['img'],50,50,1);@-->"/>
+                                        </a>
+                                    </li>
+                                    <!--@php } @-->
+                                </ul>
+                                <!--@php } @-->
+                            </li>
+
+                            <!--@php  }} @-->
+                            <!--@php  if(empty($comments)) { @-->
+                            <div class="myoder" style="text-align: center; color: #aaa; padding: 30px;">
+                                暂时没有商品评价!!</div>
+                            <!--@php  } @-->
+                        </ul>
+                        <!--@php echo $pager;@-->
+                    </div>
+
+                </div>
+            </div>
+            <script type="text/javascript">
+                /*TouchSlide({
+                    slideCell: "#tabBox1",
+                    endFun: function (i) { //高度自适应
+                        var bd = document.getElementById("tabBox1-bd");
+                        bd.parentNode.style.height = bd.children[i].children[0].offsetHeight + "px";
+                        if (i > 0)bd.parentNode.style.transition = "200ms";//添加动画效果
+                    }
+                });*/
+                /*$("body").on("touchstart",".loading",function(){
+                    var off_set_Height = $(".show_comment").height();
+                    $(".tempWrap").css("height","auto");
+                })*/
+                var li_index = 0 ;
+
+                $("#tabBox1 .hd li").on("click",function(){
+                    li_index = $(this).index();
+                    $(this).addClass("liactive").siblings("li").removeClass("liactive");
+                    $("#tabBox1-bd .con").eq(li_index).addClass("liactive").siblings(".con").removeClass("liactive");
+                });
+
+            </script>
+            <!--商品详情和评价 End  -->
+
+        </div>
+    </div>
+    <div style="height: 45px;"></div>
+    <!-- 尾部 -->
+    <div class="foot_menu">
+        <div class="foot_left">
+            <div class="home"><a href="<!--@php  echo mobile_url('shopindex')@-->" ><img src="__RESOURCE__/recouse/images/home_page.png" width="19px" height='16px'><span>主页</span></a></div>
+            <div class="collect"><a href="javascript:;" id="shoucan" data-url=""><img src="__RESOURCE__/recouse/images/shoucan.png" width="18px" height='16px'><span>收藏</span></a></div>
+            <div class="qq_kefu">
+                <!--@php  if ( is_array($qqarr) ){ $num = mt_rand(0,count($qqarr)-1); $qq_num=$qqarr[$num]; }@-->
+                <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<!--@php echo $qq_num; @-->&site=himrc.com&menu=yes"><img src="__RESOURCE__/recouse/images/qq_kefu.png" width="18px" height='16px'><span>客服</span></a>
+            </div>
+        </div>
+        <div class="foot_right">
+            <input type="hidden" id="accesskey" value="<!--@php if(!empty($_GP['accesskey'])){ echo $_GP['accesskey']; }@-->">
+            <div class="add_gouwuche"><a href="javascript:;" onclick='buy(-1);' id="add_gouwuche">单独购买</a></div>
+            <!--@php if(time() < $goods['timestart']){  @-->
+                 <div class="liji_buy"><a href="javascript:;" disabled="disabled" >等待开始</a></div>
+            <!--@php }else{ @-->
+                 <div class="liji_buy"><a href="javascript:;" onclick='buy(0);' >立即开团</a></div>
+            <!--@php } @-->
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 30%">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    <!--标题-->
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--内容-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="foot_fix_top">
+    <img src="__RESOURCE__/recouse/images/scroll-to-top.png" width="37" height="37">
+</div>
+<div class="foot_gouwuche">
+    <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'mycart'));@-->"><img src="__RESOURCE__/openshop/images/gouwuche_ico.png" style="width: 26px;height: 26px;"></a>
+</div>
+
+<script src="__RESOURCE__/recouse/share/js/jquery.share.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".img-list img").click(function(){
+            if($(this).closest('.img-list').data('clicked')==0){
+                var key = $(this).closest('.img-list').data('key');
+                $(".fancybox_"+key).fancybox();
+                $(this).closest('.img-list').data('clicked','1');
+            }
+
+        })
+
+        //收藏
+        $("#shoucan").click(function(){
+            var dishid      = $(".hide_dish").val();
+            var url = "<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_action','act'=>'collectgood'));@-->";
+            url = url + "&dishid="+dishid;
+            $.getJSON(url,function(data){
+                tip(data.message,1);
+                if(data.errno != 200){
+                    setTimeout(function(){
+                        window.location.href="<!--@php echo mobile_url('login'); @-->"
+                    },2000)
+                }
+
+            },'json');
+        })
+
+
+        $(".return").click(function(){
+            var refer = document.referrer;//没有来源url
+            if(refer.length == 0){
+                var url = "index.php";
+                window.location.href = url;
+            }else{
+                window.history.back(-1);
+            }
+        })
+
+    });
+
+
+    //代销说明
+    $(".daixiao_shuoming").click(function(){
+        $('#myModal').modal('show');
+        $(".modal-title").html('代销说明');
+        $(".modal-body").html('代销说明代销说明代销说明代销说明');
+    })
+
+    var webUrl = "http://"+window.location.host;
+    var shareUrl = $("meta[name='site']").attr("content");
+    var imageUrl = $(".tempWrap li").eq(0).find('img').attr('src');
+    if(imageUrl.indexOf(webUrl)<0){
+        imageUrl = webUrl +'/'+ imageUrl;
+    }
+    $(document).ready(function(){
+        //立即分享
+        $(".to_share").click(function(){
+            //调用分享
+            $('#myModal').modal('show');
+            $(".modal-title").html('分享商品');
+            var html = '<div class="sharejs"><div id="shareBox" class=""></div></div>';
+            $(".modal-body").html(html);
+            $('#shareBox').share({
+                sites: ['weibo','wechat','qq','qzone','tencent'],
+                url:shareUrl,
+                image:imageUrl
+            });
+        });
+
+        $(".share").click(function(){
+            //调用分享
+            $('#myModal').modal('show');
+            $(".modal-title").html('分享商品');
+            var html = '<div class="sharejs"><div id="shareBox" class=""></div></div>';
+            $(".modal-body").html(html);
+            $('#shareBox').share({
+                sites: ['weibo','wechat','qq','qzone','tencent'],
+                url:shareUrl,
+                image:imageUrl
+            });
+        });
+    });
+    function tip(msg,autoClose){
+        var div = $("#poptip");
+        var content =$("#poptip_content");
+        if(div.length<=0){
+            div = $("<div id='poptip'></div>").appendTo(document.body);
+            content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+        }
+        else{
+            content.html(msg);
+            content.show(); div.show();
+        }
+        if(autoClose) {
+            setTimeout(function(){
+                content.fadeOut(500);
+                div.fadeOut(500);
+
+            },1000);
+        }
+    }
+    function tip_close(){
+        $("#poptip").fadeOut(1000);
+        $("#poptip_content").fadeOut(1000);
+    }
+
+    $(function(){
+        $(window).scroll(function(){    //这个是滚动的
+            var distanceTop = 900;
+
+            if  ($(window).scrollTop() > distanceTop)
+                $(".foot_fix_top").show();
+            else
+                $(".foot_fix_top").hide();
+        });
+        $(".foot_fix_top").click(function(){
+            $("html,body").animate({scrollTop: 0},"slow");
+        })
+    })
+
+    //立即购买
+    var hasoption = <!--@php echo $goods['hasoption']=='1'?'true':'false'@-->;
+    function buy(type){
+         var total = 1;
+         var url  = "<!--@php  echo mobile_url('mycart',array('id'=>$goods['id'],'op'=>'token'),true);@-->"+"&optionid=" + $("#optionid").val() + "&total=" + total +"&type=" + type;
+        if($("#accesskey").val() != '' ){
+            url = url + "&accesskey="+$("#accesskey").val();
+        }
+          $.getJSON(url, function(s){
+              if (s.result == 0)
+              {
+                  var success = "<!--@php echo mobile_url('confirm')@-->";
+                  window.location.href = success;
+              }else if(s.result == 1002){
+                  tip(s.message,1);
+              }
+         });   
+    }
+
+</script>
+</body>
+</html>

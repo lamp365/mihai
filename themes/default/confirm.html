@@ -1,0 +1,674 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+     <meta charset="utf-8">
+    <title>订单确认</title>
+    <meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>	
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="__RESOURCE__/recouse/css/confirm.css?v=111" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />    
+<style>
+.label_radio input { 
+	margin-right: 5px; 
+}
+
+.has-js .label_radio { 
+	padding-left: 26px; 
+}
+
+.has-js .label_radio { 
+	background-position: 0 0;
+	background: url(__RESOURCE__/recouse/images/radio_none.png) no-repeat;
+	background-size: 16px 16px;
+}
+.has-js label.r_on { 
+	background-position: 0 0px;
+	background: url(__RESOURCE__/recouse/images/radio_check.png) no-repeat;
+	background-size: 16px 16px;
+}
+.has-js .label_radio input { 
+	position: absolute; 
+	left: -9999px; 
+} 
+.topTabbox{
+   display:none;
+}
+
+#mallHead{display:none}
+.nav{background:none}
+.settlementAmount{width: 87px\9;height: 120px\9;}
+.settlementItem{width: 102px\9;height: 120px\9;}
+ #addresslist{width: 1170px;overflow: hidden;}
+#type .choosetype{
+	color:rgb(232,67,98);	
+	border-bottom: solid 2px rgb(232,67,98);
+}
+.os_box_list > li{
+	width: 230px;
+	height: 320px;
+	margin-left: 5px;
+}
+.os_box_list{
+	margin-left: -5px;
+}
+.os_box_list .img img {
+	width: 60%;
+	margin-top: -60%;
+	margin-left: -35.5px;
+}
+.os_box_list .item {
+	width: 230px;
+}
+.os_box_list .txt{
+	margin: 5px 13px;
+}
+.member-browse-name div{
+	width: 370px;
+	display: inline-block;
+}
+#member-browse-name div{
+	width: 420px;
+	
+}
+.os_box_list .reduceNum{
+	float:left;
+	background-color: #f2f2f2;
+	border: none;
+	border-right: solid 1px gainsboro;
+	width: 25px;
+	height: 25px;
+	border-radius: 0px;
+	color: #6f6f6f;
+	line-height: 0px;
+	padding: 0 8px;
+	font-weight: 400;
+}
+.os_box_list .addNum{
+	float:left;
+	background-color: #f2f2f2;
+	border: none;
+	border-left: solid 1px gainsboro;
+	width: 25px;
+	height: 25px;
+	border-radius: 0px;
+	color:#6f6f6f;
+	line-height: 0px;
+	padding: 0 8px;
+	font-weight: 400;
+}
+.btn {
+    color:#333;
+}
+.os_box_list .text{
+	float:left;
+	height: 25px;
+	line-height:25px;
+	width:50px;
+	border: none;
+	text-align: center;
+}
+</style>
+
+    </head>
+<body style="margin:0 auto;">
+		 <!--@php  include page('header');@-->	
+		<div class="c-progress">
+		<div class="r cart-progress">
+			<ul>
+				<li class="finish finish-01"><i>1</i><span>我的购物车</span><b></b></li>
+				<li  class="finish finish-02"><i>2</i><span>确认订单</span><b></b></li>
+				<li><i>3</i><span>付款</span><b></b></li>
+				<li><i>4</i><span>支付成功</span><b></b></li>
+			</ul>
+		</div>
+		</div>
+	<div class="viewport">
+		
+		<div class="accounts">
+			<!--显示所有收货地址-->
+			<div class="infobox">
+				<h2>收货信息</h2>
+				
+				<!--有默认地址-->
+				 <!--@php  if(!empty($addresslist)) {  @-->
+				<div id="addresslist">
+				    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
+					<div class="address_item <!--@php if (($defaultAddress['isdefault'] == 1 && count($addresslist) > 1 ) || ( count($addresslist) == 1 )) { echo 'this_address'; } @--> address_<!--@php  echo $defaultAddress['id']; @-->" onclick="setaddress(<!--@php echo $defaultAddress['id']; @-->)">
+					    <div class="addr-bd">				
+						   <strong style="float: left;"><!--@php  echo $defaultAddress['realname'];@--> 收</strong>
+						   <span class="set" onclick="setdefault(<!--@php echo $defaultAddress['id']; @-->)"><!--@php if ($defaultAddress['isdefault'] ==1 ) { echo '默认地址'; }else{ echo '设为默认'; } @--></span>
+						</div>
+						<div class="addr-hd">				
+						<!--@php  echo $defaultAddress['province'];@--> <!--@php  echo $defaultAddress['city'];@--> <!--@php  echo $defaultAddress['area'];@--> <br/><!--@php  echo $defaultAddress['address'];@--> 
+						<br/>
+						<!--@php  echo $defaultAddress['mobile'];@-->
+						</div>
+						<div  class="dosg">
+							<span class="edit" onclick="openDialog('<!--@php  echo mobile_url('address',array('op'=>'ajax','id'=>$defaultAddress['id']))@-->')">修改</span>
+							<span class="del"  onclick="addressDel(<!--@php  echo $defaultAddress['id']; @-->)">删除</span>
+						</div>
+						<div class="choose">
+						</div>
+					</div>	
+					<!--@php }} @-->
+				</div>					
+				<!--@php  }else{  @-->
+                    <div id="addresslist"></div>
+				<!--@php } @-->
+				<div class="address_add">
+					<button type="button" class="btn btn-danger" onclick="openDialog('<!--@php  echo mobile_url('address',array('op'=>'ajax'))@-->')"> + 添加收货地址</button>
+				</div>
+
+				
+			</div>
+	
+		<form id='formorder' name="input" onsubmit="return check()" method="post">
+		 <input type="hidden" name="goodstype" value="<!--@php  echo $goodstype;@-->" />
+		 <input type="hidden" id="addressval" name="address" value="<!--@php  echo $defaultAddress['id'];@-->" />
+		 <!--@php if (is_array($dispatch) && !empty($dispatch)){ @-->
+		  <div class="infobox">
+		    <h2>配送方式</h2>
+		    <ul class="payStyle">
+		 	<!--@php  foreach($dispatch as $d) { @-->
+		          <li><label><input name='dispatch' class='dispatch' dt="<!--@php  echo $d['sendtype'];@-->" onchange='oncheckboxchange("<!--@php echo $issendfree==1?0:$d['price']@-->",this);' type="radio"  value="<!--@php  echo $d['id'];@-->"  /><img src="__RESOURCE__/recouse/images/icon-wein.png" /><!--@php  echo $d['dname'];@--></label></li>
+		                        <!--@php  } @-->
+		     </ul>
+		</div>
+		<!--@php } @-->
+		 
+		<div class="infobox">
+		 <h2>支付方式</h2>
+		 <ul class="payStyle payWay" id="_<!--@php echo $d['id'];@-->">
+		 	 	<!--@php  if(is_array($payments)) { foreach($payments as $v) { @-->
+					   <li><label><input name='payment'  type="radio"  value="<!--@php echo $v['code']@-->"  /><img src="__RESOURCE__/recouse/images/icon-<!--@php echo $v['code']@-->.png" /><!--@php echo $v['name']@--></label></li>
+		       <!--@php  }  } else { echo '<li><label>请配置支付方式</label></li>'; } @-->
+		  </ul>
+		</div>
+		<div class="my-memvers">
+		  <div class="member-browse">
+		        <h2 class="member-browse-title"><span>订单详情</span></h2>
+		        <ul class="member-browse-ul confirmgoods">
+				    <li>
+		                <div class="list-head clearfix">
+		                    <div class="col col-img">图片</div>
+		                    <div class="col col-name">商品名称</div>
+		                    <div class="col col-price">单价</div>
+		                    <div class="col col-num">数量</div>
+		                    <div class="col col-price">小计</div>
+							<div class="col col-price">税费</div>
+							<div class="col col-price">合计</div>
+		                </div>
+					</li>
+		        	<!--@php  if(is_array($allgoods)) { foreach($allgoods as $item) { @-->
+		            <li class="member-browse-li">
+					     <div class="col col-img">
+					     	<span class="pro-img">
+		                        <img src="<!--@php  echo $item['small']@-->" height="40" />
+					     	</span>
+					     </div>  
+                        <div class="col col-name" style="text-align:left;">                       	
+                            <a target="_blank"  class="member-browse-summey-info"  href="<!--@php  echo mobile_url('detail',array('id'=>$item['id'],'op'=>'dish'))@-->"> 
+                            	<span class="member-browse-name" id="member-browse-name"> <!--@php  echo $item['title'];@--></span>
+                            </a>   
+                        </div>            
+		                <div class="col col-price"><span class="pro-name">¥ <!--@php  echo $item['marketprice'];@--></span></div>
+						<div class="col col-num"><span class="pro-price"><!--@php  echo $item['buynum'];@--><!--@php  if(!empty($item['unit'])) { @--><!--@php  echo $item['unit'];@--><!--@php  } @--></span></div>
+						<div class="col col-price"><span class="pro-name">¥ <!--@php  echo $item['totalprice'];@--></span></div>
+					    <div class="col col-price"><span class="pro-name">¥ <!--@php  echo $item['taxprice'];@--></span></div>
+						<div class="col col-price"><span class="pro-name">¥ <!--@php  echo $item['totalprice']+$item['taxprice'];@--></span></div>
+						
+		            </li>
+						<!--@php  } } @-->
+						<!--@php if ( !empty($change_good) ){ echo $change_good; } @-->					
+		        </ul>
+		    </div>
+		</div>
+		
+		<!--换购-->
+		<div class="my-memvers">
+		  	<div class="member-browse">
+				<h2 style="margin: 20px 0 10px; color:#333;"><!--@php if( is_array($change_goods) ){ echo ' 您的金额满399元可换购'; }else{ echo '订单金额达到399元可参与换购'; } @--></h2>
+		  		<!--换购商品列表-->
+		  		<div class="os_panel">			
+                    <ul class="os_box_list"> 
+					      <!--@php if( is_array($change_goods) ){ foreach ( $change_goods as $item ){ @-->
+                          <li>				  
+						  	<div class="item" style="position: relative;">       
+                                  <div class="img">
+                                  	<a href="<!--@php  echo mobile_url('detail', array('id' => $item['gid']))@-->" class="item" target="_blank" >
+	                                  <img data-original="<!--@php  echo $item['thumb']; @-->" class="lazy" src="images/loading.gif" >
+	                                </a>
+                                  </div>	
+								  <!--商品描述-->
+                                  <div class="txt">
+                                  	 <a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" style="width:100%;overflow:hidden;">
+                                  		<!--@php echo $item['title']@-->
+                                    </a>
+                                  </div>   
+                               	<!--数量选择-->
+								<div style="overflow: hidden;border: solid 1px gainsboro;width: 100px;margin:0 auto;height: 25px;">
+									<input type="button" value="-" class="btn reduceNum" />
+									<!--max是库存量 limit是用户限购数量-->
+									 <input type="text" id="num_<?php echo $item['id'];?>" name="number" value="1" class="text" max_buy="<?php echo $item['max_buy'];?>" data-kucun="<?php echo $item['total'];?>"/>
+									<input type="button" value="+" class="btn addNum"/>
+								</div>
+								
+								<!--价格和加入换购-->
+								<div style="position: absolute;bottom: 0;background:rgb(232,67,98);width: 100%;line-height: 40px;">
+									<span style="width: 69%;height: 40px;display: inline-block;float: left;">
+										<span  style="color: white;font-weight: 400;float:left;margin-left:5px;">
+											<span style="height: 38px;display: inline-block;line-height: 50px;">￥</span>
+											<!--现价-->
+											<span  style="font-size: 24px;color: white;font-weight: bold;margin-left: -6px;"><!--@php echo round($item['marketprice'],2) @--></span>
+										</span>
+										<!--原价-->
+										<del style="height: 38px;display: inline-block;float:left;line-height: 50px;margin-top: 4px;font-size: 14px;color: white;font-weight: 400;margin-left: 10px;line-height: 50px;">￥<!--@php echo round($item['productprice'],2)@--></del>
+									</span>
+									<span class="addredemption" onclick="addredemption('<!--@php echo $item['id']; @-->',0)"  style="color:rgb(232,67,98) ;float: left;cursor: pointer;border: solid 1px rgb(232,67,98);background: white;width:29.5%;height: 40px;display: inline-block;text-align: center;line-height: 40px;" >加入换购</span>	
+								</div>								 					  	                        	
+                            </div>
+                        </li>     
+						<!--@php }} @-->
+                   </ul>                   
+		     </div>
+		    </div>
+		</div>
+		<!--换购结束-->
+		
+		<div class="my-memvers">
+		<div class="member-browse">
+		<h2 class="member-browse-title"">备注信息</h2>
+		<ul class="member-browse-ul" style="padding:15px;">
+			<li><textarea name="remark" onchange='oninputchange("detail");' onfocus="towrite()" onblur="toleave()" style='width:100%;border:none;' type="text" value="" placeholder="亲，还有什么要交待的话，告诉我们吧！" ></textarea></li>
+		</ul></div>
+		</div>
+		
+	
+		<div class="carFoot">
+			<!--select优惠券-->
+			<!--@php  if(!empty($bonus_list)) {  @-->
+			<div class="infobox" style="background: none">
+				<select class="payStyle" id="choose-discount" name='bonus' style="float: right;width: 170px;;line-height: 23px;margin-top: 5px;" onchange="discount()">
+					<option  value="0">不使用优惠券</option>	
+					<!--@php  if(is_array($bonus_list)) { foreach($bonus_list as $bonus) { @-->
+				 	<option  value="<!--@php echo $bonus['bonus_sn']@-->" ><!--@php echo $bonus['type_name']@--></option>	
+				 	<!--@php  } } @-->
+				 </select>
+				<h2 style="display: inline-block;color: #333;font-size: 14px;font-weight: normal;float: right;margin-right: 10px;">优惠券:</h2>				
+			</div>			
+			<!--@php  } @-->
+			<div class="itemAmount clearfix">
+				<div class="settlementAmount" style="height: auto;">
+					<p><em class="price" id="goodvalue"><a>&yen;</a><span><!--@php  echo number_format($totalprice,2,'.','');@--></span></em></p>
+					<p><em class="price" id="dispatchprice"><a>&yen;</a><span><!--@php  echo number_format($dispatchprice,2,'.','');@--></span></em></p>
+					<p><em class="price" id="taxtot"><a>&yen;</a><span><!--@php  echo number_format($taxtot,2,'.','');@--></span></em></p>
+					<!--优惠金额-->
+					<p><em class="price" id="discount" style="color: #E4393C;"><a style="color: #E4393C;">-&yen;</a><span>0.00</span></em></p>
+					<p><em class="totalprice" id="totalprice" ><a style="color: #E4393C;font-weight: bold;font-size: 18px;">&yen;</a><span><!--@php  echo number_format(($totalprice+$taxtot+$dispatchprice),2,'.','');@--></span></em></p>
+				</div>
+				<div class="settlementItem clearfix" style="height: auto;">
+					<p><em>商品应付总计:</em></p>
+					<p><em>运费:</em></p>
+					<p><em>税费:</em></p>
+					<p><em>商品优惠:</em></p>
+					<p><em>应付金额:</em></p>
+				</div>
+			</div>
+			<div class="submitAndTip clearfix">
+			<button type="submit" id='submit'  name="submit" value="yes" style="display: inline-block;float: right;padding: 0 33px;text-align: center;height: 35px;line-height: 35px;color: #fff;background: #e4393c;font-size: 16px;border: none;border-radius: 5px;">提交订单</button></div>
+		</div>
+			<input type="hidden" name="token" value="<!--@php  echo $_SESSION['token'];@-->" />
+		</form>
+		</section>
+		<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		Zepto(function($){
+		   var $nav = $('.global-nav'), $btnLogo = $('.global-nav__operate-wrap');
+		   //点击箭头，显示隐藏导航
+		   $btnLogo.on('click',function(){
+		     if($btnLogo.parent().hasClass('global-nav--current')){
+		       navHide();
+		     }else{
+		       navShow();
+		     }
+		   });
+		   var navShow = function(){
+		     $nav.addClass('global-nav--current');
+		   }
+		   var navHide = function(){
+		     $nav.removeClass('global-nav--current');
+		   }
+		   
+		   $(window).on("scroll", function() {
+				if($nav.hasClass('global-nav--current')){
+					navHide();
+				}
+			});
+		})
+		function get_search_box(){
+			try{
+				document.getElementById('get_search_box').click();
+			}catch(err){
+				document.getElementById('keywordfoot').focus();
+		 	}
+		}
+		</script>
+		
+		
+		
+		
+		        <script language='javascript'>
+		    
+					function changeAddress(){
+		                location.href = '<!--@php  echo mobile_url('address', array('from'=>'confirm','returnurl'=>urlencode($returnurl)))@-->'
+		            }
+		            function check(){
+					    if ($(".dispatch:checked").attr('dt') !=1)
+					    {
+						          if($(".address_item").length<=0 ){
+		                          alert("请添加收货地址!");
+		                          return false;
+		                }  
+					    }
+		    
+		                 if($('input:radio[name="dispatch"]:checked').val()!=null)
+		                 {
+		                 	
+		                 }else
+		                	{
+		                	//	alert("请选择配送方式");
+		                	//	  return false;
+		                		}
+		          
+		                  if($('input:radio[name="payment"]:checked').val()!=null)
+		                 {
+		                 	
+		                 }else
+		                	{
+		                		alert("请选择支付方式");
+		                		  return false;
+		                		}
+		          
+		                 	return true;
+		            }
+		       
+		            function oncheckboxchange(dispatchpricestr,_this){
+		                var price = 0;
+						var sendWay = _this.value;
+		                $(".payWay").hide();
+						$("#_"+sendWay).show();
+		                $(".goodsprice").each(function(){
+		                    price+=parseFloat($(this).html());
+		                });
+		                var dispatchprice = parseFloat(dispatchpricestr);
+		                if(dispatchprice>0){
+		                   $("#totalprice").html(price + dispatchprice + " 元 (含运费"+dispatchprice + ")");    
+		                 
+		                  $("#dispatchshow").css('display','block');
+		                  
+		                  $("#dispatchshow_price").html(dispatchprice);    
+		                   $("#dispatchshow_name").html($("#dispatch").find("option:selected").attr("dispatchname"));    
+		 
+		                }
+		                else{
+		                    $("#totalprice").html(price);    
+		                       $("#dispatchshow").css('display','none');
+		                }
+		                
+		            }
+		 </script>
+		</div>
+	</div>
+		<iframe src="" class="address"></iframe>
+		<div class="iDialogLayout"></div>
+		
+		<!--@php include themePage('footer');@-->
+</body>
+<script>
+     function openDialog(url){
+	    $('.address').attr("src",url);
+        $('.address').show();
+		$('.iDialogLayout').show();
+	 }
+	 $(document).ready(function(){
+	     // 设置收货地址
+         $('.iDialogLayout').click(function(){    
+		    $('.address').hide();
+		    $('.iDialogLayout').hide();	
+		 });
+		 $('.edit').click(function(e){
+           stopEvent(e);
+		 });
+		  $('.set').click(function(e){
+           stopEvent(e);
+		 });
+		 $('.del').click(function(e){
+           stopEvent(e);
+		 });
+	 });
+	function setaddress(ids){
+	     $(".this_address").removeClass("this_address");
+		 $(".address_"+ids).addClass("this_address");
+         $("#addressval").val(ids);
+	}
+	function setdefault(ids){			
+         $.post('<!--@php  echo mobile_url("address")@-->', {'id' : ids,'op':'default_ajax'}, function(s) {		
+			   if (s.result == 1){		
+			        $(".default_address").removeClass("default_address");
+					$(".address_"+s.id+" .set").addClass("default_address");
+					$(".set").text('设为默认');
+					$(".default_address").text('默认地址');
+			   }
+         }, 'json');          
+	}	
+	//删除
+	function addressDel(addsid){		
+		if(confirm('确认要删除此收货地址吗?')){		
+			$.post("<!--@php  echo mobile_url('address', array('op' =>'remove'))@-->", {'id' : addsid,'del':'del'}, function(s) {
+				if (s.result == 1){					
+			        $(".address_"+addsid).remove();
+					if (parseInt(s.maxid) > 0){
+					     $(".default_address").removeClass("default_address");
+					     $(".address_"+s.maxid+" .set").addClass("default_address");
+						 if (parseInt($("#addressval").val()) == parseInt(addsid)){				      
+						      $(".address_"+s.maxid).addClass("this_address");
+					          $("#addressval").val(s.maxid);
+					     }
+					}else{
+                         $("#addressval").val('');
+					}
+		       }
+				//不管成功还是失败，都提示消息
+			   alert(s.message);
+
+			},'json');
+	    }
+	}
+	function stopEvent(event){ //阻止冒泡事件
+     //取消事件冒泡
+     var e=arguments.callee.caller.arguments[0]||event; //若省略此句，下面的e改为event，IE运行可以，但是其他浏览器就不兼容
+     if (e && e.stopPropagation) {
+     // this code is for Mozilla and Opera
+     e.stopPropagation();
+     } else if (window.event) {
+     // this code is for IE
+      window.event.cancelBubble = true;
+     }
+    }
+</script>
+<script>
+
+	//为了兼容不支持placeholder的浏览器
+	function towrite(){		
+		$("textarea").attr("placeholder","");
+		
+	}
+	
+	function toleave(){
+		$("textarea").attr("placeholder","亲，还有什么要交待的话，告诉我们吧！");
+	}
+	
+	//选择优惠券
+	function discount(){		
+		//如果选择不使用优惠券，则优惠金额显示0
+		if($("select[name=bonus]").val() == 0){
+			$("#discount span").text("0.00");			
+		}
+		//异步传的值是select的value
+		var bonusvalue = $("select[name=bonus]").val();
+		if ( bonusvalue == 0)
+		{
+		    $("#discount span").text(0.00);//商品优惠一栏显示值，等于选择的优惠券金额
+			delcountprice();//调用计算应付金额函数
+			return;
+		}
+		var url   = "<!--@php echo mobile_url('bonus');@-->";
+		$.post(url, {'id' : bonusvalue,'op':'get_price'}, function(s) {
+		    if (s != 0){
+			    $("#discount span").text(s);//商品优惠一栏显示值，等于选择的优惠券金额
+				delcountprice();//调用计算应付金额函数
+		    }else{
+                alert('优惠券错误');
+			}
+		});				
+	}
+	
+	//计算应付金额
+	function countprice(){	
+		var goodvalue = parseFloat($("#goodvalue span").text()); //商品价格
+		var dispatchprice = parseFloat($("#dispatchprice span").text());//运费
+		var taxtot = parseFloat($("#taxtot span").text());//税费
+		var discount = parseFloat($("#discount span").text());//商品优惠
+		var realprice = parseFloat($("#realprice").text());//换购商品的金额
+		$("#totalprice span").text(parseFloat(goodvalue + dispatchprice + taxtot - discount + realprice).toFixed(2)); //应付金额，保留两位小数	
+	}
+	
+	//点击加入换购按钮
+	var add = 0//默认没有加入换购
+	function addredemption(id,todo){
+	    var num   = parseInt($('#num_'+id).val());
+		var kucun = parseInt($("#num_"+id).data('kucun'));
+		var max   = parseInt($("#num_"+id).attr('max_buy'));
+		if(num<=0){
+			alert('数字输入有误！');
+			$('#num_'+id).val(1);
+			return;
+		}
+		if(num>max && max != 0){
+			alert('此商品最多只能换购'+max+'个');
+			$('#num_'+id).val(max);
+			return;
+		}
+		if(num > kucun){
+			alert('库存只剩下'+kucun+'个');
+			$('#num_'+id).val(kucun);
+			return;
+		}
+	    $.post('',{'ajax':'ajax','change_goods_id':id,'change_goods_num':num,'todo':todo},function(s){
+             if (s.result == 1)
+             {
+			    $(".confirmgoods").append(s.text);
+			    delcountprice();
+             }else if(s.result == 2){
+                delredemption();
+				delcountprice();
+			 }else{
+                alert(s.text);
+			 }
+		},'json');
+	}
+	//删除换购
+	function delredemption(){
+		var demption = $(".change_goods");
+		demption.remove();
+	}
+	
+	//删除换购计算金额
+	function delcountprice(){
+	  $.post('',{'ajax':'get_detail'},function(s){
+        var goodvalue = s.total; //商品价格
+		var dispatchprice = s.ships;//运费
+		var taxtot =  s.tax;//税费
+		var discount = parseFloat($("#discount span").text());//商品优惠
+		$("#goodvalue span").text(parseFloat(goodvalue).toFixed(2));
+		$("#dispatchprice span").text(parseFloat(dispatchprice).toFixed(2));
+		$("#taxtot span").text(parseFloat(taxtot).toFixed(2));
+		$("#totalprice span").text(parseFloat(goodvalue + dispatchprice + taxtot - discount).toFixed(2)); //应付金额，保留两位小数	
+	  },'json');	
+	}
+	$(".text").on("blur",function(){
+		var thisVal = parseInt($(this).val());
+		var thisMaxVal = parseInt($(this).data("kucun"));      //库存
+		var thisLimitVal = parseInt($(this).attr("max_buy"));  //最大购买 为0时不做限制
+		var reg = new RegExp("^[0-9]*$");
+		if( thisVal <= 0 ){
+			$(this).val(1);
+		}
+		if( thisLimitVal == 0 ){
+			if( thisVal > thisMaxVal ){
+				$(this).val(thisMaxVal);
+			}
+		}else{
+			if( thisLimitVal > thisMaxVal ){
+				if( thisVal > thisMaxVal ){
+					$(this).val(thisMaxVal);
+				}
+			}else{
+				if( thisVal > thisLimitVal ){
+					$(this).val(thisLimitVal);
+				}
+			}
+		}
+		if( !reg.test(thisVal)){
+			$(this).val(1);
+		}
+	})
+	$(".reduceNum").on("click",function(){
+		var numberText = $(this).siblings(".text");
+		var num =  numberText.val();
+		if( num >= 2 ){
+			num--;
+			numberText.val(num);
+		}
+	});
+	$(".addNum").on("click",function(){
+		var numberText = $(this).siblings(".text");
+		var numLimit = parseInt(numberText.attr("max_buy"));   //为0时表示不限制
+		var num = parseInt(numberText.val());
+		var max = parseInt(numberText.data("kucun"));
+		if( numLimit == 0){
+			if( num < max){
+				num++;
+				numberText.val(num);
+			}
+		}else{
+			if( numLimit > max){
+				if( num < max){
+					num++;
+					numberText.val(num);
+				}
+			}else if( numLimit <= max ){
+				if( num < numLimit){
+					num++;
+					numberText.val(num);
+				}
+			}
+		}
+	})
+	
+	//点击换购种类的样式控制
+	$(".redemption-baner li").click(function(){
+		$(this).addClass("choosetype");
+		$(this).siblings().removeClass("choosetype");
+	})
+</script>
+</html>   

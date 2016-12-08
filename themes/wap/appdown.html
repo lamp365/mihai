@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>觅海掌门人下载</title>
+<meta name='apple-itunes-app' content='app-id=1166873925'>
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+</head>
+<style type="text/css">
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .viewport{
+        position: relative;
+        max-width: 1080px;
+        margin: 0 auto;
+    }
+    .viewport img{
+        width: 100%;
+        display: block;
+    }
+    .Ios-load{
+        position: absolute;
+        top: 57%;
+        width: 48%;
+        height: 16%;
+        left: 27%;
+    }
+    .Android-load{
+        position: absolute;
+        top: 77%;
+        width: 48%;
+        height: 16%;
+        left: 27%;
+    }
+</style>
+<body>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/download_01.jpg">
+        <a href="<!--@php if(!empty($app_ios)){ echo $app_ios['url'];}else{ echo 'index.php';}@-->" class="Ios-load" id="openIosApp"></a>
+        <a href="<!--@php if(!empty($app_anzhuo)){ echo $app_anzhuo['url'];}else{ echo 'index.php';}@-->" class="Android-load" id="openAndroidApp"></a>
+    </div>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/download_02.jpg">
+    </div>
+
+</body>
+</html>
+<script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    var iPhoneUrl = "<!--@php echo $app_ios['url'];@-->";
+    var iPhoneAgreement = "mihaiweb://";
+    var AndroidUrl = "<!--@php echo $app_anzhuo['url'];@-->";
+    var AndroidAgreement ="mihai://hinrc.com";
+    var mark;
+
+    document.getElementById("openIosApp").onclick = function(){
+         //微信客户端
+        if( ua.match(/MicroMessenger/i) == 'micromessenger'){
+            alert("请在浏览器中打开");
+        }
+        if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+            window.location.href = iPhoneAgreement;
+            /*mark = document.hidden||document.webkitHidden;
+            window.setTimeout(function(){
+                if( mark == false ){
+                    window.location.href = iPhoneUrl;
+                }
+            },2000);*/
+        }
+    }
+    document.getElementById("openAndroidApp").onclick = function(){
+         //微信客户端
+        if( ua.match(/MicroMessenger/i) == 'micromessenger'){
+            alert("请在浏览器中打开");
+        }
+        if(navigator.userAgent.match(/android/i)){
+            window.location.href = AndroidAgreement;
+            /*mark = document.hidden||document.webkitHidden;
+            window.setTimeout(function(){
+                if( mark == false ){
+                    window.location.href = AndroidUrl;
+                }
+            },2000);*/
+        }
+    }
+   
+    
+    //IOS
+/*    if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+        window.location.href = iPhoneAgreement;
+        mark = document.hidden||document.webkitHidden;
+        window.setTimeout(function(){
+            if( mark == false ){
+                window.location.href = iPhoneUrl;
+            }
+        },2000);
+    }*/
+    //Android
+/*    if(navigator.userAgent.match(/android/i)){
+        window.location.href = AndroidAgreement;
+        mark = document.hidden||document.webkitHidden;
+        window.setTimeout(function(){
+            if( mark == false ){
+                window.location.href = AndroidUrl;
+            }
+        },2000);
+    }*/
+</script>

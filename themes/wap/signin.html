@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=0.5,target-densitydpi=high-dpi;user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no">
+<title>食堂订餐</title>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
+<style type="text/css">
+body{
+	background-image:url(__RESOURCE__/recouse/images/sign.png);	
+	}
+.main{
+	width: 640px;
+	margin: 0 auto;
+	background: url(__RESOURCE__/recouse/images/sign_bg.png) 0px 30px;
+	background-repeat: no-repeat;
+	height: 1160px;
+}
+.main-top{ margin:0 auto; width:445px;}
+.item-one{
+	margin-top: 30px;
+	width: 80%;
+	margin: 30px auto 0 auto;
+}
+.item-one img{width:200px; height:200px; float:left;}
+.item-one div{
+	font-size: 40px;
+	float: left;
+	margin-left: 50px;
+	font-style: italic;
+	margin-top: 10px;
+	line-height: 25px;
+	font-weight: bold;
+}
+
+.item-two{
+	margin-top: 30px;
+	width: 80%;
+	margin: 30px auto 0 auto;
+}
+.item-two img{
+	width: 250px;
+	height: 250px;
+	float: left;
+	margin-left: 50px;
+}
+.item-two div{
+	font-size: 40px;
+	float: left;
+	font-style: italic;
+	margin-top: 10px;
+	line-height: 25px;
+	font-weight: bold;
+}
+
+.item-three{
+	margin-top: 30px;
+	width: 80%;
+	margin: 20px auto 0 auto;
+	clear: both;
+}
+.item-three img{width:200px; height:200px; float:left;}
+.item-three div{
+	font-size: 40px;
+	float: left;
+	margin-left: 50px;
+	font-style: italic;
+	margin-top: 10px;
+	line-height: 25px;
+	font-weight: bold;
+}
+.clear{ clear:both;height:20px;}
+.time{
+	background: url(__RESOURCE__/recouse/images/sign-time.png) 0 0px;
+	clear: both;
+	width: 231px;
+	height: 55px;
+	margin: 0 auto;
+	font-size: 30px;
+	padding-top: 20px;
+	padding-left: 70px;
+	background-repeat: no-repeat;
+}
+</style>
+
+
+</head>
+
+<body style="min-width: 320px;max-width: 640px;margin:0 auto;">
+<div class="main">
+	<div class="main-top"><img src="__RESOURCE__/recouse/images/sign_top.png" width="445" height="101"  /></div>
+	
+	<div class="time"><!--@php echo date('Y-m-d');   @--></div>
+	
+	
+	<div class="item-one"> <a href="javascript:;" onclick="checkin('1');"><img src="__RESOURCE__/recouse/images/sign_zao.png" width="200" height="200"  /></a> 
+        <div >
+          <p>请于7:30前</p>
+          <p>点击签到</p>
+        </div> 
+       
+    </div>
+ <div class="clear"></div>
+	<div class="item-two">
+      <div>
+          <p>请于9:30前</p>
+          <p>点击签到</p>
+        </div> 
+     <a href="javascript:;" onclick="checkin('2');"><img src="__RESOURCE__/recouse/images/sign_zhong.png" width="333" height="333"  /></a> 
+      
+      <div class="clear"></div>
+    </div>
+     <div class="clear"></div>
+<div class="item-three"> <a href="javascript:;" onclick="checkin('3');"><img src="__RESOURCE__/recouse/images/sign_wang.png" width="246" height="246"  /></a> 
+        <div >
+          <p>请于15:30前</p>
+          <p>点击签到</p>
+        </div> 
+       
+    </div>
+    
+     <div class="clear"></div>
+     
+     <div style="width: 100%; margin: 0 auto; text-align: center; font-size:1.5em"><a href="<!--@php  echo mobile_url('signinlist')@-->">查看签到</a></div>
+     
+</div>
+<script type="text/javascript">
+/* var useragent = navigator.userAgent;
+if (useragent.match(/MicroMessenger/i) != 'MicroMessenger') {
+    // 这里警告框会阻塞当前页面继续加载
+    alert('已禁止本次访问：您必须用微信打开本页面！');
+    // 以下代码是用javascript强行关闭当前页面
+    var opened = window.open('about:blank', '_self');
+    opened.opener = null; */
+
+function checkin(section)
+{
+	 var url = '<!--@php  echo mobile_url('signin',array('op'=>'checkin'),true);@-->' +"&section=" +section;
+	    $.getJSON(url, function(s){
+			if(s.result=='nologin'){
+				alert(s.message);
+				location.href='<!--@php  echo mobile_url('login');@-->';
+			}
+			
+	    	if(s.result==true){
+			       alert(s.message);
+			    }else{			       
+			    	 alert(s.message);						          
+			   }
+	  	});	
+}
+
+</script>
+</body>
+</html>

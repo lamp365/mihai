@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><!--@php echo $cfg['shop_title'] @--></title>
+<meta charset="utf-8" />
+	<title>商品列表</title>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<link href="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css" />
+	<link href="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/css/search_new.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/css/xmapp.css"/>
+	<link href="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<link href="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/css/bjlist.css"       rel="stylesheet" type="text/css" />
+	<script type="text/javascript"	src="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript"	src="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+    <script type="text/javascript"   src="http://m.fjmsl.com/themes/default/__RESOURCE__/recouse/js/fbi.js"></script>
+<style  type="text/css">
+body{ background-color:#0cad84;margin-top:0;}
+.main{
+	width: 100%;
+	margin: 0 auto;
+	background-color: #77dfe6;
+	padding-bottom: 20px;
+	}	
+.top{width:100%;}
+.title{
+	width: 100%;
+	text-align: center
+}
+.top{
+	width: 100%;
+}
+.title img{ margin-left:auto; margin-right:auto;}
+
+.input{
+	width: 98%;
+	height: 74px;
+	//background-image: url(__RESOURCE__/recouse/images/ttt.png);
+	margin: 0 auto;
+	font-size:18px;
+}
+
+.input1{
+	width: 98%;
+	height: 118px;
+	//background-image: url(__RESOURCE__/recouse/images/tt2.png);
+	margin: 0 auto;
+}
+.input1 textarea{
+	border: none;
+	height: 80px;
+	margin-top: 15px;
+	width: 98%;
+	background-color: #f6ce55;
+}
+
+.input input{
+	border: none;
+	height: 40px;
+	margin-top: 15px;
+	width: 95%;
+	background-color: #f6ce55;
+	font-size:14px;
+}
+.mt10{ margin-top:5px; margin-bottom:5px;}
+.input4{
+	text-align: left;
+	width: 90%;
+	margin: 0 auto;
+	position: relative;
+}
+.input-file{
+		position: absolute;
+  			opacity:0;
+            filter:alpha(opacity=0);
+            height: 95px;
+            width: 100px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;}
+</style>
+<body style="min-width: 320px;max-width: 100%;margin:0 auto;">
+<div class="main">
+<div class="top">
+<a href="/"><img src="__RESOURCE__/recouse/images/jiaxiangcai_01.png" width="100%" alt=""></a>
+</div>
+<form class="form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);" enctype="multipart/form-data">	
+<div class="title"><img src="__RESOURCE__/recouse/images/jiaxiangcai_03.png" width="100%" alt=""  ></div>
+<div class="title"><img src="__RESOURCE__/recouse/images/jiaxiangcai_05.png" width="100%" alt=""></div>
+<div class="title">
+<div class="input">
+	<input type="text" id="title" name="title"  value="" class="form-control" placeholder="输入菜品名称"  style="font-size:18px;color:#000"/>
+    </div>
+</div>
+<div class="title"><img src="__RESOURCE__/recouse/images/jiaxiangcai_07.png" width="100%"  alt=""></div>
+<div class="title">
+<div class="input">
+	<input type="text" id="address" name="address"  value="" class="form-control" placeholder="输入家乡地址,如三明沙县，南平建瓯等" style="font-size:18px;color:#000"/>
+    </div>
+</div>
+<div class="title"><img src="__RESOURCE__/recouse/images/jiaxiangcai_09.png" width="100%"  alt=""></div>
+<div class="title">
+<div class="input1">
+	<textarea class="form-control " placeholder="请填写你的推荐理由"   row="8" name="descript" style="width:94%;font-size:18px;color:#000"></textarea>
+    </div>
+</div>
+<div class="title mt10"><img src="__RESOURCE__/recouse/images/jiaxiangcai_11.png" width="100%" alt=""></div>
+<div class="input4"  style="width:95%">
+<div style="float:left"  style="width:20%">  
+    <img src="__RESOURCE__/recouse/images/btnadd.png"   style="width:50%"  />
+    <input type="file"  class="input-file" name="thumb"  accept="image/*" onchange="handleFiles(this)">
+</div>
+<div id="fileList" style="width:50%;float:left;margin-left:0;text-align:left"></div>
+</div>
+<div  style="clear:both"></div>
+<div class="title mt10">
+	<input type="image" src="__RESOURCE__/recouse/images/btnsub_14.png"  width="90%"    />    
+</div>
+</form>
+<script type="text/javascript">
+
+	function checkInfo(form) {
+	
+		var mobile = form['title'].value;		
+		var address = form['address'].value;		
+		if (!mobile) {
+			alert('请输入菜品名称！');
+			return false;
+		}	
+		if (!address) {
+			alert('请输入您家乡的地址！');
+			return false;
+		}
+		
+		if (!form['descript'].value) {
+			alert('请输入您推荐的理由');
+			return false;
+		}		
+	}
+	
+	
+	
+	fileList = document.getElementById("fileList");
+	function handleFiles(obj) {
+
+		var files = obj.files,
+			img = new Image();
+		if(window.URL){
+			//File API			 
+		      img.src = window.URL.createObjectURL(files[0]); //创建一个object URL，并不是你的本地路径
+		      img.width = 50;
+		      img.onload = function(e) {
+		         window.URL.revokeObjectURL(this.src); //图片加载后，释放object URL
+		      }
+		      fileList.appendChild(img);
+		}else if(window.FileReader){
+			//opera不支持createObjectURL/revokeObjectURL方法。我们用FileReader对象来处理
+			var reader = new FileReader();
+			reader.readAsDataURL(files[0]);
+			reader.onload = function(e){
+				//alert(files[0].name + "," +e.total + " bytes");
+				img.src = this.result;
+				img.width = 50;
+				//img.style.margin-left="5px";
+				fileList.appendChild(img);
+			}
+		}else{
+			//ie
+			obj.select();
+			obj.blur();
+			var nfile = document.selection.createRange().text;
+			document.selection.empty();
+			img.src = nfile;
+			img.width = 50;
+			//img.style.margin-left="5px";
+			img.onload=function(){
+		      //alert(nfile+","+img.fileSize + " bytes");
+		    }
+			fileList.appendChild(img);
+		}
+	}
+</script>
+
+</div>
+</body>
+</html>
