@@ -198,6 +198,7 @@ if ($operation == 'post') {
             'lists' => intval($_GP['lists']),
 			'subtitle' => isset($_GP['subtitle'])?$_GP['subtitle']:'',
 			'unit' => isset($_GP['unit'])?$_GP['unit']:'',
+			'coefficient'=> isset($_GP['coefficient'])?$_GP['coefficient']:'0.0',
             'origin' => isset($_GP['origin'])?$_GP['origin']:'',
             'features' => isset($_GP['features'])?$_GP['features']:'',
             'status' => $_GP['status'],

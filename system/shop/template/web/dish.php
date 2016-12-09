@@ -186,7 +186,10 @@
 					  		<option>普通会员</option>
 					  		<option>至尊会员</option>
 					  </select>
-					  <input type="text" name="vip_price" class="form-control vip_price" value="" placeholder="请输入价格"/>
+					  <div class="input-group">
+						  <span class="input-group-addon">$</span>
+						  <input type="text" name="vip_price" class="form-control vip_price" value="" placeholder="请输入价格"/>
+					  </div>
 				</div>
 				<div class="col-sm-6">
 					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
@@ -587,7 +590,7 @@ $(function(){
 	$("body").on("blur",".vip_price",function(){
 		var regEx = /^(([1-9]\d*)|\d)(\.\d{1,2})?$/;
 		if( !regEx.test($(this).val()) ){
-			alert("请输入正确的价格");
+			//alert("请输入正确的价格");
 		}
 	})
 });

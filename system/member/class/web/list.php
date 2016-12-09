@@ -18,7 +18,7 @@
       {
       	
       	 $condition=$condition.' and mobile like :mobile';
-      	 $conditiondata[':mobile']='%'.trim($_GP['mobile']).'%';
+      	 $conditiondata[':mobile']='%'.$_GP['mobile'].'%';
       }
           if(!empty($_GP['weixinname']))
       {

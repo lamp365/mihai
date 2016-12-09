@@ -384,17 +384,14 @@ table a{
     position: relative;
 }
 .total-price{
-	color: #e73333;
-    font-size: 18px;
-    font-weight: 700;
     display: inline-block;
     min-width: 100px;
-    text-align: left;
 }
 .total-area p{
 	text-align: right;
 }
 .submit{
+	float: right;
     text-align: center;
     width: 80px;
     height: 30px;
@@ -407,7 +404,7 @@ table a{
     cursor: pointer;
     outline: none;
     margin-top: 10px;
-    margin-right: 11px;
+
 }
 .address-area{
 	display: none;
@@ -418,7 +415,7 @@ table a{
  	width: 1008px;
     overflow: hidden;
     border-top: 1px dashed #afafaf;
-    margin-top: 50px;
+    margin-top: 20px;
     padding-top: 20px;
  }
  #addresslist .this_address {
@@ -484,7 +481,7 @@ table a{
     border: 1px solid #eee;
     line-height: 18px;
     font-size: 14px;
-    width: 280px;
+    width: 275px;
     height: 105px;
     padding: 10px 20px;
 }
@@ -600,7 +597,7 @@ select {
   -moz-appearance:none;
   -webkit-appearance:none;
   -ms-appearance:none;
-  background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+  background: url("../images/arrow.png") no-repeat scroll right center transparent;
   background:#fff\0;
   padding-right: 14px;
 }
@@ -721,4 +718,40 @@ border-top: 1px solid #d2d2d2;
 .ajax-load{
 	height: 200px;
     line-height: 200px;
+}
+.shipping,.col-total,.confirm-total-price{color: #C60A20;}
+.freight-area{
+	overflow: auto;
+    margin-top: 30px;
+}
+.freight-area h3{
+	border-bottom:1px dotted #ccc;
+	padding-bottom: 10px;
+}
+.freight-area label{
+    margin-right: 15px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.freight-area input[type='radio']{
+	width: 16px;
+    height: 16px;
+    margin-top: -2px;
+    margin-right:5px;
+}
+.dispatchprice span{
+	display: inline-block;
+	width: 100px;
+	text-align: right;
+}
+.pay-total-price span{
+	display: inline-block;
+	width: 100px;
+	text-align: right;
+	color: #e73333;
+/*    font-size: 18px;
+    font-weight: 700;*/
+}
+.dispatchprice .userself{
+	text-decoration: line-through;
 }

@@ -23,10 +23,16 @@
 												 <input type="text" name="Supplier"  value="<?php  echo $item['Supplier'];?>" style="width:320px;" /> 
 										</div>
 		                      </div>
-							   <div class="form-group">
+							  <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 单件重量（KG）：</label>
-										<div class="col-sm-9">
+									    <div class="col-sm-9">
 												 <input type="text" name="weight"  value="<?php  echo $item['weight'];?>" /> 
+										</div>
+		                      </div>
+							  <div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > 运费系数：</label>
+										<div class="col-sm-9">
+												 <input type="text" name="coefficient"  value="<?php  echo $item['coefficient'];?>" /> 
 										</div>
 		                      </div>
 							  <div class="form-group">

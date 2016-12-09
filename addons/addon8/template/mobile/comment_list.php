@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
     <title>Document</title>
     <link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/' . 'wap/'. '/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 </head>
-
 <style>
+	
 	*{
 		margin: 0;
 		padding: 0;
@@ -29,11 +33,13 @@
 	.health-men{
 		width: 90%;
 		margin: 0 5%;
+		overflow: hidden;
 	}
 	.health-men .info{
 		float: left;
 		width: 75%;
 		padding:20px;
+		box-sizing: border-box;
 	}
 	.health-men .info img{
 		width: 60px;

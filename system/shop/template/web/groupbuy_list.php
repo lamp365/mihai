@@ -42,7 +42,7 @@
                                     <div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><?php echo $goods['title']; ?></a></div>
                                     <div>
                                         <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
-                                        <?php if($goods['draw'] == 1) { ?>
+                                        <?php if($goods['draw'] == 1 || $item['isprize'] != 0) { ?>
                                         &nbsp;&nbsp; <span class="btn btn-xs btn-info">抽奖团</span>
                                         <?php }else{ ?>
                                         &nbsp;&nbsp; <span class="btn btn-xs btn-info">团购商品</span>
@@ -75,7 +75,16 @@
             <td align="center" valign="middle" style="vertical-align: middle;">
                 <div>
                     <?php  if($items['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-                    <?php  if($items['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
+                    <!--已经付钱的，团购中 或者团购未开奖 这叫做已支付，因为不在待发货中展示，其他的叫待发货-->
+                    <?php  if($items['status'] == 1) {
+                        if(checkGroupBuyCanSend($items)){
+                            echo '<span class="label label-danger" >待发货</span>';
+                        }else{
+                            echo '<span class="label label-danger" >已支付</span>';
+                        }
+
+                    }
+                    ?>
                     <?php  if($items['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
                     <?php  if($items['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
                     <?php  if($items['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>
@@ -93,7 +102,7 @@
             <td align="center" valign="middle" style="vertical-align: middle;color: red;font-weight: bolder">
                 <?php echo  round(($items['price']+$items['dispatchprice']+$items['taxprice'])*$cur_num,2)?>元
             </td>
-            <td align="center" valign="middle" style="vertical-align: middle;"><a type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $items['id']))?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo !empty($items['retag'])?$items['retag']:'没有标注信息'; ?>"><img src="images/btag<?php echo $items['tag']; ?>.png" /></a></td>
+            <td align="center" valign="middle" style="vertical-align: middle;"><a type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $items['id']))?>" data-toggle="tooltip" data-placement="bottom" title="<?php if(!empty($items['retag'])){ $retag_json = json_decode($items['retag'],true); echo $retag_json['beizhu'];}else{ echo '没有标注信息'; } ?>"><img src="images/btag<?php echo $items['tag']; ?>.png" /></a></td>
         </tr>
     <?php  } } ?>
     </tbody>

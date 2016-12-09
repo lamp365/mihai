@@ -243,6 +243,9 @@
 	
 	$(document).ready(function(){
 		notheame();
+		$(".btn-info").on("click",function(){
+			$("#mobileTheme").removeAttr("disabled");
+		})
 	})
 </script>
 

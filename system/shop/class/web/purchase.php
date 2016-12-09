@@ -192,7 +192,14 @@ if ($operation == 'display') {
 	$order['goods'] = $goods;
 
 	if (checksubmit('reset')) { //确认标记
-		mysqld_update('shop_order', array('tag' => $_GP['tag'], 'retag' => $_GP['retag']), array('id' => $orderid));
+		$retag = '';
+		if(!empty($order['retag'])){
+			$retag = json_decode($order['retag'],true);
+		}
+		$retag['beizhu'] = $_GP['retag'];
+		$json_retag = json_encode($retag);
+
+		mysqld_update('shop_order', array('tag' => $_GP['tag'], 'retag' => $json_retag), array('id' => $orderid));
 		message('订单操作成功！', refresh(), 'success');
 	}
 

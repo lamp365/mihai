@@ -45,6 +45,7 @@
                 'city' => $_GP['city'],
                 'area' => $_GP['area'],
                 'address' => $_GP['address'],
+                'province' => $_GP['province'],
             );
 			$objValidator = new Validator();
             if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['address']) || empty($_GP['idname']) || empty($_GP['idnumber'])) {

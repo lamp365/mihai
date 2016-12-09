@@ -68,8 +68,7 @@
 	<th class="text-center" >货号</th>
 	<th class="text-center" >价格</th>
 	<th class="text-center" >库存</th>
-    <th class="text-center" >商品属性</th>
-    
+    <th class="text-center" >商品属性</th>  
     <th class="text-center" >状态</th>
     <th class="text-center" >操作</th>
   </tr>
@@ -89,18 +88,8 @@
 											<td style="text-align:center;"><?php  echo $item['total'];?></td>
 											
                                         <td style="text-align:center;">
-                                     <?php  if($item['istime']==1) { ?>  <label data='<?php  echo $item['istime'];?>' class='label label-info' >促销</label><?php  } ?>
-                                        <?php  if($item['issendfree']==1) { ?> <label data='<?php  echo $item['issendfree'];?>' class='label label-info'>包邮</label><?php  } ?>
-                                       <?php  if($item['isrecommand']==1) { ?> <label data='<?php  echo $item['isrecommand'];?>' class='label label-info'>首页推荐</label><?php  } ?>
-					                                        <?php  if($item['isnew']==1) { ?> <label data='<?php  echo $item['isnew'];?>' class='label label-info'>新品</label><?php  } ?>
-                                       <?php  if($item['isfirst']==1) { ?> <label data='<?php  echo $item['isfirst'];?>' class='label label-info'>首发</label><?php  } ?>
-                                         <?php  if($item['ishot']==1) { ?> <label data='<?php  echo $item['ishot'];?>' class='label label-info'>热卖</label><?php  } ?>
-                                      <?php  if($item['isjingping']==1) { ?> <label data='<?php  echo $item['isjingping'];?>' class='label label-info'>精品</label><?php  } ?>
-                                     
-                                   </td>
-					
-					
-					
+                                             重量:<?php echo $item['weight']; ?> 系数:<?php echo $item['coefficient']; ?> <?php if ( !empty( $item['Supplier'] ) ){ echo '<br/>组合产品'; } ?>
+                                       </td>
 					<td style="text-align:center;"><?php  if($item['status']) { ?><span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-success" style="cursor:pointer;">上架中</span><?php  } else { ?><span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-danger" style="cursor:pointer;">已下架</span><?php  } ?><!--&nbsp;<span class="label label-info"><?php  if($item['type'] == 1) { ?>实体商品<?php  } else { ?>虚拟商品<?php  } ?></span>--></td>
 					<td style="text-align:center;">
 						<a class="btn btn-xs btn-info" target="_blank" href="<?php echo WEBSITE_ROOT.mobile_url('detail',array('name'=>'shopwap','id'=>$item['id']));?>"><i class="icon-eye-open"></i>&nbsp;查&nbsp;看&nbsp;</a>&nbsp;&nbsp;

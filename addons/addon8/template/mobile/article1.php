@@ -152,42 +152,58 @@
 	/*下载app的图片*/
 	#downapp{
 		position:fixed;
-		z-index: 100;
-		margin-top: -160px;
+		top: 50%;
+		left: 50%;
+		margin: -160px 0 0 -160px;
+		z-index: 2;		
 		display: none;
-		width: 100%;
-		height: 300px;
-		background: url(<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp.png) center center no-repeat;
-		background-size: 100% 300px;
+		width: 320px;	
+		height: 304px;								
 	}
-	#downapp img{
+	#downapp .bg{
+		position: absolute;
+		width: 100%;
+		box-shadow:0 0 10px #000;
+	}
+	#downapp .btn{
 		width: 100px;
 		position: absolute;
-		bottom: 10%;
+		bottom: 11%;
 		right: 10%;
 	}
 	#downapp span{
 		position: absolute;
-		bottom: 14%;
+		bottom: 15%;
 		left: 15%;
 		color: rgb(252,100,150);
 		font-weight: bold;
+		z-index: 3;
 	}
 	#downapp p{
 		position: absolute;
-		bottom: 14%;
+		bottom: 15%;
 		right: 15%;
 		color: #fff;
 		font-weight: bold;
 	}
+	html,body{
+		width: 100%;
+		height: 100%;
+	}
 </style>
 </head>
 <body>
+	<!--遮罩层-->
+	<div style="width: 100%;height: 100%;position:fixed;background: #000;opacity: 0.5;z-index: 1;display: none;" class="iframe"></div>
+	<!--弹出框-->			
 	<div id="downapp">
-		<span>下次下载</span>		
-		<img  src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp-btn2x.png" />
+		<span>下次下载</span>	
+		<!--背景-->
+		<img class="bg" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp.png" /> 
+		<!--立即下载--> 	
+		<img  class="btn" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp-btn2x.png" />
 		<p>立即下载</p>
-	</div>		
+	</div>	
 	
 	<!--头部-->
 	<?php if($notApp){ ?>
@@ -199,6 +215,7 @@
 			<?php echo $article['title'];?>
 	    </div>        
 	</div>
+	<?php }  ?>
 
 	<!--内容-->
 	<div class="health-content">
@@ -211,14 +228,14 @@
 					<p class="name">
 						<span><?php echo $author['realname'];?></span>
 						<!--发布时间-->
-						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$author['createtime']);?></span>
+						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$article['createtime']);?></span>
 					</p>
 				<?php }else{  ?>
 					<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />
 					<p class="name">
 						<span>觅海小妹</span>
 						<!--发布时间-->
-						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于2016-12-2</span>
+						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$article['createtime']);?></span>
 					</p>
 				<?php } ?>
 			</div>
@@ -227,7 +244,7 @@
 				<span class="guanzhu <?php if($notApp){ echo " wap_guanzhu";}else{ echo " app_guanzhu";}?>">+关注</span>
 			</div>
 		</div>
-		<?php }  ?>
+
 		<!--文章大图-->
 		<?php if(!empty($article['thumb'])){ ?>
 		<img style="width: 100%;display: block;" src="<?php echo $article['thumb'];?>" />
@@ -247,6 +264,8 @@
         	<div style="padding:5% 5% 0 5%;">
         		  <img style="width: 90%;" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/comment@3x.png" />
         	</div>
+
+			<?php if(!empty($article_comment)){ ?>
 			<?php foreach($article_comment as $comment){   $member_comment = member_get($comment['openid']); ?>
         	<div class="health-men" style="margin-left: -10px;">
 				<!--头像-->
@@ -255,7 +274,7 @@
 					<p class="name">
 						<span><?php echo $member_comment['realname'];?></span>
 						<!--发布时间-->
-						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo $comment['createtime'];?></p>
+						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$comment['createtime']);?></p>
 					</p>
 					<!--评论内容-->
 					<div style="clear: both;margin-left: 70px;"><?php echo $comment['comment'];?></div>
@@ -269,10 +288,12 @@
 					查看更多评论
 				</a>
 			</div>
+			<?php } ?>
 
 		</div>		
-		<div style="height: 50px;"></div>
+
 		<?php if($notApp){ ?>
+		<div style="height: 120px;"></div>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 53px;left: 0;" class="heal-foot">
 			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
@@ -298,7 +319,7 @@
 <script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>
 <script>
 	window.onload = function(){
-		appWakeUp("<?php echo create_url('mobile', array('name'=>'addon8','do'=>'article','op'=>'get_appversion'));?>",1);
+		appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
 	}
 </script>
 <?php } ?>
@@ -335,21 +356,22 @@
 	$("#put_comment").focus(function(){
 		//并且不让输入，不一定要用focus事件，反正wap不给评论，一评论就提示,引导下载
 		$("#downapp").show();
+		$(".iframe").show();
 	})
 </script>
 <script>	
-	var Top = $(window).height() * 0.5;			
-	$("#downapp").css("top",Top);
 	
 	//点击下次下载，图片消失
 	$("#downapp span").on("click",function(){
 		$("#downapp").hide();
+		$(".iframe").hide();
 	})
 	
 	//点击立即下载，调用下载APP的方法
 	$("#downapp p").on("click",function(){
 		$("#downapp").hide();
-		appDownLoad("<?php echo create_url('mobile', array('name'=>'addon8','do'=>'article','op'=>'get_appversion'));?>");
+		$(".iframe").hide();
+		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
 	})
 	
 	//关注的点击事件，wap
@@ -358,7 +380,7 @@
 	})
 	//关注的点击事件，app
 	$(".app_guanzhu").on("click",function(){
-		
+		//这里需要正源写 提交给app操作
 	})
 </script>	
 <?php if($notApp){ ?>

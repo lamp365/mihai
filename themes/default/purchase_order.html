@@ -107,7 +107,7 @@
 							</div>
 						</td>
 						<td class='col-price'>
-							<span class='price'>￥<!--@php echo $dish_list_value['vip_price']; @--></span>
+							<span class='price'>$<!--@php echo $dish_list_value['vip_price']; @--></span>
 						</td>
 						<td class='col-num' cartid="<!--@php echo $dish_list_value['dish_id']; @-->">
 							<div class='input-group'>
@@ -135,19 +135,28 @@
 				<!--@php echo $pager; @-->
 			</div>
 			<div class="tab-div-select" style="display: none;">
+				<!--汇率隐藏域-->
+				<input type="hidden" name="exchange_rate" class="exchange_rate" value="10">
 				<div class="add-list-area">
 					<p class="select-p">已选商品详情</p>
 					<table class="product-list add-list" cellspacing="0" cellpadding="0" border="0">
 						<tr class="product-list-tr">
-							<th width="110px">图片</th>
-							<th width="400px">商品名称</th>
-							<th width="110px">单价</th>
-							<th width="106px">数量</th>
-							<th width="106px">合计</th>
-							<th width="106px">操作</th>
+							<th width="110">图片</th>
+							<th width="400">商品名称</th>
+							<th width="110">单价</th>
+							<th width="106">数量</th>
+							<th width="70">运费</th>
+							<th width="106">合计</th>
+							<th width="106">操作</th>
 						</tr>
 					</table>
-
+					<div class="freight-area">
+						<h3>配送方式</h3>
+						<label><input type="radio" name="freight" value="0" checked>觅海供应链配送</label>
+						<label><input type="radio" name="freight" value="1">买家承运</label>
+						<!--运费隐藏域-->
+						<input type="hidden" name="" class="isFreightChecked" value="0">
+					</div>
 						<!--@php  if(!empty($addresslist)) {  @-->
 						<div id="addresslist">
 						    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
@@ -193,10 +202,11 @@
 							</div>
 						</label>
 					</div>
-					<div class="total-area" style="border:none">
-						<p>商品应付金额总计：<span class="total-price"></span>
-							<button class="submit next-step" type="button" >生成订单</button>
-						</p>
+					<div class="total-area" style="border:none;overflow: hidden;color: #333;font-size: 14px;">
+						<p>商品应付总计：<span class="total-price"></span></p>
+						<p class="dispatchprice">运费：<span></span></p>
+						<p class="pay-total-price">应付金额：<span></span></p>
+						<button class="submit next-step" type="button" >生成订单</button>
 					</div>
 				</div>
 				<div class="add-list-area-tip">
@@ -468,6 +478,8 @@ jQuery(function(){
 		var address_id = $(".this_address").attr("address_id");
 		var confirm_address_html;
 		var confirm_html = "";
+		var freight = $(".freight-area input[type='radio']:checked").val();
+
 		if($(".this_address").length==0){
 			alert("请选择收货地址!");
 			return false;
@@ -486,7 +498,7 @@ jQuery(function(){
 					$(".confirm-order-address").append(confirm_address_html);
 					$.each(data.message.order_goods,function(n,value){
 						confirm_html += "<tr><td class='col-img'><img src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+
-						    "<td class='col-price'><span class='price'>"+value.price+"</span></td><td class='col-num'>"+value.num+"</td><td class=''>"+value.price*value.num+"</td></tr>";
+						    "<td class='col-price'><span class='price'>$"+value.price+"</span></td><td class='col-num'>"+value.num+"</td><td class='confirm-total-price'>$"+value.price*value.num+"</td></tr>";
 					});
 					$(".confirm-table").append(confirm_html);
 				}else{
@@ -530,27 +542,30 @@ jQuery(function(){
             }
             var price = parseFloat( $("#singleprice_"+id).html() ) * num;
             $("#goodsprice_" + id).html(price.toFixed(2));
-            $(this).parents(".col-num").siblings(".col-total").text(parseFloat($(this).attr("price"))*num);
+            $(this).parents(".col-num").siblings(".col-total").find("span").text(parseFloat($(this).attr("price"))*num);
 			totalPrice();
             updateCart(id,num);
         }else{
             $(this).val("1");
             var price = parseFloat( $("#singleprice_"+id).html() ) * 1;
             $("#goodsprice_" + id).html(price.toFixed(2));
-            $(this).parents(".col-num").siblings(".col-total").text(parseFloat($(this).attr("price"))*1);
+            $(this).parents(".col-num").siblings(".col-total").find("span").text(parseFloat($(this).attr("price"))*1);
 			totalPrice();
             updateCart(id,1);
         }
 
     });
- 
+
+    $(".freight-area label").on("click",function(){
+    	totalPrice();
+    });
 }());
 
 
 function getGoods(){
 	var psize = $(".pagenum select").val();
 	var get_goods_html = "";
-	$(".add-list").html('<tr class="product-list-tr"><th width="110px">图片</th><th width="400px">商品名称</th><th width="110px">单价</th><th width="106px">数量</th><th width="106px">合计</th><th width="106px">操作</th></tr>');
+	$(".add-list").html('<tr class="product-list-tr"><th width="110px">图片</th><th width="400px">商品名称</th><th width="110px">单价</th><th width="106px">数量</th><th width="70px">运费</th><th width="70px">合计</th><th width="106px">操作</th></tr>');
 	$.post("",{page:"1",type:"get_goods",psize:psize},function(data){
 		$(".tab .selected span").text(data.max_purchase);
 		//0成功
@@ -563,10 +578,10 @@ function getGoods(){
 		}
 		if( data.result == 0){
 			$.each(data.purchase,function(n,value){
-			get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'>￥"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
+			get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'>$"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
 				  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
 				  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
-				  "<td class='col-total'>"+value.price*value.num+"</td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";
+				  "<td class='shippingPrice'>$<span>2</span></td><td class='col-total'>$<span>"+value.price*value.num+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";
 				  
 			});
 			$(".add-list tr:last-child").after(get_goods_html);
@@ -594,10 +609,38 @@ $(document).ready(function(){
 });
 function totalPrice(){
 	var total_price = 0;
-		$(".col-total").each(function(){
-			total_price += parseInt($(this).text());
-		})
-		$(".total-price").text(total_price);
+	var total_sPrice = shippingPrice();
+	var exchange_rate = $(".exchange_rate").val();
+
+		$(".col-total span").each(function(){
+			total_price += parseFloat($(this).text());
+		});
+		//0觅海配送，1买家承运
+		if( $(".freight-area input[type='radio']:checked").val() == 0){
+			total_price += total_sPrice;
+			total_price = parseFloat(total_price*exchange_rate).toFixed(2);
+			$(".dispatchprice span").removeClass("userself");
+			$(".total-price").text("￥"+total_price);
+			$(".pay-total-price span").text("￥"+total_price);
+		}else{
+			total_price = parseFloat(total_price*exchange_rate).toFixed(2);
+			$(".dispatchprice span").addClass("userself");
+			$(".total-price").text("￥"+total_price);
+			$(".pay-total-price span").text("￥"+total_price);
+		}
+}
+function shippingPrice(){
+	var shippingPrice = 0;
+	var exchange_rate = $(".exchange_rate").val();
+	var returnVal = 0;
+	$(".shippingPrice span").each(function(){
+		shippingPrice += parseFloat($(this).text());
+	});
+	returnVal = shippingPrice;
+	shippingPrice = parseFloat(shippingPrice*exchange_rate).toFixed(2);
+	$(".isFreightChecked").val(shippingPrice);
+	$(".dispatchprice span").text("￥"+shippingPrice);
+	return returnVal;
 }
 function stopEvent(event){ //阻止冒泡事件
      //取消事件冒泡
@@ -633,7 +676,7 @@ function reduceNewNum(id,obj){
 	$(".goodsnum_" + id).val(num);
 
 	var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
-	$(obj).parents(".col-num").siblings(".col-total").text(parseFloat(price)*num);
+	$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price)*num);
 	totalPrice();
 	updateCart(id,num);
 }
@@ -670,7 +713,7 @@ function addNewNum(id,maxbuy,obj){
 
 	$(".goodsnum_" + id).val(num);
 	var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
-	$(obj).parents(".col-num").siblings(".col-total").text(parseFloat(price)*num);
+	$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price)*num);
 	totalPrice();
 	updateCart(id,num);
 

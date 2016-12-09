@@ -1007,9 +1007,10 @@ function order_auto_close($openid = ''){
 }
 
 /**
- * @param $orderlist
+ * @param $orderlist  操作获取的所有的订单进行是否移除
  * @return mixed
- * @content 移除掉组团中的订单 因为组团中已经支付的订单暂时不能显示在待发货中，仓库人员会误以为要发货
+ * @content 对于团购组团中 已经支付，不在待发货中显示
+ * @content 同时团购成功但属于开奖中的也不在待发货中显示  仓库人员会误以为要发货
  */
 function remove_ongroup_order($orderlist){
 	$remove_num = 0;
@@ -1040,30 +1041,42 @@ function remove_ongroup_order($orderlist){
 }
 
 /**
- * @param $order
+ * @param $order  操作判断单个订单
  * @return bool
- * @content 对于团购 已经支付，不能显示发货按钮，同时团购属于开奖中的也不显示发货按钮  不能发货
+ * @content 对于团购组团中 已经支付，不能显示发货按钮， 和对应发货操作
+ * @content 同时团购成功但属于开奖中的也不显示发货按钮 和对应发货操作
+ * @content 未中奖的不显示发货按钮  和对应发货操作
  */
 function checkGroupBuyCanSend($order){
-	if($order['ordertype']== '1'){
-		//团购订单  中 组团中的已经支付，不显示发货按钮
-		//组团成功，但是是属于抽奖团的不显示发货按钮
-		$sql = "select g.status,g.dish_id from ".table('team_buy_group')." as g left join ".table('team_buy_member')." as m";
-		$sql .= " on g.group_id=m.group_id where m.order_id = {$order['id']}";
-		$group = mysqld_select($sql);
-		if(!empty($group)){
-			if($group['status'] == '2' && $order['status']==1){
-				//组团中  已付款
-				return false;
-			}else if($group['status'] == '1'){
-				//组团成功的订单，但是处于开奖中  不能发货
-				$dish = mysqld_select("select draw from ".table('shop_dish')." where id={$group['dish_id']}");
-				if(!empty($dish) && $dish['draw'] == 1){
+	if($order['isprize'] == 2){
+		//未中奖单子
+		return false;
+	}else if($order['isprize'] == 1){
+		//中奖单子
+		return true;
+	}else if($order['isprize'] == 0){
+		//未抽奖，不知道是否是团购单子还是普通单子 或者是不是抽奖团的单子
+		if($order['ordertype']== '1'){
+			//团购订单  中 组团中的已经支付，不显示发货按钮
+			//组团成功，但是是属于抽奖团的不显示发货按钮
+			$sql = "select g.status,g.dish_id from ".table('team_buy_group')." as g left join ".table('team_buy_member')." as m";
+			$sql .= " on g.group_id=m.group_id where m.order_id = {$order['id']}";
+			$group = mysqld_select($sql);
+			if(!empty($group)){
+				if($group['status'] == '2' && $order['status']==1){
+					//组团中  已付款
 					return false;
+				}else if($group['status'] == '1'){
+					//组团成功的订单，但是处于开奖中  不能发货
+					$dish = mysqld_select("select draw from ".table('shop_dish')." where id={$group['dish_id']}");
+					if(!empty($dish) && $dish['draw'] == 1){
+						return false;
+					}
 				}
 			}
 		}
+
+		return true;
 	}
 
-	return true;
 }

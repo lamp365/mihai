@@ -16,6 +16,12 @@ $status_ln = array(
     "2"=>"已发货",
     "3"=>"交易成功"
 );
+// -1等待开奖 0未中奖 1中奖
+$draw_ln = array(
+    "-1"=>"等待开奖",
+    "2"=>"很遗憾，未中奖",
+    "1"=>"恭喜！中奖",
+);
 // 进行订单的自动关闭操作
 order_auto_close();
 if ($op == 'cancelsend') {
@@ -208,6 +214,15 @@ if ($op == 'returnpay') {
 
     $goods = mysqld_selectall("SELECT g.id, o.goodsid, o.total as order_total, o.status as order_status, o.type as order_type, g.title, g.thumb,o.id as order_good_id, o.aid, o.price as marketprice,o.optionid,o.iscomment,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
         . " WHERE o.orderid='{$orderid}'");
+
+    if ($item['ordertype'] == '1') {
+        $dish = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=".$goods[0]['goodsid']);
+        if ($dish['draw'] == '1') {
+            if ($item['isprize'] == '0') {
+                $item['isprize'] = '-1';
+            }
+        }
+    }
 
     if($item['ordertype'] == 1){
         //更新团购信息

@@ -101,8 +101,17 @@
 				</td>
 			<th style="width:150px"><label for="">订单状态:</label></th>
 				<td >
-														<?php  if($order['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-						<?php  if($order['status'] == 1) { ?><span class="label label-danger" >已支付</span><?php  } ?>
+					<?php  if($order['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
+					<!--已经付钱的，团购中 或者团购未开奖 这叫做已支付，因为不在待发货中展示，其他的叫待发货-->
+					<?php  if($order['status'] == 1) {
+						if(checkGroupBuyCanSend($order)){
+							echo '<span class="label label-danger" >待发货</span>';
+						}else{
+							echo '<span class="label label-danger" >已支付</span>';
+						}
+
+					}
+					?>
 						<?php  if($order['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
 						<?php  if($order['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
 						<?php  if($order['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>
@@ -127,6 +136,15 @@
 				<th ><label for="">支付方式:</label></th>
 				<td >
 					<?php  echo $order['paytypename'];?>
+					&nbsp;&nbsp;
+					<span style="color: red">
+					<?php
+						if(!empty($order['retag'])){
+							$retag = json_decode($order['retag'],true);
+							echo "操作人：".getAdminName($retag['pay']['uid'])."，理由：".$retag['pay']['payreason'];
+						}
+					?>
+					</span>
 				</td>
 				<th ><label for="">配送方式:</label></th>
 				<td >
@@ -297,7 +315,7 @@
 
 				<td >订单备注：</td>
 				<td>
-					<textarea style="height:150px;" class="span7" name="retag" cols="70"><?php  echo $order['retag']?></textarea>
+					<textarea style="height:150px;" class="span7" name="retag" cols="70"><?php  if(!empty($order['retag'])){ $retag = json_decode($order['retag'],true); echo $retag['beizhu']; }?></textarea>
 				</td>	
 					</table>
 		<table class="table" >
@@ -307,7 +325,7 @@
 				    <button type="submit" class="btn btn-danger span2" onclick="return confirm('确认更新此订单吗？'); return false;" name="reset" value="reset">确认</button>
 
 					<?php  if($order['status']==0 && isHasPowerToShow('shop','order','confrimpay')) { ?>
-						<a href="<?php echo web_url('order',array('op'=>'confrimpay','id'=>$order['id']));?>" class="btn btn-danger span2" onclick="return confirm('确认付款此订单吗？'); return false;" >确认付款</a>
+						<a href="javascript:;" class="btn btn-danger span2" data-toggle="modal" data-target="#modal-surepay">确认付款</a>
 					<?php  } ?>
 					
 					<?php if($order['status'] == 1 && isHasPowerToShow('shop','order','confirmsend') && $ishowSendBtn) { ?>
@@ -318,7 +336,7 @@
 					
 					<?php  if($order['status'] ==2 && isHasPowerToShow('shop','order','finish')) { ?>
 					<a href="<?php echo web_url('order',array('op'=>'finish','id'=>$order['id']));?>" class="btn btn-success span2" onclick="return confirm('确认完成此订单吗？'); return false;" name="finish">完成订单</a>
-				<?php  } ?>
+				   <?php  } ?>
 
 
 					<?php  if(($order['status']==0||($order['status']<-1&&$order['status']>-5)) && isHasPowerToShow('shop','order','close')) { ?>
@@ -339,6 +357,7 @@
 		</table>
 	</form>
 
+<!--确认发货-->
      <form action="<?php echo web_url('order',array('op'=>'confirmsend','id'=>$order['id']));?>" method="post" enctype="multipart/form-data" class="form-horizontal" >
 		<div id="modal-confirmsend" class="modal  fade">
 		  	<div class="modal-dialog">
@@ -382,6 +401,37 @@
 		</div>
 	</form>
 
+<!--确认支付-->
+<?php  if($order['status']==0 && isHasPowerToShow('shop','order','confrimpay')) { ?>
+<form action="<?php echo web_url('order',array('op'=>'confrimpay','id'=>$order['id']));?>" method="post" enctype="multipart/form-data" class="form-horizontal" >
+	<div id="modal-surepay" class="modal  fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">操作理由</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-left" > 操作理由：</label>
+						<div class="col-sm-8">
+							<input type="text" name="payreason" class="span5" value="测试订单"/>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" name="surepay" value="yes">确认支付</button>
+
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+</form>
+<?php } ?>
+
+<!--修改收货人信息-->
 <form action="<?php echo web_url('order',array('op'=>'modifyaddress','id'=>$order['id']));?>" method="post" enctype="multipart/form-data" class="form-horizontal" >
 	<div id="modal-address" class="modal  fade">
 		<div class="modal-dialog">

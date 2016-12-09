@@ -425,7 +425,7 @@
                 	<!--左边的商品-->
                 	<div style="float: left;">
 
-	                  <div style="overflow: hidden;height: 500px;margin-left: 35px;">
+	                  <div style="overflow: hidden;min-height: 500px;margin-left: 35px;">
 	                	<!--商品的大图-->
 
 						<div class="slider card card-nomb" style="float:left;width:400px;margin-top: 15px;margin-left: 15px;">
@@ -494,9 +494,15 @@
 							<div class="offered-explain">
 								<img src="__RESOURCE__/recouse/images/offered-detail.png" style="margin-top: 2px;">
 								<p class="title">团购说明：</p>
-								<p style="width: 438px;border-top: dotted 1px gainsboro;border-bottom: dotted 1px gainsboro;margin-top: 10px;font-size: 14px;color: #717171;padding: 5px 0;">
-									拼团有效时间为30分钟，若30分钟后拼团未成功，系统将于2个工作日内自动退款到您的付款账户。
-								</p>
+							<!--@php if($goods['draw'] == 1) { @-->
+								<p style="width: 438px;border-top: dotted 1px gainsboro;margin-top: 10px;font-size: 14px;color: #717171;padding: 5px 0;">拼团时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">拼团活动结束后从拼团成功的用户中随机抽取<!--@php echo $goods['draw_num']; @-->位中奖名额</p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">付款后30分钟内拼团未成功，以及最终抽奖未中奖的订单系统将于1-2个工作日内自动退款到你的付款账户</p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">可参与抽奖的资格必须为拼团成功的用户</p>
+							<!--@php }else{ @-->
+								<p style="width: 438px;border-top: dotted 1px gainsboro;margin-top: 10px;font-size: 14px;color: #717171;padding: 5px 0;">拼团时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;margin-bottom: 25px">付款后30分钟内拼团未成功，系统将于1-2个工作日自动退款到您的付款账户</p>
+							<!--@php } @-->
 							</div>
 							
 							<!--我要参团的按钮,点击跳转到comfirm页面-->
@@ -508,7 +514,7 @@
 							</div>	
 							
 							<!--剩余时间-->
-						<div style="margin-top: 30px;width:438px;margin-bottom: 50px;">
+						<div style="margin-top: 30px;width:438px;margin-bottom: 20px;">
 							<!--左侧的线条-->
 							<span style="height: 2px;width: 100px;background:rgb(238,238,238);display: inline-block;margin-left: 20px;"></span>					
 							<span  style="width: 180px;background:rgb(238,238,238);display: inline-block;border-radius: 5px;color:#666666;line-height: 40px;padding: 5px 10px;">

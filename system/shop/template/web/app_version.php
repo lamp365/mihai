@@ -37,7 +37,11 @@
 			<input type="radio" name="app_type" value="0" id="enabled1"
 				<?php  if(empty($appVersion) || $appVersion['app_type'] == 0) { ?> checked="true"<?php  } ?> /> 安卓 &nbsp;&nbsp;&nbsp; 
 			<input type="radio" name="app_type" value="1" id="enabled2"
-				<?php  if(!empty($appVersion) && $appVersion['app_type'] == 1) { ?> checked="true"<?php  } ?> /> IOS
+				<?php  if(!empty($appVersion) && $appVersion['app_type'] == 1) { ?> checked="true"<?php  } ?> /> IOS &nbsp;&nbsp;&nbsp;
+			<input type="radio" name="app_type" value="2" id="enabled2"
+				<?php  if(!empty($appVersion) && $appVersion['app_type'] == 2) { ?> checked="true"<?php  } ?> /> 应用宝安卓 &nbsp;&nbsp;&nbsp;
+			<input type="radio" name="app_type" value="3" id="enabled2"
+				<?php  if(!empty($appVersion) && $appVersion['app_type'] == 3) { ?> checked="true"<?php  } ?> /> 应用宝IOS &nbsp;&nbsp;&nbsp;
 		</div>
 	</div>
 	

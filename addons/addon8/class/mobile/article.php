@@ -45,11 +45,6 @@
 
 		}else if($op == 'comment_list'){ //评论更多
 			include addons_page('comment_list');
-		}else if($op == 'get_appversion'){
-			$app_anzhuo = mysqld_select("select url from ".table('app_version')." where app_type='0' order by version_id desc");
-			$app_ios    = mysqld_select("select url from ".table('app_version')." where app_type='1' order by version_id desc");
-			$data = array('iPhoneUrl'=>$app_ios['url'],'AndroidUrl'=>$app_anzhuo['url']);
-			die(showAjaxMess(200,$data));
 		}
 
   	 	 

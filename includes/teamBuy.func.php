@@ -295,31 +295,31 @@ function draw_team_buy($d_info) {
 			}
 		}
 	}
-	
-	// 随机抽取
-	if ($d_info['draw_num'] > count($all_member)) {
-		$d_info['draw_num'] = count($all_member);
-	}
-	$isprize = array_rand($all_member, intval($d_info['draw_num']));
-	// 更新订单中奖状态
-	if (is_array($isprize)) {
-		foreach ($isprize as $vp) {
-			mysqld_update('shop_order',array('isprize'=>1),array('id'=>$all_member[$vp]));
-			unset($all_member[$vp]);
-		}
-	}elseif (!empty($isprize)) {
-		mysqld_update('shop_order',array('isprize'=>1),array('id'=>$all_member[$isprize]));
-		unset($all_member[$isprize]);
-	}
-
 	if (!empty($all_member)) {
-		// 重新排列数组下标
-		$all_member = array_merge($all_member);
-		// 未中奖订单退款
-		foreach ($all_member as $am_v) {
-			update_order_status($am_v, -2, $d_info);
-			// 更新未中奖订单状态
-			mysqld_update('shop_order',array('isprize'=>2),array('id'=>$am_v));
+		// 随机抽取
+		if ($d_info['draw_num'] > count($all_member)) {
+			$d_info['draw_num'] = count($all_member);
+		}
+		$isprize = array_rand($all_member, intval($d_info['draw_num']));
+		// 更新订单中奖状态
+		if (is_array($isprize)) {
+			foreach ($isprize as $vp) {
+				mysqld_update('shop_order',array('isprize'=>1),array('id'=>$all_member[$vp]));
+				unset($all_member[$vp]);
+			}
+		}elseif (!empty($isprize)) {
+			mysqld_update('shop_order',array('isprize'=>1),array('id'=>$all_member[$isprize]));
+			unset($all_member[$isprize]);
+		}
+		if (!empty($all_member)) {
+			// 重新排列数组下标
+			$all_member = array_merge($all_member);
+			// 未中奖订单退款
+			foreach ($all_member as $am_v) {
+				update_order_status($am_v, -2, $d_info);
+				// 更新未中奖订单状态
+				mysqld_update('shop_order',array('isprize'=>2),array('id'=>$am_v));
+			}
 		}
 	}
 	

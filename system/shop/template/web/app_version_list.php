@@ -23,7 +23,7 @@
 			<td><?php echo $value['version_id'];?></td>
 			<td><?php echo $value['version_no'];?></td>
 			<td><?php echo empty($value['force_update'])?'否':'是'; ?></td>
-			<td><?php echo empty($value['app_type'])?'安卓':'IOS'; ?></td>
+			<td><?php echo $app_type_arr[$value['app_type']]; ?></td>
 			<td><?php echo $value['url'];?></td>
 			<td><?php echo $value['createtime'];?></td>
 			<td style="text-align: center;">

@@ -58,7 +58,7 @@ switch($op){
 		break;
 	
 	default:			//列表页
-		
+		$app_type_arr = array(0=>'安卓',1=>'IOS','2'=>'应用宝安卓',3=>'应用宝IOS');
 		$list = mysqld_selectall ( "SELECT * FROM " . table ( 'app_version' ) . "  ORDER BY createtime DESC" );
 		
 		include page ( 'app_version_list' );

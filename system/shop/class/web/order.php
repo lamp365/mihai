@@ -207,7 +207,14 @@ if ($operation == 'display') {
 	//确认是否可以展示发货按钮  部分团购商品已经支付，不能显示发货按钮
 	$ishowSendBtn = checkGroupBuyCanSend($order);
 	if (checksubmit('reset')) { //确认标记
-		mysqld_update('shop_order', array('tag' => $_GP['tag'], 'retag' => $_GP['retag']), array('id' => $orderid));
+		$retag = '';
+		if(!empty($order['retag'])){
+			$retag = json_decode($order['retag'],true);
+		}
+		$retag['beizhu'] = $_GP['retag'];
+		$json_retag = json_encode($retag);
+
+		mysqld_update('shop_order', array('tag' => $_GP['tag'], 'retag' => $json_retag), array('id' => $orderid));
 		message('订单操作成功！', refresh(), 'success');
 	}
 
@@ -260,7 +267,19 @@ if ($operation == 'display') {
 
 }else if($operation == 'confrimpay')  //确认支付
 {
-	mysqld_update('shop_order', array('status' => 1,'remark'=>$_GP['remark'],'paytime'=>time()), array('id' => $_GP['id']));
+	if(empty($_GP['payreason']))
+		message('请输入理由',refresh(),'error');
+
+	$order = mysqld_select("select retag from ".table('shop_order')." where id={$_GP['id']}");
+	$retag = '';
+	if(!empty($order['retag'])){
+		$retag = json_decode($order['retag'],true);
+	}
+	$retag['pay']['payreason'] = $_GP['payreason'];
+	$retag['pay']['uid']       = $_SESSION['account']['id'];
+	$json_retag 			   = json_encode($retag);
+
+	mysqld_update('shop_order', array('status' => 1,'retag'=>$json_retag,'paytime'=>time()), array('id' => $_GP['id']));
 	updateOrderStock($_GP['id']);
 	message('确认订单付款操作成功！', refresh(), 'success');
 
