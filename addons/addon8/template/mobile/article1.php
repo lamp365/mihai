@@ -50,7 +50,7 @@
 		float: right;
 		width: 20%;
 		padding: 20px 0px 0px 0px;
-		margin-top: 10px;
+		margin-right: -10px;
 	}
 	.health-content .health-men .attention span{
 		padding: 5px;
@@ -59,7 +59,8 @@
 		text-align: center;		
 		border: 1px solid #F43776;
 		border-radius: 6px;
-		color: #F43776;		
+		color: #F43776;	
+		font-size: 12px;	
 	}
 	.health-detail{
 		width: 90%;
@@ -70,7 +71,7 @@
 	    clear: none !important;
 	    display: block;
 	    margin: 10px 0;
-	    padding: 20px;
+	    padding: 10px;
 	    position: relative;
 	    text-decoration: none;
 	   
@@ -110,7 +111,8 @@
 	    position: absolute;
 	    right: 0;
 	    text-align: center;
-	    padding: 3px 5px;
+	    padding: 0 3px;
+	    font-size: 12px;
 	}
 	.item .item-info .item-price{
 		bottom: 5px;	    
@@ -125,7 +127,7 @@
 	}
 	.item .item-info .item-price .price-old{
 		color: #B2B2B2;
-		
+		font-size: 10px;
 	}
 	.item .item-info .item-price .price-new strong{
 		font-size: 16px;
@@ -146,16 +148,54 @@
 		line-height: 32px;
 	}
 	.content img{width: 100%;height: 100%;}
+	
+	/*下载app的图片*/
+	#downapp{
+		position:fixed;
+		z-index: 100;
+		margin-top: -160px;
+		display: none;
+		width: 100%;
+		height: 300px;
+		background: url(<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp.png) center center no-repeat;
+		background-size: 100% 300px;
+	}
+	#downapp img{
+		width: 100px;
+		position: absolute;
+		bottom: 10%;
+		right: 10%;
+	}
+	#downapp span{
+		position: absolute;
+		bottom: 14%;
+		left: 15%;
+		color: rgb(252,100,150);
+		font-weight: bold;
+	}
+	#downapp p{
+		position: absolute;
+		bottom: 14%;
+		right: 15%;
+		color: #fff;
+		font-weight: bold;
+	}
 </style>
 </head>
 <body>
+	<div id="downapp">
+		<span>下次下载</span>		
+		<img  src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp-btn2x.png" />
+		<p>立即下载</p>
+	</div>		
+	
 	<!--头部-->
 	<?php if($notApp){ ?>
 	 <div class="top_header" style="border-bottom: none;">
 	    <div class="header_left return">
 	        <a href="javascript:;" class="return" style="margin-top: 4px;"><img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/openshop/images/return.png"  height="18px"></a>
 	    </div>
-	    <div class="header_title" style="color: #000;font-size: 20px;font-weight: bold;line-height: 45px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width: 90%;left: 30px;">
+	    <div class="header_title" style="color: #000;font-size: 16px;font-weight: bold;line-height: 45px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width: 90%;left: 30px;">
 			<?php echo $article['title'];?>
 	    </div>        
 	</div>
@@ -184,7 +224,7 @@
 			</div>
 			<!--关注按钮-->
 			<div class="attention">
-				<span class="guanzhu">+关注</span>
+				<span class="guanzhu <?php if($notApp){ echo " wap_guanzhu";}else{ echo " app_guanzhu";}?>">+关注</span>
 			</div>
 		</div>
 		<?php }  ?>
@@ -203,8 +243,6 @@
 				<?php echo $article['content'];?>
 			</div>
 
-
-			
         	<!--评论-->
         	<div style="padding:5% 5% 0 5%;">
         		  <img style="width: 90%;" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/comment@3x.png" />
@@ -237,7 +275,7 @@
 		<?php if($notApp){ ?>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 53px;left: 0;" class="heal-foot">
-			<input type="text" style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
+			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
 
 			<ul style="float: right;list-style: none;">
 				<li>
@@ -296,10 +334,33 @@
 	<?php } ?>
 	$("#put_comment").focus(function(){
 		//并且不让输入，不一定要用focus事件，反正wap不给评论，一评论就提示,引导下载
-		alert('请下载app');
+		$("#downapp").show();
 	})
 </script>
-
+<script>	
+	var Top = $(window).height() * 0.5;			
+	$("#downapp").css("top",Top);
+	
+	//点击下次下载，图片消失
+	$("#downapp span").on("click",function(){
+		$("#downapp").hide();
+	})
+	
+	//点击立即下载，调用下载APP的方法
+	$("#downapp p").on("click",function(){
+		$("#downapp").hide();
+		appDownLoad("<?php echo create_url('mobile', array('name'=>'addon8','do'=>'article','op'=>'get_appversion'));?>");
+	})
+	
+	//关注的点击事件，wap
+	$(".wap_guanzhu").on("click",function(){
+		
+	})
+	//关注的点击事件，app
+	$(".app_guanzhu").on("click",function(){
+		
+	})
+</script>	
 <?php if($notApp){ ?>
 <?php include themePage('footer'); ?>
 <?php } ?>

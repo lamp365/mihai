@@ -297,10 +297,10 @@ function draw_team_buy($d_info) {
 	}
 	
 	// 随机抽取
-	if ($d_info['draw_num'] < count($all_member)) {
+	if ($d_info['draw_num'] > count($all_member)) {
 		$d_info['draw_num'] = count($all_member);
 	}
-	$isprize = array_rand($all_member, $d_info['draw_num']);
+	$isprize = array_rand($all_member, intval($d_info['draw_num']));
 	// 更新订单中奖状态
 	if (is_array($isprize)) {
 		foreach ($isprize as $vp) {

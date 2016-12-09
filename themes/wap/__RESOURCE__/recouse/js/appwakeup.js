@@ -104,7 +104,7 @@ function app_click_to_down(url){
         }
     });
     if( ua.match(/MicroMessenger/i) == 'micromessenger'){
-        alert("请在浏览器中打开");
+        //alert("请在浏览器中打开");
     }
     if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
         window.location.href = iPhoneUrl;
@@ -122,13 +122,15 @@ function app_show_tip(){
     var foot_menu = document.getElementsByClassName("foot_menu")[0];
 
     if(wx_nav || foot_menu){
+        div.className = "appdownload-hasfooter";
         div.style = "position:fixed;left:0;z-index:999;bottom:45px;width:100%;display:block";
     }else{
+        div.className = "appdownload-nofooter";
         div.style = "position:fixed;left:0;z-index:999;bottom:0;width:100%;display:block";
     }
     div.id = "appdownload";
     img.style = "width:100%";
     img.src ="images/down_banner.png";
     div.appendChild(img);
-    //document.body.appendChild(div);
+    document.body.appendChild(div);
 }
