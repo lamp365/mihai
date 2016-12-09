@@ -37,6 +37,9 @@
 			display: none;
 		}
 		.myoder .myoder-hd .btn{color:#ffffff;}
+		.listview .info{
+			line-height:25px !important;
+		}
 	</style>
 	
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
@@ -153,7 +156,11 @@
 							    </span>    						
 							</div>
                         </li>
-	                    <li class="h-text h-status"><!--@php if($_GP['status']==34){ echo "退款成功"; }else if($_GP['status']==14){ echo "退货成功"; }else{ echo $status_ln[$item['status']];} @--></li>
+	                    <li class="h-text h-status info">
+							<!--@php if($_GP['status']==34){ echo "退款成功"; }else if($_GP['status']==14){ echo "退货成功"; }else{ echo $status_ln[$item['status']];} @-->
+							<p>退款中</p>
+
+						</li>
 	                    <li class="h-text h-operate operate" style="vertical-align: middle;">
 						    <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status))@-->" class="bts" style="margin-top:10px;">订单详情</a> 
 							<!--@php if ($item['ifcustoms'] == 1){ @-->

@@ -80,8 +80,8 @@
     <th class="text-center">产品名称</th>
 	<th class="text-center" ><a href="<?php echo $sorturl."&orderprice=".$oprice; ?>">价格</a></th>
 	<th class="text-center"><a href="<?php echo $sorturl."&ordertprice=".$otprice; ?>">特别价格</a></th>
+    <th class="text-center">批发价格（美元)</th>
 	<th class="text-center" ><a href="<?php echo $sorturl."&ordertot=".$otot; ?>">库存</a></th>
-    <th class="text-center"  style="display:none">二手车</th>
     <th class="text-center" >状态</th>
     <th class="text-center" >操作</th>
   </tr>
@@ -100,11 +100,16 @@
                 	<td style="text-align:center;"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $item['id']))?>"><?php  echo $item['title'];?></a></td>
 					<td style="text-align:center;" ><?php  echo $item['marketprice'];?></td>
 					<td style="text-align:center;" ><?php  echo $item['timeprice'];?></td>
+					<td style="text-align:center;">
+					     <?php if ( isset( $item['purchase_price'] ) ){ foreach ( $item['purchase_price'] as $purchase_price ){ ?>
+					           <span class="label label-danger" style="margin-left:5px;"><?php echo $purchase_price['name'].$purchase_price['vip_price']; ?></span>  
+						 <?php }} ?>
+					</td>
 					<td style="text-align:center;"><?php  echo $item['total'];?></td>											
                     <td style="text-align:center;display:none;">
                         <?php  echo $item['count']?$item['count']:0;?>                 
                     </td>
-					<td style="text-align:center;"><?php  if($item['status']) { ?><span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-success" style="cursor:pointer;">开通中</span><?php  } else { ?><span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-danger" style="cursor:pointer;">已关闭</span><?php  } ?><!--&nbsp;<span class="label label-info"><?php  if($item['type'] == 1) { ?>实体二手车<?php  } else { ?>虚拟二手车<?php  } ?></span>--><span class="label label-danger" style="margin-left:5px;"><?php  echo $item['typename'];?></span>
+					<td style="text-align:center;"><?php  if($item['status']) { ?><span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-success" style="cursor:pointer;">开通中</span><?php  } else { ?><span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-danger" style="cursor:pointer;">已关闭</span><?php  } ?><!--&nbsp;<span class="label label-info"><?php  if($item['type'] == 1) { ?>实体二手车<?php  } else { ?>虚拟二手车<?php  } ?></span>--><span class="label label-danger" style="margin-left:5px;"><?php  echo $item['typename'];?></span><?php if ( isset($item['purchase']) ){echo '<span class="label label-danger" style="margin-left:5px;">'.$item['purchase'].'</span>';} ?>
 					</td>
 					<td style="text-align:center;">
 					<a class="btn btn-xs btn-info" target="_blank" href="<?php echo WEBSITE_ROOT.mobile_url('detail',array('name'=>'shopwap','id'=>$item['id']));?>" style="display:none;"><i class="icon-eye-open"></i>&nbsp;查&nbsp;看&nbsp;</a>&nbsp;&nbsp;

@@ -34,6 +34,13 @@ foreach( $dish_list as &$dish_list_value){
 unset($dish_list_value);
 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table(shop_dish_vip) . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$member['parent_roler_id']." and a.v2 =  ".$member['son_roler_id']." $condition and b.deleted=0  AND b.status = '1' ");
 $pager  = pagination($total, $page, $psize);
+// 设置汇率
+$exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
+if ( $exchange_rate ){
+    $exchange_rate_value =  $exchange_rate['value'] > 5 ? $exchange_rate['value'] : 6.8972;
+}else{
+    $exchange_rate_value = 6.8972;
+}
 $op = $_GP['type']; 
 switch ( $op ){
 	case 'get_content':

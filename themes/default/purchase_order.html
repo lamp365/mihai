@@ -135,8 +135,7 @@
 				<!--@php echo $pager; @-->
 			</div>
 			<div class="tab-div-select" style="display: none;">
-				<!--汇率隐藏域-->
-				<input type="hidden" name="exchange_rate" class="exchange_rate" value="10">
+				
 				<div class="add-list-area">
 					<p class="select-p">已选商品详情</p>
 					<table class="product-list add-list" cellspacing="0" cellpadding="0" border="0">
@@ -150,6 +149,12 @@
 							<th width="106">操作</th>
 						</tr>
 					</table>
+					<div class="exchangeRate-area">
+						<h3>美元兑人民币</h3>
+						<!--汇率隐藏域-->
+						<p>1111111</p>
+						<input type="hidden" name="exchangeRate" class="exchange_rate" value="10">
+					</div>
 					<div class="freight-area">
 						<h3>配送方式</h3>
 						<label><input type="radio" name="freight" value="0" checked>觅海供应链配送</label>
@@ -489,7 +494,7 @@ jQuery(function(){
 			e.stopPropagation();
 			$(".confirm-table").html($(".confirm-table-tr"));
 			$(".confirm-order-address").html("");
-			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',address_id:address_id},function(data){
+			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',address_id:address_id,freight:freight},function(data){
 				if( data.errno == 200){
 					order_id = data.message.order_id;
 					$(".confirm-order-num").text(data.message.order_sn);

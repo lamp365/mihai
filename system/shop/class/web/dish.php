@@ -688,7 +688,7 @@
 				$orderby = "total ".$_GP['ordertot'].' , ';
 		   }
            if (!empty($_GP['report'])) {
-			        $list = get_goods(array(
+					$list = get_goods(array(
 						"table"=>"shop_dish",
 						"where"=>$condition,
 						"order"=> $orderby."gid, status DESC, displayorder DESC, id DESC"
@@ -707,7 +707,7 @@
 				"limit" => ($pindex - 1) * $psize . ',' . $psize,
 				"order"=> $orderby."gid, status DESC, displayorder DESC, id DESC"
 			));
-           // $list = mysqld_selectall("SELECT a.* FROM " . table('shop_dish') . " as a WHERE  a.deleted=0 $condition ORDER BY a.status DESC, a.displayorder DESC, a.id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            // $list = mysqld_selectall("SELECT a.* FROM " . table('shop_dish') . " as a WHERE  a.deleted=0 $condition ORDER BY a.status DESC, a.displayorder DESC, a.id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 			//echo "SELECT * FROM " . table('shop_dish') . " WHERE  deleted=0 $condition ORDER BY status DESC, displayorder DESC, id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 			foreach($list as $key=>$val){
                     $count = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_comment') . " WHERE dishid=".$val['id']);
@@ -717,6 +717,11 @@
                         $list[$key]['imgs'] = $lists['thumb'];
 				   }else{
                         $list[$key]['imgs'] = $val['thumb'];
+				   }
+				   $purchase = mysqld_selectall("SELECT a.vip_price,b.name FROM ".table('shop_dish_vip')." as a LEFT JOIN ".table('rolers')." as b on a.v2 = b.id WHERE dish_id = ".$val['id']);
+				   if ( $purchase ){
+                       $list[$key]['purchase'] = '批发';
+					   $list[$key]['purchase_price'] = $purchase;
 				   }
 				   switch ( $val['type'] ){
                        case 1:

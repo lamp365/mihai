@@ -5,6 +5,10 @@ class shopAddons  extends BjSystemModule {
 	{
 		$this->__web(__FUNCTION__);
 	}
+	public function do_exchange_rate()
+	{
+		$this->__web(__FUNCTION__);
+	}
 	public function do_adv()
 	{
 		$this->__web(__FUNCTION__);

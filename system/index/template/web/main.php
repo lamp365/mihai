@@ -67,7 +67,9 @@
                     <i class="icon-road"></i>
                     <span id='accountname'><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></span>
                 </small>
-            </a><!-- /.brand -->
+            </a>
+            <span style="display: inline-block;line-height: 50px;color: #fff">美元兑换人民币:<span class="usa-to-rmb">6.88</span></span>
+            <!-- /.brand -->
         </div><!-- /.navbar-header -->
 
         <div class="navbar-header pull-right" role="navigation">
@@ -78,7 +80,26 @@
                         <span>商城首页</span>
                     </a>
                 </li>
-
+                <li class="Larger">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
+                  
+                            <small>修改汇率</small>                          
+       
+                        <!-- <i class="icon-caret-down"></i> -->
+                    </a>
+<!--                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a class="modify" href="javascript:;">
+                                <i class="icon-off"></i>
+                                <span class="modify-exchange-rate">修改汇率</span>
+                            </a>
+                            <a class="modify-record" href="javascript:;">
+                                <i class="icon-off"></i>
+                                <span class="modify-record-exchange-rate">汇率修改记录</span>
+                            </a>
+                        </li>
+                    </ul> -->
+                </li>
                 <li class="Larger">
                     <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
                         <i class="icon-user"></i>
@@ -116,6 +137,9 @@
         </div><!-- /.navbar-header -->
     </div><!-- /.container -->
 </div>
+
+
+
 <!-- 头部 end -->
 
 <div class="main-container" id="main-container">
@@ -901,8 +925,76 @@
         </div>
 
 
-    </div><!-- /.main-container-inner -->
-
+    </div>
+<!-- 修改汇率 -->
+<div class='modal fade modify-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+    <div class='modal-dialog modal-lg'>
+        <div class='modal-content'>
+            <div class='modal-header'> 
+                <button type='button' class='close' data-dismiss='modal'>
+                    <span aria-hidden='true'>&times;</span>
+                    <span class='sr-only'>Close</span>
+                </button>
+                <h4 class='modal-title' id='myModalLabel'>修改汇率</h4>
+            </div>
+            <div class='modal-body' style="text-align: center;">
+                <div style="padding: 50px 0;">输入要修改的汇率:<input type="text" name="" value="" class="modify-val"><button type="button" class="modify-sure" value="" style="    color: #fff;
+    background-color: #428bca;border:none;margin-left: 5px;height: 28px;line-height: 28px; border-color: #357ebd;">确定</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='modal fade modify-record-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+    <div class='modal-dialog modal-lg'>
+        <div class='modal-content'>
+            <div class='modal-header'> 
+                <button type='button' class='close' data-dismiss='modal'>
+                    <span aria-hidden='true'>&times;</span>
+                    <span class='sr-only'>Close</span>
+                </button>
+                <h4 class='modal-title' id='myModalLabel'>修改汇率</h4>
+            </div>
+            <div class='modal-body'>
+                <ul style="list-style: none;padding-left: 50px;">
+                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
+                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
+                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
+                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- /.main-container-inner -->
+<script type="text/javascript">
+    $(function(){
+        $(".modify").on("click",function(){
+            $(".modify-modal").modal();
+            $(".modify-sure").on("click",function(){
+                var regEx = /^(([1-9]\d*)|\d)(\.\d{1,4})?$/;
+                var exchange_rate_value = $(".modify-val").val();
+                if( !regEx.test(exchange_rate_value) ){
+                   alert("请输入正确的价格");
+                   return false;
+                }
+                if( exchange_rate_value < 5){
+                    exchange_rate_value = 6.8972;
+                }
+                   $.post("<?php  echo create_url('site', array('name' => 'shop','do' => 'exchange_rate','op'=>'set_exchange_rate'))?>",{exchange_rate_value:exchange_rate_value},function(data){
+                        if(data.errno == 200){
+                            $(".modify-modal").modal('hide');
+                            $(".usa-to-rmb").text(exchange_rate_value);
+                        }else{
+                            alert(data.message);
+                        }
+                    },'json') ;   
+            });
+        });
+        $(".modify-record").on("click",function(){
+            $(".modify-record-modal").modal();
+        });
+    })
+</script>
 </div>
 </body>
 </html>

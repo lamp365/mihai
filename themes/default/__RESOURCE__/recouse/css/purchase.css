@@ -720,11 +720,11 @@ border-top: 1px solid #d2d2d2;
     line-height: 200px;
 }
 .shipping,.col-total,.confirm-total-price{color: #C60A20;}
-.freight-area{
+.freight-area,.exchangeRate-area{
 	overflow: auto;
     margin-top: 30px;
 }
-.freight-area h3{
+.freight-area h3,.exchangeRate-area h3{
 	border-bottom:1px dotted #ccc;
 	padding-bottom: 10px;
 }

@@ -1048,8 +1048,8 @@ function remove_ongroup_order($orderlist){
  * @content 未中奖的不显示发货按钮  和对应发货操作
  */
 function checkGroupBuyCanSend($order){
-	if($order['isprize'] == 2){
-		//未中奖单子
+	if($order['isprize'] == 2 || $order['isprize']==3){
+		//未中奖单子 或者 待抽奖
 		return false;
 	}else if($order['isprize'] == 1){
 		//中奖单子

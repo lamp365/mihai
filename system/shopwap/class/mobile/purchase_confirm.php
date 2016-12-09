@@ -18,7 +18,14 @@ $goods = $purchase_goods->getCookie('purchase');
 if ( !empty($goods) ){
       $goods = unserialize($goods);
 }else{
-     die(showAjaxMess('1002', '产品数据异常'));
+      die(showAjaxMess('1002', '产品数据异常'));
+}
+// 设置汇率
+$exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
+if ( $exchange_rate ){
+    $exchange_rate_value =  $exchange_rate['value'] > 5 ? $exchange_rate['value'] : 6.8972;
+}else{
+    $exchange_rate_value = 6.8972;
 }
 //定义结算页面的各个接口
 switch ( $_GP['api'] ){
@@ -39,7 +46,7 @@ switch ( $_GP['api'] ){
              $dish_vip_good = mysqld_select("SELECT A.total,A.gid, B.vip_price FROM ".table('shop_dish')." as A LEFT JOIN ".table('shop_dish_vip')." as B ON A.id = B.dish_id WHERE A.id = ".$goods_value['id']." AND B.v1= ".$member['parent_roler_id']." AND B.v2 = ".$member['son_roler_id']." limit 1");
 			 if ( $dish_vip_good ){
 				 // 更新产品批发价格，不以缓存为主
-				 $goods_value['price'] = $dish_vip_good['vip_price'];
+				 $goods_value['price'] = $dish_vip_good['vip_price'] * $exchange_rate_value;
 				 $goods_value['gid'] = $dish_vip_good['gid'];
                  $had_goods_total[] = $goods_value;
 			     $had_goods_price += $goods_value['price'] * $goods_value['num'];

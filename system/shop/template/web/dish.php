@@ -177,25 +177,43 @@
 			</div>
 		</div>
 	 <?php } ?>
-		   <input type="hidden" class="vip-number" name="vip-num"  value="5">
+		   <input type="hidden" class="vip-number"   value="<?php echo max(1,count($vip_list)); ?>">
+		   <?php if ( is_array($dish_vip_list) && !empty($dish_vip_list) ){ foreach ( $dish_vip_list as $key=>$dish_vip_list_value ){ ?>
 	 	   <div class="form-group form-inline vip-form">
-	 	   		<label class="col-sm-2 control-label no-padding-left" > 会员价格：</label>
+	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
 	 	   		<div class="col-sm-4">
-					  <select class="form-control">
+					  <select name="v2[]" class="form-control">
 					  		<option>--请选择--</option>
-					  		<option>普通会员</option>
-					  		<option>至尊会员</option>
+					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
+                                   <option value='<?php echo $vip_list_value['id'] ?>' <?php echo $dish_vip_list_value['v2'] == $vip_list_value['id']?'selected':'';?> ><?php echo $vip_list_value['name']; ?></option>
+							<?php }} ?>
 					  </select>
-					  <div class="input-group">
-						  <span class="input-group-addon">$</span>
-						  <input type="text" name="vip_price" class="form-control vip_price" value="" placeholder="请输入价格"/>
+                                          <div class="input-group">
+                                          <span class="input-group-addon">$</span>
+					  <input type="text" name="vip_price[]" class="form-control vip_price" value="<?php echo $dish_vip_list_value['vip_price']; ?>" placeholder="请输入价格"/>
 					  </div>
 				</div>
 				<div class="col-sm-6">
 					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
 				</div>
-
 	 	   </div>
+		   <?php }}else{ ?>
+            <div class="form-group form-inline vip-form">
+	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
+	 	   		<div class="col-sm-4">
+					  <select name="v2[]" class="form-control">
+					  		<option>--请选择--</option>
+					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
+                                   <option value='<?php echo $vip_list_value['id'] ?>'><?php echo $vip_list_value['name']; ?></option>
+							<?php }} ?>
+					  </select>
+					  <input type="text" name="vip_price[]" class="form-control vip_price" value="" placeholder="请输入价格"/>
+				</div>
+				<div class="col-sm-6">
+					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
+				</div>
+	 	   </div>
+		   <?php } ?>
 	 	   <div class="form-group">
 	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
 	 	   		<div class="col-sm-10">
@@ -590,7 +608,12 @@ $(function(){
 	$("body").on("blur",".vip_price",function(){
 		var regEx = /^(([1-9]\d*)|\d)(\.\d{1,2})?$/;
 		if( !regEx.test($(this).val()) ){
-			//alert("请输入正确的价格");
+			var price = parseFloat($(this).val());
+			if ( isNaN(price) )
+			{
+				price = 0;
+			}
+			$(this).val(price);
 		}
 	})
 });

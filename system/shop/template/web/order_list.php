@@ -269,7 +269,7 @@
 								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><?php echo $goods['title']; ?></a></div>
 									  <div>
 										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
-								  		  <?php if($goods['draw'] == 1 || $item['isprize'] != 0) { ?>
+								  		  <?php if($item['isdraw'] == 1) { ?>
 										   &nbsp;&nbsp; <span class="label label-success">抽奖团</span>
 										  <?php }else{  ?>
 										   &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span>
