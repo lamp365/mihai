@@ -150,10 +150,10 @@
 						</tr>
 					</table>
 					<div class="exchangeRate-area">
-						<h3>美元兑人民币</h3>
+						<h3>货币汇率</h3>
 						<!--汇率隐藏域-->
-						<p>1111111</p>
-						<input type="hidden" name="exchangeRate" class="exchange_rate" value="10">
+						<p><!--@php echo $exchange_rate_value; @--></p>
+						<input type="hidden" name="exchangeRate" class="exchange_rate" value="<!--@php echo $exchange_rate_value; @-->">
 					</div>
 					<div class="freight-area">
 						<h3>配送方式</h3>
@@ -234,7 +234,7 @@
 									<div class="order_title">	
 										订单号：<span class="confirm-order-num"></span>&nbsp;&nbsp;&nbsp;&nbsp;支付金额：<span class="confirm-order-price false"></span> 	
 										<div class="pull-right">
-									    	<select id="pays" class="form-control" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;border: 1px solid #ccc!important;line-height:15px;font-size:12px;">
+									    	<select id="pays" class="form-control" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;border: 1px solid #ccc!important;line-height:15px;font-size:12px;background: url('__RESOURCE__/recouse/images/arrow.png') no-repeat scroll right center transparent;  background:#fff\0;  padding-right: 14px;text-align: left;">
 												<option value="weixin"> 微信支付</option>
 												<option value="alipay" selected=""> 支付宝</option>
 											</select>
@@ -258,7 +258,12 @@
 								</table>
 							</div>
 							<div class="modal-footer">
-							     <button class="btn btn-success" type="button" data-dismiss="modal">关闭</button>
+								<div class="confirm-modal-price">
+									<p>商品应付总计：<span class="total-price"></span></p>
+									<p class="dispatchprice">运费：<span></span></p>
+									<p class="pay-total-price">应付金额：<span></span></p>
+								</div>
+							    <button class="btn btn-success" type="button" data-dismiss="modal">关闭</button>
 							</div>
 						</div>
 					</div>
@@ -483,6 +488,7 @@ jQuery(function(){
 		var address_id = $(".this_address").attr("address_id");
 		var confirm_address_html;
 		var confirm_html = "";
+		var dataObj = "";
 		var freight = $(".freight-area input[type='radio']:checked").val();
 
 		if($(".this_address").length==0){
@@ -497,13 +503,17 @@ jQuery(function(){
 			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',address_id:address_id,freight:freight},function(data){
 				if( data.errno == 200){
 					order_id = data.message.order_id;
-					$(".confirm-order-num").text(data.message.order_sn);
-					$(".confirm-order-price").text(data.message.order_price);
+					dataObj = data.message;
+					$(".confirm-order-num").text(dataObj.order_sn);
+					$(".confirm-order-price").text('￥'+(dataObj.order_total_price).toFixed(2));
+					$(".confirm-modal-price .pay-total-price span").text('￥'+(dataObj.order_total_price).toFixed(2));
+					$(".confirm-modal-price .total-price").text('￥'+(dataObj.order_price).toFixed(2));
+					$(".confirm-modal-price .dispatchprice span").text('￥'+(dataObj.freight).toFixed(2));
 					confirm_address_html = '<span>'+data.message.address_province+'</span><span>'+data.message.address_city+'</span><span>'+data.message.address_area+'</span><span>'+data.message.address_address+'</span>'
 					$(".confirm-order-address").append(confirm_address_html);
 					$.each(data.message.order_goods,function(n,value){
 						confirm_html += "<tr><td class='col-img'><img src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+
-						    "<td class='col-price'><span class='price'>$"+value.price+"</span></td><td class='col-num'>"+value.num+"</td><td class='confirm-total-price'>$"+value.price*value.num+"</td></tr>";
+						    "<td class='col-price'><span class='price'>￥"+value.price.toFixed(2)+"</span></td><td class='col-num'>"+value.num+"</td><td class='confirm-total-price'>￥"+(value.price*value.num).toFixed(2)+"</td></tr>";
 					});
 					$(".confirm-table").append(confirm_html);
 				}else{
@@ -521,6 +531,7 @@ jQuery(function(){
 	});
 	$("body").on("blur",".goodsnum",function(){
         var id = $(this).attr("cartid");
+        var goodsnum_this = $(this);
         var reg = new RegExp("^[0-9]*$");
         if(reg.test($(this).val())){
             var num = parseInt( $(this).val() );
@@ -536,7 +547,7 @@ jQuery(function(){
                 num = mb;
                 var price = parseFloat( $("#singleprice_"+id).html() ) * num;
                 $(this).html(price.toFixed(2));
-                updateCart(id,num);
+
                 return;
             }
             if (num <=0){
@@ -548,15 +559,42 @@ jQuery(function(){
             var price = parseFloat( $("#singleprice_"+id).html() ) * num;
             $("#goodsprice_" + id).html(price.toFixed(2));
             $(this).parents(".col-num").siblings(".col-total").find("span").text(parseFloat($(this).attr("price"))*num);
-			totalPrice();
-            updateCart(id,num);
+			
+			$.post("",{page:"1",type:"add_good",id:id,num:num},function(data){
+
+				//0添加成功
+				if( data.result == 0){
+					$.each(data.purchase,function(n,value){
+						if( value.id == id ){
+							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(value.freight.toFixed(3));
+						}
+					});
+					totalPrice();
+				}else{
+					alert(data.info);
+				}
+				
+			},"json");
         }else{
             $(this).val("1");
             var price = parseFloat( $("#singleprice_"+id).html() ) * 1;
             $("#goodsprice_" + id).html(price.toFixed(2));
             $(this).parents(".col-num").siblings(".col-total").find("span").text(parseFloat($(this).attr("price"))*1);
 			totalPrice();
-            updateCart(id,1);
+			$.post("",{page:"1",type:"add_good",id:id,num:1},function(data){
+				//0添加成功
+				if( data.result == 0){
+					$.each(data.purchase,function(n,value){
+						if( value.id == id ){
+							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(value.freight.toFixed(3));
+						}
+					});
+					totalPrice();
+				}else{
+					alert(data.info);
+				}
+				
+			},"json");
         }
 
     });
@@ -586,7 +624,7 @@ function getGoods(){
 			get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'>$"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
 				  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
 				  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
-				  "<td class='shippingPrice'>$<span>2</span></td><td class='col-total'>$<span>"+value.price*value.num+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";
+				  "<td class='shippingPrice'>$<span>"+value.freight.toFixed(3)+"</span></td><td class='col-total'>$<span>"+value.price*value.num+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";
 				  
 			});
 			$(".add-list tr:last-child").after(get_goods_html);
@@ -620,18 +658,17 @@ function totalPrice(){
 		$(".col-total span").each(function(){
 			total_price += parseFloat($(this).text());
 		});
+		$(".total-area .total-price").text("￥"+parseFloat(total_price*exchange_rate).toFixed(2));
 		//0觅海配送，1买家承运
 		if( $(".freight-area input[type='radio']:checked").val() == 0){
 			total_price += total_sPrice;
 			total_price = parseFloat(total_price*exchange_rate).toFixed(2);
-			$(".dispatchprice span").removeClass("userself");
-			$(".total-price").text("￥"+total_price);
-			$(".pay-total-price span").text("￥"+total_price);
+			$(".total-area .dispatchprice span").removeClass("userself");
+			$(".total-area .pay-total-price span").text("￥"+total_price);
 		}else{
 			total_price = parseFloat(total_price*exchange_rate).toFixed(2);
-			$(".dispatchprice span").addClass("userself");
-			$(".total-price").text("￥"+total_price);
-			$(".pay-total-price span").text("￥"+total_price);
+			$(".total-area .dispatchprice span").addClass("userself");
+			$(".total-area .pay-total-price span").text("￥"+total_price);
 		}
 }
 function shippingPrice(){
@@ -640,11 +677,12 @@ function shippingPrice(){
 	var returnVal = 0;
 	$(".shippingPrice span").each(function(){
 		shippingPrice += parseFloat($(this).text());
+		console.log($(this).text());
 	});
 	returnVal = shippingPrice;
 	shippingPrice = parseFloat(shippingPrice*exchange_rate).toFixed(2);
 	$(".isFreightChecked").val(shippingPrice);
-	$(".dispatchprice span").text("￥"+shippingPrice);
+	$(".total-area .dispatchprice span").text("￥"+shippingPrice);
 	return returnVal;
 }
 function stopEvent(event){ //阻止冒泡事件
@@ -665,8 +703,6 @@ function reduceNum(id){
 	}
 	num--;
 	$("#goodsnum_" + id).val(num);
-
-	updateCart(id,num);
 }
 function reduceNewNum(id,obj){
 	var num = parseInt( $(".goodsnum_" + id).val() );
@@ -676,14 +712,23 @@ function reduceNewNum(id,obj){
 	num--;
 	$.post("",{page:"1",type:"add_good",id:id,num:num},function(data){
 		//0添加成功
-
+		if( data.result == 0){
+			$.each(data.purchase,function(n,value){
+				if( value.id == id ){
+					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(value.freight.toFixed(3));
+				}
+			});
+			totalPrice();
+		}else{
+			alert(data.info);
+		}
+		
 	},"json");
 	$(".goodsnum_" + id).val(num);
 
 	var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
 	$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price)*num);
-	totalPrice();
-	updateCart(id,num);
+	
 }
 function addNum(id,maxbuy){	
 	var mb = maxbuy;
@@ -697,8 +742,6 @@ function addNum(id,maxbuy){
 		return;
 	}
 	$("#goodsnum_" + id).val(num);
-
-	updateCart(id,num);
 }
 function addNewNum(id,maxbuy,obj){	
 	var mb = maxbuy;
@@ -713,22 +756,27 @@ function addNewNum(id,maxbuy,obj){
 	}
 	$.post("",{page:"1",type:"add_good",id:id,num:num},function(data){
 		//0添加成功
-
+		if( data.result == 0){
+			$.each(data.purchase,function(n,value){
+				if( value.id == id ){
+					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(value.freight.toFixed(3));
+				}
+				
+			});
+			totalPrice();
+		}else{
+			alert(data.info);
+		}
+		
 	},"json");
 
 	$(".goodsnum_" + id).val(num);
 	var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
 	$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price)*num);
-	totalPrice();
-	updateCart(id,num);
+	
 
 }
-function updateCart(id,num){
-	var url  = '<!--@php  echo mobile_url('mycart', array('op'=>'update'))@-->' + "&id=" + id+"&num=" + num;
-	$.getJSON(url, function(s){
 
-	});
-}
 function setaddress(ids){
      $(".this_address").removeClass("this_address");
 	 $(".address_"+ids).addClass("this_address");

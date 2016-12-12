@@ -361,21 +361,14 @@
 						<!--@php } @-->
 					</span>
 				</p>
-				<!--@php if($group['status'] ==1){ @-->
-				<!--@php if($dish['draw'] == 0){ @-->
-					<!--@php if($item['isprize'] != 0){ @-->
-					<p>
-						中奖状态：
-						<span style="color:red"><!--@php echo $draw_ln[$item['isprize']]; @--></span>
-					</p>
+					<!--@php if($group['status'] == 1){ @-->
+						<!--@php if($item['isdraw'] == 1){ @-->
+							<p>
+								中奖状态：
+								<span style="color:red"><!--@php echo $draw_ln[$item['isprize']]; @--></span>
+							</p>
+						<!--@php } @-->
 					<!--@php } @-->
-				<!--@php }else{ @-->
-					<p>
-						中奖状态：
-						<span style="color:red"><!--@php echo $draw_ln[$item['isprize']]; @--></span>
-					</p>
-				<!--@php } @-->
-				<!--@php } @-->
 				<!--@php } @-->
 				<!--@php if(!empty($item['remark'])){ @-->
 				<p>订单备注：<!--@php echo $item['remark'];@--></p>

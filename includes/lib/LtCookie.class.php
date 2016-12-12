@@ -15,7 +15,7 @@ class LtCookie
 	 */
 	protected function decrypt($encryptedText)
 	{
-		return unserialize($encryptedText);
+		return serialize($encryptedText);
 		$key = $this->secretKey;
 		$cryptText = base64_decode($encryptedText);
 		$ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
@@ -32,7 +32,7 @@ class LtCookie
 	 */
 	protected function encrypt($plainText)
 	{
-		return serialize($plainText);
+		return unserialize($plainText);
 		$key = $this->secretKey;
 		$ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($ivSize, MCRYPT_RAND);

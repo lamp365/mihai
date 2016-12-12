@@ -169,7 +169,7 @@
             </div><!-- #sidebar-shortcuts -->
 
             <ul class="nav nav-list">
-                <?php if (empty($menurule) || in_array("shop-mess",$menurule)) { ?>
+                <?php if (checkAdmin() || in_array("shop-mess",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -179,7 +179,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?>        <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?>        <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('换购管理 > 换购列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'mess','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         换购列表
@@ -217,7 +217,7 @@
                     </li>
                 <?php }?>
 
-                <?php if (empty($menurule) ||in_array("shop-dish",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("shop-dish",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -227,7 +227,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?>                 <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('出售中的宝贝 - > 宝贝列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'list'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         宝贝列表
@@ -267,7 +267,7 @@
 
 
 
-                <?php if (empty($menurule) ||in_array("shop-category",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("shop-category",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -278,7 +278,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?>                 <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('商品管理 - > 商品列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'goods','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         产品库列表
@@ -323,7 +323,7 @@
                     </li>
                 <?php }?>
 
-                <?php if (empty($menurule) ||in_array("shop-order",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("shop-order",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -334,7 +334,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?>
+                            <?php if (checkAdmin()) { ?>
                                 <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('订单管理 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -99))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
@@ -376,7 +376,7 @@
                 <?php }
                 if(is_array($modulelist)) {
                     foreach($modulelist as $key=>$module) {
-                        if(empty($menurule) ||in_array($module['name'],$menurule)){
+                        if(checkAdmin() ||in_array($module['name'],$menurule)){
                             ?>
                             <li>
                                 <!-- 导航第一级 -->
@@ -387,7 +387,7 @@
                                 </a>
 
                                 <ul class="submenu">
-                                    <?php if (empty($menurule)) { ?>
+                                    <?php if (checkAdmin()) { ?>
                                         <?php  foreach($module['menus'] as $menu) { ?>
 
                                             <li>
@@ -418,7 +418,7 @@
                         <?php }  }}   ?>
 
 
-                <?php if (empty($menurule) ||in_array("shop-taxrate",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("shop-taxrate",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -427,7 +427,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('税率管理 - > 税率列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'taxs','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         税率列表
@@ -458,7 +458,7 @@
                     </li>
                 <?php }?>
 
-                <?php if (empty($menurule) ||in_array("shop-set",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("shop-set",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -467,7 +467,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('个性管理 - > 热搜词列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'hottopic','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         热搜词列表
@@ -502,7 +502,7 @@
                 <?php   }  ?>
 
 
-                <?php if (empty($menurule) ||in_array("member-list",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("member-list",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -513,7 +513,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li>
                                     <a onclick="navtoggle('会员管理 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'list'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>
@@ -567,7 +567,7 @@
 
 
 
-                <?php if (empty($menurule) ||in_array("bonus-bonus",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("bonus-bonus",$menurule)) { ?>
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-gift"></i>
@@ -577,7 +577,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li> <a  onclick="navtoggle('营销管理 - > 优惠券管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'bonus','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         优惠券管理
@@ -608,7 +608,7 @@
                     </li>
                 <?php }?>
 
-                <?php if (empty($menurule) ||in_array("shop-config",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("shop-config",$menurule)) { ?>
 
                     <li>
                         <!-- 导航第一级 -->
@@ -620,7 +620,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
 
                                 <li> <a  onclick="navtoggle('商城配置 - > 商城基础设置')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'config'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
@@ -689,7 +689,7 @@
                     </li>
                 <?php }?>
 
-                <?php if (empty($menurule) ||in_array("template-set",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("template-set",$menurule)) { ?>
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-cogs"></i>
@@ -697,7 +697,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li>
                                     <a  onclick="navtoggle('模板设置 - > 商城主题模板')"  href="<?php  echo create_url('site', array('name' => 'shopwap','do' => 'themes','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>商城主题模板
@@ -734,7 +734,7 @@
                     </li>
                 <?php  } ?>
 
-                <?php if (empty($menurule) ||in_array("weixin-weixin",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("weixin-weixin",$menurule)) { ?>
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-comments"></i>
@@ -744,7 +744,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li>
                                     <a onclick="navtoggle('微信设置 - > 微信号设置 ')"  href="<?php  echo create_url('site', array('name' => 'weixin','do' => 'setting'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>
@@ -790,7 +790,7 @@
                 <?php }?>
 
 
-                <?php if (empty($menurule) ||in_array("user-user",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("user-user",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -801,7 +801,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
                                 <li>
                                     <a onclick="navtoggle('权限管理 - > 管理员列表 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'user','op' => 'listuser'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>

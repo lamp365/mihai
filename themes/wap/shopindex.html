@@ -61,17 +61,22 @@
 			.per-mhnews ul{
 				overflow: hidden;				
 				width: 100%;
-				padding: 0 2%;
+    			box-sizing: border-box;
 			}
 			.per-mhnews ul li{
-				width: 47%;
-				margin-right: 2%;
-				overflow: hidden;
-				float: left;				
-				margin-bottom: 5%;
+			    width: 47%;
+			    overflow: hidden;
+			    float: left;
+			    margin-bottom: 5%;
+			    box-sizing: border-box;
 			}
-			.per-mhnews ul li:first-child{
-				margin-left: 0;
+			.per-mhnews ul li:nth-child(odd){
+				margin-left: 2%;
+				margin-right: 1%;
+			}
+			.per-mhnews ul li:nth-child(even){
+				margin-left: 1%;
+				margin-right: 2%;
 			}
 			.per-mhnews ul li a img{
 				width: 100%;
@@ -166,7 +171,7 @@
 				background: rgb(243,243,243);
 				width: 100%;
 				overflow: hidden;
-				padding: 3% 2% 3% 0%;
+				padding: 3% 2% 0% 0%;
 			}
 			
 			.column{
@@ -189,6 +194,7 @@
 				padding: 3%;
 				box-sizing: border-box;
 			}
+			
 			.column .pernote .note-content .note-men{
 				margin: 3% 0;
 			}
@@ -200,6 +206,18 @@
 				display: inline-block;
 				margin: 5px 0 0 0;
 				font-size: 8px;
+			}
+			.note-content h3{
+				color: #333;
+				font-family: "微软雅黑";
+				height: 42px;
+				line-height: 21px;
+				overflow: hidden;
+			} 
+			.note-content p{
+				color: #7F7F7F;
+				height: 84px;
+				overflow: hidden;
 			}
 		</style>
         <div class="adv_mid">
@@ -231,7 +249,14 @@
 				    				</a>
 				    				<div style="overflow: hidden;">
 				    					<!--文章的热门标签-->
-					    				<span class="hottag">热门</span>
+					    				<?php if($val['iscommend'] == 1 && $val['ishot'] == 0) {?>			    				
+					    					<span class="hottag">推荐</span>
+					    				<?php }elseif($val['ishot'] == 1 && $val['iscommend'] == 0){ ?>
+					    					<span class="hottag">热门</span>
+					    				<?php }elseif($val['iscommend'] == 1 && $val['ishot'] == 1){ ?>
+					    					<span class="hottag">推荐</span>
+					    					<span class="hottag" style="margin-left: 10px;">热门</span>
+					    				<?php } ?>
 					    				<!--查看了文章的人数-->
 					    				<span class="see">
 					    					<img src="__RESOURCE__/recouse/images/seenum.png" />
@@ -243,7 +268,7 @@
 				    		</ul>
     					</div>
     					<div class="seemore">
-				    		<a target="_blank" href="<!--@php  echo mobile_url('article_list',array('name'=>'addon8'))@-->" style="color:#E53A57 ;">查看更多</a>    		
+				    		<a  href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'healty'))?>" style="color:#E53A57 ;">查看更多</a>    		
 				    	</div>
 					</div>
 					<!--觅海头条-->
@@ -265,7 +290,14 @@
 				    				</a>
 				    				<div style="overflow: hidden;">
 				    					<!--文章的热门标签-->
-					    				<span class="hottag">热门</span>
+					    				<?php if($val['iscommend'] == 1 && $val['ishot'] == 0) {?>			    				
+					    					<span class="hottag">推荐</span>
+					    				<?php }elseif($val['ishot'] == 1 && $val['iscommend'] == 0){ ?>
+					    					<span class="hottag">热门</span>
+					    				<?php }elseif($val['iscommend'] == 1 && $val['ishot'] == 1){ ?>
+					    					<span class="hottag">推荐</span>
+					    					<span class="hottag" style="margin-left: 10px;">热门</span>
+					    				<?php } ?>
 					    				<!--查看了文章的人数-->
 					    				<span class="see">
 					    					<img src="__RESOURCE__/recouse/images/seenum.png" />
@@ -277,7 +309,7 @@
 				    		</ul>
     					</div>
     					<div class="seemore" style="margin-bottom: 10px;">
-				    		<a target="_blank" href="<!--@php  echo mobile_url('article_list',array('name'=>'addon8'))@-->" style="color:#E53A57 ;">查看更多</a>    		
+				    		<a href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline'))?>" style="color:#E53A57 ;">查看更多</a>    		
 				    	</div>
 					</div>
 					<!--晒物笔记-->
@@ -287,19 +319,23 @@
 						</div>
 						<!--笔记列表-->
 						<div class="notelist">
-							<!--第一列，因为要有瀑布流的效果-->
+							<!--第一列，因为要有瀑布流的效果,所以就分列写-->
 							<div class="column one">
 								<!--第一列的第一条笔记-->
 								<div class="pernote">
-									<img src="__RESOURCE__/recouse/images/bg3.png" />
+									<a href="#">
+										<img src="__RESOURCE__/recouse/images/bg3.png" />
+									</a>
 									<div class="note-content">
-										<!--笔记标题-->
-										<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
-										<!--笔记内容-->
-										<p>
-											这些写了好久
-											感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
-										</p>
+										<a href="#">
+											<!--笔记标题-->
+											<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
+											<!--笔记内容-->
+											<p>
+												这些写了好久
+												感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
+											</p>
+										</a>
 										<!--发布人-->
 										<div class="note-men">
 											<!--头像-->
@@ -311,15 +347,19 @@
 								</div>
 								<!--第二条笔记-->
 								<div class="pernote">
-									<img src="__RESOURCE__/recouse/images/bg3.png" />
+									<a href="#">
+										<img src="__RESOURCE__/recouse/images/bg3.png" />
+									</a>	
 									<div class="note-content">
-										<!--笔记标题-->
-										<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
-										<!--笔记内容-->
-										<p>
-											这些写了好久
-											感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
-										</p>
+										<a href="#">
+											<!--笔记标题-->
+											<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
+											<!--笔记内容-->
+											<p>
+												这些写了好久
+												感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
+											</p>
+										</a>
 										<!--发布人-->
 										<div class="note-men">
 											<!--头像-->
@@ -333,15 +373,19 @@
 							<!--第二列-->
 							<div class="column two">
 								<div class="pernote">
-									<img src="__RESOURCE__/recouse/images/bg333.png" />
+									<a href="#">
+										<img src="__RESOURCE__/recouse/images/bg333.png" />
+									</a>
 									<div class="note-content">
-										<!--笔记标题-->
-										<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
-										<!--笔记内容-->
-										<p>
-											这些写了好久
-											感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
-										</p>
+										<a href="#">
+											<!--笔记标题-->
+											<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
+											<!--笔记内容-->
+											<p>
+												这些写了好久
+												感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
+											</p>
+										</a>
 										<!--发布人-->
 										<div class="note-men">
 											<!--头像-->
@@ -352,15 +396,19 @@
 									</div>		
 								</div>
 								<div class="pernote">
-									<img src="__RESOURCE__/recouse/images/bg3.png" />
+									<a href="#">
+										<img src="__RESOURCE__/recouse/images/bg3.png" />
+									</a>
 									<div class="note-content">
-										<!--笔记标题-->
-										<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
-										<!--笔记内容-->
-										<p>
-											这些写了好久
-											感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
-										</p>
+										<a href="#">
+											<!--笔记标题-->
+											<h3>想不到瘦腿肿的最难瘦的瘦肌肉腿爽分享给你啊</h3>
+											<!--笔记内容-->
+											<p>
+												这些写了好久
+												感觉自己balabala的像个老太婆 ,但是都是  自己瘦腿心得也希望能帮助你们一起
+											</p>
+										</a>
 										<!--发布人-->
 										<div class="note-men">
 											<!--头像-->
@@ -374,7 +422,7 @@
 						</div>
 						<div style="width: 100%;background: rgb(243,243,243);padding-bottom: 10px;">
 							<div class="seemore">
-					    		<a target="_blank" href="<!--@php  echo mobile_url('article_list',array('name'=>'addon8'))@-->" style="color:#E53A57 ;">查看更多</a>    		
+					    		<a href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note'))?>" style="color:#E53A57 ;">查看更多</a>    		
 					    	</div>
 				    	</div>
 					</div>

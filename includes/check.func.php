@@ -54,8 +54,8 @@ function checkrule($modname, $moddo, $modop)
 //        ppd($tmpdata);
         $hasPower = findOneRule($tmpdata,$userIsHasRule);
 
-    }else{   //一条规则都没有则还没设置，默认都可以查看
-        $hasPower = true;
+    }else{   //一条规则都没有则还没设置，默认不可以看，但是管理员root给看
+        $hasPower = checkAdmin();
     }
     return $hasPower;
 }

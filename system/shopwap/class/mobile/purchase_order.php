@@ -47,7 +47,7 @@ switch ( $op ){
 		if ( empty($_GP['id']) ){
               die(showAjaxMess('1002', '商品参数异常')); 
      	}
-        $content = mysqld_select("SELECT content FROM ".table('shop_dish')." WHERE id = ".$_GP['id']." limit 1");
+        $content = mysqld_select("SELECT content,title FROM ".table('shop_dish')." WHERE id = ".$_GP['id']." limit 1");
 		die(showAjaxMess('200', $content)); 
 		break;
 	case 'add_goods':
@@ -104,9 +104,18 @@ switch ( $op ){
 		    )));
 		}
         $max_purchase = add_goods($_GP['id'], $_GP['num'],$member['parent_roler_id'],$member['son_roler_id']);
+        if ( $max_purchase > 0 ){
+             foreach( $purchase as $key=>$purchase_value ){
+                  $query = mysqld_select("SELECT a.gid,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$key);
+                  $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.2;
+		          $freight    =  $query['weight'] * $purchase_value['num'] * $coefficient * 2.2046 * 3.25 ;
+				  $purchase[$key]['freight'] = $freight;
+			 }
+		}
 		die(json_encode(array(
 			   "result"=>0,
 			   "max_purchase" => $max_purchase,
+			   'purchase'=>$purchase,
 			   "info"=> '添加成功'
 		    )));
 	    exit;
@@ -144,6 +153,16 @@ switch ( $op ){
             $purchase = array();
 		}
 		$max_purchase = count($purchase);
+	
+		// 开始设置运费
+		if ( $max_purchase > 0 ){
+             foreach( $purchase as $key=>$purchase_value ){
+                  $query = mysqld_select("SELECT a.gid,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$key);
+                  $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.2;
+		          $freight    =  $query['weight'] * $purchase_value['num'] * $coefficient * 2.2046 * 3.25 ;
+				  $purchase[$key]['freight'] = $freight;
+			 }
+		}
 		echo json_encode(array(
 			   'result' => 0,
 			   "max_purchase" => $max_purchase,
@@ -192,7 +211,7 @@ function add_goods($id,$num,$v1,$v2){
 function model_good($id,$v1,$v2){
      $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = ".$v1." and a.v2 =  ".$v2);
 	 if ( $find_good ){
-	      $model_good = array('id'=>$id,'title'=>$find_good['title'],'total'=>$find_good['total'],'price'=>$find_good['vip_price'],'img'=>$find_good['thumb']);
+	      $model_good          = array('id'=>$id,'title'=>$find_good['title'],'total'=>$find_good['total'],'price'=>$find_good['vip_price'],'img'=>$find_good['thumb']);
 		  return $model_good;
 	 }else{
           return false;

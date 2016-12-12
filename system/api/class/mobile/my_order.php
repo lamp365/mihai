@@ -47,7 +47,7 @@
     		$where.= " AND a.status=$u_status AND b.iscomment=0";
     	}elseif ($status == 2) {
     		// 团购中
-    		$where.= " AND e.status IN (1,2) AND a.isprize=0 AND e.finish=0";
+    		$where.= " AND e.status<>0 AND e.finish=0";
     	}elseif ($status == 6) {
     		// 售后单
     		$where.= " AND b.status IN (1, 2, 3, 4)";
@@ -63,7 +63,7 @@
     // 	array('where' => $where, 'limit' => ($pindex - 1) * $psize . ',' . $psize)
     // 	);
 
-    $list = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id, a.ordersn, a.status, a.price as total_price, a.taxprice, a.dispatchprice, a.isprize, b.id as bid, b.goodsid, b.total, b.seller_openid, b.price as goodprice, b.iscomment, b.shop_type, b.status as b_status, e.status as group_status, c.group_id, d.shopname, a.createtime FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('openshop')." as d on b.seller_openid=d.openid left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+    $list = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id, a.ordersn, a.status, a.price as total_price, a.taxprice, a.dispatchprice, a.isprize, a.isdraw, b.id as bid, b.goodsid, b.total, b.seller_openid, b.price as goodprice, b.iscomment, b.shop_type, b.status as b_status, e.status as group_status, c.group_id, d.shopname, a.createtime FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('openshop')." as d on b.seller_openid=d.openid left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
     // 总记录数
 	$total = mysqld_select("SELECT FOUND_ROWS() as total;");
 
@@ -82,8 +82,8 @@
 					"where"=>"a.id = ".$l_v['goodsid'],
 				));
 	    	if ($status == 2) {
-	    		// 团购商品需判断是否抽奖团
-	    		if ($good['draw'] == '0') {
+	    		// 团购商品需判断订单是否抽奖订单
+	    		if (intval($l_v['isdraw']) == 0) {
 	    			if ($l_v['group_status'] == '1') {
 	    				unset($list[$l_k]);
 	    				$total['total'] -= 1;
@@ -92,15 +92,15 @@
 	    		}
 	    	}
 	    	if ($status == 3) {
+	    		// 未成团不在待发货
+	    		if ($l_v['group_status'] != '1') {
+	    			unset($list[$l_k]);
+    				$total['total'] -= 1;
+    				continue;
+	    		}
 	    		// 抽奖团只有中奖之后才到待发货
-	    		if ($good['draw'] == '1') {
-	    			if ($l_v['isprize'] != '1') {
-	    				unset($list[$l_k]);
-	    				$total['total'] -= 1;
-	    				continue;
-	    			}
-	    		}elseif ($good['draw'] == '0') {
-	    			if ($l_v['group_status'] == '2') {
+	    		if ($l_v['isdraw'] == '1') {
+	    			if ($l_v['isprize'] != '1' AND $l_v['group_status'] == '1') {
 	    				unset($list[$l_k]);
 	    				$total['total'] -= 1;
 	    				continue;

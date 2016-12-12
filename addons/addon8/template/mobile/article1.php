@@ -139,6 +139,7 @@
 	}
 	.heal-foot ul li{
 		float: left;
+		width: 30%;
 		padding: 0px 0px 0px 15px;
 	}
 	.heal-foot ul li a img{
@@ -147,7 +148,7 @@
 	.content p{
 		line-height: 32px;
 	}
-	.content img{width: 100%;height: 100%;}
+	.content img{width: 100%;display: block;}
 	
 	/*下载app的图片*/
 	#downapp{
@@ -209,7 +210,7 @@
 	<?php if($notApp){ ?>
 	 <div class="top_header" style="border-bottom: none;">
 	    <div class="header_left return">
-	        <a href="javascript:;" class="return" style="margin-top: 4px;"><img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/openshop/images/return.png"  height="18px"></a>
+	        <a href="javascript:;" class="return" id="return" style="margin-top: 4px;"><img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/openshop/images/return.png"  height="18px"></a>
 	    </div>
 	    <div class="header_title" style="color: #000;font-size: 16px;font-weight: bold;line-height: 45px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width: 90%;left: 30px;">
 			<?php echo $article['title'];?>
@@ -247,7 +248,10 @@
 
 		<!--文章大图-->
 		<?php if(!empty($article['thumb'])){ ?>
-		<img style="width: 100%;display: block;" src="<?php echo $article['thumb'];?>" />
+			<img style="width: 100%;display: block;" src="<?php echo $article['thumb'];?>" />
+		<?php }else { ?>
+			<!--如果这篇文章没有大图，就放一个空的撑开高度，以免文章标题跑上去-->
+			<div style="height: 70px;"></div>
 		<?php } ?>
 		<!--文章内容详情开始-->
 		<div class="health-detail">
@@ -262,7 +266,7 @@
 
         	<!--评论-->
         	<div style="padding:5% 5% 0 5%;">
-        		  <img style="width: 90%;" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/comment@3x.png" />
+        		  <img style="width: 100%;" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/comment@3x.png" />
         	</div>
 
 			<?php if(!empty($article_comment)){ ?>
@@ -325,13 +329,13 @@
 <?php } ?>
 
 <script>
-	$(".return").click(function(){
+	$("#return").click(function(){
         //没有上一页就返回首页
-        if(document.referrer.length == 0){
+        if(document.referrer.length == 0){        	
 			  window.location.href = "index.php";
 		}else{				
 			 var newHref = document.referrer;
-			 $(".return").attr("href",newHref);							
+			 $("#return").attr("href",newHref);							
 		}
 		
     })

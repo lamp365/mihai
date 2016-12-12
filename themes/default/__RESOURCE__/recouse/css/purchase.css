@@ -755,3 +755,19 @@ border-top: 1px solid #d2d2d2;
 .dispatchprice .userself{
 	text-decoration: line-through;
 }
+.confirm-modal-price p{
+	padding: 0;
+	margin: 0;
+}
+.modal-footer{
+	padding: 0!important;
+}
+.confirm-modal-price{
+	border-bottom: 1px dashed #afafaf;
+	margin-bottom: 15px;
+    padding: 15px;
+}
+.btn-success{
+	margin-bottom: 15px!important;
+    margin-right: 15px!important;
+}

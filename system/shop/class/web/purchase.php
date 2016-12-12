@@ -56,14 +56,19 @@ if ($operation == 'display') {
 	}
 
 	$status_arr = array(-2,-4,14,34,-121,-321);//退货，退款 退货完成  退款完成 退款关闭  退货关闭 另外处理
-	if ($status == '-99' || in_array($status,$status_arr)) {
-		//不用处理
+	if(in_array($status,$status_arr)){
+		//不处理
+
+	}else if ($status == '-99' ) {
+		//平台发货订单
+		$condition .= " AND A.sendtype=0";
+	}else if($status == '-100'){
+		//为自提的订单
+		$condition .= " AND A.sendtype=1";
 	}else{
 		$condition .= " AND A.status = '" . intval($status) . "'";
 	}
-	if ($status == '3') {
-		$condition .= " and ( A.status = 3 or A.status = -5 or A.status = -6)";
-	}
+
 	$dispatchs    = mysqld_selectall("SELECT * FROM " . table('shop_dispatch') );
 	$dispatchdata = array();
 	if(is_array($dispatchs)) {

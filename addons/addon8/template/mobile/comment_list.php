@@ -79,7 +79,7 @@
 	<!--头部-->
 		<div class="top_header" style="border-bottom: none;">
 		    <div class="header_left return">
-		        <a href="javascript:;" class="return" style="margin-top: 4px;">
+		        <a href="javascript:;" class="return" id="return" style="margin-top: 4px;">
 		       		 <img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/openshop/images/return.png"  height="18px">
 		        </a>
 		    </div>
@@ -138,3 +138,15 @@
 		</div>
 
 <?php include themePage('footer'); ?>
+<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap/'. '/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>	
+<script>
+	$("#return").on("click",function(){
+		alert(document.referrer);		
+		if(document.referrer.length == 0){
+			  window.location.href = "index.php";
+		}else{				
+			 var newHref = document.referrer;
+			 $("#return").attr("href",newHref);							
+		}
+	})
+</script>

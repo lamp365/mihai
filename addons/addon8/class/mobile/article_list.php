@@ -8,16 +8,19 @@ $cfg=globaSetting();
 
    if($op == 'healty'){
 	   //健康文化
+	   $title  = '健康文化';
 	   $sql    = "SELECT * FROM".table('addon8_article')." where state =6  order by displayorder desc,id desc {$limit}";
 	   $sqlnum = "SELECT count(id) FROM".table('addon8_article')." where state =6";
    }else if($op == 'headline'){
 	   //觅海头条
+	   $title  = '觅海头条';
 	   $sql    = "SELECT * FROM".table('addon8_article')." where state =6  order by displayorder desc,id desc {$limit}";
 	   $sqlnum = "SELECT count(id) FROM".table('addon8_article')." where state =6";
    }else if($op == 'note'){
 	   //觅海笔记
-	   $sql    = "SELECT * FROM".table('addon8_article')." where state =6  order by displayorder desc,id desc {$limit}";
-	   $sqlnum = "SELECT count(id) FROM".table('addon8_article')." where state =6";
+	   $title  = '觅海笔记';
+	   $sql    = "SELECT * FROM".table('note')." order by note_id desc {$limit}";
+	   $sqlnum = "SELECT count(note_id) FROM".table('note');
    }
 
 	$article_list =  mysqld_selectall($sql);

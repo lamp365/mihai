@@ -52,7 +52,7 @@ function appWakeUp(url,isshow_down_tip){
     if(isshow_down_tip){   //是否显示提醒下载 提示条
         //显示下载提示条
         app_show_tip();
-        document.getElementById("appdownload").onclick = function(){
+        document.getElementById("appdownloadlink").onclick = function(){
             //点击则下载app
             app_click_to_down(url);
         };
@@ -64,6 +64,7 @@ function appWakeUp(url,isshow_down_tip){
 function appDownLoad(url){
     //先唤醒app
     app_wake_to_up();
+
     //点击则下载app
     app_click_to_down(url);
 }
@@ -86,6 +87,8 @@ function app_click_to_down(url){
     var ua = navigator.userAgent.toLowerCase();
     var iPhoneUrl = "";
     var AndroidUrl = "";
+    var Apply_AndroidUrl = "";
+    var Apply_iPhoneUrl = "";
     ajax({
         url: url,              //请求地址
         type: "POST",                       //请求方式
@@ -98,20 +101,27 @@ function app_click_to_down(url){
             var obj = response.message;
             iPhoneUrl = obj.iPhoneUrl;
             AndroidUrl = obj.AndroidUrl;
+            Apply_iPhoneUrl = obj.Apply_iPhoneUrl;
+            Apply_AndroidUrl = obj.Apply_AndroidUrl;
+            if( ua.match(/MicroMessenger/i) == 'micromessenger'){
+                if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+                   window.open(Apply_iPhoneUrl); 
+                }
+                if(navigator.userAgent.match(/android/i)){
+                   window.open(Apply_AndroidUrl);  
+                }
+            }
+            if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+                window.open(iPhoneUrl);
+            }
+            if(navigator.userAgent.match(/android/i)){
+                window.open(AndroidUrl);
+            }
         },
         fail: function (status) {
             // 此处放失败后执行的代码
         }
     });
-    if( ua.match(/MicroMessenger/i) == 'micromessenger'){
-        //alert("请在浏览器中打开");
-    }
-    if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-        window.location.href = iPhoneUrl;
-    }
-    if(navigator.userAgent.match(/android/i)){
-        window.location.href = AndroidUrl;
-    }
 }
 
 
@@ -120,17 +130,16 @@ function app_show_tip(){
     var img = document.createElement("img");
     var wx_nav    = document.getElementsByClassName("wx_nav")[0];
     var foot_menu = document.getElementsByClassName("foot_menu")[0];
-
+    var divlink = document.createElement("div");
     if(wx_nav || foot_menu){
         div.className = "appdownload-hasfooter";
-        div.style = "position:fixed;left:0;z-index:999;bottom:45px;width:100%;display:block";
     }else{
         div.className = "appdownload-nofooter";
-        div.style = "position:fixed;left:0;z-index:999;bottom:0;width:100%;display:block";
     }
     div.id = "appdownload";
-    img.style = "width:100%";
-    img.src ="images/down_banner.png";
+    divlink.id = "appdownloadlink";
+    img.src ="http://192.168.1.85/WEB2/xiaowu/images/down_banner.png";
     div.appendChild(img);
+    div.appendChild(divlink);
     document.body.appendChild(div);
 }

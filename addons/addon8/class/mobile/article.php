@@ -45,6 +45,18 @@
 
 		}else if($op == 'comment_list'){ //评论更多
 			include addons_page('comment_list');
+		}else if($op == 'note'){ //笔记内容页面
+			if (is_mobile_request()){
+				include addons_page('wap_note');
+			}else{
+				include addons_page('pc_note');
+			}
+		}else if($op == 'headline'){ //头条内容页面
+			if (is_mobile_request()){
+				include addons_page('wap_headline');
+			}else{
+				include addons_page('pc_headline');
+			}
 		}
 
   	 	 

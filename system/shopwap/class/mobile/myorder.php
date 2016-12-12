@@ -18,9 +18,10 @@ $status_ln = array(
 );
 // -1等待开奖 0未中奖 1中奖
 $draw_ln = array(
-    "-1"=>"等待开奖",
+    "3"=>"等待开奖",
     "2"=>"很遗憾，未中奖",
     "1"=>"恭喜！中奖",
+    "0"=>"非抽奖订单"
 );
 // 进行订单的自动关闭操作
 order_auto_close();
@@ -217,11 +218,6 @@ if ($op == 'returnpay') {
 
     if ($item['ordertype'] == '1') {
         $dish = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=".$goods[0]['goodsid']);
-        if ($dish['draw'] == '1') {
-            if ($item['isprize'] == '0') {
-                $item['isprize'] = '-1';
-            }
-        }
     }
 
     if($item['ordertype'] == 1){

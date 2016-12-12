@@ -268,9 +268,35 @@ function update_all_shop_status(){
 
 // 抽奖团处理
 function draw_team_buy($d_info) {
-	if ($d_info['draw'] == 0) {
+	if ($d_info['draw'] == '0') {
 		// 未开启抽奖
 		return false;
+	}
+	if ($d_info['draw'] == '1') {
+		// 已开启抽奖把成团并且已付款的订单设为待开奖
+		$group = mysqld_selectall("SELECT * FROM ".table('team_buy_group')." WHERE dish_id=".$d_info['id']." AND status=1 AND finish=0");
+		if (!empty($group)) {
+			foreach ($group as $gk1 => $gv1) {
+				if (strtotime($gv1['createtime']) > $d_info['timestart']) {
+					$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$gv1['group_id']);
+					foreach ($group_member as $gmv1) {
+						mysqld_query("UPDATE ".table('shop_order')." SET isprize=3 WHERE id=".$gmv1['order_id']." AND status=1 AND isprize=0");
+					}
+				}
+			}
+		}
+		// 所有订单设为抽奖团
+		$al_group = mysqld_selectall("SELECT * FROM ".table('team_buy_group')." WHERE dish_id=".$d_info['id']." AND finish=0");
+		if (!empty($al_group)) {
+			foreach ($al_group as $agk => $agv) {
+				if (strtotime($agv['createtime']) > $d_info['timestart']) {
+					$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$agv['group_id']);
+					foreach ($group_member as $agmv) {
+						mysqld_query("UPDATE ".table('shop_order')." SET isdraw=1 WHERE id=".$agmv['order_id']." AND isdraw=0");
+					}
+				}
+			}
+		}
 	}
 	if ($d_info['timeend'] > time()) {
 		// 活动未结束

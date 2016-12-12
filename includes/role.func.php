@@ -98,14 +98,14 @@ function isHasPowerToShow($modname, $moddo, $modop, $act_type = '',$id=''){
 //    file_put_contents('sql.txt',"{$modname}-{$moddo}-{$modop}-{$id}\n\r",FILE_APPEND);
     $hasPower = false;
     $user_rule = mysqld_selectall("select id,role_id from ". table('user_rule') ." where uid={$_SESSION['account']['id']}");
-    if(!empty($user_rule)){   //空的话，说明该用户一个规则都没有设置，默认可以查看所有的
+    if(!empty($user_rule)){   //空的话，说明该用户一个规则都没有设置，不可以查看
         foreach($user_rule as $val){
             if($val['role_id'] == $id ){
                 $hasPower = true;
             }
         }
     }else{
-        $hasPower = true;
+        $hasPower = checkAdmin();
     }
     return $hasPower;
 }
@@ -200,5 +200,18 @@ function getUserHasDbRule($uid,$hebin=1){
         return $data;
     }else{
         return $result;
+    }
+}
+
+/**
+ * @return bool
+ * 用于左侧菜单，对于管理员root,全部可见。
+ */
+function checkAdmin(){
+    $username     =	$_SESSION['account']['username'];
+    if($username == 'root'){
+        return true;
+    }else{
+        return false;
     }
 }

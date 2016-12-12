@@ -58,7 +58,7 @@ function get_order($array=array()) {
     if (!empty($array['where'])){
         $where = $array['where'];
     }
-    $list = mysqld_select("SELECT id, status, taxprice, dispatchprice, price, isprize, addressid, address_address, address_province, address_realname, address_city, address_mobile, address_area, openid, ordersn, dispatch, goodsprice, hasbonus, bonusprice, updatetime, express, expresssn, expresscom, createtime, paytime, sendtime, completetime, closetime, ifcustoms FROM ".table('shop_order')." WHERE $where");
+    $list = mysqld_select("SELECT id, status, taxprice, dispatchprice, price, isprize, isdraw, addressid, address_address, address_province, address_realname, address_city, address_mobile, address_area, openid, ordersn, dispatch, goodsprice, hasbonus, bonusprice, updatetime, express, expresssn, expresscom, createtime, paytime, sendtime, completetime, closetime, ifcustoms FROM ".table('shop_order')." WHERE $where");
 
     $group = mysqld_select("SELECT a.group_id, a.status as group_status FROM ".table('team_buy_group')." as a left join ".table('team_buy_member')." as b on a.group_id=b.group_id WHERE b.order_id=".$list['id']);
 

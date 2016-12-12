@@ -39,17 +39,33 @@ switch ( $_GP['api'] ){
         if ( !$defaultAddress ){
             die(showAjaxMess('1002', '收货地址数据异常')); 
 		}
+		// 获取运费状态
+		if ( !isset($_GP['freight']) ){
+            die(showAjaxMess('1002', '配送方式获取异常'));
+		}
         // 分离有货无货状态
         $had_goods_total = array();
 		$had_goods_price = 0;
+		$shiprice = 0;
         foreach( $goods as $key=>$goods_value ){
              $dish_vip_good = mysqld_select("SELECT A.total,A.gid, B.vip_price FROM ".table('shop_dish')." as A LEFT JOIN ".table('shop_dish_vip')." as B ON A.id = B.dish_id WHERE A.id = ".$goods_value['id']." AND B.v1= ".$member['parent_roler_id']." AND B.v2 = ".$member['son_roler_id']." limit 1");
+			 if ( $_GP['freight'] == 1 ){
+                 $freight = 0;
+				 $sendtype = 1;
+			 }else{
+				 $sendtype = 0;
+                 // 设置配送运费
+                 $goods = mysqld_select("SELECT weight,coefficient FROM ".table('shop_goods')." WHERE id = ".$dish_vip_good['gid']);
+				 $goods['coefficient'] = $goods['coefficient'] > 0 ? $goods['coefficient'] : 1.2;
+				 $freight = $goods['weight'] * $goods_value['num'] * $goods['coefficient'] * 2.2046 * 3.25 * $exchange_rate_value;
+			 }
 			 if ( $dish_vip_good ){
 				 // 更新产品批发价格，不以缓存为主
 				 $goods_value['price'] = $dish_vip_good['vip_price'] * $exchange_rate_value;
 				 $goods_value['gid'] = $dish_vip_good['gid'];
                  $had_goods_total[] = $goods_value;
 			     $had_goods_price += $goods_value['price'] * $goods_value['num'];
+				 $shiprice += $freight;
 			 }else{
                  continue;
 			 }
@@ -63,13 +79,13 @@ switch ( $_GP['api'] ){
 		$data = array(
                 'openid' => $openid,	
                 'ordersn' => $ordersns,
-                'price' => $had_goods_price, // 产品金额+运费
-                'dispatchprice' => 0,
+                'price' => $had_goods_price + $shiprice, // 产品金额+运费
+                'dispatchprice' => $shiprice,
                 'goodsprice' => $had_goods_price,
 				'ordertype' => -2,   // 订单类型，默认为一般订单72小时关闭
                 'status' => 0,
                 'paytype'=> 2,
-                'sendtype' => 0,
+                'sendtype' => $sendtype,
                 'paytypecode' => 'alipay',
 				'relation_uid'=> $member['relation_uid'] ,// 业务员的ID
                 'paytypename' => '支付宝',
@@ -109,8 +125,10 @@ switch ( $_GP['api'] ){
                 'address_area' => $defaultAddress['area'],
                 'address_address' => $defaultAddress['address'],
 				'order_id'=> $orderid,
+				'freight' => $shiprice,
 				'order_sn'=> $ordersns,
 			    'order_price' => $had_goods_price,
+				'order_total_price' => $had_goods_price + $shiprice,
 				'order_goods'=> $had_goods_total
 			);
 			 die(showAjaxMess('200', $order_info)); 
