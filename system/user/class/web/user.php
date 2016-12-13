@@ -15,90 +15,69 @@ defined('SYSTEM_IN') or exit('Access Denied');
 	  }
 
 	  if ($operation == 'rule') {
+		  //设置权限
 		  $id      = $_GP['id'];
-		  $account = mysqld_select('SELECT * FROM '.table('user')." WHERE  id=:id" , array(':id'=> $id));
+		  $rule    = mysqld_select('SELECT * FROM '.table('rolers')." WHERE  id={$id} and type=1");
+		  if(empty($id) || empty($rule))
+		  {
+			  message('该角色不存在！',refresh(),'error');
+		  }
 		  if (checksubmit('submit')) {
-			   if(empty($id) || empty($account))
-				{
-					message('操作异常',refresh(),'error');
-				}
-
-			    $result = mysqld_delete('user_rule', array('uid'=> $account['id'],'menu_db_type'=>1));
 				if(!empty($_GP['role_ids']))
 				{
-					foreach($_GP['role_ids'] as $role_id){
-						$item = mysqld_select("select * from ". table('rule') ." where id={$role_id}");
-						$data= array(
-							'uid'		=> $account['id'],
-							'modname'	=> $item['modname'],
-							'moddo'		=> $item['moddo'],
-							'modop'		=> $item['modop'],
-							'role_id'	=> $item['id'],
-							'cat_id'    => $item['cat_id'],
-							'menu_db_type' => 1
-						);
-						mysqld_insert('user_rule', $data);
-					}
-
+					$rule_ids = implode(',',$_GP['role_ids']);
+					mysqld_update('rolers', array('rule'=>$rule_ids), array('id'=>$_GP['id']));
+				}else{
+					mysqld_update('rolers', array('rule'=>''), array('id'=>$_GP['id']));
 				}
 			    message('权限修改成功！',refresh(),'succes');
 					
 		  }else{
 
-			  $allrule = getSystemRule();
-			  $username =$account['username'];
+			  $allrule    = getSystemRule();
+			  $roler_name = $rule['name'];
 
-			  $userRule = mysqld_selectall('SELECT * FROM '.table('user_rule')." WHERE  uid=:uid and menu_db_type=:menu_db_type" , array(
-				  ':uid'		  => $id,
-				  ':menu_db_type' => 1
-			  ));
-			  foreach($allrule as $key => $item){
-				  foreach($userRule as  $rule){
-					  if($item['id'] == $rule['role_id']){
+			  $userRule = !empty($rule['rule']) ? explode(',',$rule['rule']) : '';
+			  if(!empty($userRule)){
+				  foreach($allrule as $key => $item){
+					  if( in_array($item['id'],$userRule)){
 						  $allrule[$key]['check']= 1;
 					  }//不能else为0
+
 				  }
 			  }
+
 			  $result = getRuleParentChildrenArr($allrule);
 			  $parent = $result['parent'];
 			  $children = $result['children'];
 
 			  $DbFiledList       = getDbTablesInfo();
 			  $DbFiledListJson   = json_encode($DbFiledList);
-			  $userHasDbRule     = getUserHasDbRule($id);
-			  $userHasDbRuleJson = empty($userHasDbRule) ? '' : json_encode($userHasDbRule);
+			  $userHasDbRule     = !empty($rule['db_rule']) ? json_decode($rule['db_rule'],true) : '';
+			  $userHasDbRuleJson = $rule['db_rule'];
 		  }
 		  include page('rule');
 	  }
 
 	  if ($operation == 'rule_field') {   //字段权限
 		  $id      = $_GP['id'];
-		  $account = mysqld_select('SELECT * FROM '.table('user')." WHERE  id=:id" , array(':id'=> $id));
-		  if(!empty($account)){
-			//删掉之前的字段规则
-			  mysqld_delete('user_rule',array('menu_db_type'=>2,'uid'=>$id));
+		  $rule    = mysqld_select('SELECT * FROM '.table('rolers')." WHERE  id={$id} and type=1");
+		  if(!empty($rule)){
 			  //插入新的
+			  $data = '';
 			  if(isset($_GP['shop_goods']) && !empty($_GP['shop_goods'])){
-				  $data = array(
-					  'db_name'     => 'shop_goods',
-					  'db_rule'     => json_encode($_GP['shop_goods']),
-					  'menu_db_type'=>2,
-					  'uid'         => $id
-				  );
-				  mysqld_insert('user_rule', $data);
+				  $data['shop_goods'] = $_GP['shop_goods'];
 			  }
 			  if(isset($_GP['shop_dish']) && !empty($_GP['shop_dish'])){
-				  $data = array(
-					  'db_name'     => 'shop_dish',
-					  'db_rule'     => json_encode($_GP['shop_dish']),
-					  'menu_db_type'=>2,
-					  'uid'         => $id
-				  );
-				  mysqld_insert('user_rule', $data);
+				  $data['shop_dish'] = $_GP['shop_dish'];
 			  }
+			  if(!empty($data)){
+				  $data = json_encode($data);
+			  }
+			  mysqld_update('rolers',array('db_rule'=>$data),array('id'=>$id));
 			  die(showAjaxMess('200','高级权限设置成功！'));
 		  }else{
-			  die(showAjaxMess('1002','对不起，该用户不存在！'));
+			  die(showAjaxMess('1002','对不起，该角户不存在！'));
 		  }
 	  }
 
@@ -106,7 +85,7 @@ defined('SYSTEM_IN') or exit('Access Denied');
 		    //查找之前是否有关联过一些渠道商
 		    isRelationPurchase($_GP['id']);
 	  		mysqld_delete('user', array('id'=>$_GP['id']));
-		    mysqld_delete('user_rule', array('uid'=> $_GP['id']));
+		    mysqld_delete('rolers_relation', array('uid'=> $_GP['id']));
 			message('删除成功',refresh(),'success');
 	  }
 	  if ($operation == 'changepwduser') {
@@ -309,7 +288,7 @@ defined('SYSTEM_IN') or exit('Access Denied');
    }
 
   if($operation == 'rolerlist'){
-	  $rolers = mysqld_selectall("select id,isdelete,name,createtime from ".table('rolers')." where type=1");
+	  $rolers = mysqld_selectall("select * from ".table('rolers')." where type=1");
 	  $users  = mysqld_selectall("select username,id from ".table('user'));
 	  //查找所有已经角色分配过的用户
 	  $rolers_relation = mysqld_selectall("select uid from ".table('rolers_relation'));
@@ -328,7 +307,7 @@ defined('SYSTEM_IN') or exit('Access Denied');
 			}
 	  }
 
-	  $purchase= mysqld_selectall("select id,pid,name,type,createtime from ".table('rolers')." where type<>1 order by pid asc");
+	  $purchase= mysqld_selectall("select * from ".table('rolers')." where type<>1 order by pid asc");
 	  if (! empty($purchase)) {
 		  $childrens = '';
 		  foreach ($purchase as $key => $item) {
@@ -361,14 +340,20 @@ defined('SYSTEM_IN') or exit('Access Denied');
   if($operation == 'changerolers'){
 	  if(empty($_GP['rolers_name']))
 		  message('对不起，名字不能为空！',refresh(),'error');
-	  mysqld_update('rolers',array('name'=>$_GP['rolers_name']),array('id'=>$_GP['id']));
-	  message('修改成功！',refresh(),'success');
+	  mysqld_update('rolers',array(
+		  'name'	   =>$_GP['rolers_name'],
+		  'description'=>$_GP['description']
+	  ),array('id'=>$_GP['id']));
+	  $url = web_url('user',array('op'=>'rolerlist'));
+	  $url .= "#{$_GP['tab']}";
+	  message('修改成功！',$url,'success');
   }
   if($operation == 'addrolers'){
 	  if(empty($_GP['rolers_name']))
 		  message('对不起，名字不能为空！',refresh(),'error');
 	  mysqld_insert('rolers',array(
-		  'name'=>$_GP['rolers_name'],
+		  'name'		=> $_GP['rolers_name'],
+		  'description' => $_GP['description'],
 		  'type'=>1,
 		  'createtime'=>time(),
 		  'modifiedtime'=>time()
@@ -388,7 +373,9 @@ defined('SYSTEM_IN') or exit('Access Denied');
 		  'createtime'=>time(),
 		  'modifiedtime'=>time()
 	  ));
-	  message('添加成功！',refresh(),'success');
+	  $url = web_url('user',array('op'=>'rolerlist'));
+	  $url .= "#home";
+	  message('添加成功！',$url,'success');
   }
   if($operation == 'showuser'){
 	  $sql = "select u.id,u.username,r.rolers_id from ".table('rolers_relation')." as r left join ".table('user')." as u";

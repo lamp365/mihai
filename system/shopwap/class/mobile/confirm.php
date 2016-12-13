@@ -30,7 +30,6 @@ header("Expires:0");
 	// 尝试获取非购物车数据ID
 	    $cookie = new LtCookie();
 		$good = $cookie->getCookie('goods');
-
 		$id = intval($good['id']);
 		$seller_openid = $good['seller_openid']; //卖家openid,可能是商家分享出去的
 	// 获取规格项ID

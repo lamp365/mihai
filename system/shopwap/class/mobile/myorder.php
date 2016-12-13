@@ -21,7 +21,7 @@ $draw_ln = array(
     "3"=>"等待开奖",
     "2"=>"很遗憾，未中奖",
     "1"=>"恭喜！中奖",
-    "0"=>"非抽奖订单"
+    "0"=>"您未支付！"
 );
 // 进行订单的自动关闭操作
 order_auto_close();
@@ -222,7 +222,7 @@ if ($op == 'returnpay') {
 
     if($item['ordertype'] == 1){
         //更新团购信息
-        update_group_status($goods[0]['id']);
+        update_group_status($goods[0]['goodsid']);
         //先更新后再找出该组团的信息
         $sql   = "select t.group_id,t.dish_id,t.status,t.createtime from ".table('team_buy_member')." as m left join ". table('team_buy_group') ." as t on t.group_id = m.group_id where m.order_id={$item['id']}";
         $group = mysqld_select($sql);

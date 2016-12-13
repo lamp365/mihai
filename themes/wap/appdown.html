@@ -76,6 +76,7 @@
     </div>
     <div class="viewport">
         <img src="__RESOURCE__/recouse/images/appload05.jpg">
+        <a href="javascript:;" class="Ios-load" id="openIosApp" style="top: 32%;height: 28%;"></a>
     </div>
 </body>
 </html>
@@ -83,7 +84,7 @@
 <script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
 <script src="__RESOURCE__/recouse/js/appwakeup.js"></script>
 <script type="text/javascript">
-
+$(function(){
     $(".Ios-load").on("click",function(){
         appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
     });
@@ -98,6 +99,5 @@
         autoPage : true, //自动分页
         switchLoad : "_src" //切换加载，真实图片路径为"_src" 
     });
-    
-
+})
 </script>

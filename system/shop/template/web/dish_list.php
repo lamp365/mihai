@@ -1,8 +1,48 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/jquery-ui-1.10.3.min.js"></script>
+<style type="text/css">
+	.icon-pencil{
+		padding: 0 8px;
+		cursor: pointer;
+	}
+	td{
+		position: relative;
+	}
+	.modify-input{
+		position: absolute;
+		width: 100%;
+    	left: 0;
+    	display: none;
+	}
+	.no-padding-left{
+		line-height: 34px;
+   		text-align: right;
+	}
+/*	.modal-body{
+	    height: 200px;
+	    padding-top: 73px;
+	}*/
+/*	.modal-dialog{
+		width: 660px;
+	}*/
+	.modal-title{
+		text-align: center;
+	}
+	.form-group{
+		overflow: hidden;
+	}
+	.wholesale-cogs{font-size: 16px;}
+	.product-stock span,.wholesale-cogs{
+		cursor: pointer;
+	}
+	.modal-content{
+		margin-top: 300px;
+	}
+</style>
 <h3 class="header smaller lighter blue">觅海全球购</h3> 
 <form action=""  class="form-horizontal" method="post">
+
 	<table class="table table-striped table-bordered table-hover">
 			<tbody >
 				<tr>
@@ -88,7 +128,7 @@
 
 		<?php if(is_array($list)) { foreach($list as $item) { ?>
 				<tr>
-				 	<td style="text-align:center;">
+				 	<td style="text-align:center;" class="dish-id">
 				 		<input type="checkbox" class="dishvalue" name="disvalue[]" value="<?php  echo $item['id'];?>"/>
 				 		<?php  echo $item['id'];?>				 			
 				 	</td>
@@ -97,15 +137,22 @@
 				        </p>
 				    </td>
                     <td style="text-align:center;"><?php  echo $item['gid'];?></td>
-                	<td style="text-align:center;"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $item['id']))?>"><?php  echo $item['title'];?></a></td>
+                	<td style="text-align:center;" class="product-title">
+                		<input type="text" name="" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $item['id'];?>">
+                		<a target="_blank" class="product-title-a" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $item['id']))?>"><?php  echo $item['title'];?></a>
+                		<i class="modify-icon icon-pencil"></i>
+                	</td>
 					<td style="text-align:center;" ><?php  echo $item['marketprice'];?></td>
 					<td style="text-align:center;" ><?php  echo $item['timeprice'];?></td>
-					<td style="text-align:center;">
+					<td style="text-align:center;" class="wholesale-td">
 					     <?php if ( isset( $item['purchase_price'] ) ){ foreach ( $item['purchase_price'] as $purchase_price ){ ?>
-					           <span class="label label-danger" style="margin-left:5px;"><?php echo $purchase_price['name'].$purchase_price['vip_price']; ?></span>  
-						 <?php }} ?>
+					           <span class="label label-danger wholesale" style="margin-left:5px;"><?php echo $purchase_price['name'].$purchase_price['vip_price']; ?></span>  					     	   
+						 <?php }}?>
+						 <i class="wholesale-cogs icon-cog" ajax-vip-price-id="<?php  echo $item['id'];?>"></i>
 					</td>
-					<td style="text-align:center;"><?php  echo $item['total'];?></td>											
+					<td style="text-align:center;" class="product-stock">
+						<input type="text" name="" class="modify-stock form-control modify-input" ajax-stock-id="<?php  echo $item['id'];?>"><span><?php  echo $item['total'];?></span>
+					</td>											
                     <td style="text-align:center;display:none;">
                         <?php  echo $item['count']?$item['count']:0;?>                 
                     </td>
@@ -132,7 +179,50 @@
 				<?php  } } ?>
  	
 		</table>
-		
+		<input type="hidden" class="vip-number" value="2">
+		<div class='modal fade wholesale-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+			<div class='modal-dialog modal-lg'>
+				<div class='modal-content'>
+					<div class='modal-header'> 
+						<button type='button' class='close' data-dismiss='modal'>
+							<span aria-hidden='true'>&times;</span>
+							<span class='sr-only'>Close</span>
+						</button>
+						<h4 class='modal-title' id='myModalLabel'>批发价格修改</h4>
+					</div>
+					<div class='modal-body'>
+						<div class="form-group form-inline vip-form">
+				 	   		<label class="col-sm-3 control-label no-padding-left" >会员价格：</label>
+				 	   		<div class="col-sm-7 set-vip-price">
+								  <select name="v2[]" class="form-control set-select">
+								  		<option value="-1">--请选择--</option>
+			                            <option value='0'>0</option>
+										<option value='1'>1</option>
+								  </select>
+			                      <div class="input-group">
+			                       <span class="input-group-addon">$</span>
+								  <input type="text" name="vip_price[]" class="form-control vip_price" value="<?php echo $dish_vip_list_value['vip_price']; ?>" placeholder="请输入价格"/>
+								  </div>
+							</div>
+							<div class="col-sm-2">
+								<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
+							</div>
+				 	   </div>
+				 	   <div class="form-group">
+				 	   		<label class="col-sm-3 control-label no-padding-left" ></label>
+				 	   		<div class="col-sm-9">
+								<a href="javascript:void(0)" class="btn btn-primary addvip" name="button"><i class="icon-plus"></i>添加会员</a>
+							</div>
+
+				 	   </div>
+
+					</div>
+					<div class="modal-footer">
+				        <button type="button" class="btn btn-primary btn-save">保存</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!--增加的操作-->
 		<?php if ( !empty( $list_op )  ){ ?>
 		<select style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="" id="option" onchange="fetchOption()">
@@ -203,15 +293,128 @@
  }
  //全选
  function selectAll(){
- 	
 	if($("#selectAll").is(':checked')){
-	   $(".dishvalue").prop("checked",true);
+	    $(".dishvalue").prop("checked",true);
 	}else{
 		$(".dishvalue").prop("checked",false);
 	}
  }
- 
- 
+ function modify(){
+ 	 //修改标题操作
+	$(".modify-icon").on("click",function(){
+		var titleVal = $(this).siblings(".product-title-a").text();
+	 	$(this).siblings(".modify-title").show().focus();
+	 	$(this).siblings(".modify-title").val(titleVal);
+	});
+	$(".modify-title").blur(function(){
+		var id = $(this).attr("ajax-title-id");
+		var title = $(this).val();
+		var this_title = $(this);
+		$.post("",{op:'ajax_title',ajax_id:id,ajax_title:title},function(data){
+			if( data.errno == 200 ){
+				this_title.siblings(".product-title-a").text(data.message);
+				$(this).hide();
+			}else{
+				alert(data.message);
+				$(this).hide();
+			}
+		},"json");
+		$(this).hide();
+	});
+	//修改库存操作
+	$(".product-stock span").on("click",function(){
+		var stockVal = $(this).text();
+		$(this).siblings(".modify-stock").show().focus();
+		$(this).siblings(".modify-stock").val(stockVal);
+	});
+	$(".modify-stock").blur(function(){
+		var id = $(this).attr("ajax-stock-id");
+		var stock = parseInt($(this).val());
+		var stock_this = $(this);
+		var regEx = /^[0-9]*$/;
+		if( !regEx.test(stock) ){
+			alert("请输出入正确的库存");
+		}else{
+			$.post("",{op:'ajax_total',ajax_id:id,ajax_stock:stock},function(data){
+				if( data.errno == 200){
+					stock_this.siblings("span").text(data.message);
+					$(this).hide();
+				}else{
+					alert(data.message);
+					$(this).hide();
+				}
+			},"json");
+		}
+		$(this).hide();
+	});
 
+	$(".wholesale-cogs").on("click",function(){
+		$(".wholesale-modal").modal();
+		var id = $(this).attr("ajax-vip-price-id");
+		$.post("",{op:'ajax_get_vip',ajax_id:id},function(data){
+			if( data.errno==200 ){
+
+			}else{
+				alert(data.message);
+			}
+		},"json");
+	});
+	$(".btn-save").on("click",function(){
+		var ajax_vip_data = {};
+		var select_val = "";
+		var input_val = "";
+		$(".vip-form").each(function(index,ele){
+			select_val = parseInt($(ele).find(".set-select").val());
+			input_val = $(ele).find(".vip_price").val();
+			ajax_vip_data[select_val] = input_val;
+		})
+		$.post("",{op:'ajax_set_vip',ajax_vip_data:ajax_vip_data},function(data){
+			if( data.errno==200 ){
+
+			}else{
+				alert(data.message);
+			}
+		},'json')
+		$(".wholesale-modal").modal('hide');
+	});
+
+	//会员价格
+	var vipNum = parseInt($(".vip-number").val());
+	var vip_i = 1 ;
+	$(".addvip").on("click",function(){
+		var addHtml = $(".vip-form:last").clone();
+		if ( vip_i < vipNum){
+			vip_i++;
+			$(".vip-form:last").after(addHtml);
+			$(".vip-form:last").find(".no-padding-left").text("");
+			$(".vip-form:last").find(".vip_price").val("");
+		}
+	});
+	$("body").on("click",".remove_vip",function(){
+		var vipLength = $(".vip-form").length;
+		if( vipLength == 1 ){
+			$(".vip-select").val(-1);
+			$(".vip_price").val("");
+			return false;
+		}else{
+			vip_i--;
+			$(this).parents(".vip-form").remove();
+		}
+		$(".vip-form:first").find(".no-padding-left").text(" 会员价格：");
+	});
+
+	$("body").on("blur",".vip_price",function(){
+		var regEx = /^(([1-9]\d*)|\d)(\.\d{1,2})?$/;
+		if( !regEx.test($(this).val()) ){
+			var price = parseFloat($(this).val());
+			if ( isNaN(price) )
+			{
+				price = 0;
+			}
+			$(this).val(price);
+		}
+	});
+ }
+modify();
 </script>
 <?php  include page('footer');?>

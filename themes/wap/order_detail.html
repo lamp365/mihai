@@ -279,7 +279,7 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 							<span>
 								¥<!--@php   echo $g['marketprice'];@--> * <!--@php  echo $g['order_total'];@-->
 							</span>
-							<span class="btn btn-xs btn-success"><!--@php echo getGoodsType($item['ordertype']); @--></span>
+							<span class="btn btn-xs btn-success"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($g['shop_type']); }@--></span>
 							<!--@php  if(empty($g['iscomment']) && ($item['status'] == 3)) { @-->
 								<!--@php if($g['order_type'] == 3 && in_array($g['order_status'],array(-2,-1))){ @-->
 								<a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'],'order_good_id' =>$g['order_good_id'],'optionid'=>$g['optionid'], 'op' => 'returncomment', 'fromstatus' => intval($_GP['fromstatus'])))@-->"

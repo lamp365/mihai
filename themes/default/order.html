@@ -109,7 +109,7 @@
 				 <!--@php foreach($listorder as $item) {  @-->
 				<div class="myoder" style="margin-bottom: 20px;">
 					<div class="myoder-hd">
-						<span class="pull-left">订单编号：<!--@php  echo $item['ordersn'];@--></span>&nbsp;&nbsp; <span class="btn btn-xs btn-info"><!--@php echo getGoodsType($item['ordertype']);@--></span>
+						<span class="pull-left">订单编号：<!--@php  echo $item['ordersn'];@--></span>&nbsp;&nbsp; <span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($item['ordertype']); }@--></span>
 						<span class="pull-right"><!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></span>
 					</div>
 					<ul class="listview">

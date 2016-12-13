@@ -33,8 +33,7 @@ function checklogin()
 function checkrule($modname, $moddo, $modop)
 {
     global $_CMS;
-    $account     = $_CMS['account'];
-    $system_rule = getSystemRule($account['id']);
+    $system_rule = getSystemRule();
     //正对于产品库，中如果还没上架，则不用判断权限，只有上架后才判断权限。
 
     if(!empty($_GET['id']) && $moddo == 'goods'){
@@ -42,16 +41,21 @@ function checkrule($modname, $moddo, $modop)
         if($res['status'] == 0)
             return true;
     }
+    /**
+     * 正确做法 A 根据模块方法名等找规则 rule
+     * B 根据用户找规则id rule_id
+     * C 进行id比对
+     * 由于这里A情况由于架构逻辑的问题，很多地址模块名和方法名都一样会找出多条记录，故，不按常理做法走
+     */
     $hasPower = false;
     $tmpdata  = array();
-    $userIsHasRule = mysqld_selectall("select * from ". table('user_rule') . " where uid={$_CMS['account']['id']} and menu_db_type=1");
+    $userIsHasRule = getAdminHasRule($_CMS['account']['id']);
     if(!empty($userIsHasRule)){
         foreach ($system_rule as $item) {
             if ($item['modname'] == $modname && $item['moddo'] == $moddo && $item['modop'] == $modop) {
                 $tmpdata[] = $item;
             }
         }
-//        ppd($tmpdata);
         $hasPower = findOneRule($tmpdata,$userIsHasRule);
 
     }else{   //一条规则都没有则还没设置，默认不可以看，但是管理员root给看
@@ -81,7 +85,7 @@ function findOneRule($tmpdata,$userIsHasRule)
 
     if(!empty($tmpdata)){
         foreach($userIsHasRule as $row){
-            if($row['role_id'] == $tmpdata[0]['id']){
+            if($row['id'] == $tmpdata[0]['id']){
                 $hasPower =  true;
             }
         }

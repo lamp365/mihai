@@ -182,8 +182,8 @@
 	 	   <div class="form-group form-inline vip-form">
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
 	 	   		<div class="col-sm-4">
-					  <select name="v2[]" class="form-control">
-					  		<option>--请选择--</option>
+					  <select name="v2[]" class="form-control vip-select">
+					  		<option value="-1">--请选择--</option>
 					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
                                    <option value='<?php echo $vip_list_value['id'] ?>' <?php echo $dish_vip_list_value['v2'] == $vip_list_value['id']?'selected':'';?> ><?php echo $vip_list_value['name']; ?></option>
 							<?php }} ?>
@@ -202,7 +202,7 @@
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
 	 	   		<div class="col-sm-4">
 					  <select name="v2[]" class="form-control">
-					  		<option>--请选择--</option>
+					  		<option value="-1">--请选择--</option>
 					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
                                    <option value='<?php echo $vip_list_value['id'] ?>'><?php echo $vip_list_value['name']; ?></option>
 							<?php }} ?>
@@ -597,6 +597,8 @@ $(function(){
 	$("body").on("click",".remove_vip",function(){
 		var vipLength = $(".vip-form").length;
 		if( vipLength == 1 ){
+			$(".vip-select").val(-1);
+			$(".vip_price").val("");
 			return false;
 		}else{
 			vip_i--;

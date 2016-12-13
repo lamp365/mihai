@@ -62,7 +62,7 @@
       }
       
       $rank_model_list = mysqld_selectall("SELECT * FROM " . table('rank_model')." order by rank_level" );
-	  // ²»¶Ô»áÔ±ÁÐ±í½øÐÐÉí·ÝÏÞÖÆ£¬±ÜÃâÎÞ·¨¶þ´Î²Ù×÷¡£Ó¦¸ÃÔÚÈ¨ÏÞÄÄÀï½øÐÐ¿ØÖÆ
+	  // ï¿½ï¿½ï¿½Ô»ï¿½Ô±ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½
 			$list = mysqld_selectall('SELECT * FROM '.table('member')." where  dummy=0 and `istemplate`=0  and `status`=$status $condition "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
 	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where parent_roler_id=0 and dummy=0 and `istemplate`=0 $condition ",$conditiondata);
       $pager = pagination($total, $pindex, $psize);
@@ -73,9 +73,9 @@
                  $list[$index]['mess_name'] = mysqld_selectcolumn("SELECT title FROM " . table('shop_mess') . " WHERE id = :id", array(':id' => $item['mess_id']));
       		}
 
-            //ÕÒ³öÒµÎñÔ±
+            //ï¿½Ò³ï¿½Òµï¿½ï¿½Ô±
             $rolers   = mysqld_select("select id,name,createtime from ".table('rolers')." where type=1 and isdelete=0");
-            //ÒµÎñÔ±¶ÔÓ¦µÄ¹ÜÀíÔ±¶¼ÓÐÄÄÐ©
+            //Òµï¿½ï¿½Ô±ï¿½ï¿½Ó¦ï¿½Ä¹ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð©
             $user_rolers  = '';
             if(!empty($rolers)){
                 $sql = "select r.id,r.rolers_id,r.uid,u.username from ".table('rolers_relation')." as r ";
@@ -83,8 +83,8 @@
                 $user_rolers = mysqld_selectall($sql);
             }
 
-            //ÇþµÀÉÌÉí·Ý½ÇÉ«
-            $purchase = mysqld_selectall("select id,pid,name,createtime from ".table('rolers')." where type=2 order by pid asc");
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½É«
+            $purchase = mysqld_selectall("select id,pid,name,createtime from ".table('rolers')." where type<>1 order by pid asc");
             if (! empty($purchase)) {
                 $childrens = '';
                 foreach ($purchase as $key => $item) {

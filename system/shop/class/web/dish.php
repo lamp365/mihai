@@ -2,7 +2,8 @@
         //每次有显示的地方就进行跟新团购状态  并且这里展示宝贝的时候进行更新所有商品时间过期了，自动更改宝贝类型为一般商品
         update_all_shop_status();
  		$cfg = globaSetting();
-
+        // 获取批发商列表
+		$vip_list = mysqld_selectall("SELECT * FROM ".table('rolers')." WHERE (type = 2 or type = 3) and pid != 0");
         $area = mysqld_selectall("SELECT * FROM " . table('dish_list') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');
         if (!empty($area)) {
             $children = '';
@@ -49,6 +50,47 @@
 			 }
              exit;
 		}
+		if ( $operation == 'ajax_title' ){
+            if ( !empty($_GP['ajax_id']) ){
+				$data = array(
+					'title'=>$_GP['ajax_title']
+				);
+                mysqld_update('shop_dish',$data,array('id'=>$_GP['ajax_id']));
+				die(showAjaxMess('200',$_GP['ajax_title']));
+			}else{
+                die(showAjaxMess('1002','修改失败'));
+			}
+		}
+		if ( $operation == 'ajax_total' ){
+            if ( !empty($_GP['ajax_id']) ){
+				$data = array(
+					'total'=>$_GP['ajax_stock']
+				);
+                mysqld_update('shop_dish',$data,array('id'=>$_GP['ajax_id']));
+				die(showAjaxMess('200',$_GP['ajax_stock']));
+			}else{
+                die(showAjaxMess('1002','修改失败'));
+			}
+		}
+		if ( $operation == 'ajax_get_vip' ){
+            if ( !empty($_GP['ajax_id']) ){
+				$data = mysqld_selectall("SELECT * FROM ".table('shop_dish_vip')." WHERE dish_id = ".$_GP['ajax_id']);
+				$vip_data = array(
+					'vip_list' =>$vip_list,
+					'vip_data'=>$data
+				);
+				die(showAjaxMess('200',$vip_data));
+			}else{
+                die(showAjaxMess('1002','获取失败'));
+			}
+		}
+		if ( $operation == 'ajax_set_vip' ){
+            if ( !empty($_GP['ajax_id']) ){
+				die(showAjaxMess('200',$_GP['ajax_vip_data']));
+			}else{
+                die(showAjaxMess('1002','获取失败'));
+			}
+		}
 		if ( $operation == 'query' ){
             $condition = '';  
 			if (!empty($_GP['ccate2'])) {
@@ -71,8 +113,6 @@
         if ($operation == 'post') {
 			$taxlist = mysqld_selectall("SELECT * FROM ".table('shop_tax'));
             $id = intval($_GP['id']);
-			// 获取批发商列表
-			$vip_list = mysqld_selectall("SELECT * FROM ".table('rolers')." WHERE type = 2 and pid != 0");
             if (!empty($id)) {
 				$item = mysqld_select("SELECT a.*,b.title as gname,b.id as gid,b.thumb as gthumb FROM " . table('shop_dish') . " AS a LEFT JOIN " . table('shop_goods') . " as b on a.gid = b.id WHERE a.id = :id", array(':id' => $id));
                 if (empty($item)) {
@@ -328,7 +368,7 @@
 				$vip_data = array();
 				if ( is_array($_GP['v2']) && !empty($_GP['v2']) ){
 					foreach ( $_GP['v2'] as $key=>$v2_value ){
-						 if ( !empty($v2_value) && !empty($_GP['vip_price'][$key])){
+						 if ( ($v2_value != -1) && !empty($v2_value) && !empty($_GP['vip_price'][$key])){
 							  $vip_data[] = array(
 									'dish_id' => $id,
 										'v2' => $v2_value,
@@ -339,6 +379,8 @@
 				}
 				if ( !empty($vip_data) ){
 				    setExtendPrice($vip_data);
+				}else{
+                    mysqld_delete('shop_dish_vip', array('dish_id'=>$id));
 				}
                 $warring = ( $shop_goods['marketprice'] - $marketprice ) / $shop_goods['marketprice'];
 				if ( $warring >= 0.2 ){

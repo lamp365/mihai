@@ -48,10 +48,10 @@
 		<p style="margin: 10px;background: #fcfcfc;border: 1px solid #e5e5e5;padding: 10px;color:red;font-size: 12px;">注：对于产品库，未上架的商品，不判断权限，只有上架后业务才会权限判断。</p>
 
 		<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 用户名：</label>
+										<label class="col-sm-2 control-label no-padding-left" > 角色名：</label>
 
 										<div class="col-sm-9">
-										 <?php echo $username ?>
+										 <?php echo $roler_name; ?>
 										</div>
 									</div>
 									

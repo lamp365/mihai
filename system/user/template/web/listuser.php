@@ -43,8 +43,6 @@
 									<?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
 						<td style="text-align:center;">
 						<a class="btn btn-xs btn-info fenpei_rolers"  href="javascript:;"  data-uid="<?php echo $item['id'];?>"><i class="icon-edit"></i>分配角色</a>
-						<a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'rule','id' => $item['id']))?>"><i class="icon-edit"></i>设置权限</a>
-						&nbsp;&nbsp;
 						<a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'changepwduser','id' => $item['id']))?>"><i class="icon-edit"></i>修改资料</a>&nbsp;&nbsp;
 						<a class="btn btn-xs btn-danger" href="<?php  echo web_url('user', array('op'=>'deleteuser','id' => $item['id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
 					</td>

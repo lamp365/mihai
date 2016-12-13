@@ -65,7 +65,7 @@
 	}
 
 	//渠道商身份角色
-	$purchase = mysqld_selectall("select id,pid,name,createtime from ".table('rolers')." where type=2 order by pid asc");
+	$purchase = mysqld_selectall("select id,pid,name,createtime from ".table('rolers')." where type<>1 order by pid asc");
 	if (! empty($purchase)) {
 		$childrens = '';
 		foreach ($purchase as $key => $item) {

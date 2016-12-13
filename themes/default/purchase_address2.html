@@ -242,7 +242,19 @@
 									<input type="text" class="form-control" id="address">
 								</div>
 							</div>
-
+							<!--身份证-->
+							<!--@php if (isset($user_a['type']) && $user_a['type'] == 3){ @-->
+							<div class="form-group">
+								<label for="idname" class="col-sm-3 control-label">身份证姓名：</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="idname">
+								</div>
+								<label for="idnumber" class="col-sm-3 control-label" style="margin-top: 20px;">身份证号码：</label>
+								<div class="col-sm-9" style="margin-top: 30px;">
+									<input type="text" class="form-control" id="idnumber">
+								</div>
+							</div>
+							<!--@php } @-->
 							<input type="hidden" id="addressid" value="" />
 							<div class="form-group">
 								<div class="col-sm-12">
@@ -280,6 +292,14 @@
 		var idname = $('#idname').val();
 		var idnumber = $('#idnumber').val();
 		var area = $('#sel-area').val();
+		if(!idname) {
+			alert('请输入您的身份证姓名！');
+			return false;
+		}
+		if(!idnumber) {
+			alert('请输入您的身份证号码！');
+			return false;
+		}
 		if(area == null) {
 			area = '';
 		}
@@ -313,6 +333,8 @@
 				'mobile': mobile,
 				'province': province,
 				'city': city,
+				'idnumber': idnumber,
+				'idname': idname,
 				'area': area,
 				'ajax':'ajax',
 				'address': address,
@@ -407,6 +429,8 @@ function editAddress(id) {
 			$('#realname').val(s.message.realname);
 			$('#mobile').val(s.message.mobile);
 			$('#address').val(s.message.address);
+			$('#idname').val(s.message.idname);
+			$('#idnumber').val(s.message.idnumber);
 			cascdeInit('__RESOURCE__/recouse/js',s.message.province,s.message.city,s.message.area);
 			$('#addressid').val(s.message.id);
 		}

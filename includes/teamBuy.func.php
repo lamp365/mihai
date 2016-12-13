@@ -278,7 +278,7 @@ function draw_team_buy($d_info) {
 		if (!empty($group)) {
 			foreach ($group as $gk1 => $gv1) {
 				if (strtotime($gv1['createtime']) > $d_info['timestart']) {
-					$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$gv1['group_id']);
+					$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$gv1['group_id']." and order_id<>0");
 					foreach ($group_member as $gmv1) {
 						mysqld_query("UPDATE ".table('shop_order')." SET isprize=3 WHERE id=".$gmv1['order_id']." AND status=1 AND isprize=0");
 					}
@@ -290,7 +290,7 @@ function draw_team_buy($d_info) {
 		if (!empty($al_group)) {
 			foreach ($al_group as $agk => $agv) {
 				if (strtotime($agv['createtime']) > $d_info['timestart']) {
-					$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$agv['group_id']);
+					$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$agv['group_id']." and order_id<>0");
 					foreach ($group_member as $agmv) {
 						mysqld_query("UPDATE ".table('shop_order')." SET isdraw=1 WHERE id=".$agmv['order_id']." AND isdraw=0");
 					}
@@ -312,7 +312,7 @@ function draw_team_buy($d_info) {
 	$all_member = array();
 	foreach ($group as $gk => $gv) {
 		if (strtotime($gv['createtime']) > $d_info['timestart']) {
-			$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$gv['group_id']);
+			$group_member = mysqld_selectall("SELECT order_id FROM ".table('team_buy_member')." WHERE group_id=".$gv['group_id']." and order_id<>0");
 			foreach ($group_member as $gmv) {
 				$od_sta = mysqld_select("SELECT status FROM ".table('shop_order')." WHERE id=".$gmv['order_id']);
 				if ($od_sta['status'] == '1') {

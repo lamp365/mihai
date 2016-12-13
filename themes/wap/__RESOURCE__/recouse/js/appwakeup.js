@@ -1,48 +1,3 @@
-function ajax(options) {
-    options = options || {};
-    options.type = (options.type || "GET").toUpperCase();
-    options.dataType = options.dataType || "json";
-    var params = formatParams(options.data);
-
-    //创建 - 非IE6 - 第一步
-    if (window.XMLHttpRequest) {
-        var xhr = new XMLHttpRequest();
-    } else { //IE6及其以下版本浏览器
-        var xhr = new ActiveXObject('Microsoft.XMLHTTP');
-    }
-
-    //接收 - 第三步
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            var status = xhr.status;
-            if (status >= 200 && status < 300) {
-                options.success && options.success(xhr.responseText, xhr.responseXML);
-            } else {
-                options.fail && options.fail(status);
-            }
-        }
-    }
-
-    //连接 和 发送 - 第二步
-    if (options.type == "GET") {
-        xhr.open("GET", options.url + "?" + params, true);
-        xhr.send(null);
-    } else if (options.type == "POST") {
-        xhr.open("POST", options.url, true);
-        //设置表单提交时的内容类型
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.send(params);
-    }
-}
-//格式化参数
-function formatParams(data) {
-    var arr = [];
-    for (var name in data) {
-        arr.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
-    }
-    arr.push(("v=" + Math.random()).replace(".",""));
-    return arr.join("&");
-}
 //url是获取 app版本下载地址的路劲
 //首先唤醒app，唤醒不起来则加入提示条，引导下载。并且点击提示条可以下载app
 function appWakeUp(url,isshow_down_tip){
@@ -63,10 +18,15 @@ function appWakeUp(url,isshow_down_tip){
 //点击下载app版本
 function appDownLoad(url){
     //先唤醒app
-    app_wake_to_up();
 
-    //点击则下载app
-    app_click_to_down(url);
+    var ua2 = navigator.userAgent.toLowerCase();
+    if( ua2.match(/MicroMessenger/i) == 'micromessenger'){
+        app_click_to_down(url);
+    }else{
+        app_wake_to_up();
+        //点击则下载app
+        app_click_to_down(url);
+    }
 }
 
 
@@ -76,54 +36,35 @@ function app_wake_to_up(){
     //IOS
     if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
         window.location.href = iPhoneAgreement;
-    }
-    //Android
-    if(navigator.userAgent.match(/android/i)){
-        window.location.href = AndroidAgreement;
+    }else{
+       // window.location.href = AndroidAgreement;
     }
 }
-
 function app_click_to_down(url){
     var ua = navigator.userAgent.toLowerCase();
     var iPhoneUrl = "";
     var AndroidUrl = "";
     var Apply_AndroidUrl = "";
     var Apply_iPhoneUrl = "";
-    ajax({
-        url: url,              //请求地址
-        type: "POST",                       //请求方式
-        data: {},        //请求参数
-        dataType: "json",
-        success: function (response, xml) {
-            console.log(response);
-            // 此处放成功后执行的代码
-            response = eval("("+response+")");
-            var obj = response.message;
+    $.post(url,{},function(response,xml){
+        var obj = response.message;
             iPhoneUrl = obj.iPhoneUrl;
             AndroidUrl = obj.AndroidUrl;
             Apply_iPhoneUrl = obj.Apply_iPhoneUrl;
             Apply_AndroidUrl = obj.Apply_AndroidUrl;
             if( ua.match(/MicroMessenger/i) == 'micromessenger'){
                 if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-                   window.open(Apply_iPhoneUrl); 
+                    window.location.href = Apply_iPhoneUrl; 
+                }else if(navigator.userAgent.match(/android/i)){
+                   window.location.href = Apply_AndroidUrl;  
                 }
-                if(navigator.userAgent.match(/android/i)){
-                   window.open(Apply_AndroidUrl);  
-                }
+            }else if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+                window.location.href = iPhoneUrl;
+            }else if(navigator.userAgent.match(/android/i)){
+                window.location.href = AndroidUrl;
             }
-            if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-                window.open(iPhoneUrl);
-            }
-            if(navigator.userAgent.match(/android/i)){
-                window.open(AndroidUrl);
-            }
-        },
-        fail: function (status) {
-            // 此处放失败后执行的代码
-        }
-    });
+    },'json');
 }
-
 
 function app_show_tip(){
     var div = document.createElement("div");

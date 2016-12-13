@@ -2,6 +2,16 @@
 /*
 member操作
 */
+function get_user_identity($mobile=''){
+	 $identity = array();
+     if (! empty($mobile)) {
+        $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
+            ':mobile' => $mobile
+        ));
+		$identity = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['son_roler_id']." and pid = ".$member['parent_roler_id']);
+     }
+	 return $identity;
+}
 function save_vip_member_login($mobile='', $openid ='' ){
      if (! empty($mobile)) {
         $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
@@ -109,7 +119,15 @@ function member_login_weixin($weixin_openid)
 function vip_member_login($mobile, $pwd)
 {
     $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile='{$mobile}' and parent_roler_id<>0  limit 1");
-    
+   // parent_roler_id 身份id 父级	son_roler_id
+    if ( !empty($member['parent_roler_id']) && !empty($member['son_roler_id']) ){
+          $check = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['son_roler_id']." and pid = ".$member['parent_roler_id']." and (type = 2 or type = 3) ");
+		  if ( !$check ){
+             return -1;
+		  }
+	}else{
+          return -2;
+	}
     if (!empty($member['openid'])) {
         if ($member['status'] != 1) {
             return - 1;
@@ -125,8 +143,7 @@ function member_login($mobile, $pwd)
 {
     $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
         ':mobile' => $mobile
-    ));
-    
+    ));  
     if (! empty($member['openid'])) {
         if ($member['status'] != 1) {
             return - 1;

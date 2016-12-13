@@ -75,7 +75,7 @@
 			<div class="name"><a href="<!--@php  echo mobile_url('detail', array('id' => $goods['aid']))@-->"><!--@php  echo $goods['title'];@--></a></div>
 			<div class="price">
 				<span>¥<!--@php  echo $goods['marketprice'];@--> * <!--@php  echo $goods['total'];@--></span>
-				<span class="btn btn-xs btn-success"><!--@php echo getGoodsType($item['ordertype']); @--></span>
+				<span class="btn btn-xs btn-success"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($item['ordertype']); }@--></span>
 			</div>
 		</div>
 		<div class="status"  style="text-align: right">

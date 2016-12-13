@@ -18,6 +18,9 @@ if (checksubmit("submit")) {
     if ($loginid == - 1) {
         message("账户已被禁用！");
     }
+	if ($loginid == -2 ){
+        message("账户身份错误!");
+	}
     if (empty($loginid)) {
         message("用户名或密码错误");
     } else {

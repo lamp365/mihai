@@ -3579,3 +3579,10 @@ button.swiper-pagination-bullet {
 .appdownload-hasfooter{position:fixed;left:0;z-index:999;bottom:45px;width:100%;display:block}
 .appdownload-nofooter{position:fixed;left:0;z-index:999;bottom:0;width:100%;display:block}
 #appdownload img{width: 100%;max-width: 100%;display: block;}
+#appdownloadlink{
+	position: absolute;
+    right: 0;
+    top: 0;
+    width: 28%;
+    height: 100%;
+}

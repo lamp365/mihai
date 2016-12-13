@@ -1,5 +1,6 @@
 <?php
-		$member=get_vip_member_account();
+		$member=get_vip_member_account(true,true);
+		$user_a = get_user_identity($member['mobile']);
 		$openid =$member['openid'] ;
 		$from = $_GP['from'];
         $returnurl = urldecode($_GP['returnurl']);
@@ -43,6 +44,8 @@
                 'realname' => $_GP['realname'],
                 'mobile' => $_GP['mobile'],
                 'city' => $_GP['city'],
+				'idname'=>$_GP['idname'],
+				'idnumber'=>$_GP['idnumber'],
                 'area' => $_GP['area'],
                 'address' => $_GP['address'],
             );
@@ -82,7 +85,7 @@
             die(json_encode(array("result" => 1, "id" => $id)));
         }elseif ($operation == 'detail') {
             $id = intval($_GP['id']);
-            $row = mysqld_select("SELECT id, realname, mobile, province, city, area, address FROM " . table('shop_address') . " WHERE id = :id", array(':id' => $id));
+            $row = mysqld_select("SELECT * FROM " . table('shop_address') . " WHERE id = :id", array(':id' => $id));
             message($row, '', 'ajax');
         } elseif ($operation == 'remove') {
             $id = intval($_GP['id']);

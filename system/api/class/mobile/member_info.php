@@ -148,11 +148,41 @@
     		$where.= " AND a.status=$u_status";
     	}elseif ($status == 2) {
     		// 团购中
-    		$where.= " AND e.status=2";
+    		$where.= " AND e.status<>0 AND e.finish=0";
     	}else{
     		return false;
     	}
-		$order = mysqld_select("SELECT COUNT(*) as num FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where);
+		$order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.isdraw, a.isprize, e.status as group_status FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where);
+		// 总记录数
+		$total = mysqld_select("SELECT FOUND_ROWS() as total;");
+		$total['total'] = intval($total['total']);
+		if (!empty($order)) {
+			foreach ($order as $ok => $ov) {
+				if ($status == 2) {
+		    		// 团购商品需判断订单是否抽奖订单
+		    		if (intval($ov['isdraw']) == 0) {
+		    			if ($ov['group_status'] == '1') {
+		    				$total['total'] -= 1;
+		    				continue;
+		    			}
+		    		}
+		    	}
+		    	if ($status == 3) {
+		    		// 未成团不在待发货
+		    		if ($ov['group_status'] != '1') {
+	    				$total['total'] -= 1;
+	    				continue;
+		    		}
+		    		// 抽奖团只有中奖之后才到待发货
+		    		if ($ov['isdraw'] == '1') {
+		    			if ($ov['isprize'] != '1') {
+		    				$total['total'] -= 1;
+		    				continue;
+		    			}
+		    		}
+		    	}
+			}
+		}
 		
-		return $order['num'];
+		return $total['total'];
 	}

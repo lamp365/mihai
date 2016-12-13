@@ -6,7 +6,7 @@ $member = get_vip_member_account(true, true);
 $openid =$member['openid'] ;
 // [parent_roler_id] => 2 [son_roler_id] => 3
 // 验证用户是否是批发商
-$rolers = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['parent_roler_id']." and type=2 ");
+$rolers = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['parent_roler_id']." and (type=2 or type=3) ");
 if ( empty($member['parent_roler_id']) || !$rolers || empty($member['son_roler_id']) ){
      header("location:".mobile_url('vip_logout'));
 }
@@ -22,6 +22,7 @@ $purchase = $purchase_goods->getCookie('purchase');
 if ( !empty($purchase) ){
 	$purchase = unserialize($purchase);
 }
+unset($purchase_goods);
 $max_purchase = count($purchase);
 foreach( $dish_list as &$dish_list_value){
 	  if ( isset( $purchase[$dish_list_value['id']] ) ){
@@ -103,7 +104,11 @@ switch ( $op ){
 			   "info"=> '该产品不在批发列表中'
 		    )));
 		}
-        $max_purchase = add_goods($_GP['id'], $_GP['num'],$member['parent_roler_id'],$member['son_roler_id']);
+        $purchase = add_goods($_GP['id'], $_GP['num'],$member['parent_roler_id'],$member['son_roler_id']);
+		if ( !empty($purchase) ){
+             $purchase = unserialize($purchase);
+		}
+        $max_purchase = count($purchase);
         if ( $max_purchase > 0 ){
              foreach( $purchase as $key=>$purchase_value ){
                   $query = mysqld_select("SELECT a.gid,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$key);
@@ -206,7 +211,7 @@ function add_goods($id,$num,$v1,$v2){
 	 $max = count($purchase);
 	 $purchase = serialize($purchase);
      $purchase_goods->setCookie('purchase',$purchase);
-	 return $max;
+	 return $purchase;
 }
 function model_good($id,$v1,$v2){
      $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = ".$v1." and a.v2 =  ".$v2);

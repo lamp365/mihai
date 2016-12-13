@@ -190,18 +190,6 @@ function getDbTablesInfo($byLocal = true){
     return $DbFiledList;
 }
 
-function getUserHasDbRule($uid,$hebin=1){
-    $result = mysqld_selectall("select * from ". table('user_rule') ." where menu_db_type=2 and uid={$uid}");
-    if($hebin && !empty($result)){
-        $data = array();
-        foreach($result as $row){
-            $data[$row['db_name']] = json_decode($row['db_rule']);
-        }
-        return $data;
-    }else{
-        return $result;
-    }
-}
 
 /**
  * @return bool
@@ -213,5 +201,33 @@ function checkAdmin(){
         return true;
     }else{
         return false;
+    }
+}
+
+/**
+ * @param $uid
+ * @return mixed|string
+ * @content 根据用户id 获取对应的权限规则数组 或者没有返回空
+ */
+function getAdminHasRule($uid)
+{
+    if (empty($uid)) {
+        return '';
+    }
+    $relation = mysqld_select("select rolers_id from ".table('rolers_relation')."  where uid={$uid}");
+    if(empty($relation)){
+        return '';
+    }
+
+    $rule = mysqld_select("select rule from  ".table('rolers')." where id={$relation['rolers_id']}");
+    if(!empty($rule['rule'])){
+        $rule_ids = explode(',',$rule['rule']);
+        $rule_arr = '';
+        foreach($rule_ids as $id){
+            $rule_arr[] = mysqld_select("select * from ".table('rule')." where id={$id}");
+        }
+        return $rule_arr;
+    }else{
+        return '';
     }
 }

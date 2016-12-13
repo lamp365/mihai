@@ -528,17 +528,32 @@ function getCategoryExtendDishId($cate_id)
    );
 */
 function setExtendPrice($data = array() ){
+	 $v2_now = array();
+	 $dish_id  = '';
      if ( !empty( $data ) && is_array($data) ){
-          // 开始寻找是否有记录
+          // 开始寻找是否有记录 array_diff
 		  foreach ( $data as $data_value ){
 		     $find = mysqld_select('SELECT * FROM '.table('shop_dish_vip'). ' WHERE dish_id = '.$data_value['dish_id'].' and v2 = '.$data_value['v2'].' limit 1');
 			 $v1  = mysqld_select('SELECT * FROM '.table('rolers').' WHERE id = '.$data_value['v2'].' limit 1');
 			 $data_value['v1'] = $v1['pid'];
+			 $dish_id = $data_value['dish_id'];
 			 if ( $find ){
                  mysqld_update('shop_dish_vip', $data_value, array('vid'=>$find['vid']));
 			 }else{
                  mysqld_insert('shop_dish_vip',$data_value);
 			 }
+			 $v2_now[] = $data_value['v2'];
+		  }
+		  // 开始处理差集
+		  $v2after = mysqld_selectall("SELECT v2 FROM ".table('shop_dish_vip'). " WHERE dish_id = ".$dish_id);
+		  foreach ( $v2after as $key=>$value ){
+                $v2_after[] = $value['v2'];
+		  }
+		  $diff = array_diff($v2_after,$v2_now);
+		  if ( !empty($diff) ){
+                foreach ( $diff as $diff_val){
+                     mysqld_delete('shop_dish_vip', array('dish_id'=>$dish_id,'v2'=>$diff_val));
+				}
 		  }
 	 }
 	 return false;

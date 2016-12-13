@@ -270,7 +270,7 @@
 						<!--@php if($item['status'] == 0) { @-->
 						
 							<div class="pull-left">
-								<select id="pays"  class="form-control" style="float:left;width:100px;height:30px;line-height:15px;font-size:12px;">
+								<select id="paystop"  class="form-control" style="float:left;width:100px;height:30px;line-height:15px;font-size:12px;">
 									<!--@php  foreach($payments as $payment) { @-->
 									<!--@php  if($payment['code']==$item['paytypecode']) { @-->
 									<!--@php  $select = "selected"; @-->
@@ -279,12 +279,12 @@
 									<!--@php  } @-->
 								</select>
 								<!--@php if($item['paytypecode']!='delivery'){   @-->
-								<a href="javascript:;" onclick="topay();"
+								<a href="javascript:;" onclick="toppay();"
 								   class="btn btn-danger btn-sm" style="float:left;margin-left:10px;">立即支付</a>
 								<a id="J_cancelOrderBtn" class="btn btn-default btn-sm" href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'cancelsend','fromstatus'=>$status))@-->" style="margin-left: 10px;">取消订单</a>
 								<script>
-									function topay() {
-										var paycode = $("#pays").val();
+									function toppay() {
+										var paycode = $("#paystop").val();
 										location.href = "<!--@php  echo mobile_url('pay', array('orderid' => $item['id']))@-->&paymentcode="+paycode;
 									}
 								</script>
@@ -398,7 +398,7 @@
 					 	<a  target="_blank" href="<!--@php  echo mobile_url('detail', array('id' => $g['aid']))@-->" style="text-align: center;">
 							<!--@php  echo $g['title'];@-->
 						</a>
-						 <br/><span class="btn btn-xs btn-info"><!--@php echo getGoodsType($g['shop_type']);@--></span>
+						 <br/><span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($g['shop_type']); }@--></span>
 					 </li>
 					 <li class="ps"><span>
 							<!--@php   echo $g['marketprice'];@--> 元<!--@php  if($g['unit']) { @-->
