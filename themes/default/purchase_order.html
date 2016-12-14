@@ -74,20 +74,19 @@
 						<th width="160px">数量</th>
 						<th width="110px">商品操作</th>
 					</tr>
-					
+					<!--美元或人民币的隐藏域 -->
+					<input type="hidden" name="currency" class="currency" value="<?php echo $currency; ?>">
 					<!--@php if ( is_array($dish_list) && !empty($dish_list) ){ foreach ( $dish_list as $dish_list_value ){ @-->
 					<tr>
-						<!-- 未勾选 -->
-
 						<td class='td-check col-label'>
 							<img class="lazy" data-original='__RESOURCE__/recouse/images/cart_circle.png' src="images/loading.gif">
 						</td>
 
 						<td class='col-img'>
-							<img class="lazy product-img" product_id="<!--@php echo $dish_list_value['dish_id']; @-->" data-original="<!--@php echo $dish_list_value['thumb']; @-->" src="images/loading.gif" >
+							<img class="lazy product-img" product_id="<!--@php echo $dish_list_value['id']; @-->" data-original="<!--@php echo $dish_list_value['thumb']; @-->" src="images/loading.gif" >
 						</td>
 						<td class='col-name'>
-							<a class="product-name" product_id="<!--@php echo $dish_list_value['dish_id']; @-->"><!--@php echo $dish_list_value['title']; @--></a>
+							<a class="product-name" product_id="<!--@php echo $dish_list_value['id']; @-->"><!--@php echo $dish_list_value['title']; @--></a>
 							<div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
 								<div class='modal-dialog modal-lg'>
 									<div class='modal-content'>
@@ -106,23 +105,23 @@
 							</div>
 						</td>
 						<td class='col-price'>
-							<span class='price'>$<!--@php echo $dish_list_value['vip_price']; @--></span>
+							<span class='price'><span class="currency-span">$</span><!--@php echo $dish_list_value['vip_price']; @--></span>
 						</td>
-						<td class='col-num' cartid="<!--@php echo $dish_list_value['dish_id']; @-->">
+						<td class='col-num' cartid="<!--@php echo $dish_list_value['id']; @-->">
 							<div class='input-group'>
 								<span class='input-group-btn'>
-									<button class='btn btn-default btn-sm' type='button' onclick='reduceNum(<!--@php echo $dish_list_value['dish_id']; @-->)'>-</button>
+									<button class='btn btn-default btn-sm' type='button' onclick='reduceNum(<!--@php echo $dish_list_value['id']; @-->)'>-</button>
 								</span>
-								<input type='tel' value="1" class='form-control input-sm pricetotal goodsnum ' cartid="<!--@php echo $dish_list_value['dish_id']; @-->" id='goodsnum_<!--@php echo $dish_list_value['dish_id']; @-->' price="<!--@php echo $dish_list_value['vip_price']; @-->"  maxbuy="<!--@php echo $dish_list_value['total']; @-->">
+								<input type='tel' value="1" class='form-control input-sm pricetotal goodsnum ' cartid="<!--@php echo $dish_list_value['id']; @-->" id='goodsnum_<!--@php echo $dish_list_value['id']; @-->' price="<!--@php echo $dish_list_value['vip_price']; @-->"  maxbuy="<!--@php echo $dish_list_value['total']; @-->">
 								<span class='input-group-btn'>
-									<button class='btn btn-default btn-sm' type='button' onclick='addNum(<!--@php echo $dish_list_value['dish_id']; @-->,<!--@php echo $dish_list_value['total']; @-->)'>+</button>
+									<button class='btn btn-default btn-sm' type='button' onclick='addNum(<!--@php echo $dish_list_value['id']; @-->,<!--@php echo $dish_list_value['total']; @-->)'>+</button>
 								</span>
 							</div>
 						</td>
 						<!--@php if ( $dish_list_value['selected'] == 0 ){ @-->
-						<td class="conl-action"><span class='col-check' id="<!--@php echo $dish_list_value['dish_id']; @-->">选择商品</span></td>
+						<td class="conl-action"><span class='col-check' id="<!--@php echo $dish_list_value['id']; @-->">选择商品</span></td>
                          <!--@php  }else{ @-->
-						<td class="conl-action"><span class='col-check added' id="<!--@php echo $dish_list_value['dish_id']; @-->">已选择</span></td>
+						<td class="conl-action"><span class='col-check added' id="<!--@php echo $dish_list_value['id']; @-->">已选择</span></td>
 						<!--@php } @-->
 					</tr>
 					<!--@php }} @-->
@@ -289,12 +288,14 @@ jQuery(function(){
 		 effect : "fadeIn"
 	});
 
+	currency();
+
 	$("#addresslist .set").each(function(){
 		if($(this).text()=="默认地址"){
 			$("#addresslist .set").hide();
 			$(this).show();
 		}
-	})
+	});
 	//点击商品名称显示产品详情
 	$(".product-name").on("click",function(){
 		var content_id = $(this).attr("product_id");
@@ -609,7 +610,7 @@ jQuery(function(){
     });
 }());
 
-
+var get_currency_val = -1;
 function getGoods(){
 	var psize = $(".pagenum select").val();
 	var get_goods_html = "";
@@ -626,18 +627,39 @@ function getGoods(){
 			$(".add-list-area-tip").hide();
 		}
 		if( data.result == 0){
-			$.each(data.purchase,function(n,value){
-			get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'>$"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
-				  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
-				  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
-				  "<td class='shippingPrice'>$<span>"+value.freight.toFixed(3)+"</span></td><td class='col-total'>$<span>"+value.price*value.num+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
-			});
+			if(data.shiprice!=-1){
+				$(".add-list").html('<tr class="product-list-tr"><th width="110px">图片</th><th width="400px">商品名称</th><th width="110px">单价</th><th width="106px">数量</th><th width="70px">合计</th><th width="106px">操作</th></tr>');
+				get_currency_val = data.shiprice;
+				$.each(data.purchase,function(n,value){
+				get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'><i class='currency-span'>$</i>"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
+					  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
+					  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
+					  "<td class='col-total'><i class='currency-span'>$</i><span>"+value.price*value.num+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
+				});
+			}else if(data.shiprice==-1){
+				$.each(data.purchase,function(n,value){
+				get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'><i class='currency-span'>$</i>"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
+					  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
+					  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
+					  "<td class='shippingPrice'><i class='currency-span'>$</i><span>"+value.freight.toFixed(3)+"</span></td><td class='col-total'><i class='currency-span'>$</i><span>"+value.price*value.num+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
+				});
+			}
+			
 			$(".add-list tr:last-child").after(get_goods_html);
+			currency();
 			totalPrice();
 		}else{
 			alert(data.info);
 		}
 	},"json");
+}
+//价格符号值的显示。
+function currency(){
+	if($(".currency").val()==1){
+		$(".currency-span").text("￥");
+	}else{
+		$(".currency-span").text("$");
+	};
 }
 $(document).ready(function(){
      // 设置收货地址
@@ -659,24 +681,40 @@ function totalPrice(){
 	var total_price = 0;
 	var total_sPrice = shippingPrice();
 	var exchange_rate = $(".exchange_rate").val();
-
+	var currency_val = $(".currency").val();
 		$(".col-total span").each(function(){
 			total_price += parseFloat($(this).text());
 		});
-		$(".total-area .total-price").text("￥"+parseFloat(total_price*exchange_rate).toFixed(2));
+		if( currency_val==1 ){
+			$(".total-area .total-price").text("￥"+parseFloat(total_price).toFixed(2));
+		}else{
+			$(".total-area .total-price").text("￥"+parseFloat(total_price*exchange_rate).toFixed(2));
+		}
+		
 		//0觅海配送，1买家承运
 		if( $(".freight-area input[type='radio']:checked").val() == 0){
 			total_price += total_sPrice;
-			total_price = parseFloat(total_price*exchange_rate).toFixed(2);
+			if( currency_val==1 ){
+				total_price = parseFloat(total_price).toFixed(2);
+			}else{
+				total_price = parseFloat(total_price*exchange_rate).toFixed(2);
+			}
+			
 			$(".total-area .dispatchprice span").removeClass("userself");
 			$(".total-area .pay-total-price span").text("￥"+total_price);
 		}else{
-			total_price = parseFloat(total_price*exchange_rate).toFixed(2);
+			if( currency_val==1 ){
+				total_price = parseFloat(total_price).toFixed(2);
+			}else{
+				total_price = parseFloat(total_price*exchange_rate).toFixed(2);
+			}
+			
 			$(".total-area .dispatchprice span").addClass("userself");
 			$(".total-area .pay-total-price span").text("￥"+total_price);
 		}
 }
 function shippingPrice(){
+	var currency_val = $(".currency").val();
 	var shippingPrice = 0;
 	var exchange_rate = $(".exchange_rate").val();
 	var returnVal = 0;
@@ -684,9 +722,16 @@ function shippingPrice(){
 		shippingPrice += parseFloat($(this).text());
 	});
 	returnVal = shippingPrice;
-	shippingPrice = parseFloat(shippingPrice*exchange_rate).toFixed(2);
-	$(".isFreightChecked").val(shippingPrice);
-	$(".total-area .dispatchprice span").text("￥"+shippingPrice);
+	if( get_currency_val == -1){
+		shippingPrice = parseFloat(shippingPrice*exchange_rate).toFixed(2);
+		$(".isFreightChecked").val(shippingPrice);
+		$(".total-area .dispatchprice span").text("￥"+shippingPrice);
+	}else{
+		returnVal = get_currency_val;
+		$(".isFreightChecked").val(get_currency_val);
+		$(".total-area .dispatchprice span").text("￥"+get_currency_val);
+	}
+
 	return returnVal;
 }
 function stopEvent(event){ //阻止冒泡事件
@@ -864,18 +909,6 @@ function openDialog(url){
 		fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
 	}
 
-
-/*  function fetchChildCategory2(cid) {
-	var html = '<option value="0">请选择三级分类</option>';
-	if (!category || !category[cid]) {
-		$('#p3').html(html);
-		return false;
-	}
-	for (i in category[cid]) {
-		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
-	}
-	$('#p3').html(html);
- }*/
 
 </script>
 <!--@php  include themePage('purchase_footer');@

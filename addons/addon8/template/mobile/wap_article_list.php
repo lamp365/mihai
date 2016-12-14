@@ -12,86 +12,10 @@
 	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
+	
 </head>
 
 <style type="text/css">
-
-	/*wap的觅海头条二级页*/
-	.mhnews-wap{
-		width: 100%;overflow: hidden;
-	}
-	.mhnews-wap .mhheadline {
-		background: #eee;
-	}
-	.mhnews-wap .mhheadline ul{
-		overflow: hidden;
-	}
-	.mhnews-wap .mhheadline ul li{
-		width: 100%;border-top: solid 1px gainsboro;
-		overflow: hidden;padding:3%;
-		background: #fff;
-		box-sizing: border-box;
-	}
-	.mhnews-wap .mhheadline ul li a{
-		float: left;
-		display: inline-block;
-		overflow: hidden;
-		/*height: 80%;*/
-		width: 100%;
-		margin-top: 2%;
-
-	}
-	.mhnews-wap .mhheadline ul li a p{
-		font-size: 14px;
-		color: #333333;
-		width: 100%;
-		text-overflow:ellipsis;
-		overflow: hidden;
-		white-space:nowrap;
-		font-weight:bold;
-		font-family: "微软雅黑";
-	}
-	.mhnews-wap .mhheadline ul li a span{
-		display: inline-block;
-		width: 100%;
-		color: #7F7F7F;
-		height: 40px;
-		overflow: hidden;
-		margin-top: 5px;
-	}
-	.mhnews-wap .mhheadline ul li span{
-		width:47%;
-		float: left;
-		display: inline-block;
-	}
-
-	.mhnews-wap .mhheadline .hottag{
-		width: 28px;
-		display: inline-block;
-		height: 16px;
-		line-height: 16px;
-		font-size: 8px;
-		text-align: center;
-		border: 1px solid #DC0200;
-		border-radius: 4px;
-		color: #DC0200;
-		margin-left: 0;
-		margin-right: 5px;
-		box-sizing: border-box;
-	}
-
-	.tip .jiazai{
-		margin: 0 auto;
-		display: block;
-	}
-	.header_title .art_active{
-		color:#FF2D4B;
-	}
-	.header_title a{
-		width: 30%;
-		display: inline-block;
-		font-family: "微软雅黑";
-	}
 
 	/*健康文化*/
 	.healthy{
@@ -129,73 +53,149 @@
 		font-weight: bold;
 	}
 	.healthy ul li .healthy-data{
-		width: 45px;
+		width: 55px;
 		position: absolute;
 		top: 0;
 		right:0;
 	}
 	.healthy ul li span{
 		position: absolute;
-		top: 6px;
-		right:10px;
+		top: 9px;
+		right:22px;
 		width: 30px;
 		font-size: 8px;
 		color: #fff;
 		display: inline-block;
 	}
 
-	/*晒物笔记*/
-	.notelist{
-		background: rgb(243,243,243);
-		width: 100%;
-		overflow: hidden;
-		padding: 3% 2% 0% 0%;
+	/*晒物笔记*/	
+	div.wrap{
+		width: 100%;								
+		position: relative;
+		background: #DDD;
 	}
-
-	.column{
-		width: 47%;
-		overflow: hidden;
-		float: left;
-		margin-left: 2%;
-
-	}
-	.column .pernote{
-		margin-bottom: 3.5%;
-		border: solid 1px gainsboro;
+	div.wrap div{				
+		border: 1px solid #eee;
+		position: absolute;
 		background: #fff;
-		background: #FFFFFF;
-		box-shadow: 0px 0 5px 0 rgba(0,0,0,0.2);
-	}
-	.column .pernote img{
-		width: 100%;
-	}
-	.column .pernote .note-content{
-		width: 100%;
-		padding: 3%;
+		padding-bottom: 1%;
 		box-sizing: border-box;
 	}
-
-	.column .pernote .note-content .note-men{
-		margin: 3% 0;
+	div.wrap div p{
+		padding:3% 3% 0 3%;
+		box-sizing: border-box;
+		line-height: 18px;
 	}
-	.column .pernote .note-content .note-men img{
+	div.wrap div p.title{
+		color: #333;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	div.wrap div p.detail{
+		color: #7F7F7F;
+		font-size: 12px;
+	}	
+	div.wrap div p.men img{
 		width: 30px;
+		height: 30px;
 		border-radius: 50%;
 	}
-	.column .pernote .note-content .note-men span{
-		display: inline-block;
-		margin: 5px 0 0 0;
-		font-size: 8px;
+	div.wrap div p.men span{
 		color: #7F7F7F;
+		font-size: 10px;
+		line-height: 30px;
+		width: 75%;
+		display: inline-block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
-	.note-content h3{
-		color: #333;
+	div.wrap div h3 {
+		line-height: 35px;
+	}
+	div.wrap div img {
+		width: 100%;
+	}
+
+	/*wap的觅海头条二级页*/
+	.mhnews-wap{
+		width: 100%;
+	}
+	.mhnews-wap .mhheadline {
+		background: #fff;
+	}
+
+	.tip .jiazai{
+		margin: 10px auto;
+		display: block;
+		width: 20px;
+	}
+	.header_title .art_active{
+		color:#FF2D4B;
+	}
+	.header_title a{
+		width: 30%;
+		display: inline-block;
 		font-family: "微软雅黑";
 	}
-	.note-content p{
-		color: #7F7F7F;
-		height:45px;
+	.mhheadline h3{
+		background: #eee;height: 10px;
+	}	
+	.mhheadline ul li{
+		padding:4%;
+		width: 100%;
 		overflow: hidden;
+		box-sizing: border-box;
+		border-bottom: solid 1px #eee;
+	}
+	.mhheadline ul li .content{
+		width: 85%;
+		float: right;
+	}
+	.mhheadline ul li .content .name{
+		color: #333;
+		font-size: 10px;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.mhheadline ul li .content .title{
+		color: #333;
+		font-weight: bold;
+		font-family: "微软雅黑";
+		font-size: 14px;		
+	}
+	.mhheadline ul li .content .detail{
+		color: #7F7F7F;
+		font-size: 12px;
+	}
+	/*头像*/	
+	.mhheadline .men{
+		width: 15%;
+		overflow: hidden;
+		float: left;		
+	}
+	.mhheadline .men img{
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+	}
+	/*文章图片*/
+	.mhheadline ul li .imglist{
+		width: 100%;
+		overflow: hidden;
+		padding:2% 0 0 15%;
+		box-sizing: border-box;
+	}
+	.mhheadline ul li .imglist .imgone{
+		width: 100%;
+	}
+	.mhheadline ul li .imglist .imgtwo{
+		width: 49%;			
+	}
+	.mhheadline ul li .imglist .imgthree{
+		width: 32%;
 	}
 </style>
 
@@ -245,75 +245,153 @@
 				</div>
 			</div>
 			<!--觅海头条-->
-		<?php }else if($_GP['op'] == 'headline'){  ?>
+		<?php }else if($_GP['op'] == 'headline'){  ?>			
 			<div class="mhheadline">
+				<h3></h3>
 				<ul>
-					<?php if (is_array($article_list)){ foreach ($article_list as $val){ ?>
-						<li>
-							<div  style="overflow: hidden; float: left;width: 50%;">
-								<a href="<?php  echo mobile_url('article',array('name'=>'addon8','id'=>$val['id']))?>">
-									<p><?php  echo $val['title']?></p>
-									<span>男性健身就只有2个目的，一个就是减脂，另一个就是增加肌肉!那么有没</span>
-								</a>
-
-							</div>
-							<!--右边的图片-->
-                            <span style="float:right;">
-                                <img style="width: 100%;height: 80px;border: none;" src="<?php  echo $val['thumb']?>"/>
-                            </span>
-						</li>
-					<?php }}else{ ?>
-						echo '暂时没有头条';
-					<?php } ?>
+					<!--一个li是一篇文章，总共4个静态文章，分别表现不同的图片数量-->					
+					<li>
+						<div class="men">
+							<!--头像-->							
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />														
+						</div>
+						<div class="content">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">
+								<!--用户名-->
+								<p class="name">北城少女南城情</p>
+								<!--文章标题-->
+								<p class="title">对美物的追求，是永远没有尽头的</p>
+								<!--文章内容-->
+								<p class="detail">厌倦了周末不是逛街，看电影，就是吃吃喝喝喝。直到今天去了新天地的一家名叫洗衣船</p>
+							</a>
+						</div>
+						<!--文章图片-->
+						<div class="imglist">	
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">						
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>
+							</a>
+						</div>
+					</li>	
+					<li>
+						<div class="men">
+							<!--头像-->
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />							
+						</div>
+						<div class="content">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">
+								<!--用户名-->
+								<p class="name">北城少女南城情</p>
+								<!--文章标题-->
+								<p class="title">对美物的追求，是永远没有尽头的</p>
+								<!--文章内容-->
+								<p class="detail">厌倦了周末不是逛街，看电影，就是吃吃喝喝喝。直到今天去了新天地的一家名叫洗衣船</p>
+							</a>
+						</div>
+						<!--文章图片-->
+						<div class="imglist">	
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">						
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>							
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>
+							</a>
+						</div>
+					</li>	
+					<li>
+						<div class="men">
+							<!--头像-->
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />							
+						</div>
+						<div class="content">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">
+								<!--用户名-->
+								<p class="name">北城少女南城情</p>
+								<!--文章标题-->
+								<p class="title">对美物的追求，是永远没有尽头的</p>
+								<!--文章内容-->
+								<p class="detail">厌倦了周末不是逛街，看电影，就是吃吃喝喝喝。直到今天去了新天地的一家名叫洗衣船</p>
+							</a>
+						</div>
+						<!--文章图片-->
+						<div class="imglist">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">							
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>	
+							</a>											
+						</div>
+					</li>	
+					<li>
+						<div class="men">
+							<!--头像-->
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />							
+						</div>
+						<div class="content">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">
+								<!--用户名-->
+								<p class="name">北城少女南城情</p>
+								<!--文章标题-->
+								<p class="title">对美物的追求，是永远没有尽头的</p>
+								<!--文章内容-->
+								<p class="detail">厌倦了周末不是逛街，看电影，就是吃吃喝喝喝。直到今天去了新天地的一家名叫洗衣船</p>
+							</a>
+						</div>
+						<!--文章图片-->
+						<div class="imglist">							
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">
+							</a>												
+						</div>
+					</li>						
 				</ul>
 			</div>
 			<!--晒物笔记-->
-		<?php }else { ?>
-			<div class="notelist">
-				<!--第一列，因为要有瀑布流的效果,所以就分列写-->
-				<div class="column one">
-					<?php if (is_array($article_list)){ foreach ($article_list as $key=>$val){ ?>
-						<!--第一列的第一条笔记-->
-						<div class="pernote">
-							<a href="#">
-								<?php $pic = explode(';',$val['pic']); ?>
-								<img src="<?php echo $pic[0]; ?>" />
-							</a>
-							<div class="note-content">
-								<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
-									<!--笔记标题-->
-									<h3><?php echo $val['title']; ?></h3>
-									<!--笔记内容-->
-									<p>
-										<?php echo msubstr($val['description'],0,100); ?>
-									</p>
-								</a>
-								<!--发布人-->
-								<div class="note-men">
-									<!--头像-->
-									<?php $member = member_get($val['openid']); ?>
-									<?php if(empty($member['avatar'])){ ?>
-										<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />
-									<?php }else{ ?>
-										<img src="<?php echo $member['avatar']; ?>" />
-									<?php } ?>
-									<!--用户名-->
-									<span><?php if(!empty($member['nickname'])) {  echo $member['nickname']; }else{ echo substr_cut($member['mobile']); } ; ?></span>
-								</div>
-							</div>
-						</div>
-					<?php }}else{ ?>
-						echo '暂时没有文章';
-					<?php }?>
+		<?php }else { ?>	
+			<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/waterfloor.js"></script>		
+				<div class="wrap" id="wrap">
+					<!--这块div是静态数据，为了让你看下瀑布流的布局-->
+					<div>						
+						<a href="">							
+							<img src="<?php echo $pic[0]; ?>"/>
+						</a>
+						<a href="">
+							<p class="title">hhh</p>
+							<p class="detail">slkdjgkajdgka</p>
+						</a>						
+						<p class="men">							
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />												
+							<span>gsdh</span>
+						</p>							
+					</div>	
+					<!--接下来的是正式的，一个div是一条文章-->	
+					<?php if (is_array($article_list)){ foreach ($article_list as $key=>$val){ ?>								
+					<div>						
+						<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
+							<?php $pic = explode(';',$val['pic']); ?>
+							<img src="<?php echo $pic[0]; ?>"/>
+						</a>
+						<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
+							<p class="title"><?php echo $val['title']; ?></p>
+							<p class="detail"><?php echo msubstr($val['description'],0,100); ?></p>
+						</a>						
+						<p class="men">
+							<?php $member = member_get($val['openid']); ?>
+							<?php if(empty($member['avatar'])){ ?>
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />
+							<?php }else{ ?>
+								<img src="<?php echo $member['avatar']; ?>" />
+							<?php } ?>						
+							<span><?php if(!empty($member['nickname'])) {  echo $member['nickname']; }else{ echo substr_cut($member['mobile']); } ; ?></span>
+						</p>							
+					</div>	
+					<?php }}?>	
+											
 				</div>
-			</div>
+		
 		<?php } ?>
 	</div>
 </div>
 <!--用来存当前page-->
 <input type="hidden" value="2" id="page"/>
 <div class="tip" style="display: none;text-align: center">
-	<img class="jiazai" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/ajax-loader.gif" />
+	<img class="jiazai" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/ajax-loader.gif"/>
 	正在加载
 </div>
 <?php include themePage('footer');?>
@@ -323,30 +401,49 @@
 	var index = 1; //默认开关状态是打开
 
 	$(function(){
+		hlimglist();//调用觅海头条图片样式控制的方法
 		//滚动条到底部时就加载剩下数据
-		$(window).scroll(function () {
+		$(window).scroll(function(){			
 			if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
 				Refresh();
 			}
 		})
 	})
-
+	//根据觅海头条图片数量，动态控制样式
+	function hlimglist(){
+		$(".mhheadline .imglist").each(function(){
+			var length = $(this).find("img").length;
+			if(length == 1){			
+				$(this).find("img").attr("class", "imgone");
+			}else if(length == 2){
+				$(this).find("img").attr("class", "imgtwo");
+			}else if(length == 3){
+				$(this).find("img").attr("class", "imgthree");
+			}else{
+				$(this).find("img").attr("class", " ");
+			}
+		})
+	}
+		
 	function Refresh(){
 		if( index == 1){
 			$(".tip").show();
 			index = 0; //关闭开关
 			var page = $("#page").val(); //第一次传的是2
 			$.post("", {'page' : page,'nextpage' : 'ajax'}, function(s){
-				console.log(s.result);
+				console.log(s.result);				
 				if(s.info == 1){
 					//如果没有数据
 					$(".tip").hide();
 				}else{
 					$("#page").val(++page);
 					for(var i = 0;i < s.result.length;i++){
-						var readcount = s.result[0].readcount;
-						var title = s.result[0].title;
-						var img = s.result[0].thumb;
+						var readcount = s.result[i].readcount;//阅读人数
+						var title = s.result[i].title;//文章标题
+						var img = s.result[i].thumb;//文章图片
+													//文章内容
+													//用户头像
+													//用户名
 						Load(title,readcount,img);
 					}
 					index = 1;  //加载完后重新打开开关
@@ -358,39 +455,70 @@
 	}
 
 	function Load(title,readcount,img){
+		//健康文化的append
 		<?php  if($_GP['op'] == 'healty'){ ?>
-		var li = '';
-
-		<?php } else if($_GP['op'] == 'headline'){ ?>
 		var li = '<li>'+
-			'<div  style="overflow: hidden; float: left;width: 57%;height: 100%;">'+
-			'<a target="_blank" href="">'+
-			'<p>'+title+'</p>'+
-			'</a>'+
-
-			'<?php if($val['iscommend'] == 1 && $val['ishot'] == 0) {?>'+
-			'<span class="hottag">推荐</span>'+
-			'<?php }else if($val['ishot'] == 1 && $val['iscommend'] == 0){ ?>'+
-			'<span class="hottag">热门</span>'+
-			'<?php }else if($val['iscommend'] == 1 && $val['ishot'] == 1){ ?>'+
-			'<span class="hottag">推荐</span>'+
-			'<span class="hottag hot">热门</span>'+
-			'<?php } ?>'+
-			'<span style="line-height: 20px;color: #999999;">'+
-			'<img style="margin-top: 5px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/seenum.png"/>'+
-			readcount+
-			'</span>'+
-
-			'</div>'+
-			'<span style="float:right;">'+
-			'<img style="width: 100%;border: none;" src="'+img+'"/>'+
-			'</span>'+
-			'</li>'
+					'<a href="<?php echo mobile_url('article',array('id'=>$val['id']));?>">'+								
+						'<?php if(empty($val['thumb'])){ ?>'+
+							'<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>'+
+						'<?php }else{  ?>'+
+							'<img src="'+img+'"/>'+
+						'<?php } ?>'+								
+						'<p>'+title+'</p>'+
+					'</a>'+							
+					'<div style="position: absolute;top: 0;right:5%;width: 45px;height: 41px;">'+
+						'<img class="healthy-data" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/healthy-data.png"/>'+								
+						'<span><?php  echo date("Y/m",$val['createtime']);?></span>'+
+					'</div>'+
+				'</li>';
+			$(".healthy ul").append(li);
+		<?php } else if($_GP['op'] == 'headline'){ ?>
+		//觅海头条的append
+		var li = '<li>'+
+					'<div class="men">'+
+						'<!--头像-->'+							
+						'<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />'+														
+					'</div>'+
+					'<div class="content">'+
+						'<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">'+
+							'<!--用户名-->'+
+							'<p class="name">hhh</p>'+
+							'<!--文章标题-->'+
+							'<p class="title">对美物的追求，是永远没有尽头的</p>'+
+							'<!--文章内容-->'+
+							'<p class="detail">厌倦了周末不是逛街，看电影，就是吃吃喝喝喝。直到今天去了新天地的一家名叫洗衣船</p>'+
+						'</a>'+
+					'</div>'+
+					'<!--文章图片-->'+
+					'<div class="imglist">'+	
+						'<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">'+						
+							'<img src="'+img+'"/>'+					
+						'</a>'+	
+					'</div>'+	
+				'</li>';
 		$(".mhnews-wap ul").append(li);
+		hlimglist();
 		<?php }else{ ?>
-			var li = '';
+			//晒物笔记的append			
+			var li = '<div>'+						
+						'<a href="">'+							
+							'<img src="'+img+'"/>'+
+						'</a>'+
+						'<a href="">'+
+							'<p class="title">'+title+'</p>'+
+							'<p class="detail">slkdjgkajdgka</p>'+
+						'</a>'+						
+						'<p class="men">'+							
+							'<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />'+												
+							'<span>gsdh</span>'+
+						'</p>'+							
+					'</div>';
+			$(".wrap").append(li);
+			//append后按瀑布流布局排列
+			waterfall();
 		<?php } ?>
 
 	}
+	
 </script>
 </html>

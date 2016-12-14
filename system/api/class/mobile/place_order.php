@@ -114,13 +114,8 @@ if (!empty($member) AND $member != 3) {
 							}
 							//独立建团
 							else{
-								$groupSql = "SELECT COUNT( * ) cnt FROM ".table('team_buy_group');
-								$groupSql.= " WHERE dish_id=".$dish_id."  and ((status=2 and createtime>'".date('Y-m-d H:i:s',(time()-TEAM_BUY_EXPIRY))."') or status=1) and finish=0 ";
 								
-								//该商品总团数不包含失败的团
-								$groupCnt = mysqld_select($groupSql);
-								
-								if(floor($result ['data'] ['dish_list'][0]['quantity']/$result ['data'] ['dish_list'][0]['team_buy_count'])<=$groupCnt['cnt'])
+								if(floor($result ['data'] ['dish_list'][0]['quantity']/$result ['data'] ['dish_list'][0]['team_buy_count'])<1)
 								{
 									unset($result);				//清除返回数据中的订单信息
 									

@@ -68,7 +68,9 @@
 	if($result['code']==1)
 	{
 		//默认地址信息
-		$addressInfo = mysqld_select("SELECT id,realname,mobile,province,city,area,address,isdefault FROM " . table('shop_address') . " WHERE openid = :openid and isdefault=1", array(':openid' => $openid));
+		$addressInfo= mysqld_select("SELECT id,realname,mobile,province,city,area,address,isdefault FROM " . table('shop_address') . " WHERE openid = :openid and isdefault=1", array(':openid' => $openid));
+		//默认身份证
+		$identity 	= mysqld_select ( "SELECT identity_id,identity_number,identity_name,isdefault FROM " . table ( 'member_identity' ) . " WHERE openid = :openid and isdefault=1 and status=0", array (':openid' => $openid) );
 		
 		if(empty($addressInfo))
 		{
@@ -77,6 +79,15 @@
 		else{
 			$result['data']['address'] 	= $addressInfo;
 		}
+		
+		if(empty($identity))
+		{
+			$result['data']['identity'] = array();
+		}
+		else{
+			$result['data']['identity'] = $identity;
+		}
+		
 		
 		$result ['data']['totalprice'] 	= $result ['data']['goodsprice']+$result ['data']['taxtotal']+$result ['data']['ships'];
 		$result ['data']['payment_list']= getPayment (); 					// 支付方式

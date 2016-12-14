@@ -71,11 +71,11 @@
 						<?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
 					<td style="text-align:center;">
 						<a class="btn btn-xs btn-info"   href="<?php echo web_url('user',array('op'=>'rule','id'=>$item['id']));?>"><i class="icon-edit"></i>设置权限</a>
-<!--						<a class="btn btn-xs btn-info show_user"  data-id="--><?php //echo $item['id'];?><!--" href="javascript:;"><i class="icon-edit"></i>管理用户</a>-->
+						<!--						<a class="btn btn-xs btn-info show_user"  data-id="--><?php //echo $item['id'];?><!--" href="javascript:;"><i class="icon-edit"></i>管理用户</a>-->
 						&nbsp;&nbsp;
-						<a class="btn btn-xs btn-info edit_name"  data-tab='admin' data-id="<?php echo $item['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改名字</a>&nbsp;&nbsp;
+						<a class="btn btn-xs btn-info edit_name"  data-tab='admin' data-id="<?php echo $item['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改设置</a>&nbsp;&nbsp;
 						<?php if($item['isdelete'] == 1){ ?>
-<!--							<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $item['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
+							<!--							<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $item['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
 						<?php } ?>
 					</td>
 				</tr>
@@ -92,6 +92,7 @@
 				<th style="text-align:center;min-width:150px;">身份名称</th>
 				<th style="text-align:center;min-width:150px;">描述</th>
 				<th style="text-align:center;min-width:150px;">所属类型</th>
+				<th style="text-align:center;min-width:150px;">折扣</th>
 				<th style="text-align:center;min-width:150px;">创建时间</th>
 				<th style="text-align:center; min-width:60px;">操作</th>
 			</tr>
@@ -106,16 +107,19 @@
 						<?php if($item['type'] == 3) echo '一件代发'; ?>
 					</td>
 					<td style="text-align:center;">
+						<?php if($item['type'] == 3){ echo ($item['discount'] * 100)."%"; }else{ echo '-'; } ?>
+					</td>
+					<td style="text-align:center;">
 						<?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
 					<td style="text-align:center;">
-						<a class="btn btn-xs btn-info edit_name"  data-tab='home' data-id="<?php echo $item['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改名字</a>&nbsp;&nbsp;
+						<a class="btn btn-xs btn-info edit_name"  data-tab='home' data-id="<?php echo $item['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改设置</a>&nbsp;&nbsp;
 						<?php if($item['pid'] != 0){ ?>
-<!--							<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $item['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
+							<!--							<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $item['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
 						<?php } ?>
 					</td>
 				</tr>
 				<?php if(is_array($childrens[$item['id']])){ ?>
-				<?php foreach($childrens[$item['id']] as $child){ ?>
+					<?php foreach($childrens[$item['id']] as $child){ ?>
 						<tr class="one_row">
 							<td style="text-align:left;padding-left: 30px;" class="one_name">|---<span><?php  echo $child['name'];?></span></td>
 							<td style="text-align:center;" class="one_desc"><span><?php  echo $child['description'];?></span></td>
@@ -124,15 +128,18 @@
 								<?php if($child['type'] == 3) echo '一件代发'; ?>
 							</td>
 							<td style="text-align:center;">
+								<?php if($item['type'] == 3){ echo ($child['discount'] * 100)."%"; }else{ echo '-'; } ?>
+							</td>
+							<td style="text-align:center;">
 								<?php  echo date('Y-m-d H:i:s', $child['createtime'])?></td>
 							<td style="text-align:center;">
-								<a class="btn btn-xs btn-info edit_name" data-tab='home' data-id="<?php echo $child['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改名字</a>&nbsp;&nbsp;
+								<a class="btn btn-xs btn-info edit_name" data-tab='home' data-id="<?php echo $child['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改设置</a>&nbsp;&nbsp;
 								<?php if($child['pid'] != 0){ ?>
-<!--									<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $child['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
+									<!--									<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $child['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
 								<?php } ?>
 							</td>
 						</tr>
-				<?php } ?>
+					<?php } ?>
 				<?php } ?>
 			<?php  } } ?>
 			</tbody>
@@ -144,28 +151,32 @@
 
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<form action="" method="post">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">修改名称</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label for="name">名称</label>
-					<input type="text" class="form-control" name="rolers_name" id="edit_name" placeholder="请输入名称">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">设置</h4>
 				</div>
-				<div class="form-group">
-					<label for="name">描述</label>
-					<input type="text" class="form-control" name="description" id="edit_desc" placeholder="请输入描述">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="name">名称</label>
+						<input type="text" class="form-control" name="rolers_name" id="edit_name" placeholder="请输入名称">
+					</div>
+					<div class="form-group">
+						<label for="name">描述</label>
+						<input type="text" class="form-control" name="description" id="edit_desc" placeholder="请输入描述">
+					</div>
+					<div class="form-group" id="discount" >
+						<label for="name">批量折扣设置</label>
+						<input type="text" class="form-control" name="rolers_alls"   id="rolers_alls" placeholder="请输入折扣【0-1】">
+					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="submit" class="btn btn-primary">确认修改</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="submit" class="btn btn-primary">确认修改</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
 	</form>
 </div>
 
@@ -198,17 +209,17 @@
 
 <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<form action="" method="post">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">管理用户 (<span></span>)</h4>
-			</div>
-			<div class="modal-body">
-				<div class="field">
-					<div class="pull-left" style="width: 45%">
-						<div class="tit">未分配管理员</div>
-						<?php
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">管理用户 (<span></span>)</h4>
+				</div>
+				<div class="modal-body">
+					<div class="field">
+						<div class="pull-left" style="width: 45%">
+							<div class="tit">未分配管理员</div>
+							<?php
 							if(!empty($users)){
 								foreach($users as $item){
 									echo "<p data-uid='{$item['id']}'>{$item['username']}</p>";
@@ -216,20 +227,20 @@
 							}else{
 								echo '<div class="z_none">暂无</div>';
 							}
-						?>
-					</div>
-					<div class="pull-right" style="width: 45%">
-						<div class="tit">已关联管理员</div>
-						<div class="z_none">暂无</div>
+							?>
+						</div>
+						<div class="pull-right" style="width: 45%">
+							<div class="tit">已关联管理员</div>
+							<div class="z_none">暂无</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default close_modal">关闭</button>
-				<button type="submit" class="btn btn-primary sure_add_users">确认添加</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default close_modal">关闭</button>
+					<button type="submit" class="btn btn-primary sure_add_users">确认添加</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
 	</form>
 </div>
 
@@ -284,6 +295,19 @@
 		$("#editModal form").attr('action',url);
 		$("#edit_name").val(name);
 		$("#edit_desc").val(desc);
+		var url_check = "<?php  echo web_url('user', array('op'=>'getroler'))?>";
+		url_check = url_check +"&id="+id;
+		$.getJSON(url_check,function(data){
+			var obj = data.message;
+			if (data.errno == 200)
+			{
+				$("#discount").show();
+				$("#rolers_alls").val(obj);
+			}else{
+				$("#discount").hide();
+			}
+		},'json');
+
 	})
 	$(".add_rolers").click(function(){
 		$("#addModal").modal('show');
@@ -300,7 +324,7 @@
 			if(obj.length > 0){
 				for(var i= 0;i< obj.length;i++){
 					var info = obj[i];
-					 html += "<p data-uid='"+ info.id +"'>"+ info.username + "</p><input type='hidden' name='uids[]' value='"+ info.id +"'>";
+					html += "<p data-uid='"+ info.id +"'>"+ info.username + "</p><input type='hidden' name='uids[]' value='"+ info.id +"'>";
 				}
 				$(".field .pull-right .z_none").remove();
 				$(".field .pull-right").append(html);
@@ -393,5 +417,13 @@
 		}
 	}
 
+	//获取地址如果带有#home,那么默认的页面tab 会员身份被选中，默认被点击
+	function locationHash(){
+		var home = location.hash;
+		if( home == "#home" ){
+			$('#myTab a:last').tab('show');
+		}
+	}
+	locationHash();
 </script>
 <?php  include page('footer');?>

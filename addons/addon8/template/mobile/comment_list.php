@@ -140,8 +140,7 @@
 <?php include themePage('footer'); ?>
 <script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap/'. '/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>	
 <script>
-	$("#return").on("click",function(){
-		alert(document.referrer);		
+	$("#return").on("click",function(){				
 		if(document.referrer.length == 0){
 			  window.location.href = "index.php";
 		}else{				

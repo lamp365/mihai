@@ -62,5 +62,6 @@ if ($order['paytypecode'] != $paytypecode) {
         'id' => $orderid
     ));
 }
+$tags = 'purchase_';
 require (WEB_ROOT . '/system/modules/plugin/payment/' . $paytypecode . '/payaction.php');
 exit();

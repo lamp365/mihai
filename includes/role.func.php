@@ -81,6 +81,7 @@ function isHasPowerToShow($modname, $moddo, $modop, $act_type = '',$id=''){
             return true;
     }
 
+    $id = '';
     $system_rule = getSystemRule();
     foreach($system_rule as $row){
         if($row['modname'] == $modname && $row['moddo'] == $moddo && $row['modop'] == $modop){
@@ -91,19 +92,25 @@ function isHasPowerToShow($modname, $moddo, $modop, $act_type = '',$id=''){
             }else{
                 $id = $row['id'];
             }
-        }else{
-            return true;
         }
+    }
+    if(empty($id)){
+        //该操作没有录入系统中的话，默认不给看 但是root可以看
+        return checkAdmin();
     }
 //    file_put_contents('sql.txt',"{$modname}-{$moddo}-{$modop}-{$id}\n\r",FILE_APPEND);
     $hasPower = false;
-    $user_rule = mysqld_selectall("select id,role_id from ". table('user_rule') ." where uid={$_SESSION['account']['id']}");
-    if(!empty($user_rule)){   //空的话，说明该用户一个规则都没有设置，不可以查看
-        foreach($user_rule as $val){
-            if($val['role_id'] == $id ){
-                $hasPower = true;
-            }
+    $relation = mysqld_select("select rolers_id from ".table('rolers_relation')." where uid={$_SESSION['account']['id']}");
+    if(empty($relation))
+        return checkAdmin();
+
+    $user_rule = mysqld_select("select * from ". table('rolers') ." where id={$relation['rolers_id']}");
+    if(!empty($user_rule['rule'])){   //空的话，说明该用户一个规则都没有设置，不可以查看
+        $rule_arr = explode(',',$user_rule['rule']);
+        if(in_array($id,$rule_arr)){
+            $hasPower = true;
         }
+
     }else{
         $hasPower = checkAdmin();
     }
@@ -123,16 +130,20 @@ function isHasPowerOperateField($table,$filed,$id=''){
         if($res['status'] == 0)
             return true;
     }
-    $uid = $_SESSION['account']['id'];
-    $fieldRule = mysqld_selectall("select id,db_name,db_rule from ". table('user_rule') ." where uid={$uid} and menu_db_type=2");
+
+    $relation = mysqld_select("select rolers_id from ".table('rolers_relation')." where uid={$_SESSION['account']['id']}");
+    if(empty($relation))
+        return checkAdmin();
+
+    $fieldRule = mysqld_select("select * from ". table('rolers') ." where id={$relation['rolers_id']}");
     $hasPower = true;
-    if(!empty($fieldRule)){
-        foreach($fieldRule as $row){
-            if($row['db_name'] == $table){
-                $db_rule = json_decode($row['db_rule']);
-                if(in_array($filed,$db_rule)){
-                    $hasPower = false;
-                }
+    if(!empty($fieldRule['db_rule'])){
+        $file_rule = json_decode($fieldRule['db_rule'],true);
+        if(array_key_exists($table,$file_rule)){
+            $fild_arr = $file_rule[$table];
+            if(in_array($filed,$fild_arr)){
+                //能找到，说明设置了，设置了反而是限制操作不让显示
+                $hasPower = false;
             }
         }
     }

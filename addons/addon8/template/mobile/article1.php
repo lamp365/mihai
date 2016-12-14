@@ -299,7 +299,7 @@
 		<?php if($notApp){ ?>
 		<div style="height: 120px;"></div>
 		<!--底部栏 -->
-		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 53px;left: 0;" class="heal-foot">
+		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
 			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
 
 			<ul style="float: right;list-style: none;">
@@ -320,7 +320,7 @@
 </div>
 
 <?php if($notApp){ ?>
-<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>
+<!--<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>-->
 <script>
 	window.onload = function(){
 		appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);

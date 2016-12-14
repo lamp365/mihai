@@ -3,7 +3,7 @@
         update_all_shop_status();
  		$cfg = globaSetting();
         // 获取批发商列表
-		$vip_list = mysqld_selectall("SELECT * FROM ".table('rolers')." WHERE (type = 2 or type = 3) and pid != 0");
+		$vip_list = mysqld_selectall("SELECT * FROM ".table('rolers')." WHERE type = 2 or (type = 3 and pid != 0)  ");
         $area = mysqld_selectall("SELECT * FROM " . table('dish_list') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');
         if (!empty($area)) {
             $children = '';
@@ -86,7 +86,25 @@
 		}
 		if ( $operation == 'ajax_set_vip' ){
             if ( !empty($_GP['ajax_id']) ){
-				die(showAjaxMess('200',$_GP['ajax_vip_data']));
+				$ajax_vip_data = $_GP['ajax_vip_data'];
+				$vip_data = array();
+				if ( is_array($ajax_vip_data) ){
+					foreach ( $ajax_vip_data as $key=>$v2_value ){
+						 if ( ($key != -1) && !empty($key) && !empty($v2_value)){
+							  $vip_data[] = array(
+									'dish_id' => $_GP['ajax_id'],
+										'v2' => $key,
+								  'vip_price' => $v2_value
+							  );
+						 }
+					}
+					if ( !empty($vip_data) ){
+						setExtendPrice($vip_data);
+					}else{
+						mysqld_delete('shop_dish_vip', array('dish_id'=>$_GP['ajax_id']));
+					}
+				}
+				 die(showAjaxMess('200', '设置成功'));
 			}else{
                 die(showAjaxMess('1002','获取失败'));
 			}

@@ -45,7 +45,6 @@
  <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php  echo $adv['id'];?>" />
 		<h3 class="header smaller lighter blue">新增用户</h3>
-	   <p style="margin: 10px;background: #fcfcfc;border: 1px solid #e5e5e5;padding: 10px;color:red;font-size: 12px;">注：对于产品库，未上架的商品，不判断权限，只有上架后业务才会权限判断。</p>
         <div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 用户名：</label>
 
@@ -75,70 +74,9 @@
 				<input type="password"  name="confirmpassword" class="col-xs-10 col-sm-2"  />
 			</div>
 		</div>
-		  <div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> 权限：</label>
-
-			<div class="col-sm-9" >
-				<strong><a href="javascript:;" onclick="checkrule(true)">全选</a>，<a href="javascript:;"  onclick="checkrule(false)">全否</a></strong> &nbsp;&nbsp;&nbsp;&nbsp;<span onclick="getAjaxFiledData()" class="btn btn-sm btn-info">高级权限</span><br/>
-
-				 <?php  foreach($parent as $cat_id => $arr){ ?>
-				<div class="showlist show_roles">
-				 <div class="role_title"><input type="checkbox" class="cat"><strong><?php echo $arr[0]['cat_name']?></strong></div>
-
-					 <?php  foreach($arr as $row){ ?>
-						 <div style="margin-left: 35px;" class="pre_level">
-							 <div><input type="checkbox" class="parent son" name="role_ids[]"  value="<?php echo $row['id'];?>"><?php echo $row['moddescription'];?></div>
-
-						 <?php if(is_array($children[$row['id']])){ ?>
-							 <div style="padding-left: 60px;">
-							<?php foreach($children[$row['id']] as $val){ ?>
-								<input type="checkbox" value="<?php echo $val['id'];?>" name="role_ids[]" class="son"><span class="each_role"><?php echo $val['moddescription'];?></span>
-						   <?php } ?>
-							 </div>
-						 <?php } ?>
-						 </div>
-					 <?php } ?>
-				 </div>
-				 <?php } ?>
-
-				<script>
-				  function checkrule(ischecked)
-				  {
-					  $("input[type='checkbox']").each(function(){
-						  this.checked = ischecked;
-					  })
-				  }
-					$(".son").click(function(){
-						if(this.checked){
-							var obj = $(this).closest('.pre_level').find(".parent")[0];
-							var obj2 = $(this).closest('.show_roles').find('.cat')[0];
-							obj.checked = true;
-							obj2.checked = true;
-						}
-					})
-				  $(".parent").click(function(){
-					  if(this.checked){
-						  var obj2 = $(this).closest('.show_roles').find('.cat')[0];
-						  obj2.checked = true;
-					  }
-					  var isCheck = this.checked;
-					  $(this).closest(".pre_level").find('.son').each(function(){
-						  this.checked = isCheck;
-					  })
-				  })
-					$(".cat").click(function(){
-						var isCheck = this.checked;
-						$(this).closest('.show_roles').find("input[type='checkbox']").each(function(){
-							this.checked = isCheck;
-						})
-					})
-				</script>
 
 
-			</div>
-		</div>
-									
-									
+
 	  <div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> </label>
 
@@ -147,155 +85,9 @@
 
 			</div>
 		</div>
-	 <input type="hidden" class="hide_total_filed" value='<?php echo $DbFiledListJson;?>'>
-	 <input type="hidden" class="hide_user_filed" name="hide_user_filed" value='<?php echo '';?>'>
+
 
     </form>
 
-<div class="gundon">
-	<div><img src="<?php echo RESOURCE_ROOT;?>addons/common/image/shang.png" alt=""></div>
-	<div><img src="<?php echo RESOURCE_ROOT;?>addons/common/image/xia.png" alt=""></div>
-</div>
-<!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 class="modal-title" id="myModalLabel">高级权限</h3>
-			</div>
-			<div class="modal-body">
-				<select name="" class="DbFiledList" onchange="getFiledInfo(this)">
-					<option value="0">请选择模型</option>
-					<?php foreach($DbFiledList as $table=>$data){ ?>
-						<option value="<?php echo $table;?>"><?php echo MenuEnum::$dbFiledValue[$table];?></option>
-					<?php } ?>
-				</select>
-				<div class="field" style="margin-top: 15px;">
-					<div class="pull-left" style="width: 45%">
-						<div class="tit">模型属性</div>
-						<div class="z_none">暂无</div>
-					</div>
-					<div class="pull-right" style="width: 45%">
-						<div class="tit"><span style="font-weight: bolder">限制</span>操作属性</div>
-						<div class="z_none">暂无</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="button" class="btn btn-primary field_sure" >确定</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
 
 <?php  include page('footer');?>
-<script>
-	function getFiledInfo(obj){
-		var table = $(obj).val();
-		var hide_total_filed = $(".hide_total_filed").val();
-		hide_total_filed = eval("("+ hide_total_filed +")");
-
-		var html = '';
-		var fieldArr = '';
-		if(table == 0){
-			html = '<div class="z_none">暂无</div>';
-		}else{
-			for(var key in hide_total_filed){
-				if(key == table){
-					fieldArr = hide_total_filed[key];
-				}
-			}
-
-			for(var keyFiled in fieldArr){
-				html += "<p data-field='"+ keyFiled +"'>"+ fieldArr[keyFiled] +"</p>"
-			}
-		}
-
-		$(".field .pull-left .z_none").remove();
-		$(".field .pull-left p").remove();
-		$(html).appendTo($(".field .pull-left"))
-	}
-
-	function getAjaxFiledData(){
-		//先恢复右侧已经确定好的字段数据
-		var hide_user_filed  = $(".hide_user_filed").val();
-		var hide_total_filed = $(".hide_total_filed").val();
-		hide_user_filed      = hide_user_filed == '' ? '' : eval("("+ hide_user_filed +")");
-		hide_total_filed     = eval("("+ hide_total_filed +")");
-		var html = '';
-		if(hide_user_filed != ''){
-			for(var table in hide_user_filed){
-				if(hide_user_filed[table] != ''){
-					for(var key in hide_user_filed[table]){
-						var keyFile = hide_user_filed[table][key];
-						var str      = table+"|"+hide_total_filed[table][keyFile];
-						var strField = table+"|"+keyFile;
-						html += "<p data-field='"+ strField +"'>"+ str +"</p>"
-					}
-				}
-			}
-		}
-		html = html == ''? '<div class="z_none">暂无</div>' : html;
-		$(".field .pull-right .z_none").remove();
-		$(".field .pull-right p").remove();
-		$(html).appendTo($(".field .pull-right"));
-		$("#myModal").modal('show');
-	}
-
-	$(document).delegate(".field .pull-left p","click",function(){
-		var table    = $(".DbFiledList").find("option:selected").val();
-		var text     = $(".DbFiledList").find("option:selected").text();
-		var str 	 = text+"|" + $(this).html();
-		var strField = table+"|" + $(this).data('field');
-		var isContinue = true;
-		$(".field .pull-right p").each(function(){   //已经存在的不用再次添加
-			if($(this).html() == str){
-				isContinue = false;
-			}
-		});
-		if(!isContinue){
-			return;
-		}
-		var html = "<p data-field='"+ strField +"'>"+ str + "</p>";
-		$(".field .pull-right .z_none").remove();
-		$(html).appendTo($(".field .pull-right"));
-	})
-	$(document).delegate(".field .pull-right p",'click',function(){
-		$(this).remove();
-	})
-
-	$(".field_sure").click(function(){
-		var info = {};
-		$(".DbFiledList").find("option").each(function(){
-			if($(this).val() != 0){
-				var table = $(this).val().replace('squdian_','');
-				info[table] = [];
-			}
-		})
-
-		if($(".field .pull-right p").length > 0){
-			$(".field .pull-right p").each(function(){
-				var htmlArr = $(this).data('field').split('|');
-				var table = htmlArr[0];
-				var filed = htmlArr[1];
-				info[table].push(filed);
-
-			})
-
-			info = JSON.stringify(info);
-			$("input[name='hide_user_filed']").val(info);
-		}
-
-
-		$("#myModal").modal('hide');
-	})
-
-	$(".gundon div:first").click(function(){
-		parent.scrollTo(0,0);
-	})
-	$(".gundon div:last").click(function(){
-		$('html,body').animate({scrollTop:$('.tijiao').offset().top});
-	})
-</script>

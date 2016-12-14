@@ -3,6 +3,7 @@ $title = '批发采购';
 $is_login = is_vip_account();
 // 获取用户的参数
 $member = get_vip_member_account(true, true);
+$user_a = get_user_identity($member['mobile']);
 $openid =$member['openid'] ;
 // [parent_roler_id] => 2 [son_roler_id] => 3
 // 验证用户是否是批发商
@@ -14,8 +15,27 @@ $addresslist      =   mysqld_selectall("SELECT * FROM " . table('shop_address') 
 $page = max(1, $_GP['page']);
 $psize = max(20,$_GP['psize']);
 $limit =  " limit ".($page-1)*$psize.','.$psize;
+$condition = '';
+if (!empty($_GP['keyword'])){
+     switch ( $_GP['key_type'] ){
+		 case 'title':
+			 $condition = " and b.title like '%".$_GP['keyword']."%' ";
+			 break;
+		 default:
+			 $condition = " and c.goodssn = '".$_GP['keyword']."' ";
+			 break;
+	 }
+}
 // 根据用户的角色获取产品数据
-$dish_list = mysqld_selectall("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.deleted = 0 and b.status = 1 and a.v1 = ".$member['parent_roler_id']." and a.v2 =  ".$member['son_roler_id'].$limit);
+if ( $user_a['type'] == 2 ){
+     $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$member['parent_roler_id']." and a.v2 =  0 ".$limit);
+	 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$member['parent_roler_id']." and a.v2 = 0  $condition and b.deleted=0  AND b.status = '1' ");
+     $currency = 2;
+}else{
+     $dish_list = mysqld_selectall("SELECT b.*,c.goodssn FROM ".table('shop_dish')." AS b  LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition ".$limit);
+	 $total = mysqld_selectcolumn("SELECT count(*) FROM ".table('shop_dish')." AS b LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition ");
+     $currency = 1;
+}
 // 开始进行标记选中事件selected
 $purchase_goods = new LtCookie();
 $purchase = $purchase_goods->getCookie('purchase');
@@ -23,6 +43,7 @@ if ( !empty($purchase) ){
 	$purchase = unserialize($purchase);
 }
 unset($purchase_goods);
+// 已选商品数量
 $max_purchase = count($purchase);
 foreach( $dish_list as &$dish_list_value){
 	  if ( isset( $purchase[$dish_list_value['id']] ) ){
@@ -31,9 +52,10 @@ foreach( $dish_list as &$dish_list_value){
 			 $dish_list_value['selected'] = 0;
 	  }
 	  unset($dish_list_value['content']);
+	  $dish_list_value = price_check($dish_list_value, $member['parent_roler_id'],$member['son_roler_id'], $user_a['type']);
+	  $dish_list_value['currency'] = $currency;
 }
 unset($dish_list_value);
-$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table(shop_dish_vip) . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$member['parent_roler_id']." and a.v2 =  ".$member['son_roler_id']." $condition and b.deleted=0  AND b.status = '1' ");
 $pager  = pagination($total, $page, $psize);
 // 设置汇率
 $exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
@@ -48,7 +70,7 @@ switch ( $op ){
 		if ( empty($_GP['id']) ){
               die(showAjaxMess('1002', '商品参数异常')); 
      	}
-        $content = mysqld_select("SELECT content,title FROM ".table('shop_dish')." WHERE id = ".$_GP['id']." limit 1");
+        $content = mysqld_select("SELECT b.content,a.title FROM ".table('shop_dish')." as a LEFT JOIN ".table('shop_goods')." as b on a.gid = b.id WHERE a.id = ".$_GP['id']." limit 1");
 		die(showAjaxMess('200', $content)); 
 		break;
 	case 'add_goods':
@@ -67,12 +89,14 @@ switch ( $op ){
             $purchase = array();
 		}
 		foreach ($_GP['goods'] as $key=>$value){
-		    // 查找产品,是否存在
-			$check_goods = check_goods($key,$member['parent_roler_id'],$member['son_roler_id']);
-			if ( !$check_goods ){
-				continue;
+			if ( $user_a['type'] == 2 ){
+					// 查找批发产品,是否存在
+					$check_goods = check_goods($key,$member['parent_roler_id'],$member['son_roler_id']);
+					if ( !$check_goods ){
+						continue;
+					}
 			}
-			$model = model_good($key,$member['parent_roler_id'],$member['son_roler_id']);
+			$model = model_good($key,$member['parent_roler_id'],$member['son_roler_id'],$user_a['type']);
 			$model['num'] = $value;
 			if ( isset($purchase[$key]) ){
                 unset($purchase[$key]);
@@ -97,14 +121,16 @@ switch ( $op ){
 		   )));
 		}
 		// 查找产品,是否存在
-		$check_goods = check_goods($_GP['id'],$member['parent_roler_id'],$member['son_roler_id']);
-		if ( !$check_goods ){
-            die(json_encode(array(
-			   "result"=>1,
-			   "info"=> '该产品不在批发列表中'
-		    )));
+		if ( $user_a['type'] == 2 ){
+				$check_goods = check_goods($_GP['id'],$member['parent_roler_id'],$member['son_roler_id']);
+				if ( !$check_goods ){
+					die(json_encode(array(
+					   "result"=>1,
+					   "info"=> '该产品不在批发列表中'
+					)));
+				}
 		}
-        $purchase = add_goods($_GP['id'], $_GP['num'],$member['parent_roler_id'],$member['son_roler_id']);
+        $purchase = add_goods($_GP['id'], $_GP['num'],$member['parent_roler_id'],$member['son_roler_id'], $user_a['type']);
 		if ( !empty($purchase) ){
              $purchase = unserialize($purchase);
 		}
@@ -171,6 +197,7 @@ switch ( $op ){
 		echo json_encode(array(
 			   'result' => 0,
 			   "max_purchase" => $max_purchase,
+			   "shiprice" => 2,
 			   'purchase'=>$purchase
 			));
 	    exit;
@@ -194,9 +221,9 @@ function del_goods($id){
 	 }
 	 return $max;
 }
-function add_goods($id,$num,$v1,$v2){
+function add_goods($id,$num,$v1,$v2,$type=2){
      $purchase_goods = new LtCookie();
-	 $model = model_good($id,$v1,$v2);
+	 $model = model_good($id,$v1,$v2,$type);
 	 $model['num'] = $num;
 	 $purchase = $purchase_goods->getCookie('purchase');
 	 if ( !empty($purchase) ){
@@ -213,14 +240,68 @@ function add_goods($id,$num,$v1,$v2){
      $purchase_goods->setCookie('purchase',$purchase);
 	 return $purchase;
 }
-function model_good($id,$v1,$v2){
-     $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = ".$v1." and a.v2 =  ".$v2);
-	 if ( $find_good ){
-	      $model_good          = array('id'=>$id,'title'=>$find_good['title'],'total'=>$find_good['total'],'price'=>$find_good['vip_price'],'img'=>$find_good['thumb']);
-		  return $model_good;
+function model_good($id,$v1,$v2,$type=2){
+	 if ( $type == 2 ){
+			 $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = ".$v1." and a.v2 =  ".$v2);
+			 if ( $find_good ){
+				  $model_good    = array('id'=>$id,'title'=>$find_good['title'],'total'=>$find_good['total'],'price'=>$find_good['vip_price'],'img'=>$find_good['thumb']);
+				  return $model_good;
+			 }else{
+                  $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = ".$v1." and a.v2 = 0 ");
+				  if ( $find_good ){
+                      $model_good    = array('id'=>$id,'title'=>$find_good['title'],'total'=>$find_good['total'],'price'=>$find_good['vip_price'],'img'=>$find_good['thumb']);
+				  }else{
+				      return false;
+				  }
+			 }
 	 }else{
-          return false;
+             $find_good = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE deleted = 0 and status = 1 and id = ".$id);
+			 if ( $find_good ){
+				  $model_good    = array('id'=>$id,'title'=>$find_good['title'],'total'=>$find_good['total'],'price'=>$find_good['marketprice'],'img'=>$find_good['thumb']);
+				  // 进行价格校验
+                  // 首先判断是否有指定价格设置
+                  $check_price = mysqld_select("SELECT * FROM ".table('shop_dish_vip')." WHERE v1 = ".$v1." and v2 = ".$v2." and dish_id = ".$id);
+                  if ( $check_price ){
+                      $model_good['price'] = $check_price['vip_price'];
+                  }else{
+                  // 开始判断有没批量价格的设定
+				       $check_price = mysqld_select("SELECT * FROM ".table('rolers')." WHERE discount > 0 and type = 3  and ( id= ".$v1." or id = ".$v2.") order by pid desc limit 1 " );
+					   if ( $check_price ){
+                           $model_good['price'] = $check_price['discount'] * $model_good['price'];
+					   }
+				  }
+				  return $model_good;
+			 }else{
+				  return false;
+			 }
 	 }
+}
+function price_check($goods=array(), $v1, $v2, $type = 2){
+    if ( $type == 2 ){
+         // 开始查找是否有相应权限的特殊价格.批量的价格在外围设置完毕
+         $check_price = mysqld_select("SELECT * FROM ".table('shop_dish_vip')." WHERE dish_id = :dish_id and v1 = :v1 and v2 = :v2 ", array(':dish_id'=>$goods['id'], ':v1'=> $v1, ':v2'=>$v2 ));
+		 if ( $check_price ){
+             $goods['vip_price'] = $check_price['vip_price'];
+		 }
+		 return $goods;
+	}else{
+         // 开始查找是否有特定的价格
+		  $goods['vip_price'] = $goods['marketprice'];
+		  
+		  $check_price = mysqld_select("SELECT * FROM ".table('shop_dish_vip')." WHERE v1 = ".$v1." and v2 = ".$v2." and dish_id = ".$id);
+		  if ( $check_price ){
+			  $goods['vip_price'] = $check_price['vip_price'];
+
+		  }else{
+		  // 开始判断有没批量价格的设定
+			   $check_price = mysqld_select("SELECT * FROM ".table('rolers')." WHERE discount > 0 and type = 3  and ( id= ".$v1." or id = ".$v2.") order by pid desc limit 1 " );
+			   if ( $check_price ){
+				   $goods['vip_price'] = $check_price['discount'] * $goods['vip_price'];
+			   }
+		  }
+
+		  return $goods;
+	}
 }
 function check_goods($id,$v1,$v2){
     $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = ".$v1." and a.v2 =  ".$v2);

@@ -39,6 +39,13 @@
 	.modal-content{
 		margin-top: 300px;
 	}
+	.wholesale-td{
+		position: relative;
+	}
+	.wholesale-cogs{
+		position: absolute;
+    	top: 41px;
+	}
 </style>
 <h3 class="header smaller lighter blue">觅海全球购</h3> 
 <form action=""  class="form-horizontal" method="post">
@@ -145,9 +152,11 @@
 					<td style="text-align:center;" ><?php  echo $item['marketprice'];?></td>
 					<td style="text-align:center;" ><?php  echo $item['timeprice'];?></td>
 					<td style="text-align:center;" class="wholesale-td">
+						<div class="wholesale-div" ajax_id="<?php  echo $item['id'];?>">
 					     <?php if ( isset( $item['purchase_price'] ) ){ foreach ( $item['purchase_price'] as $purchase_price ){ ?>
 					           <span class="label label-danger wholesale" style="margin-left:5px;"><?php echo $purchase_price['name'].$purchase_price['vip_price']; ?></span>  					     	   
 						 <?php }}?>
+						 </div>
 						 <i class="wholesale-cogs icon-cog" ajax-vip-price-id="<?php  echo $item['id'];?>"></i>
 					</td>
 					<td style="text-align:center;" class="product-stock">
@@ -179,7 +188,8 @@
 				<?php  } } ?>
  	
 		</table>
-		<input type="hidden" class="vip-number" value="2">
+		<input type="hidden" class="vip-number" value="<?php echo count($vip_list); ?>">
+		<input type="hidden" name="" class="ajax-id" value="">
 		<div class='modal fade wholesale-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
 			<div class='modal-dialog modal-lg'>
 				<div class='modal-content'>
@@ -191,22 +201,22 @@
 						<h4 class='modal-title' id='myModalLabel'>批发价格修改</h4>
 					</div>
 					<div class='modal-body'>
-						<div class="form-group form-inline vip-form">
-				 	   		<label class="col-sm-3 control-label no-padding-left" >会员价格：</label>
-				 	   		<div class="col-sm-7 set-vip-price">
-								  <select name="v2[]" class="form-control set-select">
-								  		<option value="-1">--请选择--</option>
-			                            <option value='0'>0</option>
-										<option value='1'>1</option>
-								  </select>
-			                      <div class="input-group">
-			                       <span class="input-group-addon">$</span>
-								  <input type="text" name="vip_price[]" class="form-control vip_price" value="<?php echo $dish_vip_list_value['vip_price']; ?>" placeholder="请输入价格"/>
-								  </div>
-							</div>
-							<div class="col-sm-2">
-								<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
-							</div>
+						<div class="vip-form-area">
+							<div class="form-group form-inline vip-form">
+					 	   		<label class="col-sm-3 control-label no-padding-left" >会员价格：</label>
+					 	   		<div class="col-sm-7 set-vip-price">
+									  <select  class="form-control set-select">
+									  		<option value="-1">--请选择--</option>
+									  </select>
+				                      <div class="input-group">
+				                       <span class="input-group-addon">$</span>
+									   <input type="text"  class="form-control vip_price" value="" placeholder="请输入价格"/>
+									  </div>
+								</div>
+								<div class="col-sm-2">
+									<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
+								</div>
+					 	   </div>
 				 	   </div>
 				 	   <div class="form-group">
 				 	   		<label class="col-sm-3 control-label no-padding-left" ></label>
@@ -347,30 +357,77 @@
 		}
 		$(this).hide();
 	});
-
+	//获取批发价格下拉列表
 	$(".wholesale-cogs").on("click",function(){
 		$(".wholesale-modal").modal();
 		var id = $(this).attr("ajax-vip-price-id");
+		$(".ajax-id").val(id);
+		var option_html = "";
+		var get_html = "";
+		$(".set-select").html("");
 		$.post("",{op:'ajax_get_vip',ajax_id:id},function(data){
 			if( data.errno==200 ){
-
+				$.each(data.message.vip_list,function(n,value){
+					option_html += "<option value="+value.id+">"+value.name+"</option>"
+				});
+				$(".vip-form-area").html("");
+				if( data.message.vip_data!="" ){
+					$.each(data.message.vip_data,function(data_n,data_value){
+						get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
+								"<select  class='form-control set-select' v2='"+data_value.v2+"'></select><div class='input-group'><span class='input-group-addon'>$</span>"+
+								"<input type='text'  class='form-control vip_price' value='"+data_value.vip_price+"' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
+								"class='btn btn-danger remove_vip' >移除</a></div></div>";						
+					});
+					$(".vip-form-area").html(get_html);
+				}else{
+					get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
+								"<select  class='form-control set-select' vid=''></select><div class='input-group'><span class='input-group-addon'>$</span>"+
+								"<input type='text'  class='form-control vip_price' value='' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
+								"class='btn btn-danger remove_vip' >移除</a></div></div>";
+					$(".vip-form-area").html(get_html);
+				}
+				$(".set-select").append("<option value='-1'>--请选择--</option>"+option_html);
+				$(".set-select option").each(function(idnex,ele){
+					if( $(ele).val() == $(ele).parent(".set-select").attr("v2")){
+						$(ele).prop("selected","selected");
+					}
+				});
 			}else{
 				alert(data.message);
 			}
 		},"json");
 	});
+	//保存批发价格
 	$(".btn-save").on("click",function(){
 		var ajax_vip_data = {};
 		var select_val = "";
 		var input_val = "";
+		var id = $(".ajax-id").val();
+		var save_get_html = "";
 		$(".vip-form").each(function(index,ele){
 			select_val = parseInt($(ele).find(".set-select").val());
 			input_val = $(ele).find(".vip_price").val();
 			ajax_vip_data[select_val] = input_val;
 		})
-		$.post("",{op:'ajax_set_vip',ajax_vip_data:ajax_vip_data},function(data){
+		$.post("",{op:'ajax_set_vip',ajax_id:id,ajax_vip_data:ajax_vip_data},function(data){
 			if( data.errno==200 ){
-
+				$.post("",{op:'ajax_get_vip',ajax_id:id},function(data){
+					if( data.errno == 200 ){
+						$(".wholesale-div").html();
+						$.each(data.message.vip_data,function(data_i,data_val){
+							$.each(data.message.vip_list,function(list_i,list_val){
+								if( data_val.v2 == list_val.id ){
+									save_get_html += "<span class='label label-danger wholesale' style='margin-left:5px;''>"+list_val.name+data_val.vip_price+"</span>";
+								}else{
+									return;
+								}
+							});
+						});
+						$(".wholesale-div[ajax_id="+id+"]").html(save_get_html);
+					}else{
+						alert(data.message);
+					}
+				},'json');
 			}else{
 				alert(data.message);
 			}
@@ -393,7 +450,7 @@
 	$("body").on("click",".remove_vip",function(){
 		var vipLength = $(".vip-form").length;
 		if( vipLength == 1 ){
-			$(".vip-select").val(-1);
+			$(".set-select").val(-1);
 			$(".vip_price").val("");
 			return false;
 		}else{
