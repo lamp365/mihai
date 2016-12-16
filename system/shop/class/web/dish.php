@@ -303,20 +303,20 @@
                 $data = array(
                     'pcate' => intval($_GP['pcate']),
                     'ccate' => intval($_GP['ccate']),
-					'taxid' => intval($_GP['taxid']),
+//					'taxid' => intval($_GP['taxid']),
 					'timeprice'=> $timeprice,
 					'gid'  => intval($_GP['c_goods']),
-                    'status' => $_GP['status'],
+//                    'status' => $_GP['status'],
                     'displayorder' => intval($_GP['displayorder']),
                     'title' =>  !empty($_GP['dishname'])?$_GP['dishname']:$shop_goods['title'],
                     'description' => $_GP['description'],
                     'content' => htmlspecialchars_decode($_GP['content']),
                     'dishsn' => $_GP['dishsn'],
                     'productsn' => $_GP['productsn'],
-                    'marketprice' => $marketprice,
+//                    'marketprice' => $marketprice,
                     'weight' => $_GP['weight'],
-                    'productprice' => $productprice,
-                    'commision' => $_GP['commision']/100,
+//                    'productprice' => $productprice,
+//                    'commision' => $_GP['commision']/100,
                     'total' => intval($_GP['total']),
                     'totalcnf' => intval($_GP['totalcnf']),
                     'credit' => intval($_GP['credit']),
@@ -326,38 +326,45 @@
                     'ishot' => intval($_GP['ishot']),
                     'isjingping' => intval($_GP['isjingping']),
                      'issendfree' => intval($_GP['issendfree']),
-                    'type' => $_GP['type'],								//促销类型
+//                    'type' => $_GP['type'],								//促销类型
                     'ishot' => intval($_GP['ishot']),
                     'isdiscount' => intval($_GP['isdiscount']),
                     'isrecommand' => intval($_GP['isrecommand']),
-                    'istime' => $_GP['istime'],
-                    'timestart' => strtotime($_GP['timestart']),
+//                    'istime' => $_GP['istime'],
+//                    'timestart' => strtotime($_GP['timestart']),
                     'hasoption' => intval($_GP['hasoption']),
-                    'timeend' => strtotime($_GP['timeend']),
+//                    'timeend' => strtotime($_GP['timeend']),
                 	'max_buy_quantity' => (int)$_GP['max_buy_quantity']			//单笔最大购买数量
                     );
 
-                //删除因为加入权限不可见后，一些字段没有对应数据则删除
-                foreach($data as $key => $val){
-                    if($val === null)  unset($data[$key]);
+                //保税设置
+                $data = getDataIsNotNull($data,'taxid',$_GP['taxid']);
+                //是否销售
+                $data = getDataIsNotNull($data,'status',$_GP['status']);
+                $data = getDataIsNotNull($data,'marketprice',$marketprice);
+                $data = getDataIsNotNull($data,'productprice',$productprice);
+                $data = getDataIsNotNull($data,'timeprice',$timeprice);
+                //促销类型
+                $data = getDataIsNotNull($data,'type',$_GP['type']);
+                //促销时间
+                $data = getDataIsNotNull($data,'istime',$_GP['istime']);
+                //商品佣金比例
+                $data = getDataIsNotNull($data,'commision',$_GP['commision']);
+                $data = getDataIsNotNull($data,'timestart',$_GP['timestart']);
+                $data = getDataIsNotNull($data,'timeend',$_GP['timeend']);
 
-                    if($key == 'commision'){
-                        if($val == 0) unset($data[$key]);
-                    }
-                    if($key == 'timestart' || $key == 'timeend'){
-                        if($val == '')   unset($data[$key]);
-                    }
-                }
                 
                 //团购商品时
                 if(intval($_GP['type'])==1)
                 {
-                	$data['team_buy_count'] = (int)$_GP['team_buy_count'];
-                    $data['draw'] = (int)$_GP['draw'];
-                    if ($data['draw'] == 1) {
-                        $data['draw_num'] = (int)$_GP['team_draw_num'];
-                    }else{
-                        $data['draw_num'] = 0;
+                    $data = getDataIsNotNull($data,'team_buy_count',$_GP['team_buy_count']);
+                    $data = getDataIsNotNull($data,'draw',$_GP['draw']);
+                    if ($_GP['draw'] !== NULL) {
+                        //因为加入权限后，部分字段不可以见，再修改的时候，提交得不到数据，会被修改为0。故加这个判断
+                        if($_GP['draw'] == 1)
+                            $data['draw_num'] = (int)$_GP['team_draw_num'];
+                        else
+                            $data['draw_num'] = 0;
                     }
                 }
 				$c_p = mysqld_select("SELECT * FROM ".table("shop_goods")." WHERE id = ".$_GP['c_goods']);

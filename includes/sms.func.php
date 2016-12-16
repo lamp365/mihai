@@ -71,22 +71,22 @@ function send_warring($id){
 	   if ( empty($id) ){
            return false;
 	   }
-	   $url_arr = array('http://hinrc.com','http://www.hinrc.com');
-	   if(in_array($_SERVER['HTTP_HOST'],$url_arr)){
-		   $telphone = '18649713342';
-		   if (file_exists(WEB_ROOT . '/includes/TopSdk.php')) {
-			   require WEB_ROOT . '/includes/TopSdk.php';
-			   $respObject = send_warring_sms($telphone,$id);
-			   //如果发送失败
-			   if (isset($respObject->code))
-			   {
-				   return false;
-			   }
-			   else{
-				   return $id;
-			   }
-		   }
+	   if( !strstr($_SERVER['HTTP_HOST'] , 'hinrc')){
+           return false;
 	   }
+	   $telphone = '18649713342';
+       if (file_exists(WEB_ROOT . '/includes/TopSdk.php')) {
+              require WEB_ROOT . '/includes/TopSdk.php';
+			  $respObject = send_warring_sms($telphone,$id);
+			  //如果发送失败
+			  if (isset($respObject->code))
+			  {
+			  	return false;
+			  }
+			  else{
+			  	return $id;
+			  }
+        }	
 }
 function send_warring_sms($telphone,$code){
         $c = new TopClient;					

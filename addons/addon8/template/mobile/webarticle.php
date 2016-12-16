@@ -88,6 +88,16 @@
 		width: 100%;
 		margin: 10px 0;
 	}
+	/*为了避免后台导入的文章都是图片堆砌而成的，取消图片之间的空隙*/
+	.content dl dd table td img{
+		margin: 0;
+		display: block;
+	}
+	/*同上*/
+	.content dl dd p img{
+		margin: 0;
+		display: block;
+	}
 	.content dl dd p{
 		font-size: 16px;
 		line-height: 1.875;

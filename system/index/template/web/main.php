@@ -68,7 +68,7 @@
                     <span id='accountname'><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></span>
                 </small>
             </a>
-            <span style="display: inline-block;line-height: 50px;color: #fff">美元兑换人民币:<span class="usa-to-rmb">6.88</span></span>
+            <span style="display: inline-block;line-height: 50px;color: #fff"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span>
             <!-- /.brand -->
         </div><!-- /.navbar-header -->
 

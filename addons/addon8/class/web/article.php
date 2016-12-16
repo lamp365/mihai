@@ -32,6 +32,9 @@
 						  $openid_keys = array_keys($author_arr);
 						  if(empty($_GP['openid']))
 							  $_GP['openid'] = $openid_keys[0];
+
+						  //因为该用户是线上固定的几个用户，避免开发环境没有，自动创建
+						  createTheUserForNotExist($_GP['openid']);
 					  }
 					  if(	empty($article['id']))
 					   {

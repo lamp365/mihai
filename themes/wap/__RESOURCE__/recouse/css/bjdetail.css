@@ -649,8 +649,22 @@ div.notice .checkbox {
 	font-size:14px;
 	color:#6a6a6a;
 	margin-bottom:15px;
-	}
-	
+}
+.ajax_next_page{
+	font-size:14px;
+	color:#6a6a6a;
+	margin-bottom:15px;
+	text-align: center;
+	display: none;
+}
+.ajax_next_page .jiazai{
+	margin: 10px auto;
+	width: 25px;
+	display: block;
+}
+.ajax_next_page_foot{
+	height: 120px;
+}
 .tip em{
 	background-image:url('../images/bg-pro-intro.png');
 	background-position:-136px -86px;

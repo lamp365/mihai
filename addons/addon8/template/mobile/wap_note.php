@@ -53,18 +53,29 @@
 		margin-left: 10px;
 		font-size: 16px;
 		margin-top: 5px;
+		width: 60%;
 	}
-	
+	.headline-content .health-men .info .name .men{
+		width: 70%;
+		display: inline-block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		
+	}
 	.headline-content .health-men .info .name .lz{
 		background: #FCB9C2;
 		border-radius: 4px;
 		color: #fff;
+		float: left;
 		font-size: 12px;
 		width: 30px;
 		height: 16px;
 		line-height: 16px;
+		padding: 3px;
+		margin-top: 1px;
 		text-align: center;
-		margin-left: 5px;
+		margin-right: 5px;
 	}
 	.headline-content .health-men .attention{
 		float: right;
@@ -86,7 +97,7 @@
 	/*文章内容*/
 	.headline-detail .title{
 		color: #333;	
-		margin: 20px 0;	
+		margin: 15px 0;
 		font-size: 16px;
 		font-weight:bold;		
 	}
@@ -168,6 +179,13 @@
 		color: #fff;
 		font-weight: bold;
 	}
+	html,body{
+		height: 100%;
+	}
+	.bd{
+		height: 30%;
+	}
+	.bd img{height: 100%;}
 </style>
 
 <body>
@@ -192,13 +210,13 @@
 			</div>
 			<div class="bd">
 				<ul>
-					<!--一个li是一张轮播的图片-->						
+					<!--一个li是一张轮播的图片-->
+					<?php $pic_list = explode(';',$article_note['pic']); ?>
+					<?php foreach($pic_list as $pic){ ?>
 					<li>							
-						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif" />											
+						<img src="<?php echo $pic;?>" />
 					</li>	
-					<li>
-						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif" />
-					</li>					
+					<?php } ?>
 				</ul>
 			</div>
 		</div>
@@ -213,24 +231,16 @@
 		<div class="health-men">
 			<!--头像-->
 			<div class="info">
-				<?php if(!empty($article['openid'])){ $author = member_get($article['openid']);    ?>
-					<img src="<?php if(empty($author['avatar'])){ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; }else{ echo download_pic($author['avatar'],60,60); }?>" />
+
+					<img src="<?php if(empty($article_member['avatar'])){ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; }else{ echo download_pic($article_member['avatar'],60,60); }?>" />
 					<p class="name" style="margin-top: 13px;">
-						<span><?php echo $author['realname'];?></span>
-						<!--发布时间-->
-						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$article['createtime']);?></span>
+						<span class="men"><?php if(!empty($article_member['nickname'])){ echo $article_member['nickname'];}else{ echo substr_cut($article_member['mobile']); } ?></span>
+						<span class="lz">楼主</span>
 					</p>
-				<?php }else{  ?>
-					<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />
-					<p class="name" style="margin-top: 17px;">
-						<span style="float: left;line-height: 16px;">觅海小妹</span>
-						<span class="lz" style="float: right;">楼主</span>						
-					</p>
-				<?php } ?>
 			</div>
 			<!--关注按钮-->
 			<div class="attention">
-				<span class="guanzhu <?php if($notApp){ echo " wap_guanzhu";}else{ echo " app_guanzhu";}?>">+关注</span>
+				<span class="guanzhu put_comment">+关注</span>
 			</div>
 		</div>
 		
@@ -238,82 +248,83 @@
 		<div class="headline-detail">
 			
 			<!--文章标题-->
-			<p class="title">Swisse的樱桃胶南是什么味道的？</p>
+			<p class="title"><?php echo $article_note['title'];?></p>
 			
 			<!--文章内容-->
-			<p>
-				今年8月份给妈妈在美国买的，自己背回来的。
-				但妈妈说打开有一种哈喇味儿
-				就是瓜子坚果变质的味道？
-				大家吃有没有这种味道？
-				有没有在美国买的或者海淘回来的分享一下！
-				谢谢啦！
-				感觉淘宝不靠谱，
-				当时在Swisse专卖店很优惠的时候入的，
-				不算税都比淘宝贵。
-				而他家的芦荟胶和面霜
-				专卖店买两个三刀，
-				淘宝买80两个！
+			<p style="margin-bottom: 5px;">
+				<?php echo $article_note['description'];?>
 			</p>
 			<!--定位-->
+			<?php if(!empty($article_note['ddress'])){ ?>
 			<div style="margin: 3% 0;">
 				<img style="width: 15px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/location.png" />
-				<span style="color: #999;font-size: 10px;">福州市 仓山区 大榕树创意园</span>
+				<span style="color: #999;font-size: 10px;"><?php echo $article_note['ddress'];?></span>
 			</div>
-			
+			<?php } ?>
 			<div class="info" style="position: relative;">
 				<!--发布日期-->
-				<span>2016-12-13</span>
+				<span><?php echo date("Y-m-d",$article_note['createtime']);?></span>
 				<!--收藏人数-->
-				<span style="position: absolute;top:30%;right: 0;display: inline-block;">120人收藏</span>
+				<span style="position: absolute;top:30%;right: 0;display: inline-block;"><?php echo $collect_num;?>人收藏</span>
 			</div>	
 			
 			<!--评论-->
         	<div style="padding:0 5%;">
         		  <img style="width: 100%;" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/comment@3x.png" />        		 
         	</div>
-			<!--有评论-->
-        	<div class="health-men" style="margin-left: -10px;border-bottom: none;">
-				<!--一条评论内容-->
-				<div class="info"style="width: 100%;border-bottom: solid 1px #eee;border-top: none;">
-					<!--头像-->
-					<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>" />
-					<p class="name">
-						<span style="color: #4c4c4c;font-size: 14px;">喝水不用嘴</span>
-						<!--发布时间-->
-						<span style="color: #999;font-size: 12px;margin-top: 5px;display: block;"><?php echo date("Y-m-d H:i",$comment['createtime']);?></p>
-					</p>
-					<!--评论内容-->
-					<div style="clear: both;margin-left: 60px;">我爱觅海么么哒</div>
-				</div>									
-			</div>			
-			<!--没有评论-->
-			<div style="width: 100%;line-height: 100px;height: 100px;text-align: center;border-bottom: solid 1px #eee;display: none;">
-				勾搭评论别害羞，聊骚要做第一人~
-			</div>
+			<?php if(empty($article_comment)){ ?>
+				<!--没有评论-->
+				<div style="width: 100%;line-height: 100px;height: 100px;text-align: center;border-bottom: solid 1px #eee;">
+					勾搭评论别害羞，聊骚要做第一人~
+				</div>
+			<?php }else{ ?>
+				<!--有评论-->
+				<?php foreach($article_comment as $row){  ?>
+					<?php $member_comment = member_get($row['openid']); ?>
+				<div class="health-men" style="margin-left: -10px;border-bottom: none;">
+					<!--一条评论内容-->
+					<div class="info"style="width: 100%;border-bottom: solid 1px #eee;border-top: none;">
+						<!--头像-->
+						<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>" />
+						<p class="name">
+							<span style="color: #4c4c4c;font-size: 14px;">
+								<?php if(!empty($member_comment['nickname'])){ echo $member_comment['nickname'];}else{ echo substr_cut($member_comment['mobile']); } ?>
+							</span>
+							<!--发布时间-->
+							<span style="color: #999;font-size: 12px;margin-top: 5px;display: block;"><?php echo date("Y-m-d H:i",$article_comment['createtime']);?></p>
+						</p>
+						<!--评论内容-->
+						<div style="clear: both;margin-left: 60px;"><?php echo $article_comment['comment'];?></div>
+					</div>
+				</div>
+				<?php } ?>
+			<?php } ?>
+
+
+			<?php if(!empty($article_comment)){ ?>
 			<!--更多评论-->
-			<div style="text-align: center;margin-top: 30px;clear: both;color: #999;padding: 15px 0px 10px 0px;" <?php if($notApp){ echo "class='wap_more'";}else{ echo "class='app_more'";}?> >
+			<div style="text-align: center;margin-top: 15px;clear: both;color: #999;padding: 15px 0px 10px 0px;" class='wap_more' >
 				<a href="javascript:;" style="color: #999;font-size: 14px;">
 					查看更多评论
 				</a>
 			</div>
-			
+			<?php } ?>
 		</div>	
 	</div>
 	<h3 style="height: 50px;"></h3>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
-			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
+			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" class="put_comment"/>
 
 			<ul style="float: right;list-style: none;">
 				<li>
 					<a>
-						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/health-comment@2x.png"  <?php if($notApp){ echo "class='wap_more'";}else{ echo "class='app_more'";}?> />
+						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/health-comment@2x.png"  class='wap_more' />
 					</a>
 				</li>
 				
 				<li>
-					<a>
+					<a class="put_comment" href="javascript:;">
 						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/clle@2x.png" />
 					</a>
 				</li>
@@ -344,11 +355,11 @@
 			 var newHref = document.referrer;
 			 $("#return").attr("href",newHref);							
 		}
-		
+		window.history.back(-1);
    	  })	
     
     
-    $("#put_comment").focus(function(){
+    $(".put_comment").focus(function(){
 		//并且不让输入，不一定要用focus事件，反正wap不给评论，一评论就提示,引导下载
 		$("#downapp").show();
 		$(".iframe").show();
@@ -364,6 +375,11 @@
 		$("#downapp").hide();
 		$(".iframe").hide();
 		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
+	})
+
+	$(".wap_more").click(function(){
+		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'note')); ?>"
+		window.location.href = url;
 	})
 </script>
 </html>

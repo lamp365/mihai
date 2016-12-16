@@ -230,7 +230,7 @@ if ($operation == 'post') {
             'timeend' => strtotime($_GP['timeend'])
         );
 
-        //删除因为加入权限不可见后，一些字段没有对应数据则删除
+        //删除因为加入权限不可见后，一些字段没有对应数据则删除  产品这边可以这么去除，宝贝那边不能这么处理
         foreach($data as $key => $val){
             if($val === null)  unset($data[$key]);
         }

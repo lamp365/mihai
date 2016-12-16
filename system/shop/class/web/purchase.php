@@ -19,7 +19,7 @@ $_mess    =  mysqld_selectall("SELECT * FROM " . table('shop_mess'));
 if ($operation == 'display') {
 	$pindex = max(1, intval($_GP['page']));
 	$psize = 10;
-	$status = !isset($_GP['status']) ? -99 : $_GP['status'];
+	$status = !isset($_GP['status']) ? -110 : $_GP['status'];
 	$sendtype = !isset($_GP['sendtype']) ? 0 : $_GP['sendtype'];
 	$condition = 'A.ordertype=-2';   //只显示批发订单
 	$param_ordersn=$_GP['ordersn'];
@@ -59,12 +59,14 @@ if ($operation == 'display') {
 	if(in_array($status,$status_arr)){
 		//不处理
 
-	}else if ($status == '-99' ) {
-		//平台发货订单
+	}else if ($status == '-110' ) {
+		//平台发货订单  我方承运
 		$condition .= " AND A.sendtype=0";
 	}else if($status == '-100'){
 		//为自提的订单
 		$condition .= " AND A.sendtype=1";
+	}else if($status == '-99'){
+		//全部  不做处理
 	}else{
 		$condition .= " AND A.status = '" . intval($status) . "'";
 	}

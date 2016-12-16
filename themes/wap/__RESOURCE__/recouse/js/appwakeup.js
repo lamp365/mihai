@@ -25,7 +25,9 @@ function appDownLoad(url){
     }else{
         app_wake_to_up();
         //点击则下载app
-        app_click_to_down(url);
+        setTimeout(function(){
+            app_click_to_down(url)
+        },300);     
     }
 }
 
@@ -35,7 +37,9 @@ function app_wake_to_up(){
     var AndroidAgreement ="mihai://hinrc.com";
     //IOS
     if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-        window.location.href = iPhoneAgreement;
+        if(navigator.userAgent.indexOf("Safari") ==-1){
+            window.location.href = iPhoneAgreement;
+        }
     }else{
        // window.location.href = AndroidAgreement;
     }
@@ -46,24 +50,36 @@ function app_click_to_down(url){
     var AndroidUrl = "";
     var Apply_AndroidUrl = "";
     var Apply_iPhoneUrl = "";
-    $.post(url,{},function(response,xml){
-        var obj = response.message;
-            iPhoneUrl = obj.iPhoneUrl;
-            AndroidUrl = obj.AndroidUrl;
-            Apply_iPhoneUrl = obj.Apply_iPhoneUrl;
-            Apply_AndroidUrl = obj.Apply_AndroidUrl;
-            if( ua.match(/MicroMessenger/i) == 'micromessenger'){
-                if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-                    window.location.href = Apply_iPhoneUrl; 
+
+    var last_url = "";
+    $.ajax({
+        url:url,
+        type: "POST",
+        async: false,
+        dataType:'json',
+        success:function(response,xml){
+            if(response.errno==200){
+                var obj = response.message;
+                iPhoneUrl = obj.iPhoneUrl;
+                AndroidUrl = obj.AndroidUrl;
+                Apply_iPhoneUrl = obj.Apply_iPhoneUrl;
+                Apply_AndroidUrl = obj.Apply_AndroidUrl;
+                if( ua.match(/MicroMessenger/i) == 'micromessenger'){
+                    if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+                       last_url = Apply_iPhoneUrl; 
+                    }else if(navigator.userAgent.match(/android/i)){
+                       last_url = Apply_AndroidUrl;  
+                    }
+                }else if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+                    last_url = iPhoneUrl;
                 }else if(navigator.userAgent.match(/android/i)){
-                   window.location.href = Apply_AndroidUrl;  
+                    last_url = AndroidUrl;
                 }
-            }else if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-                window.location.href = iPhoneUrl;
-            }else if(navigator.userAgent.match(/android/i)){
-                window.location.href = AndroidUrl;
             }
-    },'json');
+            
+        }
+    });
+    window.location.href = last_url;
 }
 
 function app_show_tip(){
@@ -72,6 +88,7 @@ function app_show_tip(){
     var wx_nav    = document.getElementsByClassName("wx_nav")[0];
     var foot_menu = document.getElementsByClassName("foot_menu")[0];
     var divlink = document.createElement("div");
+    var close_div = document.createElement("div");
     if(wx_nav || foot_menu){
         div.className = "appdownload-hasfooter";
     }else{
@@ -79,8 +96,14 @@ function app_show_tip(){
     }
     div.id = "appdownload";
     divlink.id = "appdownloadlink";
-    img.src ="http://192.168.1.85/WEB2/xiaowu/images/down_banner.png";
+    close_div.id = "closeLoad";
+    img.src ="/images/down_banner.png";
     div.appendChild(img);
     div.appendChild(divlink);
+    div.appendChild(close_div);
     document.body.appendChild(div);
+    var appdownload_div = document.getElementById("appdownload");
+    document.getElementById("closeLoad").onclick = function(){
+        document.body.removeChild(appdownload_div);    
+    }
 }

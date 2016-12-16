@@ -196,7 +196,7 @@ function index_c_goods($categoryid,$ts=1,$num=5,$p=1){
 }
 // 根据属性返回产品数据
 function cs_goods($categoryid,$p=0, $tip=0, $num=0, $is_guess=false){
-     //  hots = 1  isrecommand  =2  isnew =3  isjingping =4
+     //  hots = 1  isrecommand  =2  isnew =3  isjingping =4  5表示团购商品
 	 $where = ' a.status = 1 ';
 	 if ( !empty($categoryid) ){
 		 switch ($p){
@@ -224,6 +224,9 @@ function cs_goods($categoryid,$p=0, $tip=0, $num=0, $is_guess=false){
 		case 4:
 			$where .= ' AND a.isjingping = 1';
 			break;
+		 case 5:
+			 $where .= ' AND a.type = 1';
+			 break;
 		default:
 			break;
 	 }
@@ -557,4 +560,111 @@ function setExtendPrice($data = array() ){
 		  }
 	 }
 	 return false;
+}
+
+/**
+ * @param $data 数组数据
+ * @param $key  数据字段
+ * @param $val  对应的值
+ * @return mixed
+ * 对数组数据进行塞入值，用于对产品字段设定权限后，页面该如金额字段会不显示，导致管理员做修改时，提交表单，获取不到该金额
+ * 会修改原来的金额价格为0.故有涉及到权限字段的需要赋值给数组时，进行调用。
+ */
+function getDataIsNotNull($data,$key,$val){
+	if($val !== null){
+		if($key == 'commision'){
+			//佣金要处以100
+			$val = $val/100;
+		}else if($key == 'timestart' || $key == 'timeend'){
+			//时间特殊处理
+			$val = strtotime($val);
+		}
+		$data[$key] = $val;
+	}
+	return $data;
+}
+// 查找批发和代购的购物车数据
+function get_purchase_cart($openid, $type = 2 ){
+	$purchase = array();
+    if ( !empty( $openid ) ){
+		$purchase_data = array(":openid"=>$openid, ":goodstype"=>$type);
+        $purchase_cart = mysqld_selectall("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype", $purchase_data);
+		if ( is_array($purchase_cart)){
+            foreach ( $purchase_cart as $value ){
+                $purchase[$value['goodsid']] = $value;
+			}
+		}
+		return $purchase;
+	}else{
+        return $purchase;
+	}
+}
+// 插入批发和代购的购物车数据
+function set_purchase_cart($goods, $openid, $type = 2 ){
+	if ( is_array($goods) && !empty($openid) ){
+         foreach ( $goods as $goods_value ){
+               // 进行更新或插入的判断
+			   $purchase_data = array(":openid"=>$openid, ":goodstype"=>$type, ":goodsid"=>$goods_value['id']);
+			   $find_goods = mysqld_select("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype and goodsid = :goodsid limit 1", $purchase_data);
+			   $set_purchase_data = array("goodsid"=>$goods_value['id'],"goodstype"=>$type,"openid"=>$openid,"total"=>$goods_value['num'],"marketprice"=>$goods_value['price'], "creatime"=>time());
+			   if ( $find_goods ){
+                     mysqld_update("shop_purchase_cart", $set_purchase_data, array('id'=>$find_goods['id']));
+			   }else{
+                     mysqld_insert("shop_purchase_cart",  $set_purchase_data);
+			   }
+		 }
+	}
+}
+// 删除批发和代购的购物车数据
+function del_purchase_cart($id,$openid,$type=2){
+    if ( !empty($id) && !empty($openid) ){
+         mysqld_delete('shop_purchase_cart', array('goodsid'=> $id, 'openid'=>$openid, 'goodstype'=>$type ));
+	}
+}
+// 批发或一件代发的
+function price_check($goods=array(), $v1, $v2, $type = 2){
+    if ( $type == 2 ){
+         //开始查找是否有相应权限的特殊价格.批量的价格在外围设置完毕
+         $check_price = mysqld_select("SELECT * FROM ".table('shop_dish_vip')." WHERE dish_id = :dish_id and v1 = :v1 and v2 = :v2 ", array(':dish_id'=>$goods['id'], ':v1'=> $v1, ':v2'=>$v2 ));
+		 if ( $check_price ){
+             $goods['price'] = $check_price['vip_price'];
+		 }else{
+             $check_price = mysqld_select("SELECT * FROM ".table('shop_dish_vip')." WHERE dish_id = :dish_id and v1 = :v1 and v2 = :v2 ", array(':dish_id'=>$goods['id'], ':v1'=> 0, ':v2'=>$v1));
+			 $goods['price'] = $check_price['vip_price'];
+		 }
+		 return $goods;
+	}else{
+		  $check_price = mysqld_select("SELECT * FROM ".table('shop_dish_vip')." WHERE v1 = ".$v1." and v2 = ".$v2." and dish_id = ".$goods['id']);
+		  if ( $check_price ){
+			  $goods['price'] = $check_price['vip_price'];
+		  }else{
+		  // 开始判断有没批量价格的设定
+			   $check_price = mysqld_select("SELECT * FROM ".table('rolers')." WHERE discount > 0 and type = 3  and ( id= ".$v1." or id = ".$v2.") order by pid desc limit 1 " );
+			   if ( $check_price ){
+				   $goods['price'] = $check_price['discount'] * $goods['price'];
+			   }
+		  }
+		  return $goods;
+	}
+}
+function model_good($id,$v1,$v2,$type=2){
+	 if ( $type == 2 ){
+			 $find_good = mysqld_select("SELECT a.*,b.* FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id WHERE b.id = ".$id." and a.v1 = 0 and a.v2 = ".$v1);
+			 if ( $find_good ){
+				  $model_good    = array('id'=>$id,'total'=>$find_good['total'],'price'=>$find_good['vip_price']);
+				  $model_good    = price_check($model_good, $v1, $v2, $type);
+				  return $model_good;
+			 }else{
+				  return false;
+			 }
+	 }else{
+             $find_good = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE deleted = 0 and status = 1 and id = ".$id);
+			 if ( $find_good ){
+				  $model_good    = array('id'=>$id,'total'=>$find_good['total'],'price'=>$find_good['marketprice']);
+				  $model_good    = price_check($model_good, $v1, $v2, $type);
+				  return $model_good;
+			 }else{
+				  return false;
+			 }
+	 }
 }

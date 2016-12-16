@@ -21,7 +21,7 @@ if($op == 'list'){
         if(is_numeric($_GP['keyword'])) {
             $condition .= " and mobile={$_GP['keyword']}";
         } else {
-            $condition .= " and realname='{$_GP['keyword']}'";
+            $condition .= " and realname like '%{$_GP['keyword']}%'";
         }
     }
 

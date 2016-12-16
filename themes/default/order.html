@@ -153,7 +153,21 @@
 							    </span>    						
 							</div>
                         </li>
-	                    <li class="h-text h-status"><!--@php if($_GP['status']==34){ echo "退款成功"; }else if($_GP['status']==14){ echo "退货成功"; }else{ echo $status_ln[$item['status']];} @--></li>
+	                    <li class="h-text h-status status">
+	                    	<span class="bts" style="margin-top:10px;">	                    	
+	                    		<!--@php if($_GP['status']==34){ echo "退款成功"; }else if($_GP['status']==14){ echo "退货成功"; }else{ echo $status_ln[$item['status']];} @-->
+	                    	</span>
+							<!--@php if($stat = showDrawOrderStatue($item)){  @-->
+	                    	<span class="bts">
+	                    		<!--@php echo $stat;@-->
+	                    	</span>
+							<!--@php } @-->
+							<!--@php if(!isSureGetGoods($item['goods'],'order_type','order_status')){  @-->
+	                    	<span class="bts">
+	                    		<font color="red">售后处理中</font>
+	                    	</span>
+							<!--@php } @-->
+	                    </li>
 	                    <li class="h-text h-operate operate" style="vertical-align: middle;">
 						    <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status))@-->" class="bts" style="margin-top:10px;">订单详情</a>
 						 	<a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'identity','fromstatus'=>$status))@-->" class="bts">清关材料</a>
@@ -182,8 +196,7 @@
 <script>
 	$(function(){
 		$(".operate").each(function(){
-			var len = $(this).find("a").length;
-			console.log(len);
+			var len = $(this).find("a").length;			
 			if(len == 2){
 				$(this).find("a").css("height","30px");
 				$(this).find("a").css("line-height","30px");
@@ -193,6 +206,20 @@
 			}else if(len==3){
 				$(this).find("a").css("height"," ");
 				$(this).find("a").css("line-height"," ");
+			}
+		})
+		
+		$(".status").each(function(){
+			var len = $(this).find("span").length;
+			if(len == 2){
+				$(this).find("span").css("height","30px");
+				$(this).find("span").css("line-height","30px");
+			}else if(len == 1){
+				$(this).find("span").css("height","60px");
+				$(this).find("span").css("line-height","60px");
+			}else if(len==3){
+				$(this).find("span").css("height"," ");
+				$(this).find("span").css("line-height"," ");
 			}
 		})
 	})

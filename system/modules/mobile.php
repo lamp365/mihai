@@ -25,7 +25,12 @@ class modulesAddons  extends BjSystemModule {
 					include_once("plugin/payment/alipay/alipay_return_url.php");
 					exit;
 	}
-		
+	public function do_purchase_alipay_return_url()
+	{		
+		global $_CMS;
+					include_once("plugin/payment/alipay/purchase_alipay_return_url.php");
+					exit;
+	}	
 }
 
 

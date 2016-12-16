@@ -32,9 +32,14 @@ if ( $op == 'list' ){
 			}
 			if (checksubmit("submit")) {
 				    if ( !empty( $_GP['outgold_bankcardcode'] ) ){
-						$bank_check = bankInfo($_GP['outgold_bankcardcode']);
-						if ( !$bank_check ){
+						$bankcheck = luhn($_GP['outgold_bankcardcode']);
+						if ( !$bankcheck ){
 							 message('请输入正确的银行卡号码');
+						}else{
+                             $bank_check = bankInfo($_GP['outgold_bankcardcode']);
+							 if ( !$bank_check ){
+                                    message('请输入正确的银行卡号码');
+							 }
 						}
 					}
 					$outgoldinfo=array(

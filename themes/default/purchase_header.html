@@ -5,16 +5,162 @@
 	<meta charset="utf-8">	
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"type="text/css" />
-	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/purchase.css">
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/purchase.css">	
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
 	<script src="__RESOURCE__/recouse/js/PLaceholder.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 </head>
+<style>
+
+	.purchase_head{
+		height: auto;
+	}
+	.purchase_head .top{
+		height: 30px;
+		width: 100%;
+		background: #F2F2F2;
+		margin: 0;		
+	}
+	.purchase_head .top .content{
+		margin: 0 auto;
+		width: 1190px;
+		height: 100%;
+		line-height: 30px;
+		font-size: 14px;
+		color: #666;
+	}
+	.purchase_head .top .content .topNavLeft{
+		float: left;
+		height:30px;
+		width: 20%;		
+		font-size: 14px;		
+	}
+	.purchase_head .top .content .topNavLeft .men{
+		display: inline-block;
+		max-width: 142px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.purchase_head .top .content .topNavLeft a{
+		font-size: 14px;
+		height: 30px;
+		display: inline-block;
+		line-height: 30px;
+		overflow: hidden;
+		text-decoration: none;
+	}
+	.purchase_head .top .content .topNavLeft a:hover{
+		color: red;
+	}
+	.sep{
+		color: #ccc;
+		padding: 0 10px;		
+		overflow: hidden;
+	}
+	.purchase_head .top .content .topNavRight{
+		float: right;
+		width: 50%;
+		height: 100%;
+		margin-bottom: 0;
+	}
+	.purchase_head .top .content .topNavRight li{
+		float:right;
+		width: 88px;		
+		height: 30px;
+		line-height: 30px;	
+		cursor: pointer;	
+	}
+	.purchase_head .top .content .topNavRight li:hover{
+		color: red;	
+		text-decoration:none !important;	
+	}
+	.purchase_head .top .content .topNavRight li a{
+		font-size: 14px;
+		color: #666;
+	}
+	.purchase_head .top .content .topNavRight .dropdown a{
+		text-decoration: none !important;
+	}
+	.purchase_head .top .content .topNavRight li a:hover{
+		color: red;
+	}	
+	.dropdown-menu li{
+		float: left !important;
+		color: #666 !important;		
+		width: 100% !important;		
+	}
+	.topNavRight .dropdown .dropdown-menu li a:hover{
+		background: none;
+	}
+	.dropdown-menu{
+		left: -20px !important;
+		margin-top: -2px !important;
+		min-width: auto !important;
+	}
+	.dropdown-menu .divider{
+		height: 1px !important;
+		width: 80% !important;
+		margin: 0 10% !important;
+		box-sizing: border-box;
+	}
+</style>
+ <script> 
+ //鼠标移入就能出现，不用点击
+  $(function(){
+  	$('li.dropdown').mouseenter(function() { 	
+     	$(this).addClass('open');
+  	}).mouseleave(function(){
+  		$(".dropdown-menu").mouseenter(function(){
+  			$(this).addClass('open');
+  		});
+  		$(this).removeClass("open");
+  	});  	
+  })
+</script>
 <body>
    <div class="purchase_head">
-			<div>
-				<img src="images/title.png" style="margin-top: 27.5px;"/>
+   	<div class="top">
+   		<div class="content">
+   			<div class="topNavLeft">				
+				<span class="men">您好，a n</span>
+				<span class="sep" style="display: inline-block;">|</span>
+				<a href="<!--@php  echo mobile_url('vip_logout')@-->">退出</a>
 			</div>
+			<ul class="topNavRight">						
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown">客户服务</a>
+					<ul class="dropdown-menu">
+						<li><a href="<!--@php  echo mobile_url('purchase_order')@-->">联系客服</a></li>
+						<li><a href="<!--@php  echo mobile_url('purchase_myorder')@-->">帮助中心</a></li>					
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown">个人中心</a>
+					<span class="sep">|</span>
+					<ul class="dropdown-menu">
+						<li><a href="<!--@php  echo mobile_url('purchase_order')@-->">商品中心</a></li>
+						<li><a href="<!--@php  echo mobile_url('purchase_myorder')@-->" style="border-bottom: solid 1px #eee;">我的订单</a></li>						
+						<li><a href="<!--@php  echo mobile_url('purchase_member')@-->">资料修改</a></li>
+						<li><a href="<!--@php  echo mobile_url('purchase_address')@-->" style="border-bottom: solid 1px #eee;">管理收货地址</a></li>						
+						<li><a href="<!--@php  echo mobile_url('purchase_member_pwd')@-->">修改密码</li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="<!--@php  echo mobile_url('purchase_myorder')@-->">我的订单</a>
+					<span class="sep">|</span>
+				</li>
+				<li class="dropdown">
+					<a href="<!--@php  echo mobile_url('purchase_order')@-->">商品中心</a>
+					<span class="sep">|</span>
+				</li>
+			</ul>
+   		</div>
+   	</div>
+	<div>
+		<img src="images/title.png" style="margin-top: 27.5px;"/>
+	</div>
    </div>
 	<div class="login-content">
-		
+ 

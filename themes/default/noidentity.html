@@ -32,6 +32,7 @@
 			margin-top: 40px;
 			margin-bottom: 30px;
 			border: solid 1px gainsboro;
+			font-size: 16px;
 		}
 	
 		.box .top{
@@ -60,15 +61,24 @@
 	   		overflow: hidden;
 	   		margin-left: 5%;
 	   		margin-top: 70px;
-	   		color: black;
-	   		font-size: 16px;
+	   		color: black;	   		
 	   	}
-	   	.box .content p{
+	    p{
 	   		margin-top: 10px;
 	   	}
+	   	.attention{
+	   		background: #eee;
+	   		padding: 5px 0;	 
+	   		margin-top: 10px;
+	   		box-sizing: border-box;  		   			   		
+	   	}
+	   	.attention p{
+	   		width: 90%;
+	   		margin-left: 5%;	   	   		
+	   		margin-top: 0;
+	   	}
 	   	.Btn{
-	   		color: #127BAB;
-	   		margin-left: 10px;
+	   		color: #127BAB;	   		
 	   		cursor: pointer;
 	   	}
 	    a:hover{text-decoration: none;}
@@ -180,17 +190,22 @@
 				<p>
 					 实付款：
 					<span style="color: #D43F3A;">￥<!--@php echo $order['price']; @--></span>
-				</p>
-				<p style="font-weight: bold;">
+				</p>			
+				
+			</div>
+			<div class="attention">
+				<p>
 					根据海关总署公告2016年第26号（关于跨境电子商务零售进出口商品有关监管事宜的公告），
 					电子商务企业应当对购买跨境电子商务零售进出口商品的个人（订购人）身份信息进行核实，
 					并向海关提供有国家主管部门认证的身份有效信息。
 				</p>
-				<div style="margin-top: 10px;display: <!--@php if($order['ifcustoms'] == 2){ echo 'hide';} @-->">
-					<span>您需要</span>
+			</div>
+			<div style="font-weight: bold;margin-top: 10px;padding-left: 5%;display: <!--@php if($order['ifcustoms'] == 2){ echo 'hide';} @-->">
+					<span style="color: red;">您的订单需要</span>
 					<span class="Btn" onclick="openDialog()">【提交清关材料】</span>
+					<span>或者</span>
 					<span class="Btn"><a href="">【稍后提供】</a></span>
-				</div>
+					<span style="font-weight: normal;">(尽快提供清关材料，以便商家及时安排发货)</span>
 			</div>
 			<!--@php } @-->
 		</div>     					
@@ -310,11 +325,11 @@
 				</div>
 				<div class="form-group">					
 					<p style="margin-left: 225px;margin-bottom: 10px;">
-						<img src="__RESOURCE__/recouse/images/attention.png" style="width: 20px;"/>
+						<img src="__RESOURCE__/recouse/images/attention.png" style="width: 20px;margin-top: 2px;"/>
 						觅海将严格保护您身份证信息的安全。请您务必提交真实、准确、有效的信息，以便您的商品顺利清关。
 					</p>								 
-		        	<input type="checkbox" id="_input" onclick="check()" style="+display: inline;+margin-top: -15px;margin-left: 225px;" onfocus="this.blur()"/>
-		            <p style="margin-left:10px;display: inline-block;+display: inline;">
+		        	<input type="checkbox" id="_input" onclick="check()" style="+display: inline;+margin-top: -15px;margin-top: -3px;margin-left: 225px;" onfocus="this.blur()"/>
+		            <p style="margin-left:8px;display: inline-block;+display: inline;">
 		            	我同意身份证信息将由商家用于商品清关。	             	
 		            </p>
 				</div>
@@ -323,17 +338,7 @@
 						<button type="button" class="btn btn-danger" id="Btn" onclick="saveIdentity();"style="position: absolute;left: 18.5%;">确认提交</button>						
 					</div>
 				</div>
-				<div class="form-group"style="margin-top: 50px;">
-					<p style="margin-left: 225px;">
-						如果您无法提供
-						<span><!--@php echo $order['address_realname']; @--></span>
-						的身份证，您可以：
-					</p>
-					<p style="margin-left: 225px;margin-top: 10px;">
-						<a style="color: #127BAB;cursor: pointer;">联系卖家</a>
-						修改收货人姓名，再上传身份证
-					</p>
-				</div>
+				
 			</div>
 		</div>
 	</form>
@@ -354,8 +359,9 @@
 		 $('#identity2').show();
 		 $(".iDialogLayout").show();
 		 $(".noidentity").hide();
+		 check();
 		 uploaderfrontImg();
-		 uploaderbackImg()
+		 uploaderbackImg();
 	 }
 //	 $(document).ready(function(){
 //       $('.iDialogLayout').click(function(){

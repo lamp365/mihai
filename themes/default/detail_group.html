@@ -4,25 +4,25 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><!--@php  echo $goods['title'];@--></title>
-<meta name="viewport"content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="renderer" content="webkit">
-<script type="text/javascript"src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 <link rel="shortcut icon" href="favicon.ico"/>
 <meta name="format-detection" content="telephone=no">
 <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/fontawesome3/css/font-awesome.min.css" />
-<link rel='stylesheet' type='text/css'href='__RESOURCE__/recouse/css/bjdetail.css' />
-<link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet"type="text/css" />
+<link rel='stylesheet' type='text/css' href='__RESOURCE__/recouse/css/bjdetail.css' />
+<link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css" />
 <link href="__RESOURCE__/recouse/jqzoom/css/jqzoombase.css" rel="stylesheet" type="text/css" />
-<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"type="text/css" />
-<link href="__RESOURCE__/recouse/css/lrtk.css" rel="stylesheet"type="text/css" />
-<link href="__RESOURCE__/recouse/css/magiczoomplus.css" rel="stylesheet"type="text/css" />
-<script src="__RESOURCE__/recouse/js/jquery.json.js"type="text/javascript"></script>
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+<link href="__RESOURCE__/recouse/css/lrtk.css" rel="stylesheet" type="text/css" />
+<link href="__RESOURCE__/recouse/css/magiczoomplus.css" rel="stylesheet" type="text/css" />
+<script src="__RESOURCE__/recouse/js/jquery.json.js" type="text/javascript"></script>
 <script type="text/javascript" src="__RESOURCE__/recouse/js/common.js"></script>
-<script type="text/javascript"src="__RESOURCE__/recouse/js/transport.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/transport.js"></script>
 <script type="text/javascript" src="__RESOURCE__/recouse/js/utils.js"></script>
 <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="__RESOURCE__/recouse/js/mzp-packed.js"></script>
@@ -286,8 +286,19 @@
 .shopinfo .proinfo-side{
 	height: 690px;
 }
+.shopinfo{
+	width: 210px;
+	border-left: 1px solid #ddd;
+}
 .customer-rec{
 	height: 690px;
+	/*padding-left: 10px;*/
+	border-left: none;
+}
+.customer-rec li {
+	overflow: hidden;
+    padding: 26px 0 20px 0;
+    border-bottom: 1px #ddd dotted;
 }
 .btn_col{
 	padding-top: 10px;
@@ -296,6 +307,7 @@
 	position: absolute;
     top: 1px;
     right: 22px;
+    color: #888;
 }
 .pro-groupon-time span{
 	display: inline-block;
@@ -303,6 +315,10 @@
 	height: 24px;
 	text-align: center;
     font-size: 14px;
+    background: #000;
+    width: 24px;
+    border-radius: 3px;
+    color:#fff;
 }
 .offered-explain{
 	margin-top:20px;
@@ -316,6 +332,170 @@
 .spec-scroll{
 	overflow: hidden;
 }
+.share-area{
+	width: 400px;
+	margin-top: 15px;
+}
+.share-btn{
+	width: 400px;
+	height: 50px;
+	line-height: 50px;
+	background-color: #d32047;
+	color:#fff;
+	font-size:16px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.share-list{
+	
+	overflow: hidden;
+   	padding: 0 20px 0 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+.share-list li{
+	width: 58px;
+	height: 58px;
+	line-height: 58px;
+	margin-left: 25px;
+	text-align: center;
+	color: #fff;
+	border-radius: 4px;
+	//border: 1px solid #f4f4f4;
+	font-size: 12px;
+	float: left;
+}
+.weixin_li{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -211px -24px;
+
+}
+.weixin_li:hover{
+	background: #61cd67;
+}
+.weibo{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -29px -24px;
+
+}
+.weibo:hover{
+	background: #ff9c25;
+}
+.qq{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -87px -24px;
+
+}
+.qq:hover{
+	background: #0096e9;
+}
+.qqzone{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -147px -23px;
+
+}
+.qqzone:hover{
+	background: #f6b433;
+}
+.shade{
+	background-color: #000;
+	opacity: .5;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: 9999;
+	top: 0;
+	left: 0;
+	display: none;
+	filter:Alpha(opacity=50);
+}
+.wx_code_area{
+	width: 280px;
+	height: 380px;
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin: -190px 0 0 -140px;
+	z-index: 10000;
+	background-color: #fff;
+    border-radius: 5px;
+    text-align: center;
+}
+#wx_code{
+	margin: 0 auto; width: 200px; margin-top: 30px;
+}
+.wx_code_area_1{
+	font-size: 18px;color: #333;padding-top: 30px;
+}
+.wx_code_area_2{
+	font-size: 14px;color:#666;padding-top: 30px;
+}
+.shade-close{
+    top: -25px;
+    right: -25px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    line-height: 35px;
+    text-align: center;
+    background-color: #2f2f2f;
+    border-radius: 40px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+}
+.right-title img{
+	width: 100%;
+}
+.more-li-left{
+	float: left;
+    width: 60px;
+}
+.more-li-left img{
+	width: 60px;
+}
+.more-li-right{
+	float: left;
+    width: 130px;
+    margin-left: 8px;
+    font-size: 12px;
+    color: #666666;
+}
+.more-li-right p{
+	width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 10px;
+}
+.more-price{
+	float: left;
+    width: 65px;
+    background-color: #e84362;
+    color: #fff;
+    text-align: center;
+    height: 23px;
+    line-height: 23px;
+    margin-top: 3px;
+}
+.play-now{
+	float: left;
+    width: 65px;
+    border: 1px solid #e84362;
+    box-sizing: border-box;
+    text-align: center;
+    height: 23px;
+    line-height: 23px;
+    color: #e84362;
+    margin-top: 3px;
+}
+.play-now a{
+	color: #e84362;
+}
+
 </style>
 <script>
 
@@ -465,20 +645,30 @@ function getTime(sys_second,id){
 								</div>
 								<!--缩图开始-->
 								<div class="spec-scroll"> <a class="prev">&lt;</a> <a class="next">&gt;</a>
-									<div class="items">
+									<div class="items" style="width: 370px;">
 										<ul>
 											<!--@php  if(is_array($piclist)) { foreach($piclist as $row) { @-->
-											<li><img alt="<!--@php  echo $goods['title'];@-->" bimg="<!--@php  echo download_pic($row['attachment'],800,800);@-->" src="<!--@php  echo $row['small'];@-->" onmousemove="preview(this);"></li>
+											<li style="width: 62px;"><img alt="<!--@php  echo $goods['title'];@-->" bimg="<!--@php  echo download_pic($row['attachment'],800,800);@-->" src="<!--@php  echo $row['small'];@-->" onmousemove="preview(this);"></li>
 											<!--@php  } } @-->
 										</ul>
 									</div>
 								</div>
-								<!--缩图结束-->
-								<div class="offered-explain">
+								<!--缩图结束-->								
+								<ul style="margin: 20px 0 0 0;overflow: hidden;">
+									<li style="float: left;width:100px;text-align: center;cursor: pointer;" data-toggle="modal" data-target="#share-list">
+										<img src="__RESOURCE__/recouse/images/goodshare.png" style="margin-top: 4px;"/>
+										分享
+									</li>
+									<li style="float: left;width:100px;text-align: center;cursor: pointer;" id="collect">
+										<img src="__RESOURCE__/recouse/images/goodcollect.png" style="margin-top: 4px;" />
+										收藏
+									</li>
+								</ul>
+								<div class="offered-explain" style="clear: both;">
 									<img src="__RESOURCE__/recouse/images/offered-detail.png" style="margin-top: 2px;">
 									<p class="title">团购说明：</p>
 								<!--@php if($goods['draw'] == 1) { @-->
-									<p style="width: 400px;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">拼团时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></p>
+
 									<p style="width: 400px;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">拼团活动结束后从拼团成功的用户中随机抽取<!--@php echo $goods['draw_num']; @-->位中奖名额</p>
 									<p style="width: 400px;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">付款后30分钟内拼团未成功，以及最终抽奖未中奖的订单系统将于1-2个工作日内自动退款到你的付款账户</p>
 									<p style="width: 400px;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">可参与抽奖的资格必须为拼团成功的用户</p>
@@ -499,12 +689,12 @@ function getTime(sys_second,id){
 					    	</span>					    	
 							<i class="crosstag tag" style="float: right;">跨境</i>
                         </dt>
-						<p class="pro-name">
+						<p class="pro-name" style="padding-bottom: 4px;">
 							<span id="itemNameZy" class="zy">自营</span><strong>
 								<!--@php  echo $goods['title'];@-->
 							</strong>
 						</p>
-						<p class="pro-desc" style="padding: 0 5px 5px 10px; overflow:hidden; font-size:12px;clear:both;">
+						<p class="pro-desc" style="padding-left:10px;height:44px;overflow:hidden; font-size:12px;clear:both;">
 								<!--@php  echo $goods['description'];@-->
 						</p>
 						<div class="pro-groupon">
@@ -593,7 +783,7 @@ function getTime(sys_second,id){
 					<p class="groupon-list-title">以下小伙伴正在发起拼团，点击立即参团</p>
 					<div class="groupon-list">
 					  <!--@php  foreach ( $group as $group_value ){ @-->
-						<div style="width: 402px;overflow: hidden;">
+						<div style="overflow: hidden;">
 						    <!--@php if ( !empty( $group_value['avatar'] ) ){ @-->
 							<img src="<!--@php echo $group_value['avatar']; @-->" class="groupon-list-left">
 							<!--@php }else{ @-->
@@ -616,6 +806,12 @@ function getTime(sys_second,id){
 					<div class="btn_wrap btn_wrap_fixed" id="btnTools" style="margin-left:10px;">
 						<input type="hidden" id="favoriteId" value="" />
 						<!-- <a class="btn_fav" href="javascript:void(0);" id="collect-link"><i></i></a>    -->
+						<!--是否已经加入过该团-->
+						<!--@php if(isAddedTeamBuyGroup($_GP['id'],$openid)){ @-->
+						<div class="share-area">
+							<p class="share-btn" data-toggle="modal" data-target="#share-list">邀请好友</p>							
+						</div>						
+						<!--@php }else{  @-->
 						<div class="btn_col">
 							<!--@php if(time() < $goods['timestart']){  @-->
 							    <a class="btn btn-danger" disabled="disabled"  href="javascript:;" style="background: #d22046;border: solid 2px #d22046;font-size: 16px;">等待开始</a>
@@ -624,9 +820,23 @@ function getTime(sys_second,id){
 							<!--@php } @-->
 
 							<a class="btn btn-primary" href="javascript:;" onclick='buy(-1);' style="border:solid 2px #d22046;color: #d22046;background: rgb(255,237,237);font-size: 16px;">单独购买</a>
-						</div>		
+						</div>
+						<!--@php } @-->
 					</div>
-
+					<div class="modal fade" taria-hidden="true" id="share-list" style="top: 40%;">
+						<div class="modal-dialog" style="width: 230px;">
+							<div class="modal-content">							  	
+							  	<div class="modal-body">
+									<ul class="share-list">
+										<a href="javascript:;"><li class="weixin_li" textval="微信"></li></a>
+										<a href="javascript:;" target="_blank"><li class="weibo" textval="新浪微博"></li></a>
+										<a href="javascript:;" target="_blank"><li class="qq" textval="QQ"></li></a>
+										<a href="javascript:;" target="_blank"><li class="qqzone" textval="QQ空间"></li></a>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
 					<form action="javascript:addToCart(6)" method="post"
 						name="ECS_FORMBUY" id="ECS_FORMBUY">
 						<!--@php  if($goods['hasoption']==1) { @-->
@@ -701,28 +911,27 @@ function getTime(sys_second,id){
 
 				</div>
 				<div class="shopinfo">
-                     <div id="cshopBox" class="proinfo-side">
-                          <div id="seeAgainTile" class="customer-rec">
-                                <div class="customer-rec-title"><h3><span>看了又看</span></h3></div>
-								<div id="seeAndsee" class="customer-rec-list" style="">
-								<ul>
-								 
-                                 <!--@php  if ( is_array($jp_goods) && !empty($jp_goods)){  foreach ( $jp_goods as $hstory_value ){ @-->
-	                             <li>
-	                                 <a target="_blank"  title="<!--@php echo $hstory_value['title']; @-->" href="<!--@php  echo mobile_url('detail', array('id' => $hstory_value['id'],'op'=>'dish'))@-->" target="_blank" class="product-img">
-									    <img alt="<!--@php echo $hstory_value['title']; @-->" data-original="<!--@php echo $hstory_value['small']; @-->" class="lazy" src="images/loading.gif" height="80" />
-	                                 </a>
-	                                 <p>	           
-	                                <a href="<!--@php  echo mobile_url('detail', array('id' => $hstory_value['id'],'op'=>'dish'))@-->" title="<!--@php echo $hstory_value['title']; @-->" " target="_blank" class="title"><!--@php echo $hstory_value['title']; @--></a>
-					                <span class="price"><i>¥</i><em><!--@php echo $hstory_value['marketprice']; @--></em></span>
-	                                </p>
-	        </li>
-	 <!--@php  } }@-->
-        </ul>
-								</div>
-
-						  </div>
-					 </div>
+                    <div id="cshopBox" class="proinfo-side">
+                        <div id="seeAgainTile" class="customer-rec">
+                        	<p class="right-title"><img src="__RESOURCE__/recouse/images/detail_right_title.jpg"></p>
+                        	<ul style="padding-left: 5px;">
+								<!--@php if(!empty($group_goods)){  foreach($group_goods as $row){  @-->
+                        		<li>
+                        			<div class="more-li-left">
+                        				<img class="lazy" data-original="<!--@php echo $row['small']; @-->" src="images/loading.gif" alt="">
+                        			</div>
+                        			<div class="more-li-right">
+                        				<p><!--@php echo $row['title'];@--></p>
+                        				<div>
+                        					<div class="more-price">￥<!--@php echo $row['timeprice'];@--></div>
+                        					<div class="play-now"><a href="<!--@php  echo mobile_url('detail', array('id' => $row['id'],'op'=>'dish'))@-->" target="_blank">立即参与</a></div>
+                        				</div>
+                        			</div>
+                        		</li>
+                        		<!--@php }} @-->
+                        	</ul>
+						</div>
+					</div>
 				</div>
 			   </div>
 			</div>
@@ -870,7 +1079,13 @@ function getTime(sys_second,id){
 		
 </div>
 			<!--商品详情和评价 End  -->
-
+<div class="shade"></div>
+<div class="wx_code_area">
+	<p class="shade-close">&times</p>
+	<p class="wx_code_area_1" >分享到微信朋友圈</p>
+	<div id="wx_code"></div>
+	<p class="wx_code_area_2">扫描上方二维码 分享到微信</p>
+</div>
 
 
 <script type="text/javascript">
@@ -1158,6 +1373,50 @@ $(".Qrcode").qrcode({
 	height:75, //高度
 	text: qrcode_url
 });
+
+$(".share-btn").on("click",function(){
+	$(".share-list").toggle();
+})
+$(".share-list a").hover(function(){
+		var hover_val = $(this).find("li").attr("textval");
+		$(this).find("li").text(hover_val);
+	},function(){
+		$(this).find("li").text('');
+	});
+	
+	function shareFun(url,title,picurl){
+		$(".share-list .qqzone").on("click",function(){
+			var qqzone_share_url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?summary='+title+'&url='+location_href+'&pics='+picurl;
+			$(this).parent("a").attr("href",qqzone_share_url);
+		});
+		$(".share-list .weibo").on("click",function(){
+			var weibo_share_url = 'http://v.t.sina.com.cn/share/share.php?title='+title+'&url='+location_href+'&content=utf-8&sourceUrl='+location_href+'&pic='+picurl;
+			$(this).parent("a").attr("href",weibo_share_url);
+		});
+		$(".share-list .qq").on("click",function(){
+			var qq_share_url = 'http://connect.qq.com/widget/shareqq/index.html?summary='+title+'&url='+location_href+'&pics='+picurl;
+			$(this).parent("a").attr("href",qq_share_url);
+		});
+		$(".share-list .weixin_li").on("click",function(){
+			$(".wx_code_area,.shade").show();
+			$("#wx_code").qrcode({ 
+			    render: "table", //table方式 
+			    width: 200, //宽度 
+			    height:200, //高度 
+			    text: url //二维码的链接 
+			}); 
+		});
+		$(".wx_code_area .shade-close").on("click",function(){
+			$(".wx_code_area,.shade").hide();
+			$("#wx_code").empty();
+		});
+	}
+	var location_href = encodeURIComponent(location.href);//分享的链接
+	var title = "分享的内容";//需要分享的内容
+	var picurl = $(".jqzoom img").attr('src');//需要分享的图片地址
+	shareFun(location_href,title,picurl);
+
+
 </script>
 
 
@@ -1167,5 +1426,27 @@ $(".Qrcode").qrcode({
 </body>
 <script>
 	rightNavShow(1);
+	//点击商品幻灯片下面的收藏
+	var status = 0;//没有收藏
+	$("#collect").click(function(){
+		if(status == 0){
+			$(this).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect2.png");
+			status = 1;
+		}else{
+			$(this).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect.png");
+			status = 0;
+		}
+		
+	})
+	
+	$(function(){
+		//控制商品详情框的高度
+		var l = $(".offered-explain").find("p").length;
+		if(l >= 4){
+			$(".detailtop").css("height","750px");
+			$("#cshopBox").css("height","750px");
+		}
+	})
+	
 </script>
 </html>

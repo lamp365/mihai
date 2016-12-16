@@ -834,6 +834,34 @@ function isSureOpenGoods($orderGoodInfo,$type='type',$status='status'){
 }
 
 /**
+ * 显示抽奖状态
+ */
+function showDrawOrderStatue($order){
+	if(empty($order)){
+		return false;
+	}else if($order['status'] == 0){
+		//未支付
+		return false;
+	}else{
+		$stat = false;
+		if($order['isdraw'] == 1){
+
+			switch($order['isprize']){
+				case 3:
+					$stat = '待开奖';
+					break;
+				case 2:
+					$stat = '未中奖';
+					break;
+				case 1:
+					$stat = '已开奖';
+					break;
+			}
+		}
+		return $stat;
+	}
+}
+/**
  * @param $order_goods
  * @param $order
  * @conetent 确认收获后 冻结佣金变为金额 买家收到积分  同时记录账单和APP消息推送

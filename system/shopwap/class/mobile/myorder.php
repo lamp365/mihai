@@ -25,6 +25,8 @@ $draw_ln = array(
 );
 // 进行订单的自动关闭操作
 order_auto_close();
+//更新该用户团购信息
+update_user_group_status($openid);
 if ($op == 'cancelsend') {
     $orderid = intval($_GP['orderid']);
     $item = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id AND openid = :openid", array(':id' => $orderid, ':openid' => $openid ));
@@ -221,8 +223,6 @@ if ($op == 'returnpay') {
     }
 
     if($item['ordertype'] == 1){
-        //更新团购信息
-        update_group_status($goods[0]['goodsid']);
         //先更新后再找出该组团的信息
         $sql   = "select t.group_id,t.dish_id,t.status,t.createtime from ".table('team_buy_member')." as m left join ". table('team_buy_group') ." as t on t.group_id = m.group_id where m.order_id={$item['id']}";
         $group = mysqld_select($sql);
@@ -402,4 +402,16 @@ if ($op == 'returnpay') {
         exit;
     }
     include themePage('order');
+}
+
+
+function update_user_group_status($openid){
+    //获取该用户团购订单
+    $order = mysqld_selectall('select g.goodsid from '.table('shop_order')." as o left join ".table('shop_order_goods')." as g on g.orderid=o.id where o.openid={$openid} and o.ordertype=1");
+    if(!empty($order)){
+        foreach($order as $row){
+            update_group_status($row['goodsid']);
+        }
+    }
+
 }

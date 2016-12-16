@@ -8,6 +8,9 @@
 <?php 
       defined('SYSTEM_IN') or exit('Access Denied');
       require_once("common.php");
+	  if ( !isset( $tags ) ){
+          $tags = '';
+      }
 	  $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='alipay' limit 1");
       $configs=unserialize($payment['configs']);
 	  if ( !is_mobile_request()){
@@ -15,18 +18,19 @@
 	  }else{
            $service = "alipay.wap.create.direct.pay.by.user";
 	  }
+	  $return_url = WEBSITE_ROOT.'notify/'.$tags.'alipay_return_url.php';
       $parameter = array(
 		"service" => $service,
 		"partner" =>  trim($configs['alipay_safepid']),
 		"seller_id" => trim($configs['alipay_safepid']),
 		"payment_type"	=> 1,
 		"notify_url"	=> WEBSITE_ROOT.'notify/alipay_notify.php',
-		"return_url"	=> WEBSITE_ROOT.'notify/alipay_return_url.php',
+		"return_url"	=> $return_url,
 		"out_trade_no"	=> $order['ordersn'].'-'.$order['id'],
 		"subject"	=> $order['ordersn'],
 		"total_fee"	=> $order['price'],
 		"app_pay"	=> "Y",
-		"show_url"	=> WEBSITE_ROOT.mobile_url('myorder',array('name'=>'shopwap','op'=>'detail','orderid'=>$order['id'],'fromstatus'=>99)),
+		"show_url"	=> WEBSITE_ROOT.mobile_url($tags.'myorder',array('name'=>'shopwap','op'=>'detail','orderid'=>$order['id'],'fromstatus'=>99)),
 		"body"	=> $goodtitle,
 		//"it_b_pay"	=> $it_b_pay,
 	    //"extern_token"	=> $extern_token,

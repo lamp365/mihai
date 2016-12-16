@@ -6,6 +6,7 @@ header("Expires:0");
 $member=get_vip_member_account(true,true);
 // 获取用户的opeinid;
 $openid =$member['openid'] ;
+$user_a = get_user_identity($member['mobile']);
 // 判断是否存在关联的业务来来决定是否重新获取
 if ( empty( $member['relation_uid'] ) ){
     $relation =  mysqld_select("SELECT relation_uid FROM ".table('member')." WHERE openid = ".$openid." limit 1");
@@ -13,12 +14,9 @@ if ( empty( $member['relation_uid'] ) ){
 }
 // 初始化订单金额
 $totalprice = 0;
-$purchase_goods = new LtCookie();
-$goods = $purchase_goods->getCookie('purchase');
-if ( !empty($goods) ){
-      $goods = unserialize($goods);
-}else{
-      die(showAjaxMess('1002', '产品数据异常'));
+$goods = get_purchase_cart($openid,$user_a['type']);
+if ( empty($goods) ){
+     die(showAjaxMess('1002', '产品数据异常'));
 }
 // 设置汇率
 $exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
@@ -26,6 +24,14 @@ if ( $exchange_rate ){
     $exchange_rate_value =  $exchange_rate['value'] > 5 ? $exchange_rate['value'] : 6.8972;
 }else{
     $exchange_rate_value = 6.8972;
+}
+// 批发或一件代发状态
+if ( $user_a['type'] == 2 ){
+    $currency = 2;
+	$ordertype = -2;
+}else{
+    $currency = 1;
+	$ordertype = 0;
 }
 //定义结算页面的各个接口
 switch ( $_GP['api'] ){
@@ -40,40 +46,73 @@ switch ( $_GP['api'] ){
             die(showAjaxMess('1002', '收货地址数据异常')); 
 		}
 		// 获取运费状态
-		if ( !isset($_GP['freight']) ){
-            die(showAjaxMess('1002', '配送方式获取异常'));
+		if ( $currency == 2 ){
+			if ( !isset($_GP['freight']) ){
+				die(showAjaxMess('1002', '配送方式获取异常'));
+			}
 		}
-        // 分离有货无货状态
         $had_goods_total = array();
 		$had_goods_price = 0;
 		$shiprice = 0;
-        foreach( $goods as $key=>$goods_value ){
-             $dish_vip_good = mysqld_select("SELECT A.total,A.gid, B.vip_price FROM ".table('shop_dish')." as A LEFT JOIN ".table('shop_dish_vip')." as B ON A.id = B.dish_id WHERE A.id = ".$goods_value['id']." AND B.v1= ".$member['parent_roler_id']." AND B.v2 = ".$member['son_roler_id']." limit 1");
-			 if ( $_GP['freight'] == 1 ){
-                 $freight = 0;
-				 $sendtype = 1;
-			 }else{
-				 $sendtype = 0;
-                 // 设置配送运费
-                 $goods = mysqld_select("SELECT weight,coefficient FROM ".table('shop_goods')." WHERE id = ".$dish_vip_good['gid']);
-				 $goods['coefficient'] = $goods['coefficient'] > 0 ? $goods['coefficient'] : 1.2;
-				 $freight = $goods['weight'] * $goods_value['num'] * $goods['coefficient'] * 2.2046 * 3.25 * $exchange_rate_value;
-			 }
-			 if ( $dish_vip_good ){
-				 // 更新产品批发价格，不以缓存为主
-				 $goods_value['price'] = $dish_vip_good['vip_price'] * $exchange_rate_value;
-				 $goods_value['gid'] = $dish_vip_good['gid'];
-                 $had_goods_total[] = $goods_value;
-			     $had_goods_price += $goods_value['price'] * $goods_value['num'];
-				 $shiprice += $freight;
-			 }else{
-                 continue;
-			 }
+		// 购物车里的产品数据
+		// 要考虑一件代发的库存问题
+        foreach ( $goods as $goods_value ){
+			 $good_template = mysqld_select("SELECT a.*,b.weight,b.coefficient FROM ".table('shop_dish')." as a LEFT JOIN ".table('shop_goods')." as b on a.gid = b.id WHERE a.id = ".$goods_value['goodsid']." limit 1");
+			 $goods_value['price'] = $good_template['marketprice'];
+			 $goods_value['id']    = $goods_value['goodsid'];
+			 $goods_value   = price_check($goods_value,$member['parent_roler_id'],$member['son_roler_id'],$user_a['type']);
+             if ( $user_a['type'] == 2 ){
+                 if ( $_GP['freight'] == 1 ){
+					 $freight = 0;
+					 $sendtype = 1;
+			     }else{
+					 $sendtype = 0;
+					 // 设置配送运费
+					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.2;
+					 $freight = $good_template['weight'] * $goods_value['total'] * $good_template['coefficient'] * 2.2046 * 3.25 * $exchange_rate_value;
+			      } 
+				  $goods_value['price'] = $goods_value['price'] * $exchange_rate_value;
+				  $had_goods_price += $goods_value['price'] * $goods_value['total'];
+				  $shiprice += $freight;
+			}else{
+				 $goods_value['issendfree'] = $good_template['issendfree'];
+				 $goods_value['pcate'] = $good_template['pcate'];
+				 $had_goods_price += $goods_value['price'] * $goods_value['total'];
+			}
+			$goods_value['title']   = $good_template['title'];
+			$goods_value['img']   = $good_template['thumb'];
+			$goods_value['num']   = $goods_value['total'];
+			$goods_value['gid']   = $good_template['gid'];
+			$had_goods_total[] = $goods_value;
+		}
+		if ( $user_a['type'] == 3 ){
+			    $sendtype = 0;
+				$promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
+				if(empty($issendfree)){
+					   $promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
+					   //========运费计算===============
+							foreach($promotion as $pro){
+								if($pro['promoteType']==1){
+									if(($had_goods_price)>=$pro['condition']){
+										$issendfree=1;		
+									}
+								} else if($pro['promoteType']==0){
+									if($had_goods_price>=$pro['condition']){
+										$issendfree=1;	
+									}
+								}		
+						}
+				} 
+				$shiprice = shipcost($had_goods_total);
+				$shiprice = $shiprice['price'];
+				if ( $issendfree == 1 ){
+                    $shiprice = 0;
+				}
 		}
 		$ordersns= 'SN'.date('Ymd') . random(6, 1);
 		$randomorder = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE  ordersn=:ordersn limit 1", array(':ordersn' =>$ordersns));
 		while ( !empty($randomorder['ordersn']) ){
-             $ordersns= 'SN'.date('Ymd') . random(6, 1);   
+             $ordersns= 'SN'.date('Ymd') . random(6, 1);
 			 $randomorder = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE  ordersn=:ordersn limit 1", array(':ordersn' =>$ordersns));
 		}
 		$data = array(
@@ -82,7 +121,7 @@ switch ( $_GP['api'] ){
                 'price' => $had_goods_price + $shiprice, // 产品金额+运费
                 'dispatchprice' => $shiprice,
                 'goodsprice' => $had_goods_price,
-				'ordertype' => -2,   // 订单类型，默认为一般订单72小时关闭
+				'ordertype' => $ordertype,   // 订单类型，默认为一般订单72小时关闭
                 'status' => 0,
                 'paytype'=> 2,
                 'sendtype' => $sendtype,

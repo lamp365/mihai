@@ -1,5 +1,8 @@
 <?php
 $cfg = globaSetting();
+if ( !isset( $tags ) ){
+    $tags = '';
+}
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
     $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
     if (empty($weixinthirdlogin) || empty($weixinthirdlogin['id'])) {
@@ -117,22 +120,17 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 
 </head>
 <body>
-
-
 	<div class="p-header">
 		<div class="w">
 			<div id="logo">
                 	<?php if(!empty($cfg['shop_logo'])){ ?>
-                    <img  height="40"
-					src="<?php echo WEBSITE_ROOT;?><?php echo $cfg['shop_logo'] ?>">
+                    <img  height="40" src="<?php echo $cfg['shop_logo'] ?>">
                     <?php } ?>
                 
 			</div>
 		</div>
 	</div>
 	<!-- p-header end -->
-
-
 	<div class="main">
 		<div class="w">
 			<!-- order 订单信息 -->
@@ -190,7 +188,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 						href="javascript:history.back();"> <i class="pc-w-arrow-left">&lt;</i>
 						<strong>选择其他支付方式</strong>
 					</a> <a class="pc-wrap" style="float: right"
-						href="<?php echo WEBSITE_ROOT;?>index.php?mod=mobile&name=shopwap&do=myorder">
+						href="<?php echo WEBSITE_ROOT;?>index.php?mod=mobile&name=shopwap&do=<?php echo $tags;?>myorder">
 						<strong>如完成支付没有跳转请点击</strong> <i class="pc-w-arrow-right">&gt;</i>
 					</a>
 				</div>
@@ -219,7 +217,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
       	$.getJSON("<?php echo WEBSITE_ROOT;?><?php echo 	create_url('mobile',array('name' => 'shopwap','do' => 'getorder','id'=>$order['id']));?>", { }, function(json){
   if(json.status>0)
   {
-  location.href="<?php echo WEBSITE_ROOT;?>index.php?mod=mobile&name=shopwap&do=myorder";	
+  location.href="<?php echo WEBSITE_ROOT;?>index.php?mod=mobile&name=shopwap&do=<?php echo $tags;?>myorder";	
   }
 });
       }

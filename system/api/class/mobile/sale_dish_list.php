@@ -25,7 +25,7 @@
 		$whereSql.= " and a.timeend>=".time();						//显示现在+将来的
 	}
 	
-	$dish_list = get_goods(array('field'=>'a.id,a.p1,a.p2,a.p3,a.title,a.productprice,a.marketprice,a.thumb,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.total,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market ',
+	$dish_list = get_goods(array('field'=>'a.id,a.p1,a.p2,a.p3,a.title,a.productprice,a.marketprice,a.thumb,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.total,a.draw,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market ',
 									'table'=>'shop_dish',
 									'where'	=>$whereSql,
 									'order'	=> $order,

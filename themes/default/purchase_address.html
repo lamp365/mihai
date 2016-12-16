@@ -185,7 +185,7 @@
 <div class="viewport">
 	<div class="crumbs">
          <span>当前位置：</span>
-         <a href="<?php  echo mobile_url('purchase_order',array('name'=>'shopwap')); ?>">批发采购</a>&gt;
+       
          <strong>管理收货地址</strong>
     </div>
      <div class="r-member">
@@ -350,15 +350,7 @@
 						if(province == null) {
 							province = '';
 						}
-						var address = $('#address').val();
-						if(!idname) {
-							alert('请输入您的身份证姓名！');
-							return false;
-						}
-						if(!idnumber) {
-							alert('请输入您的身份证号码！');
-							return false;
-						}
+						var address = $('#address').val();						
 						if(!realname) {
 							alert('请输入您的真实姓名！');
 							return false;

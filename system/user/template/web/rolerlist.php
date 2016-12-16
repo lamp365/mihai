@@ -320,7 +320,6 @@
 		var html = '';
 		$.getJSON(url,function(data){
 			var obj = data.message;
-			console.log(obj);
 			if(obj.length > 0){
 				for(var i= 0;i< obj.length;i++){
 					var info = obj[i];

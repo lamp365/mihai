@@ -9,13 +9,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
-	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/' . 'wap/'. '/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
-	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap/'. '/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>	
+	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
+	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
 <style type="text/css">
 	*{
 		margin: 0;
 		padding: 0;
-	}
+	}	
+	 
+	
 	.health-content{
 		width: 100%;
 		height: 100%;
@@ -276,7 +278,7 @@
 				<div class="info"style="width: 100%;border-bottom: solid 1px #eee;">
 					<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>" />
 					<p class="name">
-						<span><?php echo $member_comment['realname'];?></span>
+						<span><?php if(!empty($member_comment['nickname'])){ echo $member_comment['nickname'];}else{ echo substr_cut($member_comment['mobile']); } ?></span>
 						<!--发布时间-->
 						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$comment['createtime']);?></p>
 					</p>
@@ -297,7 +299,7 @@
 		</div>		
 
 		<?php if($notApp){ ?>
-		<div style="height: 120px;"></div>
+		<div class="ajax_next_page_foot"></div>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
 			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
@@ -337,10 +339,10 @@
 			 var newHref = document.referrer;
 			 $("#return").attr("href",newHref);							
 		}
-		
+		window.history.back(-1);
     })
 	$(".wap_more").click(function(){
-		var url = "<?php echo create_url('mobile', array('id' => $id,'op'=>'comment_list','name'=>'addon8','do'=>'article')); ?>"
+		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'article')); ?>"
 		window.location.href = url;
 	})
 	$(".app_more").click(function(){

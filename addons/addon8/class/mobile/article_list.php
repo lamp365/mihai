@@ -2,7 +2,7 @@
 $op = empty($_GP['op']) ? 'healty' : $_GP['op'];
 $cfg=globaSetting();
 
-    $psize =  8;
+    $psize =  5;
 	$pindex = max(1, intval($_GP["page"]));
     $limit = ' limit '.($pindex-1)*$psize.','.$psize;
 
@@ -14,12 +14,12 @@ $cfg=globaSetting();
    }else if($op == 'headline'){
 	   //觅海头条
 	   $title  = '觅海头条';
-	   $sql    = "SELECT * FROM".table('addon8_article')." where state =6  order by displayorder desc,id desc {$limit}";
-	   $sqlnum = "SELECT count(id) FROM".table('addon8_article')." where state =6";
+	   $sql    = "SELECT * FROM".table('headline')."  order by isrecommand desc,headline_id desc {$limit}";
+	   $sqlnum = "SELECT count(headline_id) FROM".table('headline');
    }else if($op == 'note'){
-	   //觅海笔记
-	   $title  = '觅海笔记';
-	   $sql    = "SELECT * FROM".table('note')." order by note_id desc {$limit}";
+	   //晒物笔记
+	   $title  = '晒物笔记';
+	   $sql    = "SELECT * FROM".table('note')." order by isrecommand desc,note_id desc {$limit}";
 	   $sqlnum = "SELECT count(note_id) FROM".table('note');
    }
 
@@ -27,19 +27,14 @@ $cfg=globaSetting();
 	$total        = mysqld_selectcolumn($sqlnum);
 	$pager        = pagination($total, $pindex, $psize);
 
+    //当手机端滑动的时候加载下一页
 	if ($_GP['nextpage'] == 'ajax' && $_GP['page'] > 1 ){
 		// error  1: 失败  0:成功
 		if ( empty($article_list) ){
-			$error = 1;
+			die(showAjaxMess(1002,'查无数据！'));
 		}else{
-			$error = 0;
+			die(showAjaxMess(200,$article_list));
 		}
-		$result = array(
-			'info' => $error,
-			'result'=> $article_list
-		);
-		echo  json_encode($result);
-		exit;
 	}
 
 	if (is_mobile_request()){

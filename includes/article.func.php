@@ -64,3 +64,20 @@ function getArticleUrl($id,$openid = ''){
     $url = create_url('mobile', array('id' => $id,'name'=>'addon8','do'=>'article','is_app'=>1,'openid'=>$openid));
     return WEBSITE_ROOT.$url;
 }
+
+/**
+ * 如果该用户不存在则，进行创建
+ * 用于发布文章时，有几个固定用户的选择，如果开发环境没有该用户则创建
+ */
+function createTheUserForNotExist($openid){
+    $user = member_get($openid);
+    if(empty($user)){
+        mysqld_insert('member',array(
+            'realname' => '觅海小编'.mt_rand(100,999),
+            'mobile'   => get_rand_mobile(),
+            'pwd'      => md5('hinrc_123456'),
+            'createtime' => time(),
+            'openid'   => $openid
+        ));
+    }
+}

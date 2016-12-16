@@ -80,10 +80,12 @@ if ( $goods['type'] == 1 && $timeout == 0 ){
 				$comments = array();
 				$comments = mysqld_selectall("SELECT * FROM " . table('shop_goods_comment') . "  WHERE goodsid={$goods['gid']} ORDER BY istop desc, createtime desc limit ". ($pindex - 1) * $psize . ',' . $psize);
 				$pager    = '';
-				// 获取推荐产品
+				// 获取推荐产品   看了最终买
 				$best_goods = cs_goods($goods['p1'], 1, 1,10);
-				// 获取热卖产品
+				// 获取热卖产品  相关推荐
 				$jp_goods = cs_goods($goods['p1'], 1, 4, 6);
+				 //获取其他团购商品
+				 $group_goods = cs_goods($goods['p1'], 1, 5, 6);
 				 // 获取团购队伍信息
 				 $group = mysqld_selectall("SELECT a.*, b.nickname, b.avatar,b.mobile FROM ".table('team_buy_group')." as a left join ".table('member')." as b on a.creator=b.openid WHERE a.dish_id=".$goodsid." AND a.status=2 ORDER BY a.modifiedtime DESC limit 2");
 				 foreach ($group as &$g_v) {

@@ -178,6 +178,8 @@
 		</div>
 	 <?php } ?>
 		   <input type="hidden" class="vip-number"   value="<?php echo max(1,count($vip_list)); ?>">
+
+	 <?php if(isHasPowerOperateField('shop_dish','vip_price') || empty($_GP['id'])){ ?>
 		   <?php if ( is_array($dish_vip_list) && !empty($dish_vip_list) ){ foreach ( $dish_vip_list as $key=>$dish_vip_list_value ){ ?>
 	 	   <div class="form-group form-inline vip-form">
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
@@ -214,6 +216,9 @@
 				</div>
 	 	   </div>
 		   <?php } ?>
+
+		<?php } ?>
+
 	 	   <div class="form-group">
 	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
 	 	   		<div class="col-sm-10">
@@ -345,6 +350,8 @@
 					<input type="text" name="team_buy_count" id="J_team_buy_count" value="<?php echo empty($item['team_buy_count'])?'0':$item['team_buy_count'];?>" />
 				</div>
 		</div>
+	 <?php } ?>
+	 <?php if(isHasPowerOperateField('shop_dish','draw') || empty($_GP['id'])){ ?>
 		<div id="J_team_buy_draw_div" class="form-group" <?php if($item['type']!=1){?>style="display:none;"<?php  } ?> >
 				<label class="col-sm-2 control-label no-padding-left" > 开启抽奖：</label>
 				<div class="col-sm-7">

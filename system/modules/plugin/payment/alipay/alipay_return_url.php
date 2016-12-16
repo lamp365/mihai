@@ -29,12 +29,14 @@ if($verify_result) {
 							$order_cookie->setCookie('success', serialize($order));
 							if($order['status']==1){
 							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
-		                     	  message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
+								  Header("Location:".WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success'); 
+		                     	  //message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
 							}else{
 							      mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
 		                          updateOrderStock($order['id']);
 							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
-		                          message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
+								  Header("Location:".WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success'); 
+		                          // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
 							}
 							exit;
 						}else

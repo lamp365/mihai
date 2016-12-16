@@ -54,4 +54,5 @@ foreach($result as $index => $module)  {
 	$module['menus'] 	= mysqld_selectall("SELECT * FROM " . table('modules_menu') . " WHERE `module`=:module order by id",array(':module'=>$module['name']));
 	$modulelist[$key]   = $module;
 }
+$exchange_rate = mysqld_select("SELECT * FROM " .table('config'). " WHERE  name = 'exchange_rate' limit 1");
 include page('main');

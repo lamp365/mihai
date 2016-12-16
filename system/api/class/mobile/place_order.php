@@ -85,7 +85,7 @@ if (!empty($member) AND $member != 3) {
 						{
 							unset($result);				//清除返回数据中的订单信息
 								
-							$result ['message'] = "已经加入其他团，不能重复参团!";
+							$result ['message'] = "不要贪心，不能重复参团哦！";
 							$result ['code'] 	= 0;
 						}
 						else{

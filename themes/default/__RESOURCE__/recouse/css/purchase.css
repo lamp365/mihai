@@ -563,7 +563,9 @@ input[name="payment"]{
     height: 31px;
     line-height: 31px;
     cursor: pointer;
-    background:url(../images/filter_bg1.png) no-repeat center;
+    background-color: #3292DD;
+    color: #fff;
+    border-radius: 2px;
 }
 .total-area .terms-content{
 	font-weight: 400;
@@ -784,4 +786,15 @@ border-top: 1px solid #d2d2d2;
 }
 .ajax-load-area{
 	display: none;
+}
+.personalTitle {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    width: 1008px;
+    margin-top: 40px;
+    border-bottom: solid 1px gainsboro;
+    padding-bottom: 10px;
 }

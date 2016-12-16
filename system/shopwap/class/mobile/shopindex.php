@@ -90,7 +90,7 @@ foreach ($category as $c_index){
        $category_index[] = $c_index;
    }
 } 
-//$category_index = index_c_goods($category_index,1);
+$category_index = index_c_goods($category_index,1);
 $category_index = index_c_goods($category_index,2);
 $first_good_list = array();
 $recommandcategory = array();

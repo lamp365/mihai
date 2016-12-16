@@ -138,7 +138,9 @@ class MenuEnum {
             'istime'           => '促销时间',
             'team_buy_count'   => '成团人数',
             'timeprice'        => '促销金额',
-            'commision'        => '商品佣金比例'
+            'commision'        => '商品佣金比例',
+            'vip_price'         => '会员价',
+            'draw'             => '开启抽奖'
         )
     );
 

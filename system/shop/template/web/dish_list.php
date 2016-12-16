@@ -157,7 +157,9 @@
 					           <span class="label label-danger wholesale" style="margin-left:5px;"><?php echo $purchase_price['name'].$purchase_price['vip_price']; ?></span>  					     	   
 						 <?php }}?>
 						 </div>
+						<?php if(isHasPowerOperateField('shop_dish','vip_price')){ ?>
 						 <i class="wholesale-cogs icon-cog" ajax-vip-price-id="<?php  echo $item['id'];?>"></i>
+						<?php } ?>
 					</td>
 					<td style="text-align:center;" class="product-stock">
 						<input type="text" name="" class="modify-stock form-control modify-input" ajax-stock-id="<?php  echo $item['id'];?>"><span><?php  echo $item['total'];?></span>

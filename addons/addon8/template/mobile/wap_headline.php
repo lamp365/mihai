@@ -323,7 +323,7 @@
 			 var newHref = document.referrer;
 			 $("#return").attr("href",newHref);							
 		}
-		
+		window.history.back(-1);
     })
 </script>
 </html>

@@ -136,3 +136,29 @@ function getAttr(cat_id)
   {
   }
 }
+
+//该文件用来写一些公共的方法。以上估计没有别处用到，后期确认后，可进行删除掉
+//该文件用来写一些公共的方法。以上估计没有别处用到，后期确认后，可进行删除掉
+//该文件用来写一些公共的方法。以上估计没有别处用到，后期确认后，可进行删除掉
+
+/**
+ * 封装一个加载滚动获取下一页
+ * 1、页面要加载append这一段
+ * <input type="hidden" value="2" id="page"/>
+  <div class="ajax_next_page">
+    <img class="jiazai" src="../recouse/images/ajax-loader.gif"/>
+    正在加载
+  </div>
+ <div class="ajax_next_page_foot"></div>
+
+ 2、当滚动到底部时请求数据
+    function nextpage(){
+		//滚动条到底部时就加载剩下数据
+		$(window).scroll(function(){
+			if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+				Refresh(url,json_data,'wai_func','#id');
+				请求url  请求json对象数据  关联外面的一个方法，用于组装html    要追加到页面的id
+			}
+		})
+	}
+ */
