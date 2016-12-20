@@ -41,7 +41,11 @@ body{
 }
 .purchase_head div img{
 	height: 25px;
-	margin-left: -20px;
+	vertical-align: top;
+}
+.purchase_head div .logotitle{
+	height: 100px;
+	margin-left: -25px;
 }
 .login-area{
 	float: right;
@@ -125,6 +129,7 @@ body{
 	line-height: 60px;
 	width: 100%;
 	text-align: center;
+	font-size:14px;
 	color: #333;
 	z-index: 2;
 }
@@ -797,4 +802,12 @@ border-top: 1px solid #d2d2d2;
     margin-top: 40px;
     border-bottom: solid 1px gainsboro;
     padding-bottom: 10px;
+}
+.modal-body-content{
+    width: 790px;
+    margin: 0 auto;
+}
+.modal-body-content img{
+    width: 100%!important;
+    height: auto!important;
 }

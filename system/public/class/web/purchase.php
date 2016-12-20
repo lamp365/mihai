@@ -5,6 +5,8 @@ if ( $is_login ){
     integration_session_account($loginid, $oldsessionid);
     header("location:".create_url('mobile', array('name' => 'shopwap','do' => 'purchase_order')));
 }
+// 获取品牌数据
+$brand = mysqld_selectall("SELECT * FROM " . table('shop_brand') . "  where deleted=0 and recommend = 1 ");
 if (checksubmit("submit")) {
     if (empty($_GP['mobile'])) {
         message("请输入手机号");
@@ -29,4 +31,4 @@ if (checksubmit("submit")) {
     }
 }		
 	    //header("location:".create_url('site', array('name' => 'index','do' => 'main')));
-		include themepage('purchase_login');
+include themepage('purchase_login');

@@ -240,7 +240,7 @@
 				'<p class="name">'+
 					'<span>'+ art_data.nickname +'</span>'+
 					'<!--发布时间-->'+
-					'<span style="color: #999;font-size: 14px;margin-top: 5px;">'+art_data.createtime+'</p>'+
+					'<span style="color: #999;font-size: 14px;margin-top: 5px;">'+Stringtotime(art_data.createtime)+'</p>'+
 				'</p>'+
 				'<!--评论内容-->'+
 				'<div style="clear: both;margin-left: 60px;line-height: 22px;">'+art_data.comment+'</div>'+
@@ -248,7 +248,19 @@
 		'</div>';
 		$(".commentlist").append(html);
 	}
-
+	
+	//格式化时间
+	function Stringtotime(time){  
+	    var datetime = new Date();  
+	    datetime.setTime(time);  
+	    var year = datetime.getFullYear();  
+	    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;  
+	    var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();  
+	    var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();  
+	    var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();  
+	    var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();  
+	    return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;  
+	}  
 
 	$(".wap_more").click(function(){
 		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>$_GP['table'])); ?>"

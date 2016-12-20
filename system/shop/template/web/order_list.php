@@ -342,6 +342,7 @@
 						<?php  if($item['status'] == -4) { ?><span class="label label-danger">退货中</span><?php  } ?>
 						<?php  if($item['status'] == -5) { ?><span class="label label-success">已退货</span><?php  } ?>
 						<?php  if($item['status'] == -6) { ?><span class="label  label-success">已退款</span><?php  } ?>
+						<?php  if($item['status'] == -7) { ?><span class="label  label-success">付款审核</span><?php  } ?>
 						</div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看详情</a></div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'identity', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看清关材料</a></div>

@@ -152,7 +152,7 @@
     	}else{
     		return false;
     	}
-		$order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.isdraw, a.isprize, e.status as group_status FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where);
+		$order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.isdraw, a.isprize, e.status as group_status, a.status FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where);
 		// 总记录数
 		$total = mysqld_select("SELECT FOUND_ROWS() as total;");
 		$total['total'] = intval($total['total']);
@@ -169,7 +169,7 @@
 		    	}
 		    	if ($status == 3) {
 		    		// 未成团不在待发货
-		    		if ($ov['group_status'] != '1') {
+		    		if ($ov['group_status'] != '1' AND $ov['group_status'] != NULL) {
 	    				$total['total'] -= 1;
 	    				continue;
 		    		}

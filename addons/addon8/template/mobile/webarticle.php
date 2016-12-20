@@ -11,7 +11,7 @@
 <script type="text/javascript"	src="<?php echo WEBSITE_ROOT . 'themes/' . $theme . '/__RESOURCE__'; ?>/recouse/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript"	src="<?php echo WEBSITE_ROOT . 'themes/' . $theme . '/__RESOURCE__'; ?>/recouse/js/jquery.lazyload.min.js"></script>
 <script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/' . $theme . '/__RESOURCE__'; ?>/recouse/js/fbi.js"></script>
-<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/' . $theme . '/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
+<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/' . $theme . '/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 </head>
 <style type="text/css">
 .article .title{
@@ -58,7 +58,7 @@
 	line-height: 35px;
 }
 .child-div div:hover a{color: #da4a62;}
-.child-div div.active a{
+.child-div div.li_active a{
 	color: #da4a62;
 }
 .right-icon{
@@ -248,7 +248,7 @@
 				$(".child-div div").each(function(){
 					chili_div_name = $(this).find("a").text();
 					if( chili_div_name == init_child_name){
-						$(this).addClass("active");
+						$(this).addClass("li_active");
 					}
 				})
 			}

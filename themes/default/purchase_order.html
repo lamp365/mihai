@@ -19,7 +19,7 @@
 		<div class="tab-div">
 			<div class="tab-div-select">
 				<form method="post" name="" class="">
-					<label>
+					<label style="display:none;">
 						<select name="cate_1" class="fetch-select fetchChildarea" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
 							<option value="0">请选择保税仓</option>
 							<?php  if(is_array($area)) { foreach($area as $row) { ?>
@@ -29,7 +29,7 @@
 							<?php  } } ?>
 						</select>
 					</label>
-					<label>
+					<label style="display:none;">
 						<select name="p1" class="fetch-select" onchange="fetchChildCategory(this.options[this.selectedIndex].value)" >
 							<option value="0">请选择一级分类</option>
 							<?php  if(is_array($category)) { foreach($category as $row) { ?>
@@ -39,7 +39,7 @@
 							<?php  } } ?>
 						</select>
 					</label>
-					<label>
+					<label style="display:none;">
 						<select id="p2" class="fetch-select" name="p2" onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" >
 							<option value="0">请选择二级分类</option>
 							<?php  if(!empty($_GP['p1']) && !empty($childrens[$_GP['p1']])) { ?>
@@ -152,6 +152,11 @@
 					</table>
 					<!--@php if ( $user_a['type'] == 2 ){ @-->
 					<div class="exchangeRate-area">
+						<h3>订单要求</h3>
+						<!--汇率隐藏域-->
+						<p>单个订单总额必须高于2000人民币系统才会审核通过，否则无法下单</p>
+					</div>
+					<div class="exchangeRate-area">
 						<h3>货币汇率</h3>
 						<!--汇率隐藏域-->
 						<p><!--@php echo $exchange_rate_value; @--></p>
@@ -202,7 +207,7 @@
 							<div class="terms-content">
 								<p>通过单击 “下单”，我同意接受觅海供应链在线商店条款和条件。</p>
 								<p>请注意以下内容：</p>
-								<p>发货和送达日期为觅海供应链做出的最佳估算时间。就少数订单，由于无法预料的产品短缺或超出我们控制以外的因素，实际时间可能会更长。如有延迟，我们将联系您，您可以选择取消订单及要求全额退款。
+								<p>发货和送达日期为觅海供应链做出的最佳估算时间。就少数订单，由于无法预料的产品短缺或超出我们控制以外的因素，实际时间可能会更长。如有延迟，我们将联系您。
 								我们网站上的产品和定价信息在公布前已经过核实。但是，在极少数情形下可能有误。如果我们发现定价错误，我们将通知您，取消您的订单，并对订单金额全额退款。
 								您应仔细阅读条款和条件中有关争议解决的条款，您确认本订单即视为您理解争议将通过仲裁方式解决，仲裁机构及仲裁地点详见条款和条件。</p>
 							</div>
@@ -312,7 +317,7 @@ $(function(){
 			$.post("",{type:'get_content',id:content_id},function(data){
 				if(data.errno == 200){
 					$(".ajax-load").hide();
-					siblings_detail.find(".modal-body").append(data.message.content);
+					siblings_detail.find(".modal-body").append("<div class='modal-body-content'>"+data.message.content+"</div>");
 				}else{
 					$(".ajax-load").hide();
 					alert(data.message);
@@ -322,20 +327,20 @@ $(function(){
 	})
 	//点击商品图片显示产品详情
 	$(".product-img").on("click",function(){
-		
-		
 		var content_this = $(this);
 		var content_id = content_this.attr("product_id");
 		var content_len = content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").children().length;
 			content_this.parent(".col-img").siblings(".col-name").find(".product-detail").modal();
 		//如何已有详情直接返回
-		if( content_len > 0){
+		if( content_len > 1){
 			return false;
 		}else{
 			$.post("",{type:'get_content',id:content_id},function(data){
 				if(data.errno == 200){
-					content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").append(data.message.content);
+					$(".ajax-load").hide();
+					content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").append("<div class='modal-body-content'>"+data.message.content+"</div>");
 				}else{
+					$(".ajax-load").hide();
 					alert(data.message);
 				}
 			},'json')
@@ -348,13 +353,7 @@ $(function(){
 		$(this).addClass("on");
 		$(".tab-div .tab-div-select").hide().eq(index).show();
 	});
-	var index2 = 0;
-	$(".question-nav li").on("click",function(){
-		index2 = $(this).index();
-		$(this).siblings("li").removeClass("on");
-		$(this).addClass("on");
-		$(".faq-detail").hide().eq(index2).show();
-	});
+
 	$(".product-list .th-check").on("click",function(){
 		var _this = $(this);
 		//全部取消选中

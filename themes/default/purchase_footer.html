@@ -58,4 +58,15 @@
 	</div>
 
 	</body>
+	<script type="text/javascript">
+		$(function(){
+			var index2 = 0;
+			$(".question-nav li").on("click",function(){
+				index2 = $(this).index();
+				$(this).siblings("li").removeClass("on");
+				$(this).addClass("on");
+				$(".faq-detail").hide().eq(index2).show();
+			});
+		})
+	</script>
 </html>

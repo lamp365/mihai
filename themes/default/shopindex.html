@@ -209,6 +209,94 @@ video {
 	font-size: 16px;
 	color: #888888;
 }
+
+/*轮播样式*/
+/*reset*/
+
+.clear { clear: both; }
+.clearfix:after{ content:""; display:block;visibility:hidden; height:0; clear:both;}
+.clearfix {zoom:1;}
+/*main css*/
+.indexPicBox{    
+	position: relative;
+    margin: 0 auto;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+.hotPic{    
+	height: 400px;
+    position: relative;
+}
+.hotPic .num{    
+	position: absolute;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    height: 30px;
+    text-align: center;
+}
+.hotPic .num span{
+	border-radius:20px; 
+	width:20px; 
+	height:20px; 
+	display:inline-block; 
+	line-height:20px; 
+	font-size:14px; 
+	text-align:center; 
+	margin:5px 4px 0; 
+	cursor:pointer; 
+	background:#000\9; 
+	background:rgba(0,0,0,.5); 
+	color:#fff;
+}
+.hotPic .num span.cur{ background:#E31436;color:#fff;}
+.hotPic .pic{    
+	position: absolute;
+    top: 0;
+    left: 50%;
+    height: 400px;
+    margin-left: -960px;
+	z-index:1;
+}
+.hotPic .pic li{ position:absolute; display:none;}
+.hotPic .pic li img{ width:1920px; height:400px; display:block;}
+.nav-left{
+	position:absolute;
+	width: 34px;
+    height: 68px;
+    z-index: 3;
+	top:166px;
+	left:100px;
+	cursor:pointer;
+	background:url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat center;
+	background-position:-1px -2px;
+}
+.nav-left:hover{
+	background:url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat center;
+	background-position:-1px -87px;
+}
+.nav-right{
+	position:absolute;
+	width: 34px;
+    height: 68px;
+    z-index: 22;	    
+	top:166px;
+	right:100px;
+	cursor:pointer;
+	background:url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat center;
+	background-position:-45px -1px;
+}
+.nav-right:hover{
+	background:url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat center;
+	background-position:-45px -87px;
+}
+.nav-box{
+	display: none;
+}
+.hotPic:hover .nav-box{
+	display: block;
+}
 </style>
 
 </head>
@@ -216,37 +304,90 @@ video {
     <!--@php  include page('header');@-->	
 	<script> index = 1;</script>
 	<div class="viewport" style="width:100%;height:400px;">
-	   <div class="slider card card-nomb" style="">
-			<script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
-			<div id="focus" class="focus">
-				<div class="hd">
-					<ul>
-					</ul>
-				</div>
-				<div class="bd">
-					<ul>
-						<!--@php  if(is_array($advs)) { foreach($advs as $adv) { @-->
-						<li>
-						     <a target="_blank" href="<!--@php echo $adv['link']; @-->"><div  style="background:url(<!--@php  echo $adv['thumb'];@-->) no-repeat center center;width:100%;height:400px;"></div></a>
-						</li>
-						<!--@php  } } @-->
-					</ul>
-				</div>
-			</div>
-			<script type="text/javascript">			
-				TouchSlide({
-					slideCell :"#focus",
-					titCell : ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
-					mainCell : ".bd ul",
-					delayTime : 600,
-					interTime : 4000,
-					effect : "leftLoop",
-					autoPlay : true,//自动播放
-					autoPage : true, //自动分页
-					switchLoad : "_src" //切换加载，真实图片路径为"_src" 
-				});	
-			</script>
+		<div id="focus" class="indexPicBox focus slider">
+		  <div class="hotPic">
+			<div class="num"></div>
+			<ul class="pic tempWrap">
+			    <!--@php  if(is_array($advs)) { foreach($advs as $adv) { @-->
+				<li>
+				     <a target="_blank" href="<!--@php echo $adv['link']; @-->"><img width="1920" height="400" data-original="<!--@php  echo $adv['thumb'];@-->" class="lazy_img" src="images/loading.gif" /></a>
+				</li>
+				<!--@php  } } @-->
+			</ul>
+			<ul class="nav-box">
+				<li class="nav-left"></li>
+				<li class="nav-right"></li>
+			</ul>
+		  </div>
 		</div>
+
+			<script type="text/javascript">			
+				$(function(){
+					$(".lazy_img").lazyload({
+						effect : "fadeIn",
+						skip_invisible : false
+					});
+					var sw = 0;
+					//自动开始
+					var myTime = setInterval(function(){
+					   myShow(sw)
+					   sw++;
+					   if(sw==$(".hotPic .pic li").length){sw=0;}
+					} , 3000);
+					function appendNumDiv(){
+						var num_div_len = $(".hotPic .pic li").length;
+						var num_i = 1;
+						var num_div_html = "<span class='cur'>"+num_i+"</span>";
+						for( num_i; num_i < num_div_len; num_i++ ){
+							num_div_html += "<span>"+(num_i+1)+"</span>" 
+						}
+						$(".hotPic .num").append(num_div_html);
+					}
+					appendNumDiv();
+					//左右箭头切换
+					function leftRightFun(){
+						$(".nav-left").on("click",function(){
+							sw = $(".hotPic .num .cur").index();
+							myShow(sw-1);
+						});
+						$(".nav-right").on("click",function(){
+							sw = $(".hotPic .num .cur").index();
+							if(sw+1==$(".hotPic .pic li").length){
+								myShow(0);
+							}else{
+								myShow(sw+1);
+							}
+						});
+					}
+					leftRightFun();
+					//显示函数
+					function myShow(i){
+						$(".hotPic .num span").eq(i).addClass("cur").siblings("span").removeClass("cur");
+						$(".hotPic .pic li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+						$(".hotPic .text p").eq(i).show().siblings("p").hide();
+					}
+					function hoverFun(){
+						$(".hotPic .num span").mouseover(function(){
+							sw = $(".hotPic .num span").index(this);
+							myShow(sw);
+						});
+						//滑入停止动画，滑出开始动画
+						$(".hotPic").hover(function(){
+							if(myTime){
+							   clearInterval(myTime);
+							}
+						},function(){
+							myTime = setInterval(function(){
+							  myShow(sw)
+							  sw++;
+							  if(sw==$(".hotPic .pic li").length){sw=0;}
+							} , 3000);
+						});
+					}
+					hoverFun();
+				});
+			</script>
+
 	</div>
 	<div class="left-fixed" style="display:none;">
 		<img src="images/leftweixin.png">

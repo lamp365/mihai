@@ -279,7 +279,7 @@ if ($operation == 'display') {
 	$retag['pay']['uid']       = $_SESSION['account']['id'];
 	$json_retag 			   = json_encode($retag);
 
-	mysqld_update('shop_order', array('status' => 1,'retag'=>$json_retag,'paytime'=>time()), array('id' => $_GP['id']));
+	mysqld_update('shop_order', array('status' => -7,'retag'=>$json_retag,'paytime'=>time()), array('id' => $_GP['id']));
 	updateOrderStock($_GP['id']);
 	message('确认订单付款操作成功！', refresh(), 'success');
 

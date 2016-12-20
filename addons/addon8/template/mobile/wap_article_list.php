@@ -412,8 +412,8 @@
 		}
 	}
 
-	function Load(art_data){
-//		console.log(art_data);
+function Load(art_data){	
+	
 		<?php  if($_GP['op'] == 'healty'){ ?>
 		//健康文化的append
 		var url = "<?php echo mobile_url('article');?>";
@@ -429,7 +429,7 @@
 					'</a>'+
 					'<div style="position: absolute;top: 0;right:2%;width: 45px;height: 41px;">'+
 						'<img class="healthy-data" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/healthy-data.png"/>'+
-						'<span>'+art_data.createtime+'</span>'+
+						'<span>'+Stringtotime(art_data.createtime)+'</span>'+
 						'</div>'+
 				'</li>';
 			$(".healthy ul").append(li);
@@ -510,6 +510,13 @@
 		<?php } ?>
 
 	}
-	
+	//将后台返回的时间戳格式化为时间格式
+	function Stringtotime(time){  
+	    var datetime = new Date();			    
+	    datetime.setTime(time);			      
+	    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1; 			   
+	    var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate(); 	      
+	    return month + "/" + date;  
+	}  
 </script>
 </html>

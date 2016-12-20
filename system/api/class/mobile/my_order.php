@@ -93,14 +93,14 @@
 	    	}
 	    	if ($status == 3) {
 	    		// 未成团不在待发货
-	    		if ($l_v['group_status'] != '1') {
+	    		if ($l_v['group_status'] != '1' AND $l_v['group_status'] != NULL) {
 	    			unset($list[$l_k]);
     				$total['total'] -= 1;
     				continue;
 	    		}
 	    		// 抽奖团只有中奖之后才到待发货
 	    		if ($l_v['isdraw'] == '1') {
-	    			if ($l_v['isprize'] != '1' AND $l_v['group_status'] == '1') {
+	    			if ($l_v['isprize'] != '1') {
 	    				unset($list[$l_k]);
 	    				$total['total'] -= 1;
 	    				continue;

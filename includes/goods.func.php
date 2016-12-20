@@ -604,14 +604,16 @@ function set_purchase_cart($goods, $openid, $type = 2 ){
 	if ( is_array($goods) && !empty($openid) ){
          foreach ( $goods as $goods_value ){
                // 进行更新或插入的判断
-			   $purchase_data = array(":openid"=>$openid, ":goodstype"=>$type, ":goodsid"=>$goods_value['id']);
-			   $find_goods = mysqld_select("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype and goodsid = :goodsid limit 1", $purchase_data);
-			   $set_purchase_data = array("goodsid"=>$goods_value['id'],"goodstype"=>$type,"openid"=>$openid,"total"=>$goods_value['num'],"marketprice"=>$goods_value['price'], "creatime"=>time());
-			   if ( $find_goods ){
-                     mysqld_update("shop_purchase_cart", $set_purchase_data, array('id'=>$find_goods['id']));
-			   }else{
-                     mysqld_insert("shop_purchase_cart",  $set_purchase_data);
-			   }
+			   if ( !empty($goods_value['id']) ){
+					   $purchase_data = array(":openid"=>$openid, ":goodstype"=>$type, ":goodsid"=>$goods_value['id']);
+					   $find_goods = mysqld_select("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype and goodsid = :goodsid limit 1", $purchase_data);
+					   $set_purchase_data = array("goodsid"=>$goods_value['id'],"goodstype"=>$type,"openid"=>$openid,"total"=>$goods_value['num'],"marketprice"=>$goods_value['price'], "creatime"=>time());
+					   if ( $find_goods ){
+							 mysqld_update("shop_purchase_cart", $set_purchase_data, array('id'=>$find_goods['id']));
+					   }else{
+							 mysqld_insert("shop_purchase_cart",  $set_purchase_data);
+					   }
+	           }
 		 }
 	}
 }
@@ -667,4 +669,21 @@ function model_good($id,$v1,$v2,$type=2){
 				  return false;
 			 }
 	 }
+}
+
+// 搜索分词引擎
+function get_word($text=''){
+	$sh = scws_new();
+	$sh->set_charset('utf8');
+	$sh->set_ignore(true); 
+	$sh->set_multi(true);
+	$sh->set_duality(true); 
+	$sh->send_text($text);
+	$words = $sh->get_tops(5);
+	$sh->close();
+	$word = array();
+	foreach($words as $word_value){
+         $word[] = $word_value['word'];
+	}
+	return $word;
 }

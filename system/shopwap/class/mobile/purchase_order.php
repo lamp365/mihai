@@ -41,6 +41,30 @@ if ( $user_a['type'] == 2 ){
 	 $total = mysqld_selectcolumn("SELECT count(*) FROM ".table('shop_dish')." AS b LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ");
      $currency = 1;
 }
+
+if ( empty($dish_list) && !empty($_GP['keyword']) && $_GP['key_type'] == 'title') {
+     $word = get_word($_GP['keyword']);
+	 if ( !empty($word) ){
+		 $condition = '';
+		 foreach ($word as $word_value ) {
+	         $keys[] = " b.title like '%".$word_value."%' ";
+		 }
+		 $keys = implode(' or ' , $keys);
+		 $condition = ' and ('.$keys.')';
+		  // 根据用户的角色获取产品数据
+			if ( $user_a['type'] == 2 ){
+				 // 找到批发权限
+				 $gank   = mysqld_select("SELECT * FROM ".table('rolers')." WHERE type = 2 and pid = 0 ");
+				 $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id'].$limit);
+				 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']."  $condition and b.deleted=0  AND b.status = '1' ");
+				 $currency = 2;
+			}else{
+				 $dish_list = mysqld_selectall("SELECT b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish')." AS b  LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ".$limit);
+				 $total = mysqld_selectcolumn("SELECT count(*) FROM ".table('shop_dish')." AS b LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ");
+				 $currency = 1;
+			}
+	 }
+}
 // 开始进行标记选中事件selected
 // 进入数据库进行查询产品数据 
 //$purchase_goods = new LtCookie();

@@ -57,7 +57,7 @@ switch ( $_GP['api'] ){
 		// 购物车里的产品数据
 		// 要考虑一件代发的库存问题
         foreach ( $goods as $goods_value ){
-			 $good_template = mysqld_select("SELECT a.*,b.weight,b.coefficient FROM ".table('shop_dish')." as a LEFT JOIN ".table('shop_goods')." as b on a.gid = b.id WHERE a.id = ".$goods_value['goodsid']." limit 1");
+			 $good_template = mysqld_select("SELECT a.*,b.weight,b.coefficient,b.thumb as good_img FROM ".table('shop_dish')." as a LEFT JOIN ".table('shop_goods')." as b on a.gid = b.id WHERE a.id = ".$goods_value['goodsid']." limit 1");
 			 $goods_value['price'] = $good_template['marketprice'];
 			 $goods_value['id']    = $goods_value['goodsid'];
 			 $goods_value   = price_check($goods_value,$member['parent_roler_id'],$member['son_roler_id'],$user_a['type']);
@@ -80,7 +80,7 @@ switch ( $_GP['api'] ){
 				 $had_goods_price += $goods_value['price'] * $goods_value['total'];
 			}
 			$goods_value['title']   = $good_template['title'];
-			$goods_value['img']   = $good_template['thumb'];
+			$goods_value['img']   = $good_template['good_img'];
 			$goods_value['num']   = $goods_value['total'];
 			$goods_value['gid']   = $good_template['gid'];
 			$had_goods_total[] = $goods_value;

@@ -120,6 +120,7 @@
 						<?php  if($order['status'] == -4) { ?><span class="label label-danger">退货中</span><?php  } ?>
 						<?php  if($order['status'] == -5) { ?><span class="label label-success">已退货</span><?php  } ?>
 						<?php  if($order['status'] == -6) { ?><span class="label label-success">已退款</span><?php  } ?>
+						<?php  if($order['status'] == -7) { ?><span class="label label-success">付款审核</span><?php  } ?>
 				</td>
 			</tr>
 			<tr>

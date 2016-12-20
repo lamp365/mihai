@@ -233,7 +233,7 @@ if ($op == 'returnpay') {
     }
     unset($g);
 
-    $dispatch = mysqld_select("select id,dispatchname,sendtype from " . table('shop_dispatch') . " where id=:id limit 1", array(":id" => $item['dispatch']));
+    $dispatch = mysqld_select("select id,dispatchname,sendtype,dispatch_web from " . table('shop_dispatch') . " where id=:id limit 1", array(":id" => $item['dispatch']));
 
     $paymentconfig="";
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {

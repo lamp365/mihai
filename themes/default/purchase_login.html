@@ -23,14 +23,15 @@
 		<!--入驻品牌-->
 		<div class="enterbrand">			
 			<div>
-				入驻品牌
+				合作品牌
 			</div>
 			<!--品牌列表-->
 			<ul>
-				<!--一行10个-->
+				<!--@php if ( is_array($brand) ){ foreach( $brand as $brand_value ){ @-->
 				<li>					
-					<img src="__RESOURCE__/recouse/images/black_friday_no.jpg" />					
+					<img src="<!--@php echo $brand_value['icon']; @-->" />					
 				</li>
+				<!--@php }} @-->
 			</ul>
 		</div>
 <style>
@@ -44,25 +45,26 @@
   .enterbrand div{
   	border-bottom: solid 1px #eee;
   	padding-bottom: 10px;
-  	font-size: 28px;
+  	font-size: 20px;
   	font-weight: bold;
   	font-family: "微软雅黑";
   }
   .enterbrand ul{
    	width: 100%;
   	overflow: hidden;
-  	margin-top: 30px;
+  	margin-top: 10px;
   }
   .enterbrand ul li{
   	width: 119px;
   	height: 119px;
   	float: left;
+	text-align:center;
    	line-height: 119px;
   	box-sizing: border-box; 		
   }
   .enterbrand ul li img{
-   	width: 90%;  
-   	margin-left: 5%;
+   	width: 75%;  
+	height:auto;
    	vertical-align: middle;
   }
 </style>
