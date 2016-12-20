@@ -68,10 +68,10 @@ switch ( $_GP['api'] ){
 			     }else{
 					 $sendtype = 0;
 					 // 设置配送运费
-					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.2;
+					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.12;
 					 $freight = $good_template['weight'] * $goods_value['total'] * $good_template['coefficient'] * 2.2046 * 3.25 * $exchange_rate_value;
 			      } 
-				  $goods_value['price'] = $goods_value['price'] * $exchange_rate_value;
+				  $goods_value['price'] = round($goods_value['price'] * $exchange_rate_value,2);
 				  $had_goods_price += $goods_value['price'] * $goods_value['total'];
 				  $shiprice += $freight;
 			}else{
@@ -108,6 +108,10 @@ switch ( $_GP['api'] ){
 				if ( $issendfree == 1 ){
                     $shiprice = 0;
 				}
+		}else{
+               if ( $had_goods_price  < 2000 ) {
+                     die(showAjaxMess('1002', '批发金额不足2000'));
+			   }
 		}
 		$ordersns= 'SN'.date('Ymd') . random(6, 1);
 		$randomorder = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE  ordersn=:ordersn limit 1", array(':ordersn' =>$ordersns));

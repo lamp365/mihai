@@ -23,6 +23,8 @@ if ($operation == 'rule') {
 		message('该角色不存在！',refresh(),'error');
 	}
 	if (checksubmit('submit')) {
+		//清空掉之前的缓存规则
+		cleanAdminHasRule($_GP['id']);
 		if(!empty($_GP['role_ids']))
 		{
 			$rule_ids = implode(',',$_GP['role_ids']);
@@ -393,6 +395,13 @@ if($operation == 'rolercate'){
 	}else{
 		//则前端会显示该顶级分类
 		die(showAjaxMess(200,$roler));
+	}
+}
+
+if($operation == 'menusort'){
+	//更新排序
+	if(!empty($_GP['id']) && $_GP['sort'] !== NULL){
+		mysqld_update('rule',array('sort'=>$_GP['sort']),array('id'=>$_GP['id']));
 	}
 }
 

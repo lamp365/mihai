@@ -159,7 +159,7 @@ function getSystemRule($uid=''){
         $system_rule = $memcache->get('SYSTEM_RULES');
         if(empty($system_rule)){
             $system_rule = mysqld_selectall('SELECT * FROM ' . table('rule') ." order by cat_id asc,sort asc,id asc");
-            $memcache->set('SYSTEM_RULES',$system_rule,time()+3600*3);
+            $memcache->set('SYSTEM_RULES',$system_rule,time()+3600*7);
         }
     }else{
         $system_rule = mysqld_selectall('SELECT * FROM ' . table('rule') ." order by cat_id asc,sort asc,id asc");
@@ -232,13 +232,30 @@ function getAdminHasRule($uid)
 
     $rule = mysqld_select("select rule from  ".table('rolers')." where id={$relation['rolers_id']}");
     if(!empty($rule['rule'])){
-        $rule_ids = explode(',',$rule['rule']);
-        $rule_arr = '';
-        foreach($rule_ids as $id){
-            $rule_arr[] = mysqld_select("select * from ".table('rule')." where id={$id}");
+        if(class_exists('Memcached')){
+            $mem_key  = 'ADMIN_HAS_SYSTEM_RULES_'.$relation['rolers_id'];
+            $memcache = new Mcache();
+            $rule_arr = $memcache->get($mem_key);
+            if(empty($rule_arr)){
+                $rule_arr = mysqld_selectall("select * from ".table('rule')." where id in ({$rule['rule']}) order by cat_id asc,sort asc,id asc");
+                $memcache->set($mem_key,$rule_arr,time()+3600*7);
+            }
+        }else{
+            $rule_arr = mysqld_selectall("select * from ".table('rule')." where id in ({$rule['rule']}) order by cat_id asc,sort asc,id asc");
         }
         return $rule_arr;
     }else{
         return '';
     }
+}
+
+//清空该管理员所拥有的权限规则
+//参数为角色id
+function cleanAdminHasRule($role_id){
+    $mem_key  = 'ADMIN_HAS_SYSTEM_RULES_'.$role_id;
+    if(class_exists('Memcached')){
+        $memcache = new Mcache();
+        $memcache->delete($mem_key);
+    }
+
 }

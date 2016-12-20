@@ -21,7 +21,7 @@ function get_goods($array=array()){
 		$field = $array['field'];
 	}
 	else{
-		$field = ' a.*,b.title as btitle,b.thumb as imgs,b.content as bcontent,b.productprice as price, b.marketprice as market, b.brand ';
+		$field = ' a.*,b.title as btitle,b.thumb as imgs,b.goodssn,b.content as bcontent,b.productprice as price, b.marketprice as market, b.brand ';
 	}
 	
 	$where = $limit = $order = '';

@@ -391,7 +391,7 @@
                     mysqld_update('shop_dish', $data, array('id' => $id));
                 }
 				$vip_data = array();
-				if ( is_array($_GP['v2']) && !empty($_GP['v2']) ){
+				if ( is_array($_GP['v2']) && !empty($_GP['v2']) && isset($_GP['v2']) ){
 					foreach ( $_GP['v2'] as $key=>$v2_value ){
 						 if ( ($v2_value != -1) && !empty($v2_value) && !empty($_GP['vip_price'][$key])){
 							  $vip_data[] = array(
@@ -405,7 +405,9 @@
 				if ( !empty($vip_data) ){
 				    setExtendPrice($vip_data);
 				}else{
-                    mysqld_delete('shop_dish_vip', array('dish_id'=>$id));
+					if ( isset($_GP['v2']) ){
+                          mysqld_delete('shop_dish_vip', array('dish_id'=>$id));
+					}
 				}
                 $warring = ( $shop_goods['marketprice'] - $marketprice ) / $shop_goods['marketprice'];
 				if ( $warring >= 0.2 ){

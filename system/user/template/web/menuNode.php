@@ -29,7 +29,7 @@
             <td style="text-align:center;"><?php echo $item['moddescription'];?></td>
             <td style="text-align:center;"><?php echo rtrim($item['url'],'/');?></td>
             <td style="text-align:center;">
-            	<input style="text-align: center;width: 60px;" type="number" min="<?php echo $cat_id-10?>" max="<?php echo $cat_id+10?>" value="" name="sort">            		
+            	<input style="text-align: center;width: 60px;" type="number" min="<?php echo $cat_id-10?>" max="<?php echo $cat_id+10?>" value="<?php echo $item['sort'];?>" name="sort">
             </td>
             <td style="text-align:center;">
                 <a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'sonMenuList','id' => $item['id']))?>"><i class="icon-edit"></i>子菜单</a>&nbsp;&nbsp;
@@ -81,11 +81,18 @@
 	$("input[name=sort]").blur(function(){
   		//如果输入的值大于设定的最大值，就显示最大值
   		var maxval = $(this).attr("max");
-  		if($(this).val() > maxval){
-  			$(this).val(maxval);	  				  			
-  		}	  		
+        var sort = $(this).val();
+  		if(sort > maxval){
+  			$(this).val(maxval);
+            sort = maxval;
+  		}
 	  	//获取id
 	  	var ID = $(this).parent().parent().children().eq(0).children().val();
+        var url = "<?php echo web_url('user',array('op'=>'menusort'));?>";
+        url = url+"&id="+ID+"&sort="+sort;
+        $.getJSON(url,function(){
+
+        })
 	  		  	
 	})
 </script>

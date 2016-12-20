@@ -8,6 +8,9 @@
 	<meta name="format-detection" content="telephone=no">
 	<title>评论列表</title>
 	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
+	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
+	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />	
+	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <style>
 
@@ -26,6 +29,7 @@
 	.heal-foot ul li{
 		float: left;
 		width: 30%;
+		padding: 0 0 0 15px;
 	}
 	.heal-foot ul li a img{
 		width: 20px;
@@ -94,6 +98,18 @@
 	}
 </style>
 <body>
+	<!--遮罩层-->
+	<div style="width: 100%;height: 100%;position:fixed;background: #000;opacity: 0.5;z-index: 1;display: none;" class="iframe"></div>
+	<!--弹出框-->			
+	<div id="downapp">
+		<span>下次下载</span>	
+		<!--背景-->
+		<img class="bg" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp.png" /> 
+		<!--立即下载--> 	
+		<img  class="btn" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp-btn2x.png" />
+		<p>立即下载</p>
+	</div>	
+	
 <!--头部-->
 <div class="top_header" style="border-bottom: none;">
 	<div class="header_left return">
@@ -108,34 +124,34 @@
 
 
 <!--评论内容-->
-
-<!--没有评论-->
-<?php if(empty($comment_list)){ ?>
-	<div class="no-comment">
-		<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/health-comment@3x.png"/>
-		<p>勾搭评论别害羞，聊骚要做第一人~</p>
-	</div>
-<?php }else{  ?>
-	<?php foreach($comment_list as $row) {   $member_comment = member_get($row['openid']);  ?>
-		<!--有评论-->
-		<div class="health-men">
-			<!--头像-->
-			<div class="info"style="width: 100%;border-bottom: solid 1px #eee;">
-				<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>" />
-				<p class="name">
-					<span><?php if(!empty($member_comment['nickname'])){ echo $member_comment['nickname'];}else{ echo substr_cut($member_comment['mobile']); } ?></span>
-					<!--发布时间-->
-					<span style="color: #999;font-size: 14px;margin-top: 5px;"><?php echo date("Y-m-d H:i:s",$row['createtime']); ?></p>
-				</p>
-				<!--评论内容-->
-				<div style="clear: both;margin-left: 60px;line-height: 22px;">
-					<?php echo $row['comment'];?>
+<div class="commentlist">
+	<!--没有评论-->
+	<?php if(empty($comment_list)){ ?>
+		<div class="no-comment">
+			<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/health-comment@3x.png"/>
+			<p>勾搭评论别害羞，聊骚要做第一人~</p>
+		</div>
+	<?php }else{  ?>
+		<?php foreach($comment_list as $row) {  ?>
+			<!--有评论-->
+			<div class="health-men">
+				<!--头像-->
+				<div class="info"style="width: 100%;border-bottom: solid 1px #eee;">
+					<img src="<?php if(!empty($row['avatar'])){ echo $row['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>" />
+					<p class="name">
+						<span><?php echo $row['nickname'];  ?></span>
+						<!--发布时间-->
+						<span style="color: #999;font-size: 14px;margin-top: 5px;"><?php echo date("Y-m-d H:i:s",$row['createtime']); ?></p>
+					</p>
+					<!--评论内容-->
+					<div style="clear: both;margin-left: 60px;line-height: 22px;">
+						<?php echo $row['comment'];?>
+					</div>
 				</div>
 			</div>
-		</div>
+		<?php } ?>
 	<?php } ?>
-<?php } ?>
-
+</div>
 <!--用来存当前page-->
 <input type="hidden" value="2" id="page"/>
 <div class="ajax_next_page">
@@ -210,10 +226,27 @@
 		}
 	}
 
-	function Load(art_data){
-		console.log(art_data);
+	function Load(art_data){		
 		//拼接html 然后追加
-		var html = '';
+		if(art_data.avatar == ''){
+			var face = "<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; ?>";
+		}else{
+			var face = art_data.avatar;
+		}
+		var html = '<div class="health-men">'+
+			'<!--头像-->'+
+			'<div class="info"style="width: 100%;border-bottom: solid 1px #eee;">'+
+				'<img src="'+ face +'" />'+
+				'<p class="name">'+
+					'<span>'+ art_data.nickname +'</span>'+
+					'<!--发布时间-->'+
+					'<span style="color: #999;font-size: 14px;margin-top: 5px;">'+art_data.createtime+'</p>'+
+				'</p>'+
+				'<!--评论内容-->'+
+				'<div style="clear: both;margin-left: 60px;line-height: 22px;">'+art_data.comment+'</div>'+
+			'</div>'+
+		'</div>';
+		$(".commentlist").append(html);
 	}
 
 

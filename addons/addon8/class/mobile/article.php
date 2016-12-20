@@ -63,6 +63,13 @@
 			}
 
 			$comment_list = mysqld_selectall($sql);
+			//获取文章对应的用户名和头像
+			if(!empty($comment_list)){
+				foreach($comment_list as $key => &$item){
+					$comment_list[$key] = get_article_member($item);
+				}
+			}
+
 			//当手机端滑动的时候加载下一页
 			if ($_GP['nextpage'] == 'ajax' && $_GP['page'] > 1 ){
 				// error  1: 失败  0:成功
@@ -92,11 +99,13 @@
 			}
 		}else if($op == 'headline'){ //头条内容页面
 			$article_headline = mysqld_select("SELECT * FROM " . table('headline')." where headline_id=:id ",array(":id"=>intval($_GP['id'])) );
+			if(empty($article_headline))
+				message('对不起，该文章已不存在！',refresh(),'error');
 			$article_member = member_get($article_headline['openid']);
 			//收藏数
 			$collect_num = mysqld_selectcolumn("select count(collection_id) from ".table('headline_collection')." where headline_id={$_GP['id']}");
 			//获取三条评论
-			$article_comment = mysqld_selectall("select * from ".table('headline_comment')." where note_id={$_GP['id']} order by createtime desc limit 3");
+			$article_comment = mysqld_selectall("select * from ".table('headline_comment')." where headline_id={$_GP['id']} order by createtime desc limit 3");
 			if (is_mobile_request()){
 				include addons_page('wap_headline');
 			}else{

@@ -10,14 +10,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
 	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
+	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
+	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script>
 <style type="text/css">
 	*{
 		margin: 0;
 		padding: 0;
-	}	
-	 
-	
+	}	 
 	.health-content{
 		width: 100%;
 		height: 100%;
@@ -35,8 +35,7 @@
 		height: 60px;
 		border-radius: 50%;
 		display: inline-block;
-		float: left;
-		
+		float: left;		
 	}
 	.health-content .health-men .info .name{
 		display: inline-block;
@@ -152,47 +151,7 @@
 	}
 	.content img{width: 100%;display: block;}
 	
-	/*下载app的图片*/
-	#downapp{
-		position:fixed;
-		top: 50%;
-		left: 50%;
-		margin: -160px 0 0 -160px;
-		z-index: 2;		
-		display: none;
-		width: 320px;	
-		height: 304px;								
-	}
-	#downapp .bg{
-		position: absolute;
-		width: 100%;
-		box-shadow:0 0 10px #000;
-	}
-	#downapp .btn{
-		width: 100px;
-		position: absolute;
-		bottom: 11%;
-		right: 10%;
-	}
-	#downapp span{
-		position: absolute;
-		bottom: 15%;
-		left: 15%;
-		color: rgb(252,100,150);
-		font-weight: bold;
-		z-index: 3;
-	}
-	#downapp p{
-		position: absolute;
-		bottom: 15%;
-		right: 15%;
-		color: #fff;
-		font-weight: bold;
-	}
-	html,body{
-		width: 100%;
-		height: 100%;
-	}
+	
 </style>
 </head>
 <body>
@@ -323,11 +282,11 @@
 
 <?php if($notApp){ ?>
 <!--<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>-->
-<script>
+<!--<script>
 	window.onload = function(){
 		appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
 	}
-</script>
+</script>-->
 <?php } ?>
 
 <script>
@@ -359,27 +318,9 @@
 			var id = $(this).data('id');
 		})
 	<?php } ?>
-	$("#put_comment").focus(function(){
-		//并且不让输入，不一定要用focus事件，反正wap不给评论，一评论就提示,引导下载
-		$("#downapp").show();
-		$(".iframe").show();
-	})
+	
 </script>
-<script>	
-	
-	//点击下次下载，图片消失
-	$("#downapp span").on("click",function(){
-		$("#downapp").hide();
-		$(".iframe").hide();
-	})
-	
-	//点击立即下载，调用下载APP的方法
-	$("#downapp p").on("click",function(){
-		$("#downapp").hide();
-		$(".iframe").hide();
-		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
-	})
-	
+<script>		
 	//关注的点击事件，wap
 	$(".wap_guanzhu").on("click",function(){
 		

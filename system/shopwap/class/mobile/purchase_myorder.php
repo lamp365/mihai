@@ -22,7 +22,7 @@ if ($op == 'cancelsend') {
     $orderid = intval($_GP['orderid']);
     $item = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id AND openid = :openid", array(':id' => $orderid, ':openid' => $openid ));
     if (empty($item)) {
-        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('myorder'), 'error');
+        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('purchase_myorder'), 'error');
     }
     if($item['ordertype'] == 1){
         message('对不起，团购商品，不允许取消！',refresh(),'error');
@@ -30,7 +30,7 @@ if ($op == 'cancelsend') {
     if(($item['paytype']==3&&$item['status']==1)||$item['status']==0)
     {
         mysqld_update('shop_order', array('status' => -1,'updatetime'=>time()), array('id' => $orderid, 'openid' => $openid ));
-        message('订单已关闭！', mobile_url('myorder',array('status'=>$_GP['fromstatus'])), 'success');
+        message('订单已关闭！', mobile_url('purchase_myorder',array('status'=>$_GP['fromstatus'])), 'success');
     }
     if($item['status']==2)
     {
@@ -45,13 +45,13 @@ if ($op == 'returngood') {
     $dispatch = mysqld_select("select id,dispatchname,sendtype from " . table('shop_dispatch') . " where id=:id limit 1", array(":id" => $item['dispatch']));
 
     if (empty($item)) {
-        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('myorder'), 'error');
+        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('purchase_myorder'), 'error');
     }
     $opname="退货";
     if (checksubmit("submit")) {
         mysqld_update('shop_order', array('status' => -4,'isrest'=>1,'rsreson' => $_GP['rsreson']), array('id' => $orderid, 'openid' => $openid ));
 
-        message('申请退货成功，请等待审核！', mobile_url('myorder',array('status' => intval($_GP['fromstatus']))), 'success');
+        message('申请退货成功，请等待审核！', mobile_url('purchase_myorder',array('status' => intval($_GP['fromstatus']))), 'success');
     }
     include themePage('purchase_order_detail_return');
     exit;
@@ -61,13 +61,13 @@ if ($op == 'returngood') {
     $dispatch = mysqld_select("select id,dispatchname,sendtype from " . table('shop_dispatch') . " where id=:id limit 1", array(":id" => $item['dispatch']));
 
     if (empty($item)) {
-        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('myorder'), 'error');
+        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('purchase_myorder'), 'error');
     }
     $opname="换货";
     if (checksubmit("submit")) {
         mysqld_update('shop_order', array('status' =>  -3,'isrest'=>1,'rsreson' => $_GP['rsreson']), array('id' => $orderid, 'openid' => $openid ));
 
-        message('申请换货成功，请等待审核！', mobile_url('myorder',array('status' => intval($_GP['fromstatus']))), 'success');
+        message('申请换货成功，请等待审核！', mobile_url('purchase_myorder',array('status' => intval($_GP['fromstatus']))), 'success');
     }
     include themePage('purchase_order_detail_return');
     exit;
@@ -131,7 +131,7 @@ if ($op == 'returncomment') {
                 mysqld_insert('shop_comment_img',array('img'=>$picurl,'comment_id'=>$lastid));
             }
         }
-        message('评论成功！', mobile_url('myorder',array('status' => intval($_GP['fromstatus']), 'op'=>'detail','orderid'=>$orderid)), 'success');
+        message('评论成功！', mobile_url('purchase_myorder',array('status' => intval($_GP['fromstatus']), 'op'=>'detail','orderid'=>$orderid)), 'success');
     }
     include themePage('purchase_order_detail_comment');
     exit;
@@ -154,7 +154,7 @@ if ($op == 'returnpay') {
     $dispatch = mysqld_select("select id,dispatchname,sendtype from " . table('shop_dispatch') . " where id=:id limit 1", array(":id" => $item['dispatch']));
 
     if (empty($item)) {
-        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('myorder'), 'error');
+        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('purchase_myorder'), 'error');
     }
     $opname="退款";
     if (checksubmit("submit")) {
@@ -164,7 +164,7 @@ if ($op == 'returnpay') {
         }
         mysqld_update('shop_order', array('status' => -2,'rsreson' => $_GP['rsreson']), array('id' => $orderid, 'openid' => $openid ));
 
-        message('申请退款成功，请等待审核！', mobile_url('myorder',array('status' => intval($_GP['fromstatus']))), 'success');
+        message('申请退款成功，请等待审核！', mobile_url('purchase_myorder',array('status' => intval($_GP['fromstatus']))), 'success');
     }
     include themePage('purchase_order_detail_return');
     exit;
@@ -173,7 +173,7 @@ if ($op == 'returnpay') {
     $order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id AND openid = :openid", array(':id' => $orderid, ':openid' => $openid ));
     $orderGoodInfo = mysqld_selectall("select * from ". table('shop_order_goods') ." where orderid={$orderid}");
     if (empty($order) || empty($orderGoodInfo)) {
-        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('myorder'), 'error');
+        message('抱歉，您的订单不存在或是已经被取消！', mobile_url('purchase_myorder'), 'error');
     }
     if(!isSureGetGoods($orderGoodInfo)){
         message("对不起，你有商品还等待处理中，暂不允许确认收货!",refresh(),'error');
@@ -186,13 +186,13 @@ if ($op == 'returnpay') {
     }else{
         message('操作失敗！',refresh(),'error');
     }
-    message('确认收货完成！', mobile_url('myorder',array('status' => 3)), 'success');
+    message('确认收货完成！', mobile_url('purchase_myorder',array('status' => 3)), 'success');
 } else if ($op == 'detail') {
 
     $orderid = intval($_GP['orderid']);
     $item = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE openid = '".$openid."' and id='{$orderid}' limit 1");
     if (empty($item)) {
-        message('抱歉，您的订单不存或是已经被取消！', mobile_url('myorder'), 'error');
+        message('抱歉，您的订单不存或是已经被取消！', mobile_url('purchase_myorder'), 'error');
     }
     if($item['hasbonus'])
     {
@@ -383,7 +383,7 @@ if ($op == 'returnpay') {
             if($item['hasbonus']>0) {
                 $html .='<span style="color:green"> ( 已优惠：'.$item['bonusprice'].' 元)</span>';
             }
-            $html .='</span><a href="'.mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status)).'" class="btn btn-default pull-right btn-sm" >订单详情</a>
+            $html .='</span><a href="'.mobile_url('purchase_myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status)).'" class="btn btn-default pull-right btn-sm" >订单详情</a>
 	</div>
 </div>';
         }}

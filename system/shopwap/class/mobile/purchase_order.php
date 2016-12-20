@@ -33,11 +33,11 @@ if (!empty($_GP['keyword'])){
 if ( $user_a['type'] == 2 ){
 	 // 找到批发权限
 	 $gank   = mysqld_select("SELECT * FROM ".table('rolers')." WHERE type = 2 and pid = 0 ");
-     $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id'].$limit);
+     $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id'].$limit);
 	 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']."  $condition and b.deleted=0  AND b.status = '1' ");
      $currency = 2;
 }else{
-     $dish_list = mysqld_selectall("SELECT b.*,c.goodssn FROM ".table('shop_dish')." AS b  LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ".$limit);
+     $dish_list = mysqld_selectall("SELECT b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish')." AS b  LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ".$limit);
 	 $total = mysqld_selectcolumn("SELECT count(*) FROM ".table('shop_dish')." AS b LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ");
      $currency = 1;
 }
@@ -55,6 +55,7 @@ foreach( $dish_list as &$dish_list_value){
 	  }
 	  unset($dish_list_value['content']);
 	  $dish_list_value['price'] = $dish_list_value['marketprice'];
+	  $dish_list_value['thumb'] = $dish_list_value['good_img'];
 	  $dish_list_value = price_check($dish_list_value, $member['parent_roler_id'],$member['son_roler_id'], $user_a['type']);
 	  $dish_list_value['currency'] = $currency;
 }
@@ -104,7 +105,7 @@ switch ( $op ){
 		     $cart_data = array(":openid"=>$openid, ":goodstype"=>$user_a['type'], ":goodsid"=>$_GP['id']);
 		     $total = mysqld_select("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype and goodsid = :goodsid ", $cart_data);
              $query = mysqld_select("SELECT a.gid,a.thumb,a.pcate,a.issendfree, a.title,b.content,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$_GP['id']);
-             $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.2;
+             $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.12;
 		     $freight    =  $query['weight'] * $total['total'] * $coefficient * 2.2046 * 3.25 ;
 			 die(json_encode(array(
 			   "errno"=>200,
@@ -139,18 +140,20 @@ switch ( $op ){
 	    $purchase = get_purchase_cart($openid,$user_a['type']);
 		$max_purchase = count($purchase);
 		$totalprice = 0;
+		$purchase_ship = 0;
 		// 开始设置运费
 		if ( $max_purchase > 0 ){
              foreach( $purchase as $key=>$purchase_value ){
-                  $query = mysqld_select("SELECT a.gid,a.thumb,a.pcate,a.issendfree, a.title,b.content,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$key);
-                  $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.2;
+                  $query = mysqld_select("SELECT a.gid,a.thumb,a.pcate,a.issendfree, a.title,b.content,b.weight,b.coefficient,b.thumb as good_img FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$key);
+                  $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.12;
 		          $freight    =  $query['weight'] * $purchase_value['total'] * $coefficient * 2.2046 * 3.25 ;
+				  $purchase_ship += $freight;
 				  $purchase[$key]['freight'] = $freight;
 				  $purchase[$key]['id'] = $purchase_value['goodsid'];
 				  $purchase[$key]['price'] = $purchase_value['marketprice'];
 				  $purchase[$key]['num'] = $purchase_value['total'];
 				  $purchase[$key]['title'] = $query['title'];
-				  $purchase[$key]['img'] = $query['thumb'];
+				  $purchase[$key]['img'] = $query['good_img'];
 				  $purchase[$key]['content'] = $query['content'];
 				  $purchase[$key]['issendfree'] = $query['issendfree'];
 				  $purchase[$key]['pcate'] = $query['pcate'];
@@ -180,14 +183,15 @@ switch ( $op ){
                     $ships = 0;
 				}
 		}else{
-                $ships = -1;
+			    $totalprice = round(($totalprice* $exchange_rate_value),2);
+                $ships = round(round($purchase_ship,3) * $exchange_rate_value,2);
 		}	
 		echo json_encode(array(
 			 'result' => 0,
 			 "max_purchase" => $max_purchase,
 			 "shiprice" => $ships,
 			 "goods_price"=> $totalprice,
-			 "total_price"=>  $totalprice + $ships ,
+			 "total_price"=>   $totalprice + $ships ,
 			 'purchase'=>$purchase
 		));
 	    exit;

@@ -81,3 +81,19 @@ function createTheUserForNotExist($openid){
         ));
     }
 }
+
+/**
+ * @param $item  比如是文章列表的一条数据 或者一条评论数据
+ * @return mixed
+ * 加入该文章的用户头像和名字
+ */
+function get_article_member($item){
+    $item['nickname'] = '';
+    $item['avatar']   = '';
+    if(!empty($item['openid'])){
+        $member = mysqld_select("select nickname,avatar,mobile from ".table('member')." where openid={$item['openid']}");
+        $item['nickname'] = empty($member['nickname']) ? substr_cut($member['mobile']) : $member['nickname'];
+        $item['avatar']   = empty($member['avatar']) ? '' : download_pic($member['avatar'],150);
+    }
+    return $item;
+}

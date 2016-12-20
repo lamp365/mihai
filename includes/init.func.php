@@ -117,5 +117,7 @@ if (file_exists(WEB_ROOT . '/includes/rand_username.func.php')) {
 if (file_exists(WEB_ROOT . '/includes/article.func.php')) {
 	require_once WEB_ROOT . '/includes/article.func.php';
 }
-
+if (file_exists(WEB_ROOT . '/includes/erp.func.php')) {
+	require_once WEB_ROOT . '/includes/erp.func.php';
+}
 

@@ -27,6 +27,13 @@ $cfg=globaSetting();
 	$total        = mysqld_selectcolumn($sqlnum);
 	$pager        = pagination($total, $pindex, $psize);
 
+	//获取文章对应的用户名和头像
+    if(!empty($article_list)){
+		foreach($article_list as $key => &$item){
+			$article_list[$key] = get_article_member($item);
+		}
+	}
+
     //当手机端滑动的时候加载下一页
 	if ($_GP['nextpage'] == 'ajax' && $_GP['page'] > 1 ){
 		// error  1: 失败  0:成功

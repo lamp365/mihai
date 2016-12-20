@@ -124,6 +124,7 @@
     </th>
     <th class="text-center" >首图</th>
     <th class="text-center" >产品库编号</th>
+	<th class="text-center" >条形码</th>
     <th class="text-center">产品名称</th>
 	<th class="text-center" ><a href="<?php echo $sorturl."&orderprice=".$oprice; ?>">价格</a></th>
 	<th class="text-center"><a href="<?php echo $sorturl."&ordertprice=".$otprice; ?>">特别价格</a></th>
@@ -144,6 +145,7 @@
 				        </p>
 				    </td>
                     <td style="text-align:center;"><?php  echo $item['gid'];?></td>
+					<td style="text-align:center;"><?php  echo $item['goodssn']; ?> </td>
                 	<td style="text-align:center;" class="product-title">
                 		<input type="text" name="" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $item['id'];?>">
                 		<a target="_blank" class="product-title-a" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $item['id']))?>"><?php  echo $item['title'];?></a>

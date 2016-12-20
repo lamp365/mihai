@@ -154,6 +154,11 @@
 	margin: 0 auto;
 	display: block;
 }
+/*页码样式冲突*/
+.pagination .active{
+	margin: 0 10px 0 0;
+}
+.pagination li a{border: solid 1px #eee;}
 </style>
 
 <body>

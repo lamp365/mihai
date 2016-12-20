@@ -20,18 +20,73 @@
 				</div>
 			</div>
 		</div>	
-		
-
+		<!--入驻品牌-->
+		<div class="enterbrand">			
+			<div>
+				入驻品牌
+			</div>
+			<!--品牌列表-->
+			<ul>
+				<!--一行10个-->
+				<li>					
+					<img src="__RESOURCE__/recouse/images/black_friday_no.jpg" />					
+				</li>
+			</ul>
+		</div>
+<style>
+   .faq{display:none;}
+   .purchase_head .top{display: none;}
+   /*入驻品牌*/
+  .enterbrand{
+  	width:1190px;
+  	margin: 40px auto 0;
+  }
+  .enterbrand div{
+  	border-bottom: solid 1px #eee;
+  	padding-bottom: 10px;
+  	font-size: 28px;
+  	font-weight: bold;
+  	font-family: "微软雅黑";
+  }
+  .enterbrand ul{
+   	width: 100%;
+  	overflow: hidden;
+  	margin-top: 30px;
+  }
+  .enterbrand ul li{
+  	width: 119px;
+  	height: 119px;
+  	float: left;
+   	line-height: 119px;
+  	box-sizing: border-box; 		
+  }
+  .enterbrand ul li img{
+   	width: 90%;  
+   	margin-left: 5%;
+   	vertical-align: middle;
+  }
+</style>
 <script type="text/javascript">
 	$(function(){
 		$(".login-area-div input").each(function(){
 			if($(this).val()){
 				$(this).siblings(".remove").show();
+			}else{
+				$(this).siblings(".remove").hide();
 			}
 		});
 		$(".login-area-div input").on("input propertychange",function(){
 			if($(this).val()){
 				$(this).siblings(".remove").show();
+			}else{
+				$(this).siblings(".remove").hide();
+			}
+		});
+		$(".login-area-div input").blur(function(){
+			if($(this).val()){
+				$(this).siblings(".remove").show();
+			}else{
+				$(this).siblings(".remove").hide();
 			}
 		});
 		$(".login-area-div .remove").on("click",function(){
@@ -55,8 +110,5 @@
 		}
 	}
 </script>
-<style>
-   .faq{display:none;}
-   .purchase_head .top{display: none;}
-</style>
+
 <!--@php  include themePage('purchase_footer');@-->

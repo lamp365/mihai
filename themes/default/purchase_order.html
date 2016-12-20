@@ -150,6 +150,7 @@
 							<th width="106">操作</th>
 						</tr>
 					</table>
+					<!--@php if ( $user_a['type'] == 2 ){ @-->
 					<div class="exchangeRate-area">
 						<h3>货币汇率</h3>
 						<!--汇率隐藏域-->
@@ -161,6 +162,7 @@
 						<label><input type="radio" name="freight" value="0" checked>觅海供应链配送</label>
 						<label><input type="radio" name="freight" value="1">买家承运</label>
 					</div>
+                    <!--@php } @-->
 						<!--@php  if(!empty($addresslist)) {  @-->
 						<div id="addresslist">
 						    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
@@ -500,13 +502,13 @@ $(function(){
 			return false;
 		}
 		if(checkedVal){
-			$(".confirm-modal").modal({backdrop: 'static', keyboard: false});
 			e.stopPropagation();
 			$(".confirm-table").html($(".confirm-table-tr"));
 			$(".ajax-loader").show();
 			$(".confirm-order-address").html("");
 			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',address_id:address_id,freight:freight},function(data){
 				if( data.errno == 200){
+					$(".confirm-modal").modal({backdrop: 'static', keyboard: false});
 					order_id = data.message.order_id;
 					dataObj = data.message;
 					$(".confirm-order-num").text(dataObj.order_sn);
@@ -672,7 +674,7 @@ function getGoods(){
 				get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'><i class='currency-span'>$</i>"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
 					  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
 					  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
-					  "<td class='col-total'><i class='currency-span'>$</i><span>"+parseFloat(value.price*value.num).toFixed(1)+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
+					  "<td class='col-total'><i class='currency-span'>$</i><span>"+parseFloat(value.price*value.num).toFixed(2)+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
 				});
 			}else if($(".currency").val()==2){
 				$.each(data.purchase,function(n,value){

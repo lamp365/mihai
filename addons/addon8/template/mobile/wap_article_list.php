@@ -83,7 +83,7 @@
 		box-sizing: border-box;
 	}
 	div.wrap div p{
-		padding:3% 3% 0 3%;
+		padding:3%;
 		box-sizing: border-box;
 		line-height: 18px;
 	}
@@ -95,6 +95,8 @@
 	div.wrap div p.detail{
 		color: #7F7F7F;
 		font-size: 12px;
+		height: 74px;
+		overflow: hidden;
 	}	
 	div.wrap div p.men img{
 		width: 30px;
@@ -165,6 +167,10 @@
 	.mhheadline ul li .content .detail{
 		color: #7F7F7F;
 		font-size: 12px;
+		line-height: 20px;
+		height: 40px;
+		overflow: hidden;
+		margin-top: 5px;
 	}
 	/*头像*/	
 	.mhheadline .men{
@@ -176,22 +182,28 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-	}
+	}	
 	/*文章图片*/
 	.mhheadline ul li .imglist{
-		width: 100%;
+		width: 100%;		
 		overflow: hidden;
 		padding:2% 0 0 15%;
 		box-sizing: border-box;
 	}
 	.mhheadline ul li .imglist .imgone{
 		width: 100%;
+		border: solid 1px #f8f8f8;
+		box-sizing: border-box;
 	}
 	.mhheadline ul li .imglist .imgtwo{
-		width: 49%;			
+		width: 49%;	
+		border: solid 1px #f8f8f8;
+		box-sizing: border-box;		
 	}
 	.mhheadline ul li .imglist .imgthree{
 		width: 32%;
+		border: solid 1px #f8f8f8;
+		box-sizing: border-box;
 	}
 </style>
 
@@ -247,17 +259,17 @@
 				<ul>
 					<?php if(!empty($article_list)){ ?>
 					<!--一个li是一篇文章，总共4个静态文章，分别表现不同的图片数量-->
-					<?php foreach($article_list as $row){   $member_comment = member_get($row['openid']);  ?>
+					<?php foreach($article_list as $row){  ?>
 					<li>
 						<div class="men">
 							<!--头像-->
-							<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT."themes/wap/__RESOURCE__/912865945439541.jpg" ;} ?>" />
+							<img src="<?php if(!empty($row['avatar'])){ echo $row['avatar'];}else{ echo WEBSITE_ROOT."themes/wap/__RESOURCE__/912865945439541.jpg" ;} ?>" />
 
 						</div>
 						<div class="content">
-							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$row['id']));?>">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$row['headline_id']));?>">
 								<!--用户名-->
-								<p class="name"><?php if(!empty($member_comment['nickname'])){ echo $member_comment['nickname'];}else{ echo substr_cut($member_comment['mobile']); } ?></p>
+								<p class="name"><?php  echo $row['nickname']; ?></p>
 								<!--文章标题-->
 								<p class="title"><?php echo $row['title'] ;?></p>
 								<!--文章内容-->
@@ -267,7 +279,7 @@
 						<!--文章图片-->
 						<?php if(!empty($row['pic'])){   $picArr = explode(';',$row['pic']);  ?>
 						<div class="imglist">	
-							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$row['id']));?>">
+							<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$row['headline_id']));?>">
 								<?php  foreach($picArr as $pic) { ?>
 								<img src="<?php echo download_pic($pic,300);?>"/>
 								<?php } ?>
@@ -293,16 +305,15 @@
 						</a>
 						<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
 							<p class="title"><?php echo $val['title']; ?></p>
-							<p class="detail"><?php echo msubstr($val['description'],0,100); ?></p>
+							<p class="detail" style="padding-top: 0;"><?php echo msubstr($val['description'],0,100); ?></p>
 						</a>						
 						<p class="men">
-							<?php $member = member_get($val['openid']); ?>
-							<?php if(empty($member['avatar'])){ ?>
+							<?php if(empty($val['avatar'])){ ?>
 								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />
 							<?php }else{ ?>
-								<img src="<?php echo $member['avatar']; ?>" />
+								<img src="<?php echo $val['avatar']; ?>" />
 							<?php } ?>						
-							<span><?php if(!empty($member['nickname'])) {  echo $member['nickname']; }else{ echo substr_cut($member['mobile']); } ; ?></span>
+							<span><?php echo $val['nickname']; ?></span>
 						</p>							
 					</div>	
 					<?php }}?>	
@@ -402,64 +413,96 @@
 	}
 
 	function Load(art_data){
-		console.log(art_data);
-		//健康文化的append
+//		console.log(art_data);
 		<?php  if($_GP['op'] == 'healty'){ ?>
+		//健康文化的append
+		var url = "<?php echo mobile_url('article');?>";
+		url = url + "&id="+art_data.id;
 		var li = '<li>'+
-					'<a href="<?php echo mobile_url('article',array('id'=>$val['id']));?>">'+								
-						'<?php if(empty($val['thumb'])){ ?>'+
-							'<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>'+
-						'<?php }else{  ?>'+
-							'<img src="'+img+'"/>'+
-						'<?php } ?>'+								
-						'<p>'+title+'</p>'+
-					'</a>'+							
+					'<a href="'+ url +'">';
+		if(art_data.thumb.length <= 0){
+			li += '<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline .gif"/>';
+		}else{
+			li += '<img src="'+art_data.thumb+'"/>';
+		}
+				li += '<p>'+art_data.title+'</p>'+
+					'</a>'+
 					'<div style="position: absolute;top: 0;right:2%;width: 45px;height: 41px;">'+
-						'<img class="healthy-data" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/healthy-data.png"/>'+								
-						'<span><?php  echo date("Y/m",$val['createtime']);?></span>'+
-					'</div>'+
+						'<img class="healthy-data" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/healthy-data.png"/>'+
+						'<span>'+art_data.createtime+'</span>'+
+						'</div>'+
 				'</li>';
 			$(".healthy ul").append(li);
+
 		<?php } else if($_GP['op'] == 'headline'){ ?>
 		//觅海头条的append
+		var url = "<?php echo mobile_url('article',array('op'=>'headline'));?>";
+		url = url + "&id="+art_data.headline_id;
+		var piclist = art_data.pic;
+		var perpic = piclist.split(";"); //字符串截取，成为数组
+		var picurl = "";
+		for(var j=0;j<perpic.length;j++){
+			if(perpic[j] != ""){
+				picurl += '<img src="'+perpic[j]+'"/>';
+			}
+		}
+		var face = '';
+		if(art_data.avatar == ''){
+			face = "<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>" + "/912865945439541.jpg";
+		}else{
+			face = art_data.avatar;
+		}
 		var li = '<li>'+
 					'<div class="men">'+
-						'<!--头像-->'+							
-						'<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />'+														
+						'<img src="'+ face +'"/>'+
 					'</div>'+
 					'<div class="content">'+
-						'<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">'+
-							'<!--用户名-->'+
-							'<p class="name">hhh</p>'+
-							'<!--文章标题-->'+
-							'<p class="title">对美物的追求，是永远没有尽头的</p>'+
-							'<!--文章内容-->'+
-							'<p class="detail">厌倦了周末不是逛街，看电影，就是吃吃喝喝喝。直到今天去了新天地的一家名叫洗衣船</p>'+
+						'<a href="'+ url +'">'+
+							'<p class="name">'+ art_data.nickname +'</p>'+
+							'<p class="title">'+art_data.title+'</p>'+
+							'<p class="detail">'+art_data.description+'</p>'+
 						'</a>'+
-					'</div>'+
-					'<!--文章图片-->'+
-					'<div class="imglist">'+	
-						'<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$val['headline_id']));?>">'+						
-							'<img src="'+img+'"/>'+					
-						'</a>'+	
-					'</div>'+	
-				'</li>';
+					'</div>';
+
+		if(picurl != ''){
+			li = li + '<div class="imglist">'+
+						'<a href="'+ url +'">'+picurl+'</a>'+
+					  '</div>';
+		}
+
+		var li = li +  "</li>";
 		$(".mhnews-wap ul").append(li);
 		hlimglist();
+
 		<?php }else{ ?>
-			//晒物笔记的append			
-			var li = '<div>'+						
-						'<a href="">'+							
-							'<img src="'+img+'"/>'+
+			//晒物笔记的append
+			var url = "<?php echo mobile_url('article',array('op'=>'note'));?>";
+			url = url + "&id="+art_data.note_id;
+			var face = '';
+			if(art_data.avatar == ''){
+				face = "<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>" + "/912865945439541.jpg";
+			}else{
+				face = art_data.avatar;
+			}
+			var piclist = art_data.pic;
+			var picurl = "";
+			if(piclist.length > 0){
+				var perpic = piclist.split(";"); //字符串截取，成为数组
+				picurl     = perpic[0];
+			}
+
+			var li = '<div>'+
+						'<a href="'+ url +'">'+
+							'<img src="'+picurl+'"/>'+
 						'</a>'+
 						'<a href="">'+
-							'<p class="title">'+title+'</p>'+
-							'<p class="detail">slkdjgkajdgka</p>'+
-						'</a>'+						
-						'<p class="men">'+							
-							'<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />'+												
-							'<span>gsdh</span>'+
-						'</p>'+							
+							'<p class="title">'+art_data.title+'</p>'+
+							'<p class="detail">'+art_data.description+'</p>'+
+						'</a>'+
+						'<p class="men">'+
+							'<img src="'+ face +'" />'+
+							'<span>'+ art_data.nickname +'</span>'+
+						'</p>'+
 					'</div>';
 			$(".wrap").append(li);
 			//append后按瀑布流布局排列

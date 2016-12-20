@@ -132,6 +132,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 $oauth2_code = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid . "&secret=" . $secret . "&code=" . $code . "&grant_type=authorization_code";
                 $content = http_get($oauth2_code);
                 $token = @json_decode($content, true);
+
                 if (empty($token) || ! is_array($token) || empty($token['access_token']) || empty($token['openid'])) {
                     message('获取微信公众号授权失败');
                     exit();
@@ -256,15 +257,15 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         ':weixin_openid' => $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']
                     ));
                     
-                if (empty($weixinfans['weixin_openid'])) {
-                    if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                        if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
-                            unset($_SESSION[MOBILE_WEIXIN_OPENID]);
-                            unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
+                    if (empty($weixinfans['weixin_openid'])) {
+                        if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                            if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
+                                unset($_SESSION[MOBILE_WEIXIN_OPENID]);
+                                unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
+                            }
                         }
                     }
                 }
-            }
                
                 if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
                     

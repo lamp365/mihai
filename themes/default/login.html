@@ -61,7 +61,7 @@ body{background:#efefef ;}
 	margin-right: 100px;
 	margin-top: 10px;
 	border-top: 1px solid #ECECEC;
-	box-shadow: 0 0 9px #d6d6d6;
+	/*box-shadow: 0 0 9px #d6d6d6;*/
 }
 .viewport .form-control{
 	width: 278px;
@@ -115,6 +115,22 @@ body{background:#efefef ;}
     display: inline-block;
     margin-left: 9px;
 }
+/*输入框的删除内容*/
+.col-sm-9 .remove{
+	position: absolute;
+	top: 0;
+	right:15px;
+	display: block;
+	height: 46px;
+	width: 46px;
+	cursor: pointer;
+	line-height: 46px;
+	text-align: center;
+	display: none;
+}
+.col-sm-9 .remove img{
+	vertical-align: middle;
+}
 </style>
 <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 </head>
@@ -135,6 +151,7 @@ body{background:#efefef ;}
 	<div class="col-sm-9">
 		<i class="username-icon"><img src="images/icon_user.png"><span class="i-span"></span></i>
 		<input type="text" id="mobile" name="mobile" value="" class="form-control" placeholder="请输入您的手机号" />
+		<span class="remove"><img src="__RESOURCE__/recouse/images/remove_input_val.png"></span>
 	</div>
 </div>
 
@@ -144,6 +161,7 @@ body{background:#efefef ;}
 	<div class="col-sm-9">
 		<i class="password-icon"><img src="images/icon_pwd.png"><span class="i-span"></span></i>
 		<input type="password" id="pwd" name="pwd" value="" class="form-control span2" placeholder="请输入密码"/>
+		<span class="remove"><img src="__RESOURCE__/recouse/images/remove_input_val.png"></span>
 	</div>
 </div>
 <div class="form-group" style="margin-top: 20px;">
@@ -206,6 +224,34 @@ body{background:#efefef ;}
 		}
 
 	}
+	//输入框的删除按钮控制
+	$(function(){
+		$(".col-sm-9 input").each(function(){
+			if($(this).val()){
+				$(this).siblings(".remove").show();
+			}else{
+				$(this).siblings(".remove").hide();
+			}
+		});
+		$(".col-sm-9 input").on("input propertychange",function(){
+			if($(this).val()){
+				$(this).siblings(".remove").show();
+			}else{
+				$(this).siblings(".remove").hide();
+			}
+		});
+		$(".col-sm-9 input").blur(function(){
+			if($(this).val()){
+				$(this).siblings(".remove").show();
+			}else{
+				$(this).siblings(".remove").hide();
+			}
+		});
+		$(".col-sm-9 .remove").on("click",function(){
+			$(this).siblings("input").val("");
+			$(this).hide();
+		});
+	})
 </script>
 
 <!--@php include themePage('footer');@-->

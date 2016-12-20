@@ -1374,9 +1374,6 @@ $(".Qrcode").qrcode({
 	text: qrcode_url
 });
 
-$(".share-btn").on("click",function(){
-	$(".share-list").toggle();
-})
 $(".share-list a").hover(function(){
 		var hover_val = $(this).find("li").attr("textval");
 		$(this).find("li").text(hover_val);
@@ -1443,8 +1440,8 @@ $(".share-list a").hover(function(){
 		//控制商品详情框的高度
 		var l = $(".offered-explain").find("p").length;
 		if(l >= 4){
-			$(".detailtop").css("height","750px");
-			$("#cshopBox").css("height","750px");
+			$(".detailtop").css("height","715px");
+			$("#cshopBox").css("height","715px");
 		}
 	})
 	

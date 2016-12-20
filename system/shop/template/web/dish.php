@@ -552,7 +552,7 @@ $(function(){
 	});
 
 	//select2下拉框初始化
-	$("#c_goods,#taxid").select();
+	$("#c_goods,#taxid").select2();
 
 	$('#J_type').change(function() {
 		if(parseInt($(this).val())==0)

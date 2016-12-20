@@ -12,6 +12,8 @@
 	<link href="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjcommon.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/TouchSlide.1.1.js"></script>
+	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />	
+	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script>
 </head>
 
 <style type="text/css">
@@ -20,7 +22,7 @@
 	}
 	*{margin: 0;padding: 0;font-family: "微软雅黑";}
 	body{
-		background: #fff;
+		background: #fff;		
 	}
 	.headline-content{
 		width: 90%;
@@ -141,51 +143,14 @@
 	}
 	.heal-foot ul li a img{
 		width: 20px;
+	}	
+	.bd ul{
+		height:200px;
 	}
-	/*下载app的图片*/
-	#downapp{
-		position:fixed;
-		top: 50%;
-		left: 50%;
-		margin: -160px 0 0 -160px;
-		z-index: 2;		
-		display: none;
-		width: 320px;	
-		height: 304px;								
+	.bd ul li{
+		height: 200px;
 	}
-	#downapp .bg{
-		position: absolute;
-		width: 100%;
-		box-shadow:0 0 10px #000;
-	}
-	#downapp .btn{
-		width: 100px;
-		position: absolute;
-		bottom: 11%;
-		right: 10%;
-	}
-	#downapp span{
-		position: absolute;
-		bottom: 15%;
-		left: 15%;
-		color: rgb(252,100,150);
-		font-weight: bold;
-		z-index: 3;
-	}
-	#downapp p{
-		position: absolute;
-		bottom: 15%;
-		right: 15%;
-		color: #fff;
-		font-weight: bold;
-	}
-	html,body{
-		height: 100%;
-	}
-	.bd{
-		height: 30%;
-	}
-	.bd img{height: 100%;}
+	.bd ul li img{height: 100%;}
 </style>
 
 <body>
@@ -214,7 +179,7 @@
 					<?php $pic_list = explode(';',$article_note['pic']); ?>
 					<?php foreach($pic_list as $pic){ ?>
 					<li>							
-						<img src="<?php echo $pic;?>" />
+						<img src="<?php echo $pic;?>"/>
 					</li>	
 					<?php } ?>
 				</ul>
@@ -255,7 +220,7 @@
 				<?php echo $article_note['description'];?>
 			</p>
 			<!--定位-->
-			<?php if(!empty($article_note['ddress'])){ ?>
+			<?php if(!empty($article_note['address'])){ ?>
 			<div style="margin: 3% 0;">
 				<img style="width: 15px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/location.png" />
 				<span style="color: #999;font-size: 10px;"><?php echo $article_note['ddress'];?></span>
@@ -314,7 +279,7 @@
 	<h3 style="height: 50px;"></h3>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
-			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" class="put_comment"/>
+			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment" class="put_comment"/>
 
 			<ul style="float: right;list-style: none;">
 				<li>
@@ -357,26 +322,6 @@
 		}
 		window.history.back(-1);
    	  })	
-    
-    
-    $(".put_comment").focus(function(){
-		//并且不让输入，不一定要用focus事件，反正wap不给评论，一评论就提示,引导下载
-		$("#downapp").show();
-		$(".iframe").show();
-	})
-	//点击下次下载，图片消失
-	$("#downapp span").on("click",function(){
-		$("#downapp").hide();
-		$(".iframe").hide();
-	})
-	
-	//点击立即下载，调用下载APP的方法
-	$("#downapp p").on("click",function(){
-		$("#downapp").hide();
-		$(".iframe").hide();
-		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
-	})
-
 	$(".wap_more").click(function(){
 		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'note')); ?>"
 		window.location.href = url;
