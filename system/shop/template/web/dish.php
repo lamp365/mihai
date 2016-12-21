@@ -184,14 +184,15 @@
 	 	   <div class="form-group form-inline vip-form">
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
 	 	   		<div class="col-sm-4">
-					  <select name="v2[]" class="form-control vip-select">
+					  <select name="v2[]" class="form-control vip-select" onchange='changeFun(this)'>
 					  		<option value="-1">--请选择--</option>
 					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
-                                   <option value='<?php echo $vip_list_value['id'] ?>' <?php echo $dish_vip_list_value['v2'] == $vip_list_value['id']?'selected':'';?> ><?php echo $vip_list_value['name']; ?></option>
+					  		<!-- //currency属性用来控制价格符号，1代表￥，2代表$ -->
+                                   <option currency="1" value='<?php echo $vip_list_value['id'] ?>' <?php echo $dish_vip_list_value['v2'] == $vip_list_value['id']?'selected':'';?> ><?php echo $vip_list_value['name']; ?></option>
 							<?php }} ?>
 					  </select>
-                                          <div class="input-group">
-                                          <span class="input-group-addon">$</span>
+                      <div class="input-group">
+                      <span class="input-group-addon">$</span>
 					  <input type="text" name="vip_price[]" class="form-control vip_price" value="<?php echo $dish_vip_list_value['vip_price']; ?>" placeholder="请输入价格"/>
 					  </div>
 				</div>
@@ -203,10 +204,10 @@
             <div class="form-group form-inline vip-form">
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
 	 	   		<div class="col-sm-4">
-					  <select name="v2[]" class="form-control">
+					  <select name="v2[]" class="form-control" onchange='changeFun(this)'>
 					  		<option value="-1">--请选择--</option>
 					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
-                                   <option value='<?php echo $vip_list_value['id'] ?>'><?php echo $vip_list_value['name']; ?></option>
+                                   <option currency="1" value='<?php echo $vip_list_value['id'] ?>'><?php echo $vip_list_value['name']; ?></option>
 							<?php }} ?>
 					  </select>
 					  <input type="text" name="vip_price[]" class="form-control vip_price" value="" placeholder="请输入价格"/>
@@ -223,6 +224,13 @@
 	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
 	 	   		<div class="col-sm-10">
 					<a href="javascript:void(0)" class="btn btn-primary addvip" name="button"><i class="icon-plus"></i>添加会员</a>
+				</div>
+
+	 	   </div>
+	 	   <div class="form-group">
+	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
+	 	   		<div class="col-sm-10">
+					说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明
 				</div>
 
 	 	   </div>
@@ -737,7 +745,16 @@ $("#timeprice").on("input propertychange",function(){
 	$("#show_commision").html("佣金："+ result + '元');
 })
 
+//批发价格修改下拉框值变化，修改对应的货币符号
 
+function changeFun(obj){
+	var currency_val = $(obj).find("option:selected").attr("currency");
+	if( currency_val ==1 ){
+		$(obj).siblings('.input-group').find(".input-group-addon").text("￥");
+	}else if( currency_val ==2 ){
+		$(obj).siblings('.input-group').find(".input-group-addon").text("$");
+	}
+}
 
     </script>
 <?php  include page('footer');?>

@@ -9,10 +9,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
-	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
-	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />
+	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
+	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
-	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script>
+<!-- 	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script> -->
 <style type="text/css">
 	*{
 		margin: 0;
@@ -27,8 +27,9 @@
 	}
 	.health-content .health-men .info{
 		float: left;
-		width: 75%;
+		width: 80%;
 		padding: 10px 0px 10px 10px;
+		box-sizing: border-box;
 	}
 	.health-content .health-men .info img{
 		width: 60px;
@@ -51,7 +52,7 @@
 		float: right;
 		width: 20%;
 		padding: 20px 0px 0px 0px;
-		margin-right: -10px;
+		box-sizing: border-box;
 	}
 	.health-content .health-men .attention span{
 		padding: 5px;
@@ -151,10 +152,31 @@
 	}
 	.content img{width: 100%;display: block;}
 	
-	
+	/*app下载页样式*/
+	.appdownload-hasfooter{position:fixed;left:0;z-index:999;bottom:45px;width:100%;display:block}
+	.appdownload-nofooter{position:fixed;left:0;z-index:999;bottom:0;width:100%;display:block}
+	#appdownload img{width: 100%;max-width: 100%;display: block;}
+	#appdownloadlink{
+		position: absolute;
+	    right: 0;
+	    top: 0;
+	    width: 28%;
+	    height: 100%;
+	}
+	#closeLoad{
+		position: absolute;
+	    left: 0;
+	    top: 0;
+	    width: 15%;
+	    height: 100%;
+	}
 </style>
 </head>
 <body>
+	<!-- openid 和 文章id的隐藏域 -->
+	<input type="hidden" class="openid" name="openid" value="<?php echo $_GP['openid'];?>">
+	<input type="hidden" class="articleid" name="articleid" value="<?php echo $_GP['id'];?>">
+	<input type="hidden" class="article_openid" name="article_openid" value="<?php echo $article['openid'];?>">
 	<!--遮罩层-->
 	<div style="width: 100%;height: 100%;position:fixed;background: #000;opacity: 0.5;z-index: 1;display: none;" class="iframe"></div>
 	<!--弹出框-->			
@@ -281,12 +303,13 @@
 </div>
 
 <?php if($notApp){ ?>
-<!--<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>-->
-<!--<script>
+
+<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>
+<script>
 	window.onload = function(){
 		appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
 	}
-</script>-->
+</script>
 <?php } ?>
 
 <script>
@@ -304,9 +327,7 @@
 		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'article')); ?>"
 		window.location.href = url;
 	})
-	$(".app_more").click(function(){
-		//需要正源写，跳到app的评论页显示更多
-	})
+
 	<?php if($notApp){ ?>
 		$(".content .item").click(function(){
 			var url = $(this).data('url');
@@ -316,19 +337,85 @@
 		$(".content .item").click(function(){
 			//需要正源写，跳到app的详情页
 			var id = $(this).data('id');
+			product_id_obj.product_id = id;
+			window.webkit.messageHandlers.mihaiapp.postMessage(product_id_obj);
 		})
 	<?php } ?>
+	//app判断是否登录
+	var openid_val         = $(".openid").val();
+	var articleid_val      = $(".articleid").val();
+	var article_openid_val = $(".article_openid").val();
+	var product_id_obj = {};
+	function isLogin(msg){
+		var ua = browserFun();
+		if( ua == "ios" ){
+			if( openid_val == "" ){
+				window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
+				return 'false';
+			}else{
+				return 'true';
+			}
+		}else if( ua=="android" ){
+
+		}
+	}
+	//判断iOS还是Android系统
+	function browserFun(){
+		var ua = navigator.userAgent.toLowerCase();
+		if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+			return 'ios';
+		}
+		if(navigator.userAgent.match(/android/i)){
+			return 'android';
+		}
+	}
 	
-</script>
-<script>		
+	function appMore(msg){
+		$(".app_more").click(function(){
+			//需要正源写，跳到app的评论页显示更多
+			window.webkit.messageHandlers.mihaiapp.postMessage({articleid:articleid_val});
+		})
+	}
+	appMore();
 	//关注的点击事件，wap
 	$(".wap_guanzhu").on("click",function(){
 		
 	})
 	//关注的点击事件，app
-	$(".app_guanzhu").on("click",function(){
-		//这里需要正源写 提交给app操作
-	})
+	function follow(msg){
+		$(".app_guanzhu").on("click",function(){
+			//这里需要正源写 提交给app操作
+			//先判断是否登录
+			var login = isLogin();
+			if( login == 'true' ){
+				var ua = browserFun();
+				if( ua == "ios" ){
+					var url = "<?php echo mobile_url('article',array('op'=>'guanzhu'));?>";
+					window.webkit.messageHandlers.mihaiapp.postMessage(openid_val);
+					$.post(url,{'openid':openid_val,'article_openid':article_openid_val},function(data){
+						if(data.errno != 200){
+							alert(data.message);
+						}else{
+							alert(data.message);
+						}
+					},'json');
+				}else if( ua=="android" ){
+
+				}
+
+			}else{
+
+			}
+			
+		})
+	}
+	follow();
+	//点击立即下载，调用下载APP的方法
+	$("#downapp p").on("click",function(){
+		$("#downapp").hide();
+		$(".iframe").hide();
+		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
+	})	
 </script>	
 <?php if($notApp){ ?>
 <?php include themePage('footer'); ?>

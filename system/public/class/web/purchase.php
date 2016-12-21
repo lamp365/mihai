@@ -2,7 +2,7 @@
 $settings=globaSetting();
 $is_login = is_vip_account();
 if ( $is_login ){
-    integration_session_account($loginid, $oldsessionid);
+    integration_session_account($loginid, $oldsessionid, $unionid);
     header("location:".create_url('mobile', array('name' => 'shopwap','do' => 'purchase_order')));
 }
 // 获取品牌数据
@@ -16,6 +16,7 @@ if (checksubmit("submit")) {
     }
     $member = get_vip_session_account();
     $oldsessionid = $member['openid'];
+    $unionid      = $member['unionid'];
     $loginid = vip_member_login($_GP['mobile'], $_GP['pwd']);
     if ($loginid == - 1) {
         message("账户已被禁用！");
@@ -26,7 +27,7 @@ if (checksubmit("submit")) {
     if (empty($loginid)) {
         message("用户名或密码错误");
     } else {
-        integration_session_account($loginid, $oldsessionid);
+        integration_session_account($loginid, $oldsessionid, $unionid);
         header("location:".create_url('mobile', array('name' => 'shopwap','do' => 'purchase_order')));
     }
 }		

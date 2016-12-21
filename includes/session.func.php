@@ -8,7 +8,7 @@ function create_sessionid()
     return '_t' . date("mdHis") . rand(10000000, 99999999);
 }
 
-function integration_session_account($loginid, $oldsessionid)
+function integration_session_account($loginid, $oldsessionid, $unionid='')
 {
     $member = mysqld_select("SELECT * FROM " . table('member') . " WHERE openid = :openid ", array(
         ':openid' => $loginid
@@ -108,15 +108,15 @@ function integration_session_account($loginid, $oldsessionid)
     }
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
         $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
-        if (! empty($weixinthirdlogin) && ! empty($weixinthirdlogin['id'])) {
-            $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
-                ':weixin_openid' => $oldsessionid
+        if (! empty($weixinthirdlogin) && ! empty($unionid)) {
+            $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE unionid=:unionid ", array(
+                ':unionid' => $unionid
             ));
             if (! empty($weixinfans['weixin_openid'])) {
                 mysqld_update('weixin_wxfans', array(
                     'openid' => $loginid
                 ), array(
-                    'weixin_openid' => $oldsessionid
+                    'unionid' => $unionid
                 ));
             }
         }
@@ -180,7 +180,8 @@ function get_session_account($useAccount = true, $mess_id = 0)
         $sessionAccount = $_SESSION[MOBILE_SESSION_ACCOUNT];
     } else {
         $sessionAccount = array(
-            'openid' => create_sessionid()
+            'openid' => create_sessionid(),
+            'unionid' => ''
         );
         $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
     }

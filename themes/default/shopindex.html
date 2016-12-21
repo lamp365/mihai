@@ -260,6 +260,7 @@ video {
 	z-index:1;
 }
 .hotPic .pic li{ position:absolute; display:none;}
+
 .hotPic .pic li img{ width:1920px; height:400px; display:block;}
 .nav-left{
 	position:absolute;
@@ -267,7 +268,7 @@ video {
     height: 68px;
     z-index: 3;
 	top:166px;
-	left:100px;
+	left:0;
 	cursor:pointer;
 	background:url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat center;
 	background-position:-1px -2px;
@@ -282,7 +283,7 @@ video {
     height: 68px;
     z-index: 22;	    
 	top:166px;
-	right:100px;
+	right:0;
 	cursor:pointer;
 	background:url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat center;
 	background-position:-45px -1px;
@@ -292,6 +293,9 @@ video {
 	background-position:-45px -87px;
 }
 .nav-box{
+	position: relative;
+	width: 850px;
+	margin: 0 auto;
 	display: none;
 }
 .hotPic:hover .nav-box{
@@ -308,9 +312,9 @@ video {
 		  <div class="hotPic">
 			<div class="num"></div>
 			<ul class="pic tempWrap">
-			    <!--@php  if(is_array($advs)) { foreach($advs as $adv) { @-->
-				<li>
-				     <a target="_blank" href="<!--@php echo $adv['link']; @-->"><img width="1920" height="400" data-original="<!--@php  echo $adv['thumb'];@-->" class="lazy_img" src="images/loading.gif" /></a>
+			    <!--@php  if(is_array($advs)) { $nu = 0; foreach($advs as $adv) {  $nu +=1 ; @-->
+				<li <!--@php if ($nu == 1) echo 'style="display:block;"'; @-->>
+				     <a target="_blank" href="<!--@php echo $adv['link']; @-->"><img width="1920" height="400" data-original="<!--@php  echo $adv['thumb'];@-->" class="lazy_img" src="images/banner_login.png" /></a>
 				</li>
 				<!--@php  } } @-->
 			</ul>
@@ -328,6 +332,7 @@ video {
 						skip_invisible : false
 					});
 					var sw = 0;
+
 					//自动开始
 					var myTime = setInterval(function(){
 					   myShow(sw)

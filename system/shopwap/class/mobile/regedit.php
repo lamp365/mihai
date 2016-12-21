@@ -102,11 +102,12 @@
 				}
 				
 				$member=get_session_account();
-					$oldsessionid=$member['openid'];
-					
+					$oldsessionid = $member['openid'];
+					$unionid      = $member['unionid'];
+
 				$loginid=save_member_login('',$openid);
 			
-					integration_session_account($loginid,$oldsessionid);
+					integration_session_account($loginid,$oldsessionid, $unionid);
 			  message('注册成功！', to_member_loginfromurl(), 'success');
 		}
 			$qqlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='qq'");

@@ -42,6 +42,32 @@
 			}
 			tosaveloginfrom();
 		}else if($op == 'guanzhu'){  //关注
+			$openid         = $_GP['openid'];
+			$article_openid = $_GP['article_openid'];
+			//是否已经关注过
+			$info = mysqld_select("select follow_id from ".table('follow')." where followed_openid={$article_openid} and follower_openid = {$openid}");
+			if(!empty($info)){
+				die(showAjaxMess('1002','你已经关注过'));
+			}
+			$data = array(
+				'followed_openid' => $article_openid,
+				'follower_openid' => $openid,
+				'createtime'      => time(),
+				'modifiedtime'    => time(),
+			);
+			mysqld_insert('follow',$data);
+			if($last_id = mysqld_insertid()){
+				//是否被对方关注过
+				$info = mysqld_select("select follow_id from ".table('follow')." where followed_openid={$openid} and follower_openid = {$article_openid}");
+				if(!empty($info)){
+					//更新为互相关注
+					mysqld_update('follow',array('mutual_attention'=>'1'),array('follow_id'=>$last_id));
+					mysqld_update('follow',array('mutual_attention'=>'1'),array('follow_id'=>$info['follow_id']));
+				}
+				die(showAjaxMess('200','关注成功！'));
+			}else{
+				die(showAjaxMess('1002','关注失败！'));
+			}
 
 		}else if($op == 'comment_list'){ //评论更多
 			$psize  =  5;

@@ -132,13 +132,14 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 $oauth2_code = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid . "&secret=" . $secret . "&code=" . $code . "&grant_type=authorization_code";
                 $content = http_get($oauth2_code);
                 $token = @json_decode($content, true);
-
                 if (empty($token) || ! is_array($token) || empty($token['access_token']) || empty($token['openid'])) {
                     message('获取微信公众号授权失败');
                     exit();
                 }
-                $from_user = $token['openid'];
-                
+                $from_user      = $token['openid'];
+                $unionid        = $token['unionid'];
+                $_GP['unionid'] = $token['unionid'];
+
                 $access_token = get_weixin_token();
                 $oauth2_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $from_user . "&lang=zh_CN";
                 
@@ -150,9 +151,28 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 } else {
                     $follow = 0;
                 }
-                $fans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
+
+                /**************等旧数据全部被更新完之后，这个部分可以去掉**************/
+                $fans_by_weixin_openid = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
                     ':weixin_openid' => $from_user
                 ));
+                if(!empty($fans_by_weixin_openid) && empty($fans_by_weixin_openid['unionid'])){
+                    //之前的旧数据，更新 unionid
+                    //旧数据的存在，app没办法得知，可能会再次插入一条数据，删除app的数据，更新旧数据
+                    mysqld_query("delete from ".table('weixin_wxfans')." where unionid={$unionid} and weixin_openid<>{$from_user}");
+                    //存在该记录， 但是没有unionid  则进行更新上对应的unionid
+                    mysqld_update('weixin_wxfans',array('unionid'=>$unionid),array('weixin_openid'=>$from_user));
+                }
+                /**************等旧数据全部被更新完之后，这个部分可以去掉**************/
+
+                $fans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE unionid=:unionid ", array(
+                    ':unionid' => $unionid
+                ));
+                if(!empty($fans) && $fans['weixin_openid'] != $from_user){
+                    //如果 该微信用户  之前存的   weixin_openid 跟现在的不一样，则说明是app端存的，更新为现在的weixin_openid
+                    mysqld_update('weixin_wxfans',array('weixin_openid'=> $from_user ),array('unionid'=>$unionid));
+                }
+
                 $gender = $info["gender"];
                 $nickname = $info["nickname"];
                 if (empty($fans) || empty($fans['weixin_openid']) || empty($fans["nickname"])) {
@@ -183,14 +203,15 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         'gender' => intval($gender),
                         'weixin_openid' => $from_user,
                         'avatar' => '',
-                        'createtime' => TIMESTAMP
+                        'createtime' => TIMESTAMP,
+                        'unionid' => $unionid
                     );
                     mysqld_insert('weixin_wxfans', $row);
                     if (! empty($info["headimgurl"])) {
                         mysqld_update('weixin_wxfans', array(
                             'avatar' => $info["headimgurl"]
                         ), array(
-                            'weixin_openid' => $from_user
+                            'unionid' => $unionid
                         ));
                     }
                 } else {
@@ -204,14 +225,14 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         $row['nickname'] = $nickname;
                     }
                     mysqld_update('weixin_wxfans', $row, array(
-                        'weixin_openid' => $from_user
+                        'unionid' => $unionid
                     ));
                     
                     if (! empty($info["headimgurl"])) {
                         mysqld_update('weixin_wxfans', array(
                             'avatar' => $info["headimgurl"]
                         ), array(
-                            'weixin_openid' => $from_user
+                            'unionid' => $unionid
                         ));
                     }
                 }
@@ -257,15 +278,15 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         ':weixin_openid' => $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']
                     ));
                     
-                    if (empty($weixinfans['weixin_openid'])) {
-                        if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                            if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
-                                unset($_SESSION[MOBILE_WEIXIN_OPENID]);
-                                unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
-                            }
+                if (empty($weixinfans['weixin_openid'])) {
+                    if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                        if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
+                            unset($_SESSION[MOBILE_WEIXIN_OPENID]);
+                            unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
                         }
                     }
                 }
+            }
                
                 if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
                     
@@ -277,7 +298,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                             $from_user = xoauth($appid, $secret);
                             $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
                             $sessionAccount = array(
-                                'openid' => $from_user
+                                'openid'  => $from_user,
+                                'unionid' => $_GP['unionid']
                             );
                             $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
                             return $from_user;
@@ -290,7 +312,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                             $from_user = xoauth($appid, $secret);
                             $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
                             $sessionAccount = array(
-                                'openid' => $from_user
+                                'openid'  => $from_user,
+                                'unionid' => $_GP['unionid']
                             );
                             $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
                             return $from_user;

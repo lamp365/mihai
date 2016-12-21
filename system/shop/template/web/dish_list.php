@@ -19,13 +19,6 @@
 		line-height: 34px;
    		text-align: right;
 	}
-/*	.modal-body{
-	    height: 200px;
-	    padding-top: 73px;
-	}*/
-/*	.modal-dialog{
-		width: 660px;
-	}*/
 	.modal-title{
 		text-align: center;
 	}
@@ -45,6 +38,13 @@
 	.wholesale-cogs{
 		position: absolute;
     	top: 41px;
+	}
+	.vip-form-desc{
+		text-align: left;
+	    margin: 0 auto;
+	    border-bottom: 1px dotted #ddd;
+	    margin-bottom: 15px;
+	    padding-bottom: 15px;
 	}
 </style>
 <h3 class="header smaller lighter blue">觅海全球购</h3> 
@@ -229,9 +229,9 @@
 							</div>
 
 				 	   </div>
-
 					</div>
 					<div class="modal-footer">
+						<div class='vip-form-desc'>currency属性用来控制价格符号，1代表￥，2代表$,描述描述</div>
 				        <button type="button" class="btn btn-primary btn-save">保存</button>
 					</div>
 				</div>
@@ -361,6 +361,7 @@
 		}
 		$(this).hide();
 	});
+
 	//获取批发价格下拉列表
 	$(".wholesale-cogs").on("click",function(){
 		$(".wholesale-modal").modal();
@@ -368,24 +369,36 @@
 		$(".ajax-id").val(id);
 		var option_html = "";
 		var get_html = "";
+		var currency_tap = "$";
 		$(".set-select").html("");
 		$.post("",{op:'ajax_get_vip',ajax_id:id},function(data){
 			if( data.errno==200 ){
+				//currency属性用来控制价格符号，1代表￥，2代表$
 				$.each(data.message.vip_list,function(n,value){
-					option_html += "<option value="+value.id+">"+value.name+"</option>"
+					option_html += "<option currency="+1+" value="+value.id+">"+value.name+"</option>"
 				});
 				$(".vip-form-area").html("");
 				if( data.message.vip_data!="" ){
 					$.each(data.message.vip_data,function(data_n,data_value){
+						if( data_value.currency ==1 ){
+							currency_tap = '￥';
+						}else if(data_value.currency ==2){
+							currency_tap = '$';
+						}
 						get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
-								"<select  class='form-control set-select' v2='"+data_value.v2+"'></select><div class='input-group'><span class='input-group-addon'>$</span>"+
+								"<select  class='form-control set-select' onchange='changeFun(this)' v2='"+data_value.v2+"'></select><div class='input-group'><span class='input-group-addon'>"+currency_tap+"</span>"+
 								"<input type='text'  class='form-control vip_price' value='"+data_value.vip_price+"' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
 								"class='btn btn-danger remove_vip' >移除</a></div></div>";						
 					});
 					$(".vip-form-area").html(get_html);
 				}else{
+					if( data_value.currency ==1 ){
+						currency_tap = '￥';
+					}else if(data_value.currency ==2){
+						currency_tap = '$';
+					}
 					get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
-								"<select  class='form-control set-select' vid=''></select><div class='input-group'><span class='input-group-addon'>$</span>"+
+								"<select  class='form-control set-select' vid='' onchange='changeFun(this)'></select><div class='input-group'><span class='input-group-addon'>"+currency_tap+"</span>"+
 								"<input type='text'  class='form-control vip_price' value='' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
 								"class='btn btn-danger remove_vip' >移除</a></div></div>";
 					$(".vip-form-area").html(get_html);
@@ -477,5 +490,16 @@
 	});
  }
 modify();
+
+//批发价格修改下拉框值变化，修改对应的货币符号
+
+function changeFun(obj){
+	var currency_val = $(".set-select option:selected").attr("currency");
+	if( currency_val ==1 ){
+		$(obj).siblings('.input-group').find(".input-group-addon").text("￥");
+	}else if( currency_val ==2 ){
+		$(obj).siblings('.input-group').find(".input-group-addon").text("$");
+	}
+}
 </script>
 <?php  include page('footer');?>

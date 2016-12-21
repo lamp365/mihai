@@ -159,7 +159,7 @@ body{
 
 /**批发商订单样式**/
 .wrap{
-	width: 1200px;
+	width: 1190px;
 	margin: 0 auto;
 	overflow: hidden;
 }
@@ -174,7 +174,7 @@ body{
 	line-height: 40px;
 }
 .wrap .main{
-	margin-left: 31px;
+	margin-left: 21px;
 	width: 1008px;
 	float: left;
 	padding-bottom:20px;
@@ -243,13 +243,20 @@ body{
 	height: 33px;
 	padding-left: 2px;
 }
-.tab-div-select input,.tab-div-select select{
+.tab-div-select input{
 	width: 158px;
 	padding: 4px 0;
 	margin-bottom: 15px;
 	border-radius: 3px;
 	border:1px solid #ccc;
 	font-weight: 400;
+}
+.tab-div-select select{
+    width: 158px;
+    padding: 4px 0;
+    margin-bottom: 15px;
+
+    font-weight: 400;
 }
 .product-number{margin-right: 11px;height: 33px;box-sizing: border-box;}
 .tab-div-select select{
@@ -594,19 +601,7 @@ input[name="payment"]{
 	margin-top: 50px;
 	    box-sizing: border-box;
 }
-select::-ms-expand { display: none; } 
-select {
-  /*统一边框*/
-  border: solid 1px #000;
-  /*将默认的select选择框样式清除*/
-  appearance:none;
-  -moz-appearance:none;
-  -webkit-appearance:none;
-  -ms-appearance:none;
-  background: url("../images/arrow.png") no-repeat scroll right center transparent;
-  background:#fff\0;
-  padding-right: 14px;
-}
+
 
 .default_address{
 	display: block!important;

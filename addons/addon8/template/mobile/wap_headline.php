@@ -253,7 +253,12 @@
 	<?php include themePage('footer'); ?>	
 	
 </body>
-
+<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>
+<script>
+	window.onload = function(){
+		appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
+	}
+</script>
 <script>
 	
 	$("#return").click(function(){
@@ -271,5 +276,11 @@
 		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'headline')); ?>"
 		window.location.href = url;
 	})
+	//点击立即下载，调用下载APP的方法
+	$("#downapp p").on("click",function(){
+		$("#downapp").hide();
+		$(".iframe").hide();
+		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
+	})	
 </script>
 </html>

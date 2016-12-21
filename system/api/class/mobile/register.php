@@ -74,10 +74,11 @@
 			
 				$member = get_session_account ();
 				$oldsessionid = $member ['openid'];
-			
+				$unionid      = $member ['unionid'];
+
 				$loginid = save_member_login ( '', $openid );
 			
-				integration_session_account ( $loginid, $oldsessionid );
+				integration_session_account ( $loginid, $oldsessionid ,$unionid);
 
 				if (extension_loaded('Memcached')) {
 					$mcache = new Mcache();

@@ -1,7 +1,8 @@
 <?php
 $is_login = is_login_account();
 if ( $is_login ){
-    integration_session_account($loginid, $oldsessionid);
+    //加入 $unionid 只为了微信绑定平台用户所做的
+    integration_session_account($loginid, $oldsessionid,$unionid);
     header("location:" . to_member_loginfromurl());
 }
 if (checksubmit("submit")) {
@@ -13,6 +14,7 @@ if (checksubmit("submit")) {
     }
     $member = get_session_account();
     $oldsessionid = $member['openid'];
+    $unionid      = $member['unionid'];
     $loginid = member_login($_GP['mobile'], $_GP['pwd']);
     if ($loginid == - 1) {
         message("账户已被禁用！");
@@ -20,7 +22,7 @@ if (checksubmit("submit")) {
     if (empty($loginid)) {
         message("用户名或密码错误");
     } else {
-        integration_session_account($loginid, $oldsessionid);
+        integration_session_account($loginid, $oldsessionid,$unionid);
         header("location:" . to_member_loginfromurl());
     }
 }
