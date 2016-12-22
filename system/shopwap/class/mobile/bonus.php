@@ -7,24 +7,48 @@ $op = $_GP['op'];
 if ( $op == 'get' ){
    $id = intval($_GP['id']);
    if ( empty( $id ) ){
-       message('当前优惠卷领取地址有误');
+	   //由于app嵌套了自定义活动页 活动页里有领取优惠券的操作，需要用ajax操作，不能跳转操作，故才加的
+	   if(empty($_GP['showajax'])){
+		   message('当前优惠卷领取地址有误');
+	   }else{
+		   die(showAjaxMess(1002,'当前优惠卷领取地址有误'));
+	   }
+
    }
    // 找到优惠卷的信息 send_start_date 	send_end_date
    $bonus = mysqld_select("SELECT * FROM " . table('bonus_type')." where type_id='".$id."' and deleted = 0 ");
    //and send_start_date <= " .time(). " and send_end_date > ".time()
    if ( !$bonus ){
-      message('当前优惠卷已失效');
+	   if(empty($_GP['showajax'])) {
+		   message('当前优惠卷已失效');
+	   }else{
+		   die(showAjaxMess(1002,'当前优惠卷已失效'));
+	   }
    }
    if ( $bonus['send_start_date'] > time() ){
-      message('该优惠券还未开抢');
+	   if(empty($_GP['showajax'])) {
+		   message('该优惠券还未开抢');
+	   }else{
+		   die(showAjaxMess(1002,'该优惠券还未开抢'));
+	   }
    }
+
    if ( $bonus['send_end_date'] < time() ){
-      message('该优惠券已被抢光，您可以关注一下其他优惠哦！');
+	   if(empty($_GP['showajax'])) {
+		   message('该优惠券已被抢光，您可以关注一下其他优惠哦！');
+	   }else{
+		   die(showAjaxMess(1002,'该优惠券已被抢光'));
+	   }
+
    }
    if ( $bonus['send_max'] > 0 ){
         $user_had = mysqld_selectcolumn("SELECT count(*) FROM " .table('bonus_user'). " WHERE openid = :openid and bonus_type_id = :bonus_type_id ", array(":bonus_type_id"=>$id, ":openid"=> $openid));
 		if ( $user_had > $bonus['send_max']){
-            message('您已领取过该优惠券了，快去选购喜欢的宝贝吧！');
+			if(empty($_GP['showajax'])) {
+				message('您已领取过该优惠券了，快去选购喜欢的宝贝吧！');
+			}else{
+				die(showAjaxMess(1002,'您已领取过该优惠券了'));
+			}
 		}
    }
    	if(!empty($openid)){
@@ -42,7 +66,12 @@ if ( $op == 'get' ){
 						'isuse'=>0,
 						'bonus_type_id'=>$id);
 		   mysqld_insert('bonus_user',$data);
-		   message("恭喜，领取成功","refresh","success");
+			if(empty($_GP['showajax'])) {
+				message("恭喜，领取成功","refresh","success");
+			}else{
+				die(showAjaxMess(200,'恭喜，领取成功'));
+			}
+
    }
    exit;
 }

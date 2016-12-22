@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">
+		<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
+		<title>应聘者信息录入</title>
+	</head>
+	<style>
+		*{margin: 0;padding: 0;}
+		html,body{height: 100%;}
+		h3{
+			
+			font-weight: bold;
+			padding-left: 15%;
+			margin-bottom: 40px;
+					
+		}	
+		label{			
+			margin-top: 25px;
+			width: 100px;
+			text-align: right;
+			font-weight: normal;
+		}
+		.col-sm-9{
+			display: inline-block;
+			width: 240px;
+			margin-top: 20px;
+		}
+		.form-control{
+			display: inline-block;
+		}
+		
+	</style>
+	<body>
+		
+		<h3>应聘者信息录入:</h3>
+		<form action="  " method="post" role="form">
+			<label for="" class="col-sm-3 control-label">姓名：</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" id="realname" placeholder="请输入应聘者姓名">
+			</div>
+			
+			<label for="" class="col-sm-3 control-label">应聘岗位：</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" id="postion" placeholder="请输入应聘岗位">
+			</div>
+			
+			<label for="" class="col-sm-3 control-label">联系电话：</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" id="mobile" placeholder="请输入应聘者电话">
+			</div>
+			
+			<label for="" class="col-sm-3 control-label">工作经验：</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" id="experience" placeholder="请输入工作经验">
+			</div>
+			
+			<label for="" class="col-sm-3 control-label">面试结果：</label>
+			<div class="col-sm-9">
+				<select name="" value="" class="form-control" id="result">
+					<option value="0">等待结果</option>
+					<option value="1">录用</option>
+					<option value="2">未录用</option>
+				</select>
+			</div>
+			
+			<label for="" class="col-sm-3 control-label"> </label>
+			<div class="col-sm-9">
+				
+			</div>
+			
+			<label for="" class="col-sm-3 control-label"> </label>
+			<div class="col-sm-9" style="margin-left: 5%;margin-top: 50px;">
+				<input style="background:#eee;" type="submit" class="form-control" id="">
+			</div>
+		</form>
+	</body>
+	
+	<script>
+		//获取面试结果的值
+		$("#result").change(function(){
+			var result = $('#result').val();			
+		})
+	</script>
+</html>

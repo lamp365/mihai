@@ -18,6 +18,7 @@
     <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="__RESOURCE__/recouse/share/css/share.min.css">
     <link rel="stylesheet" href="__RESOURCE__/openshop/css/openshop.css">
+    <link rel="stylesheet" href="__RESOURCE__/recouse/css/todownapp.css">
     <script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
     <script src="__RESOURCE__/recouse/js/jquery.json.js" type="text/javascript"></script>
     <script type="text/javascript" src="__RESOURCE__/recouse/js/common.js"></script>
@@ -631,6 +632,10 @@
 
         //加入购物车
         $("#add_gouwuche").click(function(){
+            var shop_type = "<!--@php echo $goods['type']; @-->";
+            if(!checkIsCanBuy(shop_type)){
+                return ;
+            }
             var url = "<!--@php  echo mobile_url('mycart',array('op'=>'add','id'=>$goods['id']),true);@-->" +"&optionid=" + $("#optionid").val() + "&total=1";
             if($("#accesskey").val() != '' ){
                 url = url + "&accesskey="+$("#accesskey").val();
@@ -655,6 +660,10 @@
         })
 
         $(".liji_buy").click(function(){
+            var shop_type = "<!--@php echo $goods['type']; @-->";
+            if(!checkIsCanBuy(shop_type)){
+                return ;
+            }
             var height = $(document.body).height() + $(window).scrollTop();
             $("#slidemain").css('height',height);
             $("#slidemain").fadeIn(500);
@@ -842,6 +851,16 @@
             $("html,body").animate({scrollTop: 0},"slow");
         })
     })
+
+
+    function checkIsCanBuy(shop_type){
+        if(shop_type != 0){
+            //弹窗 提示下载
+            tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",2);
+            return false;
+        }
+        return true;
+    }
 </script>
 </body>
 </html>

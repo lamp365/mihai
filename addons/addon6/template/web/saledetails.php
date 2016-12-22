@@ -25,9 +25,9 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 <h4 class="sub-title">起始日期：<input name="start_time" id="start_time" type="text" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
 ， 终止日期：<input name="end_time" id="end_time" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
 &nbsp;&nbsp;&nbsp;<span>
-						<span style="vertical-align: middle;">按食堂筛选：</span>
+						<span style="vertical-align: middle;display: none;">按食堂筛选：</span>
 						<span >
-			<select style="margin-right:15px;font-size:14px;" id="mess" name="mess" >
+			<select style="margin-right:15px;font-size:14px;display: none;" id="mess" name="mess" >
 		 <option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
 				<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
                  <option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>

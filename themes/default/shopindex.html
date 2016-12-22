@@ -12,6 +12,9 @@
 <link rel="shortcut icon" href="favicon.ico"/>
 <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 <link rel="shortcut icon" href="favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/PingFang-font.css"/>
+<!--引入首页觅海头条，笔记的样式文件-->
+<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/community.css" />
 <script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
 <style type='text/css'>
 
@@ -39,7 +42,7 @@
     z-index: 999;
     text-align: center;
     background: #333;
-    background: rgba(51,51,51,0.82);
+    background: rgba(51,51,51,0.82);   
 }
 
 .bonus_new_memeber .bonus_close{
@@ -96,9 +99,9 @@ video {
 	width: 50%;
 }
 
-/*觅海头条*/
+/*健康文化*/
 .mhnews{padding: 10px 0;margin-top: 40px;}
-.mhnews .mhheadline{
+ .mhheadline{
 	width: 969px;
 	height: 35px;
 	overflow: hidden;
@@ -306,6 +309,41 @@ video {
 </head>
 <body>
     <!--@php  include page('header');@-->	
+    
+   <!--左侧楼梯-->
+   <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/floor.css" />
+   <div id="floor">
+		<ul>
+			<li><a href="JavaScript:void(0);" class="activ" data-id="1">健康文化</a> </li>
+			<li><a href="JavaScript:void(0);" class="activ" data-id="2">觅海头条</a> </li>
+			<li><a href="JavaScript:void(0);" class="activ" data-id="3">精选笔记</a> </li>
+			<li><a href="JavaScript:void(0);" class="activ" data-id="4">今日限购</a> </li>
+			<li><a href="JavaScript:void(0);" class="activ" data-id="5">热门品牌</a> </li>					
+		</ul>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			//滚动到指定模块
+			$("#floor ul li").click(function(){
+				var _index = parseInt($(this).find("a").attr("data-id"));				
+				var _top = $(".louti"+_index).offset().top;				
+				$("body,html").stop().animate({scrollTop:_top},500);
+			})			
+			var sc=$(document);//得到document文档对象。			
+			window.onscroll = function(){
+				 //获取滚动元素对应的索引			
+				 var index=Math.floor(sc.scrollTop()/600);
+				if(sc.scrollTop()>=500){
+					$("#floor").fadeIn();
+				}else{
+					$("#floor").fadeOut();
+				}				
+				
+				$("#floor ul li").eq(index).siblings().find("a").removeClass("activ");
+				$("#floor ul li").eq(index).find("a").addClass("activ");
+			}			
+		})
+	</script>
 	<script> index = 1;</script>
 	<div class="viewport" style="width:100%;height:400px;">
 		<div id="focus" class="indexPicBox focus slider">
@@ -466,13 +504,13 @@ video {
 		</div>
 	</div>
    
-   <!--觅海头条-->
-    <div class="viewport mhnews">
+   <!--健康文化-->
+    <div class="viewport mhnews louti1">
     	<div class="mhheadline"> </div>
     	<!--每个头条，一行显示4个-->
     	<div class="per-mhnews">    		 
     		<ul>    			
-    		<!--@php if (is_array($article_middle)){ foreach ($article_middle as $val){ @-->
+    		<!--@php if (is_array($article_healty)){ foreach ($article_healty as $val){ @-->
     			<li>
     				<a target="_blank" href="<!--@php  echo mobile_url('article',array('name'=>'addon8','id'=>$val['id']))@-->">
     					<!--文章图片-->
@@ -496,8 +534,113 @@ video {
     		</ul>
     	</div>
     	<div class="seemore">
-    		<a target="_blank" href="<!--@php  echo mobile_url('article_list',array('name'=>'addon8'))@-->">查看更多</a>    		
+    		<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'healty'))?>">查看更多</a>    		
     	</div>
+    </div>
+    <!--觅海头条-->  
+   <script src="__RESOURCE__/recouse/js/swiper-3.4.0.jquery.min.js" type="text/javascript" charset="utf-8"></script>
+   <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/swiper-3.4.0.min.css"/>
+   <div class="viewport louti2" style="border-bottom: solid 1px #eee;margin: 50px auto;">
+    	<!--头条模块图-->
+    	<div class="mhimg">
+    		<img src="__RESOURCE__/recouse/images/mhheadl.png"/>
+    	</div>
+    	<!--右侧的滚动的文章列表-->
+    	<div class="newslist swiper-container">
+    		<div class="swiper-wrapper">
+    			<!--一个slide是一个文章标题-->
+				<!--@php if (is_array($article_headline)){ foreach ($article_headline as $val){ @-->
+		        <div class="swiper-slide">
+					<!--@php if(empty($val['avatar'])){ @-->
+					<img src="__RESOURCE__/recouse/images/userface.png"/>
+					<!--@php }else{ @-->
+					<img src="<!--@php  echo $val['avatar']@-->"/>
+					<!--@php } @-->
+		        	<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline','id'=>$val['headline_id']))?>">
+						<!--@php  echo $val['title'];@-->
+					</a>
+		        </div>
+				<!--@php }}@-->
+			</div>
+    	</div>
+    	<div class="notemore">
+    		<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline'))?>">查看更多</a>
+    	</div>
+   </div>
+   <!--滚动控制-->
+   <script>        
+	  var mySwiper = new Swiper ('.swiper-container', {
+	    direction: 'vertical',
+	    loop: true,
+	    autoplay:2000,
+	    slidesPerView :3,   	    
+	  })        
+  </script>
+    <!--晒物笔记-->
+    <div class="viewport louti3">
+    	<!--笔记模块图-->
+    	<div class="mhheadline noteimg" style="background: url(__RESOURCE__/recouse/images/note.png) no-repeat;"> </div>
+    	<!--笔记列表，默认出两行，第二行的最后一个只显示图片，用来点击显示更多笔记，显示更多笔记不用跳转新页面-->
+    	<div class="notelist">
+    		<ul>
+				<!--@php if(!empty($article_note)){  $j=0; foreach($article_note as $val){ $j++; @-->
+					<!--@php  if($j == 8){ @-->
+						<!--最后一个笔记-->
+						<li>
+							<!--笔记图片-->
+							<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>" class="notepic">
+								<?php $pic = explode(';',$val['pic']); ?>
+								<img src="<?php echo download_pic($pic[0],180); ?>"/>
+							</a>
+							<!--查看更多-->
+							<div class="lookmore">
+								<div>
+									<span></span>
+									<span></span>
+									<span></span>
+								</div>
+								<p>查看更多笔记</p>
+							</div>
+						</li>
+					<!--@php  }else{ @-->
+						<li>
+							<!--笔记图片-->
+							<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>" class="notepic">
+								<?php $pic = explode(';',$val['pic']); ?>
+								<img src="<?php echo download_pic($pic[0],180); ?>"/>
+							</a>
+							<!--图片下面的东西-->
+							<div class="noteinfo">
+								<!--笔记详情-->
+								<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>">
+									<p>
+										<!--@php echo  msubstr($val['description'],0,100); @-->
+									</p>
+								</a>
+								<!--头像，用户名-->
+								<div>
+									<!--@php if(empty($val['avatar'])){  @-->
+									<img src="__RESOURCE__/recouse/images/icon2.png" />
+									<!--@php }else{ @-->
+									<img src="<!--@php echo $val['avatar']; @-->" alt="">
+									<!--@php } @-->
+									<h3><!--@php echo $val['nickname']; @--></h3>
+								</div>
+							</div>
+						</li>
+					<!--@php  } @-->
+
+				<!--@php }} @-->
+
+    		</ul>    		
+    	</div>
+    	<script>
+    		//点击查看更多笔记，直接在当前页出现隐藏的笔记，点击一次出三行
+    		$(".lookmore").click(function(){
+    			var url = "<!--@php echo mobile_url('article_list',array('op'=>'note','name'=>'addon8'));@-->";
+				window.location.href = url;
+    		})
+    	</script>
     </div>
     
 	<script type="text/javascript">
@@ -508,7 +651,7 @@ video {
 		rightNavShow(1);
 	})
 	</script>
-    <div class="viewport">
+    <div class="viewport louti4">
 	    <div class="m-productfloor">
 		    <script>
                  function countDown(time,id){
@@ -600,7 +743,7 @@ video {
     		</div>
     	</div>
     	<!--热门品牌-->
-    	<div class="m-productfloor">
+    	<div class="m-productfloor louti5">
     		<div class="w-tit1 w-tit1-1 clearfix">
     			 <h2 class="tit"><span class="big">热门品牌</span></h2>
     			 <ul class="w-taglist clearfix">

@@ -229,7 +229,7 @@
 				
 			default:			//身份证列表
 				
-				$arrIdentity = mysqld_selectall("SELECT identity_id,identity_number,identity_name,identity_front_image,identity_back_image,isdefault FROM " . table('member_identity') . " WHERE openid = :openid", array(':openid' => $openid));
+				$arrIdentity = mysqld_selectall("SELECT identity_id,identity_number,identity_name,identity_front_image,identity_back_image,isdefault FROM " . table('member_identity') . " WHERE openid = :openid and status=0 ", array(':openid' => $openid));
 
 				$result['data']['identity'] = $arrIdentity;
 				$result['code'] 	= 1;

@@ -11,8 +11,7 @@
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
-	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />	
-	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script>
+	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />
 </head>
 
 <style type="text/css">
@@ -120,18 +119,6 @@
 
 <body>
 	
-	<!--遮罩层-->
-	<div style="width: 100%;height: 100%;position:fixed;background: #000;opacity: 0.5;z-index: 1;display: none;" class="iframe"></div>
-	<!--弹出框-->			
-	<div id="downapp">
-		<span>下次下载</span>	
-		<!--背景-->
-		<img class="bg" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp.png" /> 
-		<!--立即下载--> 	
-		<img  class="btn" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp-btn2x.png" />
-		<p>立即下载</p>
-	</div>	
-	
 	<!--头部-->	
 	 <div class="top_header">
 	    <div class="header_left return">
@@ -158,7 +145,7 @@
 			</div>
 			<!--关注按钮-->
 			<div class="attention">
-				<span class="guanzhu put_comment">+关注</span>
+				<span class="guanzhu wap_guanzhu">+关注</span>
 			</div>
 		</div>
 		<!--文章内容-->
@@ -233,7 +220,7 @@
 		<h3 style="height: 50px;"></h3>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
-			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment" class="put_comment"/>
+			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" class="wap_guanzhu"/>
 
 			<ul style="float: right;list-style: none;">
 				<li>
@@ -243,7 +230,7 @@
 				</li>
 				
 				<li>
-					<a href="javascript:;" class="put_comment">
+					<a href="javascript:;" class="wap_guanzhu">
 						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/clle@2x.png" />
 					</a>
 				</li>
@@ -276,11 +263,8 @@
 		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'headline')); ?>"
 		window.location.href = url;
 	})
-	//点击立即下载，调用下载APP的方法
-	$("#downapp p").on("click",function(){
-		$("#downapp").hide();
-		$(".iframe").hide();
-		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
-	})	
+	$(".wap_guanzhu").click(function(){
+		tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
+	})
 </script>
 </html>

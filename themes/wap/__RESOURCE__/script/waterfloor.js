@@ -74,7 +74,7 @@
 						
 				}
 				//为了首页的晒物笔记的外层有高度
-				var boxheight = $(".category-container").eq(2).prop("scrollHeight")-20 || $(".mhnews-wap").prop("scrollHeight");			
+				var boxheight = $(".category-container:last-child").prop("scrollHeight")-400 || $(".mhnews-wap").prop("scrollHeight");			
 				window.setTimeout(function(){$("#wrap").css({"height":boxheight+"px"})},500);						 
 			}		
 			

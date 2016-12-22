@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 	<style>
 		i{
-			color: red;
+			//color: red;
 			font-weight: bolder;
 		}
 	</style>

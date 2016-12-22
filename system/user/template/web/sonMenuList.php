@@ -2,7 +2,7 @@
 <h3 class="header smaller lighter blue" style="display: inline-block;margin-right: 15px;">【<?php echo $parentInfo['moddescription']; ?>】子菜单节点</h3>
 <a href="<?php echo web_url('user',array('op'=>'menu','act'=>'post','parent_id'=>$parentInfo['id']))?>" class="btn btn-primary">添加菜单</a>
 &nbsp;&nbsp;<span class="btn btn-danger delete_menu">&nbsp;删&nbsp;除&nbsp;</span> &nbsp;&nbsp;
-<a class="btn btn-info" href="<?php echo web_url('user',array('do'=>'user','op'=>'menu')); ?>">&nbsp;返&nbsp;回&nbsp;</a>
+<a class="btn btn-info" href="<?php echo web_url('user',array('do'=>'user','op'=>'menudisplay')); ?>">&nbsp;返&nbsp;回&nbsp;</a>
 <table class="table table-striped table-bordered table-hover" style="margin-top: 15px;;">
     <thead >
     <tr>

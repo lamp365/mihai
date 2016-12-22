@@ -15,6 +15,20 @@ if ($op == 'token'){
 			 'optionid'=>$_GP['optionid'],
 			 'seller_openid'=>$seller_openid,
      );
+    $table= array(
+        'table'=>'shop_dish',
+        'where' => 'a.id = '.$_GP['id']
+    );
+    $goods_shop = get_good($table);
+    if (empty($goods_shop)) {
+        $result = array('result' => 1002,'message'=>'抱歉，该商品不存在或是已经被删除！');
+        die(json_encode($result));
+    }
+    if ($goods_shop['type'] != 0 && is_mobile_request()) {
+        $result = array('result' => 1002,'message'=>'此活动商品必须下载APP才能购买！');
+        die(json_encode($result));
+    }
+
 	 $cookie = new LtCookie();
 	 $cookie->setCookie('goods',$goods,time()+3600*2);  //暂时2个小时
 	 $result = array(
@@ -36,6 +50,10 @@ if ($op == 'add') {
     $goods = get_good($table);
     if (empty($goods)) {
         $result['message'] = '抱歉，该商品不存在或是已经被删除！';
+        message($result, '', 'ajax');
+    }
+    if ($goods['type'] != 0 && is_mobile_request()) {
+        $result['message'] = '此活动商品必须下载APP才能购买！';
         message($result, '', 'ajax');
     }
 	$carttotal = $this->getCartTotal($goodsid);

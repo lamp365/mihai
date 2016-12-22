@@ -75,22 +75,22 @@ if ($operation == 'display') {
 
 	if($status == -2){ //退款
 		$sql    = "SELECT A.* FROM " . table('shop_order') . " A  left join ". table('shop_order_goods')." as C on A.id=C.orderid WHERE  {$condition} and C.type=3 and C.status in (1,2) group by A.id ORDER BY  A.createtime DESC ".$selectCondition;
-		$sqlNum = "SELECT COUNT(A.id) FROM " . table('shop_order') . " A  left join ". table('shop_order_goods')." as C on A.id=C.orderid WHERE  {$condition} and C.type=3 and C.status in (1,2) group by A.id";
+		$sqlNum = "SELECT COUNT(distinct A.id) FROM " . table('shop_order') . " A  left join ". table('shop_order_goods')." as C on A.id=C.orderid WHERE  {$condition} and C.type=3 and C.status in (1,2)";
 	}else if($status == -4){  //退货
 		$sql   = "SELECT A.* FROM " . table('shop_order') . " A  left join ". table('shop_order_goods')." as C on A.id=C.orderid WHERE  {$condition} and C.type=1 and C.status in (1,2,3) group by A.id ORDER BY  A.createtime DESC ".$selectCondition;
-		$sqlNum = "SELECT COUNT(A.id) FROM " . table('shop_order') . " A  left join ". table('shop_order_goods')." as C on A.id=C.orderid WHERE  {$condition} and C.type=1 and C.status in (1,2,3) group by A.id";
+		$sqlNum = "SELECT COUNT(distinct A.id) FROM " . table('shop_order') . " A  left join ". table('shop_order_goods')." as C on A.id=C.orderid WHERE  {$condition} and C.type=1 and C.status in (1,2,3)";
 	}else if($status == 34){  //退款完成
 		$sql    = "SELECT A.* from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=3 and B.status=4 group by A.id ORDER BY  A.createtime DESC ".$selectCondition;
-		$sqlNum = "SELECT COUNT(A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=3 and B.status=4 group by A.id";
+		$sqlNum = "SELECT COUNT(distinct A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=3 and B.status=4";
 	}else if($status == 14){  //退货完成
 		$sql    = "SELECT A.* from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=1 and B.status=4 group by A.id ORDER BY  A.createtime DESC ".$selectCondition;
-		$sqlNum = "SELECT COUNT(A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=1 and B.status=4 group by A.id";
+		$sqlNum = "SELECT COUNT(distinct A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=1 and B.status=4";
 	}else if($status == -321){  //退款关闭
 		$sql    = "SELECT A.* from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=3 and B.status in (-1,-2) group by A.id ORDER BY  A.createtime DESC ".$selectCondition;
-		$sqlNum = "SELECT COUNT(A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=3 and B.status in (-1,-2) group by A.id";
+		$sqlNum = "SELECT COUNT(distinct A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=3 and B.status in (-1,-2)";
 	}else if($status == -121){  //退货关闭
 		$sql    = "SELECT A.* from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where  {$condition} AND B.type=1 and B.status in (-1,-2) group by A.id ORDER BY  A.createtime DESC ".$selectCondition;
-		$sqlNum = "SELECT COUNT(A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where {$condition} AND B.type=1 and B.status in (-1,-2) group by A.id";
+		$sqlNum = "SELECT COUNT(distinct A.id) from ". table('shop_order') ." as A left join ". table('shop_order_goods'). " as B on A.id=B.orderid where {$condition} AND B.type=1 and B.status in (-1,-2)";
 	}else{
 		$sql    = "SELECT A.* FROM " . table('shop_order') . " A  WHERE  {$condition} ORDER BY  A.createtime DESC ".$selectCondition;
 		$sqlNum = 'SELECT COUNT(A.id) FROM ' . table('shop_order') . " A WHERE  {$condition}";
@@ -105,18 +105,11 @@ if ($operation == 'display') {
 		$list       = $listArr['list'];
 		$remove_num = $listArr['remove_num'];
 	}
+
 	$total = mysqld_selectcolumn($sqlNum);
 	$total -= $remove_num;
 	$pager = pagination($total, $pindex, $psize);
 	foreach ( $list as $id => $item) {
-		/***************   这两个估计没用  可以先注释，以后确定可以删除
-		$member = mysqld_select("SELECT istemplate,mess_id from " . table('member') . " where  openid=:openid ",array(':openid' => $item['openid']));
-		$mess_name = mysqld_selectcolumn("SELECT title from " . table('shop_mess') . " where  id= ".$member['mess_id']);
-		 * *********/
-		/******************  关联三张表没必要，修改为两张表做关联
-		 * $goods = mysqld_selectall("SELECT g.*,h.marketprice as dishprice,h.pcate,o.total,o.aid,g.type,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
-			. " left join ". table('shop_dish'). " h on o.shopgoodsid = h.gid  WHERE o.orderid='{$item['id']}'");
-		***************/
 		$sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
 		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid,h.draw from ".table('shop_order_goods')." as o ";
 		$sql .= " left join ".table('shop_dish')." as h ";

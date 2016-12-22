@@ -97,3 +97,30 @@ function get_article_member($item){
     }
     return $item;
 }
+
+/**
+ * @param $type  文章类型
+ * @return array
+ * 用于首页展示文章
+ */
+function getIndexArticle($type){
+    switch($type){
+        case 'healty':
+            $sql = "SELECT * FROM ".table('addon8_article')." where state =6 and (iscommend = 1 or ishot = 1) order by displayorder desc,id desc limit 4";
+            break;
+        case 'note':
+            $sql = "SELECT * FROM ".table('note')." order by isrecommand desc,note_id desc limit 8";
+            break;
+        case 'headline':
+            $sql= "SELECT * FROM ".table('headline')."  order by isrecommand desc,headline_id desc limit 8";
+            break;
+    }
+    $article = mysqld_selectall($sql);
+    //获取用户头像
+    if(!empty($article)){
+        foreach($article as $key => $val){
+            $article[$key] = get_article_member($val);
+        }
+    }
+    return $article;
+}

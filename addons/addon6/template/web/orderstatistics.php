@@ -16,7 +16,27 @@ display: none;
 background-color: #f6faf1;
 width: 100%;
 }
-	
+	.sub-search-list tr{
+		background-color: #f9f9f9;
+		border-top: 1px solid #ddd;
+	}
+	.sub-search-list td{
+		border: 1px solid #ddd;
+	}
+	.sub-search-list li{
+		margin-top:3px;
+		float: left;
+		margin-right: 10px;
+		list-style: none;
+	}
+	.sub-search-list li select{
+		height:26px;
+	}
+	.sub-search-list li span{
+		display: inline-block;
+		height:24px;
+		line-height: 24px;
+	}
 	</style>
 	<script>
 		$(function(){
@@ -42,69 +62,57 @@ width: 100%;
 		</div>
 		
 		<form action="">
-								<input type="hidden" name="mod" value="site" />
-				<input type="hidden" name="name" value="addon6" />
-				<input type="hidden" name="do" value="orderstatistics" />
-				<table class="table sub-search">
-					<tbody>
-						<tr>
-							<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">会员名：</td>
-			<td style="width:120px">
-	<input name="realname" type="text"  class="span3" value="<?php  echo $realname;?>">
-			</td>	
-			<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">收货人：</td>
-			<td style="width:120px">
-			<input name="addressname" type="text"  class="span3" value="<?php  echo $addressname;?>">
-			</td>
-			<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">订单号：</td>
-			<td width="150">
-			<input name="ordersn" type="text"  class="span3" value="<?php  echo $ordersn;?>">
-			</td>
-			<td></td>
-						</tr>
-						
-						<tr>
-							<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">起始日期：</td>
-			<td style="width:100px">
-				
-				<input name="start_time" id="start_time" type="text" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
-
-
-			</td>	
-			<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">终止日期：</td>
-			<td>
-	
-						<input name="end_time" id="end_time" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
-
-			</td>
-			<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">食堂：</td>	<td>
-				<select style="margin-right:15px;" id="mess" name="mess" >
-		 <option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
-				<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
-                 <option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
-                  	<?php  } } ?>
-                   </select>
-			</td>
-			<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:100px">状态：</td>	<td>
-				<select name="isstatus">
-				<option value="" <?php  echo $isstatus==''?'selected':'';?>>全部</option>
-			<option value="1" <?php  echo $isstatus==1?'selected':'';?>>已付款</option>
-				<option value="3" <?php  echo $isstatus==3?'selected':'';?>>已完成</option>
-			</select>
-			</td>
-			
-						</tr>
-						
-						<tr>
-								<td></td>	
-							<td><input type="submit" name="" value=" 查 询 " class="btn btn-primary" ></td><td></td>
-									<td>	<button type="submit" name="orderstatisticsEXP01" value="orderstatisticsEXP01" class="btn btn-warning btn-primary">导出excel</button></td>	
-							<td>
-							</td>	<td>&nbsp;</td>
-						</tr>
-					</tbody>
-				</table>
-			</form>
+			<input type="hidden" name="mod" value="site" />
+			<input type="hidden" name="name" value="addon6" />
+			<input type="hidden" name="do" value="orderstatistics" />
+			<table class="table sub-search sub-search-list">
+				<tbody>
+					<tr>
+						<td>
+							<li ><span>会员名：</span></li>
+							<li >
+								<input name="realname" type="text"  class="span3" value="<?php  echo $realname;?>">
+							</li>	
+							<li><span>收货人：</span></li>
+							<li>
+								<input name="addressname" type="text"  class="span3" value="<?php  echo $addressname;?>">
+							</li>
+							<li><span>订单号：</span></li>
+							<li>
+								<input name="ordersn" type="text"  class="span3" value="<?php  echo $ordersn;?>">
+							</li>
+							<li ><span>起始日期：</span></li>
+							<li >
+								<input name="start_time" id="start_time" type="text" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
+							</li>	
+							<li ><span>终止日期：</span></li>
+							<li>
+								<input name="end_time" id="end_time" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
+							</li>
+							<li style="display: none;"><span>食堂：</span></li>	
+							<li style="display: none;">
+								<select style="margin-right:15px;" id="mess" name="mess" >
+								 	<option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
+									<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
+	                 				<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
+	                  				<?php  } } ?>
+	                   			</select>
+							</li>
+							<li><span>状态：</span></li>	
+							<li>
+								<select name="isstatus">
+									<option value="" <?php  echo $isstatus==''?'selected':'';?>>全部</option>
+									<option value="1" <?php  echo $isstatus==1?'selected':'';?>>已付款</option>
+									<option value="3" <?php  echo $isstatus==3?'selected':'';?>>已完成</option>
+								</select>
+							</li>
+							<li><input type="submit" name="" value=" 查 询 " style="margin-top: -4px;" class="btn btn-primary" ></li>
+							<li><button type="submit" name="orderstatisticsEXP01" value="orderstatisticsEXP01" style="margin-top: -4px;" class="btn btn-warning btn-primary">导出excel</button></li>	
+						<td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
 				<script type="text/javascript">
 		$("#start_time").datetimepicker({
 			format: "yyyy-mm-dd",

@@ -81,7 +81,9 @@ function app_click_to_down(url){
     });
     window.location.href = last_url;
 }
-
+/**
+ * 每个内容页显示一条提示下载app
+ */
 function app_show_tip(){
     var div = document.createElement("div");
     var img = document.createElement("img");
@@ -89,7 +91,9 @@ function app_show_tip(){
     var foot_menu = document.getElementsByClassName("foot_menu")[0];
     var divlink = document.createElement("div");
     var close_div = document.createElement("div");
-    if(wx_nav || foot_menu){
+    if(wx_nav){
+        div.className = "appdownload-hasfooter2";
+    }else if(foot_menu){
         div.className = "appdownload-hasfooter";
     }else{
         div.className = "appdownload-nofooter";
@@ -104,6 +108,61 @@ function app_show_tip(){
     document.body.appendChild(div);
     var appdownload_div = document.getElementById("appdownload");
     document.getElementById("closeLoad").onclick = function(){
-        document.body.removeChild(appdownload_div);    
+        document.body.removeChild(appdownload_div);
     }
+}
+
+/**
+ * 评论以及购买商品时提示 引导下载
+ * @param url
+ * @param tip
+ */
+function tipUserToDown(url,tip){
+    /**
+     <div id="downapp_box"></div>
+     <div id="downapp">
+     <p class='show_tip'>此活动商品必须下载APP才能购买哦</p>
+     <p class='down_btn'>
+        <span class='next_down'>下次下载</span>
+        <span class='liji_down'>立即下载</span>
+     </p>
+     </div>
+     */
+    if(tip == 1){
+        var show = '要下载APP才可以评论以及看到更多奇趣的东西哦~';
+    }else if(tip ==2 ){
+        var show = '此活动商品必须下载APP才能购买哦~';
+    }
+
+    var div_box = document.getElementById("downapp_box");
+    var div_nei = document.getElementById("downapp");
+
+    if(div_box ===  null){
+        var div_box = document.createElement("div");
+        var div_nei = document.createElement("div");
+        div_box.id    = 'downapp_box';
+        div_nei.id    = 'downapp';
+
+        var p1 = "<p class='show_tip'>"+ show +"</p>";
+        var p1 = p1 + " <p class='down_btn'> " +
+            "<span class='next_down' onclick='appdown_to_next()'>下次下载</span>"+
+            "<span class='liji_down' onclick=\"app_click_to_down('"+ url +"')\" >立即下载</span>"+
+            "</p>";
+
+        document.body.appendChild(div_box);
+        document.body.appendChild(div_nei);
+        var appdownload_div = document.getElementById("downapp");
+        appdownload_div.innerHTML = p1;
+    }else{
+        div_box.style.display = '';
+        div_nei.style.display = '';
+    }
+
+}
+
+function appdown_to_next(){
+    var div_box = document.getElementById("downapp_box");
+    var div_nei = document.getElementById("downapp");
+    div_box.style.display = 'none';
+    div_nei.style.display = 'none';
 }

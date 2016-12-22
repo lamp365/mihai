@@ -2,8 +2,40 @@
 <?php  include page('header');?>
 
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+<style type="text/css">
+	.purchase-table-list tr{
+		border: 1px solid #ddd;
+	}
+	.purchase-table-list td{
+		//border: 1px solid #ddd;
+	}
+	.purchase-table-list li{
+		margin:5px;
+		float: left;
+		margin-right: 10px;
+		list-style: none;
+	}
+	.purchase-table-list li select{
+		height:26px;
+	}
+	.purchase-table-list li span{
+		display: inline-block;
+		height:24px;
+		line-height: 24px;
+	}
+	.add-more{
+		text-align: center;
+		cursor: pointer;
 
+	}
+	.add-more-btn{
+		
+	}
+	.hide-tr{
+		display: none;
+	}
+</style>
 <script>
 	function cleartime()
 	{
@@ -110,100 +142,106 @@
 	<input type="hidden" name="do" value="purchase"/>
 	<input type="hidden" name="op" value="display"/>
 	<input type="hidden" name="status" value="<?php  echo $_GP['status'];?>"/>
-				 <table  class="table" style="width:95%;" align="center">
-					<tbody>
-						<tr>
-							<td align="right" style="font-size: 14px;font-weight: bold;width:120px">订单编号：</td>
-			<td  style="width:200px">
-<input name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
-			</td>	
-			
-					<td align="right" style="font-size: 14px;font-weight: bold;width:130px">下单时间：</td>
-			<td style="width:400px;">
-<input name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - <input id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
-		
-			<script type="text/javascript">
-		$("#begintime").datetimepicker({
-			format: "yyyy-mm-dd hh:ii",
-			minView: "0",
-			//pickerPosition: "top-right",
-			autoclose: true
-		});
-	</script> 
-	<script type="text/javascript">
-		$("#endtime").datetimepicker({
-			format: "yyyy-mm-dd hh:ii",
-			minView: "0",
-			autoclose: true
-		});
-	</script>
-			</td>	
-			<td align="right" style="font-size: 14px;font-weight: bold;width:130px;">业务员：</td>
-			<td style="width:300px;">
-				<?php if(isAgentAdmin()){ ?>
-					<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
-						 <option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
-						<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
-							<?php if($item["id"] == $_SESSION['account']['id']){ ?>
-								<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['relation_uid']?'selected':'';?>><?php  echo $item['username']?></option>
-							<?php  } ?>
-						<?php  } } ?>
-				   </select>
-               <?php } else{ ?>
-					<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
-						<option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
-						<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
-							<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['relation_uid']?'selected':'';?>><?php  echo $item['username']?></option>
-						<?php  } } ?>
-					</select>
-				<?php } ?>
-			</td>	
-
-						</tr>								
-							<tr>
-											<td align="right" style="font-size: 14px;font-weight: bold;">收货人姓名：</td>
-			<td >
-<input name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
-			</td>	
-			
-					<td align="right" style="font-size: 14px;font-weight: bold;width:100px">收货人手机：</td>
-			<td >
-<input name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" />
-			</td>	
-			<td align="right" style="font-size: 14px;font-weight: bold;">产品名称：</td>
-			<td><input name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" /></td>
-						</tr>
-						<tr>
-							<td align="right" style="font-size: 14px;font-weight: bold;">导出模板：</td>
-			<td >
-                     <select name="template">
-                          <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
-						  <option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
-					 </select>
-			</td>	
-			<td align="right" style="font-size: 14px;font-weight: bold;">标记：</td>
-			<td >
-                         <select name="tag">
+	<table  class="table purchase-table-list" style="width:100%;" align="center">
+		<tbody>
+			<tr style="background-color: #f9f9f9;">
+				<td style="height: 50px;border: 1px solid #ddd;">
+					<li ><span>订单编号：</span></li>
+					<li  >
+						<input name="ordersn" style="width:150px" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
+					</li>	
+				
+					
+					<li><span>业务员：</span></li>
+					<li>
+						<?php if(isAgentAdmin()){ ?>
+							<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
+								 <option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
+								<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
+									<?php if($item["id"] == $_SESSION['account']['id']){ ?>
+										<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['relation_uid']?'selected':'';?>><?php  echo $item['username']?></option>
+									<?php  } ?>
+								<?php  } } ?>
+						   </select>
+		               	<?php } else{ ?>
+							<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
+								<option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
+								<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
+									<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['relation_uid']?'selected':'';?>><?php  echo $item['username']?></option>
+								<?php  } } ?>
+							</select>
+						<?php } ?>
+					</li>
+					<li ><span>导出模板：</span></li>
+					<li >
+	                    <select name="template">
+	                        <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
+							<option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
+						</select>
+					</li>	
+					<li ><span>标记：</span></li>
+					<li >
+	                    <select name="tag">
 						  <option value="-1" selected>--未选择--</option>
-                          <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
+	                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
 						  <option value="1" <?php  echo $_GP['tag']==1?'selected':'';?>>红色</option>
 						  <option value="2" <?php  echo $_GP['tag']==2?'selected':'';?>>黄色</option>
 						  <option value="3" <?php  echo $_GP['tag']==3?'selected':'';?>>绿色</option>
 						  <option value="4" <?php  echo $_GP['tag']==4?'selected':'';?>>蓝色</option>
 						  <option value="5" <?php  echo $_GP['tag']==5?'selected':'';?>>紫色</option>
-					  </select>			
-			</td>	
-						<td></td>
+					  	</select>			
+					</li>	
 						
-						</tr>
-						<tr>
-						    <td></td>
-							<td colspan="3"><input type="submit" name="submit" value=" 查 询 " class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="report" value="report" class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
-							<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
-							</td></tr>
-					</tbody>
-				</table>
-			</form>
+					<li >
+						<input type="submit" name="submit" value=" 查 询 " style="margin-top: -5px;" class="btn btn-primary">&nbsp;&nbsp;
+						<button type="submit" name="report" value="report" style="margin-top: -5px;" class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
+						<div style="display:inline-block;margin-top: -5px;" class="add-more-btn btn btn-primary show-more">更 多</div>
+						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
+					</li>
+					
+				</td>
+			</tr>
+			<tr class="hide-tr">
+				<td>
+					<li><span>收货人手机：</span></li>
+					<li >
+						<input name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" />
+					</li>	
+					<li ><span>产品名称：</span></li>
+					<li><input name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" /></li>
+					<li><span>收货人姓名：</span></li>
+					<li >
+						<input style="width:150px" name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
+					</li>
+					<li><span>下单时间：</span></li>
+					<li>
+						<input style="width:150px" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - 
+						<input style="width:150px" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
+			
+						<script type="text/javascript">
+							$("#begintime").datetimepicker({
+								format: "yyyy-mm-dd hh:ii",
+								minView: "0",
+								//pickerPosition: "top-right",
+								autoclose: true
+							});
+						</script> 
+						<script type="text/javascript">
+							$("#endtime").datetimepicker({
+								format: "yyyy-mm-dd hh:ii",
+								minView: "0",
+								autoclose: true
+							});
+						</script>
+					</li>	
+					
+
+					
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
 			
 			
 <h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo $total ?></strong></span></h3>
@@ -301,7 +339,7 @@
 					</td>
 					<td align="center" valign="middle" style="vertical-align: middle;">
 					    <div>
-					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
+					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><span class="label label-warning quick-pay" style="margin-left:3px;background-color:#4edbf0">快捷支付</span><?php  } ?>
 							<!--已经付钱的，团购中 或者团购未开奖 这叫做已支付，因为不在待发货中展示，其他的叫待发货-->
 							<?php  if($item['status'] == 1) {
 								if(checkGroupBuyCanSend($item)){
@@ -341,6 +379,40 @@
 				<?php  } } ?>
 			</tbody>
 		</table>
+		<div class="modal fade" id="quick-pay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+					<h4 class="modal-title" id="myModalLabel">快捷支付</h4>
+				  </div>
+				  <div class="modal-body">
+					 123
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				  </div>
+				</div>
+			  </div>
+        </div>
+		<script type="text/javascript">
+			$(function(){
+				$(".quick-pay").click(function(){
+					$("#quick-pay").modal();
+				});
+				$(".add-more-btn").click(function(){
+					$(".hide-tr").toggle();
+					if($(this).hasClass("show-more")){
+						$(this).removeClass("show-more");
+						$(".add-more-btn").text("收 起");
+					}else{
+						$(".add-more-btn").text("更 多");
+						$(this).addClass("show-more");
+					}
+					
+				})
+			})
+		</script>
 		<?php  echo $pager;?>
 
 <?php  include page('footer');?>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>面试结果</title>
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+		<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
+	</head>
+	<style>
+		*{margin: 0;padding: 0;}
+		html,body{height: 100%;}
+		.bg{
+			width: 100%;
+			height: 100%;
+		}
+		.box{
+			width: 80%;
+			height: 50%;			
+			position:absolute;
+			top: 25%;
+			left: 10%;
+			z-index: 1;			
+		}
+		.box div{
+			width: 100%;
+			height: 100%;
+			background: #fff;
+			opacity: 0.5;
+			position: absolute;
+		}
+		.box h3{				
+			position: absolute;
+			top:20%;
+			left: 10%;			
+		}
+		.box input#num{					
+			position: absolute;
+			width: 80%;
+			height: 50px;
+			top: 35%;
+			left: 10%;
+			background: none;
+			border: none;
+			border-bottom: solid 1px black;
+			outline: none;
+			font-size: 20px;
+			letter-spacing: 5px;
+			text-indent: 15%;
+		}
+		.box input#sub{
+			position: absolute;
+			width: 60%;
+			height: 50px;
+			top:70%;
+			left: 20%;
+			background: none;			
+			border: solid 1px black;
+			outline: none;
+			border-radius: 5px;
+			font-size: 20px;
+			font-weight: bold;
+		}
+	</style>
+	<body>
+		<div class="cart_title" >
+		   <span class="return">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px">
+		   </span>
+		   	 面试结果
+		</div>
+		<div style="position: fixed;width: 100%;overflow: hidden;top: 0;">
+			<img class="bg" src="../wap/__RESOURCE__/recouse/images/interview.png"/>
+			<!--输入框-->
+			<div class="box">
+				<div></div>
+				<h3>请输入您的手机号</h3>
+				<form action="  " method="post" role="form">
+					<input type="text" name="" id="num" value="" autocomplete="off"/>
+					<input type="submit" name="" id="sub" value="确认" onclick="check()"/>
+				</form>
+			</div>
+		</div>
+	</body>
+	<script>
+		function check(){
+			var tel = $("#num").val();						
+			if(!tel){
+				alert("请输入手机号！");
+				return false;
+			}else if(tel.search(/^(13[0-9]{9})|(15[89][0-9]{8})$/) == -1) {
+				alert('请输入正确的手机号码！');
+				return false;
+			}else{			
+				window.location.href="interview_result.html";
+			}
+			
+		}
+		
+		$(".return").click(function(){
+		    window.history.back(-1);
+		})
+	</script>
+</html>

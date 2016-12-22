@@ -118,7 +118,10 @@ function member_login_weixin($weixin_openid)
 
 function vip_member_login($mobile, $pwd)
 {
-    $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile='{$mobile}' and parent_roler_id<>0  limit 1");
+	// 少一块VIP角色的用户判断，应该传参
+    $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile  limit 1", array(
+        ':mobile' => $mobile
+    ));
    // parent_roler_id 身份id 父级	son_roler_id
     if ( !empty($member['parent_roler_id']) && !empty($member['son_roler_id']) ){
           $check = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['son_roler_id']." and pid = ".$member['parent_roler_id']." and (type = 2 or type = 3) ");
@@ -636,4 +639,27 @@ function isSelfAgent($str,$uid){
         }
     }
     return $str;
+}
+
+/**
+ * @return int
+ * @return int
+ * 验证用户是否登录
+ * get_member_account 该方法可以进行获取用户是否登录，但是很多时候会自动跳转到登录，
+ * 一些场合，不需要跳转故再加一个方法
+ */
+function checkIsLogin(){
+    $member = get_member_account(false);
+    if(empty($member)){
+        return 0;
+    }else{
+        $openid     = $member['openid'];
+        $openid_arr = explode('_t', $openid);
+        if(count($openid_arr) == 2){
+            //是临时用户
+            return 0;
+        }else{
+            return 1;
+        }
+    }
 }

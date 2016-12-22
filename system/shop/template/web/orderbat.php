@@ -18,30 +18,21 @@
 	<h3 class="header smaller lighter blue">批量发货</h3>
 <form action="" method="post" class="form-horizontal">
 				
-				   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 批量设置快递公司：</label>
-
-										<div class="col-sm-9">
-													<select  name="expressall" id="expressall" >
-														<option value="-2" >请选择</option>
-			 	<option value="-1" data-name="">无需快递</option>
-			 			<?php   foreach($dispatchlist as $dispatchitem) { ?>
-			 			<option value="<?php echo $dispatchitem['code'];?>" data-name="<?php echo $dispatchitem['name'];?>"><?php echo $dispatchitem['name'];?></option>
-			 					<?php   } ?>
-								</select>
-										</div>
-									</div>
-				
-								  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" for="form-field-1">	<button type="submit"  name="sendbatexpress" value="sendbatexpress" class="btn btn-warning">批量发货</button>
-								 </label>
-
-										<div class="col-sm-9">
-										
-										</div>
-									</div>
-					
-				
+	<div class="form-group" style="margin: 0;padding: 0;    height: 50px;">
+		<div class="col-sm-12" style="background-color: #f9f9f9;border: 1px solid #ddd;    height: 50px;">
+			<label class="control-label no-padding-left" > 批量设置快递公司：</label>
+			<select  name="expressall" id="expressall" >
+				<option value="-2" >请选择</option>
+				<option value="-1" data-name="">无需快递</option>
+				<?php   foreach($dispatchlist as $dispatchitem) { ?>
+				<option value="<?php echo $dispatchitem['code'];?>" data-name="<?php echo $dispatchitem['name'];?>"><?php echo $dispatchitem['name'];?></option>
+				<?php   } ?>
+			</select>
+			<label class=" control-label no-padding-left" for="form-field-1">	
+				<button type="submit"  name="sendbatexpress" value="sendbatexpress" class="btn btn-warning">批量发货</button>
+			</label>
+		</div>
+	</div>
  
 	<h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo $total ?></strong></span></h3>
 
@@ -143,7 +134,6 @@
           }
           $("#allorders select").each(function() {
             var obj = $(this);
-            console.log(obj);
             obj.val(target_val);
           });
           	onchangcheckbox();

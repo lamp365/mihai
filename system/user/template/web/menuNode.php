@@ -28,7 +28,7 @@
             <td style="text-align:center;"><?php echo $item['id'];?></td>
             <td style="text-align:center;"><?php echo $item['moddescription'];?></td>
             <td style="text-align:center;"><?php echo rtrim($item['url'],'/');?></td>
-            <td style="text-align:center;">
+            <td style="text-align:center;">            	
             	<input style="text-align: center;width: 60px;" type="number" min="<?php echo $cat_id-10?>" max="<?php echo $cat_id+10?>" value="<?php echo $item['sort'];?>" name="sort">
             </td>
             <td style="text-align:center;">
@@ -80,12 +80,17 @@
   
 	$("input[name=sort]").blur(function(){
   		//如果输入的值大于设定的最大值，就显示最大值
-  		var maxval = $(this).attr("max");
-        var sort = $(this).val();
-  		if(sort > maxval){
-  			$(this).val(maxval);
+  		var maxval = parseInt($(this).attr("max"));   			
+     	var sort = parseInt($(this).val());
+        var minval = $(this).attr("min")
+        console.log("maxval:"+maxval);
+        console.log("minval:"+minval);
+        console.log("sort:"+sort);
+        console.log($(this).val())
+		if(sort > maxval){			
+			$(this).val(maxval);
             sort = maxval;
-  		}
+		}
 	  	//获取id
 	  	var ID = $(this).parent().parent().children().eq(0).children().val();
         var url = "<?php echo web_url('user',array('op'=>'menusort'));?>";

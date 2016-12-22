@@ -3,89 +3,89 @@
 		.modal-body i{
 			color: red;
 		}
+		.vip-table-list tr{
+			background-color: #f9f9f9;
+			border-top: 1px solid #ddd;
+		}
+		.vip-table-list td{
+			border: 1px solid #ddd;
+		}
+		.vip-table-list li{
+			margin-top:3px;
+			float: left;
+			margin-right: 10px;
+			list-style: none;
+		}
+		.vip-table-list li select{
+			height:26px;
+		}
+		.vip-table-list li span{
+			display: inline-block;
+			height:24px;
+			line-height: 24px;
+		}
 	</style>
-<h3 class="header smaller lighter blue" style="display: inline-block">会员管理</h3> &nbsp; &nbsp;<a href="javascript:;" data-toggle="modal" data-target="#addModal" class="btn btn-md btn-info">添加会员</a>
+<h3 class="header smaller lighter blue" style="display: inline-block">会员管理</h3> &nbsp; &nbsp;<a href="javascript:;" style="margin-top: -10px;" data-toggle="modal" data-target="#addModal" class="btn btn-md btn-info">添加会员</a>
 <form action="" method="get" class="form-horizontal" enctype="multipart/form-data" >
 				<input type="hidden" name="act" value="module" />
 				<input type="hidden" name="name" value="member" />
 				<input type="hidden" name="do" value="list" />
 				<input type="hidden" name="mod" value="site"/>					
 				
-				<table class="table" style="width:95%;" align="center">
+				<table class="table vip-table-list" style="width:100%;" align="center">
 					<tbody>
 						<tr>
-							<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px">用户名；</td>
-			<td style="width:300px">
-
-												<input name="realname"  type="text" value="<?php  echo $_GP['realname'];?>" />
-			</td>	
-			
-					<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">手机号码：</td>
-			<td>
-				
-												<input name="mobile" type="text"   value="<?php  echo $_GP['mobile'];?>" />
-				
-			</td>	
-						</tr>
-				
-					<tr>
-							<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px">状态：</td>
-							<td style="width:300px">
-								<select style="margin-right:15px;" name="showstatus">
-		 <option value="1" <?php if(empty($_GP['showstatus'])||$_GP['showstatus']==1){?>selected=""<?php }?>>正常</option>
-				                 <option value="-1" <?php if($_GP['showstatus']==-1){?>selected=""<?php }?>>禁用</option>
-                  	                   </select>
-								</td>
-						
-					<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">会员等级</td>
-			<td>
-								<select name="rank_level"  style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0">
-     				<option value="0">选择会员等级</option>   
-     				<?php foreach($rank_model_list as $rank_model){?>
-     				  				<option value="<?php echo $rank_model['rank_level']?>" <?php if($rank_model['rank_level']==$_GP['rank_level']){?>selected=""<?php }?>><?php echo $rank_model['rank_name']?></option> 
-     							<?php }?>
-     				</select>
-			</td>	
-						</tr>
-				
-					<tr>
-							<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px">微信昵称</td>
-							<td style="width:300px">
-						<input name="weixinname"  type="text" value="<?php  echo $_GP['weixinname'];?>" />
-								</td>
-						
-					<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">支付宝昵称</td>
-			<td><input name="alipayname"  type="text" value="<?php  echo $_GP['alipayname'];?>" />
-			</td>	
-						</tr>
-						<tr>
-						<td style="vertical-align: middle;font-size: 14px;font-weight: bold;">按食堂筛选：</td>
-						<td >
-			<select style="margin-right:15px;" id="mess" name="mess" >
-		 <option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
-				<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
-                 <option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
-                  	<?php  } } ?>
-                   </select>
-			</td>	
-			</tr>
-						<tr>
-							<td></td>
-							<td colspan="3">
-										<input name="submit" type="submit" value=" 查 找 " class="btn btn-info"/></td>
-						
-					<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px"></td>
-			<td>
-				
-				
-			</td>	
+							<td>
+								<li><span>用户名：</span></li>
+								<li>
+									<input name="realname"  type="text" value="<?php  echo $_GP['realname'];?>" />
+								</li>	
+								<li><span>手机号码：</span></li>
+								<li>
+									<input name="mobile" type="text"   value="<?php  echo $_GP['mobile'];?>" />
+								</li>	
+								<li ><span>状态：</span></li>
+								<li >
+									<select  name="showstatus">
+			 							<option value="1" <?php if(empty($_GP['showstatus'])||$_GP['showstatus']==1){?>selected=""<?php }?>>正常</option>
+					                 	<option value="-1" <?php if($_GP['showstatus']==-1){?>selected=""<?php }?>>禁用</option>
+		              	            </select>
+								</li>
+								<li><span>会员等级</span></li>
+								<li>
+									<select name="rank_level">
+		     							<option value="0">选择会员等级</option>   
+		     							<?php foreach($rank_model_list as $rank_model){?>
+		     				  				<option value="<?php echo $rank_model['rank_level']?>" <?php if($rank_model['rank_level']==$_GP['rank_level']){?>selected=""<?php }?>><?php echo $rank_model['rank_name']?></option> 
+		     							<?php }?>
+	     							</select>
+								</li>	
+							
+								<li ><span>微信昵称</span></li>
+								<li >
+									<input name="weixinname"  type="text" value="<?php  echo $_GP['weixinname'];?>" />
+								</li>
+							
+								<li ><span>支付宝昵称</span></li>
+								<li>
+									<input name="alipayname"  type="text" value="<?php  echo $_GP['alipayname'];?>" />
+								</li>	
+								<li style="display: none;"><span>按食堂筛选：</span></li>
+								<li style="display: none;">
+									<select style="margin-right:15px;" id="mess" name="mess" >
+			 							<option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
+										<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
+	                 					<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
+				                  		<?php  } } ?>
+				                   	</select>
+								</li>	
+								<li>
+									<input name="submit" type="submit" style="margin-top:-4px; " value=" 查 找 " class="btn btn-info"/>
+								</li>
+							</td>
 						</tr>
 					</tbody>
 				</table>
-				
-				     
-									
-				
 			</form>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
 		

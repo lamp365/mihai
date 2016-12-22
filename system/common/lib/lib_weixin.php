@@ -137,15 +137,15 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                     exit();
                 }
                 $from_user      = $token['openid'];
-                $unionid        = $token['unionid'];
-                $_GP['unionid'] = $token['unionid'];
 
                 $access_token = get_weixin_token();
                 $oauth2_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $from_user . "&lang=zh_CN";
                 
                 $content = http_get($oauth2_url);
                 $info = @json_decode($content, true);
-                
+
+                $unionid        = $info['unionid'];
+                $_GP['unionid'] = $info['unionid'];
                 if ($info['subscribe'] == 1) {
                     $follow = 1;
                 } else {
@@ -158,10 +158,10 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 ));
                 if(!empty($fans_by_weixin_openid) && empty($fans_by_weixin_openid['unionid'])){
                     //之前的旧数据，更新 unionid
-                    //旧数据的存在，app没办法得知，可能会再次插入一条数据，删除app的数据，更新旧数据
-                    mysqld_query("delete from ".table('weixin_wxfans')." where unionid={$unionid} and weixin_openid<>{$from_user}");
                     //存在该记录， 但是没有unionid  则进行更新上对应的unionid
                     mysqld_update('weixin_wxfans',array('unionid'=>$unionid),array('weixin_openid'=>$from_user));
+                    //旧数据的存在，app没办法得知，可能会再次插入一条数据，删除app的数据，更新旧数据
+                    mysqld_query("delete from ".table('weixin_wxfans')." where unionid='{$unionid}' and weixin_openid<>'{$from_user}'");
                 }
                 /**************等旧数据全部被更新完之后，这个部分可以去掉**************/
 

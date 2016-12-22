@@ -495,7 +495,7 @@ function Load(art_data){
 						'<a href="'+ url +'">'+
 							'<img src="'+picurl+'"/>'+
 						'</a>'+
-						'<a href="">'+
+						'<a href="'+ url +'">'+
 							'<p class="title">'+art_data.title+'</p>'+
 							'<p class="detail">'+art_data.description+'</p>'+
 						'</a>'+

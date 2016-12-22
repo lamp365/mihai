@@ -18,6 +18,7 @@
     <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="__RESOURCE__/recouse/share/css/share.min.css">
     <link rel="stylesheet" href="__RESOURCE__/openshop/css/openshop.css">
+    <link rel="stylesheet" href="__RESOURCE__/recouse/css/todownapp.css">
     <script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
     <script src="__RESOURCE__/recouse/js/jquery.json.js" type="text/javascript"></script>
     <script type="text/javascript" src="__RESOURCE__/recouse/js/common.js"></script>
@@ -494,7 +495,9 @@
 
                 <div class="good_price">
                     <span class="pro-groupon-2" style="text-decoration: inherit;float: left;">
-                          <img src="__RESOURCE__/recouse/images/group_user.png"><!--@php echo $goods['team_buy_count']; @-->人团
+                          <a href="javascript:;" class="btn btn-xs btn-success">
+                              <!--@php if($goods['draw'] == 1){ echo '抽奖团';}else{ echo '团购商品'; } @-->
+                          </a>&nbsp;&nbsp;<!--@php echo $goods['team_buy_count']; @-->人团
                     </span>
                     <span style="font-size: 16px;">单独购买：¥<!--@php echo $goods['marketprice'];@--></span>
                     <span class="good_cross">跨境</span>
@@ -720,6 +723,12 @@
 </div>
 
 <script src="__RESOURCE__/recouse/share/js/jquery.share.min.js"></script>
+<script src="__RESOURCE__/recouse/js/appwakeup.js"></script>
+<script>
+    window.onload = function(){
+        appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
+    }
+</script>
 <script>
     $(document).ready(function(){
         $(".img-list img").click(function(){
@@ -843,6 +852,10 @@
     //立即购买
     var hasoption = <!--@php echo $goods['hasoption']=='1'?'true':'false'@-->;
     function buy(type){
+        var shop_type = "<!--@php echo $goods['type']; @-->";
+        if(!checkIsCanBuy(shop_type)){
+            return ;
+        }
          var total = 1;
          var url  = "<!--@php  echo mobile_url('mycart',array('id'=>$goods['id'],'op'=>'token'),true);@-->"+"&optionid=" + $("#optionid").val() + "&total=" + total +"&type=" + type;
         if($("#accesskey").val() != '' ){
@@ -857,6 +870,15 @@
                   tip(s.message,1);
               }
          });   
+    }
+
+    function checkIsCanBuy(shop_type){
+        if(shop_type != 0){
+            //弹窗 提示下载
+            tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",2);
+            return false;
+        }
+        return true;
     }
 
 </script>

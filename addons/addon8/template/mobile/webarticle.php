@@ -293,8 +293,6 @@
 					</dl>
 				</div>
 			</div>
-			
-			
 			<!--右侧的相关产品,显示三个就好了-->			
 				<div class="shopinfo relate" style="width: 333px;float: right;margin-top: 15px;border: solid 1px gainsboro;border-left: none;border-right: none;height: auto;overflow: hidden;">
 		            <div id="cshopBox" class="proinfo-side" style="height: auto;overflow: hidden;">
@@ -339,7 +337,7 @@
 								</ul>
 							</div>		
 						</div>
-					</div>	
+					</div>
 					
 					 <!--推荐文章，显示四篇-->
 				<div class="shopinfo recommend" style="width:333px;float: right;margin-top: 42px;border: none;height: auto;overflow: hidden;">

@@ -8,8 +8,12 @@
 			line-height:30px;
 		}
 		.show_roles .role_title{
-			border-bottom:1px solid #f5f2e5;
-			margin-top:15px;
+			//border-bottom: 1px solid #f5f2e5;
+		    float: left;
+		    width: 150px;
+		}
+		.show_roles{
+			border-bottom: 1px solid #f5f2e5;
 		}
 		.field{max-height: 320px;overflow: hidden;}
 		.field>div{
@@ -41,43 +45,80 @@
 			line-height:28px;
 			padding-left:15px;
 		}
+		.pre_level{
+			float: left;
+			overflow: auto;
+		}
+
+		.showlist{
+			overflow: hidden;
+		}
+		.second-nav{
+			float: left;
+		}
+		.third-nav{
+			float: left;
+		}
+		.levle-area{
+			float:left;
+			max-width: 1537px;
+		}
+		.pre_level input,.role_title input{
+			margin-right: 5px;
+			margin-top: -2px;
+			vertical-align: middle;
+		}
+		label{
+			font-weight: 400!important;
+		}
+		.second-nav label{
+			width: 250px;
+		}
+		.third-nav label{
+			float: left;
+			width: 250px;
+		}
 	</style>
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
-    	    <input type="hidden" value="<?php echo $id ?>"  name="id"  />
-					<h3 class="header smaller lighter blue">权限设置</h3>
-		<p style="margin: 10px;background: #fcfcfc;border: 1px solid #e5e5e5;padding: 10px;color:red;font-size: 12px;">注：对于产品库，未上架的商品，不判断权限，只有上架后业务才会权限判断。</p>
+    	<input type="hidden" value="<?php echo $id ?>"  name="id"  />
+		<h3 class="header smaller lighter blue">权限设置</h3>
+		<p class="alert alert-info" ><i class="icon-lightbulb"></i>注：对于产品库，未上架的商品，不判断权限，只有上架后业务才会权限判断。</p>
 
 		<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 角色名：</label>
+			<div class="col-sm-12 control-label no-padding-left" style="text-align: left"> 
+				 角色名：<?php echo $roler_name; ?>
+				 权限：<strong><a href="javascript:;" onclick="checkrule(true)">全选</a>，<a href="javascript:;"  onclick="checkrule(false)">全否</a></strong> &nbsp;&nbsp;&nbsp;&nbsp;<span onclick="getAjaxFiledData()" class="btn btn-sm btn-info">高级权限</span>
+				 <input name="submit" type="submit" value=" 提 交 " class="btn btn-sm btn-info tijiao"/>
+			</div>
 
-										<div class="col-sm-9">
-										 <?php echo $roler_name; ?>
-										</div>
-									</div>
+		</div>
 									
 									  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> 权限：</label>
+										
 
-										  <div class="col-sm-9 " >
-											  <strong><a href="javascript:;" onclick="checkrule(true)">全选</a>，<a href="javascript:;"  onclick="checkrule(false)">全否</a></strong> &nbsp;&nbsp;&nbsp;&nbsp;<span onclick="getAjaxFiledData()" class="btn btn-sm btn-info">高级权限</span><br/>
+										  <div class="col-sm-12 " >
+											  
 
 											  <?php  foreach($parent as $cat_id => $arr){ ?>
 											  <div class="showlist show_roles">
-												  <div class="role_title"><input type="checkbox" class="cat"><strong><?php echo $arr[0]['cat_name']?></strong></div>
-
+												  <div class="role_title"><label><input type="checkbox" class="cat"><strong><?php echo $arr[0]['cat_name']?></strong></label></div>
+												  <div class="levle-area">
 												  <?php  foreach($arr as $row){ ?>
-													  <div style="margin-left: 35px;" class="pre_level">
-														  <div><input type="checkbox" value="<?php echo $row['id'];?>" class="parent son" <?php if(!empty($row['check'])){ echo "checked='checked'";} ?> name="role_ids[]" ><?php echo $row['moddescription'];?></div>
+													  
+														  <div class="pre_level">
+															  <div class="second-nav"><label><input type="checkbox" value="<?php echo $row['id'];?>" class="parent son" <?php if(!empty($row['check'])){ echo "checked='checked'";} ?> name="role_ids[]" ><?php echo $row['moddescription'];?></label></div>
 
-													  <?php if(is_array($children[$row['id']])){ ?>
-														  <div style="padding-left:60px">
-															  <?php foreach($children[$row['id']] as $val){ ?>
-																  <input type="checkbox" class="son" <?php if(!empty($val['check'])){ echo "checked='checked'";} ?> value="<?php echo $val['id'];?>" name="role_ids[]"><span class="each_role"><?php echo $val['moddescription'];?></span>
-															  <?php } ?>
+														  <?php if(is_array($children[$row['id']])){ ?>
+															  <div class="third-nav">
+																  <?php foreach($children[$row['id']] as $val){ ?>
+																	  <label><input type="checkbox" class="son" <?php if(!empty($val['check'])){ echo "checked='checked'";} ?> value="<?php echo $val['id'];?>" name="role_ids[]"><span class="each_role"><?php echo $row['moddescription'];?>--<?php echo $val['moddescription'];?></span></label>
+																  <?php } ?>
+															  </div>
+														  <?php } ?>
 														  </div>
-													  <?php } ?>
-													  </div>
+													  
 												  <?php } ?>
+												  </div>
 											  </div>
 											  <?php } ?>
 											  <script>
@@ -128,25 +169,13 @@
 										</div>
 									</div>
 									
-									
-									
-										  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> </label>
-
-										<div class="col-sm-9">
-										<input name="submit" type="submit" value=" 提 交 " class="btn btn-info tijiao"/>
-										
-										</div>
-									</div>
+								
 		<input type="hidden" class="hide_total_filed" value='<?php echo $DbFiledListJson;?>'>
 		<input type="hidden" class="hide_user_filed" name="hide_user_filed" value='<?php echo $userHasDbRuleJson;?>'>
 
     </form>
 
-<div class="gundon">
-	<div><img src="<?php echo RESOURCE_ROOT;?>addons/common/image/shang.png" alt=""></div>
-	<div><img src="<?php echo RESOURCE_ROOT;?>addons/common/image/xia.png" alt=""></div>
-</div>
+
 	<!-- 模态框（Modal） -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">

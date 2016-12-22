@@ -12,7 +12,7 @@
 	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
-<!-- 	<script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/todownapp.js" type="text/javascript" charset="utf-8"></script> -->
+
 <style type="text/css">
 	*{
 		margin: 0;
@@ -151,25 +151,7 @@
 		line-height: 32px;
 	}
 	.content img{width: 100%;display: block;}
-	
-	/*app下载页样式*/
-	.appdownload-hasfooter{position:fixed;left:0;z-index:999;bottom:45px;width:100%;display:block}
-	.appdownload-nofooter{position:fixed;left:0;z-index:999;bottom:0;width:100%;display:block}
-	#appdownload img{width: 100%;max-width: 100%;display: block;}
-	#appdownloadlink{
-		position: absolute;
-	    right: 0;
-	    top: 0;
-	    width: 28%;
-	    height: 100%;
-	}
-	#closeLoad{
-		position: absolute;
-	    left: 0;
-	    top: 0;
-	    width: 15%;
-	    height: 100%;
-	}
+
 </style>
 </head>
 <body>
@@ -177,17 +159,7 @@
 	<input type="hidden" class="openid" name="openid" value="<?php echo $_GP['openid'];?>">
 	<input type="hidden" class="articleid" name="articleid" value="<?php echo $_GP['id'];?>">
 	<input type="hidden" class="article_openid" name="article_openid" value="<?php echo $article['openid'];?>">
-	<!--遮罩层-->
-	<div style="width: 100%;height: 100%;position:fixed;background: #000;opacity: 0.5;z-index: 1;display: none;" class="iframe"></div>
-	<!--弹出框-->			
-	<div id="downapp">
-		<span>下次下载</span>	
-		<!--背景-->
-		<img class="bg" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp.png" /> 
-		<!--立即下载--> 	
-		<img  class="btn" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/downapp-btn2x.png" />
-		<p>立即下载</p>
-	</div>	
+
 	
 	<!--头部-->
 	<?php if($notApp){ ?>
@@ -283,17 +255,17 @@
 		<div class="ajax_next_page_foot"></div>
 		<!--底部栏 -->
 		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
-			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" id="put_comment"/>
+			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" class="wap_guanzhu"/>
 
 			<ul style="float: right;list-style: none;">
 				<li>
-					<a>
+					<a href="javascript:;">
 						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/health-comment@2x.png"  <?php if($notApp){ echo "class='wap_more'";}else{ echo "class='app_more'";}?> />
 					</a>
 				</li>
 				
 				<li>
-					<a>
+					<a  href="javascript:;" class="wap_guanzhu">
 						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/clle@2x.png" />
 					</a>
 				</li>
@@ -377,10 +349,7 @@
 		})
 	}
 	appMore();
-	//关注的点击事件，wap
-	$(".wap_guanzhu").on("click",function(){
-		
-	})
+
 	//关注的点击事件，app
 	function follow(msg){
 		$(".app_guanzhu").on("click",function(){
@@ -410,12 +379,10 @@
 		})
 	}
 	follow();
-	//点击立即下载，调用下载APP的方法
-	$("#downapp p").on("click",function(){
-		$("#downapp").hide();
-		$(".iframe").hide();
-		appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
-	})	
+
+	$(".wap_guanzhu").click(function(){
+		tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
+	})
 </script>	
 <?php if($notApp){ ?>
 <?php include themePage('footer'); ?>

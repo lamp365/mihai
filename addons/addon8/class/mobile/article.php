@@ -108,7 +108,12 @@
 			include addons_page('comment_list');
 
 		}else if($op == 'note'){ //笔记内容页面
-			$article_note   = mysqld_select("SELECT * FROM " . table('note')." where note_id=:id ",array(":id"=>intval($_GP['id'])) );
+			if(empty($_GP['id'])){
+				$sql = "SELECT * FROM " . table('note')." order by note_id desc limit 1 ";
+			}else{
+				$sql = "SELECT * FROM " . table('note')." where note_id= {$_GP['id']} ";
+			}
+			$article_note   = mysqld_select($sql);
 			if(empty($article_note))
 				message('对不起，该文章已不存在！',refresh(),'error');
 
@@ -124,7 +129,12 @@
 				include addons_page('pc_note');
 			}
 		}else if($op == 'headline'){ //头条内容页面
-			$article_headline = mysqld_select("SELECT * FROM " . table('headline')." where headline_id=:id ",array(":id"=>intval($_GP['id'])) );
+			if(empty($_GP['id'])){
+				$sql = "SELECT * FROM " . table('headline')." order by headline_id desc limit 1 ";
+			}else{
+				$sql = "SELECT * FROM " . table('headline')." where headline_id= {$_GP['id']} ";
+			}
+			$article_headline = mysqld_select($sql);
 			if(empty($article_headline))
 				message('对不起，该文章已不存在！',refresh(),'error');
 			$article_member = member_get($article_headline['openid']);

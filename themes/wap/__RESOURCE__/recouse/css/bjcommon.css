@@ -3586,3 +3586,10 @@ button.swiper-pagination-bullet {
     width: 28%;
     height: 100%;
 }
+#closeLoad{
+	position: absolute;
+    left: 0;
+    top: 0;
+    width: 15%;
+    height: 100%;
+}

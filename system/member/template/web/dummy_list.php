@@ -4,45 +4,55 @@
 			color: red;
 			font-weight: bolder;
 		}
+		.dummy-table-list li{
+			margin-top:3px;
+			float: left;
+			margin-right: 10px;
+			list-style: none;
+		}
+		.dummy-table-list tr{
+			background-color: #f9f9f9;
+			border-top: 1px solid #ddd;
+		}
+		.dummy-table-list td{
+			border: 1px solid #ddd;
+		}
 	</style>
-<h3 class="header smaller lighter blue">虚拟用户管理&nbsp;&nbsp; <span style="font-size:14px;color: red">星号为必填</span></h3>
-<p>
-<form action="" method="post" class="form-horizontal bat_form" enctype="multipart/form-data" >
-	<button type="button" class="bat_add btn btn-md btn-warning">批量添加100个</button>
-</form>
-</p>
+<h3 class="header smaller lighter blue">虚拟用户管理&nbsp;&nbsp; <span style="font-size:14px;color: red">星号为必填</span>
+	<form action="" method="post" style="display: inline;" class="form-horizontal bat_form" enctype="multipart/form-data" >
+		<button type="button" class="bat_add btn btn-md btn-warning">批量添加100个</button>
+	</form>
+</h3>
 <form action="<?php  echo web_url('dummy',array('op'=>'add'));?>" method="post" class="form-horizontal" enctype="multipart/form-data" >
 
-	<table class="table" style="width:40%;" align="left">
+	<table class="table dummy-table-list" style="width:100%;" align="left">
 		<tbody>
 			<tr>
-				<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px"><i>*</i>用户名：</td>
-				<td style="width:300px">
-					<input name="realname"  type="text" value="" />
-				</td>
-			</tr>
-			<tr>
-				<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px"><i>*</i>手机号码：</td>
 				<td>
-					<input name="mobile" type="text"   value="" />
+					<li><i>*</i>用户名：</li>
+					<li>
+						<input name="realname"  type="text" value="" />
+					</li>
+
+					<li><i>*</i>手机号码：</li>
+					<li>
+						<input name="mobile" type="text"   value="" />
+					</li>
+
+					<li>email：</li>
+					<li>
+						<input name="email" type="text"   value="" />
+					</li>
+
+					<li>头像：</li>
+					<li>
+						<input name="avatar" type="file"   value="" />
+					</li>
+					<li>
+						<button type="submit" class="btn btn-md btn-info">确定创建</button>
+					</li>
 				</td>
 			</tr>
-			<tr>
-				<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">email：</td>
-				<td>
-					<input name="email" type="text"   value="" />
-				</td>
-			</tr>
-			<tr>
-				<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">头像：</td>
-				<td>
-					<input name="avatar" type="file"   value="" />
-				</td>
-			</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td><button type="submit" class="btn btn-md btn-info">确定创建</button></td>
-		</tr>
 		</tbody>
 	</table>
 				

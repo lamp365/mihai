@@ -2,7 +2,10 @@
 if (file_exists(WEB_ROOT . '/includes/hottpoic.func.php') && !function_exists(getHottpoic)) {
    require WEB_ROOT . '/includes/hottpoic.func.php';
 }
-$article_middle = mysqld_selectall("SELECT * FROM".table('addon8_article')." where state =6 and (iscommend = 1 or ishot = 1) order by displayorder desc,id desc limit 4");
+$article_healty   = getIndexArticle('healty');
+$article_note     = getIndexArticle('note');
+$article_headline = getIndexArticle('headline');
+
 if (is_mobile_request()|| $_GET['wap'] == 1){
 $title = $cfg['shop_title'];
 $advs = mysqld_selectall("select * from " . table('shop_adv') . " where enabled=1 and type = 2 and page = 1 order by displayorder desc");
