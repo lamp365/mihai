@@ -87,9 +87,9 @@ switch ( $_GP['api'] ){
 		}
 		if ( $user_a['type'] == 3 ){
 			    $sendtype = 0;
-				$promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
+				$issendfree = 0;
 				if(empty($issendfree)){
-					   $promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
+					   $promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where type =1 and starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
 					   //========运费计算===============
 							foreach($promotion as $pro){
 								if($pro['promoteType']==1){
@@ -102,11 +102,12 @@ switch ( $_GP['api'] ){
 									}
 								}		
 						}
-				} 
-				$shiprice = shipcost($had_goods_total);
-				$shiprice = $shiprice['price'];
+				} 			
 				if ( $issendfree == 1 ){
                     $shiprice = 0;
+				}else{
+                    $shiprice = shipcost($had_goods_total);
+				    $shiprice = $shiprice['price'];
 				}
 		}else{
                if ( $had_goods_price  < 2000 ) {
@@ -127,6 +128,7 @@ switch ( $_GP['api'] ){
                 'goodsprice' => $had_goods_price,
 				'ordertype' => $ordertype,   // 订单类型，默认为一般订单72小时关闭
                 'status' => 0,
+				'remark'=> isset($_GP['remark'])?addslashes($_GP['remark']):'',
                 'paytype'=> 2,
                 'sendtype' => $sendtype,
                 'paytypecode' => 'alipay',
@@ -168,6 +170,7 @@ switch ( $_GP['api'] ){
                 'address_area' => $defaultAddress['area'],
                 'address_address' => $defaultAddress['address'],
 				'order_id'=> $orderid,
+				'remark'=> $data['remark'],
 				'freight' => $shiprice,
 				'order_sn'=> $ordersns,
 			    'order_price' => $had_goods_price,

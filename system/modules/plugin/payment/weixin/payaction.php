@@ -32,7 +32,7 @@ $package['appid'] = $settings['weixin_appId'];
 $package['mch_id'] = $configs['weixin_pay_mchId'];
 $package['nonce_str'] = random(8);
 $package['body'] = $goodtitle;
-$package['out_trade_no'] = $order['ordersn'] . '-' . $order['id'];
+$package['out_trade_no'] = $order['ordersn'];
 $package['total_fee'] = $order['price'] * 100;
 $package['spbill_create_ip'] = $_SERVER['REMOTE_ADDR'];
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
@@ -41,7 +41,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
     $package['openid'] = $weixin_openid;
 } else {
     $package['notify_url'] = WEBSITE_ROOT . 'notify/weixin_native_notify.php'; // todo: 这里调用$_W['siteroot']是在子目录下. 获取的是当前二级目录
-    $package['product_id'] = $order['ordersn'] . '-' . $order['id'];
+    $package['product_id'] = $order['ordersn'];
     $package['trade_type'] = 'NATIVE';
 }
 ksort($package, SORT_STRING);

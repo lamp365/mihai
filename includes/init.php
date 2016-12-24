@@ -6,17 +6,19 @@
 // +----------------------------------------------------------------------
 // | Author: 百家威信 <QQ:2752555327> <http://www.squdian.com>
 // +----------------------------------------------------------------------
-function get_http(){
-    if(!isset($_SERVER['HTTPS']))  return 'http://';
-    if($_SERVER['HTTPS'] === 1){  //Apache
-        return 'https://';
-    }elseif($_SERVER['HTTPS'] === 'on'){ //IIS
-        return 'https://';
-    }elseif($_SERVER['SERVER_PORT'] == 443){ //其他
-        return 'https://';
-    }
-    return 'http://';
-}
+// 避免加载的顺序错误，暂时先写在这里
+function is_https(){  
+    if(!isset($_SERVER['HTTPS']))  return FALSE;  
+    if($_SERVER['HTTPS'] === 1){  //Apache  
+        return TRUE;  
+    }elseif($_SERVER['HTTPS'] === 'on'){ //IIS  
+        return TRUE;  
+    }elseif($_SERVER['SERVER_PORT'] == 443){ //其他  
+        return TRUE;  
+    }  
+    return FALSE;  
+} 
+$http = is_https()?'https://':'http://';
 define('WEB_ROOT', str_replace("\\", '/', dirname(dirname(__FILE__))));
 define('SAPP_NAME', '福州小物网络科技有限公司');
 define('CORE_VERSION', 20151019);
@@ -27,7 +29,7 @@ define('TIMESTAMP', time());
 define('SYSTEM_IN', true);
 date_default_timezone_set('PRC');
 $document_root = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/'));
-define('WEBSITE_ROOT', get_http(). $_SERVER['HTTP_HOST'] . $document_root . '/');
+define('WEBSITE_ROOT', $http . $_SERVER['HTTP_HOST'] . $document_root . '/');
 define('RESOURCE_ROOT', WEBSITE_ROOT . 'assets/');
 define('SYSTEM_ROOT', WEB_ROOT . '/system/');
 define('ADDONS_ROOT', WEB_ROOT . '/addons/');

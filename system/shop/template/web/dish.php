@@ -230,7 +230,7 @@
 	 	   <div class="form-group">
 	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
 	 	   		<div class="col-sm-10">
-					说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明
+					
 				</div>
 
 	 	   </div>

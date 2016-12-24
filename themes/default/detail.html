@@ -395,7 +395,7 @@ function point(){
 					<link href="__RESOURCE__/recouse/css/flexslider.css"
 						rel="stylesheet" type="text/css" />
 					
-					<div id="viewport" class="viewport" style="margin-top:5px;position: relative;">
+					<div id="viewport" class="viewport">
 					<div class="crumbs f-cb">
                          <a href="http://www.hinrc.com/" target="_blank" >觅海全球购</a>&nbsp;&gt;&nbsp;<span class="ellipsis crumbs-title"><!--@php  echo $goods['title'];@--></span> </div>
                         <div class="detailtop">
@@ -419,9 +419,9 @@ function point(){
 										</ul>
 									</div>									
 								</div>								
-								<!--缩图结束-->								
+								<!--缩图结束-->
 							</div>
-							<ul style="overflow: hidden;position: absolute;top: 600px;">
+							<ul style="overflow: hidden;position: absolute;top: 818px;">
 								<li style="float: left;width:100px;text-align: center;cursor: pointer;" data-toggle="modal" data-target="#share-list">
 									<img src="__RESOURCE__/recouse/images/goodshare.png" style="margin-top: 4px;"/>
 									分享
@@ -432,15 +432,18 @@ function point(){
 								</li>
 							</ul>
 							<script>
-								var status = 0;//没有收藏
 								$("#collect").click(function(){
-									if(status == 0){
-										$(this).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect2.png");
-										status = 1;
-									}else{
-										$(this).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect.png");
-										status = 0;
-									}									
+									var obj = this;
+									var url = "<!--@php echo mobile_url('openshop_action',array('act'=>'collectgood','dishid'=>$_GP['id']));@-->";
+									$.getJSON(url,function(data){
+										alert(data.message);
+										if(data.errno != 200){
+											window.location.href="<!--@php echo mobile_url('login'); @-->"
+										}else{
+											$(obj).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect2.png");
+										}
+									},'json');
+
 								})
 							</script>
 							<!--点击分享弹出的-->

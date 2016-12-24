@@ -86,6 +86,8 @@ function findOneRule($tmpdata,$userIsHasRule)
     if(!empty($tmpdata)){
         foreach($userIsHasRule as $row){
             if($row['id'] == $tmpdata[0]['id']){
+                //记录管理员行为日志
+                recoderAdminBehaveLog($tmpdata);
                 $hasPower =  true;
             }
         }
@@ -98,4 +100,41 @@ function hasrule($modname, $moddo, $modop='')
     if (checkrule($modname, $moddo, $modop) == false) {
         message("您没有权限操作此功能");
     }
+}
+
+/**
+ * @content 记录后台管理员的行为日志表
+ * @param $ruledata
+ */
+function recoderAdminBehaveLog($ruledata){
+    //获取id
+    $ip = getClientIP();
+    $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.$ip;
+    $location = http_get($url);
+    $location = json_decode( $location,true);
+    $area = '';
+    if(!empty($location)){
+        $area = $location['province'].' '.$location['city'];
+    }
+    $name = '';
+    if($ruledata[0]['pid']!=0){
+        $prule = mysqld_select('select moddescription from '.table('rule')." where id={$ruledata[0]['pid']}");
+        $name  = $prule['moddescription'];
+    }
+
+    $data = array(
+      'name'    => $name,
+      'act_id'  => intval($_GET['id']),
+      'uid'     => $_SESSION['account']['id'],
+      'rolername'=> getAdminRolers($_SESSION['account']['id']),
+      'modname' => $ruledata[0]['modname'],
+      'moddo'   => $ruledata[0]['moddo'],
+      'modop'   => $ruledata[0]['modop'],
+      'message' => $ruledata[0]['moddescription'],
+      'ip'      => $ip,
+      'area'    => $area,
+      'createtime'=>time()
+    );
+    mysqld_insert('admin_behave_log',$data);
+
 }

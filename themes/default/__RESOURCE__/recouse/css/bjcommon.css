@@ -2629,7 +2629,7 @@ nav .catitmlst li .c2_category li{
    top:2px;
    z-index:901;
    height:398px;
-   border:1px solid #000;
+   /*border:1px solid #000;*/
    border-top:none;
    display:none;
   

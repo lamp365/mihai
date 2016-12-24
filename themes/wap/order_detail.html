@@ -305,7 +305,7 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 							<a  href="<!--@php echo mobile_url('backgood',array('orderid'=>$item['id'],'op'=>'aftersale_detail','order_good_id'=>$g['order_good_id'],'type'=>'money'));@-->" title="查看审核详情" class="btn btn-warning  btn-xs pull-right">退款审核</a>
 							<a href="<!--@php echo mobile_url('backgood',array('orderid'=>$item['id'],'op'=>'canclemoney','order_good_id'=>$g['order_good_id']));@-->" class="btn btn-danger  btn-xs pull-right" style="margin-right: 5px;">撤销申请</a>
 							<!--@php }else if($g['order_status'] == 2 && $g['order_type'] == 3){ @-->
-							<a href="<!--@php echo mobile_url('backgood',array('orderid'=>$item['id'],'op'=>'aftersale_detail','order_good_id'=>$g['order_good_id'],'type'=>'money'));@-->" title="查看退款详情" class="btn btn-warning  btn-xs pull-right">同意退款</a>
+							<a href="<!--@php echo mobile_url('backgood',array('orderid'=>$item['id'],'op'=>'aftersale_detail','order_good_id'=>$g['order_good_id'],'type'=>'money'));@-->" title="查看退款详情" class="btn btn-warning  btn-xs pull-right">退款中</a>
 							<!--@php }else if($g['order_status'] == -1 && $g['order_type'] == 3){ @-->
 							<a href="<!--@php echo mobile_url('backgood',array('orderid'=>$item['id'],'op'=>'aftersale_detail','order_good_id'=>$g['order_good_id'],'type'=>'money'));@-->" class="btn btn-danger btn-xs pull-right" title="查看退款详情">拒绝退款</a>
 							<!--@php }else if($g['order_status'] == -2 && $g['order_type'] == 3){ @-->
@@ -661,17 +661,14 @@ $(document).delegate(".upload_button_close",'click',function(){
 	$(function(){
 		//调用倒计时方法
 
-       //EndTime= new Date("<!--@php echo $group['end_time']; @-->");
-       EndTime= new Date("2016/11/24 16:10:00");
+		EndTime= new Date("<!--@php echo getOrderTopayLastTime($item); @-->");
+//       EndTime= new Date("2016/11/24 16:10:00");
       countDown(EndTime);			  
 	})
 	
 	//倒计时
 	 function countDown(time){
-	 	console.log(time);
-	 	console.log(new Date());
 		var sys_second = (time-new Date())/1000;
-		console.log(sys_second);
 		if(sys_second < 1){
 			$(".offered_h").html("00"); 
 		    $(".offered_m").html("00");

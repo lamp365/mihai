@@ -53,7 +53,11 @@ if ($operation == 'display') {
 	}
 
 	$status_arr = array(-2,-4,14,34,-121,-321);//退货，退款 退货完成  退款完成 退款关闭  退货关闭 另外处理
-	if ($status == '-99' || in_array($status,$status_arr)) {
+	// 对于全部订单消除关闭的订单
+	if ( $status == '-99' ){
+        $condition .= " AND A.status != -1 ";
+	}
+	if ( $status == '-99' || in_array($status,$status_arr)) {
 		//不用处理
 	}else{
 		$condition .= " AND A.status = '" . intval($status) . "'";

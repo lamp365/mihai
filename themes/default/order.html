@@ -164,13 +164,15 @@
 							<!--@php } @-->
 							<!--@php if(!isSureGetGoods($item['goods'],'order_type','order_status')){  @-->
 	                    	<span class="bts">
-	                    		<font color="red">售后处理中</font>
+	                    		<font color="red">售后中</font>
 	                    	</span>
 							<!--@php } @-->
 	                    </li>
 	                    <li class="h-text h-operate operate" style="vertical-align: middle;">
-						    <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status))@-->" class="bts" style="margin-top:10px;">订单详情</a>
+						    <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status))@-->" class="bts" style="margin-top:10px;">订单详情</a> 
+							<!--@php if ($item['ifcustoms'] == 1){ @-->
 						 	<a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'identity','fromstatus'=>$status))@-->" class="bts">清关材料</a>
+							<!--@php } @-->
 							<!--@php if ($item['status'] == 0 && $item['ordertype'] != 1){ @-->
                             <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'cancelsend','fromstatus'=>$status))@-->" class="bts">取消订单</a>
 							<!--@php } @-->

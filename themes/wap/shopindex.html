@@ -179,6 +179,10 @@
 				background: #fff;
 				padding-bottom: 1%;
 				box-sizing: border-box;
+				width: 47%;
+			}
+			div.wrap div.newnote{
+				visibility: hidden;
 			}
 			div.wrap div p{
 				padding:3% 3% 0 3%;
@@ -249,6 +253,7 @@
 				   <!--@php }}} @-->
 			  </ul>
 		</div>
+		<script type="text/javascript" src="__RESOURCE__/script/waterfloor.js"></script>
 		<div id="home-page"  style="overflow:hidden;">
 			<div role="main" class="ui-content ">
 				<div class="home-categories">
@@ -386,11 +391,8 @@
 						<!--@php } @-->
 						<!--@php } @-->
 					</ul>
-
-
-
 					<!--晒物笔记-->
-					<script type="text/javascript" src="__RESOURCE__/script/waterfloor.js"></script>
+					
 					<div class="category-container" style="background:rgb(243,243,243);padding-bottom: 10px;">
 						<div class="noteheadline" style="padding: 2% 15%;background: #fff;">
 							<img src="__RESOURCE__/recouse/images/noteheadline@3x.png" style="width: 100%;"/>
@@ -531,7 +533,7 @@
 				var perpic = piclist.split(";"); //字符串截取，成为数组
 				picurl     = perpic[0];
 			}
-			var li = '<div>'+
+			var li = '<div class="newnote">'+
 						'<a href="'+ url +'">'+
 							'<img src="'+picurl+'"/>'+
 						'</a>'+
@@ -545,7 +547,6 @@
 						'</p>'+
 					'</div>';
 			$(".wrap").append(li);
-			//append后按瀑布流布局排列
 			waterfall();
 		}
 	</script>

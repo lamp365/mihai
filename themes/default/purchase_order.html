@@ -167,7 +167,17 @@
 						<label><input type="radio" name="freight" value="0" checked>觅海供应链配送</label>
 						<label><input type="radio" name="freight" value="1">买家承运</label>
 					</div>
-                    <!--@php } @-->
+                    <!--@php }else{ @-->
+					    <!--@php if ( is_array($promotion) && !empty($promotion) ){ @-->
+                        <div class="exchangeRate-area">
+						<h3>免运费条件</h3>
+						     <!--@php foreach ( $promotion as $promotion_value ){ @-->
+							 
+					     	<p><!--@php if($promotion_value['promoteType']==0){ @-->商品件数满<span style="color:#FF0000"><!--@php echo $promotion_value['condition'];@--></span>件免运费<!--@php  }else{ @-->商品金额满<span style="color:#FF0000"><!--@php echo  $promotion_value['condition'];@--></span>元免运费 <!--@php  } @--></p>
+						    <!--@php } @-->
+						<!--@php } @-->
+					</div> 
+					<!--@php } @-->
 						<!--@php  if(!empty($addresslist)) {  @-->
 						<div id="addresslist">
 						    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
@@ -197,6 +207,13 @@
 								<button type="button" class="btn btn-danger" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax'))@-->')"> + 添加收货地址</button>
 							</div>
 						</div>
+					<div class="">
+					      <h3 style="border-bottom: 1px dotted #ccc; padding-bottom: 10px;">备注信息</h3>
+					      <ul class="member-browse-ul" style="padding:15px;">
+								<li><textarea name="remark" class="remark" style="width:100%;border:none;" type="text" value="" placeholder="亲，还有什么要交待的话，告诉我们吧！"></textarea></li>
+							</ul>
+					</div>
+
 					<div class="tiaokuan" style="border-bottom:1px dotted #ccc;">
 					      <h3>条款与条件</h3>
 					</div>
@@ -242,8 +259,8 @@
 								<div class="orderDetail-area">
 									<div class="order_title">	
 										订单号：<span class="confirm-order-num"></span>&nbsp;&nbsp;&nbsp;&nbsp;支付金额：<span class="confirm-order-price false"></span> 	
-										<div class="pull-right">
-									    	<select id="pays" class="" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;line-height:15px;font-size:12px; padding-right: 14px;text-align: left;">
+										<div class="pull-right" style="margin-right: 0">
+									    	<select id="pays" class="form-control" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;border: 1px solid #ccc!important;line-height:15px;font-size:12px;background: url('__RESOURCE__/recouse/images/arrow.png') no-repeat scroll right center transparent;  background:#fff\0;  padding-right: 14px;text-align: left;">
 												<option value="weixin"> 微信支付</option>
 												<option value="alipay" selected=""> 支付宝</option>
 											</select>
@@ -265,10 +282,14 @@
 										<th width="90px">合计</th>
 									</tr>
 								</table>
-								<div class="confirm-modal-price">
-									<p>商品应付总计：<span class="total-price"></span></p>
-									<p class="dispatchprice">运费：<span></span></p>
-									<p class="pay-total-price">应付金额：<span></span></p>
+								<div class="confirm-area">
+									<div class="confirm-modal-remark">
+									</div>
+									<div class="confirm-modal-price">
+										<p>商品应付总计：<span class="total-price"></span></p>
+										<p class="dispatchprice">运费：<span></span></p>
+										<p class="pay-total-price">应付金额：<span></span></p>
+									</div>
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -491,7 +512,7 @@ $(function(){
 	$(".next-step").on("click",function(e){
 		var checkedVal = $(".terms-accept").prop("checked");
 		var address_id = $(".this_address").attr("address_id");
-		
+		var remark = $(".remark").val();
 		var confirm_address_html;
 		var confirm_html = "";
 		var dataObj = "";
@@ -505,7 +526,7 @@ $(function(){
 			$(".confirm-table").html($(".confirm-table-tr"));
 			$(".ajax-loader").show();
 			$(".confirm-order-address").html("");
-			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',address_id:address_id,freight:freight},function(data){
+			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',remark:remark,address_id:address_id,freight:freight},function(data){
 				if( data.errno == 200){
 					$(".confirm-modal").modal({backdrop: 'static', keyboard: false});
 					order_id = data.message.order_id;
@@ -515,6 +536,7 @@ $(function(){
 					$(".confirm-modal-price .pay-total-price span").text('￥'+(parseFloat(dataObj.order_total_price)).toFixed(2));
 					$(".confirm-modal-price .total-price").text('￥'+(parseFloat(dataObj.order_price)).toFixed(2));
 					$(".confirm-modal-price .dispatchprice span").text('￥'+parseFloat((dataObj.freight)).toFixed(2));
+					$(".confirm-modal-remark").text(dataObj.remark);
 					confirm_address_html = '<span>'+data.message.address_province+'</span><span>'+data.message.address_city+'</span><span>'+data.message.address_area+'</span><span>'+data.message.address_address+'</span>'
 					$(".confirm-order-address").append(confirm_address_html);
 					$.each(data.message.order_goods,function(n,value){

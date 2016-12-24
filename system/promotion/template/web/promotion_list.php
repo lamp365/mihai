@@ -6,6 +6,7 @@
 			<th class="text-center" >ID</th>
 		 <th class="text-center" >名称</th>
     <th class="text-center"  >类型</th>
+	<th class="text-center">适用平台</th>
     <th class="text-center">开始时间</th>
     <th class="text-center" >结束时间</th>
     <th class="text-center" >满足条件</th>
@@ -17,6 +18,7 @@
 					<td class="text-center"><?php echo $index; ?></td>
 					<td class="text-center"><?php echo $item['pname']; ?></td>
           <td class="text-center"><?php echo empty($item['promoteType'])?'按订单数包邮':'满额包邮'; ?></td>
+		  <td class="text-center"><?php echo $item['type']==0?'商城':'代发'; ?></td>
            <td class="text-center"><?php echo date('Y-m-d H:i', $item['starttime']); ?></td>
           <td class="text-center"><?php echo date('Y-m-d H:i', $item['endtime']); ?></td>
           <td class="text-center">

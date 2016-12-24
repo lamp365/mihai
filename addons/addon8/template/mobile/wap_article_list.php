@@ -12,7 +12,7 @@
 	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
-	
+	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/waterfloor.js"></script>		
 </head>
 
 <style type="text/css">
@@ -81,6 +81,10 @@
 		background: #fff;
 		padding-bottom: 1%;
 		box-sizing: border-box;
+		width: 47%;
+	}
+	div.wrap div.newnote{
+		visibility: hidden;
 	}
 	div.wrap div p{
 		padding:3%;
@@ -294,7 +298,7 @@
 			</div>
 			<!--晒物笔记-->
 		<?php }else { ?>	
-			<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/waterfloor.js"></script>		
+			
 				<div class="wrap" id="wrap">
 
 					<?php if (is_array($article_list)){ foreach ($article_list as $key=>$val){ ?>								
@@ -491,7 +495,7 @@ function Load(art_data){
 				picurl     = perpic[0];
 			}
 
-			var li = '<div>'+
+			var li = '<div class="newnote">'+
 						'<a href="'+ url +'">'+
 							'<img src="'+picurl+'"/>'+
 						'</a>'+

@@ -45,19 +45,22 @@
         }
 
         function isLogin(msg){
+
             if(is_app){
                 //处理app登录
                 var ua = browserFun();
                 //is_login  0未登录 1已登录
 
                 if( ua == "ios" ){
-                    window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
-                    var msgObj = JSON.parse(msg);
-                    if( msgObj.openid !=""){
-                        is_login = 1;
-                        one_honus();
+                    if(msg == null || msg == ''){
+                        window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
                     }else{
-                        return;
+                        if( msg.openid !=""){
+                            is_login = 1;
+                            one_honus();
+                        }else{
+                            return;
+                        }
                     }
                 }else if( ua=="android" ){
                     window.JsInterface.login("get_ajax_android");
@@ -72,32 +75,14 @@
             }
         }
         function get_ajax_android(msg){
-            var msgObj = JSON.parse(msg);
-                if( msgObj.openid !=""){
-                    is_login = 1;
-                    one_honus();
-                }else{
-                    return;
-                }
+            if( msg.openid !=""){
+                is_login = 1;
+                one_honus();
+            }else{
+                return;
+            }
         }
-        function one_honus(msg){
-            $(".one_honus a").click(function(){
-                var _this = $(this);
-                get_ajax_url = _this.attr("data-url");
-                if( is_login == 0){
-                    isLogin();
-                }else{
-                    $.get(get_ajax_url,{},function(data){
-                        if(data.errno==200){
-                            tip(data.message,"autoClose")
-                        }else{
-                            tip(data.message,"autoClose")
-                        }
-                    },"json");
-                }
-            });
-        }
-        one_honus();
+
     </script>
 </head>
 <body>

@@ -73,8 +73,9 @@
 					}	
 						
 				}
+				$(".newnote").css("visibility","visible");
 				//为了首页的晒物笔记的外层有高度
 				var boxheight = $(".category-container:last-child").prop("scrollHeight")-400 || $(".mhnews-wap").prop("scrollHeight");			
-				window.setTimeout(function(){$("#wrap").css({"height":boxheight+"px"})},500);						 
+				window.setTimeout(function(){$("#wrap").css({"height":boxheight+"px"})},500);				
 			}		
 			

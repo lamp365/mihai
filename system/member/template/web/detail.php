@@ -112,6 +112,27 @@
 										 <input type="text" name="platform_url" id="platform_url" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['platform_url'];?>" />
 									 </div>
 								 </div>
+								  <div class="form-group">
+									 <label class="col-sm-2 control-label no-padding-left" > QQ:</label>
+
+									 <div class="col-sm-9">
+										 <input type="text" name="QQ" id="QQ" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['QQ'];?>" />
+									 </div>
+								 </div>
+								  <div class="form-group">
+									 <label class="col-sm-2 control-label no-padding-left" > 微信:</label>
+
+									 <div class="col-sm-9">
+										 <input type="text" name="weixin" id="weixin" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['weixin'];?>" />
+									 </div>
+								 </div>
+								  <div class="form-group">
+									 <label class="col-sm-2 control-label no-padding-left" > 旺旺:</label>
+
+									 <div class="col-sm-9">
+										 <input type="text" name="wanwan" id="wanwan" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['wanwan'];?>" />
+									 </div>
+								 </div>
 										      <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 积分:</label>
 

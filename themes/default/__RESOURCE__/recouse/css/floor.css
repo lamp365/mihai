@@ -7,16 +7,19 @@
 			height: 100%;
 		}
 		
-		#floor{
-			position: fixed;
-			top: 100px;
+	#floor{
+			position: absolute;		
+			top: 635px;	
 			left: 50%;
-			margin-left: -675px;
-			z-index: 1000;
+			/*margin-left: -677px;*/					
+			z-index: 998;
 			border: solid 1px #eaeaea;
-			display: none;
+			display: block;
 		}
-		
+		.floor_fixed{
+			position: fixed !important;
+			top: 15px !important;
+		}
 	#floor ul li{
 			list-style: none;
 			border-bottom: dashed 1px #eaeaea;			
@@ -47,12 +50,12 @@
 			text-decoration: none;
 		}
 		
-		#floor ul .activ{			
+		/*#floor ul .activ{			
 			color: red;
 			display: block;
 			position: absolute;
 			top: 0px;
 			left: 0px;
 			
-		}
+		}*/
 		

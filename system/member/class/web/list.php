@@ -62,7 +62,7 @@
       }
       
       $rank_model_list = mysqld_selectall("SELECT * FROM " . table('rank_model')." order by rank_level" );
-	  // ���Ի�Ա�б����������ƣ������޷����β�����Ӧ����Ȩ��������п���
+	  // ²»¶Ô»áÔ±ÁÐ±í½øÐÐÉí·ÝÏÞÖÆ£¬±ÜÃâÎÞ·¨¶þ´Î²Ù×÷¡£Ó¦¸ÃÔÚÈ¨ÏÞÄÄÀï½øÐÐ¿ØÖÆ
 			$list = mysqld_selectall('SELECT * FROM '.table('member')." where  dummy=0 and `istemplate`=0  and `status`=$status $condition "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
 	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where parent_roler_id=0 and dummy=0 and `istemplate`=0 $condition ",$conditiondata);
       $pager = pagination($total, $pindex, $psize);
@@ -73,9 +73,9 @@
                  $list[$index]['mess_name'] = mysqld_selectcolumn("SELECT title FROM " . table('shop_mess') . " WHERE id = :id", array(':id' => $item['mess_id']));
       		}
 
-            //�ҳ�ҵ��Ա
+            //ÕÒ³öÒµÎñÔ±
             $rolers   = mysqld_select("select id,name,createtime from ".table('rolers')." where type=1 and isdelete=0");
-            //ҵ��Ա��Ӧ�Ĺ���Ա������Щ
+            //ÒµÎñÔ±¶ÔÓ¦µÄ¹ÜÀíÔ±¶¼ÓÐÄÄÐ©
             $user_rolers  = '';
             if(!empty($rolers)){
                 $sql = "select r.id,r.rolers_id,r.uid,u.username from ".table('rolers_relation')." as r ";
@@ -83,7 +83,7 @@
                 $user_rolers = mysqld_selectall($sql);
             }
 
-            //��������ݽ�ɫ
+        
             $purchase = mysqld_selectall("select id,pid,name,createtime from ".table('rolers')." where type<>1 order by pid asc");
             if (! empty($purchase)) {
                 $childrens = '';

@@ -16,13 +16,17 @@
 		margin-right: 10px;
 		list-style: none;
 	}
+
 	.purchase-table-list li select{
-		height:26px;
+		height:34px;
+	}
+	.purchase-table-list li input{
+		height: 34px;
 	}
 	.purchase-table-list li span{
 		display: inline-block;
-		height:24px;
-		line-height: 24px;
+		height:34px;
+		line-height: 34px;
 	}
 	.add-more{
 		text-align: center;
@@ -34,6 +38,16 @@
 	}
 	.hide-tr{
 		display: none;
+	}
+	.quick-delivery .modal-dialog{
+		width: 800px;
+	}
+	.express-area{
+		text-align: left;
+		padding-bottom: 17px;
+	}
+	.quick-delivery-btn{
+		cursor: pointer;
 	}
 </style>
 <script>
@@ -145,7 +159,7 @@
 	<table  class="table purchase-table-list" style="width:100%;" align="center">
 		<tbody>
 			<tr style="background-color: #f9f9f9;">
-				<td style="height: 50px;border: 1px solid #ddd;">
+				<td style="border: 1px solid #ddd;">
 					<li ><span>订单编号：</span></li>
 					<li  >
 						<input name="ordersn" style="width:150px" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
@@ -193,10 +207,11 @@
 					</li>	
 						
 					<li >
-						<input type="submit" name="submit" value=" 查 询 " style="margin-top: -5px;" class="btn btn-primary">&nbsp;&nbsp;
-						<button type="submit" name="report" value="report" style="margin-top: -5px;" class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
-						<div style="display:inline-block;margin-top: -5px;" class="add-more-btn btn btn-primary show-more">更 多</div>
-						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
+						<input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary">&nbsp;&nbsp;
+						<button type="submit" name="report" value="report"  class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
+						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank" class="btn btn-info">打印订单</a>
+						<div style="display:inline-block;" class="add-more-btn btn btn-default show-more">更多选项</div>
+						
 					</li>
 					
 				</td>
@@ -329,8 +344,25 @@
 					<td align="center" valign="middle" style="vertical-align: middle;">
 				       <div>收货人：<?php  echo $item['address_realname'];?></div>
 					   <div>电话：<?php  echo $item['address_mobile'];?></div>
+					   <div>地址:<?php  echo $item['address_province'];?><?php  echo $item['address_city'];?><?php  echo $item['address_area'];?><?php  echo $item['address_address'];?></div>
 					   <?php if ( !empty($item['remark'])){ ?>
-					   <div><a type="button" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="<?php echo $item['remark']; ?>"><img src="images/tag.png" /></a></div>
+					   <div class="remark-btn-div"><a class="remark-modal" type="button" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="<?php echo $item['remark']; ?>"><img src="images/tag.png" /></a></div>
+					   <div class='modal fade remark-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+							<div class='modal-dialog modal-lg'>
+								<div class='modal-content'>
+									<div class='modal-header'> 
+										<button type='button' class='close' data-dismiss='modal'>
+											<span aria-hidden='true'>&times;</span>
+											<span class='sr-only'>Close</span>
+										</button>
+										<h4 class='modal-title' id='myModalLabel'>备注信息</h4>
+									</div>
+									<div class='modal-body'>
+										<?php echo $item['remark']; ?>
+									</div>
+								</div>
+							</div>
+						</div>
 					   <?php } ?>
 					</td>
 					<td align="center" valign="middle" style="vertical-align: middle;"><?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
@@ -339,7 +371,71 @@
 					</td>
 					<td align="center" valign="middle" style="vertical-align: middle;">
 					    <div>
-					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><span class="label label-warning quick-pay" style="margin-left:3px;background-color:#4edbf0">快捷支付</span><?php  } ?>
+					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
+                         <?php if ( checkAdmin() ){ ?>
+						 <span class="label label-warning quick-delivery-btn" style="margin-left:3px;background-color:#4edbf0">快捷发货</span>
+					     	<div class="modal fade quick-delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<form name="ships" method="post" action="">
+									  	<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+											<h4 class="modal-title" id="myModalLabel">快捷配送</h4>
+									  	</div>
+									  	<div class="modal-body">
+										  		<input type="hidden" name="order_id" value="<?php  echo $item['id'];?>">
+										  		<input type="hidden" name="" value="">
+										  		<div class="express-area">
+										  			<span>快递公司</span>
+										  			<select onchange="onchangcheckbox();" name="express" class="express">
+														<option value="-1" >请选择</option>
+														<?php   foreach($dispatchlist as $dispatchitem) { ?>
+														<option value="<?php echo $dispatchitem['code'];?>" data-name="<?php echo $dispatchitem['name'];?>"><?php echo $dispatchitem['name'];?></option>
+														<?php   } ?>
+													</select>
+													<input type='hidden'  name='expresscom' class='expresscom'  />
+													<span>快递单号</span>
+													<input type="text"  name="expressno"  class="expressno" placeholder="请输入快递单号"  value="">
+										  		</div>
+											 	<table class="table table-striped table-bordered table-hover">
+											 		<tr>
+											 			<th><input type="checkbox" class="check_all"></th>
+												 		<th>图片</th>
+												 		<th>产品名称</th>
+												 		<th>快递公司</th>
+												 		<th>快递单号</th>
+												 	</tr>
+												 	<?php 
+													    if ( is_array($item['goods']) ){
+															  $count_num = count($item['goods']);
+								                               foreach ( $item['goods'] as $goods ){
+													?>
+											 		<tr>
+											 			<td><?php if ( empty($goods['expresssn']) ){ ?><input type="checkbox" class="shipment_checkbox" name="shipment[]" value="<?php  echo $goods['aid'];?>"><?php } ?></td>
+												 		<td><img src="<?php echo getGoodsThumb($goods['gid']); ?>" height="40" /></td>
+												 		<td><?php echo $goods['title']; ?></td>
+												 		<td>
+												 			 <?php echo $goods['expresscom']; ?>
+												 		</td>
+												 		<td>
+												 			  <?php echo $goods['expresssn']; ?>
+												 		</td>
+												 	</tr>
+												 	<?php
+														   }
+												    }?>
+											 	</table>
+											
+										</div>
+										<div class="modal-footer">
+										  	<button type="submit" class="btn btn-primary sub-sure" onclick="return checkVal(this)">确定</button>
+											<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+										</div>
+										</form>
+									</div>
+								</div>
+						    </div>
+							<?php } ?>
 							<!--已经付钱的，团购中 或者团购未开奖 这叫做已支付，因为不在待发货中展示，其他的叫待发货-->
 							<?php  if($item['status'] == 1) {
 								if(checkGroupBuyCanSend($item)){
@@ -379,40 +475,70 @@
 				<?php  } } ?>
 			</tbody>
 		</table>
-		<div class="modal fade" id="quick-pay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-					<h4 class="modal-title" id="myModalLabel">快捷支付</h4>
-				  </div>
-				  <div class="modal-body">
-					 123
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				  </div>
-				</div>
-			  </div>
-        </div>
+		
 		<script type="text/javascript">
 			$(function(){
-				$(".quick-pay").click(function(){
-					$("#quick-pay").modal();
+				$(".quick-delivery-btn").click(function(){
+					$(this).siblings(".quick-delivery").modal();
 				});
 				$(".add-more-btn").click(function(){
 					$(".hide-tr").toggle();
 					if($(this).hasClass("show-more")){
 						$(this).removeClass("show-more");
-						$(".add-more-btn").text("收 起");
+						$(".add-more-btn").text("收起更多");
 					}else{
-						$(".add-more-btn").text("更 多");
+						$(".add-more-btn").text("更多查询");
 						$(this).addClass("show-more");
 					}
 					
+				});
+				$(".check_all").click(function(){
+	            	var checked = $(this).get(0).checked;
+	                $("input[type=checkbox]").prop("checked", checked);
+	                    
+	            });
+	            $(".remark-modal").click(function(){
+					$(this).parents(".remark-btn-div").siblings(".remark-detail").modal();
 				})
-			})
+			});
+			function checkVal(obj){
+				var express_val = $(obj).parents(".modal-footer").siblings(".modal-body").find(".express").val();
+				var expressno_val = $(obj).parents(".modal-footer").siblings(".modal-body").find(".expressno").val();
+				var check_num = 0;
+				var shipment_checkbox = $(obj).parents(".modal-footer").siblings(".modal-body").find(".shipment_checkbox");
+				console.log(shipment_checkbox);
+				shipment_checkbox.each(function(idnex,element){
+					if($(element).get(0).checked){
+						check_num++;
+					}
+				});
+				if( shipment_checkbox.length == 0 ){
+					check_num = 0;
+				}
+				if( express_val== -1 ){
+					alert("请选择快递公司");
+					return false;
+				}
+				if( expressno_val=="" ){
+					alert("请输入快递单号");
+					return false;
+				}
+				if( check_num==0 ){
+					alert("请选择配送商品");
+					return false;
+				}
+				$(".sub-sure").click(function(){
+					$('.quick-delivery').modal('hide')
+				});
+			}
 		</script>
 		<?php  echo $pager;?>
-
+<script>
+	function onchangcheckbox()
+	{
+            var obj = $(".express");  
+            var sel =obj.find("option:selected").attr("data-name");
+            $(".expresscom").val(sel);
+	}
+</script>
 <?php  include page('footer');?>

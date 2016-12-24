@@ -654,7 +654,7 @@ function getTime(sys_second,id){
 									</div>
 								</div>
 								<!--缩图结束-->								
-								<ul style="margin: 20px 0 0 0;overflow: hidden;">
+								<ul style="margin: 10px 0 0 0;overflow: hidden;">
 									<li style="float: left;width:100px;text-align: center;cursor: pointer;" data-toggle="modal" data-target="#share-list">
 										<img src="__RESOURCE__/recouse/images/goodshare.png" style="margin-top: 4px;"/>
 										分享
@@ -1424,15 +1424,17 @@ $(".share-list a").hover(function(){
 <script>
 	rightNavShow(1);
 	//点击商品幻灯片下面的收藏
-	var status = 0;//没有收藏
 	$("#collect").click(function(){
-		if(status == 0){
-			$(this).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect2.png");
-			status = 1;
-		}else{
-			$(this).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect.png");
-			status = 0;
-		}
+		var obj = this;
+		var url = "<!--@php echo mobile_url('openshop_action',array('act'=>'collectgood','dishid'=>$_GP['id']));@-->";
+		$.getJSON(url,function(data){
+			alert(data.message);
+			if(data.errno != 200){
+				window.location.href="<!--@php echo mobile_url('login'); @-->"
+			}else{
+				$(obj).find("img").attr("src","__RESOURCE__/recouse/images/goodcollect2.png");
+			}
+		},'json');
 		
 	})
 	

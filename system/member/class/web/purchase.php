@@ -70,6 +70,9 @@ if($op == 'list'){
         'parent_roler_id' => empty($_GP['parent_roler_id']) ? 0 : $_GP['parent_roler_id'],
         'son_roler_id'    => empty($_GP['son_roler_id']) ? 0 : $_GP['son_roler_id'],
         'platform_name'   => $_GP['platform_name'],
+		'QQ'=>$_GP['QQ'],
+		'weixin'=>$_GP['weixin'],
+		'wanwan'=>$_GP['wanwan'],
         'platform_url'    => $url
     ));
     message('操作成功！',refresh(),'success');

@@ -561,7 +561,7 @@ function substr_cut($str){
 /**
  * @param $uid
  * @return string
- * @content 获取业务员分配的是谁
+ * @content 获取管理员名字
  */
 function getAdminName($uid){
     $name = '';

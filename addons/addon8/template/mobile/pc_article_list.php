@@ -13,7 +13,12 @@
 	<script type="text/javascript"src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/js/swiper-3.4.0.jquery.min.js" type="text/javascript" charset="utf-8"></script>
-   	<link rel="stylesheet" type="text/css" href="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/css/swiper-3.4.0.min.css"/>   
+   	<link rel="stylesheet" type="text/css" href="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/css/swiper-3.4.0.min.css"/>
+	<style>
+		#note-detail .modal-dialog{
+			width: 700px;
+		}
+	</style>
 </head>
 
 
@@ -100,6 +105,8 @@
 		<!--页码-->
 		<?php echo $pager;?>
 	</div>
+
+
 	<!--觅海头条-->
 	<?php }else if($_GP['op'] == 'headline'){  ?>
 		<div class="viewport">
@@ -117,203 +124,176 @@
 				<!--左边的头条列表-->
 				<div class="headline_list">
 					<ul>
+						<?php if (is_array($article_list)){ foreach ($article_list as $val){ ?>
 						<!--显示10条-->
 						<li>
 							<!--头条图片-->
 							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
+								<?php if(empty($val['pic'])){  ?>
+									<a href="<?php echo mobile_url('article_list',array('op'=>'headline','id'=>$val['headline_id']));?>">
+										<p><?php echo date('d',$val['createtime']);?></p>
+										<p style="margin-top: 0"><?php echo date('m',$val['createtime']);?>月</p>
+									</a>
+								<?php }else{  ?>
+									<a href="<?php echo mobile_url('article_list',array('op'=>'headline','id'=>$val['headline_id']));?>">
+										<?php $pic = explode(';',$val['pic']); ?>
+										<img src="<?php echo download_pic($pic[0],200); ?>"/>
+									</a>
+								<?php }  ?>
+
 							</div>
 							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
+							<a href="<?php echo mobile_url('article_list',array('op'=>'headline','id'=>$val['headline_id']));?>">
+								<p class="title"><?php echo $val['title']; ?></p>
 							</a>
 						</li>
-						<li>
-							<!--头条没有图片，就显示默认日期样式-->
-							<div>	
-								<a href="#">							
-									<p>22</p>
-									<p style="margin-top: 0;">十一月</p>
-								</a>
-							</div>							
-							<a href="#">
-								<p class="title">吐槽一下你用过的护肤品吧</p>
-							</a>							
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
-						<li>
-							<!--头条图片-->
-							<div>
-								<a href="#">
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>	
-								</a>							
-							</div>
-							<!--头条标题-->
-							<a href="#">
-								<p class="title">给各位盘点一些可以入手的尖货吧！给各位盘点一些可以入手的尖货吧</p>
-							</a>
-						</li>
+						<?php }} ?>
 					</ul>
 				</div>
 				<!--右边的头条详情-->
 				<div class="headline_detail">						
 					<!--轮播图-->
 					<!--如果没有上传图片，那这一块就没有,直接显示文章-->
+					<?php if(!empty($one_article['pic'])){  ?>
 					<div class="swiper-container">
 			    		<div class="swiper-wrapper">
 			    			<!--一个slide是一张图片，最多出5张-->
-					        <div class="swiper-slide">					        	
-					        	<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>				        	
+					        <div class="swiper-slide">
+								<?php $pic = explode(';',$one_article['pic']); foreach($pic as $one) { ?>
+					        	<img src="<?php echo $one; ?>"/>
+								<?php } ?>
 					        </div>					        
 						</div>						
     					<div class="swiper-pagination"></div>
-    				</div> 
+    				</div>
+					<?php } ?>
     				<!--头条标题-->
     				<p>
-    					给各位盘点一些值得入手的尖货吧    					
+						<?php echo $one_article['title']; ?>
     				</p>
     				<div class="content">
     					<div class="info">
     						<!--头像，用户名-->
     						<div class="men">
-    							<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/tx.jpg" />
-    							<span>觅海掌门人</span>
+								<?php if(empty($one_article['avatar'])){ ?>
+    							<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/userface.jpg" />
+								<?php }else{ ?>
+									<img src="<?php echo $one_article['avatar']; ?>" />
+								<?php } ?>
+    							<span><?php echo $one_article['nickname']; ?></span>
     						</div>
     						<!--发表时间-->
     						<div class="time">
-    							<span>2016/12/19</span>
-    							<span>17:25</span>
+    							<span><?php echo date('Y/m/d  H:i',$one_article['createtime']);?></span>
     						</div>
     					</div>
     					<!--头条内容-->
     					<div class="detail">
-    						看见啊发货计划改U看见啊</br>发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊</br>发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊</br>发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊</br>发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
-    						看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U看见啊发货计划改U
+							<?php echo $one_article['description']; ?>
     					</div>
     					<!--评论-->
     					<div class="comment">
     						<!--点击img到app下载页-->
-    						<a href="">
+    						<a href="<?php echo mobile_url('appdown',array('name'=>'shopwap')); ?>" target="_blank">
     							<img class="todownapp" src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/hl_03.jpg"/>
     						</a>
-    						<span>评论20</span>
+    						<span>评论<?php echo $comment_num;?></span>
     						<!--评论列表-->
     						<ul>
     							<!--一个li是一条评论-->
+								<?php if(!empty($article_comment)){ foreach($article_comment as $comment){ ?>
     							<li>
     								<div class="meninfo">
     									<!--头像-->
-    									<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/tx.jpg" />
+										<?php if(empty($comment['avatar'])){ ?>
+											<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/userface.jpg" />
+										<?php }else{ ?>
+											<img src="<?php echo $comment['avatar']; ?>" />
+										<?php } ?>
     									<!--用户名-->
-    									<span>爱炫富的小哥</span>
+    									<span><?php echo $comment['nickname']; ?></span>
     									<!--评论时间-->
     									<span class="commenttime">
-    										2016/12/20 11:53
+    										<?php echo date("Y/m/d  H:i",$comment['createtime']); ?>
     									</span>
     								</div>
     								<!--评论内容-->
     								<div class="cdetail">
-    									这个多少钱？
+										<?php echo $comment['comment']; ?>
     								</div>
-    							</li>    							
+    							</li>
+								<?php }} ?>
     						</ul>
     					</div>    					
     				</div>    					
 				</div>
 			</div>			
 		</div>
-		
+		<!--用来存当前page-->
+		<input type="hidden" value="2" id="page"/>
+
+	<script>
+		//	头条图片滚动控制
+		var mySwiper = new Swiper ('.swiper-container', {
+			direction: 'horizontal',
+			loop: true,
+			autoplay:2000,
+			pagination: '.swiper-pagination'
+		})
+
+
+		//觅海头条，滚动条到底部时就加载剩下数据
+		$(function(){
+			$(window).scroll(function(){
+				var index = 1 ; //默认开关打开
+				if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+					if(index == 1){
+						index = 0; //关闭开关
+						var page = $("#page").val(); //第一次传的是2
+						var url = "<?php echo mobile_url('article_list',array('op'=>'headline'));?>"
+						$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
+							if(s.errno != 200){
+								//如果没有数据
+
+							}else{
+								$("#page").val(++page);
+								var art_data = s.message;
+								for(var i = 0;i < art_data.length;i++){
+									//循环拼接 html下一页数据
+									Append(art_data[i]);
+								}
+								index = 1;  //加载完后重新打开开关
+							}
+						}, 'json');
+					}
+
+				}
+			})
+		})
+
+		function Append(art_data){
+			var url = "<?php echo mobile_url('article_list',array('op'=>'headline'));?>";
+			 url = url+"&id="+art_data.headline_id;
+			var piclist = art_data.pic;
+			//时间戳是 art_data.createtime
+			var day = 15;
+			var month = '12月';
+			var picurl = '<p>'+ day +'</p><p>'+ month +'</p>';
+			if(piclist.length > 0){
+				//如果有图片换成图片
+				var perpic = piclist.split(";"); //字符串截取，成为数组
+				picurl     = '<img src="'+ perpic[0] +'" />';
+			}
+			var html = '<li>'+
+							'<div><a href="'+ url +'">'+ picurl +'</a></div>'+
+							+'<a href="'+ url +'"><p>'+ art_data.title +'</p></a>'+
+					  +'</li>';
+			$(".headline_list ul").append(html);
+
+		}
+	</script>
+
+
 	<!--晒物笔记-->
 	<?php }else { ?>
 		<!--引入首页觅海头条，笔记的样式文件-->
@@ -331,169 +311,55 @@
 			
 			<div class="notelist">
     		<ul>
-    			<li  data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/bg3.png"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<li  data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<li  data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<li  data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<li  data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<li  data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<li data-toggle="modal" data-target="#note-detail">
-    				<!--笔记图片-->
-    				<a href="#" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--图片下面的东西-->
-    				<div class="noteinfo">
-    					<!--笔记详情-->
-    					<a href="#">
-	    					<p>
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    					</p>
-    					</a>
-    					<!--头像，用户名-->
-    					<div>
-    						<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
-    						<h3>觅海掌门人</h3>
-    					</div>
-    				</div>
-    			</li>
-    			<!--最后一个笔记-->
-    			<li>
-    				<!--笔记图片-->
-    				<a href="#" data-toggle="modal" data-target="#note-detail" class="notepic">
-    					<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>
-    				</a>
-    				<!--查看更多-->
-    				<div class="lookmore">
-    					<div>
-    						<span></span>
-    						<span></span>
-    						<span></span>
-    					</div>    					
-    					<p>查看更多笔记</p>
-    				</div>
-    			</li>
+				<?php if (is_array($article_list)){ $j = 0; $num = count($article_list); foreach ($article_list as $key=>$val){  $j++; ?>
+					<?php if($j == 8 || ($num<=8 && $j == $num)){ ?>
+						<!--最后一个笔记-->
+						<li>
+							<!--笔记图片-->
+							<a href="javascript:;" data-toggle="modal" data-target="#note-detail" class="notepic">
+								<?php $pic = explode(';',$val['pic']); ?>
+								<img src="<?php echo download_pic($pic[0],300); ?>"/>
+							</a>
+							<!--查看更多-->
+							<div class="lookmore">
+								<div>
+									<span></span>
+									<span></span>
+									<span></span>
+								</div>
+								<p>查看更多笔记</p>
+							</div>
+						</li>
+					<?php }else{ ?>
+						<li  class="show_this_note_modal" data-id="<?php echo $val['note_id']; ?>">
+							<!--笔记图片-->
+							<a href="javascript:;" class="notepic">
+								<?php $pic = explode(';',$val['pic']); ?>
+								<img src="<?php echo download_pic($pic[0],300); ?>"/>
+							</a>
+							<!--图片下面的东西-->
+							<div class="noteinfo">
+								<!--笔记详情-->
+								<a href="javascript:;">
+									<p>
+										<?php echo msubstr($val['description'],0,120); ?>
+									</p>
+								</a>
+								<!--头像，用户名-->
+								<div>
+									<?php if(empty($val['avatar'])){ ?>
+										<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />
+									<?php }else{ ?>
+										<img src="<?php echo $val['avatar']; ?>" />
+									<?php } ?>
+									<h3><?php echo $val['nickname']; ?></h3>
+								</div>
+							</div>
+						</li>
+					<?php } ?>
+
+				<?php }} ?>
+
     		</ul>     		
     	</div>
     	<!--点击笔记弹出的-->
@@ -501,139 +367,197 @@
 				<div class="modal-dialog">
 					<div class="modal-content">	
 						<div class="modal-header">
-							<!--头像-->
-							<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />
+							<!--<img src="<?php /*echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; */?>/recouse/images/f5.png" />
 							<div class="info">
 								<p>用户名</p>
-								<!--发表日期-->
 								<p>2016/12/21 09:59</p>
-							</div>														
-							<img class="comment" src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/comment.png">
-							<!--评论数量-->
-							<span>20</span>
+							</div>
+							<img class="comment" src="<?php /*echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; */?>/recouse/images/comment.png">
+							<span>20</span>-->
 						</div>	
 											  	
 					  	<div class="modal-body">
 							<!--笔记详情-->
 							<!--内容多时出现滚动条-->
-							<p>								
-								疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
-	    						疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
-	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果
+							<p class="note_content">
+								<!--疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看
+	    						见过卡结果疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看见过卡结果-->
+
 							</p>
 							<!--笔记图片,最少一张，最多五张,全部排列下去-->
-							<img src="../../../../themes/default/__RESOURCE__/912865945439541.jpg"/>	
+							<div class="note_pic">
+
+							</div>
 							<!--评论-->
-							<a href="">
-    							<img class="todownapp" src="http://dev-hinrc.com/themes/default/__RESOURCE__/recouse/images/hl_03.jpg">
+							<a href="<?php echo mobile_url('appdown',array('name'=>'shopwap')); ?>" target="_blank">
+    							<img class="todownapp" src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/hl_03.jpg">
     						</a>	
-    						<span style="margin-top: 20px;display: block;">评论20</span>
+    						<span style="margin-top: 20px;display: block;">评论 <span class="note_comment"></span></span>
     						<!--评论列表-->
-    						<ul>
+    						<ul class="note_comment_list">
     							<!--一个li是一条评论-->
-    							<li>
+    							<!--<li>
     								<div class="meninfo">
-    									<!--头像-->
-    									<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/tx.jpg" />
-    									<!--用户名-->
-    									<span>爱炫富的小哥</span>
-    									<!--评论时间-->
+    									<img src="<?php /*echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; */?>/recouse/images/tx.jpg" />
+    									<span class="">爱炫富的小哥</span>
     									<span class="commenttime">
     										2016/12/20 11:53
     									</span>
     								</div>
-    								<!--评论内容-->
     								<div class="cdetail">
     									这个多少钱？
     								</div>
-    							</li>   													
+    							</li>   		-->
     						</ul>					
 						</div>
 					</div>
 				</div>
 			</div>   		
 	</div>
-	<?php } ?>				
+	<!--用来存当前page-->
+	<input type="hidden" value="2" id="page"/>
+
+	<script>
+		$(document).delegate('.show_this_note_modal','click',function(){
+			var id  = $(this).data('id');
+			var url = "<?php echo mobile_url('article',array('op'=>'ajax_note'));?>";
+			url = url + "&id="+ id;
+			$.getJSON(url,function(data){
+				if(data.errno == '200'){
+					var obj = data.message;
+					if(obj.avatar == ''){
+						var face = "<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/userface.png"
+					}else{
+						var face = obj.avatar;
+					}
+					var comment_logo = "<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/comment.png";
+					$("#note-detail").modal('show');
+					var html_head = '<img src="'+ face +'" />'+
+									'<div class="info">'+
+										'<p>'+ obj.nickname +'</p>'+
+										'<p>'+ Stringtotime(obj.createtime) +'</p>'+
+									'</div>'+
+									'<img class="comment" src="'+ comment_logo +'" />'+
+									'<span>'+ obj.comment_num +'</span>';
+					var piclist = obj.pic;
+					var perpic = piclist.split(";"); //字符串截取，成为数组
+					var picurl = "";
+					for(var j=0;j<perpic.length;j++){
+						if(perpic[j] != ""){
+							picurl += '<img src="'+perpic[j]+'"/>';
+						}
+					}
+					$("#note-detail .modal-header").html(html_head);
+					$("#note-detail .note_content").html(obj.description);
+					$("#note-detail .note_pic").html(picurl);
+					$("#note-detail .note_comment").html(obj.comment_num);
+
+					var comment_list = obj.article_comment;
+					var comment_list_html = '';
+					for(var i= 0; i<comment_list.length; i++){
+						var item = comment_list[i];
+						if(item.avatar == ''){
+							var face = "<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/userface.png"
+						}else{
+							var face = item.avatar;
+						}
+						comment_list_html =  comment_list_html +'<li>'+
+												'<div class="meninfo">'+
+													'<img src="'+  face +'" />'+
+													'<span class="">'+ item.nickname +'</span>'+
+													'<span class="commenttime">'+ Stringtotime(item.createtime) +'</span>'+
+												'</div>'+
+												'<div class="cdetail">'+ item.comment +'</div>'+
+											'</li> ';
+					}
+					$("#note-detail .note_comment_list").html(comment_list_html);
+				}
+			},'json')
+		})
+
+		var index = 1; //默认开关状态是打开
+		//点击查看更多笔记，直接在当前页出现隐藏的笔记，点击一次出三行
+		$(".lookmore").click(function(){
+			if( index == 1){
+				index = 0; //关闭开关
+				var page = $("#page").val(); //第一次传的是2
+				var url = "<?php echo mobile_url('article_list',array('op'=>'note'));?>"
+				$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
+					if(s.errno != 200){
+						//如果没有数据
+
+					}else{
+						$("#page").val(++page);
+						var art_data = s.message;
+						for(var i = 0;i < art_data.length;i++){
+							//循环拼接 html下一页数据
+							LoadHtml(art_data[i]);
+						}
+						index = 1;  //加载完后重新打开开关
+					}
+				}, 'json');
+			}
+		})
+		
+		function LoadHtml(art_data){
+			var piclist = art_data.pic;
+			var picurl = "";
+			if(piclist.length > 0){
+				var perpic = piclist.split(";"); //字符串截取，成为数组
+				picurl     = perpic[0];
+			}
+			if(art_data.avatar == ''){
+				var face = '<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/userface.png';
+			}else{
+				var face = art_data.avatar;
+			}
+			var note = '<li class="show_this_note_modal" data-id="'+ art_data.note_id +'">'+
+							'<a href="javascript:;"  class="notepic">'+
+								'<img src="'+ picurl +'"/>'+
+							'</a>'+
+							'<div class="noteinfo">'+
+								'<a href="javascript:;">'+
+									'<p>'+ art_data.description +'</p>'+
+								'</a>'+
+								'<div>'+
+									'<img src="'+ face +'" />'+
+									'<h3>'+ art_data.nickname +'</h3>'+
+								'</div>'+
+							'</div>'+
+						'</li>';
+			$(".viewport .notelist ul li:last-child").before(note);
+		}
+
+		var id = "<?php echo $_GP['id'];?>";
+		if(id != ''){
+			$(".show_this_note_modal").each(function(){
+				var this_id = $(this).data('id');
+				if(this_id == id){
+					$(this).click();
+				}
+			})
+		}
+		//将后台返回的时间戳格式化为时间格式
+		function Stringtotime(time){
+			var datetime = new Date();
+			datetime.setTime(time);
+			var year = datetime.getFullYear();
+			var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+			var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+			var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+			var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+			var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds(); 
+			return year + "/" + month + "/" + date + " &nbsp " + hour + ":" + minute + ":" + sec + "";
+		}
+	</script>
+	<?php } ?>
+
+
 	<?php  include themePage('footer'); ?>		      	
 
 </body>
 <script>
-	//	头条图片滚动控制	       
-	  var mySwiper = new Swiper ('.swiper-container', {	
-	  	direction: 'horizontal',					   
-	    loop: true,
-	    autoplay:2000,
-	    pagination: '.swiper-pagination',							    					     	    
-	  }) 
-	  
-	  //如果头条轮播图没有图片，就将那块去掉
-	 var len = $(".swiper-wrapper .swiper-slide").length;	  
-	  if(len == 0){
-	  	$(".swiper-container").hide();
-	  }   
-	  
-	  //点击查看更多笔记，直接在当前页出现隐藏的笔记，点击一次出三行
-	$(".lookmore").click(function(){
-		var note = '<li data-toggle="modal" data-target="#note-detail">'+
-			'<!--笔记图片-->'+
-			'<a href="#"  class="notepic">'+
-				'<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/912865945439541.jpg"/>'+
-			'</a>'+
-			'<!--图片下面的东西-->'+
-			'<div class="noteinfo">'+
-				'<!--笔记详情-->'+
-				'<a href="#">'+
-					'<p>'+
-						'疯啦司空见惯卡怪啊睡觉噶空间更舒服案件管理卡就噶时间啊看'+	    						
-					'</p>'+
-				'</a>'+
-				'<!--头像，用户名-->'+
-				'<div>'+
-					'<img src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/images/f5.png" />'+
-					'<h3>觅海掌门人</h3>'+
-				'</div>'+
-			'</div>'+
-		'</li>';    			
-		$(".viewport .notelist ul li:last-child").before(note);    			
-	})
-	
-	//只有头条二级页滚动的控制
-	/*$(document).scroll(function(){
-	 	var h = $(".headline_detail").height();//获取右边头条详情模块的高度		
-        var top = $(document).scrollTop();//获取滚动条距离顶部的位置
-        var bottom = $(document).height()-$(window).height()-278;//获取，滚动到出现底部栏时的位置
-        
-        if(300 <= top <= bottom){        	
-        	$(".headline_detail").addClass("headline_detail_fixed");
-        }
-        //如果头条详情模块的高度大于，且，滚动条滚动到出现底部栏时，就不要固定了
-      	if(h > 788 && top > bottom){     	
-     		$(".headline_detail").removeClass("headline_detail_fixed");
-      	} 
-      	if(top < 300){
-      		$(".headline_detail").removeClass("headline_detail_fixed");
-      	}  	
-   }); */ 
-   
-  //滚动条到底部时就加载剩下数据
-  $(function(){	
-		$(window).scroll(function(){
-			console.log($(document).scrollTop())	
-			console.log($(document).height() - $(window).height())		
-			if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-				alert();
-			}
-		})
-	})
+
 </script>
 
 </html>

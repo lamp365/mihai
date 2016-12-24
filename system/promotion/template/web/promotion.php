@@ -17,7 +17,15 @@
 				
 										</div>
 									</div>
-									
+							 <div class="form-group">
+								<label class="col-sm-2 control-label no-padding-left" > 适用区域</label>
+										<div class="col-sm-9">	
+										     <select name="type">
+                                                   <option value="0" <?php if($pro['type']==0){ echo 'selected'; } ?>>商城系统</option>
+												   <option value="1" <?php if($pro['type']==1){ echo 'selected'; } ?>>代发系统</option>
+											 </select>
+										</div>
+									</div>		
 									
 									   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > <label for=""><span id='money' <?php if($pro['promoteType']==0){ ?> style='display:none;'<?php } ?>>*满足金额(元) </span>	<span id='num'  <?php if($pro['promoteType']==1){ ?>style='display:none;'<?php } ?> >*满足数量(件)</span></label></label>

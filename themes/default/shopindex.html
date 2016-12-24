@@ -314,11 +314,11 @@ video {
    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/floor.css" />
    <div id="floor">
 		<ul>
-			<li><a href="JavaScript:void(0);" class="activ" data-id="1">健康文化</a> </li>
-			<li><a href="JavaScript:void(0);" class="activ" data-id="2">觅海头条</a> </li>
-			<li><a href="JavaScript:void(0);" class="activ" data-id="3">精选笔记</a> </li>
-			<li><a href="JavaScript:void(0);" class="activ" data-id="4">今日限购</a> </li>
-			<li><a href="JavaScript:void(0);" class="activ" data-id="5">热门品牌</a> </li>					
+			<li><a href="JavaScript:void(0);"  data-id="1">健康文化</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="2">觅海头条</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="3">精选笔记</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="4">今日限购</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="5">热门品牌</a> </li>					
 		</ul>
 	</div>
 	<script type="text/javascript">
@@ -328,20 +328,24 @@ video {
 				var _index = parseInt($(this).find("a").attr("data-id"));				
 				var _top = $(".louti"+_index).offset().top;				
 				$("body,html").stop().animate({scrollTop:_top},500);
-			})			
-			var sc=$(document);//得到document文档对象。			
-			window.onscroll = function(){
-				 //获取滚动元素对应的索引			
-				 var index=Math.floor(sc.scrollTop()/600);
-				if(sc.scrollTop()>=500){
-					$("#floor").fadeIn();
-				}else{
-					$("#floor").fadeOut();
-				}				
-				
-				$("#floor ul li").eq(index).siblings().find("a").removeClass("activ");
-				$("#floor ul li").eq(index).find("a").addClass("activ");
-			}			
+			})		
+			//楼梯的left
+			var _width = -($(".viewport").eq(2).width() / 2 + 82);
+			$("#floor").css("margin-left",_width);
+			console.log($(".viewport").eq(1))
+			//楼梯的top
+			var distanceTop ;
+			if($(".tempWrap").height()){
+				distanceTop = $(".slider").offset().top+$(".slider").height()+10;
+			}else{
+				distanceTop = $(".topTabbox").offset().top+140;
+			}
+			$(window).scroll(function(){   
+				if($(window).scrollTop() > distanceTop)
+					$("#floor").addClass("floor_fixed");
+				else 
+					$("#floor").removeClass("floor_fixed");	
+			});
 		})
 	</script>
 	<script> index = 1;</script>
@@ -583,8 +587,8 @@ video {
     	<!--笔记列表，默认出两行，第二行的最后一个只显示图片，用来点击显示更多笔记，显示更多笔记不用跳转新页面-->
     	<div class="notelist">
     		<ul>
-				<!--@php if(!empty($article_note)){  $j=0; foreach($article_note as $val){ $j++; @-->
-					<!--@php  if($j == 8){ @-->
+				<!--@php if(!empty($article_note)){  $j=0; $num = count($article_note); foreach($article_note as $val){ $j++; @-->
+					<!--@php  if($j == 8 || ($num<=8 && $j == $num)){ @-->
 						<!--最后一个笔记-->
 						<li>
 							<!--笔记图片-->
@@ -638,7 +642,7 @@ video {
     		//点击查看更多笔记，直接在当前页出现隐藏的笔记，点击一次出三行
     		$(".lookmore").click(function(){
     			var url = "<!--@php echo mobile_url('article_list',array('op'=>'note','name'=>'addon8'));@-->";
-				window.location.href = url;
+				window.open(url);
     		})
     	</script>
     </div>

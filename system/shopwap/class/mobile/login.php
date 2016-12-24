@@ -7,20 +7,20 @@ if ( $is_login ){
 }
 if (checksubmit("submit")) {
     if (empty($_GP['mobile'])) {
-        message("请输入手机号");
+        message("请输入手机号",refresh(),'error');
     }
     if (empty($_GP['pwd'])) {
-        message("请输入密码");
+        message("请输入密码",refresh(),'error');
     }
     $member = get_session_account();
     $oldsessionid = $member['openid'];
     $unionid      = $member['unionid'];
     $loginid = member_login($_GP['mobile'], $_GP['pwd']);
     if ($loginid == - 1) {
-        message("账户已被禁用！");
+        message("账户已被禁用！",refresh(),'error');
     }
     if (empty($loginid)) {
-        message("用户名或密码错误");
+        message("用户名或密码错误",refresh(),'error');
     } else {
         integration_session_account($loginid, $oldsessionid,$unionid);
         header("location:" . to_member_loginfromurl());

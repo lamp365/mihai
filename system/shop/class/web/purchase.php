@@ -5,8 +5,7 @@ $hasaddon16=false;
 $normal_order_list = array();
 $express_order_list = array();
 $addon16=mysqld_select("SELECT * FROM " . table('modules') . " WHERE name = 'addon16' limit 1");
-if(!empty($addon16['name']))
-{
+if(!empty($addon16['name'])){
 	if(file_exists(ADDONS_ROOT.'addon16/key.php'))
 	{
 		$normal_order_list = mysqld_selectall("SELECT * FROM " . table('addon16_printer') . " WHERE  printertype=0 order by isdefault desc");
@@ -14,7 +13,15 @@ if(!empty($addon16['name']))
 		$hasaddon16=true;
 	}
 }
+// 进行发货处理
+if ( isset($_GP['shipment']) && isset($_GP['express']) && ($_GP['express'] != -1) && !empty($_GP['expressno']) && !empty($_GP['order_id']) ){
+	   $ship_Data =  array('expresscom'=>$_GP['expresscom'], 'expresssn'=>$_GP['expressno'], 'express'=>$_GP['express']);
+       foreach ( $_GP['shipment'] as $shipment_id ){
+            mysqld_update('shop_order_goods', $ship_Data, array('orderid'=>$_GP['order_id'], 'goodsid'=> $shipment_id));
+	   }
+}
 $mess_list = array();
+$dispatchlist = mysqld_selectall("SELECT * FROM " . table('dispatch')." where sendtype=0" );
 $_mess    =  mysqld_selectall("SELECT * FROM " . table('shop_mess'));
 if ($operation == 'display') {
 	$pindex = max(1, intval($_GP['page']));
@@ -58,15 +65,15 @@ if ($operation == 'display') {
 	$status_arr = array(-2,-4,14,34,-121,-321);//退货，退款 退货完成  退款完成 退款关闭  退货关闭 另外处理
 	if(in_array($status,$status_arr)){
 		//不处理
-
 	}else if ($status == '-110' ) {
 		//平台发货订单  我方承运
-		$condition .= " AND A.sendtype=0";
+		$condition .= " AND A.sendtype=0 AND A.status != -1 ";
 	}else if($status == '-100'){
 		//为自提的订单
-		$condition .= " AND A.sendtype=1";
+		$condition .= " AND A.sendtype=1 AND A.status != -1 ";
 	}else if($status == '-99'){
 		//全部  不做处理
+		$condition .= " AND A.status != -1 ";
 	}else{
 		$condition .= " AND A.status = '" . intval($status) . "'";
 	}
@@ -112,7 +119,7 @@ if ($operation == 'display') {
 	$total = mysqld_selectcolumn($sqlNum);
 	$pager = pagination($total, $pindex, $psize);
 	foreach ( $list as $id => $item) {
-		$sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
+		$sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type,o.expresssn,o.express,o.expresscom ";
 		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid from ".table('shop_order_goods')." as o ";
 		$sql .= " left join ".table('shop_dish')." as h ";
 		$sql .= " on o.goodsid=h.id ";

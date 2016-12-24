@@ -31,9 +31,90 @@
     <link rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/fontawesome3/font-awesome-ie7.min.css">
     <![endif]-->
 
-
     <style>
         body{background-color: #F8FAFC;}
+        .head-second-nav{
+            background-color: #fff;
+            color: #fff;
+            width: 100%;
+            border-bottom: #ccc 1px solid;
+            padding: 6px 0;
+            overflow: hidden;
+            border-top: 1px solid #ccc;
+        }
+        .ace-nav>li>a{
+            background-color: #438eb9;
+        }
+        .ace-nav>li{
+            line-height: 35px;
+            height: 35px;
+            border-left: none;
+        }
+        .light-blue,.ace-nav>li.light-blue>a{
+           background-color: #438eb9!important; 
+        }
+        .user-info small{
+            display: inline-block;
+            font-size: 12px;
+        }
+        .navbar .navbar-header{
+            position: relative;
+        }
+        .ace-nav>li.login-out{
+            position: absolute!important;
+            right: 0;
+            bottom: -25px;
+            height: 25px;
+            line-height: 25px;
+            font-size: 12px;
+        }
+        .login-out a{
+            border: 1px solid #fff;
+        }
+        .login-out .icon-off{
+            font-size: 12px!important;
+        }
+        .head-second-nav ul{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            padding-left: 5px;
+            box-sizing: border-box;
+        }
+        .head-second-nav ul li{
+            list-style: none;
+            float: left;
+            padding: 0 10px;
+            cursor: pointer;
+            height: 24px;
+            line-height: 24px;
+            font-size: 12px;
+            background: #0d775f;
+            margin-left: 6px;
+        }
+        .head-second-nav ul li a{
+            color: #fff;
+            text-decoration: none;
+        }
+        .head-second-nav ul li:hover{
+            background-color: #39a3a7;
+        }
+        .nav-active{
+            background-color: #39a3a7; 
+        }
+        .navbar{
+            height: 70px;
+        }
+        .ace-nav>li>a:hover, .ace-nav>li>a:focus{
+            background-color: #438eb9;
+        }
+        .navbar-brand{
+            height: 70px;
+            line-height: 45px;
+        }
+        .user-info{
+            top: 9px;
+        }
     </style>
     <script type="text/javascript">
     	function navtoggle(stitle)
@@ -62,18 +143,18 @@
 <div class="navbar navbar-default" id="navbar">
     <div class="navbar-container" id="navbar-container">
         <div class="navbar-header pull-left">
-            <a href="#" class="navbar-brand">
+            <a href="" class="navbar-brand">
                 <small>
                     <i class="icon-road"></i>
                     <span id='accountname'><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></span>
                 </small>
             </a>
-            <span style="display: inline-block;line-height: 50px;color: #fff"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span>
+            <span style="display: inline-block;line-height: 70px;color: #fff"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span>
             <!-- /.brand -->
         </div><!-- /.navbar-header -->
 
         <div class="navbar-header pull-right" role="navigation">
-            <ul class="nav ace-nav" style="height:45px">
+            <ul class="nav ace-nav">
                 <li class="Larger">
                     <a class="dropdown-toggle"  href="<?php  echo WEBSITE_ROOT.'index.php';?>" target="_blank">
                         <i class="icon-mobile-phone"></i>
@@ -82,7 +163,7 @@
                 </li>
                 <li class="Larger">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
-                  
+                        <i class="icon-strikethrough"></i>
                             <small>修改汇率</small>                          
        
                         <!-- <i class="icon-caret-down"></i> -->
@@ -106,14 +187,6 @@
                         <span>修改密码</span>
                     </a>
                 </li>
-                <li class="Larger">
-                    <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
-                        <i class="icon-off"></i>
-                        <span>退出系统</span>
-                    </a>
-                </li>
-
-
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
        				<span class="user-info">
@@ -133,11 +206,25 @@
                         </li>
                     </ul>
                 </li>
+                <li class="Larger login-out">
+                    <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
+                        <i class="icon-off"></i>
+                        <span>退出系统</span>
+                    </a>
+                </li>
             </ul><!-- /.ace-nav -->
         </div><!-- /.navbar-header -->
     </div><!-- /.container -->
 </div>
-
+<div class="head-second-nav">
+    <ul>
+        <li class="nav-active"><a href="#">订单管理</a></li>
+        <li><a href="#">宝贝列表</a></li>
+        <li><a href="#">文章管理</a></li>
+        <li><a href="#">评论管理</a></li>
+        <li><a href="#">会员管理</a></li>
+    </ul>
+</div>
 
 
 <!-- 头部 end -->
@@ -820,6 +907,12 @@
                                         菜单节点
                                     </a>
                                 </li>
+                                <li>
+                                    <a onclick="navtoggle('权限管理 - > 行为日志 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'behave','op' => 'list'))?>" target="main" >
+                                        <i class="icon-double-angle-right"></i>
+                                        行为日志
+                                    </a>
+                                </li>
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::ROLE_MANGE] as $row){
                                     $zi = "权限管理 - > {$row['moddescription']}";
@@ -993,6 +1086,10 @@
         $(".modify-record").on("click",function(){
             $(".modify-record-modal").modal();
         });
+        $(".head-second-nav li").click(function(){
+            $(this).siblings("li").removeClass("nav-active");
+            $(this).addClass("nav-active");
+        })
     })
 </script>
 </div>

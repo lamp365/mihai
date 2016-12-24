@@ -2,12 +2,11 @@
 $op = empty($_GP['op']) ? 'healty' : $_GP['op'];
 $cfg=globaSetting();
 
-    $psize =  5;
-	$pindex = max(1, intval($_GP["page"]));
-    $limit = ' limit '.($pindex-1)*$psize.','.$psize;
-
    if($op == 'healty'){
 	   //健康文化
+	   $psize =  12;
+	   $pindex = max(1, intval($_GP["page"]));
+	   $limit = ' limit '.($pindex-1)*$psize.','.$psize;
 	   $title  = '健康文化';
 	   $sql    = "SELECT * FROM".table('addon8_article')." where state =6  order by displayorder desc,id desc {$limit}";
 	   $sqlnum = "SELECT count(id) FROM".table('addon8_article')." where state =6";
@@ -16,8 +15,15 @@ $cfg=globaSetting();
 	   }else{
 		   $one_sql = "SELECT * FROM " . table('addon8_article')." where id= {$_GP['id']} and state =6";
 	   }
+	   if(!is_mobile_request()){
+		   //pc健康文化，有精选10个商品
+		   $jp_goods = cs_goods('', 1, 4, 10);
+	   }
    }else if($op == 'headline'){
 	   //觅海头条
+	   $psize =  10;
+	   $pindex = max(1, intval($_GP["page"]));
+	   $limit = ' limit '.($pindex-1)*$psize.','.$psize;
 	   $title  = '觅海头条';
 	   $sql    = "SELECT * FROM".table('headline')."  order by isrecommand desc,headline_id desc {$limit}";
 	   $sqlnum = "SELECT count(headline_id) FROM".table('headline');
@@ -26,8 +32,12 @@ $cfg=globaSetting();
 	   }else{
 		   $one_sql = "SELECT * FROM " . table('headline')." where headline_id= {$_GP['id']} ";
 	   }
+
    }else if($op == 'note'){
 	   //晒物笔记
+	   $psize =  8;
+	   $pindex = max(1, intval($_GP["page"]));
+	   $limit = ' limit '.($pindex-1)*$psize.','.$psize;
 	   $title  = '晒物笔记';
 	   $sql    = "SELECT * FROM".table('note')." order by isrecommand desc,note_id desc {$limit}";
 	   $sqlnum = "SELECT count(note_id) FROM".table('note');
@@ -44,8 +54,23 @@ $cfg=globaSetting();
 
 	//获取一篇文章
 	$one_article  = mysqld_select($one_sql);
-    if(!empty($one_article))
+	$comment_num     = 0;
+	$article_comment = '';
+    if(!empty($one_article)){
 		$one_article = get_article_member($one_article);
+
+		if(!is_mobile_request() && $op == 'headline'){
+			//pc觅海头条需要有 评论
+			$comment_num     = mysqld_selectcolumn("select count(comment_id) from ".table('headline_comment')." where headline_id={$one_article['headline_id']}");
+			//获取6条评论
+			$article_comment = mysqld_selectall("select * from ".table('headline_comment')." where headline_id={$one_article['headline_id']} order by createtime desc limit 6");
+			if(!empty($article_comment)){
+				foreach($article_comment as $key => $item){
+					$article_comment[$key] = get_article_member($item);
+				}
+			}
+		}
+	}
 
 
 	//获取文章对应的用户名和头像
@@ -68,7 +93,6 @@ $cfg=globaSetting();
 	if (is_mobile_request()){
 		include addons_page('wap_article_list');
 	}else{
-		$jp_goods = cs_goods('', 1, 4, 10);
 		include addons_page('pc_article_list');
 	}
 

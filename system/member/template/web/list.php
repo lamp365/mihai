@@ -246,6 +246,24 @@
 										<input name="platform_url" type="text"   value="" />
 									</td>
 								</tr>
+								<tr>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">QQ：</td>
+									<td>
+										<input name="QQ" type="text"   value="" />
+									</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">微信：</td>
+									<td>
+										<input name="weixin" type="text"   value="" />
+									</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">旺旺：</td>
+									<td>
+										<input name="wanwan" type="text"   value="" />
+									</td>
+								</tr>
 								</tbody>
 							</table>
 					</div>

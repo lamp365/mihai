@@ -854,7 +854,7 @@ function showDrawOrderStatue($order){
 					$stat = '未中奖';
 					break;
 				case 1:
-					$stat = '已开奖';
+					$stat = '已中奖';
 					break;
 			}
 		}
@@ -1107,4 +1107,32 @@ function checkGroupBuyCanSend($order){
 		return true;
 	}
 
+}
+
+/**
+ * @param $order
+ * @return 返回数据格式 2016/12/30 15:50:00
+ * 得到未付款的商品 最后应该付款的时间点，并返回给js 做倒计时用
+ */
+function getOrderTopayLastTime($order){
+	if($order['status'] == 0){
+		//等待付款的情况下，才显示倒计时时间
+		if($order['ordertype'] == 0){
+			//0为一般订单  一般订单三天内还可以支付
+			$endtime = $order['createtime']+7200;
+		}else{
+			//活动商品 随着活动时间结束就关闭  不能支付
+			$info = mysqld_select("select goodsid from ".table('shop_order')." where orderid={$order['id']}");
+			$dish = mysqld_select("select timeend from ".table()." where id={$info['goodsid']}");
+			if(!empty($dish['timeend']) && $dish['timeend'] > $order['createtime']){
+				$endtime = $dish['timeend'];
+		}else{
+				$endtime = $order['createtime']+7200;
+			}
+		}
+	}else{
+		//不是代付款的不显示倒计时，则只返回下单时间，自然倒计时会跑动不起来
+		$endtime = $order['createtime'];
+	}
+	return date("Y/m/d H:i:s",$endtime);
 }

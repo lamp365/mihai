@@ -147,6 +147,32 @@
 			}else{
 				include addons_page('pc_headline');
 			}
+		}else if($op == 'ajax_note'){
+			if(empty($_GP['id'])){
+				$sql = "SELECT * FROM " . table('note')." order by note_id desc limit 1 ";
+			}else{
+				$sql = "SELECT * FROM " . table('note')." where note_id= {$_GP['id']} ";
+			}
+			$article_note   = mysqld_select($sql);
+			if(empty($article_note))
+				message('对不起，该文章已不存在！',refresh(),'error');
+
+			//获取文章的用户头像
+			$article_note = get_article_member($article_note);
+			//评论数目
+			$article_note['comment_num']     = mysqld_selectcolumn("select count(comment_id) from ".table('note_comment')." where note_id={$_GP['id']}");
+			//获取10条评论
+			$article_comment = mysqld_selectall("select * from ".table('note_comment')." where note_id={$_GP['id']} order by createtime desc limit 10");
+			//获取评论的用户头像
+			if(!empty($article_comment)){
+				foreach($article_comment as $key => $item){
+					$article_comment[$key] = get_article_member($item);
+				}
+			}
+
+			$article_note['article_comment'] = $article_comment;
+			die(showAjaxMess(200,$article_note));
+
 		}
 
   	 	 

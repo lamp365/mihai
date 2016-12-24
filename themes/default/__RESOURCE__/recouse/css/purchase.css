@@ -763,16 +763,15 @@ border-top: 1px solid #d2d2d2;
 	border-top:none!important;
 }
 .confirm-modal-price{
-    border-bottom: 1px solid #e5e5e5;
+    float: left;
+    width: 268px;
     text-align: right;
-    margin: 0 -15px;
-    padding: 15px;
-    border-top: 1px dashed #e5e5e5;
-    margin-top: 30px;
+    padding: 15px 0;
+
 }
 .btn-success{
 	margin-bottom: 15px!important;
-    margin-right: 15px!important;
+    margin-right: 55px!important;
 }
 .loading-area{
 	width: 200px;
@@ -805,4 +804,26 @@ border-top: 1px solid #d2d2d2;
 .modal-body-content img{
     width: 100%!important;
     height: auto!important;
+}
+.member-browse-ul {
+    list-style: none;
+    margin: 0;
+    border: 1px solid #ebebeb;
+}
+.confirm-modal-remark{
+float: left;
+    width: 522px;
+    text-align: left;
+    padding: 15px 0;
+    box-sizing: border-box;
+}
+.confirm-area{
+width: 900px;
+    border-top: 1px dashed #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    height: auto;
+    overflow: hidden;
+    margin-left: -16px;
+    padding: 0 55px;
+    box-sizing: border-box;
 }

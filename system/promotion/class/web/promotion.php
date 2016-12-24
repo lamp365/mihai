@@ -24,6 +24,7 @@
 			 'promoteType'=>$_GP['radioPromotionType'],
 			 'condition'=>(int)intval($_GP['promotionmoney']),
 			 'pname'=>$_GP['promotionname'],
+			 'type'=>$_GP['type'],
 			 'starttime'=>strtotime($_GP['start_time']),
 			 'endtime'=>strtotime($_GP['end_time']),
 			 'description'=>$_GP['description']

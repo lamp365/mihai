@@ -4,6 +4,7 @@
 */
 $title = '批发采购';
 $is_login = is_vip_account();
+$issendfree = 0;
 // 获取用户的参数
 $member = get_vip_member_account(true, true);
 $user_a = get_user_identity($member['mobile']);
@@ -11,10 +12,11 @@ $openid =$member['openid'];
 // [parent_roler_id] => 2 [son_roler_id] => 3
 // 验证用户是否是批发商
 $rolers = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['parent_roler_id']." and (type=2 or type=3) ");
-if ( empty($member['parent_roler_id']) || !$rolers || empty($member['son_roler_id']) ){
+if ( empty($member['parent_roler_id']) || !$rolers || empty($member['son_roler_id']) || $user_a['id'] != $member['son_roler_id'] ){
      header("location:".mobile_url('vip_logout'));
 }
 $addresslist  = mysqld_selectall("SELECT * FROM " . table('shop_address') . " WHERE  deleted = 0 and openid = :openid order by isdefault desc ", array(':openid' => $openid));
+$promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where type =1 and starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
 $page = max(1, $_GP['page']);
 $psize = max(20,$_GP['psize']);
 $limit =  " limit ".($page-1)*$psize.','.$psize;
@@ -185,9 +187,7 @@ switch ( $op ){
 			 }
 		}
 		if ( $user_a['type'] == 3 ){
-				$promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
 				if(empty($issendfree)){
-					   $promotion=mysqld_selectall("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
 					   //========运费计算===============
 							foreach($promotion as $pro){
 								if($pro['promoteType']==1){
@@ -201,10 +201,12 @@ switch ( $op ){
 								}		
 						}
 				} 
-				$ships = shipcost($purchase);
-				$ships = $ships['price'];
+				
 				if ( $issendfree == 1 ){
                     $ships = 0;
+				}else{
+                    $ships = shipcost($purchase);
+				    $ships = $ships['price'];
 				}
 		}else{
 			    $totalprice = round(($totalprice* $exchange_rate_value),2);

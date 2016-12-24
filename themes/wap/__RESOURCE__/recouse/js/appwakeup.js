@@ -101,7 +101,7 @@ function app_show_tip(){
     div.id = "appdownload";
     divlink.id = "appdownloadlink";
     close_div.id = "closeLoad";
-    img.src ="/images/down_banner.png";
+    img.src ="./images/down_banner.png";
     div.appendChild(img);
     div.appendChild(divlink);
     div.appendChild(close_div);
@@ -145,8 +145,8 @@ function tipUserToDown(url,tip){
 
         var p1 = "<p class='show_tip'>"+ show +"</p>";
         var p1 = p1 + " <p class='down_btn'> " +
-            "<span class='next_down' onclick='appdown_to_next()'>下次下载</span>"+
-            "<span class='liji_down' onclick=\"app_click_to_down('"+ url +"')\" >立即下载</span>"+
+            "<span class='next_down' onclick='appdown_to_next()'>我再想想</span>"+
+            "<span class='liji_down' onclick=\"app_click_to_down('"+ url +"')\" >火速下载</span>"+
             "</p>";
 
         document.body.appendChild(div_box);
