@@ -109,6 +109,7 @@
     <?php  } } ?>
     </tbody>
 </table>
+<?php  echo $pager;?>
 
 <?php  include page('footer');?>
 <script>

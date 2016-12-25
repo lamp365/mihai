@@ -22,9 +22,10 @@ if($op == 'list'){
     $pindex = max(1, intval($_GP["page"]));
     $limit  = ' limit '.($pindex-1)*$psize.','.$psize;
     $all_log = mysqld_selectall("select * from ".table('admin_behave_log')." {$condition} order by id desc ". $limit);
+    $total   = mysqld_selectcolumn("select count('id') from ".table('admin_behave_log')." {$condition}");
+    $pager   = pagination($total, $pindex, $psize);
 
     //获取所有管理员
     $all_admin = mysqld_selectall("select id,username from ".table('user'));
-
     include page('behavelist');
 }

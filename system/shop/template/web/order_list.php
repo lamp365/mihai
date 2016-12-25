@@ -278,7 +278,7 @@
 			<tbody>
 				<?php  if(is_array($list)) { foreach($list as $item) { ?>
 				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;</td></tr>
-				<tr>
+				<tr class="order_info">
 				    <td  colspan="4">
 					<?php 
 					    if ( is_array($item['goods']) ){
@@ -287,7 +287,7 @@
 					    <div class="items">
 						      <ul>
 							      <li class="img"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><img src="<?php echo getGoodsThumb($goods['gid']); ?>" height="40" /></a></li>
-								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><?php echo $goods['title']; ?></a></div>
+								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>" class="tab_title"><?php echo $goods['title']; ?></a></div>
 									  <div>
 										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
 								  		  <?php if($item['isdraw'] == 1) { ?>
@@ -354,7 +354,10 @@
 					   <?php
 					   if(!empty($item['retag'])){
 						   $retag = json_decode($item['retag'],true);
-						   echo "<span style='display:block'>操作：".getAdminName($retag['pay']['uid'])."</span><span style='display:block;color:red'>".$retag['pay']['payreason'].'</span>';
+						   if(!empty($retag['recoder'])){
+							   echo "<input type='hidden' value='{$item['retag']}' class='hide_order_log'/>";
+							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><span class='glyphicon glyphicon-comment show_order_log'></span></span>";
+						   }
 					   }
 					   ?>
 						</td>
@@ -399,6 +402,38 @@
 				<?php  } } ?>
 			</tbody>
 		</table>
+
+		<!-- 订单日志弹出框 -->
+		<div class="modal fade" id="orderLogModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">订单操作日志</h4>
+					</div>
+					<div class="modal-body">
+						<p class="modal_ordersn"></p>
+						<p class="modal_title"></p>
+						<table class="table">
+							<thead>
+							<tr>
+								<th>管理员</th>
+								<th>操作信息</th>
+								<th>时间</th>
+							</tr>
+							</thead>
+							<tbody class="modal_order_log">
+
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+
 		<script type="text/javascript">
 			$(".refund").click(function(){
 				if(confirm('确定批量退款')){
@@ -410,6 +445,63 @@
 			$(".remark-modal").click(function(){
 				$(this).parents(".remark-btn-div").siblings(".remark-detail").modal();
 			})
+
+			//点击查看订单日志
+			$(".show_order_log").click(function(){
+				var log_string = $(this).parent().prev().val();
+				log_obj  = JSON.parse(log_string);
+				//格式 2-测试订单-54815154545;3-已经发货-2323423  分号分开的字符串
+				log_info = log_obj.recoder;
+				//弹出框
+				$("#orderLogModal").modal();
+
+				var ordersn = '订单号：'+ $(this).closest('.order_info').prev().find('td').html();
+				var tit     = $(this).closest('.order_info').find('.tab_title').html();
+				$("#orderLogModal .modal_ordersn").html(ordersn);
+				$("#orderLogModal .modal_title").html(tit);
+
+				var log_info = log_info.split(";"); //字符串截取，成为数组
+				var log_html = "";
+				 for(var i=0; i<log_info.length;i++){
+					 log_html += '<tr>';
+					 var one_log     = log_info[i];
+					 //["2", "测试订单", "54815154545"]
+					 var one_log_arr =  one_log.split("-");
+					 var url = "<?php echo web_url('order',array('op'=>'getAdminName')); ?>";
+					 url += "&uid="+one_log_arr[0];
+					 //这里必须用ajax的 async false同步进行，不能改用$.get或者$.post异步进行。会导致还没拼接完，进入下一个循环
+					 $.ajax({
+						 url:url,
+						 type: "POST",
+						 async: false,
+						 dataType:'json',
+						 success:function(data,xml){
+							 var admin   = data.message;
+							 var message =  one_log_arr[1];
+							 var time    =  string_to_time(one_log_arr[2]);
+
+							 log_html   += "<td>"+ admin +"</td>";
+							 log_html   += "<td>"+ message +"</td>";
+							 log_html   += "<td>"+ time +"</td>";
+							 log_html += '</tr>';
+						 }
+					 });
+				 }
+
+				$("#orderLogModal .modal_order_log").html(log_html);
+			})
+
+			function string_to_time(time){
+				var datetime = new Date();
+				datetime.setTime(time*1000);
+				var year = datetime.getFullYear();
+				var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+				var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+				var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();
+				var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+				var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+				return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+			}
 		</script>
 		<?php  echo $pager;?>
 

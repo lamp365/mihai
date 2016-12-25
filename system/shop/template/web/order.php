@@ -138,14 +138,6 @@
 				<td >
 					<?php  echo $order['paytypename'];?>
 					&nbsp;&nbsp;
-					<span style="color: red">
-					<?php
-						if(!empty($order['retag'])){
-							$retag = json_decode($order['retag'],true);
-							echo "操作人：".getAdminName($retag['pay']['uid'])."，理由：".$retag['pay']['payreason'];
-						}
-					?>
-					</span>
 				</td>
 				<th ><label for="">配送方式:</label></th>
 				<td >
@@ -226,20 +218,38 @@
 			</tr>
 			<?php  } ?>
 
-			<?php  if($order['status'] <=-2) { ?>
-			<tr>
-				<th ><label for="">	<?php  if($order['status'] == -2||$order['status'] == -6) { ?>退款<?php  } ?><?php  if($order['status'] == -3) { ?>换货<?php  } ?><?php  if($order['status'] == -4||$order['status'] == -5) { ?>退货<?php  } ?>原因</label></th>
-				<td >
-					<textarea readonly="readonly" style='width:300px;border: none;' type="text"><?php  echo $order['rsreson'];?></textarea>		
-				</td>
-				<th ></th>
-				<td>
-		
-				</td>
-			</tr>
-			<?php  } ?>
 		</table>
-		
+
+	<?php
+	if(!empty($order['retag'])){
+		$retag = json_decode($order['retag'],true);
+		if(!empty($retag['recoder'])){
+			$retagArr = explode(';',$retag['recoder']);
+
+	 ?>
+		<table class="table table-striped table-bordered table-hover" style="width: 60%">
+			<thead>
+			<tr>
+				<th>管理员</th>
+				<th>订单操作日志</th>
+				<th>操作时间</th>
+			</tr>
+			</thead>
+			<?php  foreach($retagArr as $onetag) {
+						echo '<tr>';
+						$onetagArr = explode('-',$onetag);
+						$admin = getAdminName($onetagArr[0]);
+						$time  = date("Y-m-d H:i:s",$onetagArr[2]);
+						echo "<td style='width:150px'>{$admin}</td><td>{$onetagArr[1]}</td><td style='width:200px'>{$time}</td>";
+						echo '</tr>';
+			       }
+			?>
+		</table>
+
+	<?php }} ?>
+
+
+
 <table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
@@ -328,7 +338,13 @@
 					<?php  if($order['status']==0 && isHasPowerToShow('shop','order','confrimpay')) { ?>
 						<a href="javascript:;" class="btn btn-danger span2" data-toggle="modal" data-target="#modal-surepay">确认付款</a>
 					<?php  } ?>
-					
+					<?php  if($order['status']==-7 && isHasPowerToShow('shop','order','confrimpay_success')) { ?>
+						<a href="<?php echo web_url('order',array('op'=>'confrimpay_success','id'=>$_GP['id']));?>" class="btn btn-danger span2">审核付款成功</a>
+					<?php  } ?>
+					<?php  if($order['status']==-7 && isHasPowerToShow('shop','order','confrimpay_fail')) { ?>
+						<a href="<?php echo web_url('order',array('op'=>'confrimpay_fail','id'=>$_GP['id']));?>" class="btn btn-danger span2">审核付款失败</a>
+					<?php  } ?>
+
 					<?php if($order['status'] == 1 && isHasPowerToShow('shop','order','confirmsend') && $ishowSendBtn) { ?>
 						<a type="button" class="btn btn-primary span2" name="confirmsend" data-toggle="modal" data-target="#modal-confirmsend" value="confirmsend">确认发货</a>
 					

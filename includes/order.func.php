@@ -1136,3 +1136,27 @@ function getOrderTopayLastTime($order){
 	}
 	return date("Y/m/d H:i:s",$endtime);
 }
+
+/**
+ * @content 该方法用来记录后台订单操作的日志，存在retag字段中  数据格式
+ * retag格式 {beizhu:送袜子,recoder:{支付人uid-理由-时间;发货人uid-信息-时间}},可扩展用分号分开
+ * recode就是订单操作的整个记录，每次操作的记录用分号进行拼接进去。
+ * @param $order_retag  订单中的retag
+ * @param $reason       要存入记录中的文字信息
+ */
+function setOrderRetagInfo($order_retag,$reason){
+	$retag = '';
+	if(!empty($order_retag)){
+		$retag = json_decode($order_retag,true);
+	}
+
+	$reason  = str_replace('-','',$reason);
+	$log     = $_SESSION['account']['id'].'-'.$reason.'-'.time();
+	if(empty($retag['recoder'])){
+		$retag['recoder'] = $log;
+	}else{
+		//之前已经有日志了，直接拼接
+		$retag['recoder'] .= ";".$log;
+	}
+	return json_encode($retag);
+}

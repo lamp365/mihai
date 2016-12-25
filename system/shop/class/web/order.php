@@ -55,9 +55,8 @@ if ($operation == 'display') {
 	$status_arr = array(-2,-4,14,34,-121,-321);//退货，退款 退货完成  退款完成 退款关闭  退货关闭 另外处理
 	// 对于全部订单消除关闭的订单
 	if ( $status == '-99' ){
-        $condition .= " AND A.status != -1 ";
-	}
-	if ( $status == '-99' || in_array($status,$status_arr)) {
+        $condition .= " AND A.status <> -1 ";
+	}else if( in_array($status,$status_arr)) {
 		//不用处理
 	}else{
 		$condition .= " AND A.status = '" . intval($status) . "'";
@@ -215,48 +214,6 @@ if ($operation == 'display') {
 		message('订单操作成功！', refresh(), 'success');
 	}
 
-	/**
-	if (checksubmit('cancelreturn')) {   //退回申请不再走这里
-		$item = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id", array(':id' => $orderid));
-		$ostatus=3;
-		if($item['status']==-2)
-		{
-			$ostatus=1;
-		}
-		if($item['status']==-3)
-		{
-			$ostatus=3;
-		}
-		if($item['status']==-4)
-		{
-			$ostatus=3;
-		}
-		mysqld_update('shop_order', array('status' => $ostatus,), array('id' => $orderid));
-		message('退回操作成功！', refresh(), 'success');
-	}
-
-	if (checksubmit('returnpay')) {
-		//该方法不能这样用，逻辑有变，原先的退货逻辑不适用
-		if($order['paytype']==3)
-		{
-			message('货到付款订单不能进行退款操作!', refresh(), 'error');
-		}
-		mysqld_update('shop_order', array('status' => -6,'remark'=>$_GP['remark']), array('id' => $orderid));
-
-		$this->setOrderStock($orderid, false);
-		member_gold($order['openid'],$order['price'],'addgold','订单:'.$order['ordersn'].'退款返还余额');
-		message('退款操作成功！', refresh(), 'success');
-	}
-
-	if (checksubmit('returngood')) {
-		//该方法不能这样用，逻辑有变，原先的退货逻辑不适用
-		mysqld_update('shop_order', array('status' => -5,'remark'=>$_GP['remark']), array('id' => $orderid));
-		$this->setOrderStock($orderid, false);
-		member_gold($order['openid'],$order['price'],'addgold','订单:'.$order['ordersn'].'退货返还余额');
-		message('退货操作成功！', refresh(), 'success');
-	}
-    **/
-
 	$weixin_wxfans = mysqld_selectall("SELECT * FROM " . table('weixin_wxfans') . " WHERE openid = :openid", array(':openid' => $order['openid']));
 	$alipay_alifans = mysqld_selectall("SELECT * FROM " . table('alipay_alifans') . " WHERE openid = :openid", array(':openid' => $order['openid']));
 
@@ -267,19 +224,31 @@ if ($operation == 'display') {
 	if(empty($_GP['payreason']))
 		message('请输入理由',refresh(),'error');
 
-	$order = mysqld_select("select retag from ".table('shop_order')." where id={$_GP['id']}");
-	$retag = '';
-	if(!empty($order['retag'])){
-		$retag = json_decode($order['retag'],true);
-	}
-	$retag['pay']['payreason'] = $_GP['payreason'];
-	$retag['pay']['uid']       = $_SESSION['account']['id'];
-	$json_retag 			   = json_encode($retag);
+	$payreason = "确认支付：{$_GP['payreason']}";
+	$order      = mysqld_select("select retag from ".table('shop_order')." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], $payreason);
 
 	mysqld_update('shop_order', array('status' => -7,'retag'=>$json_retag,'paytime'=>time()), array('id' => $_GP['id']));
-	updateOrderStock($_GP['id']);
 	message('确认订单付款操作成功！', refresh(), 'success');
 
+
+}else if($operation == 'confrimpay_success'){
+	$payreason = "确认支付：审核成功";
+	$order      = mysqld_select("select retag from ".table('shop_order')." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], $payreason);
+
+	mysqld_update('shop_order', array('status' => 1,'retag'=>$json_retag), array('id' => $_GP['id']));
+	//扣除掉库存
+	updateOrderStock($_GP['id']);
+	message('订单付款已审核为成功！', refresh(), 'success');
+
+}else if($operation == 'confrimpay_fail'){
+	$payreason = "确认支付：审核失败";
+	$order      = mysqld_select("select retag from ".table('shop_order')." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], $payreason);
+
+	mysqld_update('shop_order', array('status' => 0,'retag'=>$json_retag), array('id' => $_GP['id']));
+	message('订单付款已审核为失败！', refresh(), 'success');
 
 }else if($operation == 'confirmsend'){     //确认发货
 	$orderGoodInfo = mysqld_selectall("select * from ". table('shop_order_goods') ." where orderid={$_GP['id']}");
@@ -296,8 +265,10 @@ if ($operation == 'display') {
 		//如果不能发货
 		message('不能发货，该团购订单有商品可能还在开奖中！',refresh(),'error');
 	}
+	$json_retag = setOrderRetagInfo($order['retag'], '发货：已经确认发货');
 	$res = mysqld_update('shop_order', array(
 		'status'     => 2,
+		'retag'      => $json_retag,
 		'express'    => $_GP['express'],
 		'expresscom' => $_GP['expresscom'],
 		'expresssn'  => $_GP['expresssn'],
@@ -338,11 +309,14 @@ else if($operation=='cancelsend')    //取消发货   不应该有这个按钮�
 	if(!isSureCancleGoods($orderGoodInfo)){
 		message('不能取消发货，该订单有部分商品还没处理完或者已经收到货!',refresh(),'error');
 	}
+	$order      = mysqld_select("select retag from ". table('shop_order') ." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], '发货：已经取消发货');
 	mysqld_update('shop_order', array(
 		'status' => 1,
-		'remark'=>$_GP['remark'],
+		'retag'  => $json_retag,
+		'remark' =>$_GP['remark'],
 		'sendtime'=>0,
-		'express'=>'',
+		'express' =>'',
 		'expresscom'=>'',
 		'expresssn'=>''
 	), array('id' => $_GP['id']));
@@ -355,14 +329,18 @@ else if($operation == 'open')    //开启订单
 	if(!isSureOpenGoods($orderGoodInfo))
 		message("该订单的所有商品都退款退货了，不允许开启订单",refresh(),'error');
 
-	mysqld_update('shop_order', array('status' => 0, 'remark' => $_GPC['remark'],'closetime'=>0), array('id' => $_GP['id']));
+	$order      = mysqld_select("select retag from ". table('shop_order') ." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], '开启订单：开启了订单');
+	mysqld_update('shop_order', array('status' => 0, 'remark' => $_GP['remark'],'retag'=>$json_retag,'closetime'=>0), array('id' => $_GP['id']));
 	message('开启订单操作成功！', refresh(), 'success');
 
 }
 
 else if($operation =='close')    //关闭订单
 {
-	mysqld_update('shop_order', array('status' => -1,'remark'=>$_GP['remark'],'closetime'=>time()), array('id' => $_GP['id']));
+	$order      = mysqld_select("select retag from ". table('shop_order') ." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], '关闭订单：关闭了订单');
+	mysqld_update('shop_order', array('status' => -1,'remark'=>$_GP['remark'],'retag'=>$json_retag,'closetime'=>time()), array('id' => $_GP['id']));
 	message('订单关闭操作成功！', refresh(), 'success');
 }
 
@@ -374,7 +352,8 @@ else if($operation=='finish')    //完成相当于确认收货
 		message("对不起，该订单有商品等待处理中，暂不允许完成订单!",refresh(),'error');
 	}
 
-	$res = mysqld_update('shop_order', array('status' => 3, 'remark' => $_GP['remark'],'completetime'=>time()), array('id' => $_GP['id']));
+	$json_retag = setOrderRetagInfo($order['retag'], '完成订单：确认收货完成订单');
+	$res = mysqld_update('shop_order', array('status' => 3, 'remark' => $_GP['remark'],'retag'=>$json_retag,'completetime'=>time()), array('id' => $_GP['id']));
 	if($res){
 		//乳溝有凍結佣金則變成活的金額 并记录买家和卖家的账单  以及买家的积分。
 		sureUserCommisionToMoney($orderGoodInfo,$order);
@@ -391,7 +370,10 @@ else if($operation == 'modifyaddress')
 	if(empty($id))
 		message('参数有误！',refresh(),'error');
 
+	$order      = mysqld_select("select retag from ". table('shop_order') ." where id={$_GP['id']}");
+	$json_retag = setOrderRetagInfo($order['retag'], '修改订单：修改了订单的收货人信息');
 	mysqld_update('shop_order',array(
+		'retag'			   => $json_retag,
 		'address_realname' => $_GP['address_realname'],
 		'address_mobile'   => $_GP['address_mobile'],
 		'address_province' => $_GP['address_province'],
@@ -522,8 +504,12 @@ else if($operation == 'aftersale_chuli')    //平台处理是否退换货
 
 		if(mysqld_insertid()){
 			mysqld_update('shop_order_goods',array('status'=>$_GP['status']),array('id'=>$_GP['order_good_id']));
-			$url = web_url('order',array('op'=>'detail','id'=>$_GP['orderid']));
+			//加入订单操作日志
+			$order_retag = mysqld_select("select o.retag,o.id from ".table('shop_order')." as o left join ".table('order_goods')." as g on o.id=g.orderid where g.id={$_GP['order_good_id']}");
+			$json_retag  = setOrderRetagInfo($order_retag['retag'], "售后处理：{$data['title']}");
+			mysqld_update('shop_order',array('retag'=>$json_retag),array('id'=>$order_retag['id']));
 
+			$url = web_url('order',array('op'=>'detail','id'=>$_GP['orderid']));
 
 			//给APP买家推送消息
 			$orderdata = mysqld_select("select a.openid,a.createtime,a.ordersn,b.goodsid,b.seller_openid,b.commision from ". table('shop_order') ." as a left join ". table('shop_order_goods') ." as b on a.id=b.orderid where a.id={$_GP['orderid']} and b.id={$_GP['order_good_id']}");
@@ -568,6 +554,9 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 
 	//修改订单状态
 	$res = mysqld_update('shop_order_goods', array('status' => 4), array('id' => $order_good_id));
+	//加入订单操作日志
+	$json_retag  = setOrderRetagInfo($orderInfo['retag'], "售后处理：财务确认打款");
+	mysqld_update('shop_order', array('retag' => $json_retag), array('id' => $orderInfo['id']));
 	if($res){
 		//释放商品数量  卖出件数   佣金计算  和账单记录
 		oneUpdateOrderStock($order_good_id, false);
@@ -691,6 +680,10 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 
 				//修改订单状态
 				$res = mysqld_update('shop_order_goods', array('status' => 4), array('id' => $order_good_id));
+				//加入订单操作日志
+				$json_retag  = setOrderRetagInfo($orderInfo['retag'], "售后处理：财务确认打款");
+				mysqld_update('shop_order', array('retag' => $json_retag), array('id' => $orderInfo['id']));
+
 				if($res) {
 					//释放商品数量  卖出件数   佣金计算  和账单记录
 					oneUpdateOrderStock($order_good_id, false);
@@ -749,4 +742,11 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
     	message('请上传退款表单!',refresh(),'error');
     }
 
+}else if($operation == 'getAdminName'){
+	$uid   = $_GP['uid'];
+	$admin = 'xxx';
+	if(!empty($uid)){
+		$admin = getAdminName($uid);
+	}
+	die(showAjaxMess(200,$admin));
 }
