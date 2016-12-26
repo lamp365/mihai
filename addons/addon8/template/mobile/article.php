@@ -60,9 +60,11 @@
                 window.JsInterface.checkLogin("one_honus");
             }
         }
-
+        <?php if($_GP['is_app']){  ?>
         checkLogin();
-
+        <?php }else{ ?>
+        one_honus();
+        <?php } ?>
         function isLogin(msg){
             if(is_app){
                 //处理app登录
