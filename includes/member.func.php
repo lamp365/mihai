@@ -651,15 +651,15 @@ function isSelfAgent($str,$uid){
 function checkIsLogin(){
     $member = get_member_account(false);
     if(empty($member)){
-        return 0;
+        return '';
     }else{
         $openid     = $member['openid'];
         $openid_arr = explode('_t', $openid);
         if(count($openid_arr) == 2){
             //是临时用户
-            return 0;
+            return '';
         }else{
-            return 1;
+            return $openid;
         }
     }
 }

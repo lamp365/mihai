@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin:*');
 $member=get_member_account(true,true);
 $openid = $member['openid'];
 $member=member_get($openid);
