@@ -60,8 +60,9 @@
 				$objOpenIm->createUser($userinfos);
 			}
 
-			$result['message'] 	= "账户登陆成功。";
-			$result['code'] 	= 1;
+			$result['message'] 			= "账户登陆成功。";
+			$result['data']['openid'] 	= $loginid;
+			$result['code'] 			= 1;
 		}
 	}
 	

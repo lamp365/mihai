@@ -89,8 +89,9 @@
 				unset ( $_SESSION['api'][$telephone] );
 				unset ( $_SESSION['api']['sms_code_expired'] );
 					
-				$result['message'] 	= '注册成功！';
-				$result['code'] 	= 1;
+				$result['message'] 			= '注册成功！';
+				$result['data']['openid'] 	= $openid;
+				$result['code'] 			= 1;
 			}
 			else{
 				$result['message'] 	= '注册失败！';

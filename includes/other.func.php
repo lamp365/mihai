@@ -61,7 +61,13 @@ function getClientIP()
 
 function is_mobile_request()
 {
-    $_SERVER['ALL_HTTP'] = isset($_SERVER['ALL_HTTP']) ? $_SERVER['ALL_HTTP'] : '';
+    $mobile = new MobileDetect();
+    if($mobile->isMobile()){
+        return true;
+    }else{
+        return false;
+    }
+    /*$_SERVER['ALL_HTTP'] = isset($_SERVER['ALL_HTTP']) ? $_SERVER['ALL_HTTP'] : '';
     $mobile_browser = '0';
     if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|iphone|ipad|ipod|android|xoom)/i', strtolower($_SERVER['HTTP_USER_AGENT'])))
         $mobile_browser ++;
@@ -173,7 +179,59 @@ function is_mobile_request()
     if ($mobile_browser > 0)
         return true;
     else
-        return false;
+        return false;*/
+}
+/**
+ * 获取访问设备的类型
+ * 最好有涉及到数据存储是 1代表安卓 2代表ios 3代表平板 4代表PC
+ * @param string $show_str
+ * @return string
+ * 更多方法查看 http://demo.mobiledetect.net/
+ */
+function get_mobile_type($show_str = ''){
+    if($show_str){
+        $typeArr = array('安卓','IOS','平板','PC');
+    }else{
+        $typeArr = array(1,2,3,4);
+    }
+    $mobile = new MobileDetect();
+    if($mobile->isAndroidOS()){
+        return $show_str[0];
+    }else if($mobile->isiOS()){
+        return $show_str[1];
+    }else if($mobile->isTablet()){
+        return $show_str[2];
+    }else{
+        return $show_str[3];
+    }
+}
+
+/**
+ * 判断是否是该设备类型的
+ * @param $type
+ * @return bool|MobileDetect
+ * 返回true or false
+ */
+function check_mobile_type($type){
+    $mobile = new MobileDetect();
+    switch($type){
+        case 'ios':
+            $res = $mobile->isiOS();
+            break;
+        case 'Android':
+            $res = $mobile->isAndroidOS();
+            break;
+        case 'tablet':
+            $res = $mobile->isTablet();
+            break;
+        case 'safari':
+            $res = $mobile->isSafari();
+            break;
+        case 'uc':
+            $res = $mobile->isUCBrowser();
+            break;
+    }
+    return $res;
 }
 
 function is_had_mess()

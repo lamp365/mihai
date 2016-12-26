@@ -244,7 +244,7 @@
 
 		//觅海头条，滚动条到底部时就加载剩下数据
 		$(function(){
-			$(window).scroll(function(){
+			$(window).scroll(function(){				
 				var index = 1 ; //默认开关打开
 				if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
 					if(index == 1){
@@ -253,8 +253,7 @@
 						var url = "<?php echo mobile_url('article_list',array('op'=>'headline'));?>"
 						$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
 							if(s.errno != 200){
-								//如果没有数据
-
+								//如果没有数据								
 							}else{
 								$("#page").val(++page);
 								var art_data = s.message;
@@ -272,13 +271,14 @@
 		})
 
 		function Append(art_data){
+			console.log(art_data)
 			var url = "<?php echo mobile_url('article_list',array('op'=>'headline'));?>";
 			 url = url+"&id="+art_data.headline_id;
 			var piclist = art_data.pic;
 			//时间戳是 art_data.createtime
-			var day = 15;
-			var month = '12月';
-			var picurl = '<p>'+ day +'</p><p>'+ month +'</p>';
+			var day = StringtotimeD(art_data.createtime);
+			var month = StringtotimeM(art_data.createtime);
+			var picurl = '<p>'+ day +'</p><p style="margin-top: 0">'+ month +'</p>';
 			if(piclist.length > 0){
 				//如果有图片换成图片
 				var perpic = piclist.split(";"); //字符串截取，成为数组
@@ -286,11 +286,25 @@
 			}
 			var html = '<li>'+
 							'<div><a href="'+ url +'">'+ picurl +'</a></div>'+
-							+'<a href="'+ url +'"><p>'+ art_data.title +'</p></a>'+
-					  +'</li>';
+							'<a href="'+ url +'"><p class="title">'+ art_data.title +'</p></a>'+
+					  '</li>';
 			$(".headline_list ul").append(html);
 
 		}
+	//时间戳转换为天	
+	function StringtotimeD(time){  
+	    var datetime = new Date();			    
+	    datetime.setTime(time);      			   
+	    var day = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate(); 	      
+	    return day;  
+	}  
+	//时间戳转换为月
+	function StringtotimeM(time){  
+	    var datetime = new Date();			    
+	    datetime.setTime(time);			      
+	    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1; 			   	       
+	    return month+"月";  
+	}  
 	</script>
 
 

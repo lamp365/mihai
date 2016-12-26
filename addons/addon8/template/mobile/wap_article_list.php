@@ -291,7 +291,9 @@
 						</div>
 							<?php } ?>
 					</li>
-					<?php }} ?>
+					<?php }}else{
+						echo "<p style='text-align: center;line-height: 50px;'>敬请期待！</p>";
+					} ?>
 
 
 				</ul>
@@ -301,7 +303,7 @@
 			
 				<div class="wrap" id="wrap">
 
-					<?php if (is_array($article_list)){ foreach ($article_list as $key=>$val){ ?>								
+					<?php if (is_array($article_list)){ foreach ($article_list as $key=>$val){ ?>
 					<div>						
 						<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
 							<?php $pic = explode(';',$val['pic']); ?>
@@ -320,7 +322,9 @@
 							<span><?php echo $val['nickname']; ?></span>
 						</p>							
 					</div>	
-					<?php }}?>	
+					<?php }}else{
+						echo "<p style='text-align: center;line-height: 50px;'>敬请期待！</p>";
+					}?>
 											
 				</div>
 		

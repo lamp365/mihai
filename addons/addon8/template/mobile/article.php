@@ -24,8 +24,7 @@
     <link href="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css" rel="stylesheet"  type="text/css" />
     <script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
     <script>
-        //is_login 0或者1 0未登录 1已登录
-        var is_login = "<?php echo checkIsLogin();?>";
+        var open_id = "";
         var get_ajax_url = "";
         <?php if($_GP['is_app']){  ?>
             var is_app   = true;
@@ -44,8 +43,27 @@
             }
         }
 
-        function isLogin(msg){
+        function checkLogin(msg){
+            var ua = browserFun();
+            if( ua == "ios" ){
+                if( msg == null || msg == '' ){
+                    window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
+                }else{
+                    if( msg.openid !=""){
+                        open_id = msg.openid;
+                        one_honus();
+                    }else{
+                        return;
+                    }
+                }
+            }else if( ua=="android" ){
+                window.JsInterface.checkLogin("one_honus");
+            }
+        }
 
+        checkLogin();
+
+        function isLogin(msg){
             if(is_app){
                 //处理app登录
                 var ua = browserFun();
@@ -56,7 +74,7 @@
                         window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
                     }else{
                         if( msg.openid !=""){
-                            is_login = 1;
+                            open_id = msg.openid;
                             one_honus();
                         }else{
                             return;
@@ -76,7 +94,7 @@
         }
         function get_ajax_android(msg){
             if( msg.openid !=""){
-                is_login = 1;
+                open_id = msg.openid;
                 one_honus();
             }else{
                 return;

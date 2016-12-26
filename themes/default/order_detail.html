@@ -244,6 +244,9 @@
 					<div class="cnt">
 						<p class="time-counter">还有&nbsp;
 						<span class="ltime j-counter" data-timeleft="1783000">
+							<span class="offered_d offered">
+								00		
+							</span>天
 							<span class="offered_h offered">
 								00		
 							</span>小时
@@ -742,14 +745,16 @@
 	$(function(){
 		//调用倒计时方法
        EndTime= new Date("<!--@php echo getOrderTopayLastTime($item); @-->");
-//       EndTime= new Date("2016/12/30 15:50:00");
+       //EndTime= new Date("2016/12/30 15:50:00");
        countDown(EndTime);			  
 	})
 	
 	//倒计时
 	 function countDown(time){
+//	 	console.log(time);
 		var sys_second = (time-new Date())/1000;
 		if(sys_second < 1){
+			$(".offered_d").html("00");
 			$(".offered_h").html("00"); 
 		    $(".offered_m").html("00");
 			$(".offered_s").html("00");
@@ -766,9 +771,11 @@
 	}
 	 //计算时间
 	function getTime(sys_second){
+			var day = Math.floor((sys_second / 3600) / 24);
 			var hour = Math.floor((sys_second / 3600) % 24);
 			var minute = Math.floor((sys_second / 60) % 60);
 			var second = Math.floor(sys_second % 60);
+			$(".offered_d").html( day<10 ? "0"+day : day); 
 			$(".offered_h").html( hour<10 ? "0"+hour : hour); 
 			$(".offered_m").html( minute<10 ? "0"+minute : minute);
 			$(".offered_s").html( second<10 ? "0"+second : second);
