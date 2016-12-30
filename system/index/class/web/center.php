@@ -18,22 +18,35 @@
         	$monthorderprice = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-".$nowmonth."-01 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$lastmonthday." 23:59:59"));
       		$yearordercount = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-01-01 00:00:01")." and createtime <=".strtotime($nowyear."-12-".$lastyearday." 23:59:59"));
         	$yearorderprice = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-01-01 00:00:01")." and createtime <=".strtotime($nowyear."-12-".$lastyearday." 23:59:59"));
-      	
-      		$todayordercount_re = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status<-1 and status!=-3  and createtime >=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 23:59:59"));
-        	$todayorderprice_re = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status<-1 and status!=-3  and createtime >=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 23:59:59"));
-      		$monthordercount_re = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status<-1 and status!=-3  and createtime >=".strtotime($nowyear."-".$nowmonth."-01 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$lastmonthday." 23:59:59"));
-        	$monthorderprice_re = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status<-1 and status!=-3  and createtime >=".strtotime($nowyear."-".$nowmonth."-01 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$lastmonthday." 23:59:59"));
-      		$yearordercount_re = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status<-1 and status!=-3 and createtime >=".strtotime($nowyear."-01-01 00:00:01")." and createtime <=".strtotime($nowyear."-12-".$lastyearday." 23:59:59"));
-        	$yearorderprice_re = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status<-1 and status!=-3   and createtime >=".strtotime($nowyear."-01-01 00:00:01")." and createtime <=".strtotime($nowyear."-12-".$lastyearday." 23:59:59"));
+
+			//退货单  退货加退款 已经成功的
+      		$today_time         = "g.createtime >=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 00:00:01")." and g.createtime <=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 23:59:59");
+			$todayordercount_re = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order_goods') . " as g WHERE g.status=4  and {$today_time}");
+			$sql = "SELECT SUM(price+taxprice)  FROM ".table('shop_order_goods')." AS g  WHERE g.type =4 AND {$today_time}";
+        	$todayorderprice_re = mysqld_selectcolumn($sql);
+
+			$month_time = "g.createtime >=".strtotime($nowyear."-".$nowmonth."-01 00:00:01")." and g.createtime <=".strtotime($nowyear."-".$nowmonth."-".$lastmonthday." 23:59:59");
+      		$monthordercount_re = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order_goods') . " as g WHERE g.status=4  and {$month_time}");
+			$sql = "SELECT SUM(price+taxprice)  FROM ".table('shop_order_goods')." AS g WHERE g.type =4 AND {$month_time}";
+			$monthorderprice_re = mysqld_selectcolumn($sql);
+
+			$year_time = "g.createtime >=".strtotime($nowyear."-01-01 00:00:01")." and g.createtime <=".strtotime($nowyear."-12-".$lastyearday." 23:59:59");
+      		$yearordercount_re = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order_goods') . " as g WHERE g.status=4 and {$year_time}");
+			$sql = "SELECT SUM(price+taxprice) FROM ".table('shop_order_goods')." AS g  WHERE g.type =4 AND {$year_time}";
+			$yearorderprice_re = mysqld_selectcolumn($sql);
       	
       	
       		$needsend_count = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status=1 ");
         	$needsend__price = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status=1 ");
-      		$returnofgoods_count = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status=-4 or status= -3 ");
-        	$returnofgoods_price = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status=-4 or status= -3 ");
-        		$returnofmoney_count = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status=-2 ");
-        	$returnofmoney_price = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status=-2 ");
-      
+			//退货单
+      		$returnofgoods_count = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order_goods') . " WHERE type =1 and status in (1,2,3) ");
+        	$sql = "SELECT SUM(price+taxprice) FROM ".table('shop_order_goods')." AS g  WHERE g.type =1 AND g.status IN (1,2,3)";
+			$returnofgoods_price = mysqld_selectcolumn($sql);
+			//退款单
+			$returnofmoney_count = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order_goods') . " WHERE type = 3 and status in (1,2,3) ");
+			$sql = "SELECT SUM(price+taxprice) FROM  ".table('shop_order_goods')." AS g WHERE g.type =3 AND g.status IN (1,2,3)";
+			$returnofmoney_price = mysqld_selectcolumn($sql);
+
       	 	if(empty($returnofmoney_price))
       	{
       		$returnofmoney_price="0.00";

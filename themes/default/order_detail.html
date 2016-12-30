@@ -476,10 +476,10 @@
 			<div class="myoder-express">
 				<span class="express-company">快递: <!--@php  echo $item['expresscom'];@--></span>
 				<span class="express-num"> 单号: <!--@php  echo $item['expresssn'];@-->
-					<?php  if($item['express'] != 'beihai'){?>
+					<?php  if( empty($dispatch['dispatch_web'])) {?>
 					[<a target="_blank" href="http://m.kuaidi100.com/index_all.html?type=<?php  echo $item['express']?>&postid=<?php  echo $item['expresssn']?>#input"  style="color:#127BAB;">查看物流信息</a>]
 					<?php }else{ ?>
-					[<a target="_blank" href="http://www.xlobo.com/Public/QueryBill.aspx?code=<?php  echo $item['expresssn']?>"  style="color:#127BAB;">查看物流信息</a>]
+					[<a target="_blank" href="<!--@php echo $dispatch['dispatch_web']; @-->"  style="color:#127BAB;">查看物流信息</a>]
 					<?php } ?>
 
 				</span>

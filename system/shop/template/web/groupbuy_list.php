@@ -56,6 +56,9 @@
 									  <span class="shouhou_status" style="color: red">
                                           <?php echo $cur_num;?>
                                       </span>
+                                    <?php $coudan_num = $goods['team_buy_count']-$cur_num; if($coudan_num > 0 && $group_status != 2){ ?>
+                                      <p>凑单：<?php echo $coudan_num;?></p>
+                                    <?php } ?>
                                 </li>
                             </ul>
                         </div>

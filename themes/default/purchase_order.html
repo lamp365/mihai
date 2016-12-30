@@ -308,7 +308,47 @@
 <!--@php include themePage('purchase_footer');@-->
 <script type="text/javascript">
 var order_id = "";
+   var area = <?php  echo json_encode($children)?>;
+   function fetchChildarea(cid) {
+	var html = '<option value="0">请选择二级分类</option>';
+	if (!area || !area[cid]) {
+		$('#cate_2').html(html);
+		return false;
+	}
+	for (i in area[cid]) {
+		html += '<option value="'+area[cid][i][0]+'">'+area[cid][i][1]+'</option>';
+	}
+	$('#cate_2').html(html);
+    }
+    
+  var category = <?php  echo json_encode($childrens)?>;	
+   function fetchChildCategory(cid) {
+	var html = '<option value="0">请选择二级分类</option>';
+	if (!category || !category[cid]) {
+		$('#p2').html(html);
+		fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
+		return false;
+	}
+	for (i in category[cid]) {
+		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
+	}
+	$('#p2').html(html);
+	fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
 
+}
+
+
+  function fetchChildCategory2(cid) {
+	var html = '<option value="0">请选择三级分类</option>';
+	if (!category || !category[cid]) {
+		$('#p3').html(html);
+		return false;
+	}
+	for (i in category[cid]) {
+		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
+	}
+	$('#p3').html(html);
+ }
 $(function(){
  	$("img.lazy").lazyload({
 		 threshold : 50,
@@ -440,7 +480,7 @@ $(function(){
 				return false;
 			}else{
 				addObj[add_id] = add_num;
-				$.post("",{page:"1",type:"add_goods",psize:psize,goods:addObj},function(data){
+				$.post("",{type:"add_goods",goods:addObj},function(data){
 					//0添加成功
 					if(data.result==0){
 						$(".tab .selected span").text(data.max_purchase);
@@ -475,7 +515,7 @@ $(function(){
 				}
 			}
 		});
-		$.post("",{page:"1",type:"add_goods",psize:psize,goods:allCheckObj},function(data){
+		$.post("",{type:"add_goods",goods:allCheckObj},function(data){
 			//0添加成功
 			if(data.result==0){
 				$(".tab .selected span").text(data.max_purchase);
@@ -495,7 +535,7 @@ $(function(){
 	$("body").on("click",".add-list .remove",function(){
 		var remove_this = $(this);
 		var removeId = $(this).attr("id");
-		$.post("",{page:"1",type:"del_good",id:parseInt(removeId)},function(data){
+		$.post("",{type:"del_good",id:parseInt(removeId)},function(data){
 			if(data.result==0){
 				if($('.product-list .conl-action span[id='+removeId+']').length!=0){
 					$('.product-list .conl-action span[id='+removeId+']').removeClass("added").text("选择商品");
@@ -537,7 +577,7 @@ $(function(){
 					$(".confirm-modal-price .total-price").text('￥'+(parseFloat(dataObj.order_price)).toFixed(2));
 					$(".confirm-modal-price .dispatchprice span").text('￥'+parseFloat((dataObj.freight)).toFixed(2));
 					$(".confirm-modal-remark").text(dataObj.remark);
-					confirm_address_html = '<span>'+data.message.address_province+'</span><span>'+data.message.address_city+'</span><span>'+data.message.address_area+'</span><span>'+data.message.address_address+'</span>'
+					confirm_address_html = '<span>'+data.message.address_province+'</span><span>'+data.message.address_city+'</span><span>'+data.message.address_area+'</span><span>'+data.message.address_address+'</span><span style="margin-left:15px">'+data.message.address_realname+'</span><span>'+data.message.address_mobile+'</span>'
 					$(".confirm-order-address").append(confirm_address_html);
 					$.each(data.message.order_goods,function(n,value){
 						confirm_html += "<tr><td class='col-img'><img src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+
@@ -611,14 +651,24 @@ $(function(){
                 num = 1;
             }
 			blurObj[id] = num;
-			$.post("",{page:"1",type:"add_goods",goods:blurObj},function(data){
+			$.post("",{type:"add_goods",goods:blurObj},function(data){
 				//0添加成功
 				if( data.result == 0 ){
 					$.post("",{type:'get_goods',id:id},function(shipsdata){
 						if(shipsdata.result == 0){
 							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
-							totalPrice();
-							shippingPrice();
+							//已选商品金额合计
+							var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+							$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+							if( freight_check == 0 ){
+								$(".total-area .dispatchprice span").removeClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+							}else if(freight_check == 1){
+								$(".total-area .dispatchprice span").addClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+							}
+							//运费合计
+							$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);				
 							$(".goodsnum_" + id).val(num);
 							goodsnum_this.parents(".col-num").siblings(".col-total").find("span").text(parseFloat(goodsnum_this.attr("price")*num).toFixed(2));
 						}
@@ -629,8 +679,18 @@ $(function(){
 					$.post("",{type:'get_goods',id:id},function(shipsdata){
 						if(shipsdata.result == 0){
 							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
-							totalPrice();
-							shippingPrice();
+							//已选商品金额合计
+							var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+							$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+							if( freight_check == 0 ){
+								$(".total-area .dispatchprice span").removeClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+							}else if(freight_check == 1){
+								$(".total-area .dispatchprice span").addClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+							}
+							//运费合计
+							$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);		
 							$(".goodsnum_" + id).val(num);
 							goodsnum_this.parents(".col-num").siblings(".col-total").find("span").text(parseFloat(goodsnum_this.attr("price")*num).toFixed(2));
 						}
@@ -645,14 +705,24 @@ $(function(){
             $(this).parents(".col-num").siblings(".col-total").find("span").text(parseFloat($(this).attr("price"))*1);
 
 			blurObj[id] = 1;
-			$.post("",{page:"1",type:"add_goods",goods:blurObj},function(data){
+			$.post("",{type:"add_goods",goods:blurObj},function(data){
 				//0添加成功
 				if( data.result == 0 ){
 					$.post("",{type:'get_goods',id:id},function(shipsdata){
 						if(shipsdata.result == 0){
 							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
-							totalPrice();
-							shippingPrice();
+							//已选商品金额合计
+							var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+							$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+							if( freight_check == 0 ){
+								$(".total-area .dispatchprice span").removeClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+							}else if(freight_check == 1){
+								$(".total-area .dispatchprice span").addClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+							}
+							//运费合计
+							$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);		
 							goodsnum_this.parents(".col-num").siblings(".col-total").find("span").text(parseFloat(goodsnum_this.attr("price")*1).toFixed(2));
 						}
 					},'json');
@@ -668,8 +738,25 @@ $(function(){
     });
 
     $(".freight-area label").on("click",function(){
-    	totalPrice();
-    	shippingPrice();
+    	$.post("",{type:"get_goods"},function(data){
+		    		if(data.result == 0){
+		    			//已选商品金额合计
+						var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+						$(".total-area .total-price").text("￥"+data.goods_price);
+						if( freight_check == 0 ){
+							$(".total-area .dispatchprice span").removeClass("userself");
+							$(".total-area .pay-total-price span").text("￥"+data.total_price);
+						}else if(freight_check == 1){
+							$(".total-area .dispatchprice span").addClass("userself");
+							$(".total-area .pay-total-price span").text("￥"+data.goods_price);
+						}
+						//运费合计
+						$(".total-area .dispatchprice span").text("￥"+data.shiprice);
+		    		}else{
+		    			alert(data.info);
+		    		}
+		    		
+		    	},"json")
     });
 });
 
@@ -677,7 +764,7 @@ function getGoods(){
 	var psize = $(".pagenum select").val();
 	var get_goods_html = "";
 	$(".add-list").html('<div class="loading-area"><img class="loading-img" src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>');
-	$.post("",{page:"1",type:"get_goods",psize:psize},function(data){
+	$.post("",{type:"get_goods"},function(data){
 		$(".add-list").html('<tr class="product-list-tr"><th width="110px">图片</th><th width="400px">商品名称</th><th width="110px">单价</th><th width="106px">数量</th><th width="70px">运费</th><th width="70px">合计</th><th width="106px">操作</th></tr>');
 		$(".tab .selected span").text(data.max_purchase);
 		//0成功
@@ -708,8 +795,18 @@ function getGoods(){
 			
 			$(".add-list tr:last-child").after(get_goods_html);
 			currency();
-			totalPrice();
-			shippingPrice();
+			//已选商品金额合计
+			var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+			$(".total-area .total-price").text("￥"+data.goods_price);
+			if( freight_check == 0 ){
+				$(".total-area .dispatchprice span").removeClass("userself");
+				$(".total-area .pay-total-price span").text("￥"+data.total_price);
+			}else if(freight_check == 1){
+				$(".total-area .dispatchprice span").addClass("userself");
+				$(".total-area .pay-total-price span").text("￥"+data.goods_price);
+			}
+			//运费合计
+			$(".total-area .dispatchprice span").text("￥"+data.shiprice);
 		}else{
 			alert(data.info);
 		}
@@ -739,33 +836,7 @@ $(document).ready(function(){
        stopEvent(e);
 	 });
 });
-function totalPrice(){
-	var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
 
-	$.post("",{type:"get_goods"},function(data){
-		if(data.result==0){
-			$(".total-area .total-price").text("￥"+data.goods_price);
-			if( freight_check == 0 ){
-				$(".total-area .dispatchprice span").removeClass("userself");
-				$(".total-area .pay-total-price span").text("￥"+data.total_price);
-			}else if(freight_check == 1){
-				$(".total-area .dispatchprice span").addClass("userself");
-				$(".total-area .pay-total-price span").text("￥"+data.goods_price);
-			}
-		}else{
-			alert(data.info);
-		}
-	},'json');
-}
-function shippingPrice(){
-	$.post("",{type:"get_goods"},function(data){
-		if(data.result==0){
-			$(".total-area .dispatchprice span").text("￥"+data.shiprice);
-		}else{
-			alert(data.info);
-		}
-	},'json');
-}
 function stopEvent(event){ //阻止冒泡事件
      //取消事件冒泡
      var e=arguments.callee.caller.arguments[0]||event; //若省略此句，下面的e改为event，IE运行可以，但是其他浏览器就不兼容
@@ -794,15 +865,26 @@ function reduceNewNum(id,obj){
 	}
 	num--;
 	reduceObj[id] = num;
-	$.post("",{page:"1",type:"add_goods",goods:reduceObj},function(data){
+	$.post("",{type:"add_goods",goods:reduceObj},function(data){
 		//0添加成功
 		if( data.result == 0){
 			$.post("",{type:'get_goods',id:id},function(shipsdata){
 				if(shipsdata.result == 0){
 					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
-					totalPrice();
-					shippingPrice();
+					//已选商品金额合计
+					var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+					$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+					if( freight_check == 0 ){
+						$(".total-area .dispatchprice span").removeClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+					}else if(freight_check == 1){
+						$(".total-area .dispatchprice span").addClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+					}
+					//运费合计
+					$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);
 					$(".goodsnum_" + id).val(num);
+					var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
 					$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
 				}
 			},'json');
@@ -813,11 +895,6 @@ function reduceNewNum(id,obj){
 		}
 		
 	},"json");
-	$(".goodsnum_" + id).val(num);
-
-	var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
-	$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
-	
 }
 function addNum(id,maxbuy){	
 	var mb = maxbuy;
@@ -842,14 +919,24 @@ function addNewNum(id,maxbuy,obj){
 		return;
 	}*/
 	addObj[id] = num;
-	$.post("",{page:"1",type:"add_goods",goods:addObj},function(data){
+	$.post("",{type:"add_goods",goods:addObj},function(data){
 		//0添加成功
 		if( data.result == 0){
 			$.post("",{type:'get_goods',id:id},function(shipsdata){
 				if(shipsdata.result == 0){
 					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
-					totalPrice();
-					shippingPrice();
+					//已选商品金额合计
+					var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+					$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+					if( freight_check == 0 ){
+						$(".total-area .dispatchprice span").removeClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+					}else if(freight_check == 1){
+						$(".total-area .dispatchprice span").addClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+					}
+					//运费合计
+					$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);
 					$(".goodsnum_" + id).val(num);
 					$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
 				}
@@ -860,8 +947,18 @@ function addNewNum(id,maxbuy,obj){
 			$.post("",{type:'get_goods',id:id},function(shipsdata){
 				if(shipsdata.result == 0){
 					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
-					totalPrice();
-					shippingPrice();
+					//已选商品金额合计
+					var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+					$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+					if( freight_check == 0 ){
+						$(".total-area .dispatchprice span").removeClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+					}else if(freight_check == 1){
+						$(".total-area .dispatchprice span").addClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+					}
+					//运费合计
+					$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);
 					$(".goodsnum_" + id).val(num);
 					$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
 				}

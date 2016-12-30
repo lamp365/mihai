@@ -86,6 +86,13 @@
 			$list['timeend'] = $good['timeend'];
 			// 单笔最大购买数量
 			$list['max_buy_quantity'] = $good['max_buy_quantity'];
+			// 品牌
+			$brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
+			$list['brand'] = $brand['brand'];
+			// 国家
+			$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
+			$list['country'] = $country['name'];
+			$list['country_icon'] = $country['icon'];
 			// 购物车商品数量
 			if (!empty($member)) {
 				$list['shoppingcart_num'] = countCartProducts($member['openid']);

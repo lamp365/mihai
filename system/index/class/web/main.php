@@ -30,6 +30,19 @@ if(!empty($userRule)){
 //		ppd($parentMenuList);
 }
 
+//得到快捷菜单
+$top_menu = '';
+if(!empty($parentMenuList)){
+	foreach($parentMenuList as $m_list){
+		foreach($m_list as $t_menu){
+			if($t_menu['top_menu'] == 1){
+				$top_menu[] = $t_menu;
+			}
+		}
+	}
+
+}
+
 
 $module_allow = array(
 	MenuEnum::DATA_REPORT_MANGE	=> 'addon6',

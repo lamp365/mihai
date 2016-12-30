@@ -68,7 +68,7 @@ switch ( $_GP['api'] ){
 			     }else{
 					 $sendtype = 0;
 					 // 设置配送运费
-					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.12;
+					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.18;
 					 $freight = $good_template['weight'] * $goods_value['total'] * $good_template['coefficient'] * 2.2046 * 3.25 * $exchange_rate_value;
 			      } 
 				  $goods_value['price'] = round($goods_value['price'] * $exchange_rate_value,2);

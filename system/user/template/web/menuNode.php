@@ -34,7 +34,12 @@
             <td style="text-align:center;">
                 <a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'sonMenuList','id' => $item['id']))?>"><i class="icon-edit"></i>子菜单</a>&nbsp;&nbsp;
                 <a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'menu','act'=>'post','id' => $item['id']))?>"><i class="icon-edit"></i>编辑菜单</a>&nbsp;&nbsp;
-                <a class="btn btn-xs btn-danger" href="<?php  echo web_url('user', array('op'=>'menu','act'=>'delete','id' => $item['id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
+                 <?php if($item['top_menu'] == 0){ ?>
+                     <a class="btn btn-xs btn-warning top_menu" href="javascript:;" data-topmenu="0" data-url="<?php  echo web_url('user', array('op'=>'top_nemu','id' => $item['id']))?>"><i class="icon-edit">设为快捷菜单</i></a>&nbsp;&nbsp;
+                <?php }else{  ?>
+                     <a class="btn btn-xs btn-danger top_menu"  href="javascript:;" data-topmenu="1" data-url="<?php  echo web_url('user', array('op'=>'top_nemu','id' => $item['id']))?>"><i class="icon-edit">取消快递菜单</i></a>&nbsp;&nbsp;
+                <?php } ?>
+                 <a class="btn btn-xs btn-danger" href="<?php  echo web_url('user', array('op'=>'menu','act'=>'delete','id' => $item['id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
             </td>
         </tr>
 <?php     }  } } ?>
@@ -100,4 +105,34 @@
         })
 	  		  	
 	})
+
+    $(".top_menu").click(function(){
+        var topmenu = $(this).data('topmenu');
+        var url     = $(this).data('url');
+        if(topmenu == 0){
+            //设置快捷
+            topmenu = 1;
+        }else{
+            //取消快捷
+            topmenu = 0;
+        }
+        url = url + "&topmenu="+topmenu;
+        var obj = this;
+        $.getJSON(url,function(data){
+            if(data.errno == 200){
+                $(obj).data('topmenu',topmenu);
+                if(topmenu == 1){
+                    console.log('1111111');
+                    $(obj).removeClass('btn-warning');
+                    $(obj).addClass('btn-danger');
+                    $(obj).find('i').html('取消快捷菜单');
+                }else{
+                    console.log('00000000');
+                    $(obj).removeClass('btn-danger');
+                    $(obj).addClass('btn-warning');
+                    $(obj).find('i').html('设为快捷菜单');
+                }
+            }
+        },'json')
+    })
 </script>

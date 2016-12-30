@@ -854,7 +854,8 @@
 
 
     function checkIsCanBuy(shop_type){
-        if(shop_type != 0){
+//        if(shop_type != 0){  //暂时去掉允许购买等APP2.0上去后
+        if(shop_type == 100){
             //弹窗 提示下载
             tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",2);
             return false;

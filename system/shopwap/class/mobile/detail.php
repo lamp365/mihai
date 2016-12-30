@@ -49,9 +49,26 @@
 			  $key = 'messid';
 			  $com_text ='团购评价';
 			  break;
+		  case 'pager':
+		  	  $table= array(
+                  'table'=>'shop_dish',
+	              'where' => 'a.id = '.$goodsid
+              );
+              $goods = get_good($table);
+			  $comments = mysqld_selectall("SELECT * FROM " . table('shop_goods_comment') . "  WHERE goodsid={$goods['gid']} ORDER BY istop desc, createtime desc limit ". ($pindex - 1) * $psize . ',' . $psize);
+			  //获取评论对应的图片
+			   if (!empty($comments)) {
+				   	foreach($comments as $k=> $row){
+						$comments[$k]['piclist'] = mysqld_selectall("select img from ". table('shop_comment_img') ." where comment_id={$row['id']}");
+					}
+			   }
+				
+			  echo json_encode($comments);
+			  return;
+			  break;
 		  default:
 			  $table = 'shop_dish';
-		       $table= array(
+		      $table= array(
                   'table'=>$table,
 	              'where' => 'a.id = '.$goodsid
               );
@@ -119,6 +136,19 @@
 		   }else{
 			   // 获取评论数量
 			   $total = $goods['count'] = mysqld_selectcolumn('SELECT COUNT(*) FROM '. table($comment) .'WHERE '.$key.' = '.$goods['gid']);
+			    $tpage = ceil($total / $psize);
+			    if ($tpage > 1) {
+			    	$beforesize = 5;
+    				$aftersize = 4;
+			    	$cindex = $pindex;
+			    	$rastart = max(1, $cindex - $beforesize);
+					$raend = min($tpage, $cindex + $aftersize);
+					if ($raend - $rastart < $beforesize + $aftersize) {
+						$raend = min($tpage, $rastart + $beforesize + $aftersize);
+						$rastart = max(1, $raend - $beforesize - $aftersize);
+					}
+			    }
+			    
 			   $pager = pagination($total, $pindex, $psize,'.show_comment');
 		   }
 		}

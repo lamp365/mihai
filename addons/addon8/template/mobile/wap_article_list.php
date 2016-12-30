@@ -519,7 +519,8 @@ function Load(art_data){
 
 	}
 	//将后台返回的时间戳格式化为时间格式
-	function Stringtotime(time){  
+	function Stringtotime(time){ 
+		time = time *1000; 
 	    var datetime = new Date();			    
 	    datetime.setTime(time);			      
 	    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1; 			   

@@ -244,9 +244,9 @@
 
 		//觅海头条，滚动条到底部时就加载剩下数据
 		$(function(){
-			$(window).scroll(function(){				
+			$(".headline_list").scroll(function(){				
 				var index = 1 ; //默认开关打开
-				if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+				if ( $(this)[0].scrollTop + $(".headline_list").height() >= $(this)[0].scrollHeight ) {					
 					if(index == 1){
 						index = 0; //关闭开关
 						var page = $("#page").val(); //第一次传的是2
@@ -270,8 +270,7 @@
 			})
 		})
 
-		function Append(art_data){
-			console.log(art_data)
+		function Append(art_data){			
 			var url = "<?php echo mobile_url('article_list',array('op'=>'headline'));?>";
 			 url = url+"&id="+art_data.headline_id;
 			var piclist = art_data.pic;
@@ -292,14 +291,16 @@
 
 		}
 	//时间戳转换为天	
-	function StringtotimeD(time){  
+	function StringtotimeD(time){
+		time  = time * 1000;  
 	    var datetime = new Date();			    
 	    datetime.setTime(time);      			   
 	    var day = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate(); 	      
 	    return day;  
 	}  
 	//时间戳转换为月
-	function StringtotimeM(time){  
+	function StringtotimeM(time){
+		time  = time * 1000;   
 	    var datetime = new Date();			    
 	    datetime.setTime(time);			      
 	    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1; 			   	       
@@ -553,6 +554,7 @@
 		}
 		//将后台返回的时间戳格式化为时间格式
 		function Stringtotime(time){
+			time = time*1000;
 			var datetime = new Date();
 			datetime.setTime(time);
 			var year = datetime.getFullYear();

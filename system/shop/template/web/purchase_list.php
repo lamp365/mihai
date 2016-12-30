@@ -301,8 +301,9 @@
 				    <td  colspan="4">
 					<?php 
 					    if ( is_array($item['goods']) ){
+							  $j = 0;
 							  $count_num = count($item['goods']);
-                               foreach ( $item['goods'] as $goods ){
+                               foreach ( $item['goods'] as $goods ){  $j++;
 					?>
 					    <div class="items">
 						      <ul>
@@ -339,6 +340,7 @@
 					<?php
 							   }
 					    }?>
+
 					</td>
 			       
 					<td align="center" valign="middle" style="vertical-align: middle;">
@@ -381,7 +383,7 @@
 					<td align="center" valign="middle" style="vertical-align: middle;">
 					    <div>
 					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-                         <?php if ( checkAdmin() ){ ?>
+                        <?php if(isHasPowerToShow('shop','purchase','express')){ ?>
 						 <span class="label label-warning quick-delivery-btn" style="margin-left:3px;background-color:#4edbf0">快捷发货</span>
 					     	<div class="modal fade quick-delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								<div class="modal-dialog">

@@ -24,10 +24,10 @@ if ($op == 'token'){
         $result = array('result' => 1002,'message'=>'抱歉，该商品不存在或是已经被删除！');
         die(json_encode($result));
     }
-    if ($goods_shop['type'] != 0 && is_mobile_request()) {
-        $result = array('result' => 1002,'message'=>'此活动商品必须下载APP才能购买！');
+   /* if ($goods_shop['type'] != 0 && is_mobile_request()) {
+        $result = array('result' => 1002,'message'=>'此商品须下载APP才能购买！');
         die(json_encode($result));
-    }
+    }*/
 
 	 $cookie = new LtCookie();
 	 $cookie->setCookie('goods',$goods,time()+3600*2);  //暂时2个小时

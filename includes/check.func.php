@@ -107,15 +107,9 @@ function hasrule($modname, $moddo, $modop='')
  * @param $ruledata
  */
 function recoderAdminBehaveLog($ruledata){
-    //获取id
-    $ip = getClientIP();
-    $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.$ip;
-    $location = http_get($url);
-    $location = json_decode( $location,true);
-    $area = '';
-    if(!empty($location)){
-        $area = $location['province'].' '.$location['city'];
-    }
+    //获取ip
+    $ip   = getClientIP();
+    $area = getAreaByIp($ip);
     $name = '';
     if($ruledata[0]['pid']!=0){
         $prule = mysqld_select('select moddescription from '.table('rule')." where id={$ruledata[0]['pid']}");

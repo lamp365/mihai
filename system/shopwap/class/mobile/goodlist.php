@@ -131,6 +131,22 @@
 			 'limit'=>  ($pindex-1)*$psize.','.$psize,
 			 'order' => $sortfield
 	  ));
+      if ( empty($list) && !empty($_GP['keyword'])){
+             $word = get_word($_GP['keyword']);
+			 if ( !empty($word) ){
+		     foreach ($word as $word_value ) {
+	               $keys[] = " b.title like '%".$word_value."%' ";
+		      }
+		     $keys = implode(' or ' , $keys);
+		     $condition .= ' AND ('.$keys.')';
+			 $list = get_goods(array(
+				 'table'=> $table,
+				 'where' => $condition,
+				 'limit'=>  ($pindex-1)*$psize.','.$psize,
+				 'order' => $sortfield
+	         ));
+			 }
+	  }
 	  $brands = array();
 	  $dish_brand = mysqld_selectall("SELECT b.brand FROM ". table('shop_goods') . " as b left join ". table($table) ." as a on b.id = a.gid where ".$condition." group by b.brand");
       foreach ( $dish_brand as $key=>$b_value ){

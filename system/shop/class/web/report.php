@@ -326,7 +326,9 @@ if($report=='dishreport')
 							->setCellValue('D1', '价格')
 							->setCellValue('E1', '特别价格')
 							->setCellValue('F1', '库存')
-							->setCellValue('G1', '状态');
+							->setCellValue('G1', '状态')
+		                    ->setCellValue('H1', '条型码');
+
 	  $i = 2;
 	  if (is_array($list)){
 		     foreach ( $list as $item ){
@@ -342,10 +344,12 @@ if($report=='dishreport')
 									->setCellValue('D'.$i, ' '.$item['marketprice'])
 									->setCellValue('E'.$i, $item['timeprice'])
 									->setCellValue('F'.$i, $item['total'])
-									->setCellValue('G'.$i, $status);
+									->setCellValue('G'.$i, $status)
+					                ->setCellValue('H'.$i, ' '.$item['goodssn']);
 					  $i++;
 			 }
 	  }
+	  $objPHPExcel->getActiveSheet()->getStyle('H')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
       $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(10); 
       $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(10); 
 	  $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(60); 
@@ -353,6 +357,7 @@ if($report=='dishreport')
 	  $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(10); 
 	  $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(10); 
 	  $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(10); 
+	  $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(20); 
 	  $objPHPExcel->getActiveSheet()->setTitle('订单统计');
 }
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet

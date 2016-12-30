@@ -73,8 +73,8 @@ if ($operation == 'display') {
 		//为自提的订单
 		$condition .= " AND A.sendtype=1 AND A.status != -1 ";
 	}else if($status == '-99'){
-		//全部  不做处理
-		$condition .= " AND A.status != -1 ";
+		// 对于全部订单不显示关闭 和支付审核的订单
+		$condition .= " AND A.status != -1 AND A.status != -7";
 	}else{
 		$condition .= " AND A.status = '" . intval($status) . "'";
 	}
@@ -124,7 +124,7 @@ if ($operation == 'display') {
 		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid from ".table('shop_order_goods')." as o ";
 		$sql .= " left join ".table('shop_dish')." as h ";
 		$sql .= " on o.goodsid=h.id ";
-		$sql .= " where o.orderid={$item['id']} order by o.total desc limit 5";  //批发订单一次会很多商品，这里优先列出五个
+		$sql .= " where o.orderid={$item['id']}";
 		$goods = mysqld_selectall($sql);
 		$list[$id]['goods'] = $goods;
 	}

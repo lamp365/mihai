@@ -20,7 +20,20 @@
       	 $condition=$condition.' and mobile like :mobile';
       	 $conditiondata[':mobile']='%'.$_GP['mobile'].'%';
       }
-          if(!empty($_GP['weixinname']))
+	  $vc = isset($_GP['status'])? $_GP['status']: 1;
+      switch ( $vc ){
+			   // ÉÌ³Ç»áÔ±
+                case 1:
+					$condition=$condition.' and parent_roler_id = 0 and son_roler_id = 0 ';
+					break;	 
+				// ÇþµÀÉÌ»áÔ±
+				case 2:
+					$condition=$condition.' and parent_roler_id > 0 and son_roler_id > 0 ';
+					break;
+				default :
+					break;
+	  }
+       if(!empty($_GP['weixinname']))
       {
       	
       	 $condition=$condition.' and openid in (select wxfans.openid from ' . table('weixin_wxfans').' wxfans where wxfans.nickname like :weixinname)';
@@ -64,7 +77,7 @@
       $rank_model_list = mysqld_selectall("SELECT * FROM " . table('rank_model')." order by rank_level" );
 	  // ²»¶Ô»áÔ±ÁÐ±í½øÐÐÉí·ÝÏÞÖÆ£¬±ÜÃâÎÞ·¨¶þ´Î²Ù×÷¡£Ó¦¸ÃÔÚÈ¨ÏÞÄÄÀï½øÐÐ¿ØÖÆ
 			$list = mysqld_selectall('SELECT * FROM '.table('member')." where  dummy=0 and `istemplate`=0  and `status`=$status $condition "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
-	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where parent_roler_id=0 and dummy=0 and `istemplate`=0 $condition ",$conditiondata);
+	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where  dummy=0 and `istemplate`=0 $condition ",$conditiondata);
       $pager = pagination($total, $pindex, $psize);
       
       		foreach($list as  $index=>$item){

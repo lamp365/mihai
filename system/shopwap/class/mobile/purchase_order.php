@@ -22,6 +22,7 @@ $psize = max(20,$_GP['psize']);
 $limit =  " limit ".($page-1)*$psize.','.$psize;
 $condition = '';
 if (!empty($_GP['keyword'])){
+	 $_GP['keyword'] = trim($_GP['keyword']);
      switch ( $_GP['key_type'] ){
 		 case 'title':
 			 $condition = " and b.title like '%".$_GP['keyword']."%' ";
@@ -30,6 +31,25 @@ if (!empty($_GP['keyword'])){
 			 $condition = " and c.goodssn = '".$_GP['keyword']."' ";
 			 break;
 	 }
+}
+ if (!empty($_GP['p2'])) {
+		$cid = intval($_GP['p2']);
+		$condition .= " AND b.p2 = '{$cid}'";
+} elseif (!empty($_GP['p1'])) {
+		$cid = intval($_GP['p1']);
+		$condition .= " AND b.p1 = '{$cid}'";
+}
+$category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');
+if (! empty($category)) {
+	$childrens = '';
+	foreach ($category as $cid => $cate) {
+		if (! empty($cate['parentid'])) {
+			$childrens[$cate['parentid']][$cate['id']] = array(
+				$cate['id'],
+				$cate['name']
+			);
+		}
+	}
 }
 // 根据用户的角色获取产品数据
 if ( $user_a['type'] == 2 ){
@@ -53,6 +73,13 @@ if ( empty($dish_list) && !empty($_GP['keyword']) && $_GP['key_type'] == 'title'
 		 }
 		 $keys = implode(' or ' , $keys);
 		 $condition = ' and ('.$keys.')';
+		 if (!empty($_GP['p2'])) {
+			   $cid = intval($_GP['p2']);
+			   $condition .= " AND b.p2 = '{$cid}'";
+		 } elseif (!empty($_GP['p1'])) {
+			   $cid = intval($_GP['p1']);
+			   $condition .= " AND b.p1 = '{$cid}'";
+		 }
 		  // 根据用户的角色获取产品数据
 			if ( $user_a['type'] == 2 ){
 				 // 找到批发权限
@@ -86,13 +113,61 @@ foreach( $dish_list as &$dish_list_value){
 	  $dish_list_value['currency'] = $currency;
 }
 unset($dish_list_value);
-$pager  = pagination($total, $page, $psize);
+$pager  = pagination($total, $page, $psize,'.product-lists');
 // 设置汇率
 $exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
 if ( $exchange_rate ){
     $exchange_rate_value =  $exchange_rate['value'] > 5 ? $exchange_rate['value'] : 6.8972;
 }else{
     $exchange_rate_value = 6.8972;
+}
+if (!empty($_POST['page'])){
+            if ( is_array($dish_list) && !empty($dish_list) ){ foreach ( $dish_list as $dish_list_value ){ 
+				if ( $dish_list_value["selected"] == 0 ){
+                   $html_select = '<div class="col-action"><span class="col-check" id="'. $dish_list_value["id"] .'">选择</span></div>';
+				}else{
+                   $html_select = '<div class="col-action"><span class="col-check added" id="'. $dish_list_value["id"] .'">已选</span></div>';
+			    }
+				$html .='<li>
+						<div class="product-img">
+							<img class="product-img-click" product_id="'. $dish_list_value["id"] .'"  src="'. $dish_list_value["thumb"] .'" >
+							<div class="modal fade product-detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">  
+								<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										<div class="modal-header"> 
+											<button type="button" class="close" data-dismiss="modal">
+												<span aria-hidden="true">&times;</span>
+												<span class="sr-only">Close</span>
+											</button>
+											<h4 class="modal-title" class="myModalLabel">'. $dish_list_value["title"] .'</h4>
+										</div>
+										<div class="modal-body">
+											<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="product-title">
+							<div class="product-name" product_id="'. $dish_list_value["id"] .'">'. $dish_list_value["title"] .'</div>
+						</div>
+						<div class="product-price">
+							<span><i>$</i>'. $dish_list_value["price"] .'</span>
+						</div>
+						<div class="col-num" cartid="'. $dish_list_value["id"] .'">
+							<div class="input-group">
+								<span class="input-group-btn">
+									<button class="btn btn-default btn-sm btn-reduce" type="button" onclick="reduceNum('. $dish_list_value["id"] .')">-</button>
+								</span>
+								<input type="tel" value="1" class="form-control input-sm pricetotal goodsnum " onblur="blurNum(this)"  cartid="'. $dish_list_value["id"] .'" id="goodsnum_'. $dish_list_value["id"] .'" price="'. $dish_list_value["price"] .'"  maxbuy="'. $dish_list_value["total"] .'">
+								<span class="input-group-btn">
+									<button class="btn btn-default btn-sm btn-add" type="button" onclick="addNum('. $dish_list_value["id"] .','. $dish_list_value["total"] .')">+</button>
+								</span>
+							</div>
+						</div>'.$html_select.'</li>';
+			 }} 
+       echo $html;
+       exit;
 }
 $op = $_GP['type']; 
 switch ( $op ){
@@ -131,7 +206,7 @@ switch ( $op ){
 		     $cart_data = array(":openid"=>$openid, ":goodstype"=>$user_a['type'], ":goodsid"=>$_GP['id']);
 		     $total = mysqld_select("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype and goodsid = :goodsid ", $cart_data);
              $query = mysqld_select("SELECT a.gid,a.thumb,a.pcate,a.issendfree, a.title,b.content,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$_GP['id']);
-             $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.12;
+             $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.18;
 		     $freight    =  $query['weight'] * $total['total'] * $coefficient * 2.2046 * 3.25 ;
 			 die(json_encode(array(
 			   "errno"=>200,

@@ -228,7 +228,7 @@ if ($operation == 'sonMenuList') {//子节点
 
 if($operation == 'menudisplay'){
 	$cat = MenuEnum::$getMenuEnumValues;
-	$menu = mysqld_selectall("select moddescription,concat(modname,'/',moddo,'/',modop) as url,pid,sort,id,cat_id from ".table('rule') ." where pid=0 order by cat_id asc,sort asc,id asc");
+	$menu = mysqld_selectall("select moddescription,concat(modname,'/',moddo,'/',modop) as url,pid,sort,id,cat_id,top_menu from ".table('rule') ." where pid=0 order by cat_id asc,sort asc,id asc");
 	$data = array();
 	if(!empty($menu)){
 		foreach($menu as $row){
@@ -290,6 +290,9 @@ if($operation == 'rolerlist'){
 			}
 		}
 	}
+
+	//取出所有的品牌
+	$shop_brand = mysqld_selectall("select id,brand from ".table('shop_brand')." where deleted=0");
 	include page('rolerlist');
 }
 
@@ -314,7 +317,12 @@ if($operation == 'changerolers'){
 	if(empty($_GP['rolers_name']))
 		message('对不起，名字不能为空！',refresh(),'error');
 
-	$update_data = array('name'=>$_GP['rolers_name'],'description'=>$_GP['description']);
+	$forbid_brand = empty($_GP['forbid_brand']) ? '' : serialize($_GP['forbid_brand']);
+	$update_data = array(
+		'name'		   => $_GP['rolers_name'],
+		'description'  => $_GP['description'],
+		'forbid_brand' => $forbid_brand
+	);
 	if(!empty($_GP['rolers_alls'])){
 		$update_data['discount'] = $_GP['rolers_alls'];
 	}
@@ -341,6 +349,7 @@ if($operation == 'add_purchase_rolers'){
 		message('对不起请选择身份类型！',refresh(),'error');
 	if(empty($_GP['rolers_name']))
 		message('对不起，名称不能为空！',refresh(),'error');
+
 	mysqld_insert('rolers',array(
 		'name'=>$_GP['rolers_name'],
 		'pid' =>$_GP['pid'],
@@ -402,7 +411,18 @@ if($operation == 'menusort'){
 	//更新排序
 	if(!empty($_GP['id']) && $_GP['sort'] !== NULL){
 		mysqld_update('rule',array('sort'=>$_GP['sort']),array('id'=>$_GP['id']));
+		die(showAjaxMess(200,'操作成功！'));
 	}
+	die(showAjaxMess(1002,'操作失败！'));
+}
+
+if($operation == 'top_nemu'){
+	//设置快捷菜单
+	if(!empty($_GP['id'])){
+		mysqld_update('rule',array('top_menu'=>$_GP['topmenu']),array('id'=>$_GP['id']));
+		die(showAjaxMess(200,'操作成功！'));
+	}
+	die(showAjaxMess(1002,'操作失败！'));
 }
 
 function isRelationPurchase($uid){

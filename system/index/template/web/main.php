@@ -115,6 +115,9 @@
         .user-info{
             top: 9px;
         }
+        .navbar-header.pull-left{
+            width: 700px;
+        }
     </style>
     <script type="text/javascript">
     	function navtoggle(stitle)
@@ -164,7 +167,7 @@
                 <li class="Larger">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
                         <i class="icon-strikethrough"></i>
-                            <small>修改汇率</small>                          
+                            <span>修改汇率</span>                       
        
                         <!-- <i class="icon-caret-down"></i> -->
                     </a>
@@ -218,11 +221,9 @@
 </div>
 <div class="head-second-nav">
     <ul>
-        <li class="nav-active"><a href="#">订单管理</a></li>
-        <li><a href="#">宝贝列表</a></li>
-        <li><a href="#">文章管理</a></li>
-        <li><a href="#">评论管理</a></li>
-        <li><a href="#">会员管理</a></li>
+        <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
+            <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
+        <?php }} ?>
     </ul>
 </div>
 
@@ -436,6 +437,11 @@
                                 <li> <a  onclick="navtoggle('拼团订单 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'groupbuy','op' => 'list'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         拼团订单
+                                    </a>
+                                </li>
+                                <li> <a  onclick="navtoggle('订单审核 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'audit'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        订单审核
                                     </a>
                                 </li>
                                 <li> <a onclick="navtoggle('订单管理 - > 批量发货')" href="<?php  echo create_url('site', array('name' => 'shop','do'=>'orderbat','op' => 'display'))?>" target="main">

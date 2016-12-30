@@ -239,7 +239,7 @@
 		</div>
 		<!--增加的操作-->
 		<?php if ( !empty( $list_op )  ){ ?>
-		<select style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="" id="option" onchange="fetchOption()">
+		<select style="display: block;margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="" id="option" onchange="fetchOption()">
 		    <?php foreach ( $list_op as $key=>$list_op_value ){ ?>
 			<option value="<?php echo $list_op_value; ?>"><?php echo $key; ?></option>
 			<?php } ?>
@@ -392,11 +392,6 @@
 					});
 					$(".vip-form-area").html(get_html);
 				}else{
-					if( data_value.currency ==1 ){
-						currency_tap = '￥';
-					}else if(data_value.currency ==2){
-						currency_tap = '$';
-					}
 					get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
 								"<select  class='form-control set-select' vid='' onchange='changeFun(this)'></select><div class='input-group'><span class='input-group-addon'>"+currency_tap+"</span>"+
 								"<input type='text'  class='form-control vip_price' value='' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+

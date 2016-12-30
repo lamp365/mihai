@@ -60,8 +60,37 @@ function analyzeShopContent($content,$return_dishid = false){
     }
 }
 
-function getArticleUrl($id,$openid = ''){
-    $url = create_url('mobile', array('id' => $id,'name'=>'addon8','do'=>'article','is_app'=>1,'openid'=>$openid));
+/**
+ * 获取文章的地址 如头条 健康文化 笔记
+ * @param $id
+ * @param $type   healty健康文化 note 笔记   headline头条
+ * @param string $openid    openid 可以为空，用来识别用户是否登录
+ * @param string $is_quote  是否是包含的，如健康文化是嵌套wap页面，就需要这个参数不为空为真
+ * @return string
+ */
+function getArticleUrl($id,$type,$openid = '',$is_quote=''){
+    $parame = array('id' => $id,'name'=>'addon8','do'=>'article');
+    if(!empty($is_quote)){
+        $parame['is_app']  = 1;
+    }
+    if(!empty($openid)){
+        $parame['openid']  = $openid;
+    }
+
+    switch($type){
+        case 'healty':
+
+            break;
+        case 'note':
+            $parame['op']  = $type;
+            break;
+        case 'headline':
+            $parame['op']  = $type;
+            break;
+    }
+    $url = create_url('mobile', $parame);
+    logRecord('1111','article12');
+    logRecord($url,'article12');
     return WEBSITE_ROOT.$url;
 }
 

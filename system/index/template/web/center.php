@@ -223,7 +223,7 @@ $(function () {
 		            <dl>
 		                <dt><span class="title">待处理订单</span></dt>
 		                <dd><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 1))?>">待发货：<?php echo $needsend_count ?>笔</a>￥<?php echo $needsend__price ?></dd>
-		                <dd><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -3))?>">退换货：<?php echo $returnofgoods_count ?>笔</a>￥<?php echo $returnofgoods_price ?></dd>
+		                <dd><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -4))?>">退换货：<?php echo $returnofgoods_count ?>笔</a>￥<?php echo $returnofgoods_price ?></dd>
 		               <dd><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -2))?>">退款单：<?php echo $returnofmoney_count ?>笔</a>￥<?php echo $returnofmoney_price ?></dd>
 		              
 		            </dl>
@@ -237,8 +237,8 @@ $(function () {
 		                    <span class="totay-1">今日简报</span>
 		                    <span class="totay-2">订单</span>
 		                    <span class="totay-3">订单金额</span>
-		                    <span class="totay-4">退货单</span>
-		                    <span class="totay-5">退货金额</span>
+		                    <span class="totay-4">已退货单</span>
+		                    <span class="totay-5">已退货金额</span>
 		                </dt>
 		                <dd>
 		                    <span class="totay-1">今日</span>

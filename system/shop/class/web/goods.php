@@ -229,7 +229,11 @@ if ($operation == 'post') {
             'hasoption' => intval($_GP['hasoption']),
             'timeend' => strtotime($_GP['timeend'])
         );
-
+        // 开始检查货号
+		$sn = mysqld_select("SELECT * FROM ".table('shop_goods')." WHERE goodssn = :goodssn ",array(":goodssn"=>$_GP['goodssn']));
+		if ( $sn && empty($_GP['id']) ){
+              message('货号已存在，请检查');
+		}
         //删除因为加入权限不可见后，一些字段没有对应数据则删除  产品这边可以这么去除，宝贝那边不能这么处理
         foreach($data as $key => $val){
             if($val === null)  unset($data[$key]);
@@ -242,13 +246,11 @@ if ($operation == 'post') {
             }
             $data['thumb'] = $upload['path'];
         }
+
         if (empty($id)) {
             $data['sales'] = 0;
             mysqld_insert('shop_goods', $data);
             $id = mysqld_insertid();
-			if ( empty($id) ){
-                message('货号已存在，请检查');
-			}
         } else {
             unset($data['createtime']);
             unset($data['sales']);

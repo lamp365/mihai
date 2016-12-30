@@ -117,7 +117,7 @@ function GetProducts($proNo='',$proClassCode='',$proSale='',$IsBatch='',$IsGuara
 /**
  * 查询商品库存
  * 
- * @param $proSkuNo string 商品Sku(商品货号\条形码)
+ * @param $proSkuNo string 商品Sku(商品货号\条形码) 注：商品Sku之间用逗号（,）隔开可批量查询，返回结果将按sku顺序排序
  *
  * @return array 接口返回
  *  <Code>101</Code>  // 101：成功，102：失败，103：系统异常
@@ -165,12 +165,13 @@ function GetProductSkuInfo($proSkuNo) {
  * @param $proSkuNo string 商品Sku
  * @param $proNum string 库存数量
  * @param $batchCode string  批次号(商品有开启批次管理，该字段必传[由数字和字母组成，长度不超过20个字符]；商品未开启批次管理，该字段只能传'混批'，或不传默认混批)
+ * @param $DS bool 是否同步本地库存
  *
  * @return array 接口返回
     <Code>101</Code>  //  101：成功，102：失败，103：系统异常
     <Message>更新成功</Message>  //  返回接口状态
  */
-function UpdateProductSkuNum($proSkuNo, $proNum, $batchCode='') {
+function UpdateProductSkuNum($proSkuNo, $proNum, $batchCode='', $DS=false) {
     $fun_name = __FUNCTION__;
 
     $data_ary = array(
@@ -181,7 +182,7 @@ function UpdateProductSkuNum($proSkuNo, $proNum, $batchCode='') {
         $data_ary['batchCode'] = $batchCode;
     }
 
-    return run_link($fun_name, $data_ary);
+    return run_link($fun_name, $data_ary, $DS, $proSkuNo);
 }
 
 /**
@@ -192,13 +193,14 @@ function UpdateProductSkuNum($proSkuNo, $proNum, $batchCode='') {
  * @param $oType string  更新方式(类型[0：增量(默认) 1：减量])
  * @param $batchCode string  批次号(商品有开启批次管理，该字段必传[由数字和字母组成，长度不超过20个字符]；商品未开启批次管理，该字段只能传'混批'，或不传默认混批)
  * @param $orderNo string  外部调整单号（非必填项，值：不能重复）
+ * @param $DS bool 是否同步本地库存
  *
  * @return array 接口返回
     <Code>101</Code>  //  101：成功，102：失败，103：系统异常
     <Message>更新成功</Message>  //  返回接口状态
     <Result>系统调整单号</Result>  //  返回系统调整单号
  */
-function UpdateProSkuInventory($proSkuNo, $proNum, $oType='0', $orderNo='', $batchCode='') {
+function UpdateProSkuInventory($proSkuNo, $proNum, $oType='0', $orderNo='', $batchCode='', $DS=false) {
     $fun_name = __FUNCTION__;
 
     $data_ary = array(
@@ -213,7 +215,7 @@ function UpdateProSkuInventory($proSkuNo, $proNum, $oType='0', $orderNo='', $bat
         $data_ary['orderNo'] = $orderNo;
     }
 
-    return run_link($fun_name, $data_ary);
+    return run_link($fun_name, $data_ary, $DS, $proSkuNo);
 }
 
 /**
@@ -221,13 +223,14 @@ function UpdateProSkuInventory($proSkuNo, $proNum, $oType='0', $orderNo='', $bat
  * 
  * @param $proSku array 商品Sku(例：array(array('OType'=>OType,'ProNum'=>ProNum,'SkuNo'=>SkuNo,'batchCode'=>batchCode(非必需),'mfgDate'=>mfgDate(批次号生产日期,非必需)),array))
  * @param $orderNo string  外部调整单号（非必填项，值：不能重复）
+ * @param $DS bool 是否同步本地库存
  *
  * @return array 接口返回
     <Code>101</Code>  //  101：成功，102：失败，103：系统异常
     <Message>更新成功</Message>  //  返回接口状态
     <Result>系统调整单号</Result>  //  返回系统调整单号
  */
-function BatchUpdateProSkuInventory($proSku, $orderNo='') {
+function BatchUpdateProSkuInventory($proSku, $orderNo='', $DS=false) {
     $fun_name = __FUNCTION__;
     $data_ary = array(
        "proSku"=>json_encode($proSku),
@@ -235,8 +238,14 @@ function BatchUpdateProSkuInventory($proSku, $orderNo='') {
     if (!empty($orderNo)) {
         $data_ary['orderNo'] = $orderNo;
     }
+    if ($DS) {
+        $sku_str = "";
+        foreach ($proSku as $prov) {
+            $sku_str.=($prov['SkuNo'].',');
+        }
+    }
 
-    return run_link($fun_name, $data_ary);
+    return run_link($fun_name, $data_ary, $DS, $sku_str);
 }
 
 /**
@@ -284,10 +293,11 @@ function GetProBatchNo($batchCode='', $startTime='', $endTime='', $pageIndex='',
  * 
  * @param $method 接口名
  * @param $data  接口参数
+ * @param $ds bool 是否同步本地库存
  *
  * @return array 接口返回
  */
-function run_link($method, $data) {
+function run_link($method, $data, $ds=false, $ds_data='', $debug=false) {
     if (empty($method)) {
         return false;
     }
@@ -309,7 +319,22 @@ function run_link($method, $data) {
     $postData = "user=".$appKey."&method=".$apiMethod."&token=".$sToken."&format=".$apiFormat."&appKey=".$appKey.$post_data_filed;
     $postUrl = ERP_POSTURL;
     $response = phpCurlPost($postUrl,$postData); 
-    return $response;
+    if ($ds) {
+        $info = GetProductSkuInfo($ds_data);
+        foreach ($info as $iv) {
+            $gid = mysqld_select("SELECT id FROM ".table('shop_goods')." WHERE goodssn='".$iv['ProSkuNo']."'");
+            mysqld_update("shop_dish",array('total'=>$iv['ProCount']) ,array('gid'=>$gid['id']));
+        }
+    }
+    if (!$debug) {
+        if (!empty($response) AND $response['Code'] == '101') {
+            return $response['Result'];
+        }else{
+            return false;
+        }
+    }else{
+        return $response;
+    }
 }
 
 // 入参处理

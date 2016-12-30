@@ -17,8 +17,8 @@ function is_https(){
         return TRUE;  
     }  
     return FALSE;  
-} 
-$http = is_https()?'https://':'http://';
+}
+define('WEB_HTTP', is_https()?'https://':'http://');
 define('WEB_ROOT', str_replace("\\", '/', dirname(dirname(__FILE__))));
 define('SAPP_NAME', '福州小物网络科技有限公司');
 define('CORE_VERSION', 20151019);
@@ -29,7 +29,7 @@ define('TIMESTAMP', time());
 define('SYSTEM_IN', true);
 date_default_timezone_set('PRC');
 $document_root = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/'));
-define('WEBSITE_ROOT', $http . $_SERVER['HTTP_HOST'] . $document_root . '/');
+define('WEBSITE_ROOT', WEB_HTTP . $_SERVER['HTTP_HOST'] . $document_root . '/');
 define('RESOURCE_ROOT', WEBSITE_ROOT . 'assets/');
 define('SYSTEM_ROOT', WEB_ROOT . '/system/');
 define('ADDONS_ROOT', WEB_ROOT . '/addons/');
@@ -156,7 +156,8 @@ $system_module = array(
     'bonus',
     'alipay',
     'promotion',
-    'api'
+    'api',
+    'job'
 );
 
 if (in_array($modulename, $system_module)) {
@@ -221,6 +222,11 @@ if (in_array($modulename, $system_module)) {
                         echo md5_file(__FILE__);
                         exit();
                     }
+                    if($modulename == 'shopwap'){
+                        //商城访问量统计
+                        trafficCount();
+                    }
+
                 } else {
                     
                     if ($modulename != "public") {

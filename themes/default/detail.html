@@ -286,6 +286,45 @@
 	width: 110px;text-align: right;
 }
 .pagination .active{margin-top:0px;margin-left:0px;}
+
+/*评论回复样式*/
+.comment_return{
+	width: 100%;
+	overflow: hidden;
+	background: #F8F8F8;
+	border-radius: 5px;
+	margin-top: 10px;
+	padding: 10px;
+	color:#CC7E00;
+}
+/*评论页码*/
+.comment_page{
+	width: 100%;
+	overflow: hidden;
+	text-align: center;
+	margin-top: 20px;
+}
+.comment_page li{
+	margin: 0 auto;
+	display: inline-block;	
+	height: 30px;
+	padding: 0 10px;
+	border: solid 1px #ddd;
+	border-radius: 5px;
+	margin-left: 5px;
+	text-align: center;
+	line-height: 30px;
+	cursor: pointer;
+	color: #999;
+}
+.comment_page li:hover{
+	background: #eee;
+	color: #fff;
+}
+.comment_page li.active{
+	color: #000;
+	cursor: auto;
+}
 </style>
 <script>
 
@@ -421,7 +460,7 @@ function point(){
 								</div>								
 								<!--缩图结束-->
 							</div>
-							<ul style="overflow: hidden;position: absolute;top: 818px;">
+							<ul style="overflow: hidden;position: absolute;top: 860px;">
 								<li style="float: left;width:100px;text-align: center;cursor: pointer;" data-toggle="modal" data-target="#share-list">
 									<img src="__RESOURCE__/recouse/images/goodshare.png" style="margin-top: 4px;"/>
 									分享
@@ -844,7 +883,7 @@ function point(){
 					</div>
 					<div class="con" id="goodsEvaluate" style="display: none;">
 						
-					   <!-- 高度自适应需添加外层 -->
+					 <!-- 高度自适应需添加外层 -->
 						<ul  class="show_comment">
 						     <!--@php  if(is_array($comments)) { foreach($comments as $key=> $row) { @-->
 							<li  class="comment_list">
@@ -858,6 +897,12 @@ function point(){
 										</a>
 										<!--@php } @-->
 									</div>
+									<!--@php if(!empty($row['reply'])){ @-->
+										<!--评论回复-->
+										<div class="comment_return">
+											<!--@php  echo $row['reply']; @-->
+										</div>
+									<!--@php } @-->
 								<!--@php } @-->
 								</div>
 								<div class="pull-right comment_right" style="<!--@php if(!empty($row['piclist'])){ echo 'margin-top:30px;' ;}@-->">
@@ -866,7 +911,22 @@ function point(){
 								</div>
 						   </li>
 							<!--@php  }} @-->
-							<!--@php echo $pager;@-->
+
+							<!--页码-->
+							<!--@php if($total>$psize){ @-->
+							<ul class="comment_page">
+								<!--@php if($pindex>1){ @-->
+								<li>上一页</li>
+								<!--@php } @-->
+								<!--@php for ($i = $rastart; $i <= $raend; $i ++) { @-->
+								<li class="<!--@php if($i==$pindex){echo 'active';} @-->"><!--@php echo $i; @--></li>
+								<!--@php } @-->
+								<li>下一页</li>								
+							</ul>
+							<!--@php } @-->
+							<!--隐藏域用来保存当前页码-->
+							<input type="hidden" value="1" id="current_comment"/>
+							
 							<!--@php  if(empty($comments)) { @-->
 							<div class="myoder"style="text-align: center; color: #aaa; padding: 30px;">
 								暂时没有商品评价!!
@@ -1288,6 +1348,58 @@ $(".share-list a").hover(function(){
 	shareFun(location_href,title,picurl);
 
 
+	//评论页码控制
+	var index = 1; //设置一个开关，避免，一直点击页码，上一个后台请求没有结束，就继续请求
+	$(".comment_page li").click(function(){		
+		//点击页码的样式变化
+		$(this).addClass("active").siblings().removeClass("active");
+		
+		if(index == 1){   //如果开关是打开的，就向后台请求
+			index = 0; //关闭开关
+			//获取当前点击的是哪一页,传到后台
+			var page = $(this).index();			
+			
+			var infos = {
+				AJAX:'post',
+				page:page
+			};
+			var url = "<!--@php echo mobile_url('detail', array('id' => $goods['id'],'op'=>'pager'))@-->";
+			$.post(url, infos, function(s){   //当前页传过去，再传一个参数op表示是异步
+				s = eval(s);
+				if(s.length == 0){    //我设定的是，200，表示没有数据
+					//如果没有数据,不做处理						
+				}else{
+					$("#current_comment").val(page);	//点击的是哪一页，将它赋值给隐藏域input,这个隐藏域我弄了看你需不需要，不要的话就不用
+					console.log(s);
+					var art_data = s;  //后台返回的数据是  message
+					//先将评论列表现在的评论移除
+					$(".show_comment").find(".comment_list").remove();
+					//获取到的这一页有很多条评论，一条一条的取出调用方法，放到评论列表处
+					for(var i = 0;i < art_data.length;i++){
+						//循环拼接 html下一页数据
+						rComment(art_data[i]);
+					}
+					index = 1;  //加载完后重新打开开关
+				}
+			});
+		}			
+	})
+	//刷新评论列表的方法
+	function rComment(data){		
+		//将后台返回的评论拼接进去
+		//现在的数据是写死的
+		var li  = '<li class="comment_list">'+
+						'<div  class="pull-left comment_left">'+
+								'评论内容'+
+						'</div>'+
+						'<div class="pull-right comment_right">'+
+							'<p>用户名或者手机号</p>'+
+							'<p style="font-size: 12px;color: #CCCCCC;">来自 pc 版</p>'+
+						'</div>'+
+				   '</li>'
+	    $(".show_comment").append(li);
+	}
+	
 </script>
 
 	</div>

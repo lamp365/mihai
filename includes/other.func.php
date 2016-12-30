@@ -196,13 +196,13 @@ function get_mobile_type($show_str = ''){
     }
     $mobile = new MobileDetect();
     if($mobile->isAndroidOS()){
-        return $show_str[0];
+        return $typeArr[0];
     }else if($mobile->isiOS()){
-        return $show_str[1];
+        return $typeArr[1];
     }else if($mobile->isTablet()){
-        return $show_str[2];
+        return $typeArr[2];
     }else{
-        return $show_str[3];
+        return $typeArr[3];
     }
 }
 

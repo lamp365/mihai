@@ -123,7 +123,7 @@
 						<tr class="one_row">
 							<td style="text-align:left;padding-left: 30px;" class="one_name">|---<span><?php  echo $child['name'];?></span></td>
 							<td style="text-align:center;" class="one_desc"><span><?php  echo $child['description'];?></span></td>
-							<td style="text-align:center;">
+							<td style="text-align:center;" class="son_name">
 								<?php if($child['type'] == 2) echo '渠道商'; ?>
 								<?php if($child['type'] == 3) echo '一件代发'; ?>
 							</td>
@@ -133,6 +133,7 @@
 							<td style="text-align:center;">
 								<?php  echo date('Y-m-d H:i:s', $child['createtime'])?></td>
 							<td style="text-align:center;">
+								<input type="hidden" class="hide_forbid_brand" value="<?php if(!empty($child['forbid_brand'])){ $forbid_brand = unserialize($child['forbid_brand']); echo implode(',',$forbid_brand); } ?>">
 								<a class="btn btn-xs btn-info edit_name" data-tab='home' data-id="<?php echo $child['id'];?>" href="javascript:;"><i class="icon-edit"></i>修改设置</a>&nbsp;&nbsp;
 								<?php if($child['pid'] != 0){ ?>
 									<!--									<a class="btn btn-xs btn-danger" href="--><?php // echo web_url('user', array('op'=>'deleterolers','id' => $child['id']))?><!--" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>-->
@@ -170,10 +171,18 @@
 						<label for="name">批量折扣设置</label>
 						<input type="text" class="form-control" name="rolers_alls"   id="rolers_alls" placeholder="请输入折扣【0-1】">
 					</div>
+					<div  class="form-group all_brand" style="display: none">
+						<p>禁卖品牌 <span style="padding: 0px 10px;cursor: pointer;" id="brand_choose_all">全选</span><span style="cursor: pointer;" id="brand_choose_none">反选</span></p>
+						<?php if(!empty($shop_brand)){  foreach($shop_brand as $brand){  ?>
+							<label style="margin-right: 10px;cursor: pointer;">
+								<input  style="cursor: pointer;" type="checkbox" name="forbid_brand[]" value="<?php echo $brand['id'];?>" class="child_brand"> <?php echo $brand['brand'];?>
+							</label>
+						<?php }} ?>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="submit" class="btn btn-primary">确认修改</button>
+					<button type="submit" class="btn btn-primary edit_brand">确认修改</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
@@ -282,10 +291,31 @@
 </div>
 
 <script>
+	
 	$(".edit_name").click(function(){
+		$(".all_brand label input").prop("checked",false);			
+		$(".all_brand").hide();
 		var id = $(this).data('id');
 		var tab = $(this).data('tab');
-		$("#editModal").modal('show');
+		$("#editModal").modal('show');	
+		if($(this).parent().siblings().hasClass('son_name')){			
+			$(".all_brand").show();			
+			//默认被选中
+			var allbrands = [];
+			//将所有品牌放入数组
+			$(".all_brand label input").each(function(){
+				allbrands.push($(this));						
+			});			
+			var _val = $(this).siblings().val();//选中的品牌	
+			var choose_brands  = _val.split(",");												
+			for(var i = 0;i < choose_brands.length;i++){				
+				for(var j = 0;j < allbrands.length ;j++){					
+					if(choose_brands[i] == allbrands[j].val()){
+						allbrands[j].prop("checked", true);						
+					}
+				}
+			}
+		}
 		var name = $(this).closest(".one_row").find(".one_name span").html();
 		var desc = $(this).closest(".one_row").find(".one_desc span").html();
 		name     = $.trim(name);
@@ -309,6 +339,8 @@
 		},'json');
 
 	})
+	
+	
 	$(".add_rolers").click(function(){
 		$("#addModal").modal('show');
 	})
@@ -424,5 +456,19 @@
 		}
 	}
 	locationHash();
+
+	$("#brand_choose_all").click(function(){
+		$(".child_brand").prop('checked',true);
+	})
+	$("#brand_choose_none").click(function(){
+		$(".child_brand").each(function(){
+			var isChecked = this.checked;
+			if(isChecked){
+				$(this).prop('checked',false);
+			}else{
+				$(this).prop('checked',true);
+			}
+		})
+	})
 </script>
 <?php  include page('footer');?>

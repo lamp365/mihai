@@ -1,4 +1,5 @@
 <?php
+		$member = get_member_account(false);
 		$op = empty($_GP['op']) ? 'display' : $_GP['op'];
 		if($op == 'display'){
 			$article = mysqld_select("SELECT * FROM " . table('addon8_article')." where id=:id ",array(":id"=>intval($_GP['id'])) );
@@ -8,11 +9,17 @@
 				mysqld_update('addon8_article',array('readcount'=>intval($article['readcount'])+1),array('id'=>intval($_GP['id'])));
 			}
 			$cfg=globaSetting();
-			$article_comment = '';
+			$article_comment = $is_guanzhu = '';
 			$notApp = true;
 			if(!empty($_GP['is_app'])){
 				//页面部分被app嵌套，故需要标记识别是app访问
 				$notApp = false;
+				//查找是否已经关注
+				if(!empty($member['openid'])){
+					$info = mysqld_select("select follow_id from ".table('follow')." where follower_openid='{$member['openid']}' and followed_openid='{$article['openid']}'");
+					if(!empty($info))
+						$is_guanzhu = true;
+				}
 			}
 
 			if (is_mobile_request()){

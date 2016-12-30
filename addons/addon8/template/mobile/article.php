@@ -23,6 +23,8 @@
     <meta name="format-detection" content="telephone=no">
     <link href="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css" rel="stylesheet"  type="text/css" />
     <script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
+    <!--引入懒加载的js文件-->
+    <script type="text/javascript"	src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/jquery.lazyload.min.js"></script>
     <script>
         var open_id = "<?php echo checkIsLogin();?>";
         var get_ajax_url = "";
@@ -41,7 +43,15 @@
                 return 'android';
             }
         }
-
+		
+		//懒加载的初始化
+		$(function(){
+			$("img.lazy").lazyload({
+				 threshold : 50,
+				 failure_limit : 10,
+				 effect : "fadeIn"
+			});
+		})	
 
     </script>
 </head>
@@ -54,7 +64,7 @@
     </div>
     <div style="height: 2px;background: #EEEEEE;margin-bottom: 1px;"></div>
 <?php } ?>
-<div class="content">
+<div class="content">	 
     <?php echo $article['content'];?>
 </div>
 

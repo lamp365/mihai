@@ -633,23 +633,24 @@
                     $timeend   = strtotime($_GP['timeend']);
                     $where = "where comment.createtime >= {$timestart} and comment.createtime <= {$timeend}";
             }
-            $keyword = $_GP['keyword'];
-            if(!empty($keyword)){
+
+            if(!empty($_GP['keyword'])){
                 if(!empty($where)){
                     $where .= " and";
                 }else{
                     $where = " where";
                 }
-                if(is_numeric($keyword)){
+                if(is_numeric($_GP['keyword'])){
                     //说明要查找产品id
-                    $where .= " shop_dish.id=$keyword}";
+                    $where .= " shop_dish.id={$_GP['keyword']}";
                 }else{
                     //说明模糊查询标题
-                    $where .= " shop_dish.title like '%{$keyword}%'";
+                    $where .= " shop_dish.title like '%{$_GP['keyword']}%'";
                 }
             }
-//            ppd("SELECT comment.*,shop_dish.title,shop_dish.id as did FROM " . table('shop_goods_comment') . "   comment  left join " . table('shop_dish') . " shop_dish on shop_dish.gid=comment.goodsid {$where} ORDER BY comment.istop desc,comment.createtime DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+
             $list = mysqld_selectall("SELECT comment.*,shop_dish.title,shop_dish.id as did FROM " . table('shop_goods_comment') . "   comment  left join " . table('shop_dish') . " shop_dish on shop_dish.gid=comment.goodsid {$where} ORDER BY comment.istop desc,comment.createtime DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+//            ppd("SELECT comment.*,shop_dish.title,shop_dish.id as did FROM " . table('shop_goods_comment') . "   comment  left join " . table('shop_dish') . " shop_dish on shop_dish.gid=comment.goodsid {$where} ORDER BY comment.createtime DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
             $pager = '';
             if(!empty($list)){
                 //获取评论对应的图片
@@ -951,6 +952,7 @@
             $id  = $_GP['id'];
             $gid = $_GP['gid'];
             $data = mysqld_selectall("select id,createtime from ".table('shop_goods_comment')." where goodsid={$gid} order by id desc");
+
             $num  = count($data)-1;
             $j = 0;
             foreach($data as $row){
@@ -964,12 +966,8 @@
             $key   = $zhong + $xia;
             $time  = $data[$key]['createtime'];
             $res   = mysqld_update("shop_goods_comment",array('createtime'=>$time),array('id'=>$id));
-            if($res){
-                message("操作成功！",refresh(),'success');
-            }else{
-                message("操作失败！",refresh(),'success');
-            }
-
+            message("操作成功！",refresh(),'success');
+            
         }else if($operation == 'open_groupbuy'){
             //凑单开关 关闭或者开启
             //先判断是否有虚拟用户

@@ -88,7 +88,11 @@
 				</table>
 			</form>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
-		
+		<ul class="nav nav-tabs" >
+	<li style="width:7%" <?php  if($vc == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 1))?>">商城会员</a></li>
+	<li style="width:7%" <?php  if($vc == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 2))?>">特殊会员</a></li>
+	<li style="width:7%" <?php  if($vc == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => -1))?>">全部会员</a></li>
+			</ul>
 					<table class="table table-striped table-bordered table-hover">
 			<thead >
 				<tr>
@@ -96,7 +100,6 @@
 						<th style="text-align:center;">微信昵称</th>
 						<th style="text-align:center;">支付宝昵称</th>
 					<th style="text-align:center;">用户名</th>
-					<th style="text-align:center;">食堂名称</th>
 					<th style="text-align:center;">注册时间</th>
 					<th style="text-align:center;">会员等级</th>
 					<th style="text-align:center;">状态</th>
@@ -125,9 +128,7 @@
 									<td class="text-center">
 										<?php  echo $v['realname'];?>
 									</td>
-									<td class="text-center">
-									    <?php echo $v['mess_name'];?>
-									</td>
+								
 									<td class="text-center">
 										<?php  echo date('Y-m-d',$v['createtime'])?>
 									</td>
@@ -156,7 +157,7 @@
 										<a class="btn btn-xs btn-success" href="<?php  echo web_url('delete',array('name'=>'member','openid' => $v['openid'],'status' => 1));?>" onclick="return confirm('确定要恢复该账户吗？');"><i class="icon-edit"></i>恢复账户</a>
 										
 									<?php  } ?>
-										&nbsp;<a  class="btn btn-xs btn-info" href="<?php  echo web_url('detail',array('name'=>'member','openid' => $v['openid']));?>"><i class="icon-edit"></i>账户编辑</a>&nbsp;<br/><br/>
+										&nbsp;<a  class="btn btn-xs btn-info" href="<?php  echo web_url('detail',array('name'=>'member','openid' => $v['openid']));?>"><i class="icon-edit"></i>账户编辑</a>&nbsp;
 										<a class="btn btn-xs btn-info" href="<?php  echo web_url('recharge',array('name'=>'member','openid' => $v['openid'],'op'=>'credit'));?>"><i class="icon-edit"></i>积分管理</a>&nbsp;
 										<a class="btn btn-xs btn-info" href="<?php  echo web_url('recharge',array('name'=>'member','openid' => $v['openid'],'op'=>'gold'));?>"><i class="icon-edit"></i>余额管理</a>	
 									</td>

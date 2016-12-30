@@ -312,21 +312,21 @@ video {
     
    <!--左侧楼梯-->
    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/floor.css" />
-   <div id="floor" style="display:none">
+   <div id="floor" style="display: none;">
 		<ul>
-			<li><a href="JavaScript:void(0);"  data-id="1">健康文化</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="2">觅海头条</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="a1">健康文化</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="23">觅海头条</a> </li>
 			<li><a href="JavaScript:void(0);"  data-id="3">精选笔记</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="4">今日限购</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="5">热门品牌</a> </li>					
+			<li><a href="JavaScript:void(0);"  data-id="235hnm1234">今日限购</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="c345">热门品牌</a> </li>					
 		</ul>
 	</div>
 	<script type="text/javascript">
 		$(function(){
 			//滚动到指定模块
 			$("#floor ul li").click(function(){
-				var _index = parseInt($(this).find("a").attr("data-id"));				
-				var _top = $(".louti"+_index).offset().top;				
+				var _index = $(this).find("a").attr("data-id");				
+				var _top = $("#" + _index ).offset().top;				
 				$("body,html").stop().animate({scrollTop:_top},500);
 			})		
 			//楼梯的left
@@ -338,7 +338,7 @@ video {
 			if($(".tempWrap").height()){
 				distanceTop = $(".slider").offset().top+$(".slider").height()+10;
 			}else{
-				distanceTop = $(".topTabbox").offset().top+140;
+				distanceTop = $(".topTabbox").offset().top+50;
 			}
 			$(window).scroll(function(){   
 				if($(window).scrollTop() > distanceTop)
@@ -509,7 +509,7 @@ video {
 	</div>
    
    <!--健康文化-->
-    <div class="viewport mhnews louti1">
+    <div class="viewport mhnews" id="a1">
     	<div class="mhheadline"> </div>
     	<!--每个头条，一行显示4个-->
     	<div class="per-mhnews">    		 
@@ -544,7 +544,7 @@ video {
     <!--觅海头条-->  
    <script src="__RESOURCE__/recouse/js/swiper-3.4.0.jquery.min.js" type="text/javascript" charset="utf-8"></script>
    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/swiper-3.4.0.min.css"/>
-   <div class="viewport louti2" style="border-bottom: solid 1px #eee;margin: 50px auto;display: none">
+   <div class="viewport" id="23" style="border-bottom: solid 1px #eee;margin: 50px auto;display: none">
     	<!--头条模块图-->
     	<div class="mhimg">
     		<img src="__RESOURCE__/recouse/images/mhheadl.png"/>
@@ -581,7 +581,7 @@ video {
 	  })        
   </script>
     <!--晒物笔记-->
-    <div class="viewport louti3" style="display: none">
+    <div class="viewport" id="3" style="display: none;">
     	<!--笔记模块图-->
     	<div class="mhheadline noteimg" style="background: url(__RESOURCE__/recouse/images/note.png) no-repeat;"> </div>
     	<!--笔记列表，默认出两行，第二行的最后一个只显示图片，用来点击显示更多笔记，显示更多笔记不用跳转新页面-->
@@ -655,8 +655,8 @@ video {
 		rightNavShow(1);
 	})
 	</script>
-    <div class="viewport louti4">
-	    <div class="m-productfloor">
+    <div class="viewport" id="">
+	    <div class="m-productfloor" id="235hnm1234">
 		    <script>
                  function countDown(time,id){
 						var end_time = time * 1000,//月份是实际月份-1
@@ -747,7 +747,7 @@ video {
     		</div>
     	</div>
     	<!--热门品牌-->
-    	<div class="m-productfloor louti5">
+    	<div class="m-productfloor" id="c345">
     		<div class="w-tit1 w-tit1-1 clearfix">
     			 <h2 class="tit"><span class="big">热门品牌</span></h2>
     			 <ul class="w-taglist clearfix">

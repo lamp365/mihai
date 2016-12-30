@@ -55,7 +55,6 @@ function file_upload($file, $uploadByQiniu=true, $width="350", $height="350",$ty
     $result  = $fileObj->upload($file,$uploadByQiniu,$width,$height,$type);
     return $result;
 }
-
 /**
  * @param $picurl
  * @return array
@@ -78,12 +77,28 @@ function remote_file_upload($picurl)
  * @param $imgPath          图片地址
  * @param string $width       宽度不给，则为原图
  * @param string $height      高度不给，则为原图
- * @param int $scaleType    比例类型 1为非等比 会被裁减掉 2为等比
+ * @param int $scaleType    比例类型 1为非等比 会被裁减掉 2为等比iden
  * @return mixed
  * @content 得到图片缩略图  会根据原图图片地址判断是从七牛获取还是从本地获取
  */
 function download_pic($imgPath,$width = '', $height = '', $scaleType = 2)
 {
+    /**暂时兼容旧数据用，后期会考虑处理本地图片不给全路劲   **/
+    $doname1 = "https://".$_SERVER['HTTP_HOST'];
+    $doname2 = "http://".$_SERVER['HTTP_HOST'];
+    $imgPathArr1 = explode($doname1,$imgPath);
+    $imgPathArr2 = explode($doname2,$imgPath);
+    $imgPathArr3 = explode('odozak4lg.bkt.clouddn.com',$imgPath);
+    if(count($imgPathArr1) == 2){
+        $imgPath = WEBSITE_ROOT.$imgPathArr1[2];
+    }else if(count($imgPathArr2) == 2){
+        $imgPath = WEBSITE_ROOT.$imgPathArr2[2];
+    }elseif (count($imgPathArr3) == 2) {
+        
+    }else{
+        $imgPath = WEBSITE_ROOT.$imgPath;
+    }
+
     if(empty($width)){
         return $imgPath;
     }else{
@@ -103,6 +118,58 @@ function download_pic($imgPath,$width = '', $height = '', $scaleType = 2)
         }
 
     }
+}
+
+/**
+ * @param $imgPath          图片地址
+ * @param string $width       宽度不给，则为原图
+ * @param string $height      高度
+ * @param int $scaleType    比例类型 1为等比缩放，按照宽度等比缩放  或者按照高度等比缩放
+ *                                  2按照宽高 固定拉伸
+ *                                  3按照宽高 裁减掉
+ * @return mixed
+ * @content 得到图片缩略图  会根据原图图片地址判断是从阿里获取还是从本地获取
+ * 并根据当前协议返回对应的绝对地址
+ */
+function download_pic2($imgPath,$width = '', $height = '', $scaleType = 1)
+{
+    $imgPathArr = explode('attachment',$imgPath);
+    //获取参数个数
+    $numargs    = func_num_args();
+    if(count($imgPathArr) == 2){
+        //本地图片
+        if($numargs <= 3){
+            //返回原图
+            $picUrl = WEBSITE_ROOT.$imgPath;
+        }else{
+            $thumbPic = imgThumb($imgPath,$width,$height);
+            $picUrl   = WEBSITE_ROOT.$thumbPic;
+        }
+    }else{
+        //阿里云图片
+        $ali_url = WEB_HTTP.aliyunOSS::bucket.'.'.aliyunOSS::endpoint;
+        if($numargs == 1){
+            //返回原图
+            $picUrl = $ali_url.'/'.$imgPath;
+        }else{
+            if($scaleType == 1){
+                //按照宽度或者高度等比缩放
+                if(!empty($width)){
+                    $picUrl = $ali_url.'/'.$imgPath."?x-oss-process=image/resize,w_{$width}";
+                }else if(!empty($height)){
+                    $picUrl = $ali_url.'/'.$imgPath."?x-oss-process=image/resize,h_{$height}";
+                }
+            }else if($scaleType == 2){
+                //按照宽高拉伸
+                $picUrl = $ali_url.'/'.$imgPath."?x-oss-process=image/resize,m_fixed,h_{$height},w_{$width}";
+            }else if($scaleType == 3){
+                //裁减掉
+                $picUrl = $ali_url.'/'.$imgPath."?x-oss-process=image/resize,m_fill,h_{$height},w_{$width}";
+            }
+        }
+    }
+
+    return $picUrl;
 }
 
 
@@ -158,3 +225,19 @@ function download_pic($imgPath,$width = '', $height = '', $scaleType = 2)
 		));
 	  }
  }
+
+function get_qiniu_allpic()
+{
+    $fileObj = new FileUpload();
+    $result  = $fileObj->getQiniuPicList();
+    foreach($result['items'] as $k => $row){
+        $picName = $row['key'];
+        $picUrl  = "http://odozak4lg.bkt.clouddn.com/".$picName;
+        $res = aliyunOSS::putObject($picUrl,$picName);
+        if($res){
+            echo "当前所在行：".$k.'<br/>';
+        }else{
+            die($k);
+        }
+    }
+}

@@ -48,6 +48,12 @@ class Autoloader{
             include $filename;
             return;
         }
+        //阿里云图片服务器
+        $filename = TOP_AUTOLOADER_PATH."/aliyunOSS/".$class.".php";
+        if(is_file($filename)) {
+            include $filename;
+            return;
+        }
     }
 }
 

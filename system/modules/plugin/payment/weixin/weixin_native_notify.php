@@ -53,13 +53,13 @@
 		}
 		else{
 				mysqld_insert('paylog', array('typename'=>'微支付成功返回','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin'));
-				$out_trade_no=explode('-',$array_data['out_trade_no']);
-				$ordersn = $out_trade_no[0];
-				$orderid = $out_trade_no[1];
+				//$out_trade_no=explode('-',$array_data['out_trade_no']);
+				$ordersn = $array_data['out_trade_no'];
+				//$orderid = $out_trade_no[1];
 				$index=strpos($ordersn,"g");
 				if(empty($index))
 				{
-						$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id and ordersn=:ordersn", array(':id' => $orderid,':ordersn'=>$ordersn));
+						$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
 						if(!empty($order['id']))
 						{
 							if($order['status']==0){
@@ -77,7 +77,7 @@
 						}      
 						exit;
 			}else{//余额充值
-					$order = mysqld_select("SELECT * FROM " . table('gold_order') . " WHERE id = :id and ordersn=:ordersn", array(':id' => $orderid,':ordersn'=>$ordersn));
+					$order = mysqld_select("SELECT * FROM " . table('gold_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
 						if(!empty($order['id']))
 						{
 							if($order['status']==0)

@@ -83,6 +83,7 @@ class FileUpload
         //设置开关是否启用七牛服务器存储文件
         if($uploadByQiniu){
             $result = $this->uploadByQiniu($file, $extention);
+//            $result = $this->uploadByAli($file, $extention);
         }else{
             $result = $this->uploadBylocal($file, $extention, $width, $height, $type);
         }
@@ -174,6 +175,19 @@ class FileUpload
 
     }
 
+    public function uploadByAli($file,$extention){
+        $fileName = date('YmdHi',time()).uniqid(). ".{$extention}";
+        $result   = aliyunOSS::uploadFile($file['tmp_name'],$fileName);
+        $data = array();
+        if($result){
+            $data['path']    = $fileName;
+            $data['success'] = true;
+            return $data;
+        }else{
+            $msg = error(-1,'上传失败！');
+            return $msg;
+        }
+    }
     public function conversion($size) {
         $kb = 1024; // 1KB（Kibibyte，千字节）=1024B，
         $mb = 1024 * $kb; //1MB（Mebibyte，兆字节，简称“兆”）=1024KB，
@@ -192,6 +206,24 @@ class FileUpload
             return round($size / $tb, 2) . " TB";
         }
 
+    }
+
+    /**
+     * @return bool
+     * 获取七牛所有的图片
+     */
+    public function getQiniuPicList(){
+        include_once 'qiniu/QiniuStorage.class.php';
+        $config = array(
+            'accessKey'  => 'JNJGtit_3bbLcOd8bG-TZLdW-WH1ZfUYDD74aOAF',
+            'secrectKey' => 'FBeTd4rkZQyHAdiPyLDs4dD3U5XtgKK0-9vDBtu7',
+            'bucket'     => 'mihai',
+            'domain'     => 'http://odozak4lg.bkt.clouddn.com',
+        );
+
+        $qiniu = new QiniuStorage($config);
+        $res   = $qiniu->getList();
+        return $res;
     }
 
 }

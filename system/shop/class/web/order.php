@@ -53,9 +53,9 @@ if ($operation == 'display') {
 	}
 
 	$status_arr = array(-2,-4,14,34,-121,-321);//退货，退款 退货完成  退款完成 退款关闭  退货关闭 另外处理
-	// 对于全部订单消除关闭的订单
+	// 对于全部订单不显示关闭 和支付审核的订单
 	if ( $status == '-99' ){
-        $condition .= " AND A.status <> -1 ";
+        $condition .= " AND A.status != -1 and A.status != -7 ";
 	}else if( in_array($status,$status_arr)) {
 		//不用处理
 	}else{
@@ -749,4 +749,28 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 		$admin = getAdminName($uid);
 	}
 	die(showAjaxMess(200,$admin));
+}elseif ($operation == 'audit') {
+	$pindex = max(1, intval($_GP['page']));
+	$psize = 10;
+	$selectCondition = "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
+	if (!empty($_GP['report'])) {
+		$selectCondition="";
+	}
+	$sql    = "SELECT A.* FROM " . table('shop_order') . " A  WHERE A.status=-7 ORDER BY  A.createtime DESC ".$selectCondition;
+	$sqlNum = 'SELECT COUNT(A.id) FROM ' . table('shop_order') . " A WHERE A.status=-7";
+	$list   = mysqld_selectall($sql);
+	$total  = mysqld_selectcolumn($sqlNum);
+	$pager = pagination($total, $pindex, $psize);
+	foreach ( $list as $id => $item) {
+		$sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
+		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid,h.draw from ".table('shop_order_goods')." as o ";
+		$sql .= " left join ".table('shop_dish')." as h ";
+		$sql .= " on o.goodsid=h.id ";
+		$sql .= " where o.orderid={$item['id']}";
+		$goods = mysqld_selectall($sql);
+		$list[$id]['goods'] = $goods;
+//		$list[$id]['isguest'] =$member['istemplate'];
+	}
+
+	include page('order_audit');
 }
