@@ -82,8 +82,8 @@ class FileUpload
 
         //设置开关是否启用七牛服务器存储文件
         if($uploadByQiniu){
-            $result = $this->uploadByQiniu($file, $extention);
-//            $result = $this->uploadByAli($file, $extention);
+//            $result = $this->uploadByQiniu($file, $extention);
+            $result = $this->uploadByAli($file, $extention);
         }else{
             $result = $this->uploadBylocal($file, $extention, $width, $height, $type);
         }
@@ -180,7 +180,7 @@ class FileUpload
         $result   = aliyunOSS::uploadFile($file['tmp_name'],$fileName);
         $data = array();
         if($result){
-            $data['path']    = $fileName;
+            $data['path']    = str_replace('http://',WEB_HTTP,$result['oss-request-url']);
             $data['success'] = true;
             return $data;
         }else{

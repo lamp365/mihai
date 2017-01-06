@@ -183,22 +183,31 @@ function is_mobile_request()
 }
 /**
  * 获取访问设备的类型
- * 最好有涉及到数据存储是 1代表安卓 2代表ios 3代表平板 4代表PC
- * @param string $show_str
+ * 最好有涉及到数据存储是 1代表安卓 2代表ios 3代表平板 4代表PC 5代表wap
+ * @param string $is_app  如果app调用的则 is_app要有值 任意值
+ * @param string $show_str  $show_str如果入库用 不给值，如果需要页面展示具体文字信息 则给值
  * @return string
  * 更多方法查看 http://demo.mobiledetect.net/
  */
-function get_mobile_type($show_str = ''){
+function get_mobile_type($is_app='',$show_str = ''){
     if($show_str){
-        $typeArr = array('安卓','IOS','平板','PC');
+        $typeArr = array('安卓','IOS','平板','PC','WAP');
     }else{
-        $typeArr = array(1,2,3,4);
+        $typeArr = array(1,2,3,4,5);
     }
     $mobile = new MobileDetect();
-    if($mobile->isAndroidOS()){
-        return $typeArr[0];
-    }else if($mobile->isiOS()){
-        return $typeArr[1];
+    if($mobile->isMobile()){
+        //手机端分ios  安卓  wap
+        if($is_app){
+            if($mobile->isAndroidOS()){
+                return $typeArr[0];
+            }else if($mobile->isiOS()){
+                return $typeArr[1];
+            }
+        }else{
+            //手机端wap
+            return $typeArr[4];
+        }
     }else if($mobile->isTablet()){
         return $typeArr[2];
     }else{

@@ -1,8 +1,9 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
 
-	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+<!-- <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script> -->
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style type="text/css">
 	.dummy-table-list li{
 			margin-top:3px;
@@ -25,6 +26,260 @@
 			height:24px;
 			line-height: 24px;
 		}
+		.panel.with-nav-tabs .panel-heading{
+    padding: 5px 5px 0 5px;
+}
+.panel.with-nav-tabs .nav-tabs{
+	border-bottom: none;
+}
+.panel.with-nav-tabs .nav-justified{
+	margin-bottom: -1px;
+}
+/********************************************************************/
+/*** PANEL DEFAULT ***/
+.with-nav-tabs.panel-default .nav-tabs > li > a,
+.with-nav-tabs.panel-default .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li > a:focus {
+    color: #777;
+}
+.with-nav-tabs.panel-default .nav-tabs > .open > a,
+.with-nav-tabs.panel-default .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-default .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li > a:focus {
+    color: #777;
+	background-color: #ddd;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.active > a,
+.with-nav-tabs.panel-default .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li.active > a:focus {
+	color: #555;
+	background-color: #fff;
+	border-color: #ddd;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #777;   
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #ddd;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #555;
+}
+/********************************************************************/
+/*** PANEL PRIMARY ***/
+.with-nav-tabs.panel-primary .nav-tabs > li > a,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    color: #fff;
+}
+.with-nav-tabs.panel-primary .nav-tabs > .open > a,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+	color: #fff;
+	background-color: #3071a9;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:focus {
+	color: #428bca;
+	background-color: #fff;
+	border-color: #428bca;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #428bca;
+    border-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #fff;   
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    background-color: #4a9fe9;
+}
+/********************************************************************/
+/*** PANEL SUCCESS ***/
+.with-nav-tabs.panel-success .nav-tabs > li > a,
+.with-nav-tabs.panel-success .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li > a:focus {
+	color: #3c763d;
+}
+.with-nav-tabs.panel-success .nav-tabs > .open > a,
+.with-nav-tabs.panel-success .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-success .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li > a:focus {
+	color: #3c763d;
+	background-color: #d6e9c6;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.active > a,
+.with-nav-tabs.panel-success .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li.active > a:focus {
+	color: #3c763d;
+	background-color: #fff;
+	border-color: #d6e9c6;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #3c763d;   
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #d6e9c6;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #3c763d;
+}
+/********************************************************************/
+/*** PANEL INFO ***/
+.with-nav-tabs.panel-info .nav-tabs > li > a,
+.with-nav-tabs.panel-info .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li > a:focus {
+	color: #31708f;
+}
+.with-nav-tabs.panel-info .nav-tabs > .open > a,
+.with-nav-tabs.panel-info .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-info .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li > a:focus {
+	color: #31708f;
+	background-color: #bce8f1;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.active > a,
+.with-nav-tabs.panel-info .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.active > a:focus {
+	color: #31708f;
+	background-color: #fff;
+	border-color: #bce8f1;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #31708f;   
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #bce8f1;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #31708f;
+}
+/********************************************************************/
+/*** PANEL WARNING ***/
+.with-nav-tabs.panel-warning .nav-tabs > li > a,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:focus {
+	color: #8a6d3b;
+}
+.with-nav-tabs.panel-warning .nav-tabs > .open > a,
+.with-nav-tabs.panel-warning .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:focus {
+	color: #8a6d3b;
+	background-color: #faebcc;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.active > a,
+.with-nav-tabs.panel-warning .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li.active > a:focus {
+	color: #8a6d3b;
+	background-color: #fff;
+	border-color: #faebcc;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #8a6d3b; 
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #faebcc;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #8a6d3b;
+}
+/********************************************************************/
+/*** PANEL DANGER ***/
+.with-nav-tabs.panel-danger .nav-tabs > li > a,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:focus {
+	color: #a94442;
+}
+.with-nav-tabs.panel-danger .nav-tabs > .open > a,
+.with-nav-tabs.panel-danger .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:focus {
+	color: #a94442;
+	background-color: #ebccd1;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.active > a,
+.with-nav-tabs.panel-danger .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li.active > a:focus {
+	color: #a94442;
+	background-color: #fff;
+	border-color: #ebccd1;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #f2dede; /* bg color */
+    border-color: #ebccd1; /* border color */
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #a94442; /* normal text color */  
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #ebccd1; /* hover bg color */
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff; /* active text color */
+    background-color: #a94442; /* active bg color */
+}
 </style>
 <script>
 	function cleartime()
@@ -125,122 +380,150 @@
 </div>
 </form>
 	
-<form action="" method="get">
-	<input type="hidden" name="mod" value="site"/>
-	<input type="hidden" name="name" value="shop"/>
-	<input type="hidden" name="do" value="order"/>
-	<input type="hidden" name="op" value="display"/>
-	<input type="hidden" name="status" value="<?php  echo $_GP['status'];?>"/>
-	<table  class="table dummy-table-list" style="width:100%;" align="center">
-		<tbody>
-			<tr>
-				<td style="height: 50px;">
-					<li><span>订单编号：</span></li>
-					<li>
-						<input name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
-					</li>	
 
-					<li><span>下单时间：</span></li>
-					<li >
-						<input name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - <input id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
+<div class="panel with-nav-tabs panel-default">	
+    <div class="panel-heading">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1primary" data-toggle="tab">基础查询</a></li>
+                <li><a href="#tab2primary" data-toggle="tab">批量退款
+                 </a></li>
+            </ul>
+    </div>
+ 	<div class="panel-body">
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab1primary">
+            <form action="" method="get">
+			<input type="hidden" name="mod" value="site"/>
+			<input type="hidden" name="name" value="shop"/>
+			<input type="hidden" name="do" value="order"/>
+			<input type="hidden" name="op" value="display"/>
+			<input type="hidden" name="status" value="<?php  echo $_GP['status'];?>"/>
+            	<table  class="table dummy-table-list" style="width:100%;margin-bottom: 0" align="center">
+					<tbody>
+						<tr>
+							<td style="height: 50px;">
+								<li><span>订单编号：</span></li>
+								<li>
+									<input name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
+								</li>	
 
-						<script type="text/javascript">
-							$("#begintime").datetimepicker({
-								format: "yyyy-mm-dd hh:ii",
-								minView: "0",
-								//pickerPosition: "top-right",
-								autoclose: true
-							});
-						</script> 
-						<script type="text/javascript">
-							$("#endtime").datetimepicker({
-								format: "yyyy-mm-dd hh:ii",
-								minView: "0",
-								autoclose: true
-							});
-						</script>
-					</li>	
-					<li ><span>支付方式：</span></li>
-					<li>
-						<select style="margin-right:15px;" id="paytype" name="paytype" > 
-						 <option value="" <?php  echo empty($_GP['paytype'])?'selected':'';?>>--未选择--</option>
-						<?php  if(is_array($payments)) { foreach($payments as $item) { ?>
-		                 <option value="<?php  echo $item["code"];?>" <?php  echo $item['code']==$_GP['paytype']?'selected':'';?>><?php  echo $item['name']?></option>
-		                  	<?php  } } ?>
-	                   	</select>
-	                   
-					</li>	
+								<li><span>下单时间：</span></li>
+								<li >
+									<input name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - <input id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
 
-					<li ><span>收货人姓名：</span></li>
-					<li >
-						<input name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
-					</li>	
-				
-					
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<table  class="table dummy-table-list" style="width:100%;" align="center">
-		<tbody>
-			<tr>
-				<td >
-					<li><span>收货人手机：</span></li>
-					<li >
-						<input name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" />
-					</li>
-					<li ><span>产品名称：</span></li>
-					<li><input name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" /></li>
+									<script type="text/javascript">
+										laydate({
+										 	elem: '#begintime',
+										 	istime: true, 
+										 	event: 'click',
+										 	format: 'YYYY-MM-DD hh:mm:ss',
+										 	istoday: true, //是否显示今天
+										 	start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+										});
+										laydate({
+										 	elem: '#endtime',
+										 	istime: true, 
+										 	event: 'click',
+										 	format: 'YYYY-MM-DD hh:mm:ss',
+										 	istoday: true, //是否显示今天
+										 	start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+										});
+										laydate.skin("molv"); 
+									</script> 
+									<script type="text/javascript">
+										
+									</script>
+								</li>	
+								<li ><span>支付方式：</span></li>
+								<li>
+									<select style="margin-right:15px;" id="paytype" name="paytype" > 
+									 <option value="" <?php  echo empty($_GP['paytype'])?'selected':'';?>>--未选择--</option>
+									<?php  if(is_array($payments)) { foreach($payments as $item) { ?>
+					                 <option value="<?php  echo $item["code"];?>" <?php  echo $item['code']==$_GP['paytype']?'selected':'';?>><?php  echo $item['name']?></option>
+					                  	<?php  } } ?>
+				                   	</select>
+				                   
+								</li>	
 
-					<li ><span>导出模板：</span></li>
-					<li >
-	                    <select name="template">
-	                          <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
-							  <option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
-						</select>
-					</li>	
-					<li ><span>标记：</span></li>
-					<li >
-	                  	<select name="tag">
-						  <option value="-1" selected>--未选择--</option>
-	                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
-						  <option value="1" <?php  echo $_GP['tag']==1?'selected':'';?>>红色</option>
-						  <option value="2" <?php  echo $_GP['tag']==2?'selected':'';?>>黄色</option>
-						  <option value="3" <?php  echo $_GP['tag']==3?'selected':'';?>>绿色</option>
-						  <option value="4" <?php  echo $_GP['tag']==4?'selected':'';?>>蓝色</option>
-						  <option value="5" <?php  echo $_GP['tag']==5?'selected':'';?>>紫色</option>
-					  	</select>			
-					</li>	
-					<li>
-						<input type="submit" name="submit" value=" 查 询 " style="margin-top:-4px; " class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<button type="submit" name="report" value="report" style="margin-top:-4px; " class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
-						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
-					</li>
-				</td>
+								<li ><span>收货人姓名：</span></li>
+								<li >
+									<input name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
+								</li>	
+							
+								<div style="display:inline-block;" class="add-more-btn btn btn-default show-more">更多选项</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table  class="table dummy-table-list hide-tr" style="width:100%;display: none;" align="center">
+					<tbody>
+						<tr style="border-top: none;background-color: #fff">
+							<td >
+								<li><span>收货人手机：</span></li>
+								<li >
+									<input name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" />
+								</li>
+								<li ><span>产品名称：</span></li>
+								<li><input name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" /></li>
 
-			</tr>	
-		</tbody>
-	</table>
-</form>
+								<li ><span>导出模板：</span></li>
+								<li >
+				                    <select name="template">
+				                          <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
+										  <option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
+									</select>
+								</li>	
+								<li ><span>标记：</span></li>
+								<li >
+				                  	<select name="tag">
+									  <option value="-1" selected>--未选择--</option>
+				                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
+									  <option value="1" <?php  echo $_GP['tag']==1?'selected':'';?>>红色</option>
+									  <option value="2" <?php  echo $_GP['tag']==2?'selected':'';?>>黄色</option>
+									  <option value="3" <?php  echo $_GP['tag']==3?'selected':'';?>>绿色</option>
+									  <option value="4" <?php  echo $_GP['tag']==4?'selected':'';?>>蓝色</option>
+									  <option value="5" <?php  echo $_GP['tag']==5?'selected':'';?>>紫色</option>
+								  	</select>			
+								</li>	
+								<li>
+									<input type="submit" name="submit" value=" 查 询 " style="margin-top:-4px; " class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<button type="submit" name="report" value="report" style="margin-top:-4px; " class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
+									<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
+								</li>
+							</td>
+
+						</tr>	
+					</tbody>
+				</table>
+				</form>
+            </div>
+            <div class="tab-pane fade" id="tab2primary">
+            	<form action="" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
+					<table  class="table dummy-table-list" style="width:100%;" align="center">
+					<tbody>
+						<tr>
+							<td>
+								<li>退款表单：</li>
+								<li>
+									<input name="myxls" type="file"   value="" />
+								</li>
+
+								<li >
+									<button type="button" class="refund btn btn-md btn-warning">批量退款</button>
+								</li>
+							</td>
+						</tr>	
+					</tbody>		
+					</table>
+				</form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 			
-<form action="" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
-	<table  class="table dummy-table-list" style="width:100%;" align="center">
-	<tbody>
-		<tr>
-			<td>
-				<li>退款表单：</li>
-				<li>
-					<input name="myxls" type="file"   value="" />
-				</li>
 
-				<li >
-					<button type="button" class="refund btn btn-md btn-warning">批量退款</button>
-				</li>
-			</td>
-		</tr>	
-	</tbody>		
-	</table>
-</form>
 			
 <h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo $total ?></strong></span></h3>
 			<ul class="nav nav-tabs" >
@@ -356,7 +639,7 @@
 						   $retag = json_decode($item['retag'],true);
 						   if(!empty($retag['recoder'])){
 							   echo "<input type='hidden' value='{$item['retag']}' class='hide_order_log'/>";
-							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><span class='glyphicon glyphicon-comment show_order_log'></span></span>";
+							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><span class='glyphicon glyphicon-pushpin show_order_log'></span></span>";
 						   }
 					   }
 					   ?>
@@ -446,15 +729,24 @@
 				$(this).parents(".remark-btn-div").siblings(".remark-detail").modal();
 			})
 
+			$(".add-more-btn").click(function(){
+				$(".hide-tr").toggle();
+				if($(this).hasClass("show-more")){
+					$(this).removeClass("show-more");
+					$(".add-more-btn").text("收起更多");
+				}else{
+					$(".add-more-btn").text("更多查询");
+					$(this).addClass("show-more");
+				}
+			});
+
 			//点击查看订单日志
 			$(".show_order_log").click(function(){
 				var log_string = $(this).parent().prev().val();
 				log_obj  = JSON.parse(log_string);
 				//格式 2-测试订单-54815154545;3-已经发货-2323423  分号分开的字符串
-				log_info = log_obj.recoder;
-				//弹出框
-				$("#orderLogModal").modal();
-
+				log_info = log_obj.recoder;					
+				$("#orderLogModal").modal();				
 				var ordersn = '订单号：'+ $(this).closest('.order_info').prev().find('td').html();
 				var tit     = $(this).closest('.order_info').find('.tab_title').html();
 				$("#orderLogModal .modal_ordersn").html(ordersn);

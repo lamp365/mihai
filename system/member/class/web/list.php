@@ -1,13 +1,18 @@
 <?php
-		  $pindex = max(1, intval($_GP['page']));
+      $pindex = max(1, intval($_GP['page']));
       $psize = 30;
       $condition='';
       $conditiondata=array();
 	  $mess_list = array();
-	  $_mess    =  mysqld_selectall("SELECT * FROM " . table('shop_mess'));
+	 /* $_mess    =  mysqld_selectall("SELECT * FROM " . table('shop_mess'));
 	  if (!empty($_GP['mess'])){
 		  $condition .= " AND mess_id = ".$_GP['mess'];
-	  }
+	  }*/
+    if(!empty($_GP['timestart']) && !empty($_GP['timeend'])){
+        $timestart = strtotime($_GP['timestart']);
+        $timeend   = strtotime($_GP['timeend']);
+        $condition .= " AND createtime >= {$timestart} And createtime<= {$timeend}";
+    }
       if(!empty($_GP['realname']))
       {
       	
@@ -17,8 +22,8 @@
          if(!empty($_GP['mobile']))
       {
       	
-      	 $condition=$condition.' and mobile like :mobile';
-      	 $conditiondata[':mobile']='%'.$_GP['mobile'].'%';
+      	 $condition=$condition.' and mobile = :mobile';
+      	 $conditiondata[':mobile']= $_GP['mobile'];
       }
 	  $vc = isset($_GP['status'])? $_GP['status']: 1;
       switch ( $vc ){
@@ -73,11 +78,11 @@
   								}
   							}
       }
-      
+
       $rank_model_list = mysqld_selectall("SELECT * FROM " . table('rank_model')." order by rank_level" );
 	  // ²»¶Ô»áÔ±ÁÐ±í½øÐÐÉí·ÝÏÞÖÆ£¬±ÜÃâÎÞ·¨¶þ´Î²Ù×÷¡£Ó¦¸ÃÔÚÈ¨ÏÞÄÄÀï½øÐÐ¿ØÖÆ
-			$list = mysqld_selectall('SELECT * FROM '.table('member')." where  dummy=0 and `istemplate`=0  and `status`=$status $condition "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
-	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where  dummy=0 and `istemplate`=0 $condition ",$conditiondata);
+			$list = mysqld_selectall('SELECT * FROM '.table('member')." where  dummy=0 and `istemplate`=0  and `status`={$status} {$condition} "." LIMIT " . ($pindex - 1) * $psize . ',' . $psize,$conditiondata);
+	 		$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('member')." where  dummy=0 and `istemplate`=0 {$condition} ",$conditiondata);
       $pager = pagination($total, $pindex, $psize);
       
       		foreach($list as  $index=>$item){

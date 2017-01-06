@@ -35,8 +35,6 @@ switch($op)
 			$commentCnt 	= mysqld_select("SELECT count(comment_id) cnt FROM " . table('article_comment') . " where article_id={$id} ");
 
 			$url = getArticleUrl($id,'healty',$openid,1);
-			logRecord('2222','article12');
-			logRecord($url,'article12');
 			$result['data']['openid'] 			= $openid;
 			$result['data']['url'] 			= $url;
 			$result['data']['isCollection'] = isCollection($id,$member);				//是否已收藏

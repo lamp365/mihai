@@ -34,16 +34,33 @@
     <style>
         body{background-color: #F8FAFC;}
         .head-second-nav{
-            background-color: #fff;
-            color: #fff;
-            width: 100%;
-            border-bottom: #ccc 1px solid;
-            padding: 6px 0;
-            overflow: hidden;
-            border-top: 1px solid #ccc;
+    color: #fff;
+    width: auto;
+    overflow: hidden;
+    float: left;
+    margin-top: 7px;
+        }
+        .breadcrumb{
+            /*float: left;*/
+            margin: 7px 22px 0 12px;
+        }
+        .breadcrumbs{
+            background-color: #fafafa;
+        }
+        .ace-nav>li.open>a{
+            background-color: #fafafa!important;
+            color: #555!important;
+        }
+        .ace-nav>li.open.light-blue>a{
+            background-color: #fafafa!important;
+            color: #555!important;
         }
         .ace-nav>li>a{
-            background-color: #438eb9;
+            background-color: #fafafa;
+            color: #555;
+        }
+        .ace-nav>li>a>[class*="icon-"]{
+            color: #555;
         }
         .ace-nav>li{
             line-height: 35px;
@@ -51,7 +68,7 @@
             border-left: none;
         }
         .light-blue,.ace-nav>li.light-blue>a{
-           background-color: #438eb9!important; 
+           background-color: #fafafa!important; 
         }
         .user-info small{
             display: inline-block;
@@ -68,9 +85,7 @@
             line-height: 25px;
             font-size: 12px;
         }
-        .login-out a{
-            border: 1px solid #fff;
-        }
+
         .login-out .icon-off{
             font-size: 12px!important;
         }
@@ -106,11 +121,16 @@
             height: 70px;
         }
         .ace-nav>li>a:hover, .ace-nav>li>a:focus{
-            background-color: #438eb9;
+            background-color: #fafafa;
         }
         .navbar-brand{
             height: 70px;
-            line-height: 45px;
+            line-height: 39px;
+            float: none;
+            color: #fff
+        }
+        .navbar-brand:hover{
+            color: #fff
         }
         .user-info{
             top: 9px;
@@ -118,6 +138,117 @@
         .navbar-header.pull-left{
             width: 700px;
         }
+        .label-default {
+            background-color: #777!important;
+            line-height: 1.3;
+        }
+        .label-default a{
+            color: #fff
+        }
+        /*侧边导航颜色修改 begin*/
+        .sidebar{
+            background-color: #2e353d;
+        }
+        .sidebar:before,.sidebar-collapse:before,.sidebar-collapse,.sidebar-collapse>[class*="icon-"]{
+            background-color: #2e353d;
+        }
+        .nav-list>li a>.arrow{
+            color: #fff;
+        }
+        .nav-list>li a:hover>.arrow{
+            color: #fff;
+        }
+        .sidebar-collapse{
+            border-bottom: none;
+        }
+        .sidebar-collapse:before{
+            border-top: 1px solid #9e9e9e;
+        }
+        .nav-list>li{
+            border-top: none;
+            border-bottom: 1px solid #484848;
+        }
+        .nav-list>li>a:hover:before{
+            background-color: #b5b5b5;
+            height: 37px;
+            margin-top: 1px;
+        }
+        .nav-list>li>a:hover{
+            background-color: #2e353d;
+        }
+        .nav-list>li.open{
+            border-bottom: none;
+        }
+        .nav-list>li .submenu{
+            border-top: none;
+        }
+        .nav-list>li.open>a:hover:before{
+            background-color: #2e353d;
+        }
+        .nav-list>li .submenu>li>a:hover {
+            color: #fff;
+        }
+        .nav-list>li .submenu>li a>[class*="icon-"]:first-child{
+            background: none;
+        }
+        .nav-list>li>a{
+            background-color: #2e353d;
+            color: #fff;
+        }
+        .nav-list>li>a:link{
+            background-color: #2e353d;
+            color: #fff;
+        }
+        .nav-list>li>a:visited{
+            background-color: #2e353d;
+            color: #fff;
+        }
+        .nav-list>li>a:active{
+            background-color: #2e353d;
+            color: #fff;
+        }
+        .nav-list>li>a:hover{
+            background-color: #2e353d;
+            color: #fff;
+        }
+        .nav-list>li .submenu{
+            background-color: #181c20;
+        }
+
+        .nav-list>li>.submenu>li:first-child>a{
+            border-top: none;
+        }
+        .nav-list>li a:hover>.arrow, .nav-list>li.active>a>.arrow, .nav-list>li.open>a>.arrow{
+            color: #fff;
+        }
+        .nav-list .open>a, .nav-list .open>a:hover, .nav-list .open>a:focus{
+            background-color: #2e353d;
+        }
+        .nav-list>li .submenu>li>a{
+            color: #fff;
+            border-bottom: 1px solid #484848;
+            border-top: none;
+        }
+        .nav-list>li.open>a{
+            background-color: #2e353d;
+            color: #fff;
+        }
+        .nav-list>li:not(open)>a:hover{
+            background-color: #4f5b69;
+            color: #fff;
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            -ms-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+        /*侧边导航颜色修改 end*/
+       .toback{
+       		cursor: pointer;
+       }
+       .toback:hover{
+       	text-decoration: underline;
+       }
     </style>
     <script type="text/javascript">
     	function navtoggle(stitle)
@@ -128,22 +259,22 @@
     		}else{
                 var str = new Array();
 				str=stitle.split(">");
-				for (var i = 0 ; i<str.length ; i++)
-				{
-                    if ( i == 0){
-						stitle = '返回上一级';
-                    }else{
-                        document.getElementById('activenow').innerText= " > " + str[i];
-					}
+                if ( str.length > 0){
+                   stitle = str[1];
+                        //document.getElementById('activenow').innerText= " > " + str[i];
 				}
 			}
-    		document.getElementById('activeworker').innerText=stitle;
+    		document.getElementById('activeworker').innerText=stitle;    		
+    		
     	}
+    	
     try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+    
+
 </script>
 </head>
 <body scrolling="no" style="overflow:visible;">
-<div class="navbar navbar-default" id="navbar">
+<!-- <div class="navbar navbar-default" id="navbar">
     <div class="navbar-container" id="navbar-container">
         <div class="navbar-header pull-left">
             <a href="" class="navbar-brand">
@@ -153,8 +284,7 @@
                 </small>
             </a>
             <span style="display: inline-block;line-height: 70px;color: #fff"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span>
-            <!-- /.brand -->
-        </div><!-- /.navbar-header -->
+        </div>
 
         <div class="navbar-header pull-right" role="navigation">
             <ul class="nav ace-nav">
@@ -168,21 +298,7 @@
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
                         <i class="icon-strikethrough"></i>
                             <span>修改汇率</span>                       
-       
-                        <!-- <i class="icon-caret-down"></i> -->
                     </a>
-<!--                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                        <li>
-                            <a class="modify" href="javascript:;">
-                                <i class="icon-off"></i>
-                                <span class="modify-exchange-rate">修改汇率</span>
-                            </a>
-                            <a class="modify-record" href="javascript:;">
-                                <i class="icon-off"></i>
-                                <span class="modify-record-exchange-rate">汇率修改记录</span>
-                            </a>
-                        </li>
-                    </ul> -->
                 </li>
                 <li class="Larger">
                     <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
@@ -210,14 +326,16 @@
                     </ul>
                 </li>
                 <li class="Larger login-out">
+                    <span class="label label-default">
                     <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
                         <i class="icon-off"></i>
                         <span>退出系统</span>
                     </a>
+                    </span>
                 </li>
-            </ul><!-- /.ace-nav -->
-        </div><!-- /.navbar-header -->
-    </div><!-- /.container -->
+            </ul>
+        </div>
+    </div>
 </div>
 <div class="head-second-nav">
     <ul>
@@ -225,7 +343,7 @@
             <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
         <?php }} ?>
     </ul>
-</div>
+</div> -->
 
 
 <!-- 头部 end -->
@@ -255,10 +373,18 @@
                     <span class="btn btn-danger"></span>
                 </div>
             </div><!-- #sidebar-shortcuts -->
-
+            <div style="background-color: #4f8ec1;" class="head_">
+                <a href="" class="navbar-brand">
+                    <small>
+                        <i class="icon-road"></i>
+                        <span id='accountname'><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></span>
+                    </small>
+                </a>
+            </div>
             <ul class="nav nav-list">
                 <?php if (checkAdmin() || in_array("shop-mess",$menurule)) { ?>
                     <li>
+
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-random"></i>
@@ -984,6 +1110,7 @@
 
             <script type="text/javascript">
                 try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+                $(".menu-min").find("head_").hide();
             </script>
         </div>
 
@@ -992,34 +1119,144 @@
                 <script type="text/javascript">
                     try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                 </script>
-                <ul class="breadcrumb">
-                    <li>
-                        <i class="icon-home home-icon"></i>
-                        <a  onclick="navtoggle('首页')" href="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>" target="main">首页</a>
-                    </li>
-                    <li class="active"><span id="activeworker">首页</span></li>
+                <ul class="breadcrumb" style="margin-left: 25px;">                    
+                    <li><span style="display: inline-block;"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span></li>
                 </ul><!-- .breadcrumb -->
+                <div class="head-second-nav">
+                    <ul>
+                        <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
+                            <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
+                        <?php }} ?>
+                    </ul>
+                </div>
+                <div class="navbar-header pull-right" role="navigation">
+                    <ul class="nav ace-nav">
+                        <li class="Larger">
+                            <a class="dropdown-toggle"  href="<?php  echo WEBSITE_ROOT.'index.php';?>" target="_blank">
+                                <i class="icon-mobile-phone"></i>
+                                <span>商城首页</span>
+                            </a>
+                        </li>
+                        <li class="Larger">
+                            <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
+                                <i class="icon-strikethrough"></i>
+                                    <span>修改汇率</span>                       
+               
+                                <!-- <i class="icon-caret-down"></i> -->
+                            </a>
+        <!--                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                                <li>
+                                    <a class="modify" href="javascript:;">
+                                        <i class="icon-off"></i>
+                                        <span class="modify-exchange-rate">修改汇率</span>
+                                    </a>
+                                    <a class="modify-record" href="javascript:;">
+                                        <i class="icon-off"></i>
+                                        <span class="modify-record-exchange-rate">汇率修改记录</span>
+                                    </a>
+                                </li>
+                            </ul> -->
+                        </li>
+                        <li class="Larger">
+                            <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
+                                <i class="icon-user"></i>
+                                <span>修改密码</span>
+                            </a>
+                        </li>
+                        <li class="light-blue">
+                            <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                            <span class="user-info">
+                                            <small>欢迎光临,</small>
+                                <?php echo $username ?>                             </span>
 
+                                <i class="icon-caret-down"></i>
+                            </a>
+
+                            <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+
+                                <li>
+                                    <a onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>">
+                                        <i class="icon-off"></i>
+                                        退出
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="Larger">
+                           
+                            <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
+                                <i class="icon-off"></i>
+                                <span>退出系统</span>
+                            </a>
+                           
+                        </li>
+                    </ul><!-- /.ace-nav -->
+                </div><!-- /.navbar-header -->
                 <div class="nav-search" id="nav-search">
 
                 </div><!-- #nav-search -->
             </div>
 
-            <div class="page-content" style="padding: 1px 13px 24px;">
-
-                <iframe  scrolling="no" frameborder="0" height="100%" onload="iFrameHeight()" style="width:100%;min-height:1000px;" name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>
+            <div class="page-content" style="padding: 1px 13px 24px;">	
+            	<ul class="breadcrumb breadcrumb2" style="margin-left: -2px;">
+               		<li>
+                        <i class="icon-home home-icon"></i>
+                        <a  onclick="navtoggle('首页')" href="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>" target="main">首页</a>
+                    </li>
+                    
+                    <li class="active">
+                    	<span id="activeworker">首页</span>
+                    </li>
+               	</ul>			
+                <iframe  marginheight="0" marginwidth="0" width="100%" frameborder="0" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
                 <script type="text/javascript" language="javascript">
-                    function iFrameHeight() {
-                        var ifm= document.getElementById("main");
-                        var subWeb = document.frames ? document.frames["main"].document :ifm.contentDocument;
-                        if(ifm != null && subWeb != null) {
-                            ifm.height = subWeb.body.scrollHeight + 60;
-                        }
+                    var browserVersion = window.navigator.userAgent.toUpperCase();
+                    var isOpera = browserVersion.indexOf("OPERA") > -1 ? true : false;
+                    var isFireFox = browserVersion.indexOf("FIREFOX") > -1 ? true : false;
+                    var isChrome = browserVersion.indexOf("CHROME") > -1 ? true : false;
+                    var isSafari = browserVersion.indexOf("SAFARI") > -1 ? true : false;
+                    var isIE = (!!window.ActiveXObject || "ActiveXObject" in window);
+                    var isIE9More = (! -[1, ] == false);
+                    function reinitIframe(iframeId, minHeight) {
+                        try {
+                            var iframe = document.getElementById(iframeId);
+                            var bHeight = 0;
+                            if (isChrome == false && isSafari == false){
+                                bHeight = iframe.contentWindow.document.body.scrollHeight;
+                            }
+                            var dHeight = 0;
+                            if (isFireFox == true){
+                                dHeight = iframe.contentWindow.document.documentElement.offsetHeight ;
+                            }
+                            else if (isIE == false && isOpera == false){
+                                dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+                            }
+                            else if (isIE == true && isIE9More) {//ie9+
+                                var heightDeviation = bHeight - eval("window.IE9MoreRealHeight" + iframeId);
+                                if (heightDeviation == 0) {
+                                    bHeight;
+                                } else if (heightDeviation != 3) {
+                                    eval("window.IE9MoreRealHeight" + iframeId + "=" + bHeight);
+                                    bHeight;
+                                }
+                            }
+                            else{//ie[6-8]、OPERA
+                                bHeight;
+                            }
+                            var height = Math.max(bHeight, dHeight);
+                            if (height < minHeight) height = minHeight;
+                            iframe.style.height = height + "px";
+                        } catch (ex) { }
                     }
-                    $(document).ready(function(){
-                        iFrameHeight();
-                    });
+                    function startInit(iframeId, minHeight) {
+                        eval("window.IE9MoreRealHeight" + iframeId + "=0");
+                        window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")",200);
+                    }
+                    var minHeight = $(window).height()-80;
+                    startInit('main', minHeight);
+
                 </script>
+
             </div>
         </div>
 

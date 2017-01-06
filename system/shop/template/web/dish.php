@@ -298,7 +298,7 @@
 	</div>
   </form>
           <form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
-<div class="panel with-nav-tabs panel-primary">
+<div class="panel with-nav-tabs panel-default">
     <div class="panel-heading">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab1primary" data-toggle="tab">基础信息</a></li>
@@ -315,7 +315,7 @@
   <div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left" > 选择产品：</label>
 		<div class="col-sm-9">
-			  <select name="c_goods" class="js-example-responsive" id="c_goods" style="width: 50%">
+			  <select name="c_goods" class="js-example-responsive" id="c_goods" style="width: 43%">
 			       <?php if (!empty($item['gname'])){ ?>
                    <option value='<?php echo $item['gid']; ?>'><?php echo $item['gname']; ?></option>
 				   <?php }else{ ?>
@@ -327,8 +327,8 @@
  <div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 自定义名称（默认为产品库名称）：</label>
 
-			<div class="col-sm-9">
-						 <input type="text" name="dishname" id="dishname" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
+			<div class="col-sm-4">
+				<input type="text" name="dishname" id="dishname" class="form-control" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
 			</div>
 </div>
 
@@ -432,8 +432,8 @@
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 促销价格：</label>
 
-			<div class="col-sm-9">
-					  <input type="text" name="marketprice" id="marketprice" value="<?php  echo empty($item['marketprice'])?'0':$item['marketprice'];?>" />
+			<div class="col-sm-2">
+					  <input type="text" class="form-control" name="marketprice" id="marketprice" value="<?php  echo empty($item['marketprice'])?'0':$item['marketprice'];?>" />
 			</div>
 		</div>
 	 <?php } ?>
@@ -441,8 +441,8 @@
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 参考价格：</label>
 
-			<div class="col-sm-9">
-					  <input type="text" name="productprice" id="productprice"  value="<?php  echo empty($item['productprice'])?'0':$item['productprice'];?>" />
+			<div class="col-sm-2">
+					  <input type="text" class="form-control" name="productprice" id="productprice"  value="<?php  echo empty($item['productprice'])?'0':$item['productprice'];?>" />
 			</div>
 		</div>
 	 <?php } ?>

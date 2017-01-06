@@ -20,6 +20,7 @@
 	
 }
 $(function () {
+    
     $('#container').highcharts({
     	 credits: {
           enabled:false
@@ -287,5 +288,9 @@ $(function () {
 		</div>
 
      <?php  include page('footer');?>
+     <script type="text/javascript">
+        var myheight = $(".main-wrap").height()+$("#footer").height();
+        $("#main",window.parent.document).height(myheight);
+     </script>
      </body>
 </html>

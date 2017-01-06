@@ -35,7 +35,7 @@ define('SYSTEM_ROOT', WEB_ROOT . '/system/');
 define('ADDONS_ROOT', WEB_ROOT . '/addons/');
 define('INCLUDES_ROOT', WEB_ROOT . '/includes/');
 defined('DEVELOPMENT') or define('DEVELOPMENT', 1);
-defined('SQL_DEBUG') or define('SQL_DEBUG', 1);
+defined('SQL_DEBUG') or define('SQL_DEBUG', 0);
 define('MAGIC_QUOTES_GPC', (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) || @ini_get('magic_quotes_sybase'));
 define('MOBILE_SESSION_ACCOUNT', "mobile_sessionAccount");
 define('MOBILE_ACCOUNT', "mobile_account");
@@ -48,7 +48,7 @@ define('TEAM_BUY_EXPIRY', 1800);							//团购成团有效期限(半个小时)
 define('IM_FROM_USER','nrctongyong');						//即时通讯发送方默认userid
 define('IM_ORDER_FROM_USER','admin_order');					//发送订单消息时，即时通讯发送方userid
 define('IM_WEALTH_FROM_USER','admin_wealth');				//发送财富消息时，即时通讯发送方userid
-define('WRITE_LOG',false);									//是否记录日志
+define('WRITE_LOG',true);									//是否记录日志
 define('API_DEBUG',false);									//为false时，开启app接口的签名验证
 define('IM_ICON_URL','http://odozak4lg.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720161125151517.png'); //im客户默认头像
 

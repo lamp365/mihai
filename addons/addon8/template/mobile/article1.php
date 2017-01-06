@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no" />
 	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/todownapp.css' />
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
@@ -33,15 +34,16 @@
 		box-sizing: border-box;
 	}
 	.health-content .health-men .info img{
-		width: 60px;
-		height: 60px;
-		border-radius: 50%;
-		float: left;		
+	    width: 50px;
+	    height: 50px;
+	    border-radius: 50%;
+	    float: left;
+	    margin-top: 6px;	
 	}
 	.health-content .health-men .info .name{
 		float: left;
 		overflow: hidden;
-		padding: 10px 0 0 10px ;
+		//padding: 10px 0 0 10px ;
 		
 	}
 	.health-content .health-men .info .name span{
@@ -164,10 +166,11 @@
 	}
 	.comment-time{
 		color: #999;font-size: 14px;margin-top: 5px;
+		margin-bottom: 5px;
 	}
 	.comment-con{
 		clear: both;
-		margin-left: 70px;
+		//margin-left: 70px;
 		color: #6d6d6d;
 	}
 	/*app下载页样式*/
@@ -190,6 +193,12 @@
 	}
 	.huifu{
 		color: #000;
+	}
+	.click_pinlun{
+		float: left;
+    width: 78%;
+    padding: 0 10px;
+    box-sizing: border-box;
 	}
 </style>
 </head>
@@ -266,18 +275,29 @@
         	</div>
         	<div class="comment-area">
 				<?php if(!empty($article_comment)){ ?>
-				<?php foreach($article_comment as $comment){   $member_comment = member_get($comment['openid']); ?>
-	        	<div class="health-men">
+				<?php foreach($article_comment as $comment){   ?>
+	        	<div class="health-men" comment_id="<?php echo $comment['comment_id']; ?>">
 					<!--头像-->
 					<div class="info">
-						<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>"  openid="<?php echo $comment['openid']?>"/>
-						<p class="name">
-							<span class="comment-name" comment_id ="<?php echo $comment['comment_id'];?>" ><?php if(!empty($member_comment['nickname'])){ echo $member_comment['nickname'];}else{ echo substr_cut($member_comment['mobile']); } ?></span>
-							<!--发布时间-->
-							<span class="comment-time" >发布于<?php echo date("Y-m-d H:i",$comment['createtime']);?>
-						</p>
-						<!--评论内容-->
-						<div class="comment-con" comment_id ="<?php echo $comment['comment_id'];?>"><?php echo $comment['comment'];?></div>
+						<img src="<?php if(!empty($comment['avatar'])){ echo $comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/recouse/images/userface2.png'; } ?>"  openid="<?php echo $comment['openid']?>" at_openid="<?php echo $comment['at_openid']?>" />
+						<div class="click_pinlun" onclick="pinlun(this)">
+							<p class="name" >
+								<span class="comment-name" comment_id ="<?php echo $comment['comment_id'];?>" ><?php  echo $comment['nickname'];  ?></span>
+								<!--发布时间-->
+								<span class="comment-time" >发布于<?php echo date("Y/m/d H:i",$comment['createtime']);?>
+							</p>
+
+							<?php if(!empty($comment['reply_nickname'])){ ?>
+							<div class="comment-con" comment_id ="<?php echo $comment['comment_id'];?>">
+								<span class='at_nickname'><?php  echo $comment['nickname'];  ?></span>
+								回复:
+								<span><?php  echo $comment['reply_nickname']; ?></span>
+								<?php echo $comment['comment'];?>
+							</div>
+							<?php }else{   ?>
+							<div class="comment-con" comment_id ="<?php echo $comment['comment_id'];?>"><?php echo $comment['comment'];?></div>
+							<?php }   ?>
+						</div>
 					</div>						
 				</div>
 				<?php } ?>
@@ -367,6 +387,7 @@
 	var openid_val         = $(".openid").val();
 	var articleid_val      = $(".articleid").val();
 	var article_openid_val = $(".article_openid").val();
+
 	var product_id_obj = {};
 
 	function isLogin(msg){
@@ -375,15 +396,13 @@
         //is_login  0未登录 1已登录
         if( ua == "ios" ){
         	//msg no不需要再发请求，msg yes 继续发请求
-
             if( msg.openid !=""){
                 openid_val = msg.openid;
             }else{
                 return;
             }
-
         }else if( ua=="android" ){
-            window.JsInterface.login("");
+			openid_val = msg.openid;
         }
     }
 	//判断iOS还是Android系统
@@ -421,20 +440,21 @@
 			var ua = browserFun();
 			var obj = {}
 			obj.follow = openid_val;
+			obj.openid = openid_val;
 			if( openid_val!="" ){
 				if( ua == "ios" ){
 						$.post(url,{'openid':openid_val,'article_openid':article_openid_val},function(data){
-							if(data.errno != 200){
-								$(".attention").addClass("check-attention");
+							if(data.errno == 200){
+//								$(".attention").addClass("check-attention");
 								$(".attention span").text("已关注");
-								alert(data.message);
+								tip(data.message,1);
 							}else{
-								alert(data.message);
+								tip(data.message,1);
 							}
 						},'json');
 					
 				}else if( ua=="android" ){
-					androidFollowCallback();		
+					androidFollowCallback(obj);
 				}
 
 			}else{
@@ -449,16 +469,16 @@
 	}
 	follow();
 
-	function androidFollowCallback(){
+	function androidFollowCallback(msg){
+		openid_val = msg.openid;
 		var url = "<?php echo mobile_url('article',array('op'=>'guanzhu'));?>";
-		alert("article_openid="+article_openid_val);
 		$.post(url,{'openid':openid_val,'article_openid':article_openid_val},function(data){
-			if(data.errno != 200){
-				$(".attention").addClass("check-attention");
+			if(data.errno == 200){
+//				$(".attention").addClass("check-attention");
 				$(".attention span").text("已关注");
-				alert(data.message);
+				tip(data.message,'1');
 			}else{
-				alert(data.message);
+				tip(data.message,'1');
 			}
 		},'json');
 	}
@@ -476,45 +496,53 @@
 	}
 	//评论 回复
 	function comment(msg){
-		if( openid_val!="" ){
+		var ua = browserFun();
+		if ( ua == "android"){
+			openid_val = msg.openid;
+		}
+		if( isNullVal(openid_val)=="false" ){
 			var comment_html = "";
 			var commentTime = getNowFormatDate();
-			var head_img = $(".head-img").attr("src");
-			var realname = $(".realname").text();
+
 			var comment_length = $(".comment-area .health-men").length;
-			var at_nickname_val = isNullVal(msg.at_nickname);
 			var at_openid_val = isNullVal(msg.at_openid);
+			var at_nickname_val = isNullVal(msg.at_nickname);
+			var at_avatar = isNullVal(msg.avatar);
 			//返回的at_nickname和at_openid为空表示是新增的评论
-			if( at_nickname_val == "true" && at_openid_val =="true"){
+			if( at_avatar == "true" ){
+				at_avatar = "<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/userface2.png";
+			}
+			if( at_openid_val == "true"&& at_nickname_val == "true"){
 				//评论
 				//里面的拼接的字段后续要替换成请求返回的数据 
+
 					if(comment_length<3){
-						comment_html = "<div class='health-men' at_openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+head_img+"><p class='name'><span>"+realname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><p></p><div class='comment-con'>"+msg.comment+"</div></div></div>";
+						comment_html = "<div class='health-men' openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'>"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}else{
 						$(".comment-area .health-men:last-child").remove();
-						comment_html = "<div class='health-men' at_openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+head_img+"><p class='name'><span>"+realname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><p></p><div class='comment-con'>"+msg.comment+"</div></div></div>";
+						comment_html = "<div class='health-men' openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'>"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}
 			}else{
 				//回复
 				//里面的拼接的字段后续要替换成请求返回的数据
+
 					if(comment_length<3){
-						comment_html = "<div class='health-men' at_openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+head_img+"><p class='name'><span>"+msg.at_nickname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><p></p><div class='comment-con'><span class='at_nickname'>"+msg.at_nickname+"</span><span class='huifu'>回复</span>"+msg.comment+"</div></div></div>";
+						comment_html = "<div class='health-men' openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'><span class='at_nickname'>"+msg.nickname+"</span>回复:<span>"+msg.at_nickname+"</span>"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}else{
 						$(".comment-area .health-men:last-child").remove();
-						comment_html = "<div class='health-men' at_openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+head_img+"><p class='name'><span>"+msg.at_nickname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><p></p><div class='comment-con'><span class='at_nickname'>"+msg.at_nickname+"</span><span class='huifu'>回复</span>"+msg.comment+"</div></div></div>";
+						comment_html = "<div class='health-men' openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'><span class='at_nickname'>"+msg.nickname+"</span>回复:<span>"+msg.at_nickname+"</span>"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}
 			}
 			
 		}else{
-			var ua = browserFun();
 			if( ua == "ios" ){
 				window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
 			}else if ( ua == "android"){
@@ -524,8 +552,45 @@
 		}
 		
 	}
+	//页面刷新的方法
+	function reloadFun(){
+		var url = "<?php  echo mobile_url('article', array('op'=>'ajax_articleComment','id'=>$_GP['id']));?>";
+		var ua = browserFun();
+		$.post(url,{},function(data_msg){
+			var obj = data_msg.message;
+			$(".comment-area").html(' ');
+			for(var i=0 ; i<obj.length;i++){
+				var data = obj[i];
+				var at_openid = isNullVal(data.at_openid);
+				var face = data.avatar;
+				if(face == '' || face == null){
+					face = "<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/userface2.png";
+				}
+
+				if(at_openid == "true" ){
+					comment_html = "<div class='health-men' openid="+data.openid+" comment_id="+data.comment_id+">" +
+										"<div class='info'><img src="+face+" openid="+data.openid+" at_openid="+ data.at_openid +">" +
+											"<div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name'>"+data.nickname+"</span>"+
+												"<span class='comment-time'>发布于"+ Stringtotime(data.createtime) +"</span>" +
+											"</p>" +
+											"<div class='comment-con'>"+data.comment+"</div>" +
+										"</div></div>" +
+								 "</div>";
+					$(".comment-area").append(comment_html);
+				}else{
+					comment_html = "<div class='health-men' openid="+data.openid+" comment_id="+data.comment_id+"><div class='info'><img src="+face+" openid="+data.openid+" at_openid="+ data.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name '><span class='comment-name'>"+data.nickname+"</span>"+
+						"<span class='comment-time'>发布于"+ Stringtotime(data.createtime) +"</span></p><div class='comment-con click_pinlun'><span class='nickname'>"+data.nickname+"</span>回复:<span>"+data.reply_nickname+"</span>"+data.comment+"</div></div></div></div>";
+					$(".comment-area").append(comment_html);
+				}
+			}
+			if( ua == "ios" ){
+				window.webkit.messageHandlers.mihaiapp.postMessage({comment_subtract_one:""});
+			}
+		},'json')
+	}
+
 	//点击头像传对应的openid给app
-	$(".comment-area .info img").click(function(){
+	$(document).on('click','.comment-area .info img',function(){
 		var this_openid = $(this).attr("openid");
 		var ua = browserFun();
 		var obj = {};
@@ -539,49 +604,45 @@
 		}
 	});
 	//点击评论调用comment
-	$(".comment-area .comment-con").click(function(){
+	function pinlun(obj){
 		var ua = browserFun();
-		var at_nickname = $(this).siblings(".name").find(".comment-name").text();
-		var at_openid = $(this).siblings("img").attr("openid");
-		var comment_id = $(this).attr("comment_id");
+		var at_nickname = $(obj).closest('.info').find(".comment-name").text();
+		var at_openid   = $(obj).closest('.info').find('img').attr("openid");
+		var sel_openid  = $(obj).closest('.info').find('img').attr("openid");
+		var comment_id = $(obj).closest('.health-men').attr("comment_id");
 		var obj = {};
 		var obj2 = {};
 			obj.article_id = articleid_val;
 			obj.at_openid = at_openid;
 			obj.at_nickname = at_nickname;
 			obj2.feedback = obj;
-		if( ua == "ios" ){
-			window.webkit.messageHandlers.mihaiapp.postMessage(obj2);
-		}else if( ua=="android" ){
-			var jsonString = JSON.stringify(obj);
-			window.JsInterface.comment(jsonString,"comment");
-		}
-	});
-	var comment_id = "";
-	$(".comment-area .name").click(function(){
-		var ua = browserFun();
-		var at_nickname = $(this).find(".comment-name").text();
-		var at_openid = $(this).siblings("img").attr("openid");
-		comment_id = $(this).attr("comment_id");
-		var obj = {};
-		var obj2 = {};
-			obj.article_id = articleid_val;
-			obj.at_openid = at_openid;
-			obj.at_nickname = at_nickname;
-			obj2.feedback = obj;
-		//删除评论操作
-		if( openid_val == at_openid ){
+		if( openid_val == ''){
+			//登录
+			if( ua == "ios" ){
+				window.webkit.messageHandlers.mihaiapp.postMessage(obj);
+			}else if( ua=="android" ){
+				window.JsInterface.login("isLogin");
+			}
+		}else if( openid_val == sel_openid ){
+			//删除
 			if( ua == "ios" ){
 				if( confirm("确定删除评论？") ){
-					$.post("",{comment_id:comment_id},function(){
-
+					var url = "<?php  echo mobile_url('article', array('op'=>'del_comment'));?>";
+					$.post(url,{comment_id:comment_id,table:'article'},function(data){
+						tip(data.message,'1');
+						if(data.errno == 200){
+							//what to do
+							reloadFun();
+						}
 					},'json');
 				}else{
 					return;
 				}
 				
 			}else if( ua=="android" ){
-				window.JsInterface.delete("comment_id","deleteComment");
+				var obj3 = {commentId:comment_id};
+				var jsonString = JSON.stringify(obj3);
+				window.JsInterface.delete(jsonString);
 			}
 		}else{
 		//新增评论或者回复
@@ -589,16 +650,9 @@
 				window.webkit.messageHandlers.mihaiapp.postMessage(obj2);
 			}else if( ua=="android" ){
 				var jsonString = JSON.stringify(obj);
-				window.JsInterface.comment(jsonString,"comment");
+				window.JsInterface.comment(jsonString);
 			}
 		}
-		
-	});
-	//安卓删除评论功能
-	function deleteComment(){
-		$.post("",{comment_id:comment_id},function(){
-
-		},'json');
 	}
 	//获取当前时间yyyy-mm-dd tt:mm
 	function getNowFormatDate() {
@@ -618,10 +672,7 @@
 	    return currentdate;
 	}
 
-	//页面刷新的方法
-	function reloadFun(){
-		window.location.reload();
-	}
+
 	//点击立即下载，调用下载APP的方法
 	$("#downapp p").on("click",function(){
 		$("#downapp").hide();
@@ -633,6 +684,42 @@
 		tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
 	})
 
+	function tip(msg,autoClose){
+		var div = $("#poptip");
+		var content =$("#poptip_content");
+		if(div.length<=0){
+			div = $("<div id='poptip'></div>").appendTo(document.body);
+			content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+		}
+		else{
+			content.html(msg);
+			content.show(); div.show();
+		}
+		if(autoClose) {
+			setTimeout(function(){
+				content.fadeOut(500);
+				div.fadeOut(500);
+
+			},1000);
+		}
+	}
+	function tip_close(){
+		$("#poptip").fadeOut(500);
+		$("#poptip_content").fadeOut(500);
+	}
+	//将后台返回的时间戳格式化为时间格式
+	function Stringtotime(time){
+		time = time*1000;
+		var datetime = new Date();
+		datetime.setTime(time);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+		var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+		var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+		var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
+		return year + "/" + month + "/" + date + " &nbsp " + hour + ":" + minute + "";
+	}
 </script>	
 <?php if($notApp){ ?>
 <?php include themePage('footer'); ?>

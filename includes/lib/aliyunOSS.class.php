@@ -18,9 +18,9 @@ use OSS\Core\OssException;
 class aliyunOSS
 {
     const endpoint        = 'oss-cn-shanghai.aliyuncs.com';
-    const accessKeyId     = 'Ft6j1i6G9kTWBzQl';
-    const accessKeySecret = 'VrTlrpC7izOK5aq7CNLY0uKehbzw93';
-    const bucket          = 'dayblog';
+    const accessKeyId     = 'LTAIJBblVhGuzn2j';
+    const accessKeySecret = 'CcxMOcoXA6PXVdRE2XjImWPLRwzpnJ';
+    const bucket          = 'hinrc';
     private static $self  = NULL;
     /**
      * 根据Config配置，得到一个OssClient实例
@@ -167,6 +167,8 @@ class aliyunOSS
             if(empty($fileName)){
                 $fileName = $picName;
             }
+        }else{
+            return '1';
         }
         $ossClient = self::getOssClient();
         $options = array();
@@ -190,7 +192,8 @@ class aliyunOSS
     {
         $ossClient = self::getOssClient();
         $options = array();
-
+        $dir          = date("Ym",time());
+        $new_fileName = $dir.'/'.$new_fileName;
         try {
            $res =  $ossClient->uploadFile(self::bucket, $new_fileName, $filePath, $options);
         } catch (OssException $e) {

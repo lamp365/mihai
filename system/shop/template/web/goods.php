@@ -262,7 +262,7 @@
  <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return fillform()">
 
 
-<div class="panel with-nav-tabs panel-primary">
+<div class="panel with-nav-tabs panel-default">
  	<div class="panel-heading">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab1primary" data-toggle="tab">基础信息</a></li>

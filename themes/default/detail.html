@@ -277,7 +277,7 @@
 	display: none;	
 }
 .comment_list{
-	border-bottom: 1px dashed #eee;clear: both;overflow: hidden;padding: 15px 0px;
+	border-bottom: 1px dashed #eee;clear: both;overflow: hidden;padding: 15px 0px;list-style: none;
 }
 .comment_list .comment_left{
 	 margin-right: 15px;width: 610px;
@@ -461,7 +461,7 @@ function point(){
 								<!--缩图结束-->
 							</div>
 							<ul style="overflow: hidden;position: absolute;top: 860px;">
-								<li style="float: left;width:100px;text-align: center;cursor: pointer;" data-toggle="modal" data-target="#share-list">
+								<li style="float: left;width:100px;text-align: center;cursor: pointer;" class="get_share_modal">
 									<img src="__RESOURCE__/recouse/images/goodshare.png" style="margin-top: 4px;"/>
 									分享
 								</li>
@@ -861,7 +861,7 @@ function point(){
 						</ul>
 				  </div>
 			</div>
-			 <!-- 商品详情和评价 Start  -->
+		 <!-- 商品详情和评价 Start  -->
 		<div class="detail_tb">
 			<div id="tabBox1" class="tabBox">
 				<div class="hd">
@@ -885,7 +885,7 @@ function point(){
 						
 					 <!-- 高度自适应需添加外层 -->
 						<ul  class="show_comment">
-						     <!--@php  if(is_array($comments)) { foreach($comments as $key=> $row) { @-->
+						    <!--@php  if(is_array($comments)) { foreach($comments as $key=> $row) { @-->
 							<li  class="comment_list">
 								<div  class="pull-left comment_left">
 								<!--@php  echo $row['comment']; @-->
@@ -897,13 +897,14 @@ function point(){
 										</a>
 										<!--@php } @-->
 									</div>
+									<!--@php } @-->
+									
 									<!--@php if(!empty($row['reply'])){ @-->
 										<!--评论回复-->
 										<div class="comment_return">
 											<!--@php  echo $row['reply']; @-->
 										</div>
-									<!--@php } @-->
-								<!--@php } @-->
+									<!--@php } @-->								
 								</div>
 								<div class="pull-right comment_right" style="<!--@php if(!empty($row['piclist'])){ echo 'margin-top:30px;' ;}@-->">
 									<p><!--@php echo getUserFaceAndNameHtml($row['openid'],$row['username']);@--></p>
@@ -912,16 +913,14 @@ function point(){
 						   </li>
 							<!--@php  }} @-->
 
-							<!--页码-->
-							<!--@php if($total>$psize){ @-->
+							<!--页码-->							
+							<!--@php if($total>$psize){ @-->								
 							<ul class="comment_page">
-								<!--@php if($pindex>1){ @-->
-								<li>上一页</li>
-								<!--@php } @-->
+								<a id="topre" onclick="toPre()" style="cursor: pointer;display: none;margin-right: 10px;">上一页</a>
 								<!--@php for ($i = $rastart; $i <= $raend; $i ++) { @-->
 								<li class="<!--@php if($i==$pindex){echo 'active';} @-->"><!--@php echo $i; @--></li>
-								<!--@php } @-->
-								<li>下一页</li>								
+								<!--@php } @-->	
+								<a id="tonext" onclick="toNext()" style="cursor: pointer;margin-left: 10px;">下一页</a>
 							</ul>
 							<!--@php } @-->
 							<!--隐藏域用来保存当前页码-->
@@ -1315,7 +1314,7 @@ $(".share-list a").hover(function(){
 		$(this).find("li").text('');
 	});
 	
-	function shareFun(url,title,picurl){
+	function shareFun(location_href,title,picurl){
 		$(".share-list .qqzone").on("click",function(){
 			var qqzone_share_url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?summary='+title+'&url='+location_href+'&pics='+picurl;
 			$(this).parent("a").attr("href",qqzone_share_url);
@@ -1342,64 +1341,147 @@ $(".share-list a").hover(function(){
 			$("#wx_code").empty();
 		});
 	}
-	var location_href = encodeURIComponent(location.href);//分享的链接
-	var title = "分享的内容";//需要分享的内容
-	var picurl = $(".jqzoom img").attr('src');//需要分享的图片地址
-	shareFun(location_href,title,picurl);
+	$(".get_share_modal").click(function(){
+		var openid = "<?php echo checkIsLogin();?>";
+		if(openid){
+			var url    = "<!--@php echo getShareShopUrl($goods['type']);@-->";
+			var location_href = encodeURIComponent(url);//分享的链接
+			var title = "分享的内容";//需要分享的内容
+			var picurl = $(".jqzoom img").attr('src');//需要分享的图片地址
+			shareFun(location_href,title,picurl);
+			$("#share-list").modal('show');
+		}else{
+			var url = "<!--@php echo mobile_url('login');@-->";
+			tip("请先登录",1);
+			setTimeout(function(){
+				window.location.href = url;
+			},1000);
+
+		}
+
+	})
 
 
+	
+	$(function(){
+		prenext();				
+	})
+	//上一页下一页显示隐藏
+	function prenext(){		
+		var current_page = $("#current_comment").val();
+		if(current_page == 1){
+			$("#topre").hide();
+		}else{
+			$("#topre").show();
+		}
+		var len = $(".comment_page").find("li").length;
+		if(current_page == 2){
+			$("#tonext").hide();
+		}else{
+			$("#tonext").show();
+		}
+	}
 	//评论页码控制
 	var index = 1; //设置一个开关，避免，一直点击页码，上一个后台请求没有结束，就继续请求
-	$(".comment_page li").click(function(){		
+	$(".comment_page li").click(function(){			
 		//点击页码的样式变化
-		$(this).addClass("active").siblings().removeClass("active");
-		
+		$(this).addClass("active").siblings().removeClass("active");		
 		if(index == 1){   //如果开关是打开的，就向后台请求
 			index = 0; //关闭开关
-			//获取当前点击的是哪一页,传到后台
-			var page = $(this).index();			
-			
-			var infos = {
+			//获取当前点击的是哪一页,传到后台			
+			var page = $(this).text();			
+			AJAX(page);
+		}			
+	})
+	//上一页
+	function toPre(){
+		var current_page = $("#current_comment").val();			
+		if(index == 1){   //如果开关是打开的，就向后台请求
+			index = 0; //关闭开关					
+			var page =current_page - 1;			
+			$(".comment_page").find("li").eq(page-1).addClass("active").siblings().removeClass("active");
+			AJAX(page);
+		}	
+	}
+	//下一页
+	function toNext(){
+		var current_page = parseInt($("#current_comment").val());			
+		if(index == 1){   //如果开关是打开的，就向后台请求
+			index = 0; //关闭开关					
+			var page =current_page + 1;			
+			$(".comment_page").find("li").eq(page-1).addClass("active").siblings().removeClass("active");
+			AJAX(page);
+		}	
+	}
+	//ajax方法
+	function AJAX(page){
+		var infos = {
 				AJAX:'post',
 				page:page
 			};
 			var url = "<!--@php echo mobile_url('detail', array('id' => $goods['id'],'op'=>'pager'))@-->";
 			$.post(url, infos, function(s){   //当前页传过去，再传一个参数op表示是异步
 				s = eval(s);
-				if(s.length == 0){    //我设定的是，200，表示没有数据
+				if(s.length == 0){ 
 					//如果没有数据,不做处理						
-				}else{
-					$("#current_comment").val(page);	//点击的是哪一页，将它赋值给隐藏域input,这个隐藏域我弄了看你需不需要，不要的话就不用
-					console.log(s);
-					var art_data = s;  //后台返回的数据是  message
+				}else{					
+					$("#current_comment").val(page);	//点击的是哪一页，将它赋值给隐藏域input	
+					prenext();
+					var art_data = s; 
 					//先将评论列表现在的评论移除
 					$(".show_comment").find(".comment_list").remove();
 					//获取到的这一页有很多条评论，一条一条的取出调用方法，放到评论列表处
-					for(var i = 0;i < art_data.length;i++){
-						//循环拼接 html下一页数据
+					for(var i=0;i<art_data.length;i++){
 						rComment(art_data[i]);
-					}
+					}					
 					index = 1;  //加载完后重新打开开关
+					//滚动到评论列表顶端
+					var _top = $(".detail_tb").position().top-100;
+					$("body,html").animate({scrollTop:_top},500);
 				}
-			});
-		}			
-	})
+			},'json');
+	}
 	//刷新评论列表的方法
 	function rComment(data){		
-		//将后台返回的评论拼接进去
-		//现在的数据是写死的
-		var li  = '<li class="comment_list">'+
-						'<div  class="pull-left comment_left">'+
-								'评论内容'+
+		var pic = data.piclist; //评论图片
+		var picurl = "";
+		var reply = data.reply; //评论回复
+		var li  = '<li  class="comment_list">'+
+					'<div  class="pull-left comment_left">'+data.comment;
+		if(pic.length != 0){
+			for(var j = 0 ;j < pic.length;j++){
+				picurl += '<a class="fancybox"  href="'+ pic[j].img +'" data-fancybox-group="gallery">'+
+							'<img src="'+pic[j].img+'"/>'+
+						'</a>';	
+				}
+				li += '<div style="margin-top: 8px;" class="piclist">'+picurl+'</div>';			
+		}
+		if(reply != null){
+			li += '<div class="comment_return">'+data.reply+'</div>';
+		}
+		 li = li + '</div>'+
+						'<div class="pull-right comment_right" style="margin-top:30px;">'+
+							'<p>'+data.username+'</p>'+
+							'<p style="font-size: 12px;color: #CCCCCC;">来自 '+equip(data.system)+'版</p>'+
 						'</div>'+
-						'<div class="pull-right comment_right">'+
-							'<p>用户名或者手机号</p>'+
-							'<p style="font-size: 12px;color: #CCCCCC;">来自 pc 版</p>'+
-						'</div>'+
-				   '</li>'
-	    $(".show_comment").append(li);
+				   '</li>';	
+		
+	    $(".comment_page").before(li);	    
 	}
 	
+	  $(".fancybox").fancybox();
+	   
+	//获取评论的设备
+	function equip(num){
+		if(num == 1){
+			return "PC";
+		}else if(num == 2){
+			return "Android";
+		}else{
+			return "IOS";
+		}
+	}
+
 </script>
 
 	</div>

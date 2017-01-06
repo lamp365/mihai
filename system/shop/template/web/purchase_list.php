@@ -4,29 +4,15 @@
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
 <style type="text/css">
-	.purchase-table-list tr{
-		border: 1px solid #ddd;
-	}
-	.purchase-table-list td{
-		//border: 1px solid #ddd;
-	}
+
 	.purchase-table-list li{
 		margin:5px;
 		float: left;
 		margin-right: 10px;
 		list-style: none;
 	}
-
-	.purchase-table-list li select{
-		height:34px;
-	}
-	.purchase-table-list li input{
-		height: 34px;
-	}
-	.purchase-table-list li span{
-		display: inline-block;
-		height:34px;
-		line-height: 34px;
+	.purchase-table-list td{
+		padding: 0!important;
 	}
 	.add-more{
 		text-align: center;
@@ -48,6 +34,22 @@
 	}
 	.quick-delivery-btn{
 		cursor: pointer;
+	}
+	.purchase-table-list .li-height{
+	    height: 27px;
+	    padding-left: 5px;
+	}
+	.purchase-table-list li select{
+		height: 28px;
+	}
+	.left-span{
+		float: left;
+	    line-height: 26px;
+	    background-color: #ededed;
+	    padding: 0 5px;
+	    border: 1px solid #cdcdcd;
+	    border-right: 0;
+	    font-size: 12px;
 	}
 </style>
 <script>
@@ -156,19 +158,19 @@
 	<input type="hidden" name="do" value="purchase"/>
 	<input type="hidden" name="op" value="display"/>
 	<input type="hidden" name="status" value="<?php  echo $status;?>"/>
-	<table  class="table purchase-table-list" style="width:100%;" align="center">
+	<table  class="table purchase-table-list" style="width:100%;border: 1px solid #ddd;" align="center">
 		<tbody>
-			<tr style="background-color: #f9f9f9;">
-				<td style="border: 1px solid #ddd;">
-					<li ><span>订单编号：</span></li>
-					<li  >
-						<input name="ordersn" style="width:150px" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
+			<tr >
+				<td>
+					<li>
+						<input name="ordersn" class="li-height" placeholder="订单编号" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
 					</li>	
 				
 					
-					<li><span>业务员：</span></li>
+
 					<li>
 						<?php if(isAgentAdmin()){ ?>
+						<span class="left-span">业务员：</span>
 							<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
 								 <option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
 								<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
@@ -178,6 +180,7 @@
 								<?php  } } ?>
 						   </select>
 		               	<?php } else{ ?>
+		               	<span class="left-span">业务员：</span>
 							<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
 								<option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
 								<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
@@ -186,8 +189,8 @@
 							</select>
 						<?php } ?>
 					</li>
-					<li ><span>导出模板：</span></li>
 					<li >
+						<span class="left-span">导出模板</span>
 	                    <select name="template">
 	                        <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
 							<option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
@@ -207,10 +210,10 @@
 					</li>	
 						
 					<li >
-						<input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary">&nbsp;&nbsp;
-						<button type="submit" name="report" value="report"  class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
-						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank" class="btn btn-info">打印订单</a>
-						<div style="display:inline-block;" class="add-more-btn btn btn-default show-more">更多选项</div>
+						<input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+						<button type="submit" name="report" value="report"  class="btn btn-warning btn-sm">导出excel</button>
+						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank" class="btn btn-info btn-sm">打印订单</a>
+						<div style="display:inline-block;" class="add-more-btn btn btn-default show-more btn-sm">更多选项</div>
 						
 					</li>
 					
@@ -218,20 +221,17 @@
 			</tr>
 			<tr class="hide-tr">
 				<td>
-					<li><span>收货人手机：</span></li>
 					<li >
-						<input name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" />
-					</li>	
-					<li ><span>产品名称：</span></li>
-					<li><input name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" /></li>
-					<li><span>收货人姓名：</span></li>
-					<li >
-						<input style="width:150px" name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
+						<input name="mobile" class="li-height" placeholder="收货人手机" type="text" value="<?php  echo $_GP['mobile'];?>" />
 					</li>
-					<li><span>下单时间：</span></li>
+					<li><input name="goodsname" class="li-height" placeholder="产品名称" type="text" value="<?php  echo $_GP['title'];?>" /></li>
+					<li >
+						<input  class="li-height" placeholder="收货人姓名" name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
+					</li>
+
 					<li>
-						<input style="width:150px" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - 
-						<input style="width:150px" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
+						<input class="li-height" placeholder="开始时间" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - 
+						<input class="li-height" placeholder="结束时间" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
 			
 						<script type="text/javascript">
 							$("#begintime").datetimepicker({
@@ -340,7 +340,7 @@
 					<?php
 							   }
 					    }?>
-
+						
 					</td>
 			       
 					<td align="center" valign="middle" style="vertical-align: middle;">
@@ -532,7 +532,6 @@
 						$(".add-more-btn").text("更多查询");
 						$(this).addClass("show-more");
 					}
-					
 				});
 				$(".check_all").click(function(){
 	            	var checked = $(this).get(0).checked;

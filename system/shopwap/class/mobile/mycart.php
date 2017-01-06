@@ -52,10 +52,10 @@ if ($op == 'add') {
         $result['message'] = '抱歉，该商品不存在或是已经被删除！';
         message($result, '', 'ajax');
     }
-    if ($goods['type'] != 0 && is_mobile_request()) {
-        $result['message'] = '此活动商品必须下载APP才能购买！';
+    /*if ($goods['type'] != 0 && is_mobile_request()) {
+        $result['message'] = '此活动商品须下载APP才能购买！';
         message($result, '', 'ajax');
-    }
+    }*/
 	$carttotal = $this->getCartTotal($goodsid);
     $goodsOptionStock = 0;
     $goodsOptionStock = $goods['total'];

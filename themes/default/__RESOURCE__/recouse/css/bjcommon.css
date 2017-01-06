@@ -4634,7 +4634,9 @@ del {
     height: 304px;
     margin-bottom: 15px;
     margin-left: 20px;
-    width: 220px;
+    width: 222px;
+    +width: 220px;
+    box-sizing: border-box;
 }
 .newRecomItemWrap .itemImg {
     display: block;

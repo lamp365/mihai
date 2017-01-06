@@ -84,16 +84,21 @@
 		  $hasmember = mysqld_select("SELECT * FROM " . table('member') . " WHERE openid = :openid ", array(':openid' => $openid));
 			if(!empty($hasmember['openid']))
 			{
-						$openid=date("YmdH",time()).rand(100,999);
+				$openid=date("YmdH",time()).rand(100,999);
 			}
-			$data = array('mobile' => $_GP['mobile'],
-                    'pwd' => $pwd,
-                    'createtime' => time(),
-                    'status' => 1,
-                    'istemplate'=>0,
-                    'experience'=> 0 ,
-				    'mess_id' => !empty($_users['mess_id'])?$_users['mess_id']:0 ,
-                    'openid' =>$openid);
+			//推荐人openid 用于PC分享 注册后每次都能得到佣金，相当于app的开店
+			$recommend_openid = getOpenshopSellerOpenid();
+			$data = array(
+					'mobile' => $_GP['mobile'],
+                    'pwd'    => $pwd,
+                    'createtime'       => time(),
+                    'status'           => 1,
+                    'istemplate'       =>0,
+                    'experience'       => 0 ,
+				    'mess_id'          => !empty($_users['mess_id'])?$_users['mess_id']:0 ,
+                    'openid'           =>$openid,
+                    'recommend_openid' => empty($recommend_openid)? '' : $recommend_openid,
+			);
 				mysqld_insert('member', $data);
 				
 				if(!empty($shop_regcredit))

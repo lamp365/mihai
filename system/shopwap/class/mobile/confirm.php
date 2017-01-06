@@ -31,7 +31,11 @@ header("Expires:0");
 	    $cookie = new LtCookie();
 		$good = $cookie->getCookie('goods');
 		$id = intval($good['id']);
-		$seller_openid = $good['seller_openid']; //卖家openid,可能是商家分享出去的
+		$seller_openid = $good['seller_openid']; //卖家openid,可能是商家分享出去的，用于计算佣金
+		if(empty($seller_openid)){
+			//如果是空，判断是否是有推荐人，有的话，就会把佣金给以前的推荐人
+			$seller_openid = $member['recommend_openid'];
+		}
 	// 获取规格项ID
 		$optionid = intval($good['optionid']);
 	// 获取数量如果为空则数量为1
@@ -83,6 +87,7 @@ header("Expires:0");
                 }
             }
 			*/
+
 		     $item['seller_openid'] = $seller_openid;
 			// 对购买数量进行处理，如果购买数量大于库存，则将购买数量设置为库存
 			if( $total > $item['total']){
@@ -150,6 +155,10 @@ header("Expires:0");
                          continue;
 					}
 					$item['seller_openid'] = $g['seller_openid'];
+					if($item['seller_openid']){
+						//如果是空，判断是否是有推荐人，有的话，就会把佣金给以前的推荐人
+						$item['seller_openid'] = $member['recommend_openid'];
+					}
 					// 初始化税率金额
 					$taxprice = 0;
                     //属性

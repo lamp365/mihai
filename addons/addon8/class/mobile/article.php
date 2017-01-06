@@ -26,6 +26,11 @@
 				if($article['state'] == '6'){
 					//获取评论
 					$article_comment = mysqld_selectall("select * from ".table('article_comment')." where article_id={$_GP['id']} order by istop desc,comment_id desc limit 3");
+					if(!empty($article_comment)){
+						foreach($article_comment as $key=>$item){
+							$article_comment[$key] = get_article_member($item);
+						}
+					}
 				}
 				if(empty($article['mobileTheme'])){
 					include addons_page('article');
@@ -54,7 +59,7 @@
 			//是否已经关注过
 			$info = mysqld_select("select follow_id from ".table('follow')." where followed_openid={$article_openid} and follower_openid = {$openid}");
 			if(!empty($info)){
-				die(showAjaxMess('1002','你已经关注过'));
+				die(showAjaxMess('200','你已经关注过'));
 			}
 			$data = array(
 				'followed_openid' => $article_openid,
@@ -180,6 +185,40 @@
 			$article_note['article_comment'] = $article_comment;
 			die(showAjaxMess(200,$article_note));
 
+		}else if($op == 'del_comment'){
+			//删除评论
+			$table         = $_GP['table'];
+			$table_comment = $table."_comment";
+			$res           = '';
+			switch($table){
+				case 'article':
+					$res = mysqld_delete($table_comment,array('comment_id'=>$_GP['comment_id']));
+					break;
+				case 'note':
+					$res = mysqld_delete($table_comment,array('comment_id'=>$_GP['comment_id']));
+					break;
+				case 'headline':
+					$res = mysqld_delete($table_comment,array('comment_id'=>$_GP['comment_id']));
+					break;
+			}
+			if($res){
+				die(showAjaxMess('200','删除成功！'));
+			}else{
+				die(showAjaxMess(1002,'删除失败！'));
+			}
+
+		}else if($op = 'ajax_articleComment'){
+			//wap端只要三条显示
+			$comment = '';
+			if(!empty($_GP['id'])){
+				$comment = mysqld_selectall("select * from ".table('article_comment')." where article_id={$_GP['id']} order by comment_id desc limit 3");
+				if(!empty($comment)){
+					foreach($comment as $key => $row){
+						$comment[$key] = get_article_member($row);
+					}
+				}
+			}
+			die(showAjaxMess(200,$comment));
 		}
 
   	 	 

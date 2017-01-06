@@ -46,22 +46,43 @@ function checkOpenshopAccessKey()
 }
 
 /**
- * 得到店铺卖家的openid
+ * 得到APP店铺卖家的分享出去后的openid  或者PC端分享出去的分享者openid
+ * 原理，第一次分享出去的url,带有accesskey,获取后载入缓存，用于商品加入购车后，可以得到该分享者
+ * 同时新注册的时候能得到是谁推荐的
+ * 以后推荐的该用户，都能得到每次购买商品的佣金，这是PC端的操作模式，相当于app的开店
  * @return bool|int
  */
 function getOpenshopSellerOpenid(){
-    if(empty($_REQUEST['accesskey'])){
-        return 0;
+    $cookie  = new LtCookie();
+    $key     = getShareShopCookieKey();  //作为key
+    $openid  = $cookie->getCookie($key);
+    if($openid){
+        return $openid;
     }else{
-        $openid = decodeOpenshopAccessKey($_REQUEST['accesskey']);
-        if($openid){
-            return $openid;
-        }else{
+        if(empty($_REQUEST['accesskey'])){
             return 0;
+        }else{
+            $openid = decodeOpenshopAccessKey($_REQUEST['accesskey']);
+            if($openid){
+                //缓存24小时
+                $openid = $cookie->setCookie($key,$openid,time()+3600*24);
+                return $openid;
+            }else{
+                return 0;
+            }
         }
     }
 }
 
+/**
+ * @return string
+ * 设置缓存分享商品时的 ip作为缓存的key
+ */
+function getShareShopCookieKey(){
+    $ip     = getClientIP();
+    $key    = "share-".$ip;
+    return $key;
+}
 /**
  * @param $openid 卖家id
  * @content 给每个商家统计当天访问量，相同ip只能统计一次，8小时后算为过期
@@ -204,4 +225,36 @@ function getShoperWebUrl($openid){
     $host = 'http://'.$_SERVER['HTTP_HOST'];
     $url = mobile_url('openshop_home',array('accesskey'=>$accesskey));
     return rtrim($host,'/').'/'.$url;
+}
+
+/**
+ * 用于PC端分享时加密用户信息accesskey，用于算佣金，并且成为推荐人
+ * detail页面分享时要获取该方法得到地址，然后进行分享操作
+ * @param $type  商品类型
+ * @return string
+ */
+function getShareShopUrl($type){
+    $openid = checkIsLogin();
+    //当前url
+    $cur_url = WEB_HTTP.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    if($type== 0){
+        //一般商品才分享出去有佣金
+        //返回一个加密串用于分享得知是谁分享的
+        $uri      = $_SERVER["REQUEST_URI"];
+        $uri_info = parse_url($uri);
+        $path     = $uri_info['path'];
+        $uri_info = $uri_info['query'];
+        //将uri转成数组形式
+        $uriArr    = convertUrlQuery($uri_info);
+        $accesskey = getOpenshopAccessKey($openid);
+        $uriArr['accesskey'] = $accesskey;
+        //将数组转成uri串
+        $uri_str   = getUrlQuery($uriArr);
+
+        //以上获取uri转成数组赋值后在转为串，不这么做，可能会发生分享的地址在此分享，有多个accesskey问题，故做法转成数组在转成串
+        $cur_url   = WEB_HTTP.$_SERVER['HTTP_HOST'].'/index.php?'.$uri_str;
+
+    }
+    return $cur_url;
+
 }

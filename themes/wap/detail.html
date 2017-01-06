@@ -109,13 +109,16 @@
         }
         .img-list li{
             float: left;
-            width: 50px;
+            width: 100%;
             margin: 0 .48em .5em 0;
-            border: 1px solid #eaeaea;
+            
         }
         .img-list li img{
-            display: block;
-            width: 100%;
+            display: inline-block !important;            
+            height: auto !important;
+            width: 60px !important;
+            border: solid 1px #eaeaea;
+            margin-right: 10px;
         }
         .detail-content{
             color: #000;
@@ -177,6 +180,23 @@
         .tabBox .bd .liactive p{
             padding: 0!important;
         }
+        /*评论回复样式*/
+		.comment_return{
+			width: 100%;
+			overflow: hidden;
+			background: #F8F8F8;
+			border-radius: 5px;
+			margin-bottom: 10px;
+			padding: 10px;
+			box-sizing: border-box;
+			color:#CC7E00;
+		}
+		/*加载更多评论*/
+		#show_more{
+			text-align: center;
+			font-size: 12px;
+			padding-bottom: 10px;
+		}
     </style>
 
 </head>
@@ -472,15 +492,29 @@
                                     <!--@php } @-->
                                 </ul>
                                 <!--@php } @-->
-                            </li>
-
+                                
+                               <!--@php if(!empty($row['reply'])){ @-->
+									<!--评论回复-->
+									<div class="comment_return">
+										<!--@php  echo $row['reply']; @-->
+									</div>
+								<!--@php } @-->
+                            </li>                           
                             <!--@php  }} @-->
+                            
+                            <!--加载更多评论-->
+                            <div id="show_more">
+                            	更多评论
+                            </div>
+                            <!--这个隐藏域，用来存当前评论页-->
+                            <input type="hidden" value="2" id="page"/>
+                            
                             <!--@php  if(empty($comments)) { @-->
                             <div class="myoder" style="text-align: center; color: #aaa; padding: 30px;">
                                 暂时没有商品评价!!</div>
                             <!--@php  } @-->
                         </ul>
-                        <!--@php echo $pager;@-->
+                       
                     </div>
 
                 </div>
@@ -862,6 +896,71 @@
         }
         return true;
     }
+    
+    var index = 1 ; //定义开关,定义开关是为了防止一直点击，
+    //点击更多评论
+    $("#show_more").click(function(){
+    	if(index == 1){
+    		index = 0;//关闭开关
+    		var page = $("#page").val(); //初始是第一页，然后第一次点击更多，传进来的就是2
+    		var infos = {
+				AJAX:'post',
+				page:page
+			};
+    		var url = "<!--@php echo mobile_url('detail', array('id' => $goods['id'],'op'=>'pager'))@-->";
+    		$.post(url,infos,function(s){   //传了两个参数，你可以根据你需要改
+    			if(s.length == 0){
+    				$("#show_more").hide();
+    			}else{
+    				$("#page").val(++page);
+    				var data = s;
+    				for(var i = 0;i < data.length;i++){
+    					Append(data[i]);  
+    				}
+    				index = 1; //加载完后重新打开开关
+    			}
+    		},'json');
+    	}
+    })
+    
+    //将要显示的更多评论追加到列表
+    function Append(data){    	
+    	var pic = data.piclist; //评论图片
+		var picurl = "";
+		var reply = data.reply; //评论回复
+		var li = '<li>'+
+                    '<div class="user-name">用户名：'+data.username+'</div>'+
+                    '<span class="date-time">来自 '+equip(data.system)+'版</span>'+
+                    '<h4 class="detail-content">'+data.comment+'</h4>'
+		 if(pic.length != 0){
+			for(var j = 0 ;j < pic.length;j++){
+				picurl += '<a class="fancybox"  href="'+ pic[j].img +'" data-fancybox-group="gallery">'+
+							'<img src="'+pic[j].img+'"/>'+
+						'</a>';	
+				} 	
+	       
+				li += '<ul class="img-list">'+                        
+                        '<li>'+ picurl+'</li>'+                       
+                      '</ul>';
+				   
+			}
+          if(reply != null){
+				li += '<!--评论回复-->'+
+						'<div class="comment_return">'+data.reply+'</div>'+
+               		 '</li>';
+			}             
+        $("#show_more").before(li);
+    }
+     $(".fancybox").fancybox();
+    function equip(num){
+		if(num == 1){
+			return "PC";
+		}else if(num == 2){
+			return "Android";
+		}else{
+			return "IOS";
+		}
+	}
 </script>
 </body>
 </html>

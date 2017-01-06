@@ -8,11 +8,13 @@ class Autoloader{
      * @return void
      */
     public static function autoload($class) {
-        $name = $class;
+        $name           = $class;
+        $namespaceClass = '';
         if(false !== strpos($name,'\\')){
-          $name = strstr($class, '\\', true);
+            //命名空间才会走这里
+            $name            = strstr($name,'\\',true);
+            $namespaceClass  = str_replace('\\','/',$class);
         }
-        
         $filename = TOP_AUTOLOADER_PATH."/top/".$name.".php";
         if(is_file($filename)) {
             include $filename;
@@ -49,7 +51,7 @@ class Autoloader{
             return;
         }
         //阿里云图片服务器
-        $filename = TOP_AUTOLOADER_PATH."/aliyunOSS/".$class.".php";
+        $filename = TOP_AUTOLOADER_PATH."/aliyunOSS/{$namespaceClass}.php";
         if(is_file($filename)) {
             include $filename;
             return;

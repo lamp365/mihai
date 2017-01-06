@@ -31,7 +31,8 @@
 				<input type="hidden" name="name" value="member" />
 				<input type="hidden" name="do" value="list" />
 				<input type="hidden" name="mod" value="site"/>					
-				
+				<input type="hidden" name="status" value="<?php echo isset($_GP['status'])? $_GP['status']: 1;?>"/>
+
 				<table class="table vip-table-list" style="width:100%;" align="center">
 					<tbody>
 						<tr>
@@ -69,7 +70,7 @@
 								<li ><span>支付宝昵称</span></li>
 								<li>
 									<input name="alipayname"  type="text" value="<?php  echo $_GP['alipayname'];?>" />
-								</li>	
+								</li>
 								<li style="display: none;"><span>按食堂筛选：</span></li>
 								<li style="display: none;">
 									<select style="margin-right:15px;" id="mess" name="mess" >
@@ -78,13 +79,42 @@
 	                 					<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
 				                  		<?php  } } ?>
 				                   	</select>
-								</li>	
-								<li>
-									<input name="submit" type="submit" style="margin-top:-4px; " value=" 查 找 " class="btn btn-info"/>
 								</li>
 							</td>
 						</tr>
 					</tbody>
+				</table>
+				<table class="table vip-table-list" style="width:100%;" align="center">
+					<tr>
+						<td>
+							<li>
+								时间范围:
+							</li>
+							<li>
+								<input type="text" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
+								<script type="text/javascript">
+									$("#datepicker_timestart").datetimepicker({
+										format: "yyyy-mm-dd hh:ii",
+										minView: "0",
+										//pickerPosition: "top-right",
+										autoclose: true
+									});
+								</script> -
+								<input type="text"  id="datepicker_timeend" name="timeend" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
+								<script type="text/javascript">
+									$("#datepicker_timeend").datetimepicker({
+										format: "yyyy-mm-dd hh:ii",
+										minView: "0",
+										//pickerPosition: "top-right",
+										autoclose: true
+									});
+								</script>
+							</li>
+							<li>
+								<input name="submit" type="submit" style="margin-top:-4px; " value=" 查 找 " class="btn btn-info"/>
+							</li>
+						</td>
+					</tr>
 				</table>
 			</form>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
@@ -130,7 +160,7 @@
 									</td>
 								
 									<td class="text-center">
-										<?php  echo date('Y-m-d',$v['createtime'])?>
+										<?php  echo date('Y-m-d H:i',$v['createtime'])?>
 									</td>
 									
 											<td class="text-center">

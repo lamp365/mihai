@@ -11,9 +11,7 @@
 		if($saller_openid){
 			$shopInfo = mysqld_select("select * from ". table('openshop') . " where openid=:openid",array(
 					'openid' => $saller_openid
-		));
-		}else if($saller_openid && !empty($_GP['accesskey'])){
-			message("对不起，参数有误！");
+			));
 		}
 
 		$memberinfo=member_get($openid);
@@ -22,11 +20,7 @@
 			message('地址访问有误！',refresh(),'error');
 
 		$op = $_GP['op'];
-		$selleid = 0;
-		//判断是否是卖家分享商品url进来的
-		if(!empty($_GP['accesskey'])){
-			$selleid  = checkOpenshopAccessKey();  //获取卖家id
-		}
+
 		$toshangjia   		  = $_GP['toshangjia'];       //用于显示是否是卖家要进去上下架商品，而不是卖商品
 		if(!empty($toshangjia)){
 			if(!checkIsOpenshop()){  //防止恶意改参数近来的用户，则判断是否是开店商家用户，若不是商家会影响到后续的上下架操作

@@ -89,8 +89,6 @@ function getArticleUrl($id,$type,$openid = '',$is_quote=''){
             break;
     }
     $url = create_url('mobile', $parame);
-    logRecord('1111','article12');
-    logRecord($url,'article12');
     return WEBSITE_ROOT.$url;
 }
 
@@ -119,10 +117,17 @@ function createTheUserForNotExist($openid){
 function get_article_member($item){
     $item['nickname'] = '';
     $item['avatar']   = '';
+    $item['reply_nickname'] = '';
+    $item['reply_avatar']   = '';
     if(!empty($item['openid'])){
         $member = mysqld_select("select nickname,avatar,mobile from ".table('member')." where openid={$item['openid']}");
         $item['nickname'] = empty($member['nickname']) ? substr_cut($member['mobile']) : $member['nickname'];
         $item['avatar']   = empty($member['avatar']) ? '' : download_pic($member['avatar'],150);
+    }
+    if(!empty($item['at_openid'])){
+        $member = mysqld_select("select nickname,avatar,mobile from ".table('member')." where openid={$item['at_openid']}");
+        $item['reply_nickname'] = empty($member['nickname']) ? substr_cut($member['mobile']) : $member['nickname'];
+        $item['reply_avatar']   = empty($member['avatar']) ? '' : download_pic($member['avatar'],150);
     }
     return $item;
 }

@@ -2,7 +2,6 @@
 if (file_exists(WEB_ROOT . '/includes/hottpoic.func.php') && !function_exists(getHottpoic)) {
    require WEB_ROOT . '/includes/hottpoic.func.php';
 }
- ppd(getArticleUrl(2,'healty','',1));
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
 $article_headline = getIndexArticle('headline');
