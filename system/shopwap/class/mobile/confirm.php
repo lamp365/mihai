@@ -416,7 +416,8 @@ header("Expires:0");
                 'address_city' => $address['city'],
                 'address_area' => $address['area'],
                 'address_address' => $address['address'],
-                'createtime' => time()		
+                'source' => get_mobile_type(),
+                'createtime' => time()
             );
             mysqld_insert('shop_order', $data);
             $orderid = mysqld_insertid();
