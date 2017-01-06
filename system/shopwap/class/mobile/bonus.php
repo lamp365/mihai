@@ -44,7 +44,7 @@ if ( $op == 'get' ){
    }
    if ( $bonus['send_max'] > 0 ){
         $user_had = mysqld_selectcolumn("SELECT count(*) FROM " .table('bonus_user'). " WHERE openid = :openid and bonus_type_id = :bonus_type_id ", array(":bonus_type_id"=>$id, ":openid"=> $openid));
-		if ( $user_had > $bonus['send_max']){
+		if ( $user_had >= $bonus['send_max']){
 			if(empty($_GP['showajax'])) {
 				message('您已领取过该优惠券了，快去选购喜欢的宝贝吧！');
 			}else{

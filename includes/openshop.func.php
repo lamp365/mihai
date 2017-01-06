@@ -80,7 +80,7 @@ function getOpenshopSellerOpenid(){
  */
 function getShareShopCookieKey(){
     $ip     = getClientIP();
-    $key    = "share-".$ip;
+    $key    = "share_".$ip;
     return $key;
 }
 /**

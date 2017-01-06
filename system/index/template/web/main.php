@@ -4,6 +4,9 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+     <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+     <META HTTP-EQUIV="Expires" CONTENT="0"> 
     <title><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <meta name="description" content="<?php  echo empty($settings['shop_description'])?'小物网络':$settings['shop_description'];?>" />
@@ -33,42 +36,43 @@
 
     <style>
         body{background-color: #F8FAFC;}
+		.navs{
+            background:#5D4384;
+			height:40px;
+			line-height:40px;
+		}
         .head-second-nav{
     color: #fff;
     width: auto;
     overflow: hidden;
     float: left;
-    margin-top: 7px;
         }
         .breadcrumb{
-            /*float: left;*/
-            margin: 7px 22px 0 12px;
+    float: left;
+    margin: 12px 22px 0 12px;
         }
         .breadcrumbs{
-            background-color: #fafafa;
+            background-color: #FFFFFF;overflow: auto;
         }
         .ace-nav>li.open>a{
-            background-color: #fafafa!important;
+            background-color: #FFF!important;
             color: #555!important;
         }
         .ace-nav>li.open.light-blue>a{
-            background-color: #fafafa!important;
+            background-color: #FFF!important;
             color: #555!important;
         }
         .ace-nav>li>a{
-            background-color: #fafafa;
-            color: #555;
-        }
-        .ace-nav>li>a>[class*="icon-"]{
-            color: #555;
+			height:40px;
+			line-height:40px;
+            background-color: #5D4384;
+            color: #FFF;
         }
         .ace-nav>li{
-            line-height: 35px;
-            height: 35px;
             border-left: none;
         }
         .light-blue,.ace-nav>li.light-blue>a{
-           background-color: #fafafa!important; 
+           background-color: #FFF!important; 
         }
         .user-info small{
             display: inline-block;
@@ -121,11 +125,13 @@
             height: 70px;
         }
         .ace-nav>li>a:hover, .ace-nav>li>a:focus{
-            background-color: #fafafa;
+            background-color: #FFF;
+			color:#555;
         }
         .navbar-brand{
-            height: 70px;
-            line-height: 39px;
+            line-height: 50px;
+			padding:0 0 0 10px;
+           
             float: none;
             color: #fff
         }
@@ -249,6 +255,47 @@
        .toback:hover{
        	text-decoration: underline;
        }
+       .left-nav-tap{
+        float: left;
+        width: auto;
+       }
+	   .left-nav-tap ul{
+           margin:0;
+	   }
+       .left-nav-tap li span{
+          margin-left:4px;
+	   }
+       .left-nav-tap li{
+        float: left;
+        list-style: none;
+        padding: 0 15px;
+        border-left: 1px solid #cad2e2;
+        color: #555;
+        font-size: 13px;
+        border-bottom: 1px solid #fff;
+        cursor: pointer;
+       }
+       .left-nav-tap li:hover{
+          background-color: #fff;
+       }
+       .left-nav-tap li a{
+        color: #555;
+        text-decoration: none;
+       }
+       .left-nav-tap li:last-child{
+        border-right: 1px solid #cad2e2;
+       }
+       .nav-list>li{
+        display: none;
+       }
+       .nav-list li.jichu,.nav-list li.public-tap{
+        display: block;
+       }
+
+       .left-nav-tap .left-nav-checked{
+           background-color: #fff;
+          border-bottom: 1px solid;
+       }
     </style>
     <script type="text/javascript">
     	function navtoggle(stitle)
@@ -274,85 +321,92 @@
 </script>
 </head>
 <body scrolling="no" style="overflow:visible;">
-<!-- <div class="navbar navbar-default" id="navbar">
-    <div class="navbar-container" id="navbar-container">
-        <div class="navbar-header pull-left">
-            <a href="" class="navbar-brand">
-                <small>
-                    <i class="icon-road"></i>
-                    <span id='accountname'><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></span>
-                </small>
-            </a>
-            <span style="display: inline-block;line-height: 70px;color: #fff"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span>
-        </div>
-
-        <div class="navbar-header pull-right" role="navigation">
-            <ul class="nav ace-nav">
-                <li class="Larger">
-                    <a class="dropdown-toggle"  href="<?php  echo WEBSITE_ROOT.'index.php';?>" target="_blank">
-                        <i class="icon-mobile-phone"></i>
-                        <span>商城首页</span>
-                    </a>
-                </li>
-                <li class="Larger">
-                    <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
-                        <i class="icon-strikethrough"></i>
-                            <span>修改汇率</span>                       
-                    </a>
-                </li>
-                <li class="Larger">
-                    <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
-                        <i class="icon-user"></i>
-                        <span>修改密码</span>
-                    </a>
-                </li>
-                <li class="light-blue">
-                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-       				<span class="user-info">
-									<small>欢迎光临,</small>
-                        <?php echo $username ?>								</span>
-
-                        <i class="icon-caret-down"></i>
-                    </a>
-
-                    <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-
-                        <li>
-                            <a onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>">
-                                <i class="icon-off"></i>
-                                退出
+<div class="main-container" id="main-container">
+    <div class="navs">
+	 <div class="head_logo" style="float:left;height:40px;line-height:40px;">
+                <a href="" style="float:left;">
+                      <img src="<?php  echo empty($settings['shop_logo'])?'小物网络':$settings['shop_logo'];?>" height="40px" width="189px" style="vertical-align:top;"/>
+                </a>
+      </div>
+	  	<ul class="breadcrumb" style="margin-left: 25px;color:#fff;">                    
+                    <li><span style="display: inline-block;color:#fff;"> USD → CNY: <span class="usa-to-rmb" style="color:#fff;"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span></li>
+                </ul><!-- .breadcrumb -->
+      <div class="head-second-nav">
+         <ul>
+             <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
+            <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
+             <?php }} ?>
+        </ul>
+     </div>
+	  <div class="pull-right" role="navigation">
+                    <ul class="nav ace-nav">
+                        <li class="Larger">
+                            <a class="dropdown-toggle"  href="<?php  echo WEBSITE_ROOT.'index.php';?>" target="_blank">
+                                <i class="icon-mobile-phone"></i>
+                                <span>商城首页</span>
                             </a>
                         </li>
-                    </ul>
-                </li>
-                <li class="Larger login-out">
-                    <span class="label label-default">
-                    <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
-                        <i class="icon-off"></i>
-                        <span>退出系统</span>
-                    </a>
-                    </span>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="head-second-nav">
-    <ul>
-        <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
-            <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
-        <?php }} ?>
-    </ul>
-</div> -->
+                        <li class="Larger">
+                            <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
+                                <i class="icon-strikethrough"></i>
+                                    <span>修改汇率</span>                       
+               
+                                <!-- <i class="icon-caret-down"></i> -->
+                            </a>
+        <!--                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                                <li>
+                                    <a class="modify" href="javascript:;">
+                                        <i class="icon-off"></i>
+                                        <span class="modify-exchange-rate">修改汇率</span>
+                                    </a>
+                                    <a class="modify-record" href="javascript:;">
+                                        <i class="icon-off"></i>
+                                        <span class="modify-record-exchange-rate">汇率修改记录</span>
+                                    </a>
+                                </li>
+                            </ul> -->
+                        </li>
+                        <li class="Larger">
+                            <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
+                                 <i class="icon-key"></i>
+                                <span>修改密码</span>
+                            </a>
+                        </li>
+                        <li class="Larger">
+                            <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                <span>
+								      <i class="icon-user"></i>
+                                      <small>欢迎光临,</small>
+                                      <?php echo $username ?>                             
+								</span>
 
+                                <i class="icon-caret-down"></i>
+                            </a>
 
-<!-- 头部 end -->
+                            <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 
-<div class="main-container" id="main-container">
+                                <li>
+                                    <a onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>">
+                                        <i class="icon-off"></i>
+                                        退出
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="Larger">
+                           
+                            <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
+                                <i class="icon-off"></i>
+                                <span>退出系统</span>
+                            </a>
+                           
+                        </li>
+                    </ul><!-- /.ace-nav -->
+                </div><!-- /.navbar-header -->
+  </div>
     <script type="text/javascript">
         try{ace.settings.check('main-container' , 'fixed')}catch(e){}
     </script>
-
     <div class="main-container-inner">
         <a class="menu-toggler" id="menu-toggler" href="#">
             <span class="menu-text"></span>
@@ -373,18 +427,10 @@
                     <span class="btn btn-danger"></span>
                 </div>
             </div><!-- #sidebar-shortcuts -->
-            <div style="background-color: #4f8ec1;" class="head_">
-                <a href="" class="navbar-brand">
-                    <small>
-                        <i class="icon-road"></i>
-                        <span id='accountname'><?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?></span>
-                    </small>
-                </a>
-            </div>
+          
             <ul class="nav nav-list">
                 <?php if (checkAdmin() || in_array("shop-mess",$menurule)) { ?>
-                    <li>
-
+                    <li class="shangpin">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-random"></i>
@@ -432,7 +478,7 @@
                 <?php }?>
 
                 <?php if (checkAdmin() ||in_array("shop-dish",$menurule)) { ?>
-                    <li>
+                    <li class="shangpin">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-magnet"></i>
@@ -482,7 +528,7 @@
 
 
                 <?php if (checkAdmin() ||in_array("shop-category",$menurule)) { ?>
-                    <li>
+                    <li class="shangpin">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-shopping-cart"></i>
@@ -538,7 +584,7 @@
                 <?php }?>
 
                 <?php if (checkAdmin() ||in_array("shop-order",$menurule)) { ?>
-                    <li>
+                    <li class="dingdan">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-tasks"></i>
@@ -597,7 +643,7 @@
                     foreach($modulelist as $key=>$module) {
                         if(checkAdmin() ||in_array($module['name'],$menurule)){
                             ?>
-                            <li>
+                            <li class="xiaoshou">
                                 <!-- 导航第一级 -->
                                 <a href="#" class="dropdown-toggle">
                                     <i class="<?php  echo (empty($module['icon'])||$module['icon']=='icon-flag')?'icon-sitemap':$module['icon'] ?>"></i>
@@ -638,7 +684,7 @@
 
 
                 <?php if (checkAdmin() ||in_array("shop-taxrate",$menurule)) { ?>
-                    <li>
+                    <li class="jichu">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-money"></i>
@@ -678,7 +724,7 @@
                 <?php }?>
 
                 <?php if (checkAdmin() ||in_array("shop-set",$menurule)) { ?>
-                    <li>
+                    <li class="jichu">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-tasks"></i>
@@ -722,7 +768,7 @@
 
 
                 <?php if (checkAdmin() ||in_array("member-list",$menurule)) { ?>
-                    <li>
+                    <li class="huiyuan">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-group"></i>
@@ -787,7 +833,7 @@
 
 
                 <?php if (checkAdmin() ||in_array("bonus-bonus",$menurule)) { ?>
-                    <li>
+                    <li class="yingxiao">
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-gift"></i>
                             <span class="menu-text"> 营销管理</span>
@@ -829,7 +875,7 @@
 
                 <?php if (checkAdmin() ||in_array("shop-config",$menurule)) { ?>
 
-                    <li>
+                    <li class="jichu">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-cogs"></i>
@@ -876,18 +922,6 @@
                                     </a>
                                 </li>
 
-                                <li> <a onclick="navtoggle('商城配置 - > app版本管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_version','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        app版本管理
-                                    </a>
-                                </li>
-                                
-                                <li> <a onclick="navtoggle('商城配置 - > app端banner管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_banner','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        app端banner管理
-                                    </a>
-                                </li>
-                                
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::SHOP_MANGE] as $row){
                                     $zi = "商城配置 - > {$row['moddescription']}";
@@ -909,7 +943,7 @@
                 <?php }?>
 
                 <?php if (checkAdmin() ||in_array("template-set",$menurule)) { ?>
-                    <li>
+                    <li class="jichu">
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-cogs"></i>
                             <span class="menu-text"> 模板设置</span>
@@ -954,7 +988,7 @@
                 <?php  } ?>
 
                 <?php if (checkAdmin() ||in_array("weixin-weixin",$menurule)) { ?>
-                    <li>
+                    <li class="xitong">
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-comments"></i>
                             <span class="menu-text"> 微信设置</span>
@@ -1007,9 +1041,73 @@
                         </ul>
                     </li>
                 <?php }?>
+                
+                
+                <?php if (empty($menurule) ||in_array("social-manage",$menurule)) { ?>
+                    <li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-comments"></i>
+                            <span class="menu-text"> 社区管理</span>
+
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                                <li> <a onclick="navtoggle('社区管理 - > 觅海头条管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'headline','op'=>'list'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>觅海头条管理
+                                    </a>
+                                </li>
+                                <li> <a onclick="navtoggle('社区管理 - > 图文笔记管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'note','op'=>'list'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>图文笔记管理
+                                    </a>
+                                </li>
+                            <?php }?>
+                        </ul>
+                    </li>
+                <?php }?>
+                
+                
+                 <?php if (empty($menurule) ||in_array("app-manage",$menurule)) { ?>
+                    <li class="xitong">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-mobile-phone"></i>
+                            <span class="menu-text"> app管理</span>
+
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
+                                
+                                <li> <a onclick="navtoggle('app管理 - > app端banner管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_banner','op'=>'list'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        app端banner管理
+                                    </a>
+                                </li>
+                                
+                                <li> <a onclick="navtoggle('app管理 - > app视频管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_video','op'=>'list'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>app视频管理
+                                    </a>
+                                </li>
+                                
+                                <li> <a onclick="navtoggle('app管理 - > app微信设置')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_weixin'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>app微信设置
+                                    </a>
+                                </li>
+                                
+                                 <li> <a onclick="navtoggle('app管理 - > app版本管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_version','op'=>'list'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        app版本管理
+                                    </a>
+                                </li>
+                            <?php }?>
+                        </ul>
+                    </li>
+                <?php }?>
 
 
-                <?php if (checkAdmin() ||in_array("user-user",$menurule)) { ?>
+                <?php if (empty($menurule) ||in_array("user-user",$menurule)) { ?>
                     <li>
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -1119,79 +1217,27 @@
                 <script type="text/javascript">
                     try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                 </script>
-                <ul class="breadcrumb" style="margin-left: 25px;">                    
-                    <li><span style="display: inline-block;"> USD → CNY: <span class="usa-to-rmb"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span></li>
-                </ul><!-- .breadcrumb -->
-                <div class="head-second-nav">
+                <div class="head-second-nav" style="display:none;">
                     <ul>
                         <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
                             <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
                         <?php }} ?>
                     </ul>
                 </div>
-                <div class="navbar-header pull-right" role="navigation">
-                    <ul class="nav ace-nav">
-                        <li class="Larger">
-                            <a class="dropdown-toggle"  href="<?php  echo WEBSITE_ROOT.'index.php';?>" target="_blank">
-                                <i class="icon-mobile-phone"></i>
-                                <span>商城首页</span>
-                            </a>
-                        </li>
-                        <li class="Larger">
-                            <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
-                                <i class="icon-strikethrough"></i>
-                                    <span>修改汇率</span>                       
+				<div class="left-nav-tap">
+					<ul>
+						<li class="public-tap jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
+						<li class="public-tap huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
+						<li class="public-tap shangjia"><i class="icon-sitemap"></i><span>商家管理<span></li>
+						<li class="public-tap dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
+						<li class="public-tap shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
+						<li class="public-tap yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>
+						<li class="public-tap xiaoshou"><i class="icon-bar-chart"></i><span>销售报表<span></li>
+						<li class="public-tap xitong"><i class="icon-unlock-alt"></i><span>系统管理<span></li>
+					</ul>
+				</div>
+			
                
-                                <!-- <i class="icon-caret-down"></i> -->
-                            </a>
-        <!--                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                                <li>
-                                    <a class="modify" href="javascript:;">
-                                        <i class="icon-off"></i>
-                                        <span class="modify-exchange-rate">修改汇率</span>
-                                    </a>
-                                    <a class="modify-record" href="javascript:;">
-                                        <i class="icon-off"></i>
-                                        <span class="modify-record-exchange-rate">汇率修改记录</span>
-                                    </a>
-                                </li>
-                            </ul> -->
-                        </li>
-                        <li class="Larger">
-                            <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
-                                <i class="icon-user"></i>
-                                <span>修改密码</span>
-                            </a>
-                        </li>
-                        <li class="light-blue">
-                            <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                            <span class="user-info">
-                                            <small>欢迎光临,</small>
-                                <?php echo $username ?>                             </span>
-
-                                <i class="icon-caret-down"></i>
-                            </a>
-
-                            <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-
-                                <li>
-                                    <a onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>">
-                                        <i class="icon-off"></i>
-                                        退出
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="Larger">
-                           
-                            <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
-                                <i class="icon-off"></i>
-                                <span>退出系统</span>
-                            </a>
-                           
-                        </li>
-                    </ul><!-- /.ace-nav -->
-                </div><!-- /.navbar-header -->
                 <div class="nav-search" id="nav-search">
 
                 </div><!-- #nav-search -->
@@ -1252,7 +1298,7 @@
                         eval("window.IE9MoreRealHeight" + iframeId + "=0");
                         window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")",200);
                     }
-                    var minHeight = $(window).height()-80;
+                    var minHeight = $(window).height()-180;
                     startInit('main', minHeight);
 
                 </script>
@@ -1334,6 +1380,20 @@
             $(this).addClass("nav-active");
         })
     })
+    function leftNavTap(){
+        $(".left-nav-tap li").on("click",function(){
+            var this_class_name = $(this).attr("class").split(" ");
+            var i = 0;
+            var arr_length = this_class_name.length;
+            $(this).siblings("li").removeClass("left-nav-checked");
+            $(this).addClass("left-nav-checked");
+            $(".nav-list>li").hide();
+            for(i=0;i<arr_length;i++){
+                $(".nav-list>li."+this_class_name[i]+"").show();
+            }
+        });
+    }
+    leftNavTap();
 </script>
 </div>
 </body>

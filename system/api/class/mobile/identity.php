@@ -31,7 +31,7 @@
 					);
 						
 					//身份证正面
-					if ($_FILES['front_image']['error']==0) {
+					if (isset($_FILES['front_image']) && $_FILES['front_image']['error']==0) {
 							
 						$upload = file_upload($_FILES['front_image'],false);
 							
@@ -45,7 +45,7 @@
 					}
 						
 					//身份证反面
-					if ($_FILES['back_image']['error']==0) {
+					if (isset($_FILES['back_image']) && $_FILES['back_image']['error']==0) {
 							
 						$upload = file_upload($_FILES['back_image'],false);
 							

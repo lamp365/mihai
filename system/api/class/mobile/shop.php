@@ -102,7 +102,7 @@
 		}
 
 		$round_name = '店铺'.date('YmdHis').rand(1000,9999);
-		$data = array('shopname' => $round_name, 'openid' => $member['openid']);
+		$data = array('shopname' => $round_name, 'openid' => $member['openid'], 'createtime' => time());
 		mysqld_insert('openshop', $data);
 
 		$result['message'] = "开店成功!";
@@ -362,7 +362,8 @@
 		}
 
 		mysqld_query("DELETE FROM ".table('openshop_relation')." WHERE openid='".$member['openid']."' AND goodid IN ".$id_ary);
-
+		// 减去商品商家在卖数量
+		mysqld_query("UPDATE ".table('shop_dish')." SET shoper_num=shoper_num-1 WHERE id IN ".$id_ary." AND shoper_num>0");
 		$result['message'] = "删除成功!";
 		$result['code'] = 1;
 	}elseif ($op == 'order') {

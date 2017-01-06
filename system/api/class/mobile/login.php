@@ -52,8 +52,8 @@
 			{
 				$userinfos['userid'] 	= $loginid;
 				$userinfos['password'] 	= randString(10);
-				$userinfos['nick'] 		= $_GP['telephone'];
-				$userinfos['name'] 		= $_GP['telephone'];
+				$userinfos['nick'] 		= '掌门人'+randString(5);
+				$userinfos['name'] 		= $userinfos['nick'];
 				$userinfos['icon_url'] 	= IM_ICON_URL;
 				
 				//创建IM账号

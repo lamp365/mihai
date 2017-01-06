@@ -22,7 +22,10 @@ class MenuEnum {
     const SHOP_MANGE            = '210';      //商城配置
     const TEMPLATE_MANGE        = '230';      //模板设置
     const WECHAT_MANGE          = '250';      //微信设置
+    const SOCIAL_MANGE          = '260';      //社区管理
+    const APP_MANGE          	= '261';      //app管理
     const ROLE_MANGE            = '270';      //权限管理
+    
 
 
     public static $getMenuEnumValues = array(
@@ -40,6 +43,8 @@ class MenuEnum {
         self::SHOP_MANGE            => '商城配置',
         self::TEMPLATE_MANGE        => '模板设置',
         self::WECHAT_MANGE          => '微信设置',
+    	self::SOCIAL_MANGE          => '社区管理',
+    	self::APP_MANGE          	=> 'app管理',
         self::ROLE_MANGE            => '权限管理'
     );
 
@@ -58,6 +63,8 @@ class MenuEnum {
         self::SHOP_MANGE            => 'shop-config',
         self::TEMPLATE_MANGE        => 'template-set',
         self::WECHAT_MANGE          => 'weixin-weixin',
+    	self::SOCIAL_MANGE          => 'social-manage',
+    	self::APP_MANGE          	=> 'app-manage',
         self::ROLE_MANGE            => 'user-user'
     );
 

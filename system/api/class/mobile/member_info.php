@@ -104,7 +104,7 @@
 				
 				$objOpenIm = new OpenIm();
 				
-				$memberinfo = member_get ( $openid );
+				$memberinfo = mysqld_select("SELECT openid,realname,nickname,member_description,avatar,mobile FROM " . table('member') . " where openid=:openid ", array(':openid' => $openid));
 				
 				$resp = $objOpenIm->getUserInfo($openid); 
 
@@ -112,10 +112,26 @@
 				for ($i=1; $i < 5; $i++) { 
 					$order_ary[$i] = get_member_order($i, $openid);
 				}
-
+				
+				//被人关注的数量（粉丝）
+				$followedCount 	= mysqld_select("SELECT count(follow_id) as cnt FROM " . table('follow') . " where followed_openid=:openid", array(':openid' => $openid));
+				
+				//关注别人的数量（关注）
+				$followerCount 	= mysqld_select("SELECT count(follow_id) as cnt FROM " . table('follow') . " where follower_openid=:openid", array(':openid' => $openid));
+				//发布的笔记数量
+				$noteCount 		= mysqld_select("SELECT count(note_id) as cnt FROM " . table('note') . " where openid=:openid and deleted=0 ", array(':openid' => $openid));
+				//发布的头条数量
+				$headlineCount 	= mysqld_select("SELECT count(headline_id) as cnt FROM " . table('headline') . " where openid=:openid and deleted=0 ", array(':openid' => $openid));
+				
+				
+				$memberinfo['fansCnt'] 		= $followedCount['cnt'];		//粉丝数
+				$memberinfo['followCnt'] 	= $followerCount['cnt'];		//关注别人的数量
+				$memberinfo['noteCnt'] 		= $noteCount['cnt'];			//发布的笔记数量
+				$memberinfo['headlineCnt'] 	= $headlineCount['cnt'];		//发布的头条数量
+				
 				$result['data']['member_info'] 	= $memberinfo;
-				$result['data']['im_userinfo']	= $resp->userinfos;		//im用户信息
-				$result['data']['order_num']	= $order_ary;		//订单数量
+				$result['data']['im_userinfo']	= $resp->userinfos;				//im用户信息
+				$result['data']['order_num']	= $order_ary;					//订单数量
 				$result['code'] 				= 1;
 				
 				break;

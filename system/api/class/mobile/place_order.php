@@ -22,12 +22,12 @@ if (!empty($member) AND $member != 3) {
 	// 支付方式ID
 	if (empty ( $payment_id )) {
 		
-		$result ['message'] = "请选择支付方式!";
+		$result ['message'] = "请选择支付方式";
 		$result ['code'] = 0;
 	} 
 	elseif(empty($address_id))
 	{
-		$result ['message'] = "请选择收货地址!";
+		$result ['message'] = "请选择收货地址";
 		$result ['code'] = 0;
 	}
 	else {
@@ -36,24 +36,22 @@ if (!empty($member) AND $member != 3) {
 		$identity = mysqld_select ( "SELECT * FROM " . table ( 'member_identity' ) . " WHERE openid = :openid and isdefault=1 and status=0", array (
 				':openid' => $openid
 		) );
-		$payment = mysqld_select ( "SELECT * FROM " . table ( 'payment' ) . " WHERE id = :id and enabled=1 ", array (
-				':id' => $payment_id
-		) );
+		$payment = mysqld_select ( "SELECT * FROM " . table ( 'payment' ) . " WHERE id = :id and enabled=1 ", array (':id' => $payment_id) );
 	
 		// 地址不存在
 		if (empty ( $address )) {
-			$result ['message'] = "收货地址不存在!";
+			$result ['message'] = "收货地址不存在";
 			$result ['code'] 	= 0;
 		}
 		// 默认身份证不存在
 		elseif (empty ( $identity )) {
-			$result ['message'] = "请添加默认身份证!";
+			$result ['message'] = "请添加默认身份证";
 			$result ['code'] 	= 0;
 		}
 		// 支付方式不存在
 		elseif (empty ( $payment )) {
 				
-			$result ['message'] = "支付方式不存在!";
+			$result ['message'] = "支付方式不存在";
 			$result ['code'] 	= 0;
 				
 		} else {
@@ -77,7 +75,7 @@ if (!empty($member) AND $member != 3) {
 						{
 							unset($result);				//清除返回数据中的订单信息
 						
-							$result ['message'] = "团购活动有效期已结束!";
+							$result ['message'] = "团购活动有效期已结束";
 							$result ['code'] 	= 0;
 						}
 						//是否已经加入同商品的其他团
@@ -85,7 +83,7 @@ if (!empty($member) AND $member != 3) {
 						{
 							unset($result);				//清除返回数据中的订单信息
 								
-							$result ['message'] = "不要贪心，不能重复参团哦！";
+							$result ['message'] = "不要贪心，不能重复参团哦";
 							$result ['code'] 	= 0;
 						}
 						else{
@@ -97,7 +95,7 @@ if (!empty($member) AND $member != 3) {
 								{
 									unset($result);		//清除返回数据中的订单信息
 										
-									$result ['message'] = "参团失败!";
+									$result ['message'] = "参团失败";
 									$result ['code'] 	= 0;
 								}
 								else{
@@ -109,7 +107,7 @@ if (!empty($member) AND $member != 3) {
 							{
 								unset($result);				//清除返回数据中的订单信息
 								
-								$result ['message'] = "库存数量小于成团人数时不允许开团!";
+								$result ['message'] = "库存数量小于成团人数时不允许开团";
 								$result ['code'] 	= 0;
 							}
 							//独立建团
@@ -119,7 +117,7 @@ if (!empty($member) AND $member != 3) {
 								{
 									unset($result);				//清除返回数据中的订单信息
 									
-									$result ['message'] = "开团数已满,请加入其他团友的团继续购买喔!";
+									$result ['message'] = "开团数已满,请加入其他团友的团继续购买喔";
 									$result ['code'] 	= 0;
 								}
 								else{
@@ -140,7 +138,7 @@ if (!empty($member) AND $member != 3) {
 					
 					// 购物车ID为空时
 					if (empty ( $cart_ids )) {
-						$result ['message'] = "请选择购物车商品!";
+						$result ['message'] = "请选择购物车商品";
 						$result ['code'] 	= 0;
 					} else {
 							
@@ -150,7 +148,7 @@ if (!empty($member) AND $member != 3) {
 							$result = getConfirmOrderInfoByCart ( $cart_ids,$openid,'order by c.id ');
 						}
 						else{
-							$result ['message'] = "购物车参数格式不正确!";
+							$result ['message'] = "购物车参数格式不正确";
 							$result ['code'] 	= 0;
 						}
 					}
@@ -159,7 +157,7 @@ if (!empty($member) AND $member != 3) {
 					
 				default:
 					
-					$result ['message'] = "操作不合法!";
+					$result ['message'] = "操作不合法";
 					$result ['code'] 	= 0;
 					
 					break;
@@ -179,7 +177,7 @@ if (!empty($member) AND $member != 3) {
 					{
 						unset($result);		//清除返回数据中的订单信息
 							
-						$result ['message'] = "订单总额不能小于优惠券金额!";
+						$result ['message'] = "订单总额不能小于优惠券金额";
 						$result ['code'] 	= 0;
 					}
 				}
@@ -230,7 +228,8 @@ if (!empty($member) AND $member != 3) {
 									'address_area' 		=> $address ['area'],
 									'address_address' 	=> $address ['address'],
 									'createtime' 		=> time (),
-									'identity_id' 		=> $identity ['identity_id']
+									'identity_id' 		=> $identity ['identity_id'],
+									'source'			=> get_mobile_type(1)				//设备源
 				);
 				
 				if(!empty($bonusPrice))
@@ -310,18 +309,26 @@ if (!empty($member) AND $member != 3) {
 							 		'body' 			=> preg_replace("/[\&\+]+/", '', $payBody)			//商品详情
 				 );
 				 
+				 $result ['code'] 					= 1;
+				 $result ['data']['order'] 			= $order_data;
 				 
-				 $result ['data']['order'] 		= $order_data;
-				 $result ['data']['aliPayParam']= buildRequestRsaParaToString($aliParam);		//支付宝的参数数组
-				 $result ['code'] 				= 1;
+				 //支付宝支付
+				 if($payment ['code']=='alipay')
+				 {
+				 	$result ['data']['aliPayParam']	= buildRequestRsaParaToString($aliParam);		//支付宝的参数数组
+				 }
+				 //微信支付
+				 elseif($payment ['code']=='weixin'){
+				 	$result ['data']['weixinPayParam']	= weixinPayData($order_data['ordersn'],$aliParam['body'],$aliParam['total_fee']);
+				 }
 			}
 		}
 	}
 }elseif ($member == 3) {
-	$result['message'] 	= "该账号已在别的设备上登录！";
+	$result['message'] 	= "该账号已在别的设备上登录";
 	$result['code'] 	= 3;
 }else {
-	$result ['message'] = "用户还未登陆。";
+	$result ['message'] = "用户还未登陆";
 	$result ['code'] 	= 2;
 }
 

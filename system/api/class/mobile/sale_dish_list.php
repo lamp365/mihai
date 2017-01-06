@@ -10,7 +10,7 @@
 	$limit 		= (int)$_GP['limit'];							//每页记录数
 	
 	
-	$order 		= 'a.timestart asc,a.total desc ';
+	$order 		= 'a.displayorder desc ';
 	$whereSql = " a.status=1 and a.deleted=0 and a.type={$type} ";
 	
 	//今日特价

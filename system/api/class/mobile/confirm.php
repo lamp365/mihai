@@ -30,7 +30,7 @@
 				
 				// 购物车ID为空时
 				if (empty ( $cart_ids )) {
-					$result ['message'] = "请选择购物车商品!";
+					$result ['message'] = "请选择购物车商品";
 					$result ['code'] 	= 0;
 				} else {
 				
@@ -41,7 +41,7 @@
 						$result = getConfirmOrderInfoByCart ( $cart_ids,$openid,' order by c.seller_openid ');
 					}
 					else{
-						$result ['message'] = "购物车参数格式不正确!";
+						$result ['message'] = "购物车参数格式不正确";
 						$result ['code'] 	= 0;
 					}
 				}
@@ -50,17 +50,17 @@
 				
 			default:
 				
-				$result ['message'] = "操作不合法!";
+				$result ['message'] = "操作不合法";
 				$result ['code'] 	= 0;
 				
 				break;
 		}
 		
 	}elseif ($member == 3) {
-		$result['message'] 	= "该账号已在别的设备上登录！";
+		$result['message'] 	= "该账号已在别的设备上登录";
 		$result['code'] 	= 3;
 	}else {
-		$result ['message'] = "用户还未登陆。";
+		$result ['message'] = "用户还未登陆";
 		$result ['code'] 	= 2;
 	}
 	
@@ -96,13 +96,3 @@
 	
 	echo apiReturn ( $result );
 	exit ();
-	
-	
-
-
-/**
- * 获得支付方式信息
- */
-function getPayment() {
-	return mysqld_selectall ( "select code,name,id from " . table ( "payment" ) . " where enabled=1 and code='alipay' order by `order` desc" );
-}

@@ -92,7 +92,7 @@
 			// 国家
 			$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
 			$list['country'] = $country['name'];
-			$list['country_icon'] = $country['icon'];
+			$list['country_icon'] = download_pic($country['icon']);
 			// 购物车商品数量
 			if (!empty($member)) {
 				$list['shoppingcart_num'] = countCartProducts($member['openid']);

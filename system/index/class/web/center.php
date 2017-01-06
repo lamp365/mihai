@@ -6,13 +6,12 @@
 // +----------------------------------------------------------------------
 // | Author: 小物社区 <QQ:119006873> <http://www.squdian.com>
 // +----------------------------------------------------------------------
-	$nowyear=intval(date('Y',time()));
-			  	$nowmonth=intval(date('m',time()));
-			  	$nowdate=intval(date('d',time()));
-			  	$lastmonthday=date('t',strtotime($nowyear."-".$nowmonth."-1"));
-			  	$lastyearday=date('t',strtotime($nowyear."-12-1"));
-			  	
-			  	$todayordercount = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 23:59:59"));
+	        $nowyear=intval(date('Y',time()));
+			$nowmonth=intval(date('m',time()));
+			$nowdate=intval(date('d',time()));
+			$lastmonthday=date('t',strtotime($nowyear."-".$nowmonth."-1"));
+			$lastyearday=date('t',strtotime($nowyear."-12-1"));	
+			$todayordercount = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 23:59:59"));
         	$todayorderprice = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$nowdate." 23:59:59"));
       		$monthordercount = mysqld_selectcolumn("SELECT count(id) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-".$nowmonth."-01 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$lastmonthday." 23:59:59"));
         	$monthorderprice = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($nowyear."-".$nowmonth."-01 00:00:01")." and createtime <=".strtotime($nowyear."-".$nowmonth."-".$lastmonthday." 23:59:59"));
@@ -111,17 +110,15 @@
       	{
       	$yearorderprice_re=round($yearorderprice_re,2);	
       	}
-      	
       		$chartdata1=array();
       		$index=0;
-			    		for($dateindex=1;$dateindex<=7;$dateindex++)
+			    	for($dateindex=1;$dateindex<=7;$dateindex++)
 			  		{
 			  			$time=$nowyear."-".$nowmonth."-".$dateindex;
 			  			$datastr=date("Y-m-d",mktime(0, 0 , 0,date("m"),date("d")-date("w")+$dateindex,date("Y"))); 
 			  			$start_time=date("Y-m-d 00:00:01",mktime(0, 0 , 0,date("m"),date("d")-date("w")+$dateindex,date("Y"))); 
-			  			
-							$end_time=date("Y-m-d 23:59:59",mktime(23,59,59,date("m"),date("d")-date("w")+$dateindex,date("Y"))); 
-	        		$chart1data = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($start_time)." and createtime <=".strtotime($end_time));
+						$end_time=date("Y-m-d 23:59:59",mktime(23,59,59,date("m"),date("d")-date("w")+$dateindex,date("Y"))); 
+	        		    $chart1data = mysqld_selectcolumn("SELECT sum(price) FROM " . table('shop_order') . " WHERE status>=1 and createtime >=".strtotime($start_time)." and createtime <=".strtotime($end_time));
 			      		if(empty($chart1data))
 			      	{
 			      		$chart1data="0.00";

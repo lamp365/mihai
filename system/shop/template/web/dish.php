@@ -288,14 +288,10 @@
                      <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['p3']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
             <?php  } } } ?>
         </select>
+        <a href="javascript:void(0)" onclick="findgoods()" class="btn btn-primary span2" name="submit" ><i class="icon-edit"></i>查找产品</a>    
 	</div>
   </div>
-  <div class="form-group">
-		<label class="col-sm-2 control-label no-padding-left" ></label>
-		<div class="col-sm-9">
-	    <a href="javascript:void(0)" onclick="findgoods()" class="btn btn-primary span2" name="submit" ><i class="icon-edit"></i>查找产品</a>    
-		</div>
-	</div>
+
   </form>
           <form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
 <div class="panel with-nav-tabs panel-default">

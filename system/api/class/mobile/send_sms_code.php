@@ -39,7 +39,7 @@
 		$result['code'] 	= 0;
 	}
 	//注册
-	else{
+	elseif($type==0){
 		$result['message'] 	= '该手机号码已经注册，请用其他号码注册！';
 		$result['code'] 	= 0;
 	}
@@ -71,7 +71,7 @@
 			}
 		}
 		//注册时
-		else{
+		elseif($type==0){
 			//已经注册时
 			if($member)
 			{

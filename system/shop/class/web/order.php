@@ -297,7 +297,7 @@ if ($operation == 'display') {
 		pushOrderImMessage(IM_ORDER_FROM_USER,$order['openid'],$msg);
 		message('发货操作成功！', refresh(), 'success');
 	}else{
-		message('操作失败！', refresh(), 'success');
+		message('操作失败！', refresh(), 'error');
 	}
 
 

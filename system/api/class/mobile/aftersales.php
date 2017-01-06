@@ -66,8 +66,8 @@ if (!empty($member) AND $member != 3) {
 					$arrFile = array ();
 					
 					for($i = 1; $i <= 5; $i ++) {
-						// 凭证1上传成功时
-						if ($_FILES ['evidence_pic' . $i] ['error'] == 0) {
+						// 凭证上传成功时
+						if (isset($_FILES['evidence_pic'. $i]) && $_FILES ['evidence_pic' . $i] ['error'] == 0) {
 							
 							$upload = file_upload ( $_FILES ['evidence_pic' . $i] );
 							
@@ -191,8 +191,8 @@ if (!empty($member) AND $member != 3) {
 						$arrFile = json_decode($_REQUEST ['evidence_url'], true);		//凭证图片;
 							
 						for($i = 1; $i <= 5; $i ++) {
-							// 凭证1上传成功时
-							if ($_FILES ['evidence_pic' . $i] ['error'] == 0) {
+							// 凭证上传成功时
+							if (isset($_FILES['evidence_pic'. $i]) && $_FILES ['evidence_pic' . $i] ['error'] == 0) {
 									
 								$upload = file_upload ( $_FILES ['evidence_pic' . $i] );
 									

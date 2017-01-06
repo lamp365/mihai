@@ -121,3 +121,16 @@ if (file_exists(WEB_ROOT . '/includes/erp.func.php')) {
 	require_once WEB_ROOT . '/includes/erp.func.php';
 }
 
+if (file_exists(WEB_ROOT . '/includes/follow.func.php')) {
+	require_once WEB_ROOT . '/includes/follow.func.php';
+}
+
+if (file_exists(WEB_ROOT . '/includes/pay.func.php')) {
+	require_once WEB_ROOT . '/includes/pay.func.php';
+}
+
+if (file_exists(WEB_ROOT . '/includes/third_account.func.php')) {
+	require_once WEB_ROOT . '/includes/third_account.func.php';
+}
+
+

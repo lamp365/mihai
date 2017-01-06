@@ -42,6 +42,8 @@
 					selected="selected" <?php  } ?>>秒杀</option>
 				<option value='3' <?php  if($appBanner['position'] == 3) { ?>
 					selected="selected" <?php  } ?>>每日特价</option>
+				<option value='4' <?php  if($appBanner['position'] == 4) { ?>
+					selected="selected" <?php  } ?>>社区顶部</option>
 			</select>
 		</div>
 	</div>

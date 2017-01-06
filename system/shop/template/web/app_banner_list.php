@@ -36,6 +36,11 @@
 						case 3:
 								echo '每日特价';
 								break;
+								
+						case 4:
+								echo '社区顶部';
+								break;
+									
 						default:
 								echo '未设置';
 								break;

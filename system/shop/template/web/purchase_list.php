@@ -210,11 +210,15 @@
 					</li>	
 						
 					<li >
-						<input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
 						<button type="submit" name="report" value="report"  class="btn btn-warning btn-sm">导出excel</button>
 						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank" class="btn btn-info btn-sm">打印订单</a>
-						<div style="display:inline-block;" class="add-more-btn btn btn-default show-more btn-sm">更多选项</div>
-						
+						<div class="btn-group">
+						  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+						  <button type="button" class="btn btn-primary btn-sm dropdown-toggle add-more-btn" data-toggle="dropdown">
+						    <span class="caret"></span>
+						    <span class="sr-only">Toggle Dropdown</span>
+						  </button>
+						</div>
 					</li>
 					
 				</td>
@@ -525,13 +529,6 @@
 				});
 				$(".add-more-btn").click(function(){
 					$(".hide-tr").toggle();
-					if($(this).hasClass("show-more")){
-						$(this).removeClass("show-more");
-						$(".add-more-btn").text("收起更多");
-					}else{
-						$(".add-more-btn").text("更多查询");
-						$(this).addClass("show-more");
-					}
 				});
 				$(".check_all").click(function(){
 	            	var checked = $(this).get(0).checked;

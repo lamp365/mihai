@@ -264,9 +264,105 @@ class apiAddons extends BjSystemModule
     	$this->__mobile(__FUNCTION__);
     }
     
+    public function do_note()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
     
+    public function do_note_comment()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
     
+    public function do_note_collection()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_follow()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_headline()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
 	
+    public function do_headline_collection()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_headline_comment()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_followed_info()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_article()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_article_comment()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_article_collection()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_cate_dish_list()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_app_video()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_member_list()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_third_login()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_account_bind()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_account_unbind()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_account_rebind()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_change_mobile()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_payment_type()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
 	
     public function getPaytypebycode($code)
     {

@@ -8,6 +8,9 @@ function set_sms_code($telphone='',$app=0,$type=''){
     if ( !empty($telphone) and preg_match("/^1[34578]{1}\d{9}$/",$telphone) ){
         $code = get_code();
 		switch ( $type ){
+			case 2:			//更换手机号码用的短信模板
+				$template = 'SMS_35035487';
+				break;
             case 1:
 				$template = 'SMS_13756412';
 				break;
@@ -100,4 +103,31 @@ function send_warring_sms($telphone,$code){
 		$req->setSmsTemplateCode("SMS_25215215");
 		$resp = $c->execute($req);
 		return $resp;
+}
+
+/**
+ * 短信验证码验证
+ *
+ * @param $verify 验证码
+ * @param $telephone 手机号码
+ *
+ * @return boolean
+ */
+function checkSmsCode($verify,$telephone) {
+
+	//验证码未过期
+	if(isset($_SESSION['api']['sms_code_expired']) && $_SESSION['api']['sms_code_expired']>time())
+	{
+		//验证码是否正确
+		if (isset($_SESSION['api'][$telephone]) && strtolower ( $_SESSION['api'][$telephone] ) == strtolower ( $verify )) {
+
+			return true;
+		}
+	}
+	else{
+		unset ( $_SESSION['api'][$telephone] );
+		unset ( $_SESSION['api']['sms_code_expired'] );
+	}
+
+	return false;
 }

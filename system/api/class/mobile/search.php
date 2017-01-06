@@ -44,7 +44,7 @@
 					
 			default:
 		
-				$order = 'a.id desc';
+				$order = 'a.displayorder desc';
 		
 				break;
 		}

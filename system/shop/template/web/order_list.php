@@ -449,8 +449,13 @@
 								<li >
 									<input name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
 								</li>	
-							
-								<div style="display:inline-block;" class="add-more-btn btn btn-default show-more">更多选项</div>
+								<div class="btn-group">
+								  <input type="submit" name="submit" value=" 查 询 " class="btn btn-primary">
+								  <button type="button" class="btn btn-primary dropdown-toggle add-more-btn" data-toggle="dropdown">
+								    <span class="caret"></span>
+								    <span class="sr-only">Toggle Dropdown</span>
+								  </button>
+								</div>
 							</td>
 						</tr>
 					</tbody>
@@ -486,7 +491,7 @@
 								  	</select>			
 								</li>	
 								<li>
-									<input type="submit" name="submit" value=" 查 询 " style="margin-top:-4px; " class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									
 									<button type="submit" name="report" value="report" style="margin-top:-4px; " class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
 									<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
 								</li>
@@ -731,13 +736,6 @@
 
 			$(".add-more-btn").click(function(){
 				$(".hide-tr").toggle();
-				if($(this).hasClass("show-more")){
-					$(this).removeClass("show-more");
-					$(".add-more-btn").text("收起更多");
-				}else{
-					$(".add-more-btn").text("更多查询");
-					$(this).addClass("show-more");
-				}
 			});
 
 			//点击查看订单日志

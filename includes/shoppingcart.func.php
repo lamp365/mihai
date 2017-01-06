@@ -48,7 +48,7 @@ function countCartProducts($openid)
 
 	$count = mysqld_select($sql);
 	
-	return $count['cnt'];
+	return intval($count['cnt']);
 }
 
 /**

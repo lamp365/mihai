@@ -53,14 +53,14 @@
 			$openid = date ( "YmdH", time () ) . rand ( 100, 999 );
 		}
 		$data = array ('mobile' 	=> $telephone,
-						'pwd' 		=> md5($_GP ['pwd']),
+						'pwd' 		=> md5(trim($_GP['pwd'])),
 						'createtime'=> time (),
 						'status' 	=> 1,
 						'istemplate'=> 0,
 						'experience'=> 0,
 						'mess_id' 	=> 0,
 						'openid' 	=> $openid,
-						'nickname'	=> $telephone);
+						'nickname'	=> '掌门人'+randString(5));
 		
 		$userinfos['userid'] 	= $openid;
 		$userinfos['password'] 	= randString(10);

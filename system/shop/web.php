@@ -117,6 +117,22 @@ class shopAddons  extends BjSystemModule {
 		$this->__web(__FUNCTION__);
 	}
 	
+	public function do_note(){
+		$this->__web(__FUNCTION__);
+	}
+	
+	public function do_app_video(){
+		$this->__web(__FUNCTION__);
+	}
+	
+	public function do_headline(){
+		$this->__web(__FUNCTION__);
+	}
+	
+	public function do_app_weixin(){
+		$this->__web(__FUNCTION__);
+	}
+	
 
   	public function setOrderCredit($openid,$id , $minus = true,$remark='') {
   	 			$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id='{$id}'");

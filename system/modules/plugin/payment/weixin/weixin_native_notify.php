@@ -24,7 +24,7 @@
 
 	////存储微信的回调
 	 $xml = $GLOBALS['HTTP_RAW_POST_DATA'];	
-	 mysqld_insert('paylog', array('typename'=>'微信支付记录','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin'));
+	 mysqld_insert('paylog', array('typename'=>'微信支付记录','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
 
 	 $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);		
 	if (false&&empty($array_data)) {
@@ -38,21 +38,33 @@
 				$string1 .= "{$k}={$v}&";
 			}
 		}
-	$signkey = $_CMS['weixin_pay_paySignKey'];
+		
+	//如果是APP发起的支付时
+	if($array_data['trade_type']=='APP')
+	{
+		$weixin_mobile= mysqld_select ( "SELECT value FROM " . table ( 'config' ) . " where name='weixin_mobile' " );
+		$arrWeixinMobile = unserialize($weixin_mobile['value']);
+		
+		$signkey = $arrWeixinMobile['weixin_mobile_signKey'];
+	}
+	else{
+		$signkey = $_CMS['weixin_pay_paySignKey'];
+	}
+	
 	$sign = strtoupper(md5($string1 . "key={$signkey}"));
 	 if($sign == $array_data['sign']) {
 			if ($array_data["return_code"] == "FAIL") {
 			//此处应该更新一下订单状态，商户自行增删操作
-			  	mysqld_insert('paylog', array('typename'=>'通信出错','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin'));
+			  	mysqld_insert('paylog', array('typename'=>'通信出错','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
       exit;
 		}
 		elseif($array_data["result_code"] == "FAIL"){
 			//此处应该更新一下订单状态，商户自行增删操作
-			  	mysqld_insert('paylog', array('typename'=>'业务出错','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin'));
+			  	mysqld_insert('paylog', array('typename'=>'业务出错','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
        exit;
 		}
 		else{
-				mysqld_insert('paylog', array('typename'=>'微支付成功返回','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin'));
+				mysqld_insert('paylog', array('typename'=>'微支付成功返回','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
 				//$out_trade_no=explode('-',$array_data['out_trade_no']);
 				$ordersn = $array_data['out_trade_no'];
 				//$orderid = $out_trade_no[1];
@@ -64,7 +76,9 @@
 						{
 							if($order['status']==0){
 							      mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
-							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin'));
+							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
+							      
+							      paySuccessProcess($order);	//支付成功后的处理
 		                          require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
 		                          mailnotice($orderid);
                                  message('支付成功！',WEBSITE_ROOT.mobile_url('myorder',array('status'=>99)),'success');
@@ -97,11 +111,11 @@
 			}
 		}
 		
-	mysqld_insert('paylog', array('typename'=>'微支付出现错误','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin'));
+	mysqld_insert('paylog', array('typename'=>'微支付出现错误','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
 		}else
 		{
 			
-	mysqld_insert('paylog', array('typename'=>'签名验证失败','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin'));
+	mysqld_insert('paylog', array('typename'=>'签名验证失败','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin','createtime'=>date('Y-m-d H:i:s')));
 		}
 	
 

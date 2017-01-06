@@ -36,6 +36,7 @@ header("Expires:0");
 			//如果是空，判断是否是有推荐人，有的话，就会把佣金给以前的推荐人
 			$seller_openid = $member['recommend_openid'];
 		}
+
 	// 获取规格项ID
 		$optionid = intval($good['optionid']);
 	// 获取数量如果为空则数量为1
@@ -142,7 +143,6 @@ header("Expires:0");
 			}else{   //否则的话，全部取
 				$list = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE  session_id = '".$openid."'");
 			}
-
             if (!empty($list)) {
             	$totalprice=0;
             	$totaltotal=0;
@@ -155,7 +155,7 @@ header("Expires:0");
                          continue;
 					}
 					$item['seller_openid'] = $g['seller_openid'];
-					if($item['seller_openid']){
+					if(empty($item['seller_openid'])){
 						//如果是空，判断是否是有推荐人，有的话，就会把佣金给以前的推荐人
 						$item['seller_openid'] = $member['recommend_openid'];
 					}

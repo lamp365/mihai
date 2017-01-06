@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * app 商品列表接口
+	 * app 类目下的商品列表接口
 	 * @var unknown
 	 *
 	 */
@@ -37,7 +37,7 @@
 		
 		default:
 			
-			$order = 'a.id desc';
+			$order = 'a.displayorder desc';
 			
 			break;
 	}

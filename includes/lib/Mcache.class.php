@@ -39,15 +39,15 @@ class Mcache {
    */
   public function init_msession($device_code) {
     $account = get_member_account(true, true);
-    $have_ac = $this->get($account['mobile']);
+    $have_ac = $this->get($account['openid']);
     if (!empty($have_ac)) {
       $this->set($have_ac['device'].'_belogout', 2);
       $this->delete($have_ac['device']);
-      $this->delete($account['mobile']);
+      $this->delete($account['openid']);
       // $this->get($have_ac['device'].'_belogout');
     }
     $this->set($device_code.'_belogout', 1);
-    $re1 = $this->set($account['mobile'], array('account' => $account, 'device' => $device_code));
+    $re1 = $this->set($account['openid'], array('account' => $account, 'device' => $device_code));
     $re2 = $this->set($device_code, array('account' => $account, 'device' => $device_code));
     if ($re1 AND $re2) {
       return true;
@@ -67,7 +67,7 @@ class Mcache {
     if ($be_logout == 2) {
       $this->set($device_code.'_belogout', 1);
       // $this->delete($device_code);
-      // $this->delete($device_code['account']['mobile']);
+      // $this->delete($device_code['account']['openid']);
     }
 
     return $be_logout;
@@ -83,8 +83,9 @@ class Mcache {
     $dev = $this->get($device_code);
     if (!empty($dev)) {
       $mem = $dev['account'];
-      $_SESSION[MOBILE_ACCOUNT] = $mem;
-      return $mem;
+      $new_mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$mem['openid']."'");
+      $_SESSION[MOBILE_ACCOUNT] = $new_mem;
+      return $new_mem;
     }else{
       return false;
     }
@@ -101,7 +102,7 @@ class Mcache {
     $_SESSION[MOBILE_ACCOUNT] = NULL;
     $this->delete($device_code.'_belogout');
     $this->delete($device_code);
-    $this->delete($account['mobile']);
+    $this->delete($account['openid']);
     return true;
   }
 
