@@ -35,21 +35,25 @@
     <![endif]-->
 
     <style>
-        body{background-color: #F8FAFC;}
+        .main-container:after{
+            background: url(<?php echo RESOURCE_ROOT;?>/addons/index/css/ace/body_bg.png) repeat-x left top #EAF0F5;
+        }
+        body{background-color: #F8FAFC;
+            height: 100%;}
 		.navs{
             background:#5D4384;
 			height:40px;
 			line-height:40px;
 		}
         .head-second-nav{
-    color: #fff;
-    width: auto;
-    overflow: hidden;
-    float: left;
+            color: #fff;
+            width: auto;
+            overflow: hidden;
+            float: left;
         }
         .breadcrumb{
-    float: left;
-    margin: 12px 22px 0 12px;
+            float: left;
+            margin: 12px 22px 0 12px;
         }
         .breadcrumbs{
             background-color: #FFFFFF;overflow: auto;
@@ -320,12 +324,12 @@
 
 </script>
 </head>
-<body scrolling="no" style="overflow:visible;">
+<body>
 <div class="main-container" id="main-container">
     <div class="navs">
 	 <div class="head_logo" style="float:left;height:40px;line-height:40px;">
-                <a href="" style="float:left;">
-                      <img src="<?php  echo empty($settings['shop_logo'])?'小物网络':$settings['shop_logo'];?>" height="40px" width="189px" style="vertical-align:top;"/>
+                <a href="" style="float:left;color:#fff;text-decoration:none;margin-left:13px;font-size:20px;">
+                      <i class="icon-home"></i>&nbsp;<?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?>
                 </a>
       </div>
 	  	<ul class="breadcrumb" style="margin-left: 25px;color:#fff;">                    
@@ -783,6 +787,12 @@
                                     <a onclick="navtoggle('会员管理 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'list'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>
                                         会员管理
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="navtoggle('分销商管理 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'distributor', 'op' => 'display'))?>" target="main" >
+                                        <i class="icon-double-angle-right"></i>
+                                        分销商列表
                                     </a>
                                 </li>
                                 <li>
@@ -1254,9 +1264,9 @@
                     	<span id="activeworker">首页</span>
                     </li>
                	</ul>			
-                <iframe  marginheight="0" marginwidth="0" width="100%" frameborder="0" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
+                <iframe  marginheight="0" marginwidth="0" width="100%" frameborder="0" onload="reinitIframe()" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
                 <script type="text/javascript" language="javascript">
-                    var browserVersion = window.navigator.userAgent.toUpperCase();
+                    /*var browserVersion = window.navigator.userAgent.toUpperCase();
                     var isOpera = browserVersion.indexOf("OPERA") > -1 ? true : false;
                     var isFireFox = browserVersion.indexOf("FIREFOX") > -1 ? true : false;
                     var isChrome = browserVersion.indexOf("CHROME") > -1 ? true : false;
@@ -1298,9 +1308,13 @@
                         eval("window.IE9MoreRealHeight" + iframeId + "=0");
                         window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")",200);
                     }
-                    var minHeight = $(window).height()-180;
-                    startInit('main', minHeight);
-
+                    var minHeight = $(window).height()-80;
+                    startInit('main', minHeight);*/
+                    function reinitIframe(){
+                        var iframeHeight = $("#main").contents().find("html").height();     
+                        $("#main").height(iframeHeight);
+                    }
+                    window.setInterval(reinitIframe,200);
                 </script>
 
             </div>

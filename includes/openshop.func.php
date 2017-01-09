@@ -50,26 +50,41 @@ function checkOpenshopAccessKey()
  * 原理，第一次分享出去的url,带有accesskey,获取后载入缓存，用于商品加入购车后，可以得到该分享者
  * 同时新注册的时候能得到是谁推荐的
  * 以后推荐的该用户，都能得到每次购买商品的佣金，这是PC端的操作模式，相当于app的开店
+ * 如果app分享出来的地址带有is_app
  * @return bool|int
  */
 function getOpenshopSellerOpenid(){
-    $cookie  = new LtCookie();
-    $key     = getShareShopCookieKey();  //作为key
-    $openid  = $cookie->getCookie($key);
-    if($openid){
-        return $openid;
-    }else{
-        if(empty($_REQUEST['accesskey'])){
-            return 0;
-        }else{
-            $openid = decodeOpenshopAccessKey($_REQUEST['accesskey']);
-            if($openid){
-                //缓存24小时
-                $openid = $cookie->setCookie($key,$openid,time()+3600*24);
-                return $openid;
+    $cookie      = new LtCookie();
+    $key         = getShareShopCookieKey();  //作为key
+    if(empty($_REQUEST['accesskey'])){
+        $openidInfo  = $cookie->getCookie($key);
+        if($openidInfo){
+            if($openidInfo['is_app'] ==1 ){
+                //如果是app分享的
+                if(isset($_GET['id']) && $_GET['id'] == $openidInfo['openid']){
+                    return $openidInfo['openid'];
+                }else{
+                    return 0;
+                }
             }else{
-                return 0;
+                return $openidInfo['openid'];
             }
+        }else{
+            return 0;
+        }
+    }else{
+        $openid = decodeOpenshopAccessKey($_REQUEST['accesskey']);
+        if($openid){
+            //缓存24小时
+            $data = array('openid'=>$openid,'is_app'=>0,'dishid'=>0);
+            if(isset($_GET['is_app']) && isset($_GET['id'])){
+                $data['is_app'] = 1;
+                $data['dishid'] = $_GET['id'];
+            }
+            $cookie->setCookie($key,$data,time()+3600*24);
+            return $openid;
+        }else{
+            return 0;
         }
     }
 }

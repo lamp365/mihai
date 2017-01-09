@@ -38,6 +38,10 @@ class memberAddons  extends BjSystemModule {
 	{
 		$this->__web(__FUNCTION__);
 	}
+	public function do_distributor()
+	{
+		$this->__web(__FUNCTION__);
+	}
 }
 
 

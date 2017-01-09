@@ -40,12 +40,18 @@ function get_wapshoper_url($openid){
     return WEBSITE_ROOT .$uri;
 }
 
+/**
+ * @param $openid
+ * @param $dishid
+ * @return string
+ * 该方法是给APP调用的分享商品地址，会带有is_app参数，因为pc和app有点不一样，app分享出来的商品只能该商品有佣金，而pc的操作分享就是开店。
+ */
 function get_wapgoods_url($openid,$dishid){
     if(empty($openid)){
         $uri =  create_url('mobile',array('name'=>'shopwap','do'=>'detail','id'=>$dishid));
     }else{
         $accesskey = getOpenshopAccessKey($openid);
-        $uri =  create_url('mobile',array('name'=>'shopwap','do'=>'detail','accesskey'=>$accesskey,'id'=>$dishid));
+        $uri =  create_url('mobile',array('name'=>'shopwap','do'=>'detail','accesskey'=>$accesskey,'id'=>$dishid,'is_app'=>'1'));
     }
      return WEBSITE_ROOT .$uri;
 }

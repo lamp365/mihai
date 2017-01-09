@@ -136,7 +136,7 @@ if (empty($bjconfig['db']['port'])) {
 if (empty($bjconfig['db']['database'])) {
     $bjconfig['db']['database'] = '';
 }
-$bjconfig['db']['charset'] = 'utf8mb4';
+$bjconfig['db']['charset'] = 'utf8';
 $_CMS['config'] = $bjconfig;
 $_CMS['module'] = $modulename;
 $_CMS['account'] = $_SESSION["account"];

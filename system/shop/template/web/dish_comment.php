@@ -80,6 +80,7 @@
 <th class="text-center">用户名</th>
 	  <th class="text-center">评论商品</th>
 	  <th class="text-center">评论内容</th>
+	  <th class="text-center">商家回复</th>
 	  <th class="text-center">系统设备</th>
 	  <th class="text-center" style="width: 310px;">操作</th>
   </tr>
@@ -99,6 +100,7 @@
 						 <?php } ?>
 					 </div>
 				 </td>
+				  <td style="text-align:center;"><?php echo  $item['reply']; ?></td>
                  <td style="text-align:center;">来自 <b><?php  echo getSystemType($item['system']);?></b></td>
 				 <td style="text-align:center;" style="width: 310px;">
 					 <?php if(isHasPowerToShow('shop','dish','addcomment','add')){ ?>
@@ -138,8 +140,8 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label for="name">内容：</label>
-					<textarea type="text" class="form-control" id="name" placeholder="请输入名称"></textarea>
+					<label for="reply">内容：</label>
+					<textarea type="text" class="form-control" id="reply" name="reply" placeholder="请输入回复"></textarea>
 				</div>
 			</div>
 			<div class="modal-footer">

@@ -966,8 +966,12 @@
             $key   = $zhong + $xia;
             $time  = $data[$key]['createtime'];
             $res   = mysqld_update("shop_goods_comment",array('createtime'=>$time),array('id'=>$id));
-            message("操作成功！",refresh(),'success');
-            
+            if($res){
+                message("操作成功！",refresh(),'success');
+            }else{
+                message("操作失败！",refresh(),'error');
+            }
+
         }else if($operation == 'open_groupbuy'){
             //凑单开关 关闭或者开启
             //先判断是否有虚拟用户
@@ -981,4 +985,20 @@
                 mysqld_update('shop_dish',array('open_groupbuy'=>0),array('id'=>$_GP['id']));
             }
             message('操作成功',refresh(),'success');
+        }else if($operation == 'replycomment'){
+            // 评论回复
+            $id  = $_GP['id'];
+            $reply = $_GP['reply'];
+
+            if (empty($reply)) {
+                $reply = NULL;
+            }
+            if (!empty($id)) {
+               $re = mysqld_update("shop_goods_comment",array('reply'=>$reply),array('id'=>$id));
+            }
+            if ($re) {
+                message("回复成功！",refresh(),'success');
+            }else{
+                message("回复失败，不能回复重复的内容！",refresh(),'error');
+            }
         }
