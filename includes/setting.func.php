@@ -37,6 +37,14 @@ function refreshSetting($arrays)
 
 function globaSetting($conditions = array())
 {
+    $domain = $_SERVER['HTTP_HOST'];
+    //根据访问的域名查找 微信配置信息
+    $weixin_config = mysqld_select("select * from ".table('weixin_config')." where domain='{$domain}' and is_used=1");
+    if(!empty($weixin_config)){
+        //如果找不到 则使用默认的
+        $weixin_config = mysqld_select("select * from ".table('weixin_config')." where is_default=1");
+    }
+
     $config = array();
     $system_config_cache = mysqld_select('SELECT * FROM ' . table('config') . " where `name`='system_config_cache'");
     if (empty($system_config_cache['value'])) {
@@ -56,9 +64,22 @@ function globaSetting($conditions = array())
                 'value' => serialize($config)
             ));
         }
+        $config['weixinname']       = $weixin_config['weixinname'];
+        $config['weixintoken']      = $weixin_config['weixintoken'];
+        $config['EncodingAESKey']   = $weixin_config['accesskey'];
+        $config['weixin_appId']     = $weixin_config['appid'];
+        $config['weixin_appSecret'] = $weixin_config['appsecret'];
+        $config['weixin_access_token'] = $weixin_config['weixin_access_token'];
         return $config;
     } else {
-        return unserialize($system_config_cache['value']);
+        $config_arr = unserialize($system_config_cache['value']);
+        $config_arr['weixinname']       = $weixin_config['weixinname'];
+        $config_arr['weixintoken']      = $weixin_config['weixintoken'];
+        $config_arr['EncodingAESKey']   = $weixin_config['accesskey'];
+        $config_arr['weixin_appId']     = $weixin_config['appid'];
+        $config_arr['weixin_appSecret'] = $weixin_config['appsecret'];
+        $config_arr['weixin_access_token'] = $weixin_config['weixin_access_token'];
+        return $config_arr;
     }
 }
 
@@ -79,4 +100,12 @@ function getQQ_onWork($cfg){
         }
     }
     return $qqarr;
+}
+
+function save_weixin_access_token($seriaze_access_token){
+    $domain = $_SERVER['HTTP_HOST'];
+    $res = mysqld_update("weixin_config",array('weixin_access_token'=>$seriaze_access_token),array('domain'=>$domain));
+    if(!$res){
+        $res = mysqld_update("weixin_config",array('weixin_access_token'=>$seriaze_access_token),array('is_default'=>1));
+    }
 }
