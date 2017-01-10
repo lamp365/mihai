@@ -202,40 +202,29 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         'follow' => $follow,
                         'gender' => intval($gender),
                         'weixin_openid' => $from_user,
-                        'avatar' => '',
-                        'createtime' => TIMESTAMP,
-                        'unionid' => $unionid
+                        'avatar'        => empty($info["headimgurl"]) ? '' : $info["headimgurl"],
+                        'createtime'    => TIMESTAMP,
+                        'modifiedtime'  => TIMESTAMP,
+                        'unionid'       => $unionid
                     );
                     mysqld_insert('weixin_wxfans', $row);
-                    if (! empty($info["headimgurl"])) {
-                        mysqld_update('weixin_wxfans', array(
-                            'avatar' => $info["headimgurl"]
-                        ), array(
-                            'unionid' => $unionid
-                        ));
-                    }
                 } else {
-                    
                     $row = array(
-                        'follow' => $follow,
-                        'gender' => intval($gender),
-                        'avatar' => ''
+                        'follow'       => $follow,
+                        'gender'       => intval($gender),
+                        'modifiedtime' => TIMESTAMP
                     );
                     if (! empty($nickname)) {
                         $row['nickname'] = $nickname;
                     }
+                    if (! empty($info["headimgurl"])) {
+                        $row['avatar'] = $info["headimgurl"];
+                    }
                     mysqld_update('weixin_wxfans', $row, array(
                         'unionid' => $unionid
                     ));
-                    
-                    if (! empty($info["headimgurl"])) {
-                        mysqld_update('weixin_wxfans', array(
-                            'avatar' => $info["headimgurl"]
-                        ), array(
-                            'unionid' => $unionid
-                        ));
-                    }
                 }
+                //以下这一步，更新用户名的，没必要的后期可以去除掉
                 if (! empty($fans['openid']) && ! empty($nickname)) {
                     $member = mysqld_select("SELECT realname FROM " . table('member') . " WHERE openid=:openid ", array(
                         ':openid' => $fans['openid']
