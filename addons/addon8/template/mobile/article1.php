@@ -73,6 +73,11 @@
 		width: 90%;
 		padding: 10px 5%;
 	}
+	.health-detail video{
+		width: 100%;
+		height: auto;
+	}
+	
 	.item{
 		background: #f7f7f7 none repeat scroll 0 0;
 	    clear: none !important;
@@ -155,10 +160,15 @@
 	.content p{
 		line-height: 32px;
 	}
-	.content img{width: 100%!important;display: block;}
+	.content img{
+		width: 100%!important;
+		height: auto !important;
+		display: block;
+		text-indent: 0;
+	}
 
 	.comment-area .health-men{
-		margin-left: -10px;
+		//margin-left: -10px;
 	}
 	.comment-area .info{
 		width: 100%!important;
@@ -195,7 +205,7 @@
 		color: #000;
 	}
 	.click_pinlun{
-		float: left;
+	float: left;
     width: 78%;
     padding: 0 10px;
     box-sizing: border-box;
@@ -517,13 +527,13 @@
 				//里面的拼接的字段后续要替换成请求返回的数据 
 
 					if(comment_length<3){
-						comment_html = "<div class='health-men' openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'>"+msg.comment+"</div></div></div></div>";
+						comment_html = "<div class='health-men' openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name' comment_id="+msg.comment_id+">"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con' comment_id="+msg.comment_id+">"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}else{
 						$(".comment-area .health-men:last-child").remove();
-						comment_html = "<div class='health-men' openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'>"+msg.comment+"</div></div></div></div>";
+						comment_html = "<div class='health-men' openid="+openid_val+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name' comment_id="+msg.comment_id+">"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con' comment_id="+msg.comment_id+">"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}
 			}else{
@@ -531,13 +541,13 @@
 				//里面的拼接的字段后续要替换成请求返回的数据
 
 					if(comment_length<3){
-						comment_html = "<div class='health-men' openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'><span class='at_nickname'>"+msg.nickname+"</span>回复:<span>"+msg.at_nickname+"</span>"+msg.comment+"</div></div></div></div>";
+						comment_html = "<div class='health-men' openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name' comment_id="+msg.comment_id+">"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con' comment_id="+msg.comment_id+"><span class='at_nickname'>"+msg.nickname+"</span>回复:<span>"+msg.at_nickname+"</span>"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}else{
 						$(".comment-area .health-men:last-child").remove();
-						comment_html = "<div class='health-men' openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span>"+msg.nickname+"</span>"+
-										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con'><span class='at_nickname'>"+msg.nickname+"</span>回复:<span>"+msg.at_nickname+"</span>"+msg.comment+"</div></div></div></div>";
+						comment_html = "<div class='health-men' openid="+msg.at_openid+" comment_id="+msg.comment_id+"><div class='info'><img src="+msg.avatar+" openid="+openid_val+" at_openid="+ msg.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name' comment_id="+msg.comment_id+">"+msg.nickname+"</span>"+
+										"<span class='comment-time'>发布于"+commentTime+"</span></p><div class='comment-con' comment_id="+msg.comment_id+"><span class='at_nickname'>"+msg.nickname+"</span>回复:<span>"+msg.at_nickname+"</span>"+msg.comment+"</div></div></div></div>";
 						$(".comment-area").prepend(comment_html);
 					}
 			}
@@ -570,7 +580,7 @@
 				if(at_openid == "true" ){
 					comment_html = "<div class='health-men' openid="+data.openid+" comment_id="+data.comment_id+">" +
 										"<div class='info'><img src="+face+" openid="+data.openid+" at_openid="+ data.at_openid +">" +
-											"<div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name'>"+data.nickname+"</span>"+
+											"<div class='click_pinlun' onclick='pinlun(this)'><p class='name'><span class='comment-name' comment_id="+data.comment_id+">"+data.nickname+"</span>"+
 												"<span class='comment-time'>发布于"+ Stringtotime(data.createtime) +"</span>" +
 											"</p>" +
 											"<div class='comment-con'>"+data.comment+"</div>" +
@@ -578,8 +588,8 @@
 								 "</div>";
 					$(".comment-area").append(comment_html);
 				}else{
-					comment_html = "<div class='health-men' openid="+data.openid+" comment_id="+data.comment_id+"><div class='info'><img src="+face+" openid="+data.openid+" at_openid="+ data.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name '><span class='comment-name'>"+data.nickname+"</span>"+
-						"<span class='comment-time'>发布于"+ Stringtotime(data.createtime) +"</span></p><div class='comment-con click_pinlun'><span class='nickname'>"+data.nickname+"</span>回复:<span>"+data.reply_nickname+"</span>"+data.comment+"</div></div></div></div>";
+					comment_html = "<div class='health-men' openid="+data.openid+" comment_id="+data.comment_id+"><div class='info'><img src="+face+" openid="+data.openid+" at_openid="+ data.at_openid +"><div class='click_pinlun' onclick='pinlun(this)'><p class='name '><span class='comment-name' comment_id="+data.comment_id+">"+data.nickname+"</span>"+
+						"<span class='comment-time'>发布于"+ Stringtotime(data.createtime) +"</span></p><div class='comment-con'><span class='nickname'>"+data.nickname+"</span>回复:<span>"+data.reply_nickname+"</span>"+data.comment+"</div></div></div></div>";
 					$(".comment-area").append(comment_html);
 				}
 			}
@@ -619,7 +629,7 @@
 		if( openid_val == ''){
 			//登录
 			if( ua == "ios" ){
-				window.webkit.messageHandlers.mihaiapp.postMessage(obj);
+				window.webkit.messageHandlers.mihaiapp.postMessage({follow:""});
 			}else if( ua=="android" ){
 				window.JsInterface.login("isLogin");
 			}

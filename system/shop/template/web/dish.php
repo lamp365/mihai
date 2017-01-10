@@ -2,6 +2,7 @@
 <h3 class="header smaller lighter blue"><?php  if(!empty($item['id'])) { ?>编辑<?php  }else{ ?>新增<?php  } ?></h3>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/css/select2.min.css" />
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/jquery-ui-1.10.3.min.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style type="text/css">
 .panel.with-nav-tabs .panel-heading{
     padding: 5px 5px 0 5px;
@@ -596,21 +597,27 @@
 			<input type="checkbox" name="istime" id='istime' value="1" id="isnew" <?php  if($item['istime'] == 1) { ?>checked="true"<?php  } ?> /> 开启限时促销
 			<input type="text" id="datepicker_timestart" name="timestart" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timestart']);}?>" readonly="readonly" />
 			<script type="text/javascript">
-				$("#datepicker_timestart").datetimepicker({
-					format: "yyyy-mm-dd hh:ii",
-					minView: "0",
-					//pickerPosition: "top-right",
-					autoclose: true
-				});
+				laydate({
+			        elem: '#datepicker_timestart',
+			        istime: true, 
+			        event: 'click',
+			        format: 'YYYY-MM-DD hh:mm:ss',
+			        istoday: true, //是否显示今天
+			        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+			    });
+			    laydate.skin("molv"); 
 			</script> -
 			<input type="text"  id="datepicker_timeend" name="timeend" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timeend']);}?>" readonly="readonly" />
 			<script type="text/javascript">
-				$("#datepicker_timeend").datetimepicker({
-					format: "yyyy-mm-dd hh:ii",
-					minView: "0",
-					//pickerPosition: "top-right",
-					autoclose: true
-				});
+				laydate({
+			        elem: '#datepicker_timeend',
+			        istime: true, 
+			        event: 'click',
+			        format: 'YYYY-MM-DD hh:mm:ss',
+			        istoday: true, //是否显示今天
+			        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+			    });
+			    laydate.skin("molv"); 
 			</script>
 			</div>
 		</div>
@@ -755,6 +762,7 @@
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/ueditor.config.js?x=201508021"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/ueditor.all.min.js?x=141"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/select2.min.js"></script>
+
 <script type="text/javascript">var ue = UE.getEditor('container');</script>
     
     

@@ -55,7 +55,7 @@ width: 100%;
 </script>
 <h3 class="header smaller lighter blue">订单统计</h3>
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 
 				<div class="alert alert-info" style="margin:10px 0; width:auto;">
 			<i class="icon-lightbulb"></i> 查询有购买记录客户的(完成)订单统计，您可以按时间查询客户的总订单数和总订单金额。
@@ -113,20 +113,24 @@ width: 100%;
 				</tbody>
 			</table>
 		</form>
-				<script type="text/javascript">
-		$("#start_time").datetimepicker({
-			format: "yyyy-mm-dd",
-			minView: "2",
-			//pickerPosition: "top-right",
-			autoclose: true
-		});
-	</script> 
 	<script type="text/javascript">
-		$("#end_time").datetimepicker({
-			format: "yyyy-mm-dd",
-			minView: "2",
-			autoclose: true
-		});
+		laydate({
+	        elem: '#start_time',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate({
+	        elem: '#end_time',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate.skin("molv");
 	</script>
 		
 

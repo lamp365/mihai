@@ -33,14 +33,15 @@ switch($op)
 		else{
 			$collectionCnt 	= mysqld_select("SELECT count(collection_id) cnt FROM " . table('article_collection') . " where article_id={$id} ");
 			$commentCnt 	= mysqld_select("SELECT count(comment_id) cnt FROM " . table('article_comment') . " where article_id={$id} ");
-
-			$url = getArticleUrl($id,'healty',$openid,1);
-			$result['data']['openid'] 			= $openid;
-			$result['data']['url'] 			= $url;
+			$articleInfo 	= mysqld_select("SELECT id,title,thumb,createtime FROM " . table('addon8_article')." where id={$id} and state=6");
+				
+			$result['data']['url'] 			= getArticleUrl($id,'healty',$openid,1);
 			$result['data']['isCollection'] = isCollection($id,$member);				//是否已收藏
 			$result['data']['collectionCnt']= $collectionCnt['cnt'];					//收藏数
 			$result['data']['commentCnt']	= $commentCnt['cnt'];						//评论数
 			$result['data']['share_url']	= getArticleUrl($id,'healty',$openid);		//分享链接
+			$result['data']['articleInfo']	= $articleInfo;								//文章信息
+			
 			$result ['code'] 				= 1;
 		}
 		

@@ -62,6 +62,9 @@
 			border-right: solid 1px gainsboro;
 			border-bottom: solid 1px gainsboro;
 		}
+		table tr td a{
+			color: #E83729;
+		}
 		.income,.outcome{display: none;}
 	</style>
 	<body>
@@ -94,14 +97,16 @@
 							<td width="20%">日期</td>
 							<td width="10%">收入</td>
 							<td width="10%">支出</td>
+							<td width="10%">买家</td>
 							<td>详细信息</td>
 						</tr>
-						<!--@php foreach ( $list as $listvalue ){ @-->
+						<!--@php foreach ( $list as $listvalue ){  $list_arr = explode('@',$listvalue['remark']); @-->
 						<tr>
 							<td><!--@php echo $listvalue['createtime']; @--></td>
 							<td><!--@php if ($listvalue['type'] == 'add'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
 							<td><!--@php if ($listvalue['type'] == 'use'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td><!--@php echo $listvalue['remark']; @--></td>
+							<td><!--@php if(count($list_arr) == 2){ $buyer = member_get($list_arr[0]); echo $buyer['mobile']; }@--></td>
+							<td><!--@php if(count($list_arr) == 2){ echo $list_arr[1];}else{ echo  $list_arr[0]; } @--></td>
 						</tr>
 						<!--@php } @-->
 					</table>										
@@ -114,14 +119,16 @@
 							<td width="20%">日期</td>
 							<td width="10%">收入</td>
 							<td width="10%">支出</td>
+							<td width="10%">买家</td>
 							<td>详细信息</td>
 						</tr>
-						<!--@php foreach ( $list as $listvalue ){ if ($listvalue['type'] == 'add'.$keys){ @-->
+						<!--@php foreach ( $list as $listvalue ){$list_arr = explode('@',$listvalue['remark']);  if ($listvalue['type'] == 'add'.$keys){ @-->
 						<tr>
 							<td><!--@php echo $listvalue['createtime']; @--></td>
 							<td><!--@php if ($listvalue['type'] == 'add'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
 							<td><!--@php if ($listvalue['type'] == 'use'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td><!--@php echo $listvalue['remark']; @--></td>
+							<td><!--@php if(count($list_arr) == 2){ $buyer = member_get($list_arr[0]); echo $buyer['mobile']; }@--></td>
+							<td><!--@php if(count($list_arr) == 2){ echo $list_arr[1];}else{ echo  $list_arr[0]; } @--></td>
 						</tr>
 						<!--@php }} @-->
 					</table>
@@ -134,14 +141,16 @@
 							<td width="20%">日期</td>
 							<td width="10%">收入</td>
 							<td width="10%">支出</td>
+							<td width="10%">买家</td>
 							<td>详细信息</td>
 						</tr>
-						<!--@php foreach ( $list as $listvalue ){ if ($listvalue['type'] == 'use'.$keys){@-->
+						<!--@php foreach ( $list as $listvalue ){ $list_arr = explode('@',$listvalue['remark']);  if ($listvalue['type'] == 'use'.$keys){@-->
 						<tr>
 							<td><!--@php echo $listvalue['createtime']; @--></td>
 							<td><!--@php if ($listvalue['type'] == 'add'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
 							<td><!--@php if ($listvalue['type'] == 'use'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td><!--@php echo $listvalue['remark']; @--></td>
+							<td><!--@php if(count($list_arr) == 2){ $buyer = member_get($list_arr[0]); echo $buyer['mobile']; }@--></td>
+							<td><!--@php if(count($list_arr) == 2){ echo $list_arr[1];}else{ echo  $list_arr[0]; } @--></td>
 						</tr>
 						<!--@php }} @-->
 					</table>

@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
-
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <h3 class="header smaller lighter blue">会员消费排行</h3>
 		<div class="alert alert-info" style="margin:10px 0; width:auto;">
 			<i class="icon-lightbulb"></i>  查询有成交记录的会员的订单数和购物金额,并按购物金额从高到低排行。
@@ -56,19 +56,23 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 
 			</tr>
 		</table>
-			<script type="text/javascript">
-		$("#start_time").datetimepicker({
-			format: "yyyy-mm-dd",
-			minView: "2",
-			//pickerPosition: "top-right",
-			autoclose: true
-		});
-	</script> 
-	<script type="text/javascript">
-		$("#end_time").datetimepicker({
-			format: "yyyy-mm-dd",
-			minView: "2",
-			autoclose: true
-		});
+<script type="text/javascript">
+		laydate({
+	        elem: '#start_time',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate({
+	        elem: '#end_time',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate.skin("molv");
 	</script>
 <?php  include page('footer');?>

@@ -96,7 +96,7 @@ function getOpenshopSellerOpenid(){
 function getShareShopCookieKey(){
     $ip     = getClientIP();
     $key    = "share_".$ip;
-    return $key;
+    return md5($key);
 }
 /**
  * @param $openid 卖家id

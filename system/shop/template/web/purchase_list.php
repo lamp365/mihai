@@ -2,7 +2,7 @@
 <?php  include page('header');?>
 
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style type="text/css">
 
 	.purchase-table-list li{
@@ -18,9 +18,6 @@
 		text-align: center;
 		cursor: pointer;
 
-	}
-	.add-more-btn{
-		
 	}
 	.hide-tr{
 		display: none;
@@ -238,19 +235,26 @@
 						<input class="li-height" placeholder="结束时间" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
 			
 						<script type="text/javascript">
-							$("#begintime").datetimepicker({
-								format: "yyyy-mm-dd hh:ii",
-								minView: "0",
-								//pickerPosition: "top-right",
-								autoclose: true
-							});
+							laydate({
+						        elem: '#begintime',
+						        istime: true, 
+						        event: 'click',
+						        format: 'YYYY-MM-DD hh:mm:ss',
+						        istoday: true, //是否显示今天
+						        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+						    });
+						    laydate.skin("molv"); 
 						</script> 
 						<script type="text/javascript">
-							$("#endtime").datetimepicker({
-								format: "yyyy-mm-dd hh:ii",
-								minView: "0",
-								autoclose: true
-							});
+							laydate({
+						        elem: '#endtime',
+						        istime: true, 
+						        event: 'click',
+						        format: 'YYYY-MM-DD hh:mm:ss',
+						        istoday: true, //是否显示今天
+						        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+						    });
+						    laydate.skin("molv"); 
 						</script>
 					</li>	
 					

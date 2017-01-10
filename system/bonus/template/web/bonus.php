@@ -2,7 +2,7 @@
 <h3 class="header smaller lighter blue">优惠券管理</h3>
 
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <form action="" method="post" class="form-horizontal" >
 	
 	<input type="hidden" name="id" value="<?php  echo $bonus['type_id'];?>" />
@@ -120,27 +120,40 @@
 									</div>
 </form>   
 <script>
-		$("#send_start_date").datetimepicker({
-			format: "yyyy-mm-dd hh:ii",
-			minView: "0",
-			//pickerPosition: "top-right",
-			autoclose: true
-		});
-		$("#send_end_date").datetimepicker({
-			format: "yyyy-mm-dd hh:ii",
-			minView: "0",
-			autoclose: true
-		});
-		$("#use_start_date").datetimepicker({
-			format: "yyyy-mm-dd hh:ii",
-			minView: "0",
-			autoclose: true
-		});
-		$("#use_end_date").datetimepicker({
-			format: "yyyy-mm-dd hh:ii",
-			minView: "0",
-			autoclose: true
-		});
+		laydate({
+	        elem: '#send_start_date',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate({
+	        elem: '#send_end_date',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate({
+	        elem: '#use_start_date',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate({
+	        elem: '#use_end_date',
+	        istime: true, 
+	        event: 'click',
+	        format: 'YYYY-MM-DD hh:mm:ss',
+	        istoday: true, //是否显示今天
+	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+	    });
+	    laydate.skin("molv");
+
 	function gObj(obj)
 {
   var theObj;

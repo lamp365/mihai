@@ -1266,50 +1266,6 @@
                	</ul>			
                 <iframe  marginheight="0" marginwidth="0" width="100%" frameborder="0" onload="reinitIframe()" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
                 <script type="text/javascript" language="javascript">
-                    /*var browserVersion = window.navigator.userAgent.toUpperCase();
-                    var isOpera = browserVersion.indexOf("OPERA") > -1 ? true : false;
-                    var isFireFox = browserVersion.indexOf("FIREFOX") > -1 ? true : false;
-                    var isChrome = browserVersion.indexOf("CHROME") > -1 ? true : false;
-                    var isSafari = browserVersion.indexOf("SAFARI") > -1 ? true : false;
-                    var isIE = (!!window.ActiveXObject || "ActiveXObject" in window);
-                    var isIE9More = (! -[1, ] == false);
-                    function reinitIframe(iframeId, minHeight) {
-                        try {
-                            var iframe = document.getElementById(iframeId);
-                            var bHeight = 0;
-                            if (isChrome == false && isSafari == false){
-                                bHeight = iframe.contentWindow.document.body.scrollHeight;
-                            }
-                            var dHeight = 0;
-                            if (isFireFox == true){
-                                dHeight = iframe.contentWindow.document.documentElement.offsetHeight ;
-                            }
-                            else if (isIE == false && isOpera == false){
-                                dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
-                            }
-                            else if (isIE == true && isIE9More) {//ie9+
-                                var heightDeviation = bHeight - eval("window.IE9MoreRealHeight" + iframeId);
-                                if (heightDeviation == 0) {
-                                    bHeight;
-                                } else if (heightDeviation != 3) {
-                                    eval("window.IE9MoreRealHeight" + iframeId + "=" + bHeight);
-                                    bHeight;
-                                }
-                            }
-                            else{//ie[6-8]、OPERA
-                                bHeight;
-                            }
-                            var height = Math.max(bHeight, dHeight);
-                            if (height < minHeight) height = minHeight;
-                            iframe.style.height = height + "px";
-                        } catch (ex) { }
-                    }
-                    function startInit(iframeId, minHeight) {
-                        eval("window.IE9MoreRealHeight" + iframeId + "=0");
-                        window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")",200);
-                    }
-                    var minHeight = $(window).height()-80;
-                    startInit('main', minHeight);*/
                     function reinitIframe(){
                         var iframeHeight = $("#main").contents().find("html").height();     
                         $("#main").height(iframeHeight);
@@ -1395,7 +1351,7 @@
         })
     })
     function leftNavTap(){
-        $(".left-nav-tap li").on("click",function(){
+        $(".left-nav-tap li").click(function(){
             var this_class_name = $(this).attr("class").split(" ");
             var i = 0;
             var arr_length = this_class_name.length;
@@ -1408,6 +1364,32 @@
         });
     }
     leftNavTap();
+    function leftClassIsNull(){
+        var class_arr = [];
+        var public_tap_index = 0;
+        var checked_num = 0;
+        $(".left-nav-tap li").each(function(index,ele){
+            class_arr = $(ele).attr("class").split(" ");
+            if( class_arr.indexOf("public-tap") > -1){
+                public_tap_index = class_arr.indexOf("public-tap");
+            }
+            class_arr.splice(public_tap_index,1);
+            if(!$(".nav-list>li").hasClass(class_arr[0])){
+                $(ele).remove();
+            }
+        });
+        $(".left-nav-tap li").each(function(index2,ele2){
+            if($(ele2).hasClass("left-nav-checked")){
+                checked_num++;
+            }
+        });
+        if( checked_num < 1 ){
+            $(".left-nav-tap li:first-child").addClass("left-nav-checked");
+            $(".left-nav-tap li:first-child").trigger("click");
+        }
+    }
+    leftClassIsNull();
+    
 </script>
 </div>
 </body>

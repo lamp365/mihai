@@ -23,7 +23,7 @@ function updateOrderStock($id , $minus = true) {
         $order      = mysqld_select("select * from ". table('shop_order') ." where id={$id}");
         $ordergoods = mysqld_selectall("SELECT * FROM " . table('shop_order_goods') . " WHERE orderid='{$id}'");
         $usermoney  = array();
-
+        $str_link   = '';
         foreach ($ordergoods as $item) {
         	$goods = mysqld_select("SELECT * FROM " . table('shop_dish') . "  WHERE id='".$item['goodsid']."'");
             if ($minus) {  //卖出
@@ -93,29 +93,38 @@ function updateOrderStock($id , $minus = true) {
                 'createtime'  => time()
             );
             mysqld_insert('bill',$bill_data);  //账单
+
+            $url = WEBSITE_ROOT.mobile_url('detail',array('name'=>'shopwap','op'=>'dish','id'=>$item['goodsid']));
+            $str_link .= "<a href='{$url}' target='_blank'>商品</a>、";
         }
 
+        $str_link = rtrim($str_link,'、');
         //记录paylog
         if($minus) {
-            $mark  = "订单:{$order['ordersn']}购买商品消费费用";
+            $mark  = "{$order['openid']}@订单:{$order['ordersn']}购买 {$str_link} 消费费用";
             member_goldinfo($order['openid'],$order['price'],'usegold',$mark);  //paylog
         }else{
-            $mark  = "订单:{$order['ordersn']}发生退款费用";
+            $mark  = "{$order['openid']}@订单:{$order['ordersn']} {$str_link}发生退款费用";
              member_goldinfo($order['openid'],$order['price'],'addgold',$mark);  //paylog
         }
 
 
-
         //记录卖家得到的佣金账单 paylog
-        if($minus) {
-            $type2 = 'addgold';
-            $mark = "订单:{$order['ordersn']}顾客购买商品得到佣金";
-        }else {
-            $type2 = 'usegold';
-            $mark = "订单:{$order['ordersn']}发生退款扣除佣金";
-        }
         if(!empty($usermoney)) {
+            $str_link = '';
             foreach ($usermoney as $openid => $data) {
+                foreach($data as $row){
+                    $url = WEBSITE_ROOT.mobile_url('detail',array('name'=>'shopwap','op'=>'dish','id'=>$row['goodsid']));
+                    $str_link .= "<a href='{$url}' target='_blank'>商品</a>、";
+                }
+                $str_link = rtrim($str_link,'、');
+                if($minus) {
+                    $type2 = 'addgold';
+                    $mark = "{$order['openid']}@订单:{$order['ordersn']}购买 {$str_link} 得到佣金";
+                }else {
+                    $type2 = 'usegold';
+                    $mark = "{$order['openid']}@订单:{$order['ordersn']} {$str_link} 发生退款扣除佣金";
+                }
                 member_goldinfo($openid,$data['seller_commision'],$type2,$mark,'freeze_gold',true);
             }
         }
@@ -150,18 +159,21 @@ function oneUpdateOrderStock($id , $minus = true) {
 
     }
 
+    $url = WEBSITE_ROOT.mobile_url('detail',array('name'=>'shopwap','op'=>'dish','id'=>$item['goodsid']));
+    $str_link = "<a href='{$url}' target='_blank'>商品</a>、";
+
     //记录账单买家出入资金钱
     if($minus) {
         $type = 0;  //购买
         $type2 = 'usegold';
-        $mark  = "订单:{$order['ordersn']}购买商品消费费用";
+        $mark  = "{$order['openid']}@订单:{$order['ordersn']}购买 {$str_link} 消费费用";
         $price = $item['price'];
         $money = $price*-1;
     }else{
         $type = 3;  //获得退款
         $type2 = 'addgold';
         $price = empty($aftersale['refund_price']) ? $item['price'] : $aftersale['refund_price'];
-        $mark  = "订单:{$order['ordersn']}发生退款费用";
+        $mark  = "{$order['openid']}@订单:{$order['ordersn']} {$str_link}发生退款费用";
         $money = $price;
     }
     $bill_data = array(
@@ -180,11 +192,11 @@ function oneUpdateOrderStock($id , $minus = true) {
     if($minus) {
         $type = 1;  //收入佣金
         $type2 = 'addgold';
-        $mark = "订单:{$order['ordersn']}顾客购买商品得到佣金";
+        $mark = "{$item['seller_openid']}@订单:{$order['ordersn']}购买 {$str_link} 得到佣金";
     }else {
         $type = -1; //佣金退回
         $type2 = 'usegold';
-        $mark = "订单:{$order['ordersn']}发生退款扣除佣金";
+        $mark = "{$item['seller_openid']}@订单:{$order['ordersn']} {$str_link} 发生退款扣除佣金";
     }
     if(!empty($item['seller_openid']) && !empty($item['commision'])){
         if($minus)

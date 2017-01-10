@@ -469,7 +469,7 @@ function member_goldinfo($openid, $fee, $type, $remark, $act_filed='gold',$updat
                 'remark' => $remark,
                 'type' => $type,
                 'fee' => $fee,
-                'account_fee' => $member[$act_filed] + $fee,
+                'account_fee' => 0.00,  //该字段没用
                 'createtime' => TIMESTAMP,
                 'openid' => $openid
             );
@@ -481,12 +481,12 @@ function member_goldinfo($openid, $fee, $type, $remark, $act_filed='gold',$updat
             return true;
         }
         if ($type == 'usegold') {
-            if ($member[$act_filed] >= $fee) {
+//            if ($member[$act_filed] >= $fee) {
                 $data = array(
                     'remark' => $remark,
                     'type' => $type,
                     'fee' => $fee,
-                    'account_fee' => $member[$act_filed] - $fee,
+                    'account_fee' => 0.00, //该字段没用
                     'createtime' => TIMESTAMP,
                     'openid' => $openid
                 );
@@ -496,7 +496,7 @@ function member_goldinfo($openid, $fee, $type, $remark, $act_filed='gold',$updat
                 }
 
                 return true;
-            }
+//            }
         }
     }
     return false;

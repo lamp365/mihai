@@ -1,4 +1,5 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 
 <style type="text/css">
 	.piclist{
@@ -29,21 +30,27 @@
 					时间范围:
 					<input type="text" id="datepicker_timestart" name="timestart" value="" readonly="readonly" />
 					<script type="text/javascript">
-						$("#datepicker_timestart").datetimepicker({
-							format: "yyyy-mm-dd hh:ii",
-							minView: "0",
-							//pickerPosition: "top-right",
-							autoclose: true
-						});
+						laydate({
+					        elem: '#datepicker_timestart',
+					        istime: true, 
+					        event: 'click',
+					        format: 'YYYY-MM-DD hh:mm:ss',
+					        istoday: true, //是否显示今天
+					        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+					    });
+					    laydate.skin("molv"); 
 					</script> -
 					<input type="text"  id="datepicker_timeend" name="timeend" value="" readonly="readonly" />
 					<script type="text/javascript">
-						$("#datepicker_timeend").datetimepicker({
-							format: "yyyy-mm-dd hh:ii",
-							minView: "0",
-							//pickerPosition: "top-right",
-							autoclose: true
-						});
+						laydate({
+					        elem: '#datepicker_timeend',
+					        istime: true, 
+					        event: 'click',
+					        format: 'YYYY-MM-DD hh:mm:ss',
+					        istoday: true, //是否显示今天
+					        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+					    });
+					    laydate.skin("molv");
 					</script>
 				</li>
 
