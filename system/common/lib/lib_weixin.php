@@ -51,10 +51,7 @@ function get_js_ticket()
 function get_weixin_token($refresh = false)
 {
     if ($refresh) {
-        $cfg = array(
-            'weixin_access_token' => ''
-        );
-        refreshSetting($cfg);
+        save_weixin_access_token('');
     }
     $configs = globaSetting(array(
         "weixin_access_token",
@@ -87,10 +84,8 @@ function get_weixin_token($refresh = false)
         $record = array();
         $record['token'] = $token['access_token'];
         $record['expire'] = TIMESTAMP + $token['expires_in'];
-        $cfg = array(
-            'weixin_access_token' => serialize($record)
-        );
-        refreshSetting($cfg);
+        $seriaze_access_token = serialize($record);
+        save_weixin_access_token($seriaze_access_token);
         return $record['token'];
     }
 }

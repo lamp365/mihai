@@ -3,27 +3,27 @@
 		.modal-body i{
 			color: red;
 		}
-		.vip-table-list tr{
-			background-color: #f9f9f9;
-			border-top: 1px solid #ddd;
-		}
-		.vip-table-list td{
-			border: 1px solid #ddd;
-		}
-		.vip-table-list li{
-			margin-top:3px;
-			float: left;
-			margin-right: 10px;
-			list-style: none;
-		}
-		.vip-table-list li select{
-			height:26px;
-		}
-		.vip-table-list li span{
-			display: inline-block;
-			height:24px;
-			line-height: 24px;
-		}
+	.vip-table-list{
+		border: 1px solid #ddd;padding: 7px 0;
+	}
+	.left-span{
+		float: left;
+	    line-height: 28px;
+	    background-color: #ededed;
+	    padding: 0 5px;
+	    border: 1px solid #cdcdcd;
+	    border-right: 0;
+	    font-size: 12px;
+	}
+	.vip-table-list li{
+		float: left;    
+		margin-right: 10px;
+		list-style-type: none;
+	}
+	.vip-table-list .li-height{
+	    height: 30px;
+	    padding-left: 5px;
+	}
 	</style>
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
@@ -34,25 +34,24 @@
 		<tbody>
 			<tr>
 				<td>
-					<li>用户名：</li>
 					<li>
-						<input name="u_name"  type="text" value="<?php  echo $u_name;?>" />
-					</li>
-
-					<li>手机号码：</li>
-					<li>
-						<input name="mobile" type="text"   value="<?php  echo $mobile;?>" />
-					</li>
-					<li>起始日期：</li>
-					<li>
-						<input name="start_time" id="start_time" type="text" value="<?php  echo empty($b_time)?null:date('Y-m-d',$b_time);?>" readonly="readonly"  /> 
-					</li>
-					<li>终止日期：</li>
-					<li>
-						<input name="end_time" id="end_time" type="text" value="<?php  echo empty($e_time)?null:date('Y-m-d',$e_time);?>" readonly="readonly"  /> 
+						<span class="left-span">用户名</span>
+						<input name="u_name" class="li-height" type="text" placeholder="用户名" value="<?php  echo $u_name;?>" />
 					</li>
 					<li>
-						<button type="submit" class="btn btn-md btn-info">搜 索</button>
+						<span class="left-span">手机号码</span>
+						<input name="mobile" class="li-height" type="text" placeholder="手机号码" value="<?php  echo $mobile;?>" />
+					</li>
+					<li>
+						<span class="left-span">起始日期</span>
+						<input name="start_time" class="li-height" placeholder="起始日期" id="start_time" type="text" value="<?php  echo empty($b_time)?null:date('Y-m-d',$b_time);?>" readonly="readonly"  /> 
+					</li>
+					<li>
+						<span class="left-span">终止日期</span>
+						<input name="end_time" class="li-height" placeholder="终止日期" id="end_time" type="text" value="<?php  echo empty($e_time)?null:date('Y-m-d',$e_time);?>" readonly="readonly"  /> 
+					</li>
+					<li>
+						<button type="submit" class="btn btn-md btn-primary btn-sm">查 询</button>
 					</li>
 				</td>
 			</tr>

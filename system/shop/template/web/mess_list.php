@@ -6,9 +6,9 @@
 	    <table class="table table-striped table-bordered table-hover">
 			<tbody>
 				<tr>
-				<td>
+				<td  style="background-color: #fff">
 				<li style="float:left;list-style-type:none;">
-						<select  style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="cate_1" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
+						<select  style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" name="cate_1" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
 							<option value="0">请选择一级区间</option>
 							<?php  if(is_array($area)) { foreach($area as $row) { ?>
 							<?php  if($row['parentid'] == 0) { ?>
@@ -16,7 +16,7 @@
 							<?php  } ?>
 							<?php  } } ?>
 						</select>
-						<select style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" id="cate_2" name="cate_2">
+						<select style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" id="cate_2" name="cate_2">
 							<option value="0">请选择二级区间</option>
 							<?php  if(!empty($_GP['cate_1']) && !empty($children[$_GP['cate_1']])) { ?>
 							<?php  if(is_array($children[$_GP['cate_1']])) { foreach($children[$_GP['cate_1']] as $row) { ?>
@@ -27,17 +27,17 @@
 						
 						</li>
 						<li style="float:left;list-style-type:none;">
-						 <select name="status" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
+						 <select name="status" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
 							<option value="1" selected>开通中</option>
 							<option value="0" >已关闭</option>
 						</select>
 						</li>
 						
 						<li style="float:left;list-style-type:none;">
-											<span>关键字</span>	<input style="margin-right:10px;margin-top:10px;width: 300px; height:34px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" value="<?php  echo $_GP['keyword'];?>">
+											<span>关键字</span>	<input style="margin-right:10px;width: 300px; height:30px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" value="<?php  echo $_GP['keyword'];?>">
 						</li>
 						<li style="list-style-type:none;">
-						<button class="btn btn-primary" style="margin-right:10px;margin-top:10px;"><i class="icon-search icon-large"></i> 搜索</button>
+						<button class="btn btn-primary  btn-sm" style="margin-right:10px;"><i class="icon-search icon-large"></i> 搜索</button>
 						</li>
 					</td>
 				</tr>

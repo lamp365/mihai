@@ -18,44 +18,66 @@
 	.big-img-show img{
 		max-width: 100%;
 	}
+	.left-span{
+		float: left;
+	    line-height: 28px;
+	    background-color: #ededed;
+	    padding: 0 5px;
+	    border: 1px solid #cdcdcd;
+	    border-right: 0;
+	    font-size: 12px;
+	}
+	.purchase-table-list .li-height{
+	    height: 30px;
+	    padding-left: 5px;
+	}
+	.purchase-table-list tr{
+		background-color: #fff!important;
+	}
+	.purchase-table-list li{
+		float: left;
+		list-style-type: none;
+		margin-right: 10px;
+	}
 </style>
 <h3 class="header smaller lighter blue">商品评论管理</h3>
 
 <form action="<?php echo web_url('dish',array('op'=>'comment'));?>" class="form-horizontal" method="post">
-	<table class="table table-striped table-bordered table-hover">
+	<table class="table table-striped table-bordered table-hover purchase-table-list">
 		<tbody>
 		<tr>
 			<td>
-				<li style="float:left;list-style-type:none;padding-top: 10px;margin-right: 15px;">
-					时间范围:
-					<input type="text" id="datepicker_timestart" name="timestart" value="" readonly="readonly" />
-					<script type="text/javascript">
-						laydate({
-					        elem: '#datepicker_timestart',
-					        istime: true, 
-					        event: 'click',
-					        format: 'YYYY-MM-DD hh:mm:ss',
-					        istoday: true, //是否显示今天
-					        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-					    });
-					    laydate.skin("molv"); 
-					</script> -
-					<input type="text"  id="datepicker_timeend" name="timeend" value="" readonly="readonly" />
-					<script type="text/javascript">
-						laydate({
-					        elem: '#datepicker_timeend',
-					        istime: true, 
-					        event: 'click',
-					        format: 'YYYY-MM-DD hh:mm:ss',
-					        istoday: true, //是否显示今天
-					        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-					    });
-					    laydate.skin("molv");
-					</script>
+				
+				<li >
+					<span class="left-span">开始</span>
+					<input class="li-height" type="text" id="datepicker_timestart" name="timestart" value="" readonly="readonly" />
 				</li>
-
-				<li style="float:left;list-style-type:none;">
-					<select class="sel_system" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
+				<li > - </li>
+				<li>
+					<span class="left-span">结束</span>
+					<input class="li-height" type="text"  id="datepicker_timeend" name="timeend" value="" readonly="readonly" />
+				</li>
+				<script type="text/javascript">
+					laydate({
+				        elem: '#datepicker_timestart',
+				        istime: true, 
+				        event: 'click',
+				        format: 'YYYY-MM-DD hh:mm:ss',
+				        istoday: true, //是否显示今天
+				        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+				    });
+				    laydate({
+				        elem: '#datepicker_timeend',
+				        istime: true, 
+				        event: 'click',
+				        format: 'YYYY-MM-DD hh:mm:ss',
+				        istoday: true, //是否显示今天
+				        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+				    });
+				    laydate.skin("molv"); 
+				</script>
+				<li>
+					<select class="sel_system" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
 						<option value="0">系统设备</option>
 						<option value="3" <?php if($_GP['system'] == 3) echo "selected"; ?>>IOS</option>
 						<option value="2" <?php if($_GP['system'] == 2) echo "selected"; ?>>Android</option>
@@ -63,15 +85,15 @@
 					</select>
 				</li>
 
-				<li style="float:left;list-style-type:none;">
-					<input style="margin-right:5px;margin-top:10px;width: 300px; height:34px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" placeholder="模糊匹配标题或者具体宝贝id" value="<?php echo $keyword; ?>">
+				<li>
+					<input style="margin-right:5px;width: 300px; height:30px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" placeholder="模糊匹配标题或者具体宝贝id" value="<?php echo $keyword; ?>">
 				</li>
-				<li style="float:left;list-style-type:none;">
-					<button class="btn btn-primary" style="margin-right:10px;margin-top:10px;"><i class="icon-search icon-large"></i> 搜索</button>
+				<li >
+					<button class="btn btn-primary btn-sm" style="margin-right:10px;"><i class="icon-search icon-large"></i> 搜索</button>
 				</li>
 
-				<li style="list-style-type:none;float: right;">
-					<a class="btn btn-primary" style="margin-right:10px;margin-top:10px;" href="<?php echo web_url('dish',array('op'=>'addcomment','type'=>'new'));?>"> 添加评论 </a>
+				<li style="float: right;">
+					<a class="btn btn-primary btn-sm" style="margin-right:10px;" href="<?php echo web_url('dish',array('op'=>'addcomment','type'=>'new'));?>"> 添加评论 </a>
 				</li>
 			</td>
 		</tr>

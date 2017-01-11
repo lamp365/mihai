@@ -5,29 +5,22 @@
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script> -->
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style type="text/css">
+.dummy-table-list{
+width:100%;margin-bottom: 0;border: 1px solid #ddd;
+}
 	.dummy-table-list li{
-			margin-top:3px;
+			margin:7px 5px;
 			float: left;
-			margin-right: 10px;
 			list-style: none;
 		}
-		.dummy-table-list tr{
-			background-color: #f9f9f9;
-			border-top: 1px solid #ddd;
-		}
-		.dummy-table-list td{
-			border: 1px solid #ddd;
-		}
 		.dummy-table-list li select{
-			height:26px;
-		}
-		.dummy-table-list li span{
-			display: inline-block;
-			height:24px;
-			line-height: 24px;
+			height:30px;
 		}
 		.panel.with-nav-tabs .panel-heading{
     padding: 5px 5px 0 5px;
+}
+.hide-tr{
+	display: none;
 }
 .panel.with-nav-tabs .nav-tabs{
 	border-bottom: none;
@@ -280,6 +273,26 @@
     color: #fff; /* active text color */
     background-color: #a94442; /* active bg color */
 }
+.dummy-table-list li .left-span{
+	float: left;
+	height: 30px;
+    line-height: 30px;
+    background-color: #ededed;
+    padding: 0 5px;
+    border: 1px solid #cdcdcd;
+    border-right: 0;
+    font-size: 12px;
+}
+.dummy-table-list .li-height{
+    height: 30px;
+    padding-left: 5px;
+}
+.dummy-table-list td{
+	padding: 0!important;
+}
+#paytype{
+	height: 30px
+}
 </style>
 <script>
 	function cleartime()
@@ -398,19 +411,24 @@
 			<input type="hidden" name="do" value="order"/>
 			<input type="hidden" name="op" value="display"/>
 			<input type="hidden" name="status" value="<?php  echo $_GP['status'];?>"/>
-            	<table  class="table dummy-table-list" style="width:100%;margin-bottom: 0" align="center">
+            	<table  class="table dummy-table-list" align="center">
 					<tbody>
 						<tr>
-							<td style="height: 50px;">
-								<li><span>订单编号：</span></li>
+							<td>
+
 								<li>
-									<input name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
+									<span class="left-span">订单编号</span>
+									<input class="li-height" name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" placeholder="订单编号"/> 
 								</li>	
-
-								<li><span>下单时间：</span></li>
 								<li >
-									<input name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - <input id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
-
+									<span class="left-span">开始</span>
+									<input class="li-height" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  placeholder="下单开始时间"/>
+								</li>	
+								<li> - </li>
+								<li>
+									<span class="left-span">结束</span>
+									<input class="li-height" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly" placeholder="下单结束时间" /> <a href="javascript:;" onclick="cleartime()">清空</a>
+								</li>
 									<script type="text/javascript">
 										laydate({
 										 	elem: '#begintime',
@@ -430,57 +448,51 @@
 										});
 										laydate.skin("molv"); 
 									</script> 
-									<script type="text/javascript">
-										
-									</script>
-								</li>	
-								<li ><span>支付方式：</span></li>
 								<li>
-									<select style="margin-right:15px;" id="paytype" name="paytype" > 
+								<span class="left-span">支付方式</span>
+									<select  id="paytype" name="paytype" > 
 									 <option value="" <?php  echo empty($_GP['paytype'])?'selected':'';?>>--未选择--</option>
 									<?php  if(is_array($payments)) { foreach($payments as $item) { ?>
 					                 <option value="<?php  echo $item["code"];?>" <?php  echo $item['code']==$_GP['paytype']?'selected':'';?>><?php  echo $item['name']?></option>
 					                  	<?php  } } ?>
 				                   	</select>
 				                   
-								</li>	
-
-								<li ><span>收货人姓名：</span></li>
+								</li>
 								<li >
-									<input name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
-								</li>	
+									<span class="left-span">收货人姓名</span>
+									<input class="li-height" name="address_realname" type="text" placeholder="收货人姓名" value="<?php  echo $_GP['address_realname'];?>"/>
+								</li>
+								<li>	
 								<div class="btn-group">
-								  <input type="submit" name="submit" value=" 查 询 " class="btn btn-primary">
-								  <button type="button" class="btn btn-primary dropdown-toggle add-more-btn" data-toggle="dropdown">
+								  <input type="submit" name="submit" value=" 查 询 " class="btn btn-primary btn-sm">
+								  <button type="button" class="btn btn-primary dropdown-toggle add-more-btn btn-sm" data-toggle="dropdown">
 								    <span class="caret"></span>
 								    <span class="sr-only">Toggle Dropdown</span>
 								  </button>
 								</div>
+								</li>
 							</td>
 						</tr>
-					</tbody>
-				</table>
-				<table  class="table dummy-table-list hide-tr" style="width:100%;display: none;" align="center">
-					<tbody>
-						<tr style="border-top: none;background-color: #fff">
+						<tr class="hide-tr">
 							<td >
-								<li><span>收货人手机：</span></li>
 								<li >
-									<input name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" />
+									<span class="left-span">收货人手机</span>
+									<input class="li-height" name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" placeholder="收货人手机"/>
 								</li>
-								<li ><span>产品名称：</span></li>
-								<li><input name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" /></li>
-
-								<li ><span>导出模板：</span></li>
+								<li>
+									<span class="left-span">产品名称</span>
+									<input class="li-height" name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" placeholder="产品名称"/>
+								</li>
 								<li >
-				                    <select name="template">
+									<span class="left-span">导出模板</span>
+				                    <select name="template" class="li-height">
 				                          <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
 										  <option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
 									</select>
 								</li>	
-								<li ><span>标记：</span></li>
 								<li >
-				                  	<select name="tag">
+									<span class="left-span">标记</span>
+				                  	<select name="tag" class="li-height">
 									  <option value="-1" selected>--未选择--</option>
 				                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
 									  <option value="1" <?php  echo $_GP['tag']==1?'selected':'';?>>红色</option>
@@ -492,8 +504,8 @@
 								</li>	
 								<li>
 									
-									<button type="submit" name="report" value="report" style="margin-top:-4px; " class="btn btn-warning">导出excel</button>&nbsp;&nbsp;
-									<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank">打印订单</a>
+									<button type="submit" name="report" value="report" class="btn btn-warning btn-sm">导出excel</button>&nbsp;&nbsp;
+									<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" class="btn btn-info btn-sm" target="_blank">打印订单</a>
 								</li>
 							</td>
 
@@ -504,17 +516,16 @@
             </div>
             <div class="tab-pane fade" id="tab2primary">
             	<form action="" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
-					<table  class="table dummy-table-list" style="width:100%;" align="center">
+					<table  class="table dummy-table-list" align="center">
 					<tbody>
 						<tr>
 							<td>
-								<li>退款表单：</li>
-								<li>
-									<input name="myxls" type="file"   value="" />
-								</li>
-
+								<li style="line-height: 26px;">退款表单：</li>
 								<li >
-									<button type="button" class="refund btn btn-md btn-warning">批量退款</button>
+									<input style="line-height: 26px;" name="myxls" type="file"   value="" />
+								</li>
+								<li >
+									<button type="button" class="refund btn btn-md btn-warning btn-sm">批量退款</button>
 								</li>
 							</td>
 						</tr>	

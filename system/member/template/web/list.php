@@ -4,26 +4,36 @@
 		.modal-body i{
 			color: red;
 		}
-		.vip-table-list tr{
-			background-color: #f9f9f9;
-			border-top: 1px solid #ddd;
-		}
-		.vip-table-list td{
-			border: 1px solid #ddd;
+		.vip-table-list{
+			width: 100%;
+			border:1px solid #ddd;
 		}
 		.vip-table-list li{
-			margin-top:3px;
+			margin:7px 5px;
 			float: left;
-			margin-right: 10px;
 			list-style: none;
 		}
-		.vip-table-list li select{
-			height:26px;
+		.vip-table-list .li-height{
+		    height: 30px;
+		    padding-left: 5px;
 		}
-		.vip-table-list li span{
-			display: inline-block;
-			height:24px;
-			line-height: 24px;
+		.vip-table-list li select{
+			height: 30px;
+		}
+		.vip-table-list td{
+			padding: 0!important;
+		}
+		.left-span{
+			float: left;
+		    line-height: 28px;
+		    background-color: #ededed;
+		    padding: 0 5px;
+		    border: 1px solid #cdcdcd;
+		    border-right: 0;
+		    font-size: 12px;
+		}
+		.hide-tr{
+			display: none;
 		}
 	</style>
 <h3 class="header smaller lighter blue" style="display: inline-block">会员管理</h3> &nbsp; &nbsp;<a href="javascript:;" style="margin-top: -10px;" data-toggle="modal" data-target="#addModal" class="btn btn-md btn-info">添加会员</a>
@@ -34,43 +44,41 @@
 				<input type="hidden" name="mod" value="site"/>					
 				<input type="hidden" name="status" value="<?php echo isset($_GP['status'])? $_GP['status']: 1;?>"/>
 
-				<table class="table vip-table-list" style="width:100%;" align="center">
+				<table class="table vip-table-list"  align="center">
 					<tbody>
 						<tr>
 							<td>
-								<li><span>用户名：</span></li>
 								<li>
-									<input name="realname"  type="text" value="<?php  echo $_GP['realname'];?>" />
-								</li>	
-								<li><span>手机号码：</span></li>
+									<span class="left-span">用户名</span>
+									<input name="realname" class="li-height" placeholder="用户名" type="text" value="<?php  echo $_GP['realname'];?>" />
+								</li>
 								<li>
-									<input name="mobile" type="text"   value="<?php  echo $_GP['mobile'];?>" />
-								</li>	
-								<li ><span>状态：</span></li>
+									<span class="left-span">手机号码</span>
+									<input name="mobile" class="li-height" type="text" placeholder="手机号码" value="<?php  echo $_GP['mobile'];?>" />
+								</li>
 								<li >
+									<span class="left-span">状态</span>
 									<select  name="showstatus">
 			 							<option value="1" <?php if(empty($_GP['showstatus'])||$_GP['showstatus']==1){?>selected=""<?php }?>>正常</option>
 					                 	<option value="-1" <?php if($_GP['showstatus']==-1){?>selected=""<?php }?>>禁用</option>
 		              	            </select>
 								</li>
-								<li><span>会员等级</span></li>
 								<li>
+									<span class="left-span">会员等级</span>
 									<select name="rank_level">
 		     							<option value="0">选择会员等级</option>   
 		     							<?php foreach($rank_model_list as $rank_model){?>
 		     				  				<option value="<?php echo $rank_model['rank_level']?>" <?php if($rank_model['rank_level']==$_GP['rank_level']){?>selected=""<?php }?>><?php echo $rank_model['rank_name']?></option> 
 		     							<?php }?>
 	     							</select>
-								</li>	
-							
-								<li ><span>微信昵称</span></li>
-								<li >
-									<input name="weixinname"  type="text" value="<?php  echo $_GP['weixinname'];?>" />
 								</li>
-							
-								<li ><span>支付宝昵称</span></li>
+								<li >
+									<span class="left-span">微信昵称</span>
+									<input name="weixinname" class="li-height" placeholder="微信昵称" type="text" value="<?php  echo $_GP['weixinname'];?>" />
+								</li>
 								<li>
-									<input name="alipayname"  type="text" value="<?php  echo $_GP['alipayname'];?>" />
+									<span class="left-span">支付宝昵称</span>
+									<input name="alipayname" class="li-height" placeholder="支付宝昵称" type="text" value="<?php  echo $_GP['alipayname'];?>" />
 								</li>
 								<li style="display: none;"><span>按食堂筛选：</span></li>
 								<li style="display: none;">
@@ -81,47 +89,54 @@
 				                  		<?php  } } ?>
 				                   	</select>
 								</li>
+								<li>
+									<div class="btn-group">
+									  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+									  <button type="button" class="btn btn-primary btn-sm dropdown-toggle add-more-btn" data-toggle="dropdown">
+									    <span class="caret"></span>
+									    <span class="sr-only">Toggle Dropdown</span>
+									  </button>
+									</div>
+								</li>
+							</td>
+						</tr>
+						<tr class="hide-tr">
+							<td>
+								<li>
+									<span class="left-span">起始日期</span>
+									<input type="text" class="li-height" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
+								</li>
+								<li> - </li>
+								<li>
+									<span class="left-span">终止日期</span>
+									<input type="text" class="li-height" id="datepicker_timeend" name="timeend" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
+									<script type="text/javascript">
+										laydate({
+									        elem: '#datepicker_timestart',
+									        istime: true, 
+									        event: 'click',
+									        format: 'YYYY-MM-DD hh:mm:ss',
+									        istoday: true, //是否显示今天
+									        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+									    });
+										laydate({
+									        elem: '#datepicker_timeend',
+									        istime: true, 
+									        event: 'click',
+									        format: 'YYYY-MM-DD hh:mm:ss',
+									        istoday: true, //是否显示今天
+									        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+									    });
+									    laydate.skin("molv");
+									    $(".add-more-btn").click(function(){
+											$(".hide-tr").toggle();
+										});
+									</script>
+								</li>
+								
 							</td>
 						</tr>
 					</tbody>
-				</table>
-				<table class="table vip-table-list" style="width:100%;" align="center">
-					<tr>
-						<td>
-							<li>
-								时间范围:
-							</li>
-							<li>
-								<input type="text" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
-								<script type="text/javascript">
-									laydate({
-								        elem: '#datepicker_timestart',
-								        istime: true, 
-								        event: 'click',
-								        format: 'YYYY-MM-DD hh:mm:ss',
-								        istoday: true, //是否显示今天
-								        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-								    });
-								    laydate.skin("molv"); 
-								</script> -
-								<input type="text"  id="datepicker_timeend" name="timeend" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
-								<script type="text/javascript">
-									laydate({
-								        elem: '#datepicker_timeend',
-								        istime: true, 
-								        event: 'click',
-								        format: 'YYYY-MM-DD hh:mm:ss',
-								        istoday: true, //是否显示今天
-								        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-								    });
-								    laydate.skin("molv");
-								</script>
-							</li>
-							<li>
-								<input name="submit" type="submit" style="margin-top:-4px; " value=" 查 找 " class="btn btn-info"/>
-							</li>
-						</td>
-					</tr>
 				</table>
 			</form>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>

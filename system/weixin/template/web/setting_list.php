@@ -26,6 +26,24 @@
                     <a class="btn btn-xs btn-info" href="<?php echo web_url('setting', array('op' => 'add','name'=>'weixin', 'id' => $value['id']))?>">
                         <i class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;
                     </a>
+                    <?php if($value['is_used'] == 1){ ?>
+                        <a class="btn btn-xs btn-info" href="<?php echo web_url('setting', array('op' => 'use_weixin','name'=>'weixin','is_used'=>'0', 'id' => $value['id']))?>">
+                            已&nbsp;启&nbsp;用&nbsp;
+                        </a>
+                    <?php }else{  ?>
+                        <a class="btn btn-xs btn-danger" href="<?php echo web_url('setting', array('op' => 'use_weixin','name'=>'weixin','is_used'=>'1', 'id' => $value['id']))?>">
+                            已&nbsp;禁&nbsp;用&nbsp;
+                        </a>
+                    <?php }  ?>
+                    <?php if($value['is_default'] == 1){ ?>
+                        <a class="btn btn-xs btn-info" href="<?php echo web_url('setting', array('op' => 'isdefault','name'=>'weixin','is_default'=>'0', 'id' => $value['id']))?>">
+                            取消默认
+                        </a>
+                    <?php }else{  ?>
+                        <a class="btn btn-xs btn-success" href="<?php echo web_url('setting', array('op' => 'isdefault','name'=>'weixin','is_default'=>'1', 'id' => $value['id']))?>">
+                            设为默认
+                        </a>
+                    <?php }  ?>
                 </td>
             </tr>
         <?php  } } ?>
@@ -33,19 +51,21 @@
     </table>
 
 <div class="row">
-    <div class="form-group">
-        <label class="col-sm-1 control-label no-padding-left" >微信快捷登陆：</label>
+    <form action="<?php echo web_url('setting', array('op' => 'loginStatus','name'=>'weixin'))?>" method="post">
+        <div class="form-group">
+            <label class="col-sm-1 control-label no-padding-left" >微信快捷登陆：</label>
 
-        <div class="col-sm-1">
-            <input type="radio" name="thirdlogin_weixin" value="0" <?php  echo empty($thirdlogin['enabled'])?"checked=\"true\"":"";?>> 关闭  &nbsp;&nbsp;
+            <div class="col-sm-1">
+                <input type="radio" name="thirdlogin_weixin" value="0" <?php  echo empty($thirdlogin['enabled'])?"checked=\"true\"":"";?>> 关闭  &nbsp;&nbsp;
 
-            <input type="radio" name="thirdlogin_weixin" value="1" <?php  echo $thirdlogin['enabled']==1?"checked=\"true\"":"";?>> 开启
+                <input type="radio" name="thirdlogin_weixin" value="1" <?php  echo $thirdlogin['enabled']==1?"checked=\"true\"":"";?>> 开启
 
+            </div>
+            <div class="col-sm-1">
+                <button type="submit" class="btn btn-primary btn-xs">确 定</button>
+            </div>
         </div>
-        <div class="col-sm-1">
-            <button type="submit" class="btn btn-primary btn-xs">确 定</button>
-        </div>
-    </div>
+    </form>
 </div>
 
 

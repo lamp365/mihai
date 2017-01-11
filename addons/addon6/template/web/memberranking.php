@@ -9,6 +9,28 @@
 defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
+<style type="text/css">
+	.sub-title{
+		border: 1px solid #ddd;padding: 7px 0;
+	}
+	.left-span{
+		float: left;
+	    line-height: 28px;
+	    background-color: #ededed;
+	    padding: 0 5px;
+	    border: 1px solid #cdcdcd;
+	    border-right: 0;
+	    font-size: 12px;
+	}
+	.sub-title-div{
+		float: left;    
+		margin-right: 10px;
+	}
+	.sub-title .li-height{
+	    height: 30px;
+	    padding-left: 5px;
+	}
+</style>
 <h3 class="header smaller lighter blue">会员消费排行</h3>
 		<div class="alert alert-info" style="margin:10px 0; width:auto;">
 			<i class="icon-lightbulb"></i>  查询有成交记录的会员的订单数和购物金额,并按购物金额从高到低排行。
@@ -20,13 +42,20 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 				<input type="hidden" name="do" value="memberranking" />
 		
 <h4 class="sub-title">
-	起始日期：<input name="start_time" id="start_time" type="text" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
-， 终止日期：<input name="end_time" id="end_time" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
-	&nbsp;&nbsp;<select name="sortname"  style="width:150px;">
-	<option <?php  if($sortname == 'ordermoney') { ?>selected="selected"<?php  } ?> value="ordermoney">消费金额</option>
-	<option <?php  if($sortname == 'ordercount') { ?>selected="selected"<?php  } ?>value="ordercount">订单数</option>
-
-</select>	&nbsp;&nbsp;&nbsp;<input type="submit" name="" value=" 查 询 " class="btn btn-primary" >&nbsp;<button type="submit" name="memberrankingEXP01" value="memberrankingEXP01" class="btn btn-warning btn-primary">导出excel</button>
+	<div class="sub-title-div">
+		<span class="left-span">起始日期</span>
+		<input name="start_time" id="start_time" type="text" class="li-height" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
+	</div>
+	<div class="sub-title-div">
+		<span class="left-span">终止日期</span>
+		<input name="end_time" id="end_time" type="text" class="li-height" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
+	</div>
+	<select name="sortname"  style="width:150px;height: 30px">
+		<option <?php  if($sortname == 'ordermoney') { ?>selected="selected"<?php  } ?> value="ordermoney">消费金额</option>
+		<option <?php  if($sortname == 'ordercount') { ?>selected="selected"<?php  } ?>value="ordercount">订单数</option>
+	</select>
+	<input type="submit" name="" value=" 查 询 " class="btn btn-primary btn-sm" >&nbsp;
+	<button type="submit" name="memberrankingEXP01" value="memberrankingEXP01" class="btn btn-warning btn-primary btn-sm">导出excel</button>
 	</h4>
 </form>
 

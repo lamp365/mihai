@@ -1,14 +1,11 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
-
-	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style type="text/css">
 
 	.purchase-table-list li{
-		margin:5px;
+		margin:7px 5px;
 		float: left;
-		margin-right: 10px;
 		list-style: none;
 	}
 	.purchase-table-list td{
@@ -33,15 +30,15 @@
 		cursor: pointer;
 	}
 	.purchase-table-list .li-height{
-	    height: 27px;
+	    height: 30px;
 	    padding-left: 5px;
 	}
 	.purchase-table-list li select{
-		height: 28px;
+		height: 30px;
 	}
 	.left-span{
 		float: left;
-	    line-height: 26px;
+	    line-height: 28px;
 	    background-color: #ededed;
 	    padding: 0 5px;
 	    border: 1px solid #cdcdcd;
@@ -160,6 +157,7 @@
 			<tr >
 				<td>
 					<li>
+						<span class="left-span">订单编号</span>
 						<input name="ordersn" class="li-height" placeholder="订单编号" type="text" value="<?php  echo $_GP['ordersn'];?>" /> 
 					</li>	
 				
@@ -168,7 +166,7 @@
 					<li>
 						<?php if(isAgentAdmin()){ ?>
 						<span class="left-span">业务员：</span>
-							<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
+							<select  id="relation_uid" name="relation_uid" >
 								 <option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
 								<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
 									<?php if($item["id"] == $_SESSION['account']['id']){ ?>
@@ -178,7 +176,7 @@
 						   </select>
 		               	<?php } else{ ?>
 		               	<span class="left-span">业务员：</span>
-							<select style="margin-right:15px;" id="relation_uid" name="relation_uid" >
+							<select  id="relation_uid" name="relation_uid" >
 								<option value="" <?php  echo empty($_GP['relation_uid'])?'selected':'';?>>--选择业务员--</option>
 								<?php  if(is_array($agentAdmin)) { foreach($agentAdmin as $item) { ?>
 									<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['relation_uid']?'selected':'';?>><?php  echo $item['username']?></option>
@@ -192,9 +190,9 @@
 	                        <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
 							<option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
 						</select>
-					</li>	
-					<li ><span>标记：</span></li>
+					</li>
 					<li >
+						<span class="left-span">标记</span>
 	                    <select name="tag">
 						  <option value="-1" selected>--未选择--</option>
 	                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
@@ -223,15 +221,22 @@
 			<tr class="hide-tr">
 				<td>
 					<li >
+						<span class="left-span">收货人手机</span>
 						<input name="mobile" class="li-height" placeholder="收货人手机" type="text" value="<?php  echo $_GP['mobile'];?>" />
 					</li>
-					<li><input name="goodsname" class="li-height" placeholder="产品名称" type="text" value="<?php  echo $_GP['title'];?>" /></li>
+					<li><span class="left-span">产品名称</span><input name="goodsname" class="li-height" placeholder="产品名称" type="text" value="<?php  echo $_GP['title'];?>" /></li>
 					<li >
+						<span class="left-span">收货人姓名</span>
 						<input  class="li-height" placeholder="收货人姓名" name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
 					</li>
 
 					<li>
-						<input class="li-height" placeholder="开始时间" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  /> - 
+						<span class="left-span">开始</span>
+						<input class="li-height" placeholder="开始时间" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  />
+					</li>
+					<li> - </li>
+					<li>
+						<span class="left-span">结束</span>
 						<input class="li-height" placeholder="结束时间" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
 			
 						<script type="text/javascript">

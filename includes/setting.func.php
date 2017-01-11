@@ -40,7 +40,7 @@ function globaSetting($conditions = array())
     $domain = $_SERVER['HTTP_HOST'];
     //根据访问的域名查找 微信配置信息
     $weixin_config = mysqld_select("select * from ".table('weixin_config')." where domain='{$domain}' and is_used=1");
-    if(!empty($weixin_config)){
+    if(empty($weixin_config)){
         //如果找不到 则使用默认的
         $weixin_config = mysqld_select("select * from ".table('weixin_config')." where is_default=1");
     }

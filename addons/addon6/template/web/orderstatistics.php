@@ -9,35 +9,38 @@
 defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
 <style>
-
-	.c_hidden {
-clear: both;
-display: none;
-background-color: #f6faf1;
-width: 100%;
+.c_hidden {
+	clear: both;
+	display: none;
+	background-color: #f6faf1;
+	width: 100%;
 }
-	.sub-search-list tr{
-		background-color: #f9f9f9;
-		border-top: 1px solid #ddd;
-	}
-	.sub-search-list td{
-		border: 1px solid #ddd;
-	}
-	.sub-search-list li{
-		margin-top:3px;
-		float: left;
-		margin-right: 10px;
-		list-style: none;
-	}
-	.sub-search-list li select{
-		height:26px;
-	}
-	.sub-search-list li span{
-		display: inline-block;
-		height:24px;
-		line-height: 24px;
-	}
-	</style>
+.sub-search-list{
+	border: 1px solid #ddd;
+}
+.sub-search-list li{
+	float: left;
+	margin-right: 10px;
+	list-style: none;
+}
+.sub-search-list li select{
+	height:26px;
+}
+
+.left-span{
+	float: left;
+    line-height: 28px;
+    background-color: #ededed;
+    padding: 0 5px;
+    border: 1px solid #cdcdcd;
+    border-right: 0;
+    font-size: 12px;
+}
+.sub-search-list .li-height{
+    height: 30px;
+    padding-left: 5px;
+}
+</style>
 	<script>
 		$(function(){
 	$("#TabOrders tr").not(".table_title,.c_hidden").click(function(){
@@ -69,28 +72,28 @@ width: 100%;
 				<tbody>
 					<tr>
 						<td>
-							<li ><span>会员名：</span></li>
 							<li >
-								<input name="realname" type="text"  class="span3" value="<?php  echo $realname;?>">
+								<span class="left-span">会员名</span>
+								<input name="realname" type="text" placeholder="会员名" class="span3 li-height" value="<?php  echo $realname;?>">
 							</li>	
-							<li><span>收货人：</span></li>
 							<li>
-								<input name="addressname" type="text"  class="span3" value="<?php  echo $addressname;?>">
+								<span class="left-span">收货人</span>
+								<input name="addressname" type="text" placeholder="收货人" class="span3 li-height" value="<?php  echo $addressname;?>">
 							</li>
-							<li><span>订单号：</span></li>
 							<li>
-								<input name="ordersn" type="text"  class="span3" value="<?php  echo $ordersn;?>">
+								<span class="left-span">订单号</span>
+								<input name="ordersn" type="text" placeholder="订单号" class="span3 li-height" value="<?php  echo $ordersn;?>">
 							</li>
-							<li ><span>起始日期：</span></li>
 							<li >
-								<input name="start_time" id="start_time" type="text" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
+								<span class="left-span">起始日期</span>
+								<input name="start_time" id="start_time" class="li-height" type="text" value="<?php  echo empty($start_time)?date('Y-m-d',time()):date('Y-m-d',$start_time);?>" readonly="readonly"  /> 
 							</li>	
-							<li ><span>终止日期：</span></li>
 							<li>
-								<input name="end_time" id="end_time" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
+								<span class="left-span">终止日期</span>
+								<input name="end_time" id="end_time" class="li-height" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
 							</li>
-							<li style="display: none;"><span>食堂：</span></li>	
 							<li style="display: none;">
+								<span class="left-span">食堂</span>
 								<select style="margin-right:15px;" id="mess" name="mess" >
 								 	<option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
 									<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
@@ -98,16 +101,16 @@ width: 100%;
 	                  				<?php  } } ?>
 	                   			</select>
 							</li>
-							<li><span>状态：</span></li>	
 							<li>
-								<select name="isstatus">
+								<span class="left-span">状态</span>
+								<select name="isstatus" style="height: 30px">
 									<option value="" <?php  echo $isstatus==''?'selected':'';?>>全部</option>
 									<option value="1" <?php  echo $isstatus==1?'selected':'';?>>已付款</option>
 									<option value="3" <?php  echo $isstatus==3?'selected':'';?>>已完成</option>
 								</select>
 							</li>
-							<li><input type="submit" name="" value=" 查 询 " style="margin-top: -4px;" class="btn btn-primary" ></li>
-							<li><button type="submit" name="orderstatisticsEXP01" value="orderstatisticsEXP01" style="margin-top: -4px;" class="btn btn-warning btn-primary">导出excel</button></li>	
+							<li><input type="submit" name="" value=" 查 询 " class="btn btn-primary btn-sm" ></li>
+							<li><button type="submit" name="orderstatisticsEXP01" value="orderstatisticsEXP01" class="btn btn-sm btn-warning btn-primary">导出excel</button></li>	
 						<td>
 					</tr>
 				</tbody>

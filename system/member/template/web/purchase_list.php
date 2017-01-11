@@ -4,6 +4,12 @@
 			//color: red;
 			font-weight: bolder;
 		}
+		.purchase-table tr{
+			background-color: #fff!important;
+		}
+		.purchase-table li{
+			float:left;list-style-type:none;
+		}
 	</style>
 	<script>
 		function findRolers(obj){
@@ -16,12 +22,12 @@
 <h3 class="header smaller lighter blue">渠道商列表&nbsp;&nbsp; </h3>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
 	<form action="" class="form-horizontal" method="post">
-		<table class="table table-striped table-bordered table-hover">
+		<table class="table table-striped table-bordered table-hover purchase-table">
 			<tbody>
 			<tr>
 				<td>
-					<li style="float:left;list-style-type:none;">
-						<select style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" onchange="findRolers(this)">
+					<li>
+						<select style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" onchange="findRolers(this)">
 							<option value="0">请选择业务员</option>
 							<?php
 								if(!empty($users)){
@@ -37,16 +43,16 @@
 							?>
 						</select>
 					</li>
-					<li style="float:left;list-style-type:none;">
+					<li>
 
 					</li>
-					<li style="float:left;list-style-type:none;">
+					<li>
 
-						<input style="margin-right:5px;margin-top:10px;width: 300px; height:34px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" value="<?php echo $_GP['keyword'] ?>"  placeholder="手机号或者用户名">
+						<input style="margin-right:5px;width: 300px; height:30px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" value="<?php echo $_GP['keyword'] ?>"  placeholder="手机号或者用户名">
 
 					</li>
-					<li style="list-style-type:none;">
-						<button class="btn btn-primary" style="margin-right:10px;margin-top:10px;" type="submit"><i class="icon-search icon-large"></i> 搜索</button>
+					<li>
+						<button class="btn btn-primary btn-sm" style="margin-right:10px;" type="submit"><!-- <i class="icon-search icon-large"></i> --> 查 询</button>
 					</li>
 				</td>
 			</tr>

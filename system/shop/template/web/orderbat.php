@@ -15,13 +15,13 @@
      return isExit;   
 }
 	</script>
-	<h3 class="header smaller lighter blue">批量发货</h3>
+	<h3 class="header smaller lighter blue">批量发货1</h3>
 <form action="" method="post" class="form-horizontal">
 				
-	<div class="form-group" style="margin: 0;padding: 0;    height: 50px;">
-		<div class="col-sm-12" style="background-color: #f9f9f9;border: 1px solid #ddd;    height: 50px;">
+	<div class="form-group" style="margin: 0;padding: 0;    height: 45px;">
+		<div class="col-sm-12" style="border: 1px solid #ddd;height: 45px;">
 			<label class="control-label no-padding-left" > 批量设置快递公司：</label>
-			<select  name="expressall" id="expressall" >
+			<select  name="expressall" id="expressall" style="height: 30px;">
 				<option value="-2" >请选择</option>
 				<option value="-1" data-name="">无需快递</option>
 				<?php   foreach($dispatchlist as $dispatchitem) { ?>
@@ -29,7 +29,7 @@
 				<?php   } ?>
 			</select>
 			<label class=" control-label no-padding-left" for="form-field-1">	
-				<button type="submit"  name="sendbatexpress" value="sendbatexpress" class="btn btn-warning">批量发货</button>
+				<button type="submit"  name="sendbatexpress" value="sendbatexpress" class="btn btn-warning btn-sm">批量发货</button>
 			</label>
 		</div>
 	</div>

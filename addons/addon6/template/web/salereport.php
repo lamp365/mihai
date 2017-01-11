@@ -19,18 +19,18 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 				<input type="hidden" name="name" value="addon6" />
 				<input type="hidden" name="do" value="salereport" />
 	
-				<h4 class="sub-title">
-		按月统计：
-				&nbsp;&nbsp;&nbsp;
-					<select name="dropMonthForYaer" >
+				<h4 class="sub-title" style="border: 1px solid #ddd;padding: 7px 0;">
+		按月统计：<select name="dropMonthForYaer" >
 		<?php  if(is_array($years)) { foreach($years as $v) { ?>
 	<option value="<?php  echo $v['year'];?>"  <?php  if($v['checked'] == 1) { ?>selected="selected"<?php  } ?>><?php  echo $v['year'];?></option>
 			<?php  } } ?>
 </select>
-								年&nbsp;&nbsp;
+								年
 				<input type="radio" name="radioMonthForSaleType" value="0" <?php  if($radioMonthForSaleType == 0) { ?>checked=""<?php  } ?>>交易量&nbsp;
-			<input type="radio" name="radioMonthForSaleType" value="1" <?php  if($radioMonthForSaleType == 1) { ?>checked=""<?php  } ?>>交易额&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="submit" value=" 查 询 " class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			<button type="submit" name="salereportEXP01" value="salereportEXP01" class="btn btn-warning btn-primary">导出excel</button></td>
+				<input type="radio" name="radioMonthForSaleType" value="1" <?php  if($radioMonthForSaleType == 1) { ?>checked=""<?php  } ?>>交易额&nbsp;
+				<input type="submit" name="submit" value=" 查 询 " class="btn btn-primary btn-sm">&nbsp;
+				<button type="submit" name="salereportEXP01" value="salereportEXP01" class="btn btn-warning btn-primary btn-sm" >导出excel</button>
+				</td>
 					
 				
 					<span class="pull-right" style="padding:10px 10px 0 0;">总<?php  if($radioMonthForSaleType == 1 ) { ?>交易额<?php  } else { ?>交易量<?php  } ?>：<span style="color:red; "><?php  echo $allcount;?></span>，最高峰<?php  if($radioMonthForSaleType == 1 ) { ?>交易额<?php  } else { ?>交易量<?php  } ?>：<span style="color:red; "><?php  echo $topcount;?></span></span>
@@ -62,14 +62,13 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 							</tbody>
 						</table>
 				
-				<h4 class="sub-title">按日统计&nbsp;&nbsp;&nbsp;
-					
+				<h4 class="sub-title" style="border: 1px solid #ddd;padding: 7px 0;">按日统计
 					<select name="dropdayForYaer" >
 		<?php  if(is_array($years)) { foreach($years as $v) { ?>
 	<option value="<?php  echo $v['year'];?>"  <?php  if($v['checked'] == 1) { ?>selected="selected"<?php  } ?>><?php  echo $v['year'];?></option>
 			<?php  } } ?>
 </select>
-								年&nbsp;&nbsp;&nbsp;
+								年
 							
 					<select name="selectmonthSale" class="span1">	
 	<option value="1" <?php  if($selectmonthSale == 1 ) { ?>selected="selected" <?php  } ?>>1</option>
@@ -89,8 +88,8 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 				
 					<label ><input type="radio" name="radiodayForSaleType" value="0" <?php  if($radiodayForSaleType == 0) { ?>checked=""<?php  } ?>>交易量</label>&nbsp;
 					<label ><input type="radio" name="radiodayForSaleType" value="1" <?php  if($radiodayForSaleType == 1) { ?>checked=""<?php  } ?>>交易额</label>&nbsp;
-		<input type="submit" name="t2" value="查询" class="btn btn-primary">&nbsp;&nbsp;
-						<button type="submit" name="salereportEXP02" value="salereportEXP02" class="btn btn-warning btn-primary">导出excel</button>
+		<input type="submit" name="t2" value="查询" class="btn btn-primary btn-sm">&nbsp;
+						<button type="submit" name="salereportEXP02" value="salereportEXP02" class="btn btn-warning btn-primary btn-sm">导出excel</button>
 		<span class="pull-right" style="padding:10px 10px 0 0;">总<?php  if($radiodayForSaleType == 1 ) { ?>交易额<?php  } else { ?>交易量<?php  } ?>：<span style="color:red; "><?php  echo $dayallcount;?></span>，最高峰<?php  if($radiodayForSaleType == 1 ) { ?>交易额<?php  } else { ?>交易量<?php  } ?>：<span style="color:red; "><?php  echo $daytopcount;?></span></span>
 					
 		

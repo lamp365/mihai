@@ -36,28 +36,40 @@ if($op == 'list'){
 			mysqld_update('weixin_config',$cfg,array('id'=>$_GP['id']));
 		}
 
-		/*
-                $thirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE code = :code", array(':code' => 'weixin'));
-                require WEB_ROOT.'/system/modules/plugin/thirogin/weixin/lang.php';
-
-                /*if (empty($thirdlogin['id'])) {
-                    $data = array(
-                        'code' => 'weixin',
-                        'enabled' => intval($_GP['thirdlogin_weixin']),
-                        'name' => $_LANG['thirdlogin_weixin_name']
-                    );
-                    mysqld_insert('thirdlogin', $data);
-                } else {
-                    $data = array(
-                        'enabled' => intval($_GP['thirdlogin_weixin']),
-                        'name' => $_LANG['thirdlogin_weixin_name'],
-                    );
-                    mysqld_update('thirdlogin',$data , array('code' =>'weixin'));
-                }
-        */
 		$url = web_url('setting',array('op' =>'list','name'=>'weixin'));
 		message('操作成功', $url, 'success');
 	}
 
 	include page('setting');
+
+}else if($op == 'use_weixin'){
+	mysqld_update('weixin_config',array('is_used'=>$_GP['is_used']),array('id'=>$_GP['id']));
+	message('操作成功', refresh(), 'success');
+}else if($op == 'isdefault'){
+	if($_GP['is_default']==1){
+		//先取消掉所有的默认，再重新设置一个默认
+		mysqld_update('weixin_config',array('is_default'=>0));
+	}
+	mysqld_update('weixin_config',array('is_default'=>$_GP['is_default']),array('id'=>$_GP['id']));
+	message('操作成功', refresh(), 'success');
+
+}else if($op == 'loginStatus'){
+		$thirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE code = :code", array(':code' => 'weixin'));
+		require WEB_ROOT.'/system/modules/plugin/thirdlogin/weixin/lang.php';
+
+		if (empty($thirdlogin['id'])) {
+			$data = array(
+				'code' => 'weixin',
+				'enabled' => intval($_GP['thirdlogin_weixin']),
+				'name' => $_LANG['thirdlogin_weixin_name']
+			);
+			mysqld_insert('thirdlogin', $data);
+		} else {
+			$data = array(
+				'enabled' => intval($_GP['thirdlogin_weixin']),
+				'name' => $_LANG['thirdlogin_weixin_name'],
+			);
+			mysqld_update('thirdlogin',$data , array('code' =>'weixin'));
+		}
+		message('操作成功', refresh(), 'success');
 }

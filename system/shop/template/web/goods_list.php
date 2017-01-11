@@ -1,58 +1,65 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/jquery-ui-1.10.3.min.js"></script>
+<style type="text/css">
+.goods-list-table li{
+	float:left;
+	list-style-type:none;
+}	
+.goods-list-table tr{
+	background-color: #fff!important;
+}
+</style>
 <h3 class="header smaller lighter blue">商品列表</h3>
 		<form action=""  class="form-horizontal" method="post">
-	<table class="table table-striped table-bordered table-hover">
+	<table class="table table-striped table-bordered table-hover goods-list-table">
 			<tbody >
 				<tr>
-				<td>
-				<li style="float:left;list-style-type:none;">
-						<select  style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="cate_1" onchange="fetchChildCategory(this.options[this.selectedIndex].value)">
-							<option value="0">请选择一级分类</option>
-							<?php  if(is_array($category)) { foreach($category as $row) { ?>
-							<?php  if($row['parentid'] == 0) { ?>
-							<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $_GP['cate_1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
-							<?php  } ?>
-							<?php  } } ?>
-						</select>
-						<select onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" id="cate_2" name="cate_2">
-							<option value="0">请选择二级分类</option>
-							<?php  if(!empty($_GP['cate_1']) && !empty($children[$_GP['cate_1']])) { ?>
-							<?php  if(is_array($children[$_GP['cate_1']])) { foreach($children[$_GP['cate_1']] as $row) { ?>
-							<option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $_GP['cate_2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-							<?php  } } ?>
-							<?php  } ?>
-						</select>
-						<select  id="cate_3" name="cate_3" autocomplete="off" style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0">
-                <option value="0">请选择三级分类</option>
-                <?php 
-				   if(!empty($_GP['cate_2']) && !empty($children[$_GP['cate_2']]))  { 
-				       if(is_array($children[$_GP['cate_2']])) { 
-						   foreach($children[$_GP['cate_2']] as $row) { 
-				?>
-                         <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $_GP['cate_3']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-                <?php  } } } ?>
-            </select>
+					<td>
+						<li>
+							<select  style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" name="cate_1" onchange="fetchChildCategory(this.options[this.selectedIndex].value)">
+								<option value="0">请选择一级分类</option>
+								<?php  if(is_array($category)) { foreach($category as $row) { ?>
+								<?php  if($row['parentid'] == 0) { ?>
+								<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $_GP['cate_1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
+								<?php  } ?>
+								<?php  } } ?>
+							</select>
+							<select onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" id="cate_2" name="cate_2">
+								<option value="0">请选择二级分类</option>
+								<?php  if(!empty($_GP['cate_1']) && !empty($children[$_GP['cate_1']])) { ?>
+								<?php  if(is_array($children[$_GP['cate_1']])) { foreach($children[$_GP['cate_1']] as $row) { ?>
+								<option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $_GP['cate_2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
+								<?php  } } ?>
+								<?php  } ?>
+							</select>
+							<select  id="cate_3" name="cate_3" autocomplete="off" style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0">
+				                <option value="0">请选择三级分类</option>
+				                <?php 
+								   if(!empty($_GP['cate_2']) && !empty($children[$_GP['cate_2']]))  { 
+								       if(is_array($children[$_GP['cate_2']])) { 
+										   foreach($children[$_GP['cate_2']] as $row) { 
+								?>
+				                         <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $_GP['cate_3']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
+				                <?php  } } } ?>
+				            </select>
 						</li>
-						<li style="float:left;list-style-type:none;">
-						<select name="status" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
-							<option value="" selected>请选择上下架</option>
-							<option value="1" >上架中</option>
-							<option value="0" >已下架</option>
-						</select>
+						<li>
+							<select name="status" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
+								<option value="" selected>请选择上下架</option>
+								<option value="1" >上架中</option>
+								<option value="0" >已下架</option>
+							</select>
 						</li>
-						
-						<li style="float:left;list-style-type:none;">
-											<input style="margin-right:5px;margin-top:10px;width: 300px; height:34px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" value="<?php  echo $_GP['keyword'];?>">
-											<select  name="key_type" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
-                                                    <option value="title" <?php if($_GP['key_type']=='title'){?>selected="selected"<?php  } ?> >标题</option>
-													<option value="id" <?php if($_GP['key_type']=='id'){?>selected="selected"<?php  } ?>>ID</option>
-													<option value="sn" <?php if($_GP['key_type']=='sn'){?>selected="selected"<?php  } ?>>SN</option>
-											</select>
+						<li>
+							<input style="margin-right:5px;width: 300px; height:30px; line-height:28px; padding:2px 0" name="keyword" id="" type="text" value="<?php  echo $_GP['keyword'];?>">
+							<select  name="key_type" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
+                                <option value="title" <?php if($_GP['key_type']=='title'){?>selected="selected"<?php  } ?> >标题</option>
+								<option value="id" <?php if($_GP['key_type']=='id'){?>selected="selected"<?php  } ?>>ID</option>
+								<option value="sn" <?php if($_GP['key_type']=='sn'){?>selected="selected"<?php  } ?>>SN</option>
+							</select>
 						</li>
-						<li style="list-style-type:none;">
-						<button class="btn btn-primary" style="margin-right:10px;margin-top:10px;"><i class="icon-search icon-large"></i> 搜索</button>
+						<li>
+							<button class="btn btn-primary btn-sm" style="margin-right:10px;"><i class="icon-search icon-large"></i> 搜索</button>
 						</li>
 					</td>
 				</tr>
