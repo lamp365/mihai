@@ -14,6 +14,9 @@
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/third-party/highcharts/highcharts.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style type="text/css">
+    body{
+        background:none!important;
+    }
     .payment-amount{
         width: 100%;
         height: 300px;
@@ -142,7 +145,7 @@
     .payment-amount-area h3{
         text-align: left;
         padding: 0;
-        margin-top: 25px;
+        margin-left: 25px;
         font-size: 22px;
         font-weight: bold;
     }
@@ -150,8 +153,12 @@
         float: left;
         width: 50%;
     }
-    .main-wrap{
-        padding: 0 20px 20px 20px;
+
+    .main-payment{
+        width: 100%;
+        overflow: hidden;
+        background-color: #fff;
+        border:1px solid #cad2e2;
     }
 </style>
 <script type="text/javascript">
@@ -364,11 +371,6 @@ $(function () {
             text: '24小时累计图',
             x: -20
         },
-        chart: {
-            borderColor: '#cad2e2',
-            borderWidth: 1,
-            type: 'line'
-        },
         xAxis: {
             categories: ['0h', '6h', '12h', '18h', '24h']
         },
@@ -414,7 +416,7 @@ $(function () {
 	
 		<!--end map-->
 		<!--begin main-->
-        <div style="width: 100%;overflow: hidden;">
+        <div class="main-payment">
             <div class="payment-amount-area">
                 <h3>支付金额统计</h3>
                 <div class="payment-amount" id="paymentAmount"></div>

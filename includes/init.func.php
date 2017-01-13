@@ -15,6 +15,11 @@ $listFuncs = glob(WEB_ROOT.'/includes/*.func.php');
 foreach( $listFuncs as $func) {
 	require_once $func;
 }
+//加载完公共函数后 再加载cmmon lib下的文件
+if (file_exists(WEB_ROOT . '/config/config.php') && file_exists(WEB_ROOT . '/config/install.link')) {
+	require (WEB_ROOT . '/system/common/lib/lib.php');
+}
+
 /*
 if (file_exists(WEB_ROOT . '/includes/goods.func.php')) {
     require WEB_ROOT . '/includes/goods.func.php';

@@ -31,66 +31,41 @@ function appDownLoad(url){
     }
 }
 
+function requestUrl(paras)
+    {
+        var url = window.location.href;
+        url = decodeURI(url);
+        var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");
+        var paraObj = {}
+        for (i=0; j=paraString[i]; i++){
+            paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);
+        }
+        var returnValue = paraObj[paras.toLowerCase()];
+        if(typeof(returnValue)=="undefined"){
+            return "";
+        }else{
+            return returnValue;
+        }
+    }
 
 function app_wake_to_up(){
     //将URL参数以&分割成一个数组
-    var url_param = window.location.search.split("&");
-    console.log("url_param="+url_param);
-    var i = 0,j = 0,k = 0;
-    var regex = /id=|do=/;
-    var regex2 = /id|do/;
-    var regex3 = /^[0-9]*$/;
-    var param_arr1 = "";
-    var param_arr2 = "";
-    var param = [];
-    var param_result = "";
-    var last_param_result = "";
-    var android_param = "";
+    var id = requestUrl("id");
+    var moddo = requestUrl("do");
     var AndroidAgreement = "";
-    //在参数数组中提取id 和 do类型
-    for( i ; i < url_param.length; i++ ){
-        if(url_param[i].search(regex)==0){
-            param_arr1 += url_param[i]+"=";
-        }
+    if( moddo == "detail" ){
+        AndroidAgreement ="mihai://prodetail.hinrc.com/openwith?"+"dish_id="+id;
+    }else if( moddo == "article" ){
+        AndroidAgreement ="mihai://articledetail.hinrc.com/openwith?"+"article_id="+id;
+    }else{
+        AndroidAgreement = "mihai://hinrc.com";
     }
-    console.log("param_arr1="+param_arr1);
-    param_arr2 = param_arr1.split("=");
-    //将参数拼接成type = id的形式 例如article=18
-    for( j ; j < param_arr2.length ; j++ ){
-        if( param_arr2[j].search(regex2)==-1 && param_arr2[j]!=""){
-            param.push(param_arr2[j]);
-        }
-    }
-    console.log("param_arr2="+param_arr2);
-    //如何参数第一个是数字就将数组逆序
-    if(regex3.test(param[0])){
-        param.reverse()
-    }
-    console.log("param="+param);
-    if( param[0] == "detail" ){
-        AndroidAgreement ="mihai://prodetail.hinrc.com/openwith?"+"dish_id="+param[1];
-    }else if( param[0] == "article" ){
-        AndroidAgreement ="mihai://articledetail.hinrc.com/openwith?"+"article_id="+param[1];
-    }
-    
-    for( k ; k < param.length; k++){
-       param_result += param[k]+"=";
-    }
-    console.log("param_result="+param_result);
-    last_param_result = param_result.substr(0,param_result.length-1);
-    console.log("last_param_result="+last_param_result);
-
-    var iPhoneAgreement = "mihaiweb://"+last_param_result;
-
+    var iPhoneAgreement = "mihaiweb://"+moddo+"="+id;
     //IOS
     if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-        //if(navigator.userAgent.indexOf("Safari") ==-1){
-            console.log("iPhoneAgreement="+iPhoneAgreement);
-            window.location.href = iPhoneAgreement;
-       // }
+        window.location.href = iPhoneAgreement;
     }else if(navigator.userAgent.match(/android/i)){
-        alert(AndroidAgreement);
-        window.location.href = AndroidAgreement;
+        window.location = AndroidAgreement;
     }
 }
 function app_click_to_down(url){

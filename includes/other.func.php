@@ -282,10 +282,6 @@ function randString($len)
 	return substr($string,0,$len);
 }
 
-if (file_exists(WEB_ROOT . '/config/config.php') && file_exists(WEB_ROOT . '/config/install.link')) {
-    require (WEB_ROOT . '/system/common/lib/lib.php');
-}
-
 
 /**
  * 方便打印输出查看数据
