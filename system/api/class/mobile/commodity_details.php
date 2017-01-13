@@ -216,7 +216,7 @@
 			// 优惠券信息
 			$list['bonus'] = array();
 			// 首先查找针对该商品的优惠券
-			$good_bouns = mysqld_selectall("SELECT b.type_id, b.type_name, b.type_money, b.send_type, b.send_start_date, b.send_end_date, b.use_start_date, b.use_end_date, b.min_goods_amount FROM ".table('bonus_good')." as a left join ".table('bonus_type')." as b on a.bonus_type_id=b.type_id WHERE a.good_id=".$dish_id." AND b.deleted=0 AND b.send_type=1 AND b.send_start_date<".time()." AND b.send_end_date>".time()." ORDER BY b.type_money ASC");
+			$good_bouns = mysqld_selectall("SELECT b.type_id, b.type_name, b.type_money, b.send_type, b.send_start_date, b.send_end_date, b.use_start_date, b.use_end_date, b.min_goods_amount FROM ".table('bonus_good')." as a left join ".table('bonus_type')." as b on a.bonus_type_id=b.type_id WHERE a.good_id=".$dish_id." AND b.deleted=0 AND b.app_show=1 AND b.send_type=1 AND b.send_start_date<".time()." AND b.send_end_date>".time()." ORDER BY b.type_money ASC");
 			if (!empty($good_bouns)) {
 				// $gb_ary = "(";
 				foreach ($good_bouns as $gbv) {
@@ -226,7 +226,7 @@
 				// $gb_ary = substr($gb_ary,0,strlen($gb_ary)-1).')';
 			}
 			// 查找满减的优惠卷
-			$other_bouns = mysqld_selectall("SELECT type_id, type_name, type_money, send_type, send_start_date, send_end_date, use_start_date, use_end_date, min_goods_amount FROM ".table('bonus_type')." WHERE deleted=0 AND send_type=2 AND send_start_date<".time()." AND send_end_date>".time()." ORDER BY type_money ASC");
+			$other_bouns = mysqld_selectall("SELECT type_id, type_name, type_money, send_type, send_start_date, send_end_date, use_start_date, use_end_date, min_goods_amount FROM ".table('bonus_type')." WHERE deleted=0 AND send_type=2 AND b.app_show=1 AND send_start_date<".time()." AND send_end_date>".time()." ORDER BY type_money ASC");
 			if (!empty($other_bouns)) {
 				foreach ($other_bouns as $obv) {
 					$list['bonus'][] = $obv;

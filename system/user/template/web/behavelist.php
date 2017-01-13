@@ -1,26 +1,28 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <h3 class="header smaller lighter blue" style="display: inline-block;margin-right: 15px;">【行为日志】</h3>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <style>
-    .vip-table-list tr{
-        background-color: #f9f9f9;
-        border-top: 1px solid #ddd;
+
+    .vip-table-list{
+        border: 1px solid #ddd;padding: 7px 0;
     }
-    .vip-table-list td{
-        border: 1px solid #ddd;
+    .left-span{
+        float: left;
+        line-height: 28px;
+        background-color: #ededed;
+        padding: 0 5px;
+        border: 1px solid #cdcdcd;
+        border-right: 0;
+        font-size: 12px;
     }
     .vip-table-list li{
-        margin-top:3px;
-        float: left;
+        float: left;    
         margin-right: 10px;
-        list-style: none;
+        list-style-type: none;
     }
-    .vip-table-list li select{
-        height:26px;
-    }
-    .vip-table-list li span{
-        display: inline-block;
-        height:24px;
-        line-height: 24px;
+    .vip-table-list .li-height{
+        height: 30px;
+        padding-left: 5px;
     }
 </style>
 <form action="" method="get" class="form-horizontal" enctype="multipart/form-data">
@@ -33,9 +35,9 @@
         <tbody>
         <tr>
             <td>
-                <li><span>管理员</span></li>
                 <li>
-                    <select name="uid">
+                    <span class="left-span">管理员</span>
+                    <select class="li-height" name="uid">
                         <option value="0">选择管理员</option>
                         <?php foreach($all_admin as $admin){
                             if($admin['id'] == $_GP['uid']){
@@ -48,30 +50,36 @@
                     </select>
                 </li>
                 <li>
-                    时间范围:
+                    <span class="left-span">起始日期</span>
+                    <input class="li-height" type="text" id="datepicker_timestart" name="timestart" placeholder="起始日期" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
+                </li>
+                <li>-</li>
+                <li>
+                    <span class="left-span">终止日期</span>
+                    <input class="li-height" type="text"  id="datepicker_timeend" name="timeend" placeholder="终止日期" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
+
+                    <script type="text/javascript">
+                        laydate({
+                            elem: '#datepicker_timestart',
+                            istime: true, 
+                            event: 'click',
+                            format: 'YYYY-MM-DD hh:mm:ss',
+                            istoday: true, //是否显示今天
+                            start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+                        });
+                        laydate({
+                            elem: '#datepicker_timeend',
+                            istime: true, 
+                            event: 'click',
+                            format: 'YYYY-MM-DD hh:mm:ss',
+                            istoday: true, //是否显示今天
+                            start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+                        });
+                        laydate.skin("molv"); 
+                    </script> 
                 </li>
                 <li>
-                    <input type="text" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
-                    <script type="text/javascript">
-                        $("#datepicker_timestart").datetimepicker({
-                            format: "yyyy-mm-dd hh:ii",
-                            minView: "0",
-                            //pickerPosition: "top-right",
-                            autoclose: true
-                        });
-                    </script> -
-                    <input type="text"  id="datepicker_timeend" name="timeend" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
-                    <script type="text/javascript">
-                        $("#datepicker_timeend").datetimepicker({
-                            format: "yyyy-mm-dd hh:ii",
-                            minView: "0",
-                            //pickerPosition: "top-right",
-                            autoclose: true
-                        });
-                    </script>
-                </li>
-                <li>
-                    <input name="submit" type="submit" style="margin-top:-4px; " value=" 查 找 " class="btn btn-info">
+                    <input name="submit" type="submit" value=" 查 询 " class="btn btn-primary btn-sm">
                 </li>
             </td>
         </tr>

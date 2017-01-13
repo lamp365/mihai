@@ -62,7 +62,7 @@
 				<?php if($item['state'] !=0){ echo $stats_arr[$item['state']];}?>
 			</td>
               <td class="text-center"> 
-              	<input readonly="readlony" type="text"  class="col-sm-10" value="<?php echo WEBSITE_ROOT;?><?php  echo create_url('mobile',array('name' => 'addon8','do' => 'article','id'=>$item['id']))?>" /> </td>
+              	<input readonly="readlony" type="text"  class="col-sm-10" value="<?php echo WEBSITE_ROOT;?><?php  echo create_url('mobile',array('name' => 'addon8','do' => $moddo_type[$item['state']],'id'=>$item['id']))?>" /> </td>
          <td class="text-center">
                                                     	<a class="btn btn-xs btn-info"  href="<?php  echo web_url('article', array('op' => 'post', 'id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;</a> 
                     	&nbsp;&nbsp;	<a class="btn btn-xs btn-info" onclick="return confirm('此操作不可恢复，确认删除？');return false;"  href="<?php  echo web_url('article', array('op' => 'delete', 'id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a> </td>

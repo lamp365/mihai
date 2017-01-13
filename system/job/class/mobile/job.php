@@ -76,7 +76,7 @@ if ($operation == 'index') {
 }elseif ($operation == 'check') {
     $mobile = addslashes($_GP['mobile']);
     if (!empty($mobile)) {
-        $re = mysqld_select("SELECT id, result FROM ".table('job')." WHERE mobile=".$mobile);
+        $re = mysqld_select("SELECT id, result, name, job FROM ".table('job')." WHERE mobile=".$mobile);
         if (!empty($re)) {
             if ($re['result'] == '0') {
                 include page('interview_wait');

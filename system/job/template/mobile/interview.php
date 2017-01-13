@@ -18,9 +18,11 @@
 			width: 80%;
 			height: 50%;			
 			position:absolute;
-			top: 25%;
-			left: 10%;
-			z-index: 1;			
+			top: 40%;
+			left: 10%;			
+			z-index: 1;	
+			color: #fff;
+			text-align: center;	
 		}
 		.box div{
 			width: 100%;
@@ -30,36 +32,33 @@
 			position: absolute;
 		}
 		.box h3{				
-			position: absolute;
-			top:20%;
-			left: 10%;			
+			margin-top: 25%;			
 		}
-		.box input#num{					
-			position: absolute;
+		.box input#num{						
 			width: 80%;
 			height: 50px;
-			top: 35%;
-			left: 10%;
+			margin-top:10%;
 			background: none;
 			border: none;
-			border-bottom: solid 1px black;
+			border-bottom: solid 1px #fff;
 			outline: none;
 			font-size: 20px;
 			letter-spacing: 5px;
 			text-indent: 15%;
+			color: #fff;
 		}
 		.box input#sub{
-			position: absolute;
+			
 			width: 60%;
 			height: 50px;
-			top:70%;
-			left: 20%;
+			margin-top: 20%;
 			background: none;			
-			border: solid 1px black;
+			border: solid 1px #fff;
 			outline: none;
 			border-radius: 5px;
 			font-size: 20px;
 			font-weight: bold;
+			color:#fff;
 		}
 	</style>
 	<body>
@@ -67,13 +66,11 @@
 		   <span class="return">
 		   		<img src="<?php echo RESOURCE_ROOT;?>addons/common/image/job/return.png" width="10px" height="16px">
 		   </span>
-		   	 面试结果
 		</div>
 		<div style="position: fixed;width: 100%;overflow: hidden;top: 0;">
 			<img class="bg" src="<?php echo RESOURCE_ROOT;?>addons/common/image/job/interview.png"/>
 			<!--输入框-->
-			<div class="box">
-				<div></div>
+			<div class="box">				
 				<h3>请输入您的手机号</h3>
 				<form action="" method="post" role="form" class="form-horizontal mobile_form">
 					<input type="text"  id="num" autocomplete="off"/>

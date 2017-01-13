@@ -33,15 +33,64 @@ function appDownLoad(url){
 
 
 function app_wake_to_up(){
-    var iPhoneAgreement = "mihaiweb://";
-    var AndroidAgreement ="mihai://hinrc.com";
+    //将URL参数以&分割成一个数组
+    var url_param = window.location.search.split("&");
+    console.log("url_param="+url_param);
+    var i = 0,j = 0,k = 0;
+    var regex = /id=|do=/;
+    var regex2 = /id|do/;
+    var regex3 = /^[0-9]*$/;
+    var param_arr1 = "";
+    var param_arr2 = "";
+    var param = [];
+    var param_result = "";
+    var last_param_result = "";
+    var android_param = "";
+    var AndroidAgreement = "";
+    //在参数数组中提取id 和 do类型
+    for( i ; i < url_param.length; i++ ){
+        if(url_param[i].search(regex)==0){
+            param_arr1 += url_param[i]+"=";
+        }
+    }
+    console.log("param_arr1="+param_arr1);
+    param_arr2 = param_arr1.split("=");
+    //将参数拼接成type = id的形式 例如article=18
+    for( j ; j < param_arr2.length ; j++ ){
+        if( param_arr2[j].search(regex2)==-1 && param_arr2[j]!=""){
+            param.push(param_arr2[j]);
+        }
+    }
+    console.log("param_arr2="+param_arr2);
+    //如何参数第一个是数字就将数组逆序
+    if(regex3.test(param[0])){
+        param.reverse()
+    }
+    console.log("param="+param);
+    if( param[0] == "detail" ){
+        AndroidAgreement ="mihai://prodetail.hinrc.com/openwith?"+"dish_id="+param[1];
+    }else if( param[0] == "article" ){
+        AndroidAgreement ="mihai://articledetail.hinrc.com/openwith?"+"article_id="+param[1];
+    }
+    
+    for( k ; k < param.length; k++){
+       param_result += param[k]+"=";
+    }
+    console.log("param_result="+param_result);
+    last_param_result = param_result.substr(0,param_result.length-1);
+    console.log("last_param_result="+last_param_result);
+
+    var iPhoneAgreement = "mihaiweb://"+last_param_result;
+
     //IOS
     if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
-        if(navigator.userAgent.indexOf("Safari") ==-1){
+        //if(navigator.userAgent.indexOf("Safari") ==-1){
+            console.log("iPhoneAgreement="+iPhoneAgreement);
             window.location.href = iPhoneAgreement;
-        }
-    }else{
-       // window.location.href = AndroidAgreement;
+       // }
+    }else if(navigator.userAgent.match(/android/i)){
+        alert(AndroidAgreement);
+        window.location.href = AndroidAgreement;
     }
 }
 function app_click_to_down(url){

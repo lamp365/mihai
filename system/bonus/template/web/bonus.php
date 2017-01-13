@@ -107,7 +107,21 @@
 								
      							</div>
 									</div>
-									
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > APP显示</label>
+
+										<div class="col-sm-9">
+											<?php if(empty($_GP['id'])){ ?>
+												<input type="radio" name="app_show" value="1" checked> 是
+												<input type="radio" name="app_show" value="0"> 否
+											<?php }else{  ?>
+												<input type="radio" name="app_show" value="1" <?php if($bonus['app_show'] == 1){ echo "checked"; } ?>> 是
+												<input type="radio" name="app_show" value="0" <?php if($bonus['app_show'] == 0){ echo "checked"; } ?>> 否
+											<?php } ?>
+										</div>
+									</div>
+
 									
 									
 											 <div class="form-group">

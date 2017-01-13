@@ -30,11 +30,17 @@
 		   <span class="return">
 		   		<img src="<?php echo RESOURCE_ROOT;?>addons/common/image/job/return.png" width="10px" height="16px">
 		   </span>
-		    面试人的名字
 		</div>
+
 		<!--面试失败-->
-		<div class="bg">
-			<img src="<?php echo RESOURCE_ROOT;?>addons/common/image/job/interview-fail.jpg" />
+		<div class="bg">		
+			<img src="<?php echo RESOURCE_ROOT;?>addons/common/image/job/interview-fail.png" />
+		</div>
+
+		<!--面试者信息 -->
+		<div style="position:relative;z-index:2;margin-top:30px;margin-left:30px;">
+			<P style="margin-bottom:10px;color:#fff;font-weight:bold;">姓名：<?php echo $re['name'];?></P>
+			<p style="color:#fff;font-weight:bold;">岗位：<?php echo $re['job'];?></p>
 		</div>
 	</body>
 	

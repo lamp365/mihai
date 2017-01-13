@@ -1,5 +1,7 @@
 <?php
-			$stats_arr  = array(1=>'底部显示',2=>'使用条款',3=>'隐私声明',4=>'自定义','5'=>'wap关于我们',6=>'健康文化');
+			$stats_arr  = array(1=>'底部显示',2=>'使用条款',3=>'隐私声明',4=>'自定义','5'=>'wap关于我们',6=>'健康文化',7=>'返现记录');
+			//像返现记录do是cashback 其他的都是article
+			$moddo_type = array(1=>'article',2=>'article',3=>'article',4=>'article',5=>'article',6=>'article',7=>'cashback');
 			$author_arr = array(
 				'2016120616590' => '梦琪',
 				'2016120616964' => '如萱',

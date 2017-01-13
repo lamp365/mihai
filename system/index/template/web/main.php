@@ -1054,7 +1054,7 @@
                 
                 
                 <?php if (empty($menurule) ||in_array("social-manage",$menurule)) { ?>
-                    <li>
+                    <li class="jichu">
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-comments"></i>
                             <span class="menu-text"> 社区管理</span>
@@ -1118,7 +1118,7 @@
 
 
                 <?php if (empty($menurule) ||in_array("user-user",$menurule)) { ?>
-                    <li>
+                    <li class="xitong">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-info-sign"></i>
@@ -1236,14 +1236,14 @@
                 </div>
 				<div class="left-nav-tap">
 					<ul>
-						<li class="public-tap jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
-						<li class="public-tap huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
-						<li class="public-tap shangjia"><i class="icon-sitemap"></i><span>商家管理<span></li>
-						<li class="public-tap dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
-						<li class="public-tap shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
-						<li class="public-tap yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>
-						<li class="public-tap xiaoshou"><i class="icon-bar-chart"></i><span>销售报表<span></li>
-						<li class="public-tap xitong"><i class="icon-unlock-alt"></i><span>系统管理<span></li>
+						<li class="jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
+						<li class="huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
+						<li class="shangjia"><i class="icon-sitemap"></i><span>商家管理<span></li>
+						<li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
+						<li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
+						<li class="yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>
+						<li class="xiaoshou"><i class="icon-bar-chart"></i><span>销售报表<span></li>
+						<li class="xitong"><i class="icon-unlock-alt"></i><span>系统管理<span></li>
 					</ul>
 				</div>
 			
@@ -1267,7 +1267,7 @@
                 <iframe  marginheight="0" marginwidth="0" width="100%" frameborder="0" onload="reinitIframe()" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
                 <script type="text/javascript" language="javascript">
                     function reinitIframe(){
-                        var iframeHeight = $("#main").contents().find("html").height();     
+                        var iframeHeight = $("#main").contents().find("html").height();
                         $("#main").height(iframeHeight);
                     }
                     window.setInterval(reinitIframe,200);
@@ -1351,6 +1351,7 @@
         })
     })
     function leftNavTap(){
+        var li_class_length = 0;
         $(".left-nav-tap li").click(function(){
             var this_class_name = $(this).attr("class").split(" ");
             var i = 0;
@@ -1362,18 +1363,21 @@
                 $(".nav-list>li."+this_class_name[i]+"").show();
             }
         });
+        $(".nav-list>li").each(function(index,ele){
+            li_class_length = $(ele).attr("class").length;
+            if( li_class_length == 0 ){
+                $(ele).show();
+            } 
+        })
     }
     leftNavTap();
     function leftClassIsNull(){
         var class_arr = [];
         var public_tap_index = 0;
         var checked_num = 0;
+        var i = 0;
         $(".left-nav-tap li").each(function(index,ele){
             class_arr = $(ele).attr("class").split(" ");
-            if( class_arr.indexOf("public-tap") > -1){
-                public_tap_index = class_arr.indexOf("public-tap");
-            }
-            class_arr.splice(public_tap_index,1);
             if(!$(".nav-list>li").hasClass(class_arr[0])){
                 $(ele).remove();
             }

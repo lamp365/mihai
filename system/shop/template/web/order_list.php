@@ -421,13 +421,13 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 									<input class="li-height" name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" placeholder="订单编号"/> 
 								</li>	
 								<li >
-									<span class="left-span">开始</span>
-									<input class="li-height" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  placeholder="下单开始时间"/>
+									<span class="left-span">起始日期</span>
+									<input class="li-height" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  placeholder="起始日期"/>
 								</li>	
 								<li> - </li>
 								<li>
-									<span class="left-span">结束</span>
-									<input class="li-height" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly" placeholder="下单结束时间" /> <a href="javascript:;" onclick="cleartime()">清空</a>
+									<span class="left-span">终止日期</span>
+									<input class="li-height" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly" placeholder="终止日期" /> <a href="javascript:;" onclick="cleartime()">清空</a>
 								</li>
 									<script type="text/javascript">
 										laydate({

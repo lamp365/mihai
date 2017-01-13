@@ -4,19 +4,27 @@
 			color: red;
 			font-weight: bolder;
 		}
-		.dummy-table-list li{
-			margin-top:3px;
-			float: left;
-			margin-right: 10px;
-			list-style: none;
-		}
-		.dummy-table-list tr{
-			background-color: #f9f9f9;
-			border-top: 1px solid #ddd;
-		}
-		.dummy-table-list td{
-			border: 1px solid #ddd;
-		}
+	.dummy-table-list{
+		border: 1px solid #ddd;padding: 7px 0;
+	}
+	.left-span{
+		float: left;
+	    line-height: 28px;
+	    background-color: #ededed;
+	    padding: 0 5px;
+	    border: 1px solid #cdcdcd;
+	    border-right: 0;
+	    font-size: 12px;
+	}
+	.dummy-table-list li{
+		float: left;    
+		margin-right: 10px;
+		list-style-type: none;
+	}
+	.dummy-table-list .li-height{
+	    height: 30px;
+	    padding-left: 5px;
+	}
 	</style>
 <h3 class="header smaller lighter blue">虚拟用户管理&nbsp;&nbsp; <span style="font-size:14px;color: red">星号为必填</span>
 	<form action="" method="post" style="display: inline;" class="form-horizontal bat_form" enctype="multipart/form-data" >
@@ -29,27 +37,27 @@
 		<tbody>
 			<tr>
 				<td>
-					<li><i>*</i>用户名：</li>
+
 					<li>
-						<input name="realname"  type="text" value="" />
+						<span class="left-span"><i>*</i>用户名</span>
+						<input class="li-height" name="realname"  type="text" value="" placeholder="用户名" />
+					</li>
+					<li>
+						<span class="left-span"><i>*</i>手机号码</span>
+						<input class="li-height" name="mobile" type="text"   value="" placeholder="手机号码"/>
+					</li>
+					<li>
+						<span class="left-span">email</span>	
+						<input class="li-height" name="email" type="text"   value="" placeholder="email"/>
+					</li>
+					<li>头像</li>
+					<li>
+
+						<input style="height: 30px;" name="avatar" type="file"   value="" />
 					</li>
 
-					<li><i>*</i>手机号码：</li>
 					<li>
-						<input name="mobile" type="text"   value="" />
-					</li>
-
-					<li>email：</li>
-					<li>
-						<input name="email" type="text"   value="" />
-					</li>
-
-					<li>头像：</li>
-					<li>
-						<input name="avatar" type="file"   value="" />
-					</li>
-					<li>
-						<button type="submit" class="btn btn-md btn-info">确定创建</button>
+						<button type="submit" class="btn btn-md btn-info btn-sm">确定创建</button>
 					</li>
 				</td>
 			</tr>

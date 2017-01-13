@@ -49,13 +49,13 @@
 			<td>
 				
 				<li >
-					<span class="left-span">开始</span>
-					<input class="li-height" type="text" id="datepicker_timestart" name="timestart" value="" readonly="readonly" />
+					<span class="left-span">起始日期</span>
+					<input class="li-height" type="text" placeholder="起始日期" id="datepicker_timestart" name="timestart" value="" readonly="readonly" />
 				</li>
 				<li > - </li>
 				<li>
-					<span class="left-span">结束</span>
-					<input class="li-height" type="text"  id="datepicker_timeend" name="timeend" value="" readonly="readonly" />
+					<span class="left-span">终止日期</span>
+					<input class="li-height" type="text" placeholder="终止日期" id="datepicker_timeend" name="timeend" value="" readonly="readonly" />
 				</li>
 				<script type="text/javascript">
 					laydate({
@@ -77,7 +77,7 @@
 				    laydate.skin("molv"); 
 				</script>
 				<li>
-					<select class="sel_system" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
+					<select class="sel_system" style="width: 100px; height:30px; line-height:28px; padding:2px 0">
 						<option value="0">系统设备</option>
 						<option value="3" <?php if($_GP['system'] == 3) echo "selected"; ?>>IOS</option>
 						<option value="2" <?php if($_GP['system'] == 2) echo "selected"; ?>>Android</option>

@@ -176,11 +176,12 @@ class FileUpload
     }
 
     public function uploadByAli($file,$extention){
-        $fileName = date('YmdHi',time()).uniqid(). ".{$extention}";
-        $result   = aliyunOSS::uploadFile($file['tmp_name'],$fileName);
+        $http_type =  $this->http_type()?'https://':'http://';
+        $fileName  = date('YmdHi',time()).uniqid(). ".{$extention}";
+        $result    = aliyunOSS::uploadFile($file['tmp_name'],$fileName);
         $data = array();
         if($result){
-            $data['path']    = str_replace('http://',WEB_HTTP,$result['oss-request-url']);
+            $data['path']    = str_replace('http://',$http_type,$result['oss-request-url']);
             $data['success'] = true;
             return $data;
         }else{
@@ -208,6 +209,17 @@ class FileUpload
 
     }
 
+    public function http_type(){
+        if(!isset($_SERVER['HTTPS']))  return FALSE;
+        if($_SERVER['HTTPS'] === 1){  //Apache
+            return TRUE;
+        }elseif($_SERVER['HTTPS'] === 'on'){ //IIS
+            return TRUE;
+        }elseif($_SERVER['SERVER_PORT'] == 443){ //其他
+            return TRUE;
+        }
+        return FALSE;
+    }
     /**
      * @return bool
      * 获取七牛所有的图片

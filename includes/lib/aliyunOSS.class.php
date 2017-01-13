@@ -6,8 +6,8 @@
  * Time: 15:34
  */
 
-
-require_once WEB_ROOT . '/includes/TopSdk.php';
+$dir = str_replace("\\", '/', dirname(dirname(__FILE__)));
+require_once "{$dir}/TopSdk.php";
 use OSS\OssClient;
 use OSS\Core\OssException;
 /**

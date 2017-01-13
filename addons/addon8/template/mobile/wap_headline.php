@@ -25,7 +25,7 @@
 	.headline-content .health-men{
 		width: 100%;		
 		overflow: hidden;
-		
+		border-bottom: solid 1px #eee;
 	}
 	.headline-content .health-men .info{
 		float: left;
@@ -47,18 +47,22 @@
 		margin-left: 10px;
 		font-size: 16px;
 		margin-top: 5px;
+		width: 60%;
 	}
 	
 	.headline-content .health-men .info .name .lz{
 		background: #FCB9C2;
-		border-radius: 4px;
-		color: #fff;
-		font-size: 12px;
-		width: 30px;
-		height: 18px;
-		line-height: 18px;
-		text-align: center;
-		margin-left: 5px;
+    border-radius: 4px;
+    color: #fff;
+    float: left;
+    font-size: 12px;
+    width: 30px;
+    height: 16px;
+    line-height: 16px;
+    padding: 3px;
+    margin-top: 1px;
+    text-align: center;
+    margin-right: 5px;
 	}
 	.headline-content .health-men .attention{
 		float: right;
@@ -137,10 +141,12 @@
 			<div class="info">
 				<img src="<?php if(empty($article_member['avatar'])){ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; }else{ echo download_pic($article_member['avatar'],60,60); }?>" />
 				<p class="name" style="margin-top: 15px;">
-					<span><?php if(!empty($article_member['nickname'])){ echo $article_member['nickname'];}else{ echo substr_cut($article_member['mobile']); } ?></span>
+					<span class="lz" style="float: left;">楼主</span>
+					<span style="width: 70%;display: inline-block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height: 22px;line-height: 22px;">
+   						 <?php if(!empty($article_member['nickname'])){ echo $article_member['nickname'];}else{ echo substr_cut($article_member['mobile']); } ?>  	
+   					 </span>
 					<!--发布时间-->
-					<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d",$article_headline['createtime']);?></span>
-					<span class="lz" style="float: right;">楼主</span>
+					<!--<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d",$article_headline['createtime']);?></span>-->									
 				</p>
 			</div>
 			<!--关注按钮-->

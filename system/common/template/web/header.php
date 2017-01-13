@@ -33,7 +33,8 @@ window.UEDITOR_UEUPLOAD='<?php echo WEBSITE_ROOT.web_url('file_ueupload',array('
 <style>
 html {overflow-x:hidden; }
 body {
-background-color: #FFFFFF;
+    background-color: #FFFFFF;
+    padding: 0 20px 20px 20px;
 }
 table{border-top: 0px;}
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th

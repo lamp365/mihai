@@ -10,13 +10,19 @@ if (file_exists(WEB_ROOT . '/config/debug.php')) {
     require WEB_ROOT . '/config/debug.php';
 }
 
+//公共函数的命名 一定是要放在 includes下面，然后xxx.func.php命名
+$listFuncs = glob(WEB_ROOT.'/includes/*.func.php');
+foreach( $listFuncs as $func) {
+	require_once $func;
+}
+/*
 if (file_exists(WEB_ROOT . '/includes/goods.func.php')) {
     require WEB_ROOT . '/includes/goods.func.php';
-}
+}*/
 // if (file_exists(WEB_ROOT . '/includes/hottpoic.func.php')) {
 //     require WEB_ROOT . '/includes/hottpoic.func.php';
 // }
-if (file_exists(WEB_ROOT . '/includes/sms.func.php')) {
+/*if (file_exists(WEB_ROOT . '/includes/sms.func.php')) {
     require WEB_ROOT . '/includes/sms.func.php';
 }
 if (file_exists(WEB_ROOT . '/includes/bonus.func.php')) {
@@ -131,6 +137,6 @@ if (file_exists(WEB_ROOT . '/includes/pay.func.php')) {
 
 if (file_exists(WEB_ROOT . '/includes/third_account.func.php')) {
 	require_once WEB_ROOT . '/includes/third_account.func.php';
-}
+}*/
 
 

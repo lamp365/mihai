@@ -104,12 +104,12 @@
 							<td>
 								<li>
 									<span class="left-span">起始日期</span>
-									<input type="text" class="li-height" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
+									<input type="text" class="li-height" placeholder="起始日期" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
 								</li>
 								<li> - </li>
 								<li>
 									<span class="left-span">终止日期</span>
-									<input type="text" class="li-height" id="datepicker_timeend" name="timeend" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
+									<input type="text" class="li-height" placeholder="终止日期" id="datepicker_timeend" name="timeend" value="<?php echo $_GP['timeend']; ?>" readonly="readonly" />
 									<script type="text/javascript">
 										laydate({
 									        elem: '#datepicker_timestart',

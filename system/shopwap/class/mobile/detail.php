@@ -1,7 +1,6 @@
 <?php
         $member=get_member_account(false);
 		$openid =$member['openid'] ;
-
 		$pindex = max(1, intval($_GP['page']));
 		$psize  = 15;
 		$total  = 0;
@@ -52,13 +51,15 @@
 			  $comments = mysqld_selectall("SELECT * FROM " . table('shop_goods_comment') . "  WHERE goodsid={$goods['gid']} ORDER BY istop desc, createtime desc limit ". ($pindex - 1) * $psize . ',' . $psize);
 			  //获取评论对应的图片
 			   if (!empty($comments)) {
-				   	foreach($comments as $k=> $row){
+				   	foreach($comments as $k=> &$row){
+				   		$row['username'] = getUserFaceAndNameHtml($row['openid'],$row['username']);
 						$comments[$k]['piclist'] = mysqld_selectall("select img from ". table('shop_comment_img') ." where comment_id={$row['id']}");
 					}
+					unset($row);
 			   }
 				
 			  echo json_encode($comments);
-			  return;
+			  exit;
 			  break;
 		  default:
 			  $table = 'shop_dish';

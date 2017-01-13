@@ -33,9 +33,9 @@
 					}
 				}
 				if(empty($article['mobileTheme'])){
-					include addons_page('article');
+					include addons_page('wap_article');
 				}else{
-					include addons_page('article'.$article['mobileTheme']);
+					include addons_page('wap_article'.$article['mobileTheme']);
 				}
 			}else{
 				if($article['state'] == '1'){
@@ -50,7 +50,7 @@
 					$tuijian_shop    = cs_goods('','',4,8);
 				}
 				$theme = 'default';
-				include addons_page('webarticle');
+				include addons_page('pc_article');
 			}
 			tosaveloginfrom();
 		}else if($op == 'guanzhu'){  //关注
@@ -117,7 +117,7 @@
 					die(showAjaxMess(200,$comment_list));
 				}
 			}
-			include addons_page('comment_list');
+			include addons_page('wap_comment_list');
 
 		}else if($op == 'note'){ //笔记内容页面
 			if(empty($_GP['id'])){

@@ -34,6 +34,11 @@ function analyzeShopContent($content,$return_dishid = false){
                 $where['table'] = 'shop_dish';
                 $where['where'] = 'a.id='.$id;
                 $dishinfo  = get_good($where);
+                if(!empty($_GET['is_app'])){
+                    $market_price = $dishinfo['app_marketprice'];
+                }else{
+                    $market_price = $dishinfo['marketprice'];
+                }
                 //取得商品把商品替换成对应的html
                 if(!empty($dishinfo)){
                     $url = create_url('mobile', array('id' => $dishinfo['id'],'op'=>'dish','name'=>'shopwap','do'=>'detail'));
@@ -45,7 +50,7 @@ function analyzeShopContent($content,$return_dishid = false){
                                    <div class='item-info'>
                                         <a class='item-title' href='javascript:;'>{$dishinfo['title']}</a>
                                         <div class='item-price'>
-                                            <ins class='price-new'>¥<strong>{$dishinfo['marketprice']}</strong></ins>
+                                            <ins class='price-new'>¥<strong>{$market_price}</strong></ins>
                                             <del class='price-old'>¥{$dishinfo['productprice']}</del>
                                         </div>
                                         <div class='item-btn'>去购买</div>

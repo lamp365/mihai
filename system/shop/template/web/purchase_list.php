@@ -203,7 +203,38 @@
 						  <option value="5" <?php  echo $_GP['tag']==5?'selected':'';?>>紫色</option>
 					  	</select>			
 					</li>	
-						
+					<li>
+						<span class="left-span">起始日期</span>
+						<input class="li-height" placeholder="起始日期" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  />
+					</li>
+					<li> - </li>
+					<li>
+						<span class="left-span">终止日期</span>
+						<input class="li-height" placeholder="终止日期" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
+			
+						<script type="text/javascript">
+							laydate({
+						        elem: '#begintime',
+						        istime: true, 
+						        event: 'click',
+						        format: 'YYYY-MM-DD hh:mm:ss',
+						        istoday: true, //是否显示今天
+						        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+						    });
+						    laydate.skin("molv"); 
+						</script> 
+						<script type="text/javascript">
+							laydate({
+						        elem: '#endtime',
+						        istime: true, 
+						        event: 'click',
+						        format: 'YYYY-MM-DD hh:mm:ss',
+						        istoday: true, //是否显示今天
+						        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+						    });
+						    laydate.skin("molv"); 
+						</script>
+					</li>		
 					<li >
 						<button type="submit" name="report" value="report"  class="btn btn-warning btn-sm">导出excel</button>
 						<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" target="_blank" class="btn btn-info btn-sm">打印订单</a>
@@ -230,38 +261,7 @@
 						<input  class="li-height" placeholder="收货人姓名" name="address_realname" type="text" value="<?php  echo $_GP['address_realname'];?>" />
 					</li>
 
-					<li>
-						<span class="left-span">开始</span>
-						<input class="li-height" placeholder="开始时间" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  />
-					</li>
-					<li> - </li>
-					<li>
-						<span class="left-span">结束</span>
-						<input class="li-height" placeholder="结束时间" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly"  /> <a href="javascript:;" onclick="cleartime()">清空</a>
-			
-						<script type="text/javascript">
-							laydate({
-						        elem: '#begintime',
-						        istime: true, 
-						        event: 'click',
-						        format: 'YYYY-MM-DD hh:mm:ss',
-						        istoday: true, //是否显示今天
-						        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-						    });
-						    laydate.skin("molv"); 
-						</script> 
-						<script type="text/javascript">
-							laydate({
-						        elem: '#endtime',
-						        istime: true, 
-						        event: 'click',
-						        format: 'YYYY-MM-DD hh:mm:ss',
-						        istoday: true, //是否显示今天
-						        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-						    });
-						    laydate.skin("molv"); 
-						</script>
-					</li>	
+					
 					
 
 					

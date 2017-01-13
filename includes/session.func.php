@@ -209,7 +209,9 @@ function get_session_account($useAccount = true, $mess_id = 0)
 
 function tosaveloginfrom()
 {
-    $_SESSION["mobile_login_fromurl"] = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    pp("http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+    $_SESSION["mobile_login_fromurl"] = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+//    die();
 }
 
 function clearloginfrom()

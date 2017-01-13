@@ -18,12 +18,9 @@ if(!empty($userRule)){
 			$str .= "-{$rule['modop']}";
 		}
 		$menurule[]= $str;
-
 		if($rule['pid'] == 0)
 			$parentMenuList[] = $rule;
-
 	}
-
 	$result         = getCatRuleUrl($menurule,$userRule,$parentMenuList);
 	$menurule       = $result['menuRule'];
 	$parentMenuList = $result['parentMenuList'];

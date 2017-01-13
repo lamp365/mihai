@@ -325,6 +325,56 @@
 	color: #000;
 	cursor: auto;
 }
+.img_bg{
+	position: fixed;background-color: rgba(10, 10, 10, 0.7);width: 100%;height: 100%;left: 0;top: 0;z-index: 1001;display: none;
+}
+._img{
+	height: 600px;width: 600px;
+	position: absolute;top: 50%;left: 50%;
+	margin-top: -300px;margin-left: -300px;
+}
+._img img{
+	width: 100%;height: auto;margin: 0 auto;background: #fff;
+	box-shadow:0 0 20px #000;
+}
+._img .toclose{
+	display: block;
+	width:16px;
+	height: 16px;
+	border-radius: 50%;
+	background: url(__RESOURCE__/recouse/images/remove_input_val.png) no-repeat;
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	background-color:#fff;
+	cursor: pointer;
+}
+._img .toleft{
+	display: block;
+	width:40px;
+	height:70px;
+	background: url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat;
+	background-position: 0 0;
+	cursor: pointer;
+	position: absolute;
+	left: 0;
+	margin-top: -35px;
+	display: none;
+	opacity: 0.3;
+}
+._img .toright{
+	display: block;
+	width:40px;
+	height:70px;
+	background: url(__RESOURCE__/recouse/images/left_right_icon.png) no-repeat;
+	background-position: -40px 0;
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+	margin-top: -35px;
+	display: none;
+	opacity: 0.3;
+}
 </style>
 <script>
 
@@ -336,9 +386,7 @@
 				$(this).closest('.piclist').data('clicked','1');
 			}
 
-		})
-//		$('.fancybox').fancybox();
-		
+		})		
 		//运费详情的显示隐藏
 		$(".freight").mouseenter(function(){			
 			$(".freightdetail").css({"display":"block"});
@@ -376,7 +424,16 @@ function point(){
 
 </script>
 </head>
-<body style="margin: 0 auto; ">
+<body style="margin: 0 auto;">
+	<!--展示评论图片-->
+	<div class="img_bg">
+		<div class="_img">
+			<span class="toleft"> </span>
+			<span class="toright"> </span>
+			<span class="toclose"> </span>
+			<img src=""/>
+		</div>
+	</div>
  <!--@php  include page('header');@-->	
 	<div class="main">
 		<section class="sp">
@@ -779,7 +836,7 @@ function point(){
 					                	<span class="price"><i>¥</i><em><!--@php echo $hstory_value['marketprice']; @--></em></span>
 	                                </p>
 	        </li>
-	    <!--@php $num++; } } }@-->
+	     <!--@php $num++; } } }@-->
         </ul>
 								</div>
 
@@ -789,7 +846,7 @@ function point(){
 			   </div>
 			</div>
 		</section>
-	<!--@php if ( is_array($jp_goods) && !empty($jp_goods)){ @-->
+	 <!--@php if ( is_array($jp_goods) && !empty($jp_goods)){ @-->
          <div class="viewport" style="margin-top:10px;">
              <h4 class="newRecomTitle">相关推荐<b>购买了该商品的人还买了这些</b></h4>
              <div id="pro_relPur" class="goodslst clearfix">
@@ -843,7 +900,7 @@ function point(){
 					        <!--@php } @-->
 						</ul>
 				  </div>
-				  <!--@php } @-->
+			  <!--@php } @-->
 				  <div class="best_goods">
                         <ul>
 						   <li class="title">我的足迹</li>
@@ -861,7 +918,7 @@ function point(){
 						</ul>
 				  </div>
 			</div>
-		 <!-- 商品详情和评价 Start  -->
+		<!-- 商品详情和评价 Start  -->
 		<div class="detail_tb">
 			<div id="tabBox1" class="tabBox">
 				<div class="hd">
@@ -902,7 +959,7 @@ function point(){
 									<!--@php if(!empty($row['reply'])){ @-->
 										<!--评论回复-->
 										<div class="comment_return">
-											<!--@php  echo $row['reply']; @-->
+											商家回复：<!--@php  echo $row['reply']; @-->
 										</div>
 									<!--@php } @-->								
 								</div>
@@ -961,7 +1018,8 @@ function point(){
 </div>
 
 
-		<script type="text/javascript">
+
+	<script type="text/javascript">
         var addto_cart_success = "该商品已添加到购物车。";
         var goods_id = 6;
         var goodsattr_style = 1;
@@ -1333,7 +1391,7 @@ $(".share-list a").hover(function(){
 			    render: "table", //table方式 
 			    width: 200, //宽度 
 			    height:200, //高度 
-			    text: url //二维码的链接 
+			    text: location_href //二维码的链接 
 			}); 
 		});
 		$(".wx_code_area .shade-close").on("click",function(){
@@ -1441,7 +1499,7 @@ $(".share-list a").hover(function(){
 				}
 			},'json');
 	}
-	//刷新评论列表的方法
+	//刷新评论列表的方法			
 	function rComment(data){		
 		var pic = data.piclist; //评论图片
 		var picurl = "";
@@ -1450,7 +1508,7 @@ $(".share-list a").hover(function(){
 					'<div  class="pull-left comment_left">'+data.comment;
 		if(pic.length != 0){
 			for(var j = 0 ;j < pic.length;j++){
-				picurl += '<a class="fancybox"  href="'+ pic[j].img +'" data-fancybox-group="gallery">'+
+				picurl += '<a onclick="showImg(this)">'+
 							'<img src="'+pic[j].img+'"/>'+
 						'</a>';	
 				}
@@ -1466,11 +1524,103 @@ $(".share-list a").hover(function(){
 						'</div>'+
 				   '</li>';	
 		
-	    $(".comment_page").before(li);	    
+	    $(".comment_page").before(li);	   
 	}
 	
-	  $(".fancybox").fancybox();
-	   
+	//点击评论的小图，就全屏展示	
+	var srclist;
+	function showImg(obj){		
+		srclist = [];
+		$(obj).parent(".piclist").find("img").each(function(){
+			srclist.push($(this).prop("src"));
+		});  
+		var src = $(obj).find("img").prop("src");
+		$(".img_bg").fadeIn(200);		
+		$(".img_bg").find("img").attr("src",src);	
+		arrowPosition();		
+	}
+	//上下页的按钮位置动态获取
+	function arrowPosition(){
+		var h = $("._img img").height();
+		$("._img .toleft").css("top",h*0.5 + "px");
+		$("._img .toright").css("top",h*0.5 + "px");
+	}
+	//点击背景，全屏关闭
+	$(".img_bg").click(function(){
+		$(this).fadeOut(200);
+	})
+	//点击关闭按钮，全屏关闭
+	$("._img .toclose").click(function(){
+		$(".img_bg").fadeOut(200);
+	})
+	//点击上一张按钮
+	$("._img .toleft").click(function(){
+		//获得当前显示是哪一张
+		var currpic = $(".img_bg").find("img").prop("src");
+		var currindex ;
+		var nextindex ;
+		for(var i = 0 ; i < srclist.length ; i++){
+			if(currpic == srclist[i]){
+				currindex = i;	
+				nextindex = currindex - 1;
+				if(nextindex < 0){
+					nextindex = 0;
+				}				
+				$(".img_bg").find("img").attr("src",srclist[nextindex]);
+				arrowPosition();
+			}
+		}
+		return false;
+	})
+	//点击下一张按钮
+	$("._img .toright").click(function(){
+		//获得当前显示是哪一张
+		var currpic = $(".img_bg").find("img").prop("src");
+		var currindex ;
+		var nextindex ;
+		for(var i = 0 ; i < srclist.length ; i++){
+			if(currpic == srclist[i]){
+				currindex = i;	
+				nextindex = currindex + 1;
+				if(nextindex > srclist.length -1 ){
+					nextindex = srclist.length -1;
+				}
+				$(".img_bg").find("img").attr("src",srclist[nextindex]);
+				arrowPosition();
+			}
+		}
+		return false;
+	})
+	//上一张下一张的按钮显示隐藏
+	$("._img img").mouseenter(function(){
+		if(srclist.length > 1){
+			$("._img .toleft").show();
+			$("._img .toright").show();
+		}		
+	})
+	$("._img img").mouseleave(function(){
+		$("._img .toleft").mouseenter(function(){
+			if(srclist.length > 1){
+				$(this).show();
+			}
+		})
+		$("._img .toright").mouseenter(function(){
+			if(srclist.length > 1){
+				$(this).show();
+			}
+		})		
+	})
+	$("._img .toleft").mouseleave(function(){
+			$(this).hide();
+		})
+	$("._img .toright").mouseleave(function(){
+		$(this).hide();
+	})	
+	$("._img img").mouseleave(function(){
+		$("._img .toleft").hide();
+		$("._img .toright").hide();
+	})
+	
 	//获取评论的设备
 	function equip(num){
 		if(num == 1){

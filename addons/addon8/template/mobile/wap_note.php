@@ -85,9 +85,9 @@
 		margin-right: -10px;
 	}
 	.headline-content .health-men .attention span{
-		padding: 3px;
-		height: 30px;
-		line-height: 30px;
+		padding: 2px;
+		height: 28px;
+		line-height: 28px;
 		text-align: center;		
 		border: 1px solid #F43776;
 		border-radius: 4px;

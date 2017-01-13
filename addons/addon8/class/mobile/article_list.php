@@ -82,7 +82,6 @@ $cfg=globaSetting();
 
     //当手机端滑动的时候加载下一页
 	if ($_GP['nextpage'] == 'ajax' && $_GP['page'] > 1 ){
-		// error  1: 失败  0:成功
 		if ( empty($article_list) ){
 			die(showAjaxMess(1002,'查无数据！'));
 		}else{

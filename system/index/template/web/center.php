@@ -21,13 +21,13 @@
     .payment-amount-area{
         float: left;
         width: 49%;
-        margin-right: 1%;
+       
         overflow: hidden;
     }
     .number-area{
         float: left;
         width: 49%;
-        margin-top: 60px;
+        margin-top: 45px;
     }
     .number-area ul{
         float: left;
@@ -102,9 +102,6 @@
         width: auto;
         float: left;
     }
-    .main-wrap{
-        padding:20px;
-    }
     .workbench .today-presentation,.workbench .pending-order{
         box-sizing: initial;
     }
@@ -144,13 +141,17 @@
     }
     .payment-amount-area h3{
         text-align: left;
-        padding: 10px 0;
+        padding: 0;
+        margin-top: 25px;
         font-size: 22px;
         font-weight: bold;
     }
     .payment-li-float{
         float: left;
         width: 50%;
+    }
+    .main-wrap{
+        padding: 0 20px 20px 20px;
     }
 </style>
 <script type="text/javascript">
@@ -364,7 +365,7 @@ $(function () {
             x: -20
         },
         chart: {
-            borderColor: '#f0f0f0',
+            borderColor: '#cad2e2',
             borderWidth: 1,
             type: 'line'
         },
@@ -404,7 +405,7 @@ $(function () {
 
 		</script>
 </head>
- <body onload="myheight()">
+<body >
 <div class="main-wrap">
 			
 
@@ -691,6 +692,7 @@ $(function () {
         var myheight1 = $(".main-wrap").height()+120;
         $("#main",window.parent.document).height(myheight1);
     }
+    myheight();
     laydate({
         elem: '#begintime',
         istime: true, 
@@ -731,7 +733,7 @@ $(function () {
             var endtime = $("#endtime").val();
             var search_input = $(".access-amount-head .search-input").val();
             var access_amount_html = "";
-            $.post("",{},function(data){
+            $.post("",{beginTime:begintime,endTime:endtime,searchVal:search_input},function(data){
                 if(data.errno==200){
                     $(".access-amount-html").html("");
                     access_amount_html += "<td><div class='product-name-left'><img src='http://hinrc.com/attachment/jpg/2016/08/534379437927161.jpg'></div>"+
@@ -748,7 +750,7 @@ $(function () {
             var endtime = $("#shopendtime").val();
             var search_input = $(".shop-car-head .search-input").val();
             var shop_car_html = "";
-            $.post("",{},function(data){
+            $.post("",{beginTime:begintime,endTime:endtime,searchVal:search_input},function(data){
                 if(data.errno==200){
                     $(".shop-car-html").html("");
                     shop_car_html += "<td>ON欧普特蒙一水肌酸纯肌酸粉600g健身增健肌粉肌肉爆发补充能量抗疲劳</td><td>12</td><td>12</td></tr>"
