@@ -52,7 +52,7 @@
 			{
 				$userinfos['userid'] 	= $loginid;
 				$userinfos['password'] 	= randString(10);
-				$userinfos['nick'] 		= '掌门人'+randString(5);
+				$userinfos['nick'] 		= '掌门人'.random(5);
 				$userinfos['name'] 		= $userinfos['nick'];
 				$userinfos['icon_url'] 	= IM_ICON_URL;
 				

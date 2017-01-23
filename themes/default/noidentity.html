@@ -204,7 +204,7 @@
 					<span style="color: red;">您的订单需要</span>
 					<span class="Btn" onclick="openDialog()">【提交清关材料】</span>
 					<span>或者</span>
-					<span class="Btn"><a href="">【稍后提供】</a></span>
+					<span class="Btn"><a href="<!--@php  echo mobile_url('myorder',array('status'=>99))@-->">【稍后提供】</a></span>
 					<span style="font-weight: normal;">(尽快提供清关材料，以便商家及时安排发货)</span>
 			</div>
 			<!--@php } @-->
@@ -644,6 +644,7 @@
 					url,
 					{'identity_front_image':identity_front_image,'identity_back_image':identity_back_image},
 					function(data){
+						console.log(data)
 						if(data.errno == 200) {
 							$('#identity2').hide();
 							$(".noidentity").show();

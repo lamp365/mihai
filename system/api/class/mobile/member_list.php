@@ -13,20 +13,13 @@
 	
 	if(!empty($member) AND $member != 3)
 	{
-		$sql = "SELECT openid,realname,nickname,member_description,avatar,mobile FROM " . table('member') . " where status=1 and istemplate=0 ";
+		$sql = "SELECT openid,realname,nickname,member_description,avatar,mobile,0 as isFollow FROM " . table('member') . " where status=1 and istemplate=0 ";
 		$sql.= " and openid!='".$member['openid']."' ";
+		$sql.= " and openid not in(select followed_openid from ".table('follow')." where follower_openid ='".$member['openid']."' ) ";
 		$sql.= " order by RAND( ) ";
 		$sql.= " limit ".(($page-1)*$limit).','.$limit;
 		
 		$arrMember = mysqld_selectall($sql);
-		
-		if(!empty($arrMember))
-		{
-			foreach ($arrMember as $key => $value)
-			{
-				$arrMember[$key]['isFollow'] = isFollowed($value['openid'],$member);
-			}
-		}
 	}
 	//未登录
 	else{

@@ -649,17 +649,26 @@ function isSelfAgent($str,$uid){
  * 一些场合，不需要跳转故再加一个方法
  */
 function checkIsLogin(){
-    $member = get_member_account(false);
-    if(empty($member)){
-        return '';
+    //微信端 可以获取到 get_member_account 得到的openid就是weixin_openid
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+        if (! empty($_SESSION[MOBILE_ACCOUNT])) {
+            return $_SESSION[MOBILE_ACCOUNT]['openid'];
+        }else{
+            return '';
+        }
     }else{
-        $openid     = $member['openid'];
-        $openid_arr = explode('_t', $openid);
-        if(count($openid_arr) == 2){
-            //是临时用户
+        $member = get_member_account(false);
+        if(empty($member)){
             return '';
         }else{
-            return $openid;
+            $openid     = $member['openid'];
+            $openid_arr = explode('_t', $openid);
+            if(count($openid_arr) == 2){
+                //是临时用户
+                return '';
+            }else{
+                return $openid;
+            }
         }
     }
 }

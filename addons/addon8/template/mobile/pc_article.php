@@ -84,8 +84,7 @@
 	.relate_fix{
 		position: fixed;right:355px;top:0px;
 	}
-	.content dl dd img{
-		width: 100%;
+	.content dl dd img{		
 		margin: 10px 0;
 	}
 	/*为了避免后台导入的文章都是图片堆砌而成的，取消图片之间的空隙*/
@@ -423,5 +422,21 @@
 //			$(".relate").removeClass("relate_fix");
 //		}
 //	})
+
+	//健康文化图片大小设置,为避免获取的宽度是0 ，先绑定一个load事件	
+	$(function(){
+		var _maxw = $(".content").width(); //获取最外层的宽度
+		//如果用onload,图片有缓存或，就不会触发了
+		$(".content img").one("load",function(){
+			
+		}).each(function(){				
+				var _imgw = $(this).width();  //获取图片的宽度
+				if( !$(this).parent().hasClass("item-pic")){    //过滤掉商品的图片
+					if( _imgw >= _maxw){						
+						$(this).attr("width","100%");						
+					}
+				}
+		})
+	})
 </script>
 </html>

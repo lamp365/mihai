@@ -18,6 +18,9 @@
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/bootstrap3/js/bootstrap.min.js"></script> 
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/kindeditor-min.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/themes/default/default.css" />
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+<link rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/index/css/public.css" />
 <script type="text/javascript">
 window.UEDITOR_HOME_URL = '<?php echo RESOURCE_ROOT;?>/addons/common/';
 window.UEDITOR_RES_URL = '<?php echo RESOURCE_ROOT;?>/addons/common/';

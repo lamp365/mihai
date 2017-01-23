@@ -10,7 +10,7 @@
  */
 function getCartProducts($openid)
 {
-	$sql = "SELECT c.id,d.id as dish_id,d.title,c.total,g.thumb,d.marketprice,d.timeprice,d.type,d.timestart,d.timeend,d.max_buy_quantity,c.seller_openid,s.id as shop_id,s.shopname FROM " . table('shop_cart') . " c ";
+	$sql = "SELECT c.id,d.id as dish_id,d.title,c.total,g.thumb,d.marketprice,d.app_marketprice,d.timeprice,d.type,d.timestart,d.timeend,d.max_buy_quantity,c.seller_openid,s.id as shop_id,s.shopname FROM " . table('shop_cart') . " c ";
 	$sql.= " left join " . table('shop_dish') . " d on d.id=c.goodsid ";
 	$sql.= " left join " . table('shop_goods') . " g on d.gid=g.id ";
 	$sql.= " left join " . table('openshop') . " s on s.openid=c.seller_openid ";

@@ -197,6 +197,12 @@
 						$result ['message'] = '被关注的用户ID不能为空';
 						$result ['code'] 	= 0;
 					}
+					//自己关注自己
+					elseif($followed_openid == $member ['openid'])
+					{
+						$result ['message'] = '自己不能关注自己';
+						$result ['code'] 	= 0;
+					}
 					else{
 		
 						$followedMember = mysqld_select("SELECT openid FROM " . table('member') . " where openid=:openid", array(':openid' => $followed_openid));
@@ -210,9 +216,9 @@
 						else{
 		
 							$data = array ('followed_openid' 	=> $followed_openid,
-									'follower_openid' 	=> $member ['openid'],
-									'createtime'		=> time()
-							);
+											'follower_openid' 	=> $member ['openid'],
+											'createtime'		=> time()
+									);
 								
 							//新增关注用户信息
 							if (mysqld_insert ( 'follow', $data )) {

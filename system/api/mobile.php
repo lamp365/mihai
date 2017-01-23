@@ -363,6 +363,11 @@ class apiAddons extends BjSystemModule
     {
     	$this->__mobile(__FUNCTION__);
     }
+
+    public function do_red_envelope()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
 	
     public function getPaytypebycode($code)
     {

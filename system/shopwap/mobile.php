@@ -289,6 +289,11 @@ class shopwapAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
+    public function do_shareActive()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
+
     public function getCartTotal($goodid='')
     {
 		if (!empty($goodid) ){

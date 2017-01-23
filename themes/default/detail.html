@@ -1440,12 +1440,12 @@ $(".share-list a").hover(function(){
 		}
 	}
 	//评论页码控制
-	var index = 1; //设置一个开关，避免，一直点击页码，上一个后台请求没有结束，就继续请求
+	var state = 1; //设置一个开关，避免，一直点击页码，上一个后台请求没有结束，就继续请求
 	$(".comment_page li").click(function(){			
 		//点击页码的样式变化
 		$(this).addClass("active").siblings().removeClass("active");		
-		if(index == 1){   //如果开关是打开的，就向后台请求
-			index = 0; //关闭开关
+		if(state == 1){   //如果开关是打开的，就向后台请求
+			state = 0; //关闭开关
 			//获取当前点击的是哪一页,传到后台			
 			var page = $(this).text();			
 			AJAX(page);
@@ -1454,8 +1454,8 @@ $(".share-list a").hover(function(){
 	//上一页
 	function toPre(){
 		var current_page = $("#current_comment").val();			
-		if(index == 1){   //如果开关是打开的，就向后台请求
-			index = 0; //关闭开关					
+		if(state == 1){   //如果开关是打开的，就向后台请求
+			state = 0; //关闭开关					
 			var page =current_page - 1;			
 			$(".comment_page").find("li").eq(page-1).addClass("active").siblings().removeClass("active");
 			AJAX(page);
@@ -1464,8 +1464,8 @@ $(".share-list a").hover(function(){
 	//下一页
 	function toNext(){
 		var current_page = parseInt($("#current_comment").val());			
-		if(index == 1){   //如果开关是打开的，就向后台请求
-			index = 0; //关闭开关					
+		if(state == 1){   //如果开关是打开的，就向后台请求
+			state = 0; //关闭开关					
 			var page =current_page + 1;			
 			$(".comment_page").find("li").eq(page-1).addClass("active").siblings().removeClass("active");
 			AJAX(page);
@@ -1492,7 +1492,7 @@ $(".share-list a").hover(function(){
 					for(var i=0;i<art_data.length;i++){
 						rComment(art_data[i]);
 					}					
-					index = 1;  //加载完后重新打开开关
+					state = 1;  //加载完后重新打开开关
 					//滚动到评论列表顶端
 					var _top = $(".detail_tb").position().top-100;
 					$("body,html").animate({scrollTop:_top},500);

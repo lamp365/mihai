@@ -132,6 +132,7 @@
 					<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
 												</div>
 									</div>
+									<br/><br/>
 </form>   
 <script>
 		laydate({
@@ -142,6 +143,7 @@
 	        istoday: true, //是否显示今天
 	        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
 	    });
+
 	    laydate({
 	        elem: '#send_end_date',
 	        istime: true, 

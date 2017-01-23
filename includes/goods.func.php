@@ -687,3 +687,8 @@ function get_word($text=''){
 	}
 	return $word;
 }
+
+function getDishId($id){
+	$dish = mysqld_select("select id from ".table('shop_dish')." where gid={$id}");
+	return $dish['id'];
+}

@@ -38,8 +38,10 @@
         .main-container:after{
             background: url(<?php echo RESOURCE_ROOT;?>/addons/index/css/ace/body_bg.png) repeat-x left top #EAF0F5;
         }
-        body{background-color: #F8FAFC;
-            height: 100%;}
+        body{
+            background-color: #F8FAFC;
+            height: 100%;
+        }
 		.navs{
             background:#5D4384;
 			height:40px;
@@ -191,6 +193,7 @@
         }
         .nav-list>li .submenu{
             border-top: none;
+
         }
         .nav-list>li.open>a:hover:before{
             background-color: #2e353d;
@@ -329,7 +332,7 @@
     <div class="navs">
 	 <div class="head_logo" style="float:left;height:40px;line-height:40px;">
                 <a href="" style="float:left;color:#fff;text-decoration:none;margin-left:13px;font-size:20px;">
-                      <i class="icon-home"></i>&nbsp;<?php  echo empty($settings['shop_title'])?'小物网络':$settings['shop_title'];?>
+                      <i class="icon-home"></i>&nbsp;<?php  echo empty($settings['shop_title'])?'小物网络':'后台管理';?>
                 </a>
       </div>
 	  	<ul class="breadcrumb" style="margin-left: 25px;color:#fff;">                    
@@ -688,7 +691,7 @@
 
 
                 <?php if (checkAdmin() ||in_array("shop-taxrate",$menurule)) { ?>
-                    <li class="jichu">
+                    <li class="yingxiao">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-money"></i>
@@ -840,6 +843,56 @@
                     </li>
                 <?php }?>
 
+                <?php if (checkAdmin() ||in_array("member-list",$menurule)) { ?>
+                    <li class="huiyuan">
+                        <!-- 导航第一级 -->
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-group"></i>
+                            <span class="menu-text"> 第三方用户导入</span>
+
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
+                                <li>
+                                    <a onclick="navtoggle('会员管理 - > 第三方用户导入 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'memberinto'))?>" target="main" >
+                                        <i class="icon-double-angle-right"></i>
+                                        第三方用户池
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="navtoggle('会员管理 - > 客户管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'customers'))?>" target="main" >
+                                        <i class="icon-double-angle-right"></i>
+                                        客户管理
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="navtoggle('权限管理 - > 部门管理 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'department','op' => 'index'))?>" target="main" >
+                                        <i class="icon-double-angle-right"></i>
+                                        部门管理
+                                    </a>
+                                </li>
+                            <?php }else{
+                                foreach($parentMenuList[MenuEnum::MEMBER_MANGE] as $row){
+                                    $zi = "第三方用户导入 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                                }
+
+                            }?>
+
+                        </ul>
+                    </li>
+                <?php }?>
 
 
                 <?php if (checkAdmin() ||in_array("bonus-bonus",$menurule)) { ?>
@@ -861,6 +914,11 @@
                                 <li> <a  onclick="navtoggle('营销管理 - > 促销免运费')"  href="<?php  echo create_url('site', array('name' => 'promotion','do' => 'promotion','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         促销免运费
+                                    </a>
+                                </li>
+                                <li> <a  onclick="navtoggle('营销管理 - > 红包管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'red','op'=>'display'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        红包管理
                                     </a>
                                 </li>
                             <?php }else{
@@ -1153,6 +1211,7 @@
                                         行为日志
                                     </a>
                                 </li>
+
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::ROLE_MANGE] as $row){
                                     $zi = "权限管理 - > {$row['moddescription']}";
@@ -1393,7 +1452,14 @@
         }
     }
     leftClassIsNull();
-    
+    $(".nav-list>li").on("click",function(e){
+        e.stopPropagation();
+        $(this).find(".submenu").slideToggle(200);
+        $(this).siblings("li").find(".submenu").stop();
+    });
+    $(".submenu>li").on("click",function(e){
+        e.stopPropagation();
+    })
 </script>
 </div>
 </body>

@@ -1,6 +1,10 @@
 <!--@php  include themePage('purchase_header');@-->
 <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 <div class="wrap">
+	<div class="notice-message">
+		<span><img style="width: 20px;" src="__RESOURCE__/recouse/images/notice.png"></span>
+		<span>这是消息通知模块这是消息通知模块这是消息通知模块这是消息通知模块这是消息通知模块</span>
+	</div>
 	<div class="crumbs">
 		<span>当前位置：</span>
 		<a href="<?php  echo mobile_url('purchase_order',array('name'=>'shopwap')); ?>">商品中心</a>	
@@ -12,13 +16,66 @@
 		<div class="personalTitle pT">
 				商品中心
 		</div>
+		<div class="brand-list">
+			<ul>
+				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
+				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
+				<li><span class="brand-list-name">nutrex hawaii &times 10</li>
+				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
+				<li><span class="brand-list-name">nutrex hawaii &times 10</li>
+			</ul>
+		</div>
 		<div class="tab">
 			<p class="select on">选择商品</p>
 			<p class="selected">已选商品(<span><!--@php echo $max_purchase; @--></span>)</p>
 		</div>
 		<div class="tab-div">
 			<div class="tab-div-select">
-				<form method="post" name="" class="">
+				<form method="post" name="" class="" id="myform" >
+					<input type="hidden" name="brandbid" value="<!--@php echo $_GP['brandbid']; @-->" class="brandbid">
+					<!--@php if ( !empty($brand) ){ @-->
+					<div style="margin-top: 20px;">
+						<span class="brand-name-checked"  bid="<!--@php echo $brand['id']; @-->" ><!--@php echo $brand['brand']; @--><span class="close-checked">&times</span></span>
+					</div>
+					<!--@php } @-->
+					<div class="brand">
+					    <!--@php if ( is_array($brand_list) && !empty($brand_list) ){ @-->
+						<div class="name">
+							品牌 :
+						</div>
+						<div class="brandlistBox">
+							<div class="brandlist">
+								<ul>
+								   <!--@php foreach( $brand_list as $brand_list_value ){ @-->
+									<li>
+										<a href="javascript:;" bid="<!--@php echo $brand_list_value['id']; @-->"><!--@php echo $brand_list_value['brand']; @--></a>
+									</li>
+									<!--@php } @-->
+								</ul>
+							</div>
+						</div>
+						<!--@php } @-->
+						<div class="name" style="border-top:solid 1px gainsboro">
+							查询 :
+						</div>
+						<div class="brandlistBox" style="border-top:solid 1px gainsboro">
+							<div class="brandlist">
+								<label>
+									<select style="width: 80px;padding: 0" name="key_type">
+										<option value="title" <?php if($_GP['key_type']=='title'){?>selected="selected"<?php  } ?> >产品名称</option>
+										<option value="id" <?php if($_GP['key_type']=='id'){?>selected="selected"<?php  } ?>>条形码</option>
+									</select>
+								</label>
+								<label><input style="margin-bottom: 0" type="text" name="keyword" value="<?php  echo $_GP['keyword'];?>" class="product-number"></label>
+								<button class="btn btn-primary search btn-sm">
+									<i class="search-img"></i>
+									搜索
+								</button>
+								
+							</div>
+						</div>
+						<div class="more" onclick="more()">展开</div>
+					</div>
 					<label style="display:none;">
 						<select name="cate_1" class="fetch-select fetchChildarea" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
 							<option value="0">请选择保税仓</option>
@@ -49,17 +106,7 @@
 							<?php  } ?>
 						</select>
 					</label>
-					<label><input type="text" name="keyword" value="<?php  echo $_GP['keyword'];?>" class="product-number"></label>
-					<label>
-						<select  name="key_type">
-							<option value="title" <?php if($_GP['key_type']=='title'){?>selected="selected"<?php  } ?> >产品名称</option>
-							<option value="id" <?php if($_GP['key_type']=='id'){?>selected="selected"<?php  } ?>>条形码</option>
-						</select>
-					</label>
-					<button class="btn btn-primary search">
-						<i class="search-img"></i>
-						搜索
-					</button>
+					
 <!-- 					<label class="pagenum" style="top: 50px;"><span>每页显示数量:</span>
 						<select>
 							<option>1</option>
@@ -357,13 +404,26 @@ $(function(){
 	});
 
 	currency();
-
+	//品牌超过2行显示展开按钮
+	if($(".brandlist ul li").length > 16){
+		$(".more").show();
+	}
+	//点击品牌进行提交
+	$(".brandlistBox .brandlist a").on("click",function(){
+	    $(".brandbid").val($(this).attr('bid'));
+		$("#myform").submit();
+	})
 	$("#addresslist .set").each(function(){
 		if($(this).text()=="默认地址"){
 			$("#addresslist .set").hide();
 			$(this).show();
 		}
 	});
+	//删除已选品牌
+	$(".brand-name-checked .close-checked").on("click",function(){
+		$(".brandbid").val("");
+	    $("#myform").submit();
+	})
 	//点击商品名称显示产品详情
 	$(".product-name").on("click",function(){
 		var content_this = $(this);
@@ -1052,5 +1112,19 @@ function openDialog(url){
 	}
 
 
+var state = 0; //没有展开是0
+function more(){
+	if(state == 0){
+		$(".more").html("收起");		
+		$(".brandlistBox").css("max-height","150px");
+		$(".brandlistBox").css("overflow-y","auto");
+		state = 1;
+	}else if(state == 1){
+		$(".more").html("展开");
+		$(".brandlistBox").css("max-height","80px");
+		$(".brandlistBox").css("overflow-y","hidden");
+		state = 0;
+	}
+}
 </script>
 <!--@php  include themePage('purchase_footer');@

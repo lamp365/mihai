@@ -576,7 +576,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 			</thead>
 			<tbody>
 				<?php  if(is_array($list)) { foreach($list as $item) { ?>
-				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;</td></tr>
+				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;<?php echo $item['relation_uid']>0?'<span class="label label-primary">一件代发</span>':''; ?><?php echo $item['relation_uid']>0?'&nbsp;&nbsp;<span class="label label-primary">业务员:'.$item['relation_name'].'</span>':''; ?></td></tr>
 				<tr class="order_info">
 				    <td  colspan="4">
 					<?php 

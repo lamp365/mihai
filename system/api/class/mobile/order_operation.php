@@ -29,7 +29,13 @@
 		echo apiReturn($result);
 		exit;
 	}
-	// dump($order);
+	$orderGoodInfo = mysqld_selectall("SELECT * FROM ".table('shop_order_goods')." WHERE orderid=".$id);
+	if (empty($orderGoodInfo)) {
+		$result['message'] 	= "查询订单商品失败!";
+		$result['code'] 	= 0;
+		echo apiReturn($result);
+		exit;
+	}
 	if ($op == 'cancel') {
 		// 取消订单
 		if ($order['status'] == 0) {
@@ -42,7 +48,7 @@
 		}
 	}elseif ($op == 'notarize') {
 		// 确认收货
-		if ($order['status'] == 2) {
+		if ($order['status'] == 2 AND isSureGetGoods($orderGoodInfo)) {
 			update_order_status($id, 3);
 			$result['message'] 	= "确认收货成功。";
 			$result['code'] 	= 1;
@@ -52,7 +58,7 @@
 		}
 	}elseif ($op == 'delete') {
 		// 删除订单
-		if ($order['status'] == -6 or $order['status'] == 3) {
+		if ($order['status'] == -6 or $order['status'] == 3 or $order['status'] == -1) {
 			// update_order_status($id, 3);
     		mysqld_update('shop_order', array('deleted' => 1), array('id'=> $id));
 			$result['message'] 	= "删除订单成功。";

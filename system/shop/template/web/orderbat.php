@@ -15,7 +15,7 @@
      return isExit;   
 }
 	</script>
-	<h3 class="header smaller lighter blue">批量发货1</h3>
+	<h3 class="header smaller lighter blue">批量发货</h3>
 <form action="" method="post" class="form-horizontal">
 				
 	<div class="form-group" style="margin: 0;padding: 0;    height: 45px;">

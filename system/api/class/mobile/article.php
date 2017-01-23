@@ -65,7 +65,7 @@ switch($op)
 			{
 				$where =' a.id in('.implode(",", $dishIds).')  and a.status=1 and a.deleted=0';
 			
-				$dish_list = get_goods(array('field'=>'a.id,a.p1,a.p2,a.p3,a.title,a.productprice,a.marketprice,a.thumb,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.commision,a.sales,a.total,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market ',
+				$dish_list = get_goods(array('field'=>'a.id,a.p1,a.p2,a.p3,a.title,a.productprice,a.marketprice,a.app_marketprice,a.thumb,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.commision,a.sales,a.total,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market ',
 											'table'	=>'shop_dish',
 											'where'	=> $where,
 											'order'	=> $order
@@ -91,7 +91,7 @@ switch($op)
 		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 		
-		$sql = "SELECT SQL_CALC_FOUND_ROWS id,title,thumb,createtime FROM " . table('addon8_article');
+		$sql = "SELECT SQL_CALC_FOUND_ROWS id,title,thumb,createtime,description FROM " . table('addon8_article');
 		$sql.= " WHERE state=6 ";					//健康文化
 		$sql.= " order by createtime desc";
 		$sql.= " limit ".(($page-1)*$limit).','.$limit;

@@ -228,11 +228,22 @@
 			$s_v['thumb'] = $good['thumb'];
 			$s_v['productprice'] = $good['productprice'];
 			$s_v['marketprice'] = $good['marketprice'];
+			$s_v['app_marketprice'] = $good['app_marketprice'];
 			$s_v['timeprice'] = $good['timeprice'];
 			// 库存
       		$s_v['total'] = $good['total'];
-      		// 佣金
-      		$s_v['commision'] = (float)((float)$good['timeprice']*(float)$good['commision']);
+      		
+      		// 活动商品并且处于活动中用timeprice价格
+      		if ($good ['type']!=0 && ((TIMESTAMP < $good ['timeend']) && (TIMESTAMP >= $good ['timestart']))) {
+      		
+      			// 佣金
+      			$s_v['commision'] = (float)((float)$good['timeprice']*(float)$good['commision']);
+      		}
+      		else{
+      			// 佣金
+      			$s_v['commision'] = (float)((float)$good['app_marketprice']*(float)$good['commision']);
+      		}
+      		
       		// 收藏数
       		$s_v['collect_num'] = $good['collect_num'];
       		// 销量

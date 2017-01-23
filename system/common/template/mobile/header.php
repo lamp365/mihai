@@ -425,7 +425,7 @@ $(document).ready(function($) {
 				placeholder="请输入商品名进行搜索！" ptag="37080.5.2" type="search"
 				AUTOCOMPLETE="off"/>
 			<div class="WX_me">
-				<a href="javascript:;" id="submit" class="WX_search_btn_blue">搜索</a>
+				<a href="javascript:;" id="submit" class="WX_search_btn_blue"></a>
 			</div>
 		   </form>
 		

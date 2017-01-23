@@ -295,10 +295,12 @@
                     $timeprice    = !empty($_GP['timeprice']) && ($_GP['timeprice'] > 0) ?$_GP['timeprice']:$shop_goods['marketprice'];
                     $marketprice  = !empty($_GP['marketprice']) && ($_GP['marketprice'] > 0)?$_GP['marketprice']:$shop_goods['marketprice'];
                     $productprice = !empty($_GP['productprice']) && ($_GP['productprice'] > 0)?$_GP['productprice']:$shop_goods['productprice'];
+                    $app_marketprice = !empty($_GP['app_marketprice']) && ($_GP['app_marketprice'] > 0) ? $_GP['app_marketprice'] : $marketprice;
                 }else{
                     $timeprice    = $_GP['timeprice'];
                     $marketprice  = $_GP['marketprice'] == 0 ? $shop_goods['marketprice'] : $_GP['marketprice'];
                     $productprice = $_GP['productprice'];
+                    $app_marketprice = $_GP['app_marketprice'];
                 }
                 $data = array(
                     'pcate' => intval($_GP['pcate']),
@@ -342,6 +344,7 @@
                 //是否销售
                 $data = getDataIsNotNull($data,'status',$_GP['status']);
                 $data = getDataIsNotNull($data,'marketprice',$marketprice);
+                $data = getDataIsNotNull($data,'app_marketprice',$app_marketprice);
                 $data = getDataIsNotNull($data,'productprice',$productprice);
                 $data = getDataIsNotNull($data,'timeprice',$timeprice);
                 //促销类型
@@ -692,6 +695,7 @@
 			$sorturl = create_url('site', array('name' => 'shop','do' => 'dish','op'=>'list'));
             if (!empty($_GP['keyword'])) {
 				$key_type = $_GP['key_type'];
+				$_GP['keyword'] = trim($_GP['keyword']);
 				if ( $key_type == 'title' ){
                     $condition .= " AND a.title LIKE '%{$_GP['keyword']}%'";
 				}else{

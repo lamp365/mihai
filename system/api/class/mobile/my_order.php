@@ -11,6 +11,7 @@
 	$status = intval($_GP['status']);
 	// 预留APP账户验证接口
 	$member = get_member_account(true, true);
+	// $member['openid'] = '2015111911924';
 	if (empty($member)) {
 		$result['message'] 	= "用户验证失败!";
 		$result['code'] 	= 2;
@@ -22,7 +23,6 @@
 		echo apiReturn($result);
 		exit;
 	}
-	// $member['openid'] = '2015111911924';
 
 	$openid = $member['openid'];
 	$where = "a.openid='".$openid."' AND a.deleted=0";
@@ -63,7 +63,7 @@
     // 	array('where' => $where, 'limit' => ($pindex - 1) * $psize . ',' . $psize)
     // 	);
 
-    $list = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id, a.ordersn, a.status, a.price as total_price, a.taxprice, a.dispatchprice, a.isprize, a.isdraw, b.id as bid, b.goodsid, b.total, b.seller_openid, b.price as goodprice, b.iscomment, b.shop_type, b.status as b_status, e.status as group_status, c.group_id, d.shopname, a.createtime FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('openshop')." as d on b.seller_openid=d.openid left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+    $list = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id, a.ordersn, a.status, a.price as total_price, a.taxprice, a.dispatchprice, a.isprize, a.isdraw, a.has_balance, a.balance_sprice, b.id as bid, b.goodsid, b.total, b.seller_openid, b.price as goodprice, b.iscomment, b.shop_type, b.status as b_status, e.status as group_status, c.group_id, d.shopname, a.createtime FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('openshop')." as d on b.seller_openid=d.openid left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
     // 总记录数
 	$total = mysqld_select("SELECT FOUND_ROWS() as total;");
 
@@ -75,6 +75,10 @@
     	$ary = array();
 	    foreach ($list as $l_k => &$l_v) {
 	    	update_group_status($l_v['goodsid']);
+	    	// // 处理有余额抵扣订单的价格展示
+	    	// if ($l_v['has_balance'] == '1') {
+	    	// 	$l_v['total_price'] += $l_v['balance_sprice'];
+	    	// }
 	    	$l_v['goods'] = array();
 	    	$usa = array();
 	    	$good = get_good(array(

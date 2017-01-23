@@ -207,11 +207,29 @@ function get_session_account($useAccount = true, $mess_id = 0)
     return $sessionAccount;
 }
 
+/**
+ * @content 微信打开时才会记录 MOBILE_SESSION_ACCOUNT
+ * 存入值有 $sessionAccount = array(
+                'openid'  => $from_user,
+                'unionid' => $_GP['unionid']
+            );
+ * @param string $key  可以是openid 或者  unionid
+ * @return string
+ */
+function get_weixin_session_account($key = ''){
+    $weixin_info = '';
+    if(!empty($_SESSION['MOBILE_SESSION_ACCOUNT'])){
+        $weixin_info = $_SESSION['MOBILE_SESSION_ACCOUNT'];
+        if(!empty($key) && array_key_exists($key,$weixin_info)){
+            $weixin_info = $_SESSION['MOBILE_SESSION_ACCOUNT'][$key];
+        }
+    }
+    return $weixin_info;
+}
+
 function tosaveloginfrom()
 {
-    pp("http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
-    $_SESSION["mobile_login_fromurl"] = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
-//    die();
+    $_SESSION["mobile_login_fromurl"] = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 }
 
 function clearloginfrom()

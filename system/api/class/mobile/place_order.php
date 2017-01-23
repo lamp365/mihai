@@ -18,6 +18,7 @@ if (!empty($member) AND $member != 3) {
 	$bonus_id			= intval ( $_GP ['bonus_id'] ); 	// 优惠券ID
 	$team_buy_member_id = 0;								// 团购成员ID
 	$group_id 			= intval ( $_GP ['group_id'] ); 	// 团购的group_id
+	$use_balance 		= intval($_GP['use_balance'] ? $_GP['use_balance'] : 0);	// 是否使用余额抵扣
 
 	// 支付方式ID
 	if (empty ( $payment_id )) {
@@ -238,6 +239,26 @@ if (!empty($member) AND $member != 3) {
 					$order_data['bonusprice'] 	= $bonusPrice;
 					$order_data['hasbonus'] 	= 1;
 				}
+				// 使用余额抵扣
+				if ($use_balance == 1) {
+					$use_member = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$member['openid']."'");
+					$balance = (float)$use_member['gold'];
+					if ($balance >= (float)$order_data['price']) {
+						$balance = (float)$order_data['price'];
+					}
+					if ($balance < 0) {
+						$balance = 0;
+					}
+					$order_data['price'] = (float)$order_data['price'] - $balance;
+					if ($order_data['price'] <= 0) {
+						$order_data['price'] = 0;
+					}
+					$order_data['has_balance'] = 1;
+					$order_data['balance_sprice'] = $balance;
+					// 扣除账户余额
+					$member_ary = array('gold' => (float)$use_member['gold'] - $balance);
+					mysqld_update ('member',$member_ary,array('openid' =>$openid));
+				}
 				
 				
 				//团购订单时
@@ -268,11 +289,11 @@ if (!empty($member) AND $member != 3) {
 					 				'taxprice' 		=> $row ['taxprice'],
 					 				'orderid' 		=> $orderid,
 					 				'total' 		=> $row ['total'],
-					 				'price' 		=> $row ['marketprice'],
+					 				'price' 		=> $row ['app_marketprice'],
 					 				'taxprice' 		=> $row ['taxprice'],
 					 				'seller_openid' => $row ['seller_openid'],
-				 					'shop_type'		=> ($row ['marketprice']==$row ['timeprice']) ? $row ['type'] : 0,
-				 					'commision'		=> $row ['marketprice']*$row ['total']*$row ['commision'],
+				 					'shop_type'		=> ($row ['app_marketprice']==$row ['timeprice']) ? $row ['type'] : 0,
+				 					'commision'		=> $row ['app_marketprice']*$row ['total']*$row ['commision'],
 					 				'createtime'	=> time ()
 				 		);
 
@@ -311,15 +332,26 @@ if (!empty($member) AND $member != 3) {
 				 
 				 $result ['code'] 					= 1;
 				 $result ['data']['order'] 			= $order_data;
-				 
-				 //支付宝支付
-				 if($payment ['code']=='alipay')
-				 {
-				 	$result ['data']['aliPayParam']	= buildRequestRsaParaToString($aliParam);		//支付宝的参数数组
-				 }
-				 //微信支付
-				 elseif($payment ['code']=='weixin'){
-				 	$result ['data']['weixinPayParam']	= weixinPayData($order_data['ordersn'],$aliParam['body'],$aliParam['total_fee']);
+
+				 // 使用余额抵扣全额之后的处理
+				 if ($use_balance == 1 AND $order_data['price'] == 0) {
+				 	//支付成功后的处理
+				 	$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id=".$orderid);
+					mysqld_update('shop_order', array('status'=>1,'paytime'=>time()), array('id' =>  $orderid));
+      
+					mysqld_insert('paylog', array('typename'=>'支付成功','ptype'=>'success','paytype'=>'balance','createtime'=>date('Y-m-d H:i:s')));
+					
+					paySuccessProcess($order);	
+				 }else{
+				 	//支付宝支付
+					 if($payment ['code']=='alipay')
+					 {
+					 	$result ['data']['aliPayParam']	= buildRequestRsaParaToString($aliParam);		//支付宝的参数数组
+					 }
+					 //微信支付
+					 elseif($payment ['code']=='weixin'){
+					 	$result ['data']['weixinPayParam']	= weixinPayData($order_data['ordersn'],$aliParam['body'],$aliParam['total_fee']);
+					 }
 				 }
 			}
 		}

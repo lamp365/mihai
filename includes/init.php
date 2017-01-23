@@ -136,6 +136,7 @@ if (empty($bjconfig['db']['port'])) {
 if (empty($bjconfig['db']['database'])) {
     $bjconfig['db']['database'] = '';
 }
+//$bjconfig['db']['charset'] = 'utf8mb4';
 $bjconfig['db']['charset'] = 'utf8';
 $_CMS['config'] = $bjconfig;
 $_CMS['module'] = $modulename;
@@ -256,7 +257,6 @@ if (in_array($modulename, $system_module)) {
                 }
                 $method = 'do_' . $_GP['do'];
             }
-            
             $class->module = $modulename;
             if (method_exists($class, $method)) {
                 exit($class->$method());

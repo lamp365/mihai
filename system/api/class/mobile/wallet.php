@@ -230,7 +230,7 @@
 		if ($status == '0') {
 
 		}elseif ($status == '1') {
-			$where.=" AND type IN (1,2,3)";
+			$where.=" AND type IN (1,2,3,6)";
 		}elseif ($status == '2') {
 			$where.=" AND type IN (0,-1)";
 		}elseif ($status == '3') {
@@ -512,14 +512,15 @@
 		{
 			//验证码是否正确
 			if (isset($_SESSION['api'][$telephone]) && strtolower ( $_SESSION['api'][$telephone] ) == strtolower ( $verify )) {
-				unset ( $_SESSION['api'][$telephone] );
-				unset ( $_SESSION['api']['sms_code_expired'] );
+				
 				return true;
 			}
 		}
-	
-		unset ( $_SESSION['api'][$telephone] );
-		unset ( $_SESSION['api']['sms_code_expired'] );
+		else{
+			unset ( $_SESSION['api'][$telephone] );
+			unset ( $_SESSION['api']['sms_code_expired'] );
+		}
 	
 		return false;
 	}
+	

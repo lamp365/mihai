@@ -566,7 +566,7 @@ nav{
 	}
 	
 .WX_search_txt,.hd_search_txt{
-	background-image:url(../images/icon_s.png);
+	background:url(../images/icon_s.png) no-repeat center center;
 
 	}
 	
@@ -997,7 +997,7 @@ nav{
 	width:100%;
 	height:36px;
 	padding:0;
-	background:none;
+	background:url(../images/icon_s2.png) no-repeat center center;
 	color:#fff;
 	line-height:36px;
 }
@@ -4150,6 +4150,7 @@ del {
   overflow:hidden;
   height:29px;
   line-height: 29px;
+  margin-top: 2px;
 }
 .keyword span{
   float:left;
@@ -4259,14 +4260,17 @@ del {
 }
 
 .nav .keyword li{
-	margin-left: 6px;
+	margin-left: 10px;
 	width: auto
 	display: inline;
+}
+.nav .keyword li:first-child{
+	margin-left: 0px;
 }
 .nav .keyword li a{
    height:14px;
    line-height:14px;
- 	padding-right: 3px;
+ 	padding-right: 10px;
  	margin-top: 3px;
    border-right:1px solid #ccc;
 }
@@ -4868,3 +4872,98 @@ del {
     line-height: 35px;
     z-index: 9909
 }
+
+/*头部栏*/
+
+	.purchase_head{
+		height: auto;
+	}
+	.purchase_head .top{
+		height: 30px;
+		width: 100%;
+		background: #F2F2F2;
+		margin: 0;		
+	}
+	.purchase_head .top .content{
+		margin: 0 auto;
+		width: 1190px;
+		height: 100%;
+		line-height: 30px;
+		font-size: 14px;
+		color: #666;
+	}
+	.purchase_head .top .content .topNavLeft{
+		float: left;
+		height:30px;
+		width: 20%;		
+		font-size: 14px;		
+	}
+	.purchase_head .top .content .topNavLeft .men{
+		display: inline-block;
+		max-width: 200px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.purchase_head .top .content .topNavLeft a{
+		font-size: 14px;
+		height: 30px;
+		display: inline-block;
+		line-height: 30px;
+		overflow: hidden;
+		text-decoration: none;
+	}
+	.purchase_head .top .content .topNavLeft a:hover{
+		color: red;
+	}
+	.sep{
+		color: #ccc;
+		padding: 0 10px;		
+		overflow: hidden;
+	}
+	.purchase_head .top .content .topNavRight{
+		float: right;
+		width: 50%;
+		height: 100%;
+		margin-bottom: 0;
+	}
+	.purchase_head .top .content .topNavRight li{
+		float:right;
+		width: 88px;		
+		height: 30px;
+		line-height: 30px;	
+		cursor: pointer;	
+	}
+	.purchase_head .top .content .topNavRight li:hover{
+		color: red;	
+		text-decoration:none !important;	
+	}
+	.purchase_head .top .content .topNavRight li a{
+		font-size: 14px;
+		color: #666;
+	}
+	.purchase_head .top .content .topNavRight .dropdown a{
+		text-decoration: none !important;
+	}
+	.purchase_head .top .content .topNavRight li a:hover{
+		color: red;
+	}	
+	.purchase_head .dropdown-menu li{
+		float: left !important;
+		color: #666 !important;		
+		width: 100% !important;		
+	}
+	.purchase_head .topNavRight .dropdown .dropdown-menu li a:hover{
+		background: none;
+	}
+	.purchase_head .dropdown-menu{
+		left: -20px !important;
+		margin-top: -2px !important;
+		min-width: auto !important;
+	}
+	.purchase_head .dropdown-menu .divider{
+		height: 1px !important;
+		width: 80% !important;
+		margin: 0 10% !important;
+		box-sizing: border-box;
+	}

@@ -53,6 +53,11 @@
             if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['address'])) {
                 die(showAjaxMess('1002','请输完善您的资料！'));
             }
+			if (isset($user_a['type']) && $user_a['type'] == 3){
+                if (empty($_GP['idname']) || empty($_GP['idnumber'])) {
+                     die(showAjaxMess('1002','请填写身份证用于清关'));
+                }
+			}
             if (!empty($id)) {
                 unset($data['openid']);
                 mysqld_update('shop_address', $data, array('id' => $id));

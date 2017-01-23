@@ -134,6 +134,7 @@ if ($op == 'add') {
         mysqld_delete('shop_cart', array(
             'session_id' => $openid
         ));
+		$cookie = new LtCookie();
         $cookie->delCookie('choose_cart');
         die(json_encode(array(
             "result" => 1

@@ -16,7 +16,7 @@
 	<div class="login">
 		<a href="/" class="logo"></a>
 		<div class="login-inner">
-			<h1 class="login-title"><?php  echo empty($settings['shop_title'])?'':$settings['shop_title'];?></h1>
+			<h1 class="login-title"><?php  echo empty($settings['shop_title'])?'':'后台管理';?></h1>
 			<div class="login-item mgb20">
 				<input type="text" class="clearError"  name="username"  id="ipt_account" placeholder="请输入登录账号" tabindex="1">
 				<a href="javascript:;" class="clearIpt j-clearIpt"><i class="gicon-remove"></i></a>

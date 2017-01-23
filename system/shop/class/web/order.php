@@ -120,6 +120,11 @@ if ($operation == 'display') {
 		$sql .= " where o.orderid={$item['id']}";
 		$goods = mysqld_selectall($sql);
 		$list[$id]['goods'] = $goods;
+		// 关联业务员
+		if ( $item['relation_uid'] > 0 ){
+              $relation = mysqld_select("SELECT username FROM ".table('user')." WHERE id =".$item['relation_uid']);
+			  $list[$id]['relation_name'] = $relation['username'];
+		}
 //		$list[$id]['isguest'] =$member['istemplate'];
 	}
 

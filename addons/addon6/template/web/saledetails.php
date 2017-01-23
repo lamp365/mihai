@@ -92,7 +92,7 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 
 			</tr>
 		</table>
-
+<br><br><br>
 
 	<?php  echo $pager;?>
 

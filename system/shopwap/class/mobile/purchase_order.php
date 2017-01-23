@@ -32,6 +32,10 @@ if (!empty($_GP['keyword'])){
 			 break;
 	 }
 }
+if ( !empty($_GP['brandbid']) ){
+        $bid = intval($_GP['brandbid']);
+		$condition .= " AND c.brand = '{$bid}'";
+}
  if (!empty($_GP['p2'])) {
 		$cid = intval($_GP['p2']);
 		$condition .= " AND b.p2 = '{$cid}'";
@@ -58,12 +62,13 @@ if ( $user_a['type'] == 2 ){
      $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id'].$limit);
 	 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']."  $condition and b.deleted=0  AND b.status = '1' ");
      $currency = 2;
+	 $brand_list = mysqld_selectall("SELECT * FROM ".table('shop_brand')." WHERE pifa = 1 ");
 }else{
      $dish_list = mysqld_selectall("SELECT b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish')." AS b  LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ".$limit);
 	 $total = mysqld_selectcolumn("SELECT count(*) FROM ".table('shop_dish')." AS b LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.total>0 and b.deleted = 0 and b.status = 1 $condition ");
      $currency = 1;
+	 $brand_list = mysqld_selectall("SELECT * FROM ".table('shop_brand')." WHERE daifa = 1 ");
 }
-
 if ( empty($dish_list) && !empty($_GP['keyword']) && $_GP['key_type'] == 'title') {
      $word = get_word($_GP['keyword']);
 	 if ( !empty($word) ){
@@ -73,6 +78,10 @@ if ( empty($dish_list) && !empty($_GP['keyword']) && $_GP['key_type'] == 'title'
 		 }
 		 $keys = implode(' or ' , $keys);
 		 $condition = ' and ('.$keys.')';
+		 if ( !empty($_GP['brandbid']) ){
+             $bid = intval($_GP['brandbid']);
+		     $condition .= " AND c.brand = '{$bid}'";
+         }
 		 if (!empty($_GP['p2'])) {
 			   $cid = intval($_GP['p2']);
 			   $condition .= " AND b.p2 = '{$cid}'";
@@ -93,6 +102,9 @@ if ( empty($dish_list) && !empty($_GP['keyword']) && $_GP['key_type'] == 'title'
 				 $currency = 1;
 			}
 	 }
+}
+if ( !empty($_GP['brandbid']) ){
+     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id = ".$_GP['brandbid']);
 }
 // 开始进行标记选中事件selected
 // 进入数据库进行查询产品数据 

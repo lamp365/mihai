@@ -46,7 +46,7 @@ switch ($login_type) {
 											'status' 	=> 1,
 											'istemplate'=> 0,
 											'experience'=> 0,
-											'nickname'	=> !empty($userinfo['nickname']) ? $userinfo['nickname'] : '掌门人'+randString(5),
+											'nickname'	=> !empty($userinfo['nickname']) ? $userinfo['nickname'] : '掌门人'.random(5),
 											'avatar'	=> !empty($userinfo['headimgurl']) ? $userinfo['headimgurl'] : IM_ICON_URL,
 											'mess_id' 	=> 0);
 										
@@ -84,7 +84,7 @@ switch ($login_type) {
 											'status' 	=> 1,
 											'istemplate'=> 0,
 											'experience'=> 0,
-											'nickname'	=> !empty($userinfo['nickname']) ? $userinfo['nickname'] : '掌门人'+randString(5),
+											'nickname'	=> !empty($userinfo['nickname']) ? $userinfo['nickname'] : '掌门人'.random(5),
 											'avatar'	=> !empty($userinfo['headimgurl']) ? $userinfo['headimgurl'] : IM_ICON_URL,
 											'mess_id' 	=> 0);
 										
@@ -157,7 +157,7 @@ switch ($login_type) {
 										'status' 	=> 1,
 										'istemplate'=> 0,
 										'experience'=> 0,
-										'nickname'	=> !empty($qqInfo['nickname']) ? $qqInfo['nickname'] : '掌门人'+randString(5),
+										'nickname'	=> !empty($qqInfo['nickname']) ? $qqInfo['nickname'] : '掌门人'.random(5),
 										'avatar'	=> !empty($qqInfo['figureurl_qq_2']) ? $qqInfo['figureurl_qq_2'] : IM_ICON_URL,
 										'mess_id' 	=> 0);
 					
@@ -230,7 +230,7 @@ switch ($login_type) {
 									'status' 	=> 1,
 									'istemplate'=> 0,
 									'experience'=> 0,
-									'nickname'	=> !empty($userinfo['screen_name']) ? $userinfo['screen_name'] : '掌门人'+randString(5),
+									'nickname'	=> !empty($userinfo['screen_name']) ? $userinfo['screen_name'] : '掌门人'.random(5),
 									'avatar'	=> !empty($userinfo['avatar_large']) ? $userinfo['avatar_large'] : IM_ICON_URL,
 									'mess_id' 	=> 0);
 						
@@ -396,7 +396,7 @@ function thirdLoginProcess($openid,$device_code)
 				{
 					$userinfos['userid'] 	= $member['openid'];
 					$userinfos['password'] 	= randString(10);
-					$userinfos['nick'] 		= '掌门人'+randString(5);
+					$userinfos['nick'] 		= '掌门人'.random(5);
 					$userinfos['name'] 		= $userinfos['nick'];
 					$userinfos['icon_url'] 	= IM_ICON_URL;
 				

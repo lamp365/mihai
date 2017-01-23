@@ -181,7 +181,7 @@ body{
 }
 .wrap .tab{
 	border-bottom: 1px solid #bfbfbf;
-	margin-top: 40px;
+	margin-top: 10px;
 }
 .wrap .tab p{
 	display: inline-block;
@@ -195,7 +195,7 @@ body{
 }
 .tab-div-select{
 	position: relative;
-	margin-top: 15px;
+	//margin-top: 15px;
 	font-family: '微软雅黑',Helvetica,STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial;
 }
 .pagenum{
@@ -230,7 +230,7 @@ body{
 .tab-div-select form{
 	overflow: auto;
 	font-size: 14px;
-	margin-top: 20px;
+	//margin-top: 20px;
 }
 .tab-div-select label span{
 	display: inline-block;
@@ -826,4 +826,100 @@ width: 900px;
     margin-left: -16px;
     padding: 0 55px;
     box-sizing: border-box;
+}
+.brand {
+    border: solid 1px gainsboro;
+    overflow: hidden;
+    width: 1006px;
+    position: relative;
+    background: #f7f7f7;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.brand .name {
+    color: #666;
+    float: left;
+    font-size: 13px;
+    padding-left: 20px;
+    padding-top: 8px;
+    width: 50px;
+}
+.brand .brandlistBox {
+    max-height: 80px;
+    overflow-y: hidden;
+    background: white;
+    overflow-x: hidden;
+    padding-left: 20px;
+}
+.brand .brandlistBox .brandlist {
+    background-color: #fff;
+    padding-right: 42px;
+    margin-top: 8px;
+    overflow: hidden;
+    width: 100%;
+}
+.brand .brandlistBox .brandlist ul {
+    list-style: none;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 0;
+}
+.brand .brandlistBox .brandlist ul li {
+    float: left;
+    width: 130px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+.brand .brandlistBox .brandlist ul li a{
+    color: #333;
+}
+.brand .brandlistBox .brandlist ul li a:hover {
+    color: #E83729;
+}
+.brand .more {
+    position: absolute;
+    right: 20px;
+    top: 8px;
+    display: none;
+    cursor: pointer;
+}
+.brand-name-checked{
+    border: 1px dotted #D22147;
+    color: #D22147;
+    margin-top: 20px;
+}
+.brand-name-checked .close-checked{
+    padding: 0px 3px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.brand-name-checked .close-checked:hover{
+    background-color: #D22147;
+    color: #fff;
+}
+.brand-list{
+    overflow: hidden;
+}
+.brand-list li{
+    float: left;
+    width: 335px;
+    margin-bottom: 5px;
+}
+.notice-message{
+    margin-top: 22px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.brand-list-name{
+    background-color: #428bca;
+    color: #fff;
+    display: inline-block;
+    text-align: center;
+    border-radius: 4px;
+    padding: 2px 5px;
 }

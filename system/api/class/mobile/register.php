@@ -60,7 +60,7 @@
 						'experience'=> 0,
 						'mess_id' 	=> 0,
 						'openid' 	=> $openid,
-						'nickname'	=> '掌门人'+randString(5));
+						'nickname'	=> '掌门人'.random(5));
 		
 		$userinfos['userid'] 	= $openid;
 		$userinfos['password'] 	= randString(10);

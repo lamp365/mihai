@@ -90,8 +90,22 @@
 		
 		
 		$result ['data']['totalprice'] 	= $result ['data']['goodsprice']+$result ['data']['taxtotal']+$result ['data']['ships'];
-		$result ['data']['payment_list']= getPayment (); 					// 支付方式
+		
+		//app2.0及以上版本时
+		if(isset($_GP['versioncode']) && $_GP['versioncode']>=200)
+		{
+			$result ['data']['payment_list']= getPayment (); 					// 支付方式
+		}
+		//app1.0版本时
+		else{
+			$payment_list = mysqld_selectall ( "select code,name,id from " . table ( "payment" ) . " where enabled=1 and code='alipay' order by `order` desc" );
+			
+			$result ['data']['payment_list']= $payment_list; 					// 支付方式
+		}
+		
 		$result ['data']['bonus_list']	= get_bonus_list (array('openid'=>$openid,'goods'=>$result ['data']['dish_list'],'price'=>$result ['data']['goodsprice'])); 	// 优惠券
+		$use_member = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$member ['openid']."'");
+		$result ['data']['balance_sprice'] = $use_member['gold']; 		// 账户余额
 	}
 	
 	echo apiReturn ( $result );

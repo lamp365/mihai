@@ -24,7 +24,8 @@
 			$_SESSION['api'][$telephone] 		= $code;
 			$_SESSION['api']['sms_code_expired']= time()+120;		//短信的有效期,120s
 		
-			logRecord('telephone:'.$_SESSION['api'][$telephone],'send_sms_code');
+			logRecord('telephone:'.$telephone,'send_sms_code');
+			logRecord('sms_code:'.$_SESSION['api'][$telephone],'send_sms_code');
 			logRecord('sms_code_expired:'.$_SESSION['api']['sms_code_expired'],'send_sms_code');
 		
 		

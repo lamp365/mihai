@@ -42,6 +42,14 @@ class memberAddons  extends BjSystemModule {
 	{
 		$this->__web(__FUNCTION__);
 	}
+	public function do_memberinto()
+	{
+		$this->__web(__FUNCTION__);
+	}
+	public function do_customers()
+	{
+		$this->__web(__FUNCTION__);
+	}
 }
 
 

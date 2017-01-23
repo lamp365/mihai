@@ -30,6 +30,7 @@
 		$ary['title'] = $good['title'];
 		$ary['thumb'] = $good['thumb'];
 		$ary['marketprice'] = $good['marketprice'];
+		$ary['app_marketprice'] = $good['app_marketprice'];
 		$goods[] = $ary;
 	}
 	// dump($goods);

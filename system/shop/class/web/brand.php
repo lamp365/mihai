@@ -10,6 +10,20 @@ if ($operation == 'display') {
          $country = get_country($brand_value['country_id']);
 		 $brand_value['country_img'] = $country['icon'];
 	}
+	if ($_GP['ajax'] == 'daifa' && !empty($_GP['id'])){
+		$result = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id = ".$_GP['id']);
+        $daifa = ABS($result['daifa'] - 1 );
+		$data = array('daifa'=>$daifa);
+		mysqld_update('shop_brand',$data,array('id'=>$_GP['id']));
+		die(showAjaxMess('200',array('id'=>$_GP['id'], 'daifa'=>$daifa )));
+	}
+	if ($_GP['ajax'] == 'pifa' && !empty($_GP['id'])){
+         $result = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id = ".$_GP['id']);
+        $pifa = ABS($result['pifa'] - 1 );
+		$data = array('pifa'=>$pifa);
+		mysqld_update('shop_brand',$data,array('id'=>$_GP['id']));
+		die(showAjaxMess('200',array('id'=>$_GP['id'], 'pifa'=>$pifa )));
+	}
 	include page('brand_list');
 }elseif ($operation == 'add') {
 	$country = mysqld_selectall("SELECT * FROM " . table('shop_country') . "  where deleted=0");

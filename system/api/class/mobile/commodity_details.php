@@ -65,10 +65,22 @@
 			$list['productprice'] = (float)$good['productprice'];
 			// 价格
 			$list['marketprice'] =(float)$good['marketprice'];
+			// app端价格
+			$list['app_marketprice'] =(float)$good['app_marketprice'];
 			// 团购价/秒杀价（手机价）
 			$list['timeprice'] = (float)$good['timeprice'];
-			// 佣金
-			$list['commision'] = ((float)$good['commision']*(float)$good['timeprice']);
+			
+			// 活动商品并且处于活动中用timeprice价格
+			if ($good ['type']!=0 && ((TIMESTAMP < $good ['timeend']) && (TIMESTAMP >= $good ['timestart']))) {
+			
+				// 佣金
+				$list['commision'] = (float)((float)$good['timeprice']*(float)$good['commision']);
+			}
+			else{
+				// 佣金
+				$list['commision'] = (float)((float)$good['app_marketprice']*(float)$good['commision']);
+			}
+			
 			// 库存
 			$list['total'] = $good['total'];
 			// 展示图片

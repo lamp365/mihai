@@ -19,6 +19,13 @@ if ( isset($_GP['shipment']) && isset($_GP['express']) && ($_GP['express'] != -1
        foreach ( $_GP['shipment'] as $shipment_id ){
             mysqld_update('shop_order_goods', $ship_Data, array('orderid'=>$_GP['order_id'], 'goodsid'=> $shipment_id));
 	   }
+	   $check_ship = mysqld_select("SELECT * FROM ".table('shop_order_goods')." WHERE expresssn = '' and orderid = ".$_GP['order_id']);
+	   if ( !$check_ship ){
+            // 已经全部发货完毕，自动设置为确认发货
+            mysqld_update('shop_order', array('status' => 2), array('status' => 1, 'id' => $_GP['order_id']));
+	   }
+	   $ship_Data['shipment'] = $_GP['shipment'];
+	   die(showAjaxMess('200', $ship_Data)); 
 }
 $mess_list = array();
 $dispatchlist = mysqld_selectall("SELECT * FROM " . table('dispatch')." where sendtype=0" );

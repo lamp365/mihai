@@ -160,6 +160,33 @@
         background-color: #fff;
         border:1px solid #cad2e2;
     }
+    .main-payment .small-title{
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 36px;
+        height: 36px;
+        font-weight: 700;
+        color: #1b96a9;
+        padding: 0 15px;
+        background-color: #f7f7f7;
+    }
+    .access-amount-head,.shop-car-head{
+        height: 36px;
+        padding: 0;
+        line-height: 36px;
+        padding-left: 15px;
+        border-bottom: none;
+    }
+    .access-amount-head .title,.shop-car-head .title{
+        font-size: 16px;
+        color: #1596ad;
+        font-weight: 700;
+    }
+    .main-wrap .panel-default{
+        border-color: #cad2e2;
+        box-shadow: none;
+    }
 </style>
 <script type="text/javascript">
 	function hiddenall()
@@ -372,11 +399,11 @@ $(function () {
             x: -20
         },
         xAxis: {
-            categories: ['0h', '6h', '12h', '18h', '24h']
+            categories: ['6h', '12h', '18h', '24h']
         },
         yAxis: {
             title: {
-                text: '支付金额 (K)'
+                text: '支付金额'
             },
             plotLines: [{
                 value: 0,
@@ -395,10 +422,10 @@ $(function () {
         },
         series: [{
             name: '今日',
-            data: [7.0, 6.9, 9.5, 14.5, 18.2]
+            data: [<?php echo implode(',',$today_arr); ?>]
         }, {
             name: '昨日',
-            data: [1, 0.8, 5.7, 11.3, 17.0]
+            data: [<?php echo implode(',',$yes_arr); ?>]
         }]
     });
 
@@ -417,8 +444,8 @@ $(function () {
 		<!--end map-->
 		<!--begin main-->
         <div class="main-payment">
+            <div class="small-title">支付金额统计</div>
             <div class="payment-amount-area">
-                <h3>支付金额统计</h3>
                 <div class="payment-amount" id="paymentAmount"></div>
             </div>
             <div class="number-area" style="margin-left: 1%">
@@ -429,27 +456,27 @@ $(function () {
                         </div>
                         <div class="access_amount payment-right">
                             <div>支付金额</div>
-                            <div>12695</div>
+                            <div><?php echo $all_order_price; ?></div>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-apple"></i>
-                            <span>123</span>
+                            <span><?php echo isset($group_list[2])?$group_list[2]['price']:0; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-android"></i>
-                            <span>456789</span>
+                            <span><?php echo isset($group_list[1])?$group_list[1]['price']:0; ?></span>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-desktop"></i>
-                            <span>123</span>
+                            <span><?php echo isset($group_list[4])?$group_list[4]['price']:0; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-mobile-phone"></i>
-                            <span>456789</span>
+                            <span><?php echo isset($group_list[5])?$group_list[5]['price']:0; ?></span>
                         </div>
                     </li>
                 </ul>
@@ -460,27 +487,27 @@ $(function () {
                         </div>
                         <div class="access_amount payment-right">
                             <div>访客数量</div>
-                            <div>12695</div>
+                            <div><?php echo $all_ip; ?></div>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-apple"></i>
-                            <span>123</span>
+                            <span><?php echo $ips_list[2]['ip']; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-android"></i>
-                            <span>456789</span>
+                            <span><?php echo $ips_list[1]['ip']; ?></span>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-desktop"></i>
-                            <span>123</span>
+                            <span><?php echo $ips_list[4]['ip']; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-mobile-phone"></i>
-                            <span>456789</span>
+                            <span><?php echo $ips_list[5]['ip']; ?></span>
                         </div>
                     </li>
                 </ul>
@@ -491,27 +518,27 @@ $(function () {
                         </div>
                         <div class="access_amount payment-right">
                             <div>浏览量</div>
-                            <div>12695</div>
+                            <div><?php echo $all_pv; ?></div>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-apple"></i>
-                            <span>123</span>
+                            <span><?php echo $ips_list[2]['pv']; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-android"></i>
-                            <span>456789</span>
+                            <span><?php echo $ips_list[1]['pv']; ?></span>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-desktop"></i>
-                            <span>123</span>
+                            <span><?php echo $ips_list[4]['pv']; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-mobile-phone"></i>
-                            <span>456789</span>
+                            <span><?php echo $ips_list[5]['pv']; ?></span>
                         </div>
                     </li>
                 </ul>
@@ -522,27 +549,27 @@ $(function () {
                         </div>
                         <div class="access_amount payment-right">
                             <div>支付买家数</div>
-                            <div>12695</div>
+                            <div><?php echo $peopler; ?></div>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-apple"></i>
-                            <span>123</span>
+                            <span><?php echo isset($group_list[2])?$group_list[2]['peopler']:0; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-android"></i>
-                            <span>456789</span>
+                            <span><?php echo isset($group_list[1])?$group_list[1]['peopler']:0; ?></span>
                         </div>
                     </li>
                     <li>
                         <div class="payment-li-float">
                             <i class="icon-desktop"></i>
-                            <span>123</span>
+                            <span><?php echo isset($group_list[4])?$group_list[4]['peopler']:0; ?></span>
                         </div>
                         <div class="payment-li-float">
                             <i class="icon-mobile-phone"></i>
-                            <span>456789</span>
+                            <span><?php echo isset($group_list[5])?$group_list[5]['peopler']:0; ?></span>
                         </div>
                     </li>
                 </ul>
@@ -553,13 +580,14 @@ $(function () {
             <!-- Default panel contents -->
             <div class="panel-heading access-amount-head">
                 <ul>
-                    <li><span class="btn btn-default btn-sm">最近7日</span></li>
-                    <li><span class="btn btn-default btn-sm">最近30日</span></li>
-                    <li><input name="begintime" class="begintime" id="begintime" type="text" value="" readonly="readonly" placeholder="开始时间" /></li>
-                    <li style="line-height: 30px;">至</li>
-                    <li><input name="endtime" class="endtime" id="endtime" type="text" value="" readonly="readonly" placeholder="结束时间"/></li>
-                    <li><input class="search-input" type="text" name="" value="" placeholder="请输入商品名称或ID"></li>
-                    <li><span class="btn btn-primary btn-sm search-btn">搜 索</span></li>
+				    <li class="title" >产品浏览数据</li>
+                    <li style="display:none;"><span class="btn btn-default btn-sm">最近7日</span></li>
+                    <li style="display:none;"><span class="btn btn-default btn-sm">最近30日</span></li>
+                    <li style="display:none;"><input name="begintime" class="begintime" id="begintime" type="text" value="" readonly="readonly" placeholder="开始时间" /></li>
+                    <li style="display:none;line-height: 30px;">至</li>
+                    <li style="display:none;"><input name="endtime" class="endtime" id="endtime" type="text" value="" readonly="readonly" placeholder="结束时间"/></li>
+                    <li style="display:none;"><input class="search-input" type="text" name="" value="" placeholder="请输入商品名称或ID"></li>
+                    <li style="display:none;"><span class="btn btn-primary btn-sm search-btn">搜 索</span></li>
                 </ul>
             </div>
             <!-- Table -->
@@ -571,35 +599,35 @@ $(function () {
                     <th>支付金额</th>
                     <th>支付买家数</th>
                     <th>支付转化率</th>
-                    <th>操作</th>
                 </tr>
+				<?php foreach($pro_list as $pro_list_value){ ?>
                 <tr class="access-amount-html">
                     <td>
-                        <div class="product-name-left"><img src="http://hinrc.com/attachment/jpg/2016/08/534379437927161.jpg"></div>
+                        <div class="product-name-left"><img src="<?php echo $pro_list_value['thumb']; ?>"></div>
                         <div class="product-name-right">
-                            <div>ON欧普特蒙一水肌酸纯肌酸粉600g健身增健肌粉肌肉爆发补充能量抗疲劳</div>
-                            <div class="product-name-time">发布时间2016-01-03 18:16:06</div>
+                            <div><?php echo $pro_list_value['title'] ?></div>
+                            <div class="product-name-time">发布时间<?php echo date('Y-m-d H:i:s', $pro_list_value['createtime']); ?></div>
                         </div>
                     </td>
-                    <td>12</td>
-                    <td>12</td>
-                    <td>12</td>
-                    <td>12</td>
-                    <td>12%</td>
-                    <td><a href="javascript:;">查看详情</a></td>
+                    <td><?php echo $pro_list_value['view_num']; ?></td>
+                    <td><?php echo $pro_list_value['view_ip']; ?></td>
+                    <td><?php echo $pro_list_value['view_price']; ?></td>
+                    <td><?php echo $pro_list_value['view_peo']; ?></td>
+                    <td><?php echo $pro_list_value['view_percent']; ?></td>
                 </tr>
+				<?php } ?>
             </table>
         </div>
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading shop-car-head">
                 <ul>
-                    <li style="line-height: 30px;">购物车数据：</li>
-                    <li><input name="begintime" id="shopbegintime" type="text" value="" readonly="readonly" placeholder="开始时间" /></li>
-                    <li style="line-height: 30px;">至</li>
-                    <li><input name="endtime" id="shopendtime" type="text" value="" readonly="readonly" placeholder="结束时间"/></li>
-                    <li><input class="search-input" type="text" name="" value="" placeholder="请输入商品名称或ID"></li>
-                    <li><span class="btn btn-primary btn-sm search-btn">查 询</span></li>
+                    <li class="title" >购物车数据</li>
+                    <li style="display:none;"><input name="begintime" id="shopbegintime" type="text" value="" readonly="readonly" placeholder="开始时间" /></li>
+                    <li style="display:none;line-height: 30px;">至</li>
+                    <li style="display:none;"><input name="endtime" id="shopendtime" type="text" value="" readonly="readonly" placeholder="结束时间"/></li>
+                    <li style="display:none;"><input class="search-input" type="text" name="" value="" placeholder="请输入商品名称或ID"></li>
+                    <li style="display:none;"><span class="btn btn-primary btn-sm search-btn">查 询</span></li>
                 </ul>
             </div>
             <!-- Table -->
@@ -609,13 +637,15 @@ $(function () {
                     <th>加入购物车人数</th>
                     <th>收藏人数</th>
                 </tr>
+				<?php foreach($cart_pro_list as $cart_pro_list_value){ ?>
                 <tr class="shop-car-html">
                     <td>
-                        ON欧普特蒙一水肌酸纯肌酸粉600g健身增健肌粉肌肉爆发补充能量抗疲劳
+                        <?php echo $cart_pro_list_value['title']; ?>
                     </td>
-                    <td>12</td>
-                    <td>12</td>
+                    <td><?php echo $cart_pro_list_value['cart_num']; ?></td>
+                    <td><?php echo $cart_pro_list_value['cart_colle']?$cart_pro_list_value['cart_colle']:0; ?></td>
                 </tr>
+				<?php } ?>
             </table>
         </div>
 		<div class="main-t clearfix" style="min-height:200px;">

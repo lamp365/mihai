@@ -43,8 +43,12 @@
 	.health-content .health-men .info .name{
 		float: left;
 		overflow: hidden;
-		//padding: 10px 0 0 10px ;
-		
+		//padding: 10px 0 0 10px;
+	}
+	.health-content .health-men .info .name .realname{
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.health-content .health-men .info .name span{
 		display: block;
@@ -160,12 +164,12 @@
 	.content p{
 		line-height: 32px;
 	}
-	.content img{
+	/*.content img{
 		width: 100%!important;
 		height: auto !important;
 		display: block;
 		text-indent: 0;
-	}
+	}*/
 
 	.comment-area .health-men{
 		//margin-left: -10px;
@@ -239,7 +243,7 @@
 			<div class="info">
 				<?php if(!empty($article['openid'])){ $author = member_get($article['openid']);    ?>
 					<img class="head-img" src="<?php if(empty($author['avatar'])){ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; }else{ echo download_pic($author['avatar'],60,60); }?>" />
-					<p class="name">
+					<p class="name" style="padding: 10px 0 0  10px;width: 70%;">
 						<span class="realname"><?php echo $author['realname'];?></span>
 						<!--发布时间-->
 						<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d H:i",$article['createtime']);?></span>
@@ -730,6 +734,23 @@
 		var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
 		return year + "/" + month + "/" + date + " &nbsp " + hour + ":" + minute + "";
 	}
+	
+	//健康文化图片大小设置,为避免获取的宽度是0 ，先绑定一个load事件	
+	$(function(){
+		console.log("进来了")	
+		var _maxw = $(".health-detail .content").width(); //获取最外层的宽度
+		//如果用onload,图片有缓存或，就不会触发了
+		$(".health-detail .content img").one("load",function(){
+			
+		}).each(function(){				
+				var _imgw = $(this).width();  //获取图片的宽度
+				if( !$(this).parent().hasClass("item-pic")){    //过滤掉商品的图片
+					if( _imgw >= _maxw){									
+						$(this).attr("width","100%");						
+					}
+				}
+		})
+	})
 </script>	
 <?php if($notApp){ ?>
 <?php include themePage('footer'); ?>

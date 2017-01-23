@@ -31,6 +31,7 @@
 	      		$ary['thumb'] = $g_v['thumb'];
 	      		$ary['productprice'] = $g_v['productprice'];
 	      		$ary['marketprice'] = $g_v['marketprice'];
+	      		$ary['app_marketprice'] = $g_v['app_marketprice'];
 	      		$ary['timeprice'] = $g_v['timeprice'];
 	      		$guess_ary[] = $ary;
 	      	}
@@ -54,6 +55,7 @@
       		$ary['thumb'] = $good['thumb'];
       		$ary['productprice'] = $good['productprice'];
       		$ary['marketprice'] = $good['marketprice'];
+      		$ary['app_marketprice'] = $good['app_marketprice'];
       		$ary['timeprice'] = $good['timeprice'];
       		$guess_ary[] = $ary;
 		}
@@ -80,6 +82,7 @@
 	      		$ary['thumb'] = $g_v['thumb'];
 	      		$ary['productprice'] = $g_v['productprice'];
 	      		$ary['marketprice'] = $g_v['marketprice'];
+	      		$ary['app_marketprice'] = $g_v['app_marketprice'];
 	      		$ary['timeprice'] = $g_v['timeprice'];
 	      		$guess_ary[] = $ary;
 	      	}

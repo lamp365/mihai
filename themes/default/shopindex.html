@@ -3,6 +3,8 @@
 <head>
 <title><!--@php echo $title @--></title>
 <meta charset="utf-8">
+<meta name="keywords" content="<!--@php echo $cfg['shop_keyword'] @-->"/>
+<meta name="description" content="<!--@php echo $cfg['shop_description'] @-->"/>
 <meta name="format-detection" content="telephone=no">
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9"/>
 <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
@@ -312,13 +314,14 @@ video {
     
    <!--左侧楼梯-->
    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/floor.css" />
-   <div id="floor" style="display:none">
+   <div id="floor" style="display: none;">
 		<ul>
-			<li><a href="JavaScript:void(0);"  data-id="a1">健康文化</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="23">觅海头条</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="3">精选笔记</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="235hnm1234">今日限购</a> </li>
-			<li><a href="JavaScript:void(0);"  data-id="c345">热门品牌</a> </li>					
+			<li><a href="JavaScript:void(0);"  data-id="adsgd1">今日限购</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="c345">热门品牌</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="3">女性营养</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="235hnm1234">男性营养</a></li>
+			<li><a href="JavaScript:void(0);"  data-id="c345">中老年营养</a> </li>	
+			<li><a href="JavaScript:void(0);"  data-id="c345">母婴营养</a> </li>	
 		</ul>
 	</div>
 	<script type="text/javascript">
@@ -330,13 +333,12 @@ video {
 				$("body,html").stop().animate({scrollTop:_top},500);
 			})		
 			//楼梯的left
-			var _width = -($(".viewport").eq(2).width() / 2 + 82);
-			$("#floor").css("margin-left",_width);
-			console.log($(".viewport").eq(1))
+			var _width = -($(".viewport").eq(2).width() / 2 + 92);
+			$("#floor").css("margin-left",_width);			
 			//楼梯的top
 			var distanceTop ;
 			if($(".tempWrap").height()){
-				distanceTop = $(".slider").offset().top+$(".slider").height()+10;
+				distanceTop = $(".slider").offset().top+$(".slider").height()+20;
 			}else{
 				distanceTop = $(".topTabbox").offset().top+50;
 			}
@@ -436,80 +438,8 @@ video {
 			</script>
 
 	</div>
-	<div class="left-fixed" style="display:none;">
-		<img src="images/leftweixin.png">
-	</div>
-	<div class="viewport" style="display: none;">
-		<div class="video-left">
-			<div class="video-enter">
-				<img src="images/1@3x.png" height="21" />&nbsp;&nbsp;觅海美国仓库直播间[跟纽约13小时时差]，直播时间：21:00-07:00
-			</div>
-			<div class="video-kiss" style="margin-top:51px">
-			    <a type="button" class="btn" data-toggle="modal" data-target="#myModal" style="padding:0;border:none;"><img src="images/left01.jpg" width="100%" /></a>
-			</div>
-           <!-- -->
-		</div>
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-					<h4 class="modal-title" id="myModalLabel">觅海美国仓库直播间[跟纽约13小时时差]，直播时间：21:00-07:00</h4>
-				  </div>
-				  <div class="modal-body">
-					 <iframe src="http://jia.360.cn/pc/view-iframe.html?sn=36080604512"  frameborder="0" scrolling="no" style="min-width:576px;width:100%;height:476px;border: 0px;overflow: hidden;"></iframe>
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				  </div>
-				</div>
-			  </div>
-        </div>
-		<div class="video-right">
-			<div class="video-enter" >
-				<img src="images/2@3x.png" height="21" />&nbsp;&nbsp;海外用户购物分享~
-			</div>
-			<div class="video-kiss" style="margin-top:51px">
-			<a type="button" class="btn" data-toggle="modal" data-target="#myModal1" style="padding:0;border:none;"><img src="images/right01.jpg" width="100%" /></a>
-			<!--<video width="576" height="474" controls>
-				<source src="http://www.hinrc.com/images/video.mp4" type="video/mp4">
-			</video>-->
-			<!--[if lt IE 9]>
-            <object type="application/x-shockwave-flash" classid="clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95"  width="576" height="474"><param name="AutoStart" value="0"><param name="EnableTracker" value="-1"><param name="Mute" value="0"><param name="PlayCount" value="10"><param name="PreviewMode" value="-1"><param name="Rate" value="1"><param name="ShowControls" value="-1"><param name="ShowTracker" value="-1"><param name="src" value="http://www.hinrc.com/images/video.mp4"></object>
-			<script>
-               $("video").hide();
-			</script>
-			<![endif]-->
-			</div>
-			<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
-					<h4 class="modal-title" id="myModalLabel">海外用户购物分享~</h4>
-				  </div>
-				  <div class="modal-body">
-					<video width="576" height="474" controls>
-						<source src="http://www.hinrc.com/images/video.mp4" type="video/mp4">
-					</video>
-					<!--[if lt IE 9]>
-					<object type="application/x-shockwave-flash" classid="clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95"  width="576" height="474"><param name="AutoStart" value="0"><param name="EnableTracker" value="-1"><param name="Mute" value="0"><param name="PlayCount" value="10"><param name="PreviewMode" value="-1"><param name="Rate" value="1"><param name="ShowControls" value="-1"><param name="ShowTracker" value="-1"><param name="src" value="http://www.hinrc.com/images/video.mp4"></object>
-					<script>
-					   $("video").hide();
-					</script>
-					<![endif]-->
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				  </div>
-				</div>
-			  </div>
-            </div>
-		</div>
-	</div>
-   
    <!--健康文化-->
-    <div class="viewport mhnews" id="a1">
+    <div class="viewport mhnews" id="a1" style="display: none;">
     	<div class="mhheadline"> </div>
     	<!--每个头条，一行显示4个-->
     	<div class="per-mhnews">    		 
@@ -655,8 +585,8 @@ video {
 		rightNavShow(1);
 	})
 	</script>
-    <div class="viewport" id="">
-	    <div class="m-productfloor" id="235hnm1234">
+    <div class="viewport">
+	    <div class="m-productfloor" id="adsgd1">
 		    <script>
                  function countDown(time,id){
 						var end_time = time * 1000,//月份是实际月份-1
@@ -880,6 +810,14 @@ $('#J_bonus_close').click(function (){
 	
 });
 
+//所有分类,如果没有右侧的
+$(function(){
+	$(".j-catmenu li .c_category").each(function(){
+		if($(this).children(".c2_bander").find("div").length == 0){
+			$(this).children(".c2_category").width($(this).width());
+		}
+	});
+});
 </script>
 <!--@php } @-->
  

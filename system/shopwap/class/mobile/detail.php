@@ -1,6 +1,7 @@
 <?php
         $member=get_member_account(false);
 		$openid =$member['openid'] ;
+
 		$pindex = max(1, intval($_GP['page']));
 		$psize  = 15;
 		$total  = 0;
@@ -59,7 +60,7 @@
 			   }
 				
 			  echo json_encode($comments);
-			  exit;
+			  die();
 			  break;
 		  default:
 			  $table = 'shop_dish';

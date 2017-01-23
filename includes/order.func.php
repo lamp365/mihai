@@ -58,7 +58,13 @@ function get_order($array=array()) {
     if (!empty($array['where'])){
         $where = $array['where'];
     }
-    $list = mysqld_select("SELECT id, status, taxprice, dispatchprice, price, isprize, isdraw, addressid, address_address, address_province, address_realname, address_city, address_mobile, address_area, openid, ordersn, dispatch, goodsprice, hasbonus, bonusprice, updatetime, express, expresssn, expresscom, createtime, paytime, sendtime, completetime, closetime, ifcustoms FROM ".table('shop_order')." WHERE $where");
+    $list = mysqld_select("SELECT id, status, taxprice, dispatchprice, price, isprize, isdraw, addressid, address_address, address_province, address_realname, address_city, address_mobile, address_area, openid, ordersn, dispatch, goodsprice, hasbonus, bonusprice, has_balance, balance_sprice, updatetime, express, expresssn, expresscom, createtime, paytime, sendtime, completetime, closetime, ifcustoms FROM ".table('shop_order')." WHERE $where");
+    if ($list['has_balance'] == '1') {
+    	// (string)$list['price'] += $list['balance_sprice'];
+    	// $list['price'] = (string)$list['price'];
+    }else{
+    	$list['balance_sprice'] = '0';
+    }
 
     $group = mysqld_select("SELECT a.group_id, a.status as group_status FROM ".table('team_buy_group')." as a left join ".table('team_buy_member')." as b on a.group_id=b.group_id WHERE b.order_id=".$list['id']);
 
@@ -140,6 +146,13 @@ function update_order_status($id, $status,$dishinfo='') {
 				member_goldinfo($ogv['seller_openid'],$ogv['commision'],'usegold',$remark,'freeze_gold',true);
 			}
     	}
+    	// 如果有使用余额抵扣，退还余额
+		if ($order['has_balance'] == '1' AND $order['return_balance'] == '0') {
+			$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
+			mysqld_update ('member',array('gold' => (float)$mem['gold']+(float)$order['balance_sprice']),array('openid' =>$order['openid']));
+			// 余额已退还设为1
+			mysqld_update('shop_order', array('return_balance' => 1), array('id'=> $id));
+		}
     	// 反还优惠券
     	mysqld_query("UPDATE ".table('bonus_user')." SET isuse=0 WHERE order_id=".$order['id']);
     	// 记录订单关闭时间
@@ -235,6 +248,12 @@ function paySuccessProcess($orderInfo)
 
 	//订单商品列表
 	$arrGoods = mysqld_selectall("SELECT id,orderid,goodsid,seller_openid,commision FROM " . table('shop_order_goods') . " WHERE orderid = :orderid ", array(':orderid' => $orderInfo['id']));
+
+	// // 余额抵扣订单金额展示处理
+	// if ($orderInfo['has_balance'] == '1') {
+	// 	$orderInfo['price'] += $orderInfo['balance_sprice'];
+	// 	$orderInfo['price'] = (string)$orderInfo['price'];
+	// }
 	
 	//商品名称
 	$dishTitle= '';
@@ -284,7 +303,6 @@ function paySuccessProcess($orderInfo)
 		}
 	}
 	
-	
 	$arrBuyerBill = array('order_id'		=> $orderInfo['id'],
 							'type'			=> 0,						//购买商品
 							'openid'		=> $orderInfo['openid'],
@@ -292,6 +310,7 @@ function paySuccessProcess($orderInfo)
 							'createtime'	=> time(),
 							'modifiedtime'	=> time()
 	);
+	
 		
 	//买家账单记录
 	mysqld_insert ( 'bill', $arrBuyerBill );
@@ -346,7 +365,7 @@ function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
 		foreach ( $list as $g ) {
 			$item = get_good (array('table' => 'shop_dish',
 									'where' => 'a.id=' . $g ['goodsid'] . ' and a.deleted=0 and a.status=1 and a.total>0 ',
-									'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
+									'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.app_marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
 			) );
 				
 			if (empty ( $item )) {
@@ -382,7 +401,7 @@ function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
 				case '1':		//团购商品
 				case '2':		//秒杀商品
 					
-					$item ['marketprice'] = $item ['marketprice'];		//以一般商品价格购买
+					$item ['app_marketprice'] = $item ['app_marketprice'];		//以一般商品价格购买
 				
 					break;
 					
@@ -390,27 +409,28 @@ function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
 				case '4':		//限时促销
 				
 					// 获取商品的下单价格
-					if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
-						$item ['marketprice'] = $item ['timeprice'];
+					if((TIMESTAMP < $item ['timeend']) && (TIMESTAMP >= $item ['timestart'])) {
+					//if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
+						$item ['app_marketprice'] = $item ['timeprice'];
 					}
 					
 					break;
 					
 				default:		//一般商品
 					
-					$item ['marketprice'] = $item ['timeprice'];
+					$item ['app_marketprice'] = $item ['app_marketprice'];
 					break;
 			}		
 			
 			// 获得单品总价
-			$item ['totalprice'] = $item ['total'] * $item ['marketprice'];
+			$item ['totalprice'] = $item ['total'] * $item ['app_marketprice'];
 			// 打包税率费用初始化
 			$taxarray = array (
 					array (
 							'taxid' => $item ['taxid'],
 							'id' 	=> $item ['id'],
 							'count' => $item ['total'],
-							'price' => $item ['marketprice']
+							'price' => $item ['app_marketprice']
 					)
 			);
 			$taxprice = get_taxs ( $taxarray );
@@ -496,7 +516,7 @@ function getConfirmOrderInfoByNow($dish_id, $total,$buy_type,$seller_openid) {
 	// 获得产品信息
 	$item = get_good (array('table' => 'shop_dish',
 							'where' => 'a.id=' . $dish_id . ' and a.deleted=0 ',
-							'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
+							'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.app_marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
 						) );
 	
 	//店铺信息	
@@ -532,7 +552,8 @@ function getConfirmOrderInfoByNow($dish_id, $total,$buy_type,$seller_openid) {
 		$item ['total'] = $total;
 		
 		// 进行促销价格和正常价格的比对
-		if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
+		if ($item ['type']!=0 && ((TIMESTAMP < $item ['timeend']) && (TIMESTAMP >= $item ['timestart']))) {
+		//if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
 				
 			//团购商品时
 			if($item ['type']==1)
@@ -540,28 +561,23 @@ function getConfirmOrderInfoByNow($dish_id, $total,$buy_type,$seller_openid) {
 				//以团购方式购买时
 				if($buy_type)
 				{
-					$item ['marketprice'] = $item ['timeprice'];
+					$item ['app_marketprice'] = $item ['timeprice'];
 				}
 			}
 			else{
-				$item ['marketprice'] = $item ['timeprice'];	
+				$item ['app_marketprice'] = $item ['timeprice'];	
 			}
-		}
-		//app端一般商品也用timeprice字段
-		elseif($item ['type']==0)
-		{
-			$item ['marketprice'] = $item ['timeprice'];
 		}
 		
 		// 获得单品总价
-		$item ['totalprice'] = $total * $item ['marketprice'];
+		$item ['totalprice'] = $total * $item ['app_marketprice'];
 		// 打包税率费用初始化
 		$taxarray = array (
 				array (
 						'taxid' => $item ['taxid'],
 						'id' 	=> $item ['id'],
 						'count' => $total,
-						'price' => $item ['marketprice']
+						'price' => $item ['app_marketprice']
 				)
 		);
 		$taxprice = get_taxs ( $taxarray );

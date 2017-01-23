@@ -434,6 +434,17 @@
 			</div>
 		</div>
 	 <?php } ?>
+	 
+	 <?php if(isHasPowerOperateField('shop_dish','app_marketprice') || empty($_GP['id'])){ ?>
+		<div class="form-group">
+			<label class="col-sm-2 control-label no-padding-left" > app端价格：</label>
+
+			<div class="col-sm-2">
+				<input type="text" class="form-control" name="app_marketprice" id="app_marketprice" value="<?php echo empty($item['app_marketprice'])?'0':$item['app_marketprice'];?>" />
+			</div>
+		</div>
+	 <?php } ?>
+	 
 	 <?php if(isHasPowerOperateField('shop_dish','productprice') || empty($_GP['id'])){ ?>
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 参考价格：</label>

@@ -14,6 +14,8 @@
                         <th class="text-center" >国家</th>
 						<th class="text-center">宣传图</th>
 						<th class="text-center">广告图</th>
+						<th class="text-center" >批发</th>
+						<th class="text-center" >代发</th>
                         <th class="text-center" >属性</th>
                         <th class="text-center" >操作</th>
                     </tr>
@@ -27,6 +29,8 @@
                             <td style="text-align:center;"><?php if (!empty($b['country_img'])){ ?><img src="<?php  echo $b['country_img'];?>" height="46" ><?php } ?></td>
 							<td style="text-align:center;"><?php if (!empty($b['brand_public'])){ ?><img src="<?php  echo $b['brand_public'];?>" height="50" ><?php } ?></td>
 							<td style="text-align:center;"><?php if (!empty($b['brand_ad'])){ ?><img src="<?php  echo $b['brand_ad'];?>" height="50" ><?php } ?></td>
+							<td style="text-align:center;"><span brand_id="<?php  echo $b['id'];?>" brand_type="pifa" class="glyphicon <?php echo $b['pifa']==1?'glyphicon-ok':'glyphicon-remove'; ?>"></span></td>
+							<td style="text-align:center;"><span brand_id="<?php  echo $b['id'];?>" brand_type="daifa" class="glyphicon <?php echo $b['daifa']==1?'glyphicon-ok':'glyphicon-remove'; ?>"></span></td>
 							<td style="text-align:center;">  <?php  if($b['recommend']==1) { ?>
                                                 <span class='label label-success'>推荐</span>
                                                  <?php  } ?><?php  if($b['isindex']==1) { ?>
@@ -46,4 +50,33 @@
             </table>
         </div>
     </div>
+    <script type="text/javascript">
+        $(function(){
+            $(".glyphicon").on("click",function(){
+                var $this = $(this);
+                var brand_type = $this.attr("brand_type");
+                var brand_id = $this.attr("brand_id");
+                $.post("",{ajax:brand_type,id:brand_id},function(data){
+                    if( data.errno == 200 ){
+                        if( data.message.daifa == 1){
+                            $this.removeClass("glyphicon-remove");
+                            $this.addClass("glyphicon-ok");
+                        }
+                        if( data.message.daifa == 0){
+                            $this.removeClass("glyphicon-ok");
+                            $this.addClass("glyphicon-remove");
+                        }
+                        if( data.message.pifa == 1){
+                            $this.removeClass("glyphicon-remove");
+                            $this.addClass("glyphicon-ok");
+                        }
+                        if( data.message.pifa == 0){
+                            $this.removeClass("glyphicon-ok");
+                            $this.addClass("glyphicon-remove");
+                        }
+                    }
+                },"json");
+            })
+        });
+    </script>
 <?php  include page('footer');?>

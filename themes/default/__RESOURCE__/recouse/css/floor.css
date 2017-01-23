@@ -9,7 +9,7 @@
 		
 	#floor{
 			position: absolute;		
-			top: 635px;	
+			top: 642px;	
 			left: 50%;
 			/*margin-left: -677px;*/					
 			z-index: 998;
@@ -23,7 +23,7 @@
 	#floor ul li{
 			list-style: none;
 			border-bottom: dashed 1px #eaeaea;			
-			width: 60px;
+			width: 70px;
 			height: 36px;
 			position: relative;			
 			text-align: center;			
@@ -34,7 +34,7 @@
 			border-bottom:none;
 		}
 		#floor ul li a{
-			width: 70px;			
+			width: 80px;			
 			cursor: pointer;
 			text-decoration: none;
 			color: #717171;

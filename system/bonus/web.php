@@ -19,4 +19,8 @@ class bonusAddons  extends BjSystemModule {
 	{
 			$this->__web(__FUNCTION__);
 	}
+	public function do_red()
+	{
+			$this->__web(__FUNCTION__);
+	}
 }

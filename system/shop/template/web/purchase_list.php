@@ -45,6 +45,9 @@
 	    border-right: 0;
 	    font-size: 12px;
 	}
+	.modal-body .shipment_td{
+		color: #2fc17f
+	}
 </style>
 <script>
 	function cleartime()
@@ -324,7 +327,7 @@
 								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>" class="tab_title"><?php echo $goods['title']; ?></a></div>
 									  <div>
 										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
-										  &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span>
+										  &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span> &nbsp;&nbsp; <span class="label label-success"><?php echo $goods['expresssn']!=''?'该产品已发货':''; ?></span>
 									  </div>
 									  <div class="sn">商家编码: <?php echo $goods['goodssn']; ?></div>
 								  </li>
@@ -396,19 +399,18 @@
 					<td align="center" valign="middle" style="vertical-align: middle;">
 					    <div>
 					     <?php  if($item['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
-                        <?php if(isHasPowerToShow('shop','purchase','express')){ ?>
-						 <span class="label label-warning quick-delivery-btn" style="margin-left:3px;background-color:#4edbf0">快捷发货</span>
+                        <?php if(isHasPowerToShow('shop','purchase','express') && $item['status'] == 1){ ?>
+						    <span class="label label-warning quick-delivery-btn" style="margin-left:3px;background-color:#4edbf0">快捷发货</span>
 					     	<div class="modal fade quick-delivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 								<div class="modal-dialog">
 									<div class="modal-content">
-										<form name="ships" method="post" action="">
+
 									  	<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
 											<h4 class="modal-title" id="myModalLabel">快捷配送</h4>
 									  	</div>
 									  	<div class="modal-body">
-										  		<input type="hidden" name="order_id" value="<?php  echo $item['id'];?>">
-										  		<input type="hidden" name="" value="">
+										  		<input type="hidden" name="order_id" class="order_id" value="<?php  echo $item['id'];?>">
 										  		<div class="express-area">
 										  			<span>快递公司</span>
 										  			<select onchange="onchangcheckbox();" name="express" class="express">
@@ -420,6 +422,7 @@
 													<input type='hidden'  name='expresscom' class='expresscom'  />
 													<span>快递单号</span>
 													<input type="text"  name="expressno"  class="expressno" placeholder="请输入快递单号"  value="">
+													<div class="btn btn-primary btn-sm ships-search" onclick="return checkVal(this)">设 置</div>
 										  		</div>
 											 	<table class="table table-striped table-bordered table-hover">
 											 		<tr>
@@ -435,13 +438,13 @@
 								                               foreach ( $item['goods'] as $goods ){
 													?>
 											 		<tr>
-											 			<td><?php if ( empty($goods['expresssn']) ){ ?><input type="checkbox" class="shipment_checkbox" name="shipment[]" value="<?php  echo $goods['aid'];?>"><?php } ?></td>
+											 			<td class="shipment_td"><?php if ( empty($goods['expresssn']) ){ ?><input type="checkbox" class="shipment_checkbox shipment_<?php  echo $goods['aid'];?>" name="shipment[]" value="<?php  echo $goods['aid'];?>"><?php }else{ ?> <i class="icon-ok"></i><?php } ?></td>
 												 		<td><img src="<?php echo getGoodsThumb($goods['gid']); ?>" height="40" /></td>
 												 		<td><?php echo $goods['title']; ?></td>
-												 		<td>
+												 		<td class="expresscom-td">
 												 			 <?php echo $goods['expresscom']; ?>
 												 		</td>
-												 		<td>
+												 		<td class="expresssn" >
 												 			  <?php echo $goods['expresssn']; ?>
 												 		</td>
 												 	</tr>
@@ -449,13 +452,10 @@
 														   }
 												    }?>
 											 	</table>
-											
 										</div>
 										<div class="modal-footer">
-										  	<button type="submit" class="btn btn-primary sub-sure" onclick="return checkVal(this)">确定</button>
-											<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+											<button type="button" class="btn btn-default express-close" data-dismiss="modal">关闭</button>
 										</div>
-										</form>
 									</div>
 								</div>
 						    </div>
@@ -532,9 +532,12 @@
 		</div>
 
 		<script type="text/javascript">
+		var delivery_num = 0;
 			$(function(){
+				
 				$(".quick-delivery-btn").click(function(){
 					$(this).siblings(".quick-delivery").modal();
+					delivery_num = 0;
 				});
 				$(".add-more-btn").click(function(){
 					$(".hide-tr").toggle();
@@ -549,14 +552,17 @@
 				})
 			});
 			function checkVal(obj){
-				var express_val = $(obj).parents(".modal-footer").siblings(".modal-body").find(".express").val();
-				var expressno_val = $(obj).parents(".modal-footer").siblings(".modal-body").find(".expressno").val();
+				var express_val = $(obj).siblings(".express").val();
+				var expressno_val = $(obj).siblings(".expressno").val();
 				var check_num = 0;
-				var shipment_checkbox = $(obj).parents(".modal-footer").siblings(".modal-body").find(".shipment_checkbox");
-				console.log(shipment_checkbox);
+				var shipment_checkbox = $(obj).parents(".express-area").siblings("table").find(".shipment_checkbox");
+				var order_id = $(".order_id").val();
+				var expresscom = $(obj).siblings(".expresscom").val();
+				var shipment_checkbox_val = [];
 				shipment_checkbox.each(function(idnex,element){
 					if($(element).get(0).checked){
 						check_num++;
+						shipment_checkbox_val.push($(element).val());
 					}
 				});
 				if( shipment_checkbox.length == 0 ){
@@ -577,7 +583,27 @@
 				$(".sub-sure").click(function(){
 					$('.quick-delivery').modal('hide')
 				});
+				$(obj).parents(".modal-body").siblings(".modal-footer").find(".express-close").on("click",function(){
+					if( delivery_num >= 1){
+						window.location.reload();
+					}
+				})
+				$.post("",{express:express_val,expressno:expressno_val,shipment:shipment_checkbox_val,order_id:order_id,expresscom:expresscom},function(data){
+					if( data.errno == 200 ){
+						delivery_num++;
+						var data_result = data.message
+						for( var i = 0; i < data_result.shipment.length ; i++ ){
+							$(".shipment_"+data_result.shipment[i]+"").parent("td").siblings(".expresscom-td").text(data_result.express);
+							$(".shipment_"+data_result.shipment[i]+"").parent("td").siblings(".expresssn").html(data_result.expresssn);
+							$(".shipment_"+data_result.shipment[i]+"").parent("td").html("<i class='icon-ok'></i>");	
+						}
+						alert("快捷发货成功");
+					}else{
+						alert(data.message);
+					}
+				},'json')
 			}
+			
 		</script>
 		<?php  echo $pager;?>
 <script>

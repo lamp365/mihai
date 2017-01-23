@@ -1,13 +1,32 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/css/select2.min.css" />
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/select2.min.js"></script>
+<style type="text/css">
+    .dummy-table-list{
+    border: 1px solid #ddd;padding: 7px 0;
+  }
+  .dummy-table-list tr{
+    background-color: #fff!important;
+  }
+  .header .dummy-table-list li{
+    float: left;    
+    margin-right: 10px;
+    list-style-type: none;
+  }
+  .dummy-table-list .li-height{
+      height: 30px;
+      padding-left: 5px;
+  }
+</style>
 <h3 class="header smaller lighter blue">发放优惠券</h3>
 
 		<form action="" class="form-horizontal" method="post" onsubmit="return validate()" >
-			<table class="table table-striped table-bordered table-hover">
+			<table class="table table-striped table-bordered table-hover dummy-table-list">
 			<tbody >
 				<tr>
 				<td>
 				<li style="float:left;list-style-type:none;">
-						<select  style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="cate_1" onchange="fetchChildCategory(this.options[this.selectedIndex].value)">
+						<select  style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" name="cate_1" onchange="fetchChildCategory(this.options[this.selectedIndex].value)">
 							<option value="0">请选择一级分类</option>
 							<?php  if(is_array($category)) { foreach($category as $row) { ?>
 							<?php  if($row['parentid'] == 0) { ?>
@@ -15,7 +34,7 @@
 							<?php  } ?>
 							<?php  } } ?>
 						</select>
-						<select style="margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" id="cate_2" name="cate_2">
+						<select style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" id="cate_2" name="cate_2">
 							<option value="0">请选择二级分类</option>
 							<?php  if(!empty($_GP['cate_1']) && !empty($children[$_GP['cate_1']])) { ?>
 							<?php  if(is_array($children[$_GP['cate_1']])) { foreach($children[$_GP['cate_1']] as $row) { ?>
@@ -27,7 +46,7 @@
 						</li>
 						
 						<li style="list-style-type:none;">
-							<input type="submit" name="search_goods" value="搜索" class="btn btn-primary">
+							<input type="submit" name="search_goods" value="搜索" class="btn btn-primary btn-sm">
 						</li>
 					</td>
 				</tr>
@@ -79,6 +98,7 @@
 		</form>
 		
 			<script language="javascript">
+      $("#good_search").select2();
 		var category = <?php  echo json_encode($children)?>;
    function fetchChildCategory(cid) {
 	var html = '<option value="0">请选择二级分类</option>';
@@ -103,7 +123,7 @@
 
 }
 
-			 function addGood()
+function addGood()
   {
       var src = document.getElementById('good_search');
       var dest = document.getElementById('good_add');
@@ -145,6 +165,14 @@
       }
   }
 
+function addUser(){
+	addGood();
+}
+function delUser(){
+	delGood();
+}
+	
 			</script>
+			
 <?php  include page('footer');?>
 								

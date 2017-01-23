@@ -39,6 +39,7 @@
 			$c_v['productprice'] = (float)$good['productprice'];
 			// 价格
 			$c_v['marketprice'] =(float)$good['marketprice'];
+			$c_v['app_marketprice'] = (float)$good['app_marketprice'];
 			// 团购价/秒杀价（手机价）
 			$c_v['timeprice'] = (float)$good['timeprice'];
 			$c_v['title'] = $good['title'];
