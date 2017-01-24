@@ -111,9 +111,12 @@
 					$unionid      = $member['unionid'];
 
 				$loginid=save_member_login('',$openid);
-			
-					integration_session_account($loginid,$oldsessionid, $unionid);
-			  message('注册成功！', to_member_loginfromurl(), 'success');
+
+				//注册成功后，查看是否有活动分享过来的用户，有的话，给分享者参加活动次数加1
+			    shareActive_addToalNum();
+
+				integration_session_account($loginid,$oldsessionid, $unionid);
+			    message('注册成功！', to_member_loginfromurl(), 'success');
 		}
 			$qqlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='qq'");
 				if(!empty($qqlogin)&&!empty($qqlogin['id']))

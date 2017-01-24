@@ -18,40 +18,46 @@
 </head>
 <body>
 <div class="activity clearfix">
-	<div class="activity-content">您的好友邀请你参与XXXXXXXX活动</div>
-	<div class="activity-play-now"><a href="">立即参与</a></div>
-	<p class="user-title">谁参与了活动</p>
+	<!--@php if($isSelf){   @-->
+	<div class="activity-content">快邀请您的好友参与XXXXXXXX活动吧</div>
+	<!--@php }else{   @-->
+	<div class="activity-content">您的好友:<!--@php echo $sharer_weixin['nickname'] @-->邀请您参与XXXXXXXX活动</div>
+	<!--@php }   @-->
+
+	<div class="activity-play-now">
+		<a href="<!--@php echo mobile_url('shareActive',array('op'=>'list')); @-->">立即参与</a>
+	</div>
+	<!--@php if($isSelf){  @-->
+	<div class="activity-play-now" style="margin-top: 15px;">
+		<a href="javascript:;" class="yaoqing">立即邀请</a>
+	</div>
+	<!--@php } @-->
+
+	<!--@php if(!empty($shareMember) && $isSelf){   @-->
+	<p class="user-title">今天谁参与了活动</p>
 	<ul class="user-list ">
+		<!--@php foreach($shareMember as $item){   @-->
 		<li class="clearfix">
 			<div class="user-list-left">
+				<!--@php if(empty($item['avatar'])){  @-->
 				<img src="__RESOURCE__/recouse/images/userface2.png">
+				<!--@php }else{ @-->
+				<img src="<!--@php echo $item['avatar']; @-->">
+				<!--@php } @-->
 			</div>
 			<div class="user-list-right">
-				zeng xiao fang 注册并参与了活动注册并参与了活动注册并参与了活动注册并参与了活动
+				<!--@php echo $item['nickname']; @--> 参与了本次活动
 			</div>
 		</li>
-		<li class="clearfix">
-			<div class="user-list-left">
-				<img src="__RESOURCE__/recouse/images/userface2.png">
-			</div>
-			<div class="user-list-right">
-				zeng xiao fang 注册并参与了活动
-			</div>
-		</li>
-		<li class="clearfix">
-			<div class="user-list-left">
-				<img src="__RESOURCE__/recouse/images/userface2.png">
-			</div>
-			<div class="user-list-right">
-				zeng xiao fang 注册并参与了活动
-			</div>
-		</li>
+		<!--@php }  @-->
 	</ul>
+	<!--@php }  @-->
+
 	<div class="activity-rule">
 		<p class="title">活动规则</p>
 		<ul>
 			<li>1.新老用户均可参与</li>
-			<li>2.新老用户均可参与新老用户均可参与新老用户均可参与</li>
+			<li>2.请登录后再进行分享</li>
 			<li>3.新老用户均可参与新老用户均可参与新老用户均可参与新老用户均可参与</li>
 			<li>4.新老用户均可参与新老用户均可参与</li>
 			<li>5.新老用户均可参与新老用户均可参与</li>
