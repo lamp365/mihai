@@ -10,8 +10,10 @@ body,html{
 	width: 100%;
 	margin: 0 auto;
 	margin-bottom: 50px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
-.last-wrap ul li{
+.last-wrap-list li{
 	list-style-type: none;
 	float: left;
 	width: 47%;
@@ -19,8 +21,9 @@ body,html{
     box-sizing: border-box;
     margin-top: 10px;
     padding:0 3px 10px 3px;
+    background-color: #fff;
 }
-.last-wrap ul li img{
+.last-wrap-list li img{
 	width: 100%;
 	display: block;
 	max-width: 100%;
@@ -33,11 +36,11 @@ body,html{
 	white-space:nowrap;
     padding: 0 2.5%;
 }
-.last-wrap ul li:nth-child(odd){
+.last-wrap-list li:nth-child(odd){
 	margin-left: 2%;
 	margin-right: 1%;
 }
-.last-wrap ul li:nth-child(even){
+.last-wrap-list li:nth-child(even){
 	margin-left: 1%;
 	margin-right: 2%;
 }
@@ -47,23 +50,25 @@ body,html{
 	padding: 5px 0;
 }
 .last-wrap .play-now{
-    width: 95%;
+    float: left;
+    width: 59%;
     margin: 0 auto;
     background: #ff4400;
     color: #fff;
     text-align: center;
-    padding: 5px 0;
-    border-radius: 3px;
+    border-radius: 3px 0 0 3px;
+    height: 27px;
+    line-height: 27px;
 }
-.last-wrap .love{
-	float: right;
-	width: 55px;
-}
+
 .last-wrap .love img{
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	padding: 0;
+	float: left;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    padding: 0;
+    margin-top: 3px;
+    margin-left: 3px;
 }
 .number .now-number{
 	color: #ff4400;
@@ -182,8 +187,7 @@ body,html{
     font-size: 16px;
 }
 .user-list-left{
-	width: 35px;
-    float: left;
+
 }
 .user-list-left img{
 	width: 100%;
@@ -199,6 +203,96 @@ body,html{
 	text-overflow:ellipsis;
 	white-space:nowrap;
 }
-.user-list li{
-	margin-bottom: 10px;
+.activity .user-list li{
+	width: 20%;
+	float: left;
+	padding: 5px;
+	box-sizing: border-box;
+}
+.activity .user-list li img{
+	width: 100%;
+	max-width: 100%;
+	display: block;
+	border-radius: 5px;
+}
+.total-number-div{
+	width: 96%;
+	margin: 0 auto;
+	background-color: #fff;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+	border-radius: 3px;
+}
+.last-wrap .total-number-list li{
+	float: left;
+	width: 10px;
+	margin: 0;
+	padding: 0;
+	height: 10px;
+}
+.last-wrap .fl{
+	float: left;
+}
+.is-the-lottery{
+	width: 96%;
+	margin: 0 auto;
+	background-color: #fff;
+}
+.is-the-lottery h3{
+	line-height: 35px;
+	height: 35px;
+	text-align: center;
+    font-size: 20px;
+}
+.is-the-lottery-list{
+	width: 96%;
+	margin: 0 auto;
+}
+.is-the-lottery-list li{
+	float: left;
+	width: 16.666%;
+	padding: 5px;
+    box-sizing: border-box;
+    margin: 5px 0;
+}
+.is-the-lottery-list li img{
+	width: 100%;
+	display: block;
+	max-width: 100%;
+	border-radius: 50%;
+}
+.last-wrap-list .wait{
+	background: #929292;
+	width: 100%;
+    border-radius: 3px;
+}
+.last-wrap .love{
+    float: right;
+    width: 41%;
+    border: 1px solid #E3E3E3;
+    box-sizing: border-box;
+    height: 27px;
+    line-height: 27px;
+    border-radius: 0 3px 3px 0;
+}
+.play-btn-div{
+    width: 96%;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+.banner img{
+	width: 100%;
+	max-width: 100%;
+	display: block;
+}
+.user-list-name{
+	text-align: center;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}
+.add-more{
+	text-align: center;
 }

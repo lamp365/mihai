@@ -56,14 +56,25 @@ if ($operation == 'index') {
 	$name = $_GP['user_name'];
 	$department = $_GP['check_department'];
 	$admin = $_GP['back_account'];
+	$idt = $_GP['idt'];
 
 	$depart_id = mysqld_select("SELECT id FROM ".table("shop_department")." WHERE department='".$department."'");
 	if (empty($id)) {
 		// 新增
-		mysqld_insert("shop_department_staff", array('name'=>$name, 'department'=>$depart_id['id'], 'admin'=>$admin));
+		mysqld_insert("shop_department_staff", array('name'=>$name, 'department'=>$depart_id['id'], 'admin'=>$admin, 'identity'=>$idt));
 	}else{
+		$have_man = mysqld_select("SELECT * FROM ".table('shop_department')." WHERE manager=".$id);
+		if (!empty($have_man['id']) AND $idt == '2') {
+			// 部门经理降为员工
+			$other_man = mysqld_select("SELECT id FROM ".table('shop_department_staff')." WHERE department=".$have_man['id']." AND identity=1");
+			if (!empty($other_man['id'])) {
+				mysqld_update('shop_department', array('manager'=>$other_man['id']),array('id'=>$have_man['id']));
+			}else{
+				mysqld_update('shop_department', array('manager'=>NULL),array('id'=>$have_man['id']));
+			}
+		}
 		// 更新
-		mysqld_update("shop_department_staff", array('name'=>$name, 'department'=>$depart_id['id'], 'admin'=>$admin), array('id'=>$id));
+		mysqld_update("shop_department_staff", array('name'=>$name, 'department'=>$depart_id['id'], 'admin'=>$admin, 'identity'=>$idt), array('id'=>$id));
 	}
 	$result['message'] = 1;
 	echo json_encode($result);
@@ -76,6 +87,7 @@ if ($operation == 'index') {
 	$result['username'] = $this_staff['name'];
 	$result['backaccount'] = $this_staff['admin'];
 	$result['department'] = $this_staff['b_depart'];
+	$result['idt'] = $this_staff['identity'];
 	echo json_encode($result);
 }elseif ($operation == 'add_department') {
 	// 添加部门

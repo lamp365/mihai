@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>夺宝</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/indiana.css"/>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+</head>
+<body style="background-color: red">
+	<div class="last-wrap clearfix">
+		<div class="is-the-lottery">
+			<h3>即将开奖</h3>
+		</div>
+		<ul class="is-the-lottery-list clearfix">
+			<li>
+				<img src="http://odozak4lg.bkt.clouddn.com/201612281156586337df8002c.jpg">
+			</li>
+			<li>
+				<img src="http://odozak4lg.bkt.clouddn.com/201612281156586337df8002c.jpg">
+			</li>
+			<li>
+				<img src="http://odozak4lg.bkt.clouddn.com/201612281156586337df8002c.jpg">
+			</li>
+			<li>
+				<img src="http://odozak4lg.bkt.clouddn.com/201612281156586337df8002c.jpg">
+			</li>
+			<li>
+				<img src="http://odozak4lg.bkt.clouddn.com/201612281156586337df8002c.jpg">
+			</li>
+			<li>
+				<img src="http://odozak4lg.bkt.clouddn.com/201612281156586337df8002c.jpg">
+			</li>
+		</ul>
+		<div class="is-the-lottery">
+			<h3>敬请期待</h3>
+		</div>
+		<ul class="last-wrap-list">
+			<li>
+				<div>
+					<img class="lazy" onclick="record(this)" data-original="http://odozak4lg.bkt.clouddn.com/201612231343585cb97a1ebcf.jpg" src="images/loading.gif">
+				</div>
+				<div class="small-title">NutroVape吸入式式咖啡因能量棒能量烟健康提神醒脑电子烟电子香烟加班必备【6支装=90支普通香烟】</div>				
+				<div class="play-now wait" onclick="playNow(this,1)">敬请期待</div>
+			</li>
+			<li>
+				<div>
+					<img class="lazy" onclick="record(this)" data-original="http://odozak4lg.bkt.clouddn.com/201612231343585cb97a1ebcf.jpg" src="images/loading.gif">
+				</div>
+				<div class="small-title">NutroVape吸入式式咖啡因能量棒能量烟健康提神醒脑电子烟电子香烟加班必备【6支装=90支普通香烟】</div>				
+				<div class="play-now wait" onclick="playNow(this,1)">敬请期待</div>
+			</li>
+			<li>
+				<div>
+					<img class="lazy" onclick="record(this)" data-original="http://odozak4lg.bkt.clouddn.com/201612231343585cb97a1ebcf.jpg" src="images/loading.gif">
+				</div>
+				<div class="small-title">NutroVape吸入式式咖啡因能量棒能量烟健康提神醒脑电子烟电子香烟加班必备【6支装=90支普通香烟】</div>				
+				<div class="play-now wait" onclick="playNow(this,1)">敬请期待</div>
+			</li>
+		</ul>
+	</div>
+<div class="footer_nav">
+	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=list" class="nav_index">主会场</a>
+	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=activity" class="nav_activity">活动</a>
+	<!--@php if( $accesskey = getShareAccesskeyCookie()){ @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&accesskey=<!--@php echo $accesskey;@-->" class="nav_share">分享</a>
+	<!--@php }else{  @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareActive" class="nav_share">分享</a>
+	<!--@php } @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=fansindex" class="nav_me">我的</a>
+</div>
+<script type="text/javascript">
+	$(function(){
+		$("img.lazy").lazyload({
+			placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+			threshold : 200, //控制灵敏度
+			effect : "fadeIn"
+		});
+	})
+	
+	//立即领取,第一个参数是当前元素，第二个参数是商品id
+	function playNow(thisElement,id){
+		$.post("",{id:id},function(data){
+			alert("领取成功,你的参与编号为：12345678910");
+		},"json");
+	}
+	//参与记录
+	function record(thisElement){
+		$(thisElement).parent("div").siblings(".record-modal").modal();
+	}
+</script>
+</body>
+</html>

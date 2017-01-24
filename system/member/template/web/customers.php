@@ -4,6 +4,7 @@
 	    <div class="panel-body third-party">
 	        <div class="tab-content">
 	            <div class="tab-pane fade in active" id="tab1primary">
+	            数据总数：<?php  echo $total;?>
 		            <form action="<?php  echo web_url('customers',array('op'=>'display'));?>" method="post">
 						<ul class="search-ul">
 							<li>
@@ -118,6 +119,7 @@
 					                    <th>分配人员</th>
 					                    <th>客户状态</th>
 					                    <th>是否联系</th>
+					                    <th>联系时间</th>
 					                    <th>操作</th>
 					                </tr>
 					            </thead>
@@ -142,6 +144,7 @@
 					                    <td class="text-center staff_name"><?php  echo $almv['name'];?></td>
 					                    <td class="text-center"><?php  echo $client_status[$almv['status']];?></td>
 					                    <td class="text-center staff_name contact_state" ><?php  echo $contact_status[$almv['contact']];?></td>
+					                    <td class="text-center contact_time"><?php  if(!empty($almv['contact_time'])){echo date('Y-m-d H:i',$almv['contact_time']);}else{echo '未联系';} ?></td>
 					                    <td class="text-center">
 					                    	<?php  if ($is_boos) {
 					                    		echo '<a class="btn btn-xs btn-info single-distribute" data_id="'.$almv['id'].'" href="javascript:;"><i class="icon-edit">分配</i></a>';
@@ -154,7 +157,9 @@
 					            </tbody>
 				            </table>
 				        </div>
-
+				        <?php  if (empty($al_client)) {
+				        echo '<div class="text-center">暂无分配客户</div>';
+				        } ?>
 			        	<div class='modal fade batch-distribute-result' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
 							<div class='modal-dialog modal-lg'>
 								<div class='modal-content'>
@@ -238,6 +243,7 @@ $(function(){
 				$this.addClass("btn-danger");
 				$this.find("i").text("已联系");
 				$this.parent("td").siblings(".contact_state").text("已联系");
+				$this.parent("td").siblings(".contact_time").text(Stringtotime(data.ctime));
 			}else{
 				$this.removeClass("btn-danger");
 				$this.find("i").text("联系");
@@ -251,6 +257,17 @@ $(function(){
 	// 	var data_id = $this.attr("data_id");
 	// 	$(".message-demo").modal();
 	// });
+	function Stringtotime(time){
+		time = time*1000;
+		var datetime = new Date();
+		datetime.setTime(time);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+		var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+		var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+		return year + "-" + month + "-" + date + " " + hour + ":" + minute;
+	}
 	batchDistribute();
 	singleDistribute();
 });

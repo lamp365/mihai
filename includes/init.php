@@ -35,7 +35,7 @@ define('SYSTEM_ROOT', WEB_ROOT . '/system/');
 define('ADDONS_ROOT', WEB_ROOT . '/addons/');
 define('INCLUDES_ROOT', WEB_ROOT . '/includes/');
 defined('DEVELOPMENT') or define('DEVELOPMENT', 1);
-defined('SQL_DEBUG') or define('SQL_DEBUG', 0);
+defined('SQL_DEBUG') or define('SQL_DEBUG', 1);
 define('MAGIC_QUOTES_GPC', (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) || @ini_get('magic_quotes_sybase'));
 define('MOBILE_SESSION_ACCOUNT', "mobile_sessionAccount");
 define('MOBILE_ACCOUNT', "mobile_account");

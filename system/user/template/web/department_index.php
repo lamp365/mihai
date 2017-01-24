@@ -138,6 +138,15 @@
 										</select>
 									</td>
 								</tr>
+								<tr>
+									<td class="left-title">选择职务:</td>
+									<td>
+										<select class="check-idt" >
+											<option value="2">员工</option>
+											<option value="1">经理</option>
+										</select>
+									</td>
+								</tr>
 							</table>
 						</div>
 					</div>
@@ -189,6 +198,15 @@
 												?>
 												<option value="<?php  echo $manv;?>" <?php  echo $mased;?>><?php  echo $manv;?></option>
 											<?php  } } ?>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td class="left-title">选择职务:</td>
+									<td>
+										<select class="edit-check-idt" >
+											<option value="2">员工</option>
+											<option value="1">经理</option>
 										</select>
 									</td>
 								</tr>
@@ -289,6 +307,7 @@ $(function(){
 			var user_name = $(".user-name").val();
 			var check_department = $(".check-department").val();
 			var back_account = $(".back-account").val();
+			var idt = $(".check-idt").val();
 			var url = "<?php  echo web_url('department',array('op'=>'add_staff'));?>";
 			if( user_name == "" ){
 				alert("请输入人员姓名","",function () {
@@ -303,7 +322,7 @@ $(function(){
 		          //回调函数
 		        }, {type: 'error', confirmButtonText: 'OK'});
 			}else{
-				$.post(url,{user_name:user_name,check_department:check_department,back_account:back_account},function(data){
+				$.post(url,{user_name:user_name,check_department:check_department,back_account:back_account,idt:idt},function(data){
 					if( data.message == 1){
 						alert("添加成功","",function () {
 				          $(".add-user-modal").modal('hide');
@@ -326,6 +345,7 @@ $(function(){
 		var user_name = $(".edit-user-name").val();
 		var check_department = $(".edit-check-department").val();
 		var back_account = $(".edit-back-account").val();
+		var idt = $(".edit-check-idt").val();
 		var url = "<?php  echo web_url('department',array('op'=>'add_staff'));?>";
 		if( user_name == "" ){
 			alert("请输入人员姓名","",function () {
@@ -340,7 +360,7 @@ $(function(){
 	          //回调函数
 	        }, {type: 'error', confirmButtonText: 'OK'});
 		}else{
-			$.post(url,{user_name:user_name,check_department:check_department,back_account:back_account,edit_id:edit_id},function(data){
+			$.post(url,{user_name:user_name,check_department:check_department,back_account:back_account,edit_id:edit_id,idt:idt},function(data){
 				if( data.message == 1){
 					alert("添加成功","",function () {
 			          $(".edit-user-modal").modal('hide');
@@ -417,6 +437,7 @@ function modify(id){
 		$(".edit-user-modal .edit-user-name").val(data.username);
 		$(".edit-back-account option[value="+data.backaccount+"]").prop("selected",true);
 		$(".edit-check-department option[value="+data.department+"]").prop("selected",true);
+		$(".edit-check-idt option[value="+data.idt+"]").prop("selected",true);
 	},'json');
 }
 </script>

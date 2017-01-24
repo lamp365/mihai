@@ -143,6 +143,10 @@ if ($operation == 'into') {
     }else{
       $amv['salesman'] = '未分配';
     }
+    if (mysqld_select("SELECT * FROM ".table('member')." WHERE mobile=".$amv['mobile'])) {
+      $amv['status'] = '1';
+      mysqld_update('shop_customers', array('status'=>1), array('id'=>$amv['id']));
+    }
     if ($amv['status'] == '0') {
       $amv['status'] = '未入驻';
     }else{
@@ -215,6 +219,11 @@ if ($operation == 'into') {
     exit;
   }
   $man = mysqld_select("SELECT manager FROM ".table('shop_department')." WHERE department='".$department."'");
+  if (empty($man['manager'])) {
+    $result['message'] = '所选部门未设置经理!';
+    echo json_encode($result);
+    exit;
+  }
   mysqld_update('shop_customers', array('salesman' => $man['manager'], 'updatetime' => time()), array('id'=> $client_id));
   $manager_name = mysqld_select("SELECT name FROM ".table('shop_department_staff')." WHERE id=".$man['manager']);
   
@@ -257,7 +266,13 @@ if ($operation == 'into') {
   }else{
     foreach ($al_member as $almv) {
       $man = mysqld_select("SELECT manager FROM ".table('shop_department')." WHERE department='".$department."'");
-      mysqld_update('shop_customers', array('salesman' => $man['manager'], 'updatetime' => time()), array('id'=> $almv['id']));
+      if (empty($man['manager'])) {
+        $result['message'] = '所选部门未设置经理!';
+        echo json_encode($result);
+        exit;
+      }else{
+        mysqld_update('shop_customers', array('salesman' => $man['manager'], 'updatetime' => time()), array('id'=> $almv['id']));
+      }
     }
     $result['message'] = '批量分配完成!';
   }

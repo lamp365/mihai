@@ -16,9 +16,13 @@ if ($operation == 'display') {
 	  	}else{
 	  		$where = "b.department=".$n_user['department']." AND a.salesman=".$n_user['id'];
 	  	}
+	  	$uw1 = "WHERE b.department=".$n_user['department'];
+	  	$uw2 = "WHERE department=".$n_user['department'];
   	}else{
   		$where = 'a.id<>0';
   		$n_user['identity'] = 1;
+  		$uw1 = '';
+  		$uw2 = '';
   	}
   	
 	$city = $_GP['city'];
@@ -54,13 +58,20 @@ if ($operation == 'display') {
 	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 	// 总记录数
   	$data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
+  	foreach ($al_client as &$aclv) {
+  		if (mysqld_select("SELECT * FROM ".table('member')." WHERE mobile=".$aclv['mobile'])) {
+			$aclv['status'] = '1';
+			mysqld_update('shop_customers', array('status'=>1), array('id'=>$aclv['id']));
+	    }
+  	}
+  	unset($aclv);
   	$total = $data_total['total'];
 	$city_a = array();
 	$level_a = array();
 	$shop_a = array();
 	$staff_a = array();
-	$all_c = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE b.department=".$n_user['department']." ORDER BY a.updatetime DESC");
-	$all_sta = mysqld_selectall("SELECT * FROM ".table('shop_department_staff')." WHERE department=".$n_user['department']);
+	$all_c = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id ".$uw1." ORDER BY a.updatetime DESC");
+	$all_sta = mysqld_selectall("SELECT * FROM ".table('shop_department_staff')." ".$uw2);
 	if (!empty($all_c)) {
 		foreach ($all_c as $acv) {
 			$city_a[] = $acv['city'];
@@ -186,8 +197,9 @@ if ($operation == 'display') {
 	$con_id = $_GP['data_id'];
 
 	if (!empty($con_id)) {
-		mysqld_update('shop_customers', array('contact' => 1), array('id'=> $con_id));
+		mysqld_update('shop_customers', array('contact' => 1, 'contact_time' => time()), array('id'=> $con_id));
 		$result['message'] = 1;
+		$result['ctime'] = time();
 	}else{
 		$result['message'] = 0;
 	}
