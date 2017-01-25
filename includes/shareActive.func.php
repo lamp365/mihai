@@ -26,7 +26,7 @@ function checkIsAddShareActive($openid){
             $id   = $info['id'];
             if($curt_time>$info['zero_time']){
                 mysqld_update('share_active',array(
-                    'total_num'  => $rank_level,
+                    'total_num'  => $rank_level*2,
                     'zero_time'  => $curt_time,
                     'modifytime' => time()
                 ),array('id'=>$id));
