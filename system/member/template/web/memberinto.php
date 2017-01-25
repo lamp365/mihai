@@ -78,6 +78,10 @@
 								</select>
 							</li>
 							<li>
+								<span class="left-span">金额范围</span>
+								<input type="text" name="d_money" class="input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
+							</li>
+							<li>
 								<span class="left-span">差评</span>
 								<div class="checkbox-div">
 									<input type="checkbox" name="bad" class="bad" <?php if($review){echo 'checked="checked"';}?>>
@@ -145,8 +149,7 @@
 					                    <td class="text-center"><?php  echo $almv['shop'];?></td>
 					                    <td class="text-center manager_name"><?php  echo $almv['salesman'];?></td>
 					                    <td class="text-center"><?php  echo $almv['status'];?></td>
-					                    <td class="text-center"><a  class="btn btn-xs btn-info single-distribute" data_id="<?php echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"></i>分配</a></td>
-
+					                    <td class="text-center"><a  class="btn btn-xs btn-info edit-distribute" data_id="<?php echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"></i>分配</a></td>
 					                </tr>
 					            <?php  } } ?>
 					            </tbody>
@@ -215,6 +218,7 @@ $(function(){
 			$(".refund_form").submit();
 		}
 	});
+	
 	batchDistribute();
 	singleDistribute();
 });

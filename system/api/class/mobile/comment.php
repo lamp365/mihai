@@ -69,7 +69,7 @@
 			exit;
 		}
 		$pindex = max(1, intval($_GP['page']));
-    	$psize = 20;
+		$psize = intval($_GP['limit'] ? $_GP['limit'] : 20);
 
     	$gid = mysqld_select("SELECT gid FROM ".table('shop_dish')." WHERE id=".$good_id);
 		$gid = $gid['gid'];

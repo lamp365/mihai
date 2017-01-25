@@ -95,8 +95,8 @@
 <div class="footer_nav">
 	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=list" class="nav_index">主会场</a>
 	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=activity" class="nav_activity">活动</a>
-	<!--@php if( $accesskey = getShareAccesskeyCookie()){ @-->
-	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&accesskey=<!--@php echo $accesskey;@-->" class="nav_share">分享</a>
+	<!--@php if($openid){ @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&accesskey=<!--@php echo encodeShareAccessKey($openid);@-->" class="nav_share">分享</a>
 	<!--@php }else{  @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=shareActive" class="nav_share">分享</a>
 	<!--@php } @-->

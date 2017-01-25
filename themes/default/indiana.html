@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+		<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="__RESOURCE__/recouse/css/indiana.css" rel="stylesheet"	type="text/css" />	
+		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+		
+		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	</head>
+
+	<body>
+		<!--@php  include page('header');@-->
+		<div style="background:url(__RESOURCE__/recouse/images/indiana_bac.png);">
+			<!--累计参与人数-->
+			
+			<!--存旧的参与人数-->
+			<input type="hidden" id="total_num_old" value="000000000"/>
+			<div class="total_num">
+				<span class="jText">累计参与人数</span>
+				<ul class="num_list">	
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+					<li class="per_num">
+						<ul>
+							<li>0</li>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+						</ul>
+					</li>
+				</ul>
+			</div>			
+			
+			<!--开奖中-->
+			<div class="viewport comment_h">
+				<!--左侧的开奖大图-->
+				<div class="left_img">
+					<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+				</div>
+				<!--右侧的6个-->
+				<div class="right_ele">
+					<ul>
+						<li>
+							<img src="__RESOURCE__/recouse/images/bgzj.png" />
+						</li>
+						<li>
+							<img src="__RESOURCE__/recouse/images/bgzj.png" />
+						</li>
+						<li>
+							<img src="__RESOURCE__/recouse/images/bgzj.png" />
+						</li>
+						<li>
+							<img src="__RESOURCE__/recouse/images/bgzj.png" />
+						</li>
+						<li>
+							<img src="__RESOURCE__/recouse/images/bgzj.png" />
+						</li>
+						<li>
+							<img src="__RESOURCE__/recouse/images/bgzj.png" />
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<!--推荐商品,出两个-->			
+			<div class="viewport recommend_list" style="background: url(__RESOURCE__/recouse/images/recommend_list1.jpg) no-repeat center center;">
+				<div class="left_img">
+					<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+				</div>
+				<div class="right_ele">
+					<!--商品名称-->
+					<p class="title">iphone7</p>
+					<!--商品描述-->
+					<p class="detail">玫瑰金，64G，你值得拥有</p>
+					<!--按钮-->
+					<p class="btn">新年许愿</p>
+				</div>
+			</div>
+			<div class="viewport recommend_list"  style="height: 659px;background: url(__RESOURCE__/recouse/images/recommend_list2.jpg) no-repeat center center;">
+				<div class="left_img" style="top: 37%;">
+					<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+				</div>
+				<div class="right_ele" style="top: 37%;">
+					<!--商品名称-->
+					<p class="title">iphone7</p>
+					<!--商品描述-->
+					<p class="detail">玫瑰金，64G，你值得拥有</p>
+					<!--按钮-->
+					<p class="btn">新年许愿</p>
+				</div>
+			</div>			
+			<!--一般商品-->
+			<div class="viewport" style="background: url(__RESOURCE__/recouse/images/ybsp_bg.jpg) no-repeat center center;height: 862px;">	
+				<p style="text-align: center;" class="jText">一般商品</p>
+				<ul class="indiana_list">
+					<li class="per_indiana"> 
+						<!--商品图片-->
+						<div class="imgWrap" record_id="11">
+							<a>
+								<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name">(第167期）新浪马年小浪公仔</p>
+						<!--人数-->
+						<p>总需：<strong>300人次</strong></p>
+						<!--进度条-->
+						<div class="progress">
+							<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"></div>
+						</div>
+						<p class="font12">
+							<!--已参与人数-->
+							200
+							<!--剩余人数-->
+							<span>100</span>
+						</p>
+						<p class="gray font12">
+							已参与人次
+							<span>剩余人次</span>
+						</p>
+						<div class="last">
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+							<!--爱心-->
+							<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+							<span>10次</span>
+						</div>
+					</li>
+					<li class="per_indiana"> 
+						<div class="imgWrap" record_id="22">
+							<a>
+								<img src="__RESOURCE__/912865945439541.jpg" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name">(第167期）新浪马年小浪公仔</p>
+						<!--人数-->
+						<p>总需：<strong>300人次</strong></p>
+						<!--进度条-->
+						<div class="progress">
+						   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+						</div>
+						<p class="font12">
+							<!--已参与人数-->
+							200
+							<!--剩余人数-->
+							<span>100</span>
+						</p>
+						<p class="gray font12">
+							已参与人次
+							<span>剩余人次</span>
+						</p>
+						<div class="last">
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+							<!--爱心-->
+							<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+							<span>10次</span>
+						</div>
+					</li>		
+					<li class="per_indiana"> 
+						<div class="imgWrap" record_id="22">
+							<a>
+								<img src="__RESOURCE__/912865945439541.jpg" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name">(第167期）新浪马年小浪公仔</p>
+						<!--人数-->
+						<p>总需：<strong>300人次</strong></p>
+						<!--进度条-->
+						<div class="progress">
+						   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+						</div>
+						<p class="font12">
+							<!--已参与人数-->
+							200
+							<!--剩余人数-->
+							<span>100</span>
+						</p>
+						<p class="gray font12">
+							已参与人次
+							<span>剩余人次</span>
+						</p>
+						<div class="last">
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+							<!--爱心-->
+							<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+							<span>10次</span>
+						</div>
+					</li>				
+					<li class="per_indiana"> 
+						<div class="imgWrap" record_id="22">
+							<a>
+								<img src="__RESOURCE__/912865945439541.jpg" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name">(第167期）新浪马年小浪公仔</p>
+						<!--人数-->
+						<p>总需：<strong>300人次</strong></p>
+						<!--进度条-->
+						<div class="progress">
+						   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+						</div>
+						<p class="font12">
+							<!--已参与人数-->
+							200
+							<!--剩余人数-->
+							<span>100</span>
+						</p>
+						<p class="gray font12">
+							已参与人次
+							<span>剩余人次</span>
+						</p>
+						<div class="last">
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+							<!--爱心-->
+							<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+							<span>10次</span>
+						</div>
+					</li>				
+				</ul>
+				<!--弹出的参与记录-->
+				 <div class='modal fade indiana_record' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+					<div class='modal-dialog'>
+						<div class='modal-content'>
+							<div class='modal-header'> 
+								<button type='button' class='close' data-dismiss='modal' style="margin-top: -10px;">
+									<span aria-hidden='true'>&times;</span>
+									<span class='sr-only'>Close</span>
+								</button>
+								<h4 class='modal-title'>夺宝参与记录</h4>
+							</div>
+							<div class='modal-body'>
+								<ul>
+																	
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>				
+			</div>
+			<!--预告-->
+			<div class="viewport">
+				<p style="text-align: center;" class="jText">下期预告</p>
+				<ul class="indiana_list">
+					<li class="per_indiana" style="height: 400px;position: relative;"> 
+						<!--商品图片-->
+						<div class="share" record_id="11">
+							<a>
+								<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name" style="font-weight: bold;">(第168期）***</p>					
+						<!--立即参与按钮-->
+						<a href="javascript:void(0);" class="tojoin" style="position:absolute;left:50%;margin-left:-78.5px;background: #eee;">敬请期待</a>									
+					</li>				
+				</ul>
+			</div>
+			<!--晒单分享-->
+			<div class="viewport">
+				<p style="text-align: center;" class="jText">晒单分享</p>
+				<ul class="indiana_list">
+					<li class="per_indiana" style="height: 450px;"> 
+						<!--商品图片-->
+						<div class="share" record_id="11">
+							<a>
+								<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
+						<!--人数-->
+						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
+						<div class="info">
+							<span class="xmjdh_left">
+								<a>
+									<p style="display: inline-block;">
+										<img src="__RESOURCE__/912865945439541.jpg">									
+									</p>
+									<em class="f1">觅海掌门人</em>
+								</a>
+							</span>
+							<span class="xmjdh_right">
+								<a href="javascript:;">								
+									<em>11</em>
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
+								</a>							
+							</span>
+						</div>
+					</li>				
+				</ul>
+			</div>	
+			<!--@php  include themePage('footer');@-->	
+		</div>
+		
+		<script>
+			$(function(){				
+				var total_num_new_length;
+				var total_num_new;
+				function getnum(){	
+					//获取旧的参与总人数
+					var total_num_old = $("#total_num_old").val();		
+					
+					//异步获取最新的参与总人数
+//					$.post('', {}, function(s) {
+//						total_num_new = s;	
+//					});
+					//暂时写死
+					total_num_new = "132";
+					
+					total_num_new_length = total_num_new.length;
+					if(total_num_old == total_num_new){
+						
+					}else{
+						//从最后一位开始遍历
+						var all_num = 10;
+						for(var j = 1; j <= total_num_new_length;j++){							
+							var ge_new = total_num_new.substr(total_num_new_length-j,1);
+							var ge_old = total_num_old.substr(total_num_new_length-j,1);						
+							//新旧相差多少
+							var dif = ge_new - ge_old;
+							//要滚动的距离
+							var gap = dif * 27 * (-1);
+							var last_num = all_num - j;	
+							//滚动
+							$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},500);						
+						}	
+						//更新旧的参与人数
+						$("#total_num_old").val(total_num_new);
+					}					
+				}
+				var time = setInterval(function(){
+					getnum();
+				},3000)
+										
+				//点击一般商品的图片，弹出夺宝参与记录
+				$(".imgWrap").click(function(){
+					$(".indiana_record").modal();
+					//获取id
+					var record_id = $(this).attr("record_id");	
+					var len = $(".modal-body").children().length;					
+					var per_record  = '<li>'+
+									'<span class="time">2017-01-23  15:23 </span>'+
+									 '<span class="men">觅海掌门人</span>'+
+									 '参与了'+
+									 '<span class="num">10</span>'+									
+									 '人次'+
+								 '</li>';						
+					$(".modal-body ul").html(per_record);
+					
+				})
+				//点击免费领取按钮
+				$(".tojoin").click(function(){					
+					var record_id = $(this).parent().siblings(".imgWrap").attr("record_id");
+					alert("领取成功");
+				})				
+				//点击晒单分享的爱心
+				var love = 0 ; 
+				$(".transparent-png").click(function(){
+					if(love == 0){
+						$(this).attr("src","__RESOURCE__/recouse/images/love-yes.png");
+						var love_num = parseInt($(this).siblings("em").text());
+						$(this).siblings("em").text(love_num+1);
+						love = 1;
+					}else{
+						
+					}					
+				})
+				//推荐商品模块，新年许愿按钮
+				$(".recommend_list .right_ele .btn").click(function(){
+					alert("领取成功");
+				})
+			})
+		</script>		
+	</body>
+</html>

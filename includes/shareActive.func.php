@@ -197,6 +197,9 @@ function encodeShareAccessKey($openid){
 }
 
 function decodeShareAccessKey($accesskey){
+    if(empty($accesskey)){
+        return false;
+    }
     $code = DESService::instance()->decode($accesskey);
     $codeArr = explode('@@@',$code);
     if($codeArr['1']!= 'share'){
@@ -204,5 +207,30 @@ function decodeShareAccessKey($accesskey){
     }else{
         $openid = $codeArr['0'];
         return $openid;
+    }
+}
+
+function isReloadShareActivePage($openid){
+    $accesskey = getShareAccesskeyCookie();
+    if(empty($accesskey)){
+        if(empty($_GET['accesskey'])){
+            //给自己openid加密后，得到accesskey用于分享
+            $accesskey = encodeShareAccessKey($openid);
+        }else{
+            //获取当前
+            $accesskey = $_GET['accesskey'];
+        }
+
+        $url       = mobile_url('shareActive',array('op'=>'display', 'accesskey'=>$accesskey));
+        //把accesskey记入缓存，用于注册或者其他地方用到
+        setShareAccesskeyCookie($accesskey);
+        //再重新加载页面，是为了让cookie生效，也同时，让地址确保带上accesskey，便于分享
+        header("location:".$url);
+    }else{
+        //如果解出来的openid 不对，则说明上次没有登录就分享了，则清空缓存
+        $decode_share_openid = decodeShareAccessKey($accesskey);
+        if(!$decode_share_openid){
+            cleanShareAccesskeyCookie();
+        }
     }
 }

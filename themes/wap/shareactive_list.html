@@ -21,22 +21,21 @@
 	<div class="banner">
 		<img src="__RESOURCE__/recouse/images/banner.jpg">
 	</div>
-	<div class="active-fixed-btn">活动规则</div>
-	<div class="active-num-btn">我的次数</div>
-	<div class="last-wrap clearfix">
+	<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
+	<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余2次</div>
+	<div class="last-wrap ">
 		<div class="total-number-div">
 			<span class="">累计参与了</span>123456<span class="">人次</span>
 		</div>
-		<ul class="last-wrap-list">
+		<ul class="last-wrap-list clearfix" id="act_list">
 			<!--@php if(!empty($shareActiveShop)){   foreach($shareActiveShop as $item){  @-->
 			<li>
 				<div>
-					<img class="lazy" onclick="record(this,1)" data-original="<!--@php echo $item['dthumb'];@-->" src="images/loading.gif">
+					<img class="lazy" onclick="record(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo $item['dthumb'];@-->" src="images/loading.gif">
 				</div>
 				<div class="small-title"><!--@php echo $item['dtitle'];@--></div>
 				<div class="progress">
 				  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $item['jindutiao'];@-->">
-				    	
 				  	</div>
 				</div>
 
@@ -51,12 +50,15 @@
 			</li>
 			<!--@php }}  @-->
 		</ul>
-	</div>
-	<!--用来存当前page-->
-	<input type="hidden" value="2" id="page"/>
-	<div class="ajax_next_page">
-		<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
-		正在加载
+		
+		<!--用来存当前page-->
+		<input type="hidden" value="2" id="page"/>
+		<div class="ajax_next_page">
+			<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+			正在加载
+		</div>
+		<div class="banquan">福建觅海•版权所有</div>
+		<div class="desc-more"><a href="">了解更多》</a></div>
 	</div>
 
 	<div class="modal fade record-modal" tabindex="-1" role="dialog">
@@ -118,29 +120,14 @@
 	      </div>
 	    </div>
 	  </div>
-	</div>
-	<div class="modal fade activity-number-modal" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">活动规则</h4>
-	      </div>
-	      <div class="modal-body">
-	      	剩余2次
-	      </div>
 
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	      </div>
-	    </div>
-	  </div>
 	</div>
+
 <div class="footer_nav">
 	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=list" class="nav_index">主会场</a>
 	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=activity" class="nav_activity">活动</a>
-	<!--@php if( $accesskey = getShareAccesskeyCookie()){ @-->
-	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&accesskey=<!--@php echo $accesskey;@-->" class="nav_share">分享</a>
+	<!--@php if($openid){ @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&accesskey=<!--@php echo encodeShareAccessKey($openid);@-->" class="nav_share">分享</a>
 	<!--@php }else{  @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=shareActive" class="nav_share">分享</a>
 	<!--@php } @-->
@@ -156,9 +143,7 @@
 		$(".active-fixed-btn").on("click",function(){
 			$(".activity-modal").modal();
 		});
-		$(".active-num-btn").on("click",function(){
-			$(".activity-number-modal").modal();
-		});
+
 	})
 	
 	//立即领取,第一个参数是当前元素，第二个参数是商品id
@@ -184,6 +169,50 @@
 
 			}
 		},"json");
+	}
+
+
+	var index = 1; //默认开关状态是打开
+	$(function(){
+		//滚动条到底部时就加载剩下数据
+		$(window).scroll(function(){
+			if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+				Refresh();
+			}
+		})
+	})
+	function Refresh(){
+		if( index == 1){
+			$(".ajax_next_page").show();
+			index = 0; //关闭开关
+			var page = $("#page").val(); //第一次传的是2
+			var url  = "<!--@php echo mobile_url('shareActive',array('op'=>'list')); @-->";
+			$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
+				if(s.errno != 200){
+					//如果没有数据
+					$(".ajax_next_page").hide();
+				}else{
+					$("#page").val(++page);
+					var art_data = s.message;
+					for(var i = 0;i < art_data.length;i++){
+						//循环拼接 html下一页数据
+						LoadHtml(art_data[i]);
+					}
+					index = 1;  //加载完后重新打开开关
+					$(".ajax_next_page").hide();
+				}
+			}, 'json');
+
+		}
+	}
+	function LoadHtml(data){
+		var html ="<li><div><img class='lazy' onclick='record(this,"+data.id+")' data-original="+data.dthumb+" src='images/loading.gif'>"+
+				"</div><div class='small-title'>"+data.dtitle+"</div><div class='progress'><div class='progress-bar progress-bar-danger progress-bar-striped active'"+
+				" role='progressbar' aria-valuenow='80' aria-valuemin='0' aria-valuemax='100' style='width: "+data.jindutiao+"'>"+
+				"</div></div><div class='play-btn-div'><div class='play-now' onclick='playNow(this,"+data.id+")'>新年许愿</div>"+
+				"<div class='love'><img onclick='personalRecord(this,"+data.id+")' src='__RESOURCE__/recouse/images/love-yes.png'>"+
+				"<span>111</span></div></div></li>";
+		$("#act_list").append(html);
 	}
 </script>
 </body>
