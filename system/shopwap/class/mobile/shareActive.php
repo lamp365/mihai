@@ -23,7 +23,7 @@
 
         //记住当前地址
         tosaveloginfrom();
-        include themePage('shareActive');
+        include themePage('shareactive');
 
     }else if($op == 'list'){
         $openid = getOpenidFromWeixin($openid);

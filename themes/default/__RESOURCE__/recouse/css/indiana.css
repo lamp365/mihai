@@ -1,0 +1,315 @@
+@charset "utf-8";
+/*夺宝样式文件*/
+/*累计参与人数*/
+.viewport{
+	margin-top: 20px;
+}
+.fix_gundon{
+	display: none !important;
+}
+.total_num{
+	width: 1190px;
+    min-width: 320px;
+	margin: 0 auto;
+	clear: both;
+	height: 65px;
+	background: #fff;
+	text-align: center;
+}
+.jText{
+	color: #444;
+    font: bold 20px/65px '微软雅黑';
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.total_num  .num_list{
+	display: inline-block;
+	vertical-align: middle;
+	margin-bottom: 0;
+}
+.total_num .per_num{
+	float: left;
+    font-size: 20px;
+    width: 21px;
+    height: 27px;
+    line-height: 27px;
+    text-align: center;
+    margin: 0 2px;
+    border-radius: 1px;
+    overflow: hidden;
+    margin-right: 5px;
+    background:rgb(219,55,55);
+    color: #fff;
+}
+/*开奖中*/
+.comment_h{
+	height: 400px;
+}
+.left_img{
+	float: left;
+	height:100%;
+	width: 40%;
+}
+.left_img img{
+	width: 100%;
+	height: auto;
+}
+.right_ele{
+	float: right;
+	width: 50%;
+	height: 100%;
+	position: relative;
+}
+.right_ele ul{
+	width: 100%;
+	overflow: hidden;
+	position: absolute;
+	top: 50%;
+	margin-top: -40px;
+}
+.right_ele ul li{
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background: #fff;
+	float: left;
+	margin-right: 15px;
+}
+.right_ele ul li img{
+	width: 100%;
+	height:100%;
+	border-radius: 50%;
+}
+/*推荐商品*/
+.recommend_list{
+	height: 683px;
+	position: relative;
+	margin-top: 0;
+}
+.recommend_list .left_img{
+	width: 35%;
+	height: 50%;
+	position: absolute;
+	top: 40%;
+	left: 18%;
+}
+.recommend_list .left_img img{
+	width: 100%;
+	height:100%;
+}
+.recommend_list .right_ele{
+	width: 29%;
+	height: 50%;
+	position: absolute;
+	top: 40%;
+	right: 18%;
+}
+.recommend_list .right_ele{
+	text-align: center;
+	color:#fff;
+}
+.recommend_list .right_ele .title{
+	font-size: 30px;
+	margin-top: 100px;
+}
+.recommend_list .right_ele .detail{
+	height: 80px;
+	overflow: hidden;
+}
+.recommend_list .right_ele .btn{
+	background: rgb(255,151,58);
+	color: #fff;
+	width: 150px;
+	height: 38px;
+	line-height:38px;
+	font-size: 20px;
+	margin: 0 auto;
+}
+/*一般商品*/
+.indiana_list{
+	width: 100%;
+	overflow: hidden;
+}
+.per_indiana{
+	width: 287px;
+	height: 510px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	float: left;
+    box-sizing: border-box;
+    border: solid 1px #eee;
+    padding: 15px 18px 0;
+    background: #fff;
+}
+.imgWrap{
+	width: 254px;
+    height: 280px;
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+.imgWrap a{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.imgWrap a img{
+	display: block;
+    width: 90%;
+    margin: 0 auto;
+    height:auto;
+    transition: all 0.3s ease;
+}
+.imgWrap a img:hover{
+	transform: scale(1.2);
+}
+.per_indiana .name{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+}
+.progress{
+	margin: 0;
+	margin-top: 4px;
+	margin-bottom: 14px;
+}
+.progress-bar-danger{
+	background-color: #ff4400;
+}
+.font12{
+	font-size: 12px;
+}
+.font12 span{
+	float: right;
+}
+.gray{
+	color:#969696;
+	margin-bottom:15px;
+}
+.tojoin{
+	display:inline-block;
+    width: 157px;
+    height: 40px;
+    background-color: rgb(219,55,55);
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 40px;
+ }
+.tojoin:visited{
+	color: #fff;
+}
+.love{
+	vertical-align: middle;
+	margin-left: 10px;
+	cursor: pointer;
+	width: 25px;
+}
+.last{
+	border: solid 1px rgb(219,55,55);
+	box-sizing: border-box;
+}
+/*参与记录模态框*/
+.indiana_record h4{
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+}
+.modal-body li{
+	line-height: 30px;
+	color: rgb(71,71,71);
+}
+.modal-body li .time{
+	font-size: 16px;
+	color:#969696;
+	margin-right: 10px;
+}
+.modal-body li .men{
+	margin:0 5px;
+}
+.modal-body li .num{
+	font-weight: bold;
+}
+/*晒单分享*/
+.share{
+	width: 254px;
+    height: 280px;
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+.share a{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.share a img{
+	display: block;
+    width: 90%;
+    margin: 0 auto;
+    height:auto;
+    transition: all 0.3s ease;
+}
+.indiana_list .detail{
+	font-size: 12px;
+ 	color: rgb(102,102,102);
+    height: 40px;
+    line-height: 20px;
+    overflow: hidden;
+    font-family: "微软雅黑";
+    word-spacing:2px;
+	letter-spacing:2px;
+}
+.per_indiana .info{
+	height: 30px;
+	padding: 10px 0;
+	margin-top: 5px;
+	border-top: solid 1px #eee;
+	position: relative;
+}
+.per_indiana .info span{
+	display: block;
+    height: 30px;
+    line-height: 30px;
+}
+.per_indiana .info .xmjdh_left{
+	float: left;
+    width: 160px;
+}
+.per_indiana .info .xmjdh_right{
+	float: right;
+}
+.per_indiana .info em{
+	font-size: 12px;
+	display: inline-block;
+	height: 30px;
+	line-height: 30px;	
+}
+.per_indiana .info .f1{
+	max-width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	float: right;
+	margin-left: 5px;
+}
+.per_indiana .info .xmjdh_right img{
+	width: 20px;
+}
+.xmjdh_left a{
+	display: inline-block;
+    height: 30px;
+    color: #969696;    
+}
+.xmjdh_right a{
+	display: inline-block;
+    height: 30px;
+    color: #969696;    
+}
+.xmjdh_left a p img{
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+}
+.xmjdh_left a img{
+	border-radius: 50%;
+}   
