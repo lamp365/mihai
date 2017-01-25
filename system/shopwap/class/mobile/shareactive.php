@@ -86,14 +86,16 @@
     }else if($op == 'yaoqingma'){
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
         $weixin_openid = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
-        if(empty($unicode)){
+        /*if(empty($unicode)){
             message('活动暂时关闭！','index.php','success');
-        }
+        }*/
+        $unicode = 'olMgBwFlMMm46w90gzTT0ao3BHCY';
         $weixin  = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$unicode}'");
         if(empty($weixin['openid'])){
             //记住当前地址
             tosaveloginfrom();
-            message("请您先注册，才能获取二维码");
+            $url = mobile_url('regedit');
+            message("请您先注册，才能获取二维码",$url,'error');
         }
 
         include themePage('shareactive_yqm');

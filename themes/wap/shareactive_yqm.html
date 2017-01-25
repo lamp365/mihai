@@ -36,6 +36,13 @@
 
 //获取二维码
 $(function(){
+    data = {
+        "image": [{
+            img: "images/shareactive_bg.png",
+            x: 0.345,
+            y: 0.455
+        }]
+    };
     var erweimaURL = 'images/weixin.jpg';
     <!--@php if(empty($weixin['avatar'])) {  @-->
     var touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
@@ -104,6 +111,7 @@ $(function(){
                         //从坐标点(50,50)开始绘制文字
                         context.fillText(username,158,185);
                         imgPath = mycanvas.toDataURL("image/jpeg");
+                        console.log(imgPath);
                         var id = num + 1;
                         document.body.querySelector(".poster_bg" + id).src = imgPath;
                         drawing(num + 1);
