@@ -84,6 +84,18 @@
             die(showAjaxMess(200,$share_member));
         }
     }else if($op == 'yaoqingma'){
-        die('sssss');
+        $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
+        $weixin_openid = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
+        if(empty($unicode)){
+            message('活动暂时关闭！','index.php','success');
+        }
+        $weixin  = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$unicode}'");
+        if(empty($weixin['openid'])){
+            //记住当前地址
+            tosaveloginfrom();
+            message("请您先注册，才能获取二维码");
+        }
+
+        include themePage('shareactive_yqm');
     }
 

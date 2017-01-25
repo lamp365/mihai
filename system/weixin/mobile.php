@@ -29,6 +29,7 @@ class weixinAddons extends BjSystemModule
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
             $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];      
             $message = $this->requestParse($postStr);
+
 		    //$shitan =serialize(array('mess_name'=> '', 'mess_id'=>$message['eventkey']));
             //setcookie("mess",$shitan,time()+3600*24*365*10);
 			// $oid = get_weixin_openid();

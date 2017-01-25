@@ -282,8 +282,9 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                             $from_user = xoauth($appid, $secret);
                             $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
                             $sessionAccount = array(
-                                'openid'  => $from_user,
-                                'unionid' => $_GP['unionid']
+                                'openid'         => $from_user,
+                                'weixin_openid'  => $from_user,
+                                'unionid'        => $_GP['unionid']
                             );
                             $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
                             return $from_user;
@@ -296,8 +297,9 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                             $from_user = xoauth($appid, $secret);
                             $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
                             $sessionAccount = array(
-                                'openid'  => $from_user,
-                                'unionid' => $_GP['unionid']
+                                'openid'         => $from_user,
+                                'weixin_openid'  => $from_user,
+                                'unionid'        => $_GP['unionid']
                             );
                             $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
                             return $from_user;

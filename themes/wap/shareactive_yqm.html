@@ -1,0 +1,139 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1" />
+    <title>邀请码</title>
+    <style>
+        body{
+            background-color:red ;
+            margin: 0;
+            padding: 0;
+        }
+        .poster img {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body >
+<div class="poster" >
+    <img src="images/shareactive_bg.png" alt="" class="poster_bg1">
+</div>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+
+<script>
+    var imgUrl = 'logo.png';
+
+//获取二维码
+$(function(){
+    var erweimaURL = 'images/weixin.jpg';
+    <!--@php if(empty($weixin['avatar'])) {  @-->
+    var touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
+    <!--@php }else{  @-->
+    var touxiangURL = "<!--@php echo $weixin['avatar'];@-->";
+    <!--@php } @-->
+    var username = "<!--@php echo $weixin['nickname'];@-->";
+    var winW = document.body.scrollWidth;
+    var winH = winW * 1205 / 680;
+
+    function draw() {
+        var mycanvas = document.createElement('canvas');
+        document.body.querySelector(".poster").appendChild(mycanvas);
+        var len = data.image.length;
+        mycanvas.width = winW;
+        mycanvas.height = winH;
+        if(mycanvas.getContext) {
+            var context = mycanvas.getContext('2d');
+            context.fillStyle = '#fff';
+            context.fillRect(0, 0, mycanvas.width, mycanvas.height);
+            context.fillStyle = '#f8f8f8';
+            context.fillRect(0, 0, mycanvas.width, 140);
+            context.fillStyle = '#fff';
+            context.strokeStyle = '#dfdfdf';
+            context.roundRect(150, 20, 470, 100, 6);
+            context.fill();
+            context.stroke();
+            context.beginPath();
+            context.moveTo(151, 40);
+            context.lineTo(140, 48);
+            context.lineTo(151, 56);
+            context.fill();
+            context.stroke();
+
+            // 宣传图片
+            var h = 0;
+
+
+            function drawing(num) {
+                if(num < len) {
+                    var img = new Image;
+                    img.src = data.image[num].img;
+                    var x = data.image[num].x;
+                    var y = data.image[num].y;
+
+                    img.onload = function() {
+                        context.drawImage(img, 0, 0, mycanvas.width, winH);
+                        h = winH;
+                    }
+                    var erweimaImg = new Image;
+                    erweimaImg.src = erweimaURL;
+                    erweimaImg.onload = function() {
+                        context.drawImage(erweimaImg, winW * x, winH * y, winW * 0.315, winW * 0.312);
+                        imgPath = mycanvas.toDataURL("image/jpeg");
+                        var id = num + 1;
+                        document.body.querySelector(".poster_bg" + id).src = imgPath;
+                        drawing(num + 1);
+                    }
+                    var touxiangImg = new Image;
+                    touxiangImg.src = touxiangURL;
+                    touxiangImg.onload = function() {
+                        context.drawImage(touxiangImg, winW * 0.35, winH * 0.08, winW * 0.315, winW * 0.312);
+                        context.font = "small-caps bold 18px STXinwei";
+                        //设置用户文本填充颜色
+                        context.fillStyle = "red";
+                        //从坐标点(50,50)开始绘制文字
+                        context.fillText(username,158,185);
+                        imgPath = mycanvas.toDataURL("image/jpeg");
+                        var id = num + 1;
+                        document.body.querySelector(".poster_bg" + id).src = imgPath;
+                        drawing(num + 1);
+
+                    }
+                } else {
+                    document.getElementsByTagName('canvas')[0].style.display = "none";
+                }
+            }
+            drawing(0);
+        }
+    }
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        var min_size = Math.min(w, h);
+        if(r > min_size / 2) r = min_size / 2;
+        // 开始绘制
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + w, y, x + w, y + h, r);
+        this.arcTo(x + w, y + h, x, y + h, r);
+        this.arcTo(x, y + h, x, y, r);
+        this.arcTo(x, y, x + w, y, r);
+        this.closePath();
+        return this;
+    }
+    draw();
+})
+
+
+</script>
+</body>
+
+</html>
