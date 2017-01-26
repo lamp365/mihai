@@ -15,7 +15,7 @@
     <title>邀请码</title>
     <style>
         body{
-            background-color:red ;
+            background-color:#fff;
             margin: 0;
             padding: 0;
         }
@@ -27,23 +27,26 @@
 
 <body >
 <div class="poster" >
-    <img src="images/shareactive_bg.png" alt="" class="poster_bg1">
+    <img src="" alt="" class="poster_bg1">
 </div>
 <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
-
 <script>
-    var imgUrl = 'logo.png';
+var imgUrl = 'logo.png';
 
 //获取二维码
 $(function(){
     data = {
         "image": [{
             img: "images/shareactive_bg.png",
-            x: 0.345,
-            y: 0.455
+            x: 0.28,
+            y: 0.42
         }]
     };
+    <!--@php if(empty($erweimaUrl)){ @-->
     var erweimaURL = 'images/weixin.jpg';
+    <!--@php }else{  @-->
+    var erweimaURL = "<!--@php echo $erweimaUrl; @-->";
+    <!--@php }  @-->
     <!--@php if(empty($weixin['avatar'])) {  @-->
     var touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
     <!--@php }else{  @-->
@@ -95,11 +98,7 @@ $(function(){
                     var erweimaImg = new Image;
                     erweimaImg.src = erweimaURL;
                     erweimaImg.onload = function() {
-                        context.drawImage(erweimaImg, winW * x, winH * y, winW * 0.315, winW * 0.312);
-                        imgPath = mycanvas.toDataURL("image/jpeg");
-                        var id = num + 1;
-                        document.body.querySelector(".poster_bg" + id).src = imgPath;
-                        drawing(num + 1);
+                        context.drawImage(erweimaImg, winW * x, winH * y, winW * 0.45, winW * 0.45);
                     }
                     var touxiangImg = new Image;
                     touxiangImg.src = touxiangURL;
@@ -108,20 +107,15 @@ $(function(){
                         context.font = "small-caps bold 18px STXinwei";
                         //设置用户文本填充颜色
                         context.fillStyle = "red";
-                        //从坐标点(50,50)开始绘制文字
+                        //从坐标点(158,185)开始绘制文字
                         context.fillText(username,158,185);
-                        imgPath = mycanvas.toDataURL("image/jpeg");
-                        console.log(imgPath);
-                        var id = num + 1;
-                        document.body.querySelector(".poster_bg" + id).src = imgPath;
-                        drawing(num + 1);
-
                     }
                 } else {
                     document.getElementsByTagName('canvas')[0].style.display = "none";
                 }
             }
             drawing(0);
+            $(".poster img").remove();
         }
     }
     CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {

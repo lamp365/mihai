@@ -79,7 +79,7 @@
 							</li>
 							<li>
 								<span class="left-span">金额范围</span>
-								<input type="text" name="d_money" class="input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
+								<input type="text" name="d_money" class="d_money input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="h_money input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
 							</li>
 							<li>
 								<span class="left-span">差评</span>
@@ -233,11 +233,14 @@ function batchDistribute(){
 		 	bad = $(".checkbox-div .bad").prop("checked"),
 		 	refund = $(".checkbox-div .is-refund").prop("checked"),
 		 	blacklist = $(".checkbox-div .blacklist").prop("checked"),
+		 	d_money = $(".d_money").val();
+		 	h_money = $(".h_money").val();
+
 		 	url = "<?php  echo web_url('memberinto',array('op' => 'check_allot'));?>";
 		 	if( department == 0){
 		 		alert("请选择部门");
 		 	}else{
-		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist},function(data){
+		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money},function(data){
 		 			$(".batch-distribute-result").modal();
 		 			$(".check_allot_total").text(data.total);
 				},'json');
@@ -255,8 +258,10 @@ function batchDistribute(){
 		 	bad = $(".checkbox-div .bad").prop("checked"),
 		 	refund = $(".checkbox-div .is-refund").prop("checked"),
 		 	blacklist = $(".checkbox-div .blacklist").prop("checked"),
+		 	d_money = $(".d_money").val();
+		 	h_money = $(".h_money").val();
 		 	url = "<?php  echo web_url('memberinto',array('op' => 'allot_all'));?>";
-		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist},function(data){
+		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money},function(data){
 		 		alert(data.message);
 		 		location.reload(true);
 		 	},'json');

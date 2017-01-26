@@ -62,6 +62,10 @@ if ($operation == 'index') {
 	if (empty($id)) {
 		// 新增
 		mysqld_insert("shop_department_staff", array('name'=>$name, 'department'=>$depart_id['id'], 'admin'=>$admin, 'identity'=>$idt));
+		$i_id = mysqld_insertid();
+		if ($idt == '1') {
+			mysqld_update('shop_department', array('manager'=>$i_id),array('id'=>$depart_id['id']));
+		}
 	}else{
 		$have_man = mysqld_select("SELECT * FROM ".table('shop_department')." WHERE manager=".$id);
 		if (!empty($have_man['id']) AND $idt == '2') {

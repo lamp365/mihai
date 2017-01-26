@@ -1,11 +1,15 @@
 <?php
+defined('SYSTEM_IN') or exit('Access Denied');
 require_once WEB_ROOT.'/includes/lib/phpexcel/PHPExcel/IOFactory.php';
+require_once WEB_ROOT.'/includes/readcsv.class.php';
+require_once WEB_ROOT.'/includes/lib/arrayiconv.class.php';
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 
 $result = array();
 if ($operation == 'into') {
   // 批量导入
   $myxls = '';
+  set_time_limit(0);
   if ($_FILES['myxls']['error'] != 4) {
     $upload = file_upload($_FILES['myxls'], false, NULL, NULL,$type='other');
     if (is_error($upload)) {
@@ -17,77 +21,173 @@ if ($operation == 'into') {
       message('文件上传失败，请重试!',refresh(),'error');
     }
 
-    //根据不同类型分别操作
-    if($upload['extention'] == 'xlsx' || $upload['extention'] == 'xls') {
-      $reader = PHPExcel_IOFactory::createReader('Excel5'); //设置以Excel5格式(Excel97-2003工作簿)
-    }elseif($upload['extention'] == 'csv') {
-      $reader = PHPExcel_IOFactory::createReader('CSV')
-        ->setDelimiter(',')
-        ->setInputEncoding('GBK') //不设置将导致中文列内容返回boolean(false)或乱码
-        ->setEnclosure('"')
-        ->setLineEnding("\r\n")
-        ->setSheetIndex(0);
-    }else{
-      message('文件格式不正确!',refresh(),'error');
+    // //根据不同类型分别操作
+    // if($upload['extention'] == 'xlsx' || $upload['extention'] == 'xls') {
+    //   $reader = PHPExcel_IOFactory::createReader('Excel5'); //设置以Excel5格式(Excel97-2003工作簿)
+    // }elseif($upload['extention'] == 'csv') {
+    //   $reader = PHPExcel_IOFactory::createReader('CSV')
+    //     ->setDelimiter(',')
+    //     ->setInputEncoding('GBK') //不设置将导致中文列内容返回boolean(false)或乱码
+    //     ->setEnclosure('"')
+    //     ->setLineEnding("\r\n")
+    //     ->setSheetIndex(0);
+    // }else{
+    //   message('文件格式不正确!',refresh(),'error');
+    // }
+
+    // $PHPExcel = $reader->load($myxls); // 载入excel文件
+    // $sheet = $PHPExcel->getSheet(0); // 读取第一個工作表
+    // $highestRowNum = $sheet->getHighestRow(); // 取得总行数
+    // $highestColumm = $sheet->getHighestColumn(); // 取得总列数
+    // $highestColumnNum = PHPExcel_Cell::columnIndexFromString($highestColumm);
+
+    // //取得字段，这里测试表格中的第一行为数据的字段，因此先取出用来作后面数组的键名
+    // $filed = array();
+    // for($i=0; $i<$highestColumnNum;$i++){
+    //   $cellName = PHPExcel_Cell::stringFromColumnIndex($i).'1';
+    //   $cellVal = $sheet->getCell($cellName)->getValue();//取得列内容
+    //   $filed []= $cellVal;
+    // }
+
+    // //开始取出数据并存入数组
+    // $data = array();
+    // for($i=2;$i<=$highestRowNum;$i++){//ignore row 1
+    //   $row = array();
+    //   for($j=0; $j<$highestColumnNum;$j++){
+    //     $cellName = PHPExcel_Cell::stringFromColumnIndex($j).$i;
+    //     $cellVal = $sheet->getCell($cellName)->getValue();
+    //     $row[ $filed[$j] ] = $cellVal;
+    //   }
+    //   $data []= $row;
+    // }
+    $csvreader = new CsvReader($myxls);
+    $line_number = $csvreader->get_lines();
+    $arrobj = new arrayiconv();
+    $rows = ceil($line_number / 20);
+    $cf_num = 0;
+    for ( $i = 0; $i < $rows; $i++ ){
+      $arr = $csvreader->get_data(20,$i*20+1);
+      $arr = $arrobj->Conversion($arr,"GBK","utf-8");
+      if ($i == 0){
+        array_shift($arr);
+      }
+      foreach ($arr as $dv) {
+        $have_cus = mysqld_select("SELECT mobile FROM ".table('shop_customers')." WHERE mobile=".$dv[2]);
+        if (!empty($have_cus)) {
+          $cf_num+=1;
+          continue;
+        }
+        $have_mem = mysqld_select("SELECT mobile FROM ".table('member')." WHERE mobile=".$dv[2]);
+        if (!empty($have_mem)) {
+          $status = 1;
+        }else{
+          $status = 0;
+        }
+
+        // $sql_body.="('{$dv["姓名"]}','{$dv["旺旺"]}','{$dv["手机"]}','{$dv["邮箱"]}','{$dv["给过差评"]}','{$dv["退过款"]}','{$dv["营销黑名单"]}','{$dv["城市"]}','{$dv["地址"]}','".strtotime($dv["上次购买时间"])."','{$dv["购买次数"]}',{$dv["购买金额"]},'{$dv["会员等级"]}','{$dv["店铺"]}','".time()."',{$status}),";
+        // $num += 1;
+
+        // if ($num == 2) {
+        //   $sql_body = substr($sql_body,0,strlen($sql_body)-1);
+        //   mysqld_query($sql_head.$sql_body);
+        //   $sql_body = "";
+        //   $num = 0;
+        // }
+        
+        // $xdata = array(
+        //   'username' => $dv["姓名"],
+        //   'wanwan' => $dv["旺旺"],
+        //   'mobile' => $dv["手机"],
+        //   'email' => $dv["邮箱"],
+        //   'review' => $dv["给过差评"],
+        //   'refund' => $dv["退过款"],
+        //   'blacklist' => $dv["营销黑名单"],
+        //   'city' => $dv["城市"],
+        //   'address' => $dv["地址"],
+        //   'lasttime' => strtotime($dv["上次购买时间"]),
+        //   'buytimes' => $dv["购买次数"],
+        //   'price' => $dv["购买金额"],
+        //   'level' => $dv["会员等级"],
+        //   'shop' => $dv["店铺"],
+        //   'updatetime' => time(),
+        //   'status' => $status,
+        //   );
+        if (!empty($dv)) {
+          $xdata = array(
+            'username' => $dv[1],
+            'wanwan' => $dv[0],
+            'mobile' => $dv[2],
+            'email' => $dv[3],
+            'review' => $dv[4],
+            'refund' => $dv[5],
+            'blacklist' => $dv[6],
+            'city' => $dv[7],
+            'address' => $dv[8],
+            'lasttime' => strtotime($dv[9]),
+            'buytimes' => $dv[10],
+            'price' => $dv[11],
+            'level' => $dv[12],
+            'shop' => $dv[13],
+            'updatetime' => time(),
+            'status' => $status,
+            );
+          mysqld_insert ( 'shop_customers', $xdata );
+        }
+      }
     }
 
-    $PHPExcel = $reader->load($myxls); // 载入excel文件
-    $sheet = $PHPExcel->getSheet(0); // 读取第一個工作表
-    $highestRowNum = $sheet->getHighestRow(); // 取得总行数
-    $highestColumm = $sheet->getHighestColumn(); // 取得总列数
-    $highestColumnNum = PHPExcel_Cell::columnIndexFromString($highestColumm);
+    // $sql_head = "INSERT INTO ".table('shop_customers')."(username,wanwan,mobile,email,review,refund,blacklist,city,address,lasttime,buytimes,price,level,shop,updatetime,status) VALUES ";
+    // $sql_body = "";
+    // $num = 0;
+    // foreach ($data as $dv) {
+    //   $have_cus = mysqld_select("SELECT mobile FROM ".table('shop_customers')." WHERE mobile=".$dv["手机"]);
+    //   if (!empty($have_cus)) {
+    //     continue;
+    //   }
+    //   $have_mem = mysqld_select("SELECT mobile FROM ".table('member')." WHERE mobile=".$dv["手机"]);
+    //   if (!empty($have_mem)) {
+    //     $status = 1;
+    //   }else{
+    //     $status = 0;
+    //   }
 
-    //取得字段，这里测试表格中的第一行为数据的字段，因此先取出用来作后面数组的键名
-    $filed = array();
-    for($i=0; $i<$highestColumnNum;$i++){
-      $cellName = PHPExcel_Cell::stringFromColumnIndex($i).'1';
-      $cellVal = $sheet->getCell($cellName)->getValue();//取得列内容
-      $filed []= $cellVal;
-    }
+    //   // $sql_body.="('{$dv["姓名"]}','{$dv["旺旺"]}','{$dv["手机"]}','{$dv["邮箱"]}','{$dv["给过差评"]}','{$dv["退过款"]}','{$dv["营销黑名单"]}','{$dv["城市"]}','{$dv["地址"]}','".strtotime($dv["上次购买时间"])."','{$dv["购买次数"]}',{$dv["购买金额"]},'{$dv["会员等级"]}','{$dv["店铺"]}','".time()."',{$status}),";
+    //   // $num += 1;
 
-    //开始取出数据并存入数组
-    $data = array();
-    for($i=2;$i<=$highestRowNum;$i++){//ignore row 1
-      $row = array();
-      for($j=0; $j<$highestColumnNum;$j++){
-        $cellName = PHPExcel_Cell::stringFromColumnIndex($j).$i;
-        $cellVal = $sheet->getCell($cellName)->getValue();
-        $row[ $filed[$j] ] = $cellVal;
-      }
-      $data []= $row;
-    }
-    foreach ($data as $dv) {
-      $have_cus = mysqld_select("SELECT mobile FROM ".table('shop_customers')." WHERE mobile=".$dv["手机"]);
-      if (!empty($have_cus)) {
-        continue;
-      }
-      $have_mem = mysqld_select("SELECT mobile FROM ".table('member')." WHERE mobile=".$dv["手机"]);
-      if (!empty($have_mem)) {
-        $status = 1;
-      }else{
-        $status = 0;
-      }
-      $xdata = array(
-        'username' => $dv["姓名"],
-        'wanwan' => $dv["旺旺"],
-        'mobile' => $dv["手机"],
-        'email' => $dv["邮箱"],
-        'review' => $dv["给过差评"],
-        'refund' => $dv["退过款"],
-        'blacklist' => $dv["营销黑名单"],
-        'city' => $dv["城市"],
-        'address' => $dv["地址"],
-        'lasttime' => strtotime($dv["上次购买时间"]),
-        'buytimes' => $dv["购买次数"],
-        'price' => $dv["购买金额"],
-        'level' => $dv["会员等级"],
-        'shop' => $dv["店铺"],
-        'updatetime' => time(),
-        'status' => $status,
-        );
-      $re = mysqld_insert ( 'shop_customers', $xdata );
-    }
-    message('导入完成!',refresh(),'success');      
+    //   // if ($num == 2) {
+    //   //   $sql_body = substr($sql_body,0,strlen($sql_body)-1);
+    //   //   mysqld_query($sql_head.$sql_body);
+    //   //   $sql_body = "";
+    //   //   $num = 0;
+    //   // }
+      
+    //   $xdata = array(
+    //     'username' => $dv["姓名"],
+    //     'wanwan' => $dv["旺旺"],
+    //     'mobile' => $dv["手机"],
+    //     'email' => $dv["邮箱"],
+    //     'review' => $dv["给过差评"],
+    //     'refund' => $dv["退过款"],
+    //     'blacklist' => $dv["营销黑名单"],
+    //     'city' => $dv["城市"],
+    //     'address' => $dv["地址"],
+    //     'lasttime' => strtotime($dv["上次购买时间"]),
+    //     'buytimes' => $dv["购买次数"],
+    //     'price' => $dv["购买金额"],
+    //     'level' => $dv["会员等级"],
+    //     'shop' => $dv["店铺"],
+    //     'updatetime' => time(),
+    //     'status' => $status,
+    //     );
+    //   mysqld_insert ( 'shop_customers', $xdata );
+    // }
+    // if ($sql_body != "") {
+    //   $sql_body = substr($sql_body,0,strlen($sql_body)-1);
+    //   mysqld_query($sql_head.$sql_body);
+    // }
+    // $re = mysqld_insert ( 'shop_customers', $xdata );
+    message('导入完成!',refresh(),'success'); 
+    // dump($cf_num);
   }else{
     message('请上传退款表单!',refresh(),'error');
   }
@@ -103,6 +203,9 @@ if ($operation == 'into') {
   $review = $_GP['bad'];
   $refund = $_GP['refund'];
   $blacklist = $_GP['blacklist'];
+  $d_money = $_GP['d_money'];
+  $h_money = $_GP['h_money'];
+
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
   }
@@ -125,6 +228,13 @@ if ($operation == 'into') {
   if (!empty($blacklist) AND $blacklist!='false') {
     $where.=" AND blacklist='是'";
   }
+  if (!empty($d_money)) {
+    $where.=" AND price>".$d_money;
+  }
+  if (!empty($h_money)) {
+    $where.=" AND price<".$h_money;
+  }
+
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE id>0".$where." ORDER BY price DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
@@ -182,6 +292,8 @@ if ($operation == 'into') {
   $review = $_GP['bad'];
   $refund = $_GP['refund'];
   $blacklist = $_GP['blacklist'];
+  $d_money = $_GP['d_money'];
+  $h_money = $_GP['h_money'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -201,6 +313,13 @@ if ($operation == 'into') {
   if (!empty($blacklist) AND $blacklist!='false') {
     $where.=" AND blacklist='是'";
   }
+  if (!empty($d_money)) {
+    $where.=" AND price>".$d_money;
+  }
+  if (!empty($h_money)) {
+    $where.=" AND price<".$h_money;
+  }
+
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE salesman=0".$where);
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
@@ -240,6 +359,8 @@ if ($operation == 'into') {
   $review = $_GP['bad'];
   $refund = $_GP['refund'];
   $blacklist = $_GP['blacklist'];
+  $d_money = $_GP['d_money'];
+  $h_money = $_GP['h_money'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -258,6 +379,12 @@ if ($operation == 'into') {
   }
   if (!empty($blacklist) AND $blacklist!='false') {
     $where.=" AND blacklist='是'";
+  }
+  if (!empty($d_money)) {
+    $where.=" AND price>".$d_money;
+  }
+  if (!empty($h_money)) {
+    $where.=" AND price<".$h_money;
   }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE salesman=0".$where);

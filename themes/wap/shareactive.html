@@ -19,31 +19,14 @@
 </head>
 <body>
 <div class="activity clearfix">
-	<!--@php if($isSelf){   @-->
-	<div class="activity-content">快邀请您的好友参与XXXXXXXX活动吧</div>
-	<!--@php }else{   @-->
-	<div class="activity-content">您的好友:<!--@php echo $sharer_weixin['nickname'] @-->邀请您参与XXXXXXXX活动</div>
-	<!--@php }   @-->
+
+	<div class="activity-content">快获取邀请码邀请您的好友参与XXXXXXXX活动吧</div>
+
 	<a href="<!--@php echo mobile_url('shareActive',array('op'=>'list')); @-->">
 		<div class="activity-play-now">
 			立即参与
 		</div>
 	</a>
-	<!--@php if($isSelf){  @-->
-		<!--@php if($isOpenByWeixin){  @-->
-		<a href="javascript:;" class="weixin_btn">
-			<div class="activity-play-now" style="margin-top: 15px;">
-				请用微信分享
-			</div>
-		</a>
-		<!--@php }else{  @-->
-		<a href="javascript:;" class="yaoqing">
-			<div class="activity-play-now" style="margin-top: 15px;">
-				立即邀请
-			</div>
-		</a>
-		<!--@php } @-->
-	<!--@php } @-->
 
 
 	<!--@php if(!empty($shareMember)){ @-->
@@ -93,14 +76,10 @@
 	</div>
 </div>
 <div class="footer_nav">
-	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=list" class="nav_index">主会场</a>
-	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&op=activity" class="nav_activity">活动</a>
-	<!--@php if($openid){ @-->
-	<a href="index.php?mod=mobile&name=shopwap&do=shareActive&accesskey=<!--@php echo encodeShareAccessKey($openid);@-->" class="nav_share">分享</a>
-	<!--@php }else{  @-->
-	<a href="index.php?mod=mobile&name=shopwap&do=shareActive" class="nav_share">分享</a>
-	<!--@php } @-->
-	<a href="index.php?mod=mobile&name=shopwap&do=fansindex" class="nav_me">我的</a>
+	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=list" class="nav_index">主会场</a>
+	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=activity" class="nav_activity">活动</a>
+	<a href="index.php?mod=mobile&name=shopwap&do=shareactive" class="nav_share">我的邀请</a>
+	<a href="index.php?mod=mobile&name=shopwap&do=fansindex" class="nav_me">个人中心</a>
 </div>
 <script type="text/javascript">
 $(function(){
@@ -110,7 +89,7 @@ $(function(){
 			$(".ajax_next_page").show();
 			index = 0; //关闭开关
 			var page = $("#page").val(); //第一次传的是2
-			var url  = "<!--@php echo mobile_url('shareActive',array('op'=>'ajax_moreMember'));@-->";
+			var url  = "<!--@php echo mobile_url('shareactive',array('op'=>'ajax_moreMember'));@-->";
 			$.post(url, {'page' : page}, function(s){
 				if(s.errno != 200){
 					//如果没有数据
@@ -138,15 +117,6 @@ $(function(){
 		$(".user-list").append(li);
 	}
 
-
-	$(".weixin_btn").on("click",function(){
-		$(".share-modal").modal();
-		$(".share-modal .modal-body").text("请点击右上角分享按钮分享本页面");
-	});
-	$(".yaoqing").on("click",function(){
-		$(".share-modal").modal();
-		$(".share-modal .modal-body").text("请使用浏览器分享功能分享本页面");
-	});
 })
 </script>
 </body>

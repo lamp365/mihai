@@ -1,12 +1,13 @@
 <?php
-require_once WEB_ROOT.'/includes/lib/phpexcel/PHPExcel/IOFactory.php';
+defined('SYSTEM_IN') or exit('Access Denied');
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 $client_status = array('0' => '未入驻', '1' => '已入驻');
 $contact_status = array('0' => '未联系', '1' => '已联系');
 // 根据当前后台账号进行展示
 $admin = $_CMS['account']['username'];
-// $admin = '邓绍杰';
+// $admin = 'meigong';
 $n_user = mysqld_select("SELECT * FROM ".table('shop_department_staff')." WHERE admin='".$admin."'");
+
 if ($operation == 'display') {
 	$pindex = max(1, intval($_GP['page']));
   	$psize = 30;
@@ -32,6 +33,9 @@ if ($operation == 'display') {
 	$review = $_GP['bad'];
 	$refund = $_GP['refund'];
 	$blacklist = $_GP['blacklist'];
+	$d_money = $_GP['d_money'];
+  	$h_money = $_GP['h_money'];
+
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
 	}
@@ -53,6 +57,12 @@ if ($operation == 'display') {
 	if (!empty($staff)) {
 		$man = mysqld_select("SELECT id FROM ".table('shop_department_staff')." WHERE name='".$staff."'");
 		$where.=" AND a.salesman=".$man['id'];
+	}
+	if (!empty($d_money)) {
+	    $where.=" AND price>".$d_money;
+	}
+  	if (!empty($h_money)) {
+	    $where.=" AND price<".$h_money;
 	}
 
 	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
@@ -110,6 +120,8 @@ if ($operation == 'display') {
   $review = $_GP['bad'];
   $refund = $_GP['refund'];
   $blacklist = $_GP['blacklist'];
+  $d_money = $_GP['d_money'];
+  $h_money = $_GP['h_money'];
 
   if (!empty($city)) {
     $where.=" AND a.city='".$city."'";
@@ -129,6 +141,13 @@ if ($operation == 'display') {
   if (!empty($blacklist) AND $blacklist!='false') {
     $where.=" AND a.blacklist='是'";
   }
+  if (!empty($d_money)) {
+    $where.=" AND price>".$d_money;
+  }
+  if (!empty($h_money)) {
+    $where.=" AND price<".$h_money;
+  }
+
   $al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC");
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
@@ -162,6 +181,8 @@ if ($operation == 'display') {
 	$review = $_GP['bad'];
 	$refund = $_GP['refund'];
 	$blacklist = $_GP['blacklist'];
+	$d_money = $_GP['d_money'];
+  	$h_money = $_GP['h_money'];
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -181,6 +202,13 @@ if ($operation == 'display') {
 	if (!empty($blacklist) AND $blacklist!='false') {
 		$where.=" AND a.blacklist='是'";
 	}
+	if (!empty($d_money)) {
+		$where.=" AND price>".$d_money;
+	}
+	if (!empty($h_money)) {
+		$where.=" AND price<".$h_money;
+	}
+
 	$al_client = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC");
 	if (empty($al_client)) {
 		$result['message'] = '客户查询失败!';
