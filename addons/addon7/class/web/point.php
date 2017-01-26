@@ -22,7 +22,6 @@
                         if ( $value['amount'] > 0){
                              $str2 = $value['amount'];
 							 $result =  fmod($stext,$str2);
-							ppd($result,$stext,$str2);
 							 $r_s = $result + 1;
 							 // 中奖号码
 							 $open = $result + 1000001;
@@ -53,7 +52,6 @@
 			  }
 		   }
 		   $points = mysqld_selectall("SELECT id,date,confirm_time FROM " .table('addon7_award')." WHERE state = 1");
-
 		   	$timer = array();
 				foreach ($points as $value ){
                     $c = get_open_time($value['confirm_time'], 'Y-m-d');

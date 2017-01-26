@@ -11,6 +11,7 @@
 	$op = $_GP['op'];
 	// 预留APP账户验证接口
 	$member = get_member_account(true, true);
+	// $member['openid'] = '2015111911924';
 	if ($member == 3) {
 		$result['message'] 	= "该账号已在别的设备上登录！";
 		$result['code'] 	= 3;
@@ -238,7 +239,7 @@
 				// $gb_ary = substr($gb_ary,0,strlen($gb_ary)-1).')';
 			}
 			// 查找满减的优惠卷
-			$other_bouns = mysqld_selectall("SELECT type_id, type_name, type_money, send_type, send_start_date, send_end_date, use_start_date, use_end_date, min_goods_amount FROM ".table('bonus_type')." WHERE deleted=0 AND send_type=2 AND b.app_show=1 AND send_start_date<".time()." AND send_end_date>".time()." ORDER BY type_money ASC");
+			$other_bouns = mysqld_selectall("SELECT type_id, type_name, type_money, send_type, send_start_date, send_end_date, use_start_date, use_end_date, min_goods_amount FROM ".table('bonus_type')." WHERE deleted=0 AND send_type=2 AND app_show=1 AND send_start_date<".time()." AND send_end_date>".time()." ORDER BY type_money ASC");
 			if (!empty($other_bouns)) {
 				foreach ($other_bouns as $obv) {
 					$list['bonus'][] = $obv;
@@ -256,6 +257,17 @@
 					}
 				}
 				unset($lbv);
+
+				// 去除不可领取的优惠券
+				foreach ($list['bonus'] as $lbsk => $lbsv) {
+					$have_bouns = mysqld_select("SELECT COUNT(*) as num FROM ".table('bonus_user')." WHERE openid='".$member['openid']."' AND bonus_type_id=".$lbsv['type_id']);
+					$bouns = mysqld_select("SELECT * FROM ".table('bonus_type')." WHERE type_id=".$lbsv['type_id']);
+					if (($have_bouns['num'] >= $bouns['send_max']) AND $bouns['send_max'] != '0') {
+						// 超过领取次数的情况
+						unset($list['bonus'][$lbsk]);
+					}
+				}
+				$list['bonus'] = array_merge($list['bonus']);
 			}
 
 			if ($good['status'] == 0) {
