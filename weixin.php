@@ -1,4 +1,5 @@
 <?php
+
 define('SYSTEM_ACT', 'mobile');
 $mname='weixin';
 $do='process';
