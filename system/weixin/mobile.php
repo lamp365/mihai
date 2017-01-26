@@ -54,39 +54,37 @@ class weixinAddons extends BjSystemModule
                     ));
                 }
             }
+            //已经关注过扫码是 scan   未关注的是 subscribe
             if ($message['type'] == 'subscribe') {
+                //$eventkey  带场景值  用于活动中绑定用户关系  此次活动中 eventkey 就是share_active中的id
+                if(!empty($message['eventkey'])) {
+                    $eventkey = end(explode("_", $message['eventkey']));
+                }else{
+                    $eventkey = '';
+                }
                 $reply = mysqld_select('SELECT * FROM ' . table('weixin_rule') . "   WHERE  keywords = :keywords", array(
                     ':keywords' => subscribe_key
                 ));
+                if(!empty($reply)){
+                    return $this->respText($reply['description'],$message);
+                }
+                //该活动结束后，可以去掉 把活动推荐人的openid缓存起来
+                setShareActiveCache($eventkey,$message['from']);
+                //添加邀请的活动成员
+                addShareActiveRecordMember($eventkey,$message['from']);
             }
-          
-            if ($message["type"] == "SCAN" || $message["type"] == "subscribe") {
-				if ( ! empty($message['eventkey']) ){		
-				$users = mysqld_select('SELECT * FROM' . table('weixin_mess'). " WHERE openid = :openid", array(':openid' => $message['fromusername'] ));
-                $eventkey = end(explode("_",$message['eventkey']));
-				if ( !$users ){	   
-					   $datas = array(
-							'openid'  => $message['fromusername'] ,
-							'mess_id'=> $eventkey
-					  );
-					  mysqld_insert('weixin_mess', $datas);  
-				}else{
-                      $datas = array(
-							'mess_id'=> $eventkey
-					  );
-					   mysqld_update('weixin_mess', $datas, array( 'openid' => $message['fromusername'] ) );  
-				}
-			}
-			if ( !empty($eventkey) ){
-			             $reply = mysqld_select('SELECT * FROM ' . table('shop_mess') . "   WHERE  id = :id", array(
-                                ':id' =>$eventkey
-                           ));
-						 $mess_name = $reply['title'];
-                         $msg = '欢迎光临'.$mess_name.'，食堂提供在线生鲜商品服务，欢迎选购。[愉快][愉快][愉快]';
-				}else{
-                         $msg = '欢迎光临【爱上食堂】，食堂提供在线生鲜商品服务，欢迎选购。[愉快][愉快][愉快]'; 
-				}
-                return $this->respText($msg,$message);
+            if ($message["type"] == "SCAN") {
+				if ( ! empty($message['eventkey']) ){
+                    //$eventkey  带场景值  用于活动中绑定用户关系  此次活动中 eventkey 就是share_active中的id
+                    $eventkey = $message['eventkey'];
+                }else{
+                    $eventkey = '';
+                }
+
+                //该活动结束后，可以去掉 把活动推荐人的openid缓存起来
+                setShareActiveCache($eventkey,$message['from']);
+                //添加邀请的活动成员
+                addShareActiveRecordMember($eventkey,$message['from']);
             }
             
             if (empty($reply['id'])) {
@@ -107,7 +105,7 @@ class weixinAddons extends BjSystemModule
                 return $this->respText($reply['content'], $message);
             }
             if ($reply['ruletype'] == 2) {
-                
+
                 $news = array();
                 $news = array(
                     'title' => $reply['title'],
@@ -117,7 +115,7 @@ class weixinAddons extends BjSystemModule
                 );
                 return $this->respNews($news, $message);
             }
-                         
+
             exit('');
         }
     }

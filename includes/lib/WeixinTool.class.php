@@ -79,4 +79,5 @@ class WeixinTool
         $erweima   = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$ticket}";
         return $erweima;
     }
+
 }

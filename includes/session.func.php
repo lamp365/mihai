@@ -218,10 +218,10 @@ function get_session_account($useAccount = true, $mess_id = 0)
  */
 function get_weixin_session_account($key = ''){
     $weixin_info = '';
-    if(!empty($_SESSION['MOBILE_SESSION_ACCOUNT'])){
-        $weixin_info = $_SESSION['MOBILE_SESSION_ACCOUNT'];
+    if(!empty($_SESSION[MOBILE_SESSION_ACCOUNT])){
+        $weixin_info = $_SESSION[MOBILE_SESSION_ACCOUNT];
         if(!empty($key) && array_key_exists($key,$weixin_info)){
-            $weixin_info = $_SESSION['MOBILE_SESSION_ACCOUNT'][$key];
+            $weixin_info = $_SESSION[MOBILE_SESSION_ACCOUNT][$key];
         }
     }
     return $weixin_info;

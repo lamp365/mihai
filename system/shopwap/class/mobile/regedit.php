@@ -88,6 +88,10 @@
 			}
 			//推荐人openid 用于PC分享 注册后每次都能得到佣金，相当于app的开店
 			$recommend_openid = getOpenshopSellerOpenid();
+			if(empty($recommend_openid)){
+				//从活动分享中获取推荐人的openid
+				$recommend_openid = getShareActiveCache();
+			}
 			$data = array(
 					'mobile' => $_GP['mobile'],
                     'pwd'    => $pwd,
@@ -112,10 +116,11 @@
 
 				$loginid=save_member_login('',$openid);
 
-				//注册成功后，查看是否有活动分享过来的用户，有的话，给分享者参加活动次数加1
+				integration_session_account($loginid,$oldsessionid, $unionid);
+
+			    //注册成功后，查看是否有活动分享过来的用户，有的话，给分享者参加活动次数加1
 			    shareActive_addToalNum();
 
-				integration_session_account($loginid,$oldsessionid, $unionid);
 			    message('注册成功！', to_member_loginfromurl(), 'success');
 		}
 			$qqlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='qq'");

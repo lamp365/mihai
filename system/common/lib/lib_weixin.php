@@ -170,6 +170,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
 
                 $gender = $info["gender"];
                 $nickname = $info["nickname"];
+
                 if (empty($fans) || empty($fans['weixin_openid']) || empty($fans["nickname"])) {
                     if ($follow == 0 && $state == 0) {
                         get_weixin_openid(1);
@@ -262,18 +263,17 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         ':weixin_openid' => $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']
                     ));
                     
-                if (empty($weixinfans['weixin_openid'])) {
-                    if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                        if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
-                            unset($_SESSION[MOBILE_WEIXIN_OPENID]);
-                            unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
+                    if (empty($weixinfans['weixin_openid'])) {
+                        if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                            if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
+                                unset($_SESSION[MOBILE_WEIXIN_OPENID]);
+                                unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
+                            }
                         }
                     }
                 }
-            }
                
-                if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                    
+                if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || !empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
                     if ($state == 1 || (isset($_GP['code']) && isset($_GP['state']) && $_GP['state'] == 1)) {
                         $scope = "snsapi_userinfo";
                         
@@ -318,7 +318,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 }
             
         }
-      
+
         $weixin_openid = get_weixin_openid();       
         if (! empty($weixin_openid)) {
             member_login_weixin($weixin_openid);          
