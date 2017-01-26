@@ -4,7 +4,7 @@
  * 用户每次近来活动主页优先创建 活动主表的记录
  */
 function checkIsAddShareActive($openid){
-    $info = 0;
+    $info = array();
     if(!empty($openid)){
         //今天的凌晨时间
         $curt_time = strtotime(date("Y-m-d"),time());
@@ -21,10 +21,20 @@ function checkIsAddShareActive($openid){
               'zero_time'   => $curt_time
             );
             mysqld_insert('share_active',$info);
-            $info['id'] = mysqld_insertid();
             $erweima    = getShareActiveWeixinErweima($info['id']);
+            $info['id']      = mysqld_insertid();
+            $info['erweima'] = $erweima;
+            mysqld_update("share_active",array('erweima'=>$erweima),array('id'=>$info['id']));
         }else{
             $id   = $info['id'];
+            //如果二维码已经过6天了，再次获取
+            $diff_time = time()-$info['createtime'];
+            if($diff_time > 3600*24*6){
+                $erweima         = getShareActiveWeixinErweima($info['id']);
+                $info['erweima'] = $erweima;
+                mysqld_update("share_active",array('erweima'=>$erweima),array('id'=>$id));
+            }
+            //如果过了第二天，则初始化活动参与次数
             if($curt_time>$info['zero_time']){
                 mysqld_update('share_active',array(
                     'total_num'  => $rank_level*2,
@@ -53,36 +63,40 @@ function getOpenidFromWeixin($openid){
     return $openid;
 }
 
+/**
+ * @content 获取二维码，用于扫描关注绑定用户信息
+ * @param $act_id  share_active中的活动id
+ * @return string
+ */
 function getShareActiveWeixinErweima($act_id){
-    $weixin = new WeixinTool();
+    $weixin  = new WeixinTool();
+    $erweima = $weixin->get_weixin_erweima($act_id);
+    return $erweima;
 }
 /**
  * @content 得到今天已经分享出去的一些用户
+ * @parame array $share_active  活动主表的记录
  * @param int $num      控制取出的个数 为空时，则全部取
  * @param bool $today   为true则默认取今天的，不为true则不限制时间
  * @return array
  */
-function getHasShareMember($num=10,$today=true){
-    $accesskey    = getShareAccesskeyCookie();
-    $share_openid = decodeShareAccessKey($accesskey);
+function getHasShareMember($share_active,$num=10,$today=true){
     $member = array();
-    if($share_openid){
-        $share = mysqld_select("select id from ".table('share_active')." where openid='{$share_openid}'");
+    if(!empty($share_active)){
         $limit = '';
         $where = '';
-        if(!empty($share)){
-            if($today){
-                //获取当天凌晨年月日的时间戳
-                $time  = strtotime(date('Y-m-d'),time());
-                $where = " and s.createtime = {$time}";
-            }
-            if($num){
-                $limit = "limit {$num}";
-            }
-            $sql     = "select s.visted_openid,wx.* from ".table('share_active_record')." as s left join ".table('weixin_wxfans')." as wx ";
-            $sql    .= " on s.visted_openid=wx.openid where s.active_id={$share['id']} {$where}  order by s.id desc {$limit}";
-            $member  = mysqld_selectall($sql);
+        if($today){
+            //获取当天凌晨年月日的时间戳
+            $time  = strtotime(date('Y-m-d'),time());
+            $where = " and s.createtime = {$time}";
         }
+        if($num){
+            $limit = "limit {$num}";
+        }
+        $sql     = "select s.visted_openid,wx.* from ".table('share_active_record')." as s left join ".table('weixin_wxfans')." as wx ";
+        $sql    .= " on s.visted_openid=wx.openid where s.active_id={$share_active['id']} {$where}  order by s.id desc {$limit}";
+        $member  = mysqld_selectall($sql);
+
     }
     return $member;
 }
@@ -92,7 +106,7 @@ function getHasShareMember($num=10,$today=true){
  * @param $openid  当前用户
  * @return bool
  */
-function checkAccessKeyIsSelf($openid){
+/*function checkAccessKeyIsSelf($openid){
     $accesskey     = getShareAccesskeyCookie();
     $decode_openid = decodeShareAccessKey($accesskey);
     if($decode_openid){
@@ -107,14 +121,14 @@ function checkAccessKeyIsSelf($openid){
         //解出来没值，说明，上次分享的用户没有登录
         return false;
     }
-}
+}*/
 
 /**
  * @content   获取活动分享者的微信信息
  * @param string $openid  可以不给，不给的话，默认解密accesskey后得到的openid直接去查询微信信息
  * @return array|bool|mixed
  */
-function getSharerOfWeixin($openid=''){
+/*function getSharerOfWeixin($openid=''){
     $accesskey     = getShareAccesskeyCookie();
     $decode_openid = decodeShareAccessKey($accesskey);
     if($decode_openid){
@@ -136,19 +150,19 @@ function getSharerOfWeixin($openid=''){
         $data = array();
     }
     return $data;
-}
+}*/
 
-function setShareAccesskeyCookie($accesskey){
+/*function setShareAccesskeyCookie($accesskey){
     $cookie      = new LtCookie();
     $cookie->setCookie('shareAccesskey',$accesskey,time()+3600*2);
 
-}
+}*/
 
 /**
  * @content 从cookie中获取分享者的accesskey
  * @return bool|string
  */
-function getShareAccesskeyCookie(){
+/*function getShareAccesskeyCookie(){
     $cookie        = new LtCookie();
     $accesskey     = $cookie->getCookie('shareAccesskey');
     return $accesskey;
@@ -156,7 +170,7 @@ function getShareAccesskeyCookie(){
 function cleanShareAccesskeyCookie(){
     $cookie      = new LtCookie();
     $cookie->delCookie('shareAccesskey');
-}
+}*/
 
 /**
  * @content 分享活动记录表  添加当天的成员
@@ -196,7 +210,7 @@ function shareActive_addToalNum(){
     }
 }
 
-function encodeShareAccessKey($openid){
+/*function encodeShareAccessKey($openid){
     $openid.="@@@share";
     return DESService::instance()->encode($openid);
 }
@@ -213,8 +227,8 @@ function decodeShareAccessKey($accesskey){
         $openid = $codeArr['0'];
         return $openid;
     }
-}
-
+}*/
+/*
 function isReloadShareActivePage($openid){
     $accesskey = getShareAccesskeyCookie();
     if(empty($accesskey)){
@@ -238,5 +252,5 @@ function isReloadShareActivePage($openid){
             cleanShareAccesskeyCookie();
         }
     }
-}
+}*/
 

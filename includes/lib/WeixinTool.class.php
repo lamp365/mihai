@@ -43,6 +43,12 @@ class WeixinTool
         }
     }
 
+    /**
+     * 生成带参数的二维码 带参数在关注的时候用来绑定用户关系
+     * @param $parame
+     * @param bool $isTemp  临时二维码寸6天  永久二维码的话，一个公众号只能10万张
+     * @return string    返回带参数的二维码用于关注，拿到地址后，在自己去用js或者php生成二维码
+     */
     public function get_weixin_erweima($parame,$isTemp=true){
         $weixin_access_token = get_weixin_token();
         $url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={$weixin_access_token}";
@@ -69,6 +75,8 @@ class WeixinTool
         $post_data = json_encode($post_data);
         $result    = http_post($url,$post_data);
         $result    = json_decode($result, true);
-        return urldecode($result['url']);
+        $ticket    = $result['ticket'];
+        $erweima   = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$ticket}";
+        return $erweima;
     }
 }

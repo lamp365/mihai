@@ -4,22 +4,15 @@
     if($op == 'display'){
         $openid = getOpenidFromWeixin($openid);
         //这里openid还可能是空，因为有些微信用户不一定绑定过用户信息
-        //是否需要重新载入页面 带上用户openid信息用于分享
-        isReloadShareActivePage($openid);
 
         $isOpenByWeixin = false;
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
             $isOpenByWeixin = true;
         }
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
-        checkIsAddShareActive($openid);
+        $share_info  = checkIsAddShareActive($openid);
         //获取今天已经分享给谁了
-        $shareMember = getHasShareMember();
-
-        //检查accesskey是否是自己的
-        $isSelf        = checkAccessKeyIsSelf($openid);
-        //获取分享者微信信息
-        $sharer_weixin = getSharerOfWeixin($openid);
+        $shareMember = getHasShareMember($share_info);
 
         //记住当前地址
         tosaveloginfrom();
@@ -58,24 +51,15 @@
             }
         }
 
-
-        //获取分享者openid，
-        $accesskey     = getShareAccesskeyCookie();
-        $share_openid  = decodeShareAccessKey($accesskey);
-        //再次确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
-        $shareActiveId = checkIsAddShareActive($share_openid);
-        //检查accesskey是否是自己的   z这里上面已经强制需要登录，所以openid是存在的
-        $isSelf        = checkAccessKeyIsSelf($openid);
-        if(!$isSelf){
-            addShareActiveRecordMember($shareActiveId,$openid);
-        }
         include themePage('shareactive_list');
     }else if($op == 'activity'){
 
         include themePage('shareactive_activity');
     }else if($op == 'ajax_moreMember'){
+        $openid       = getOpenidFromWeixin($openid);
+        $info         = checkIsAddShareActive($openid);
         //获取所有
-        $share_member = getHasShareMember();
+        $share_member = getHasShareMember($info,false);
         //因为第一次加载的时候是10个头像，故这里去除前面10个
         $share_member = array_slice($share_member, 10);
         if(empty($share_member)){
@@ -84,12 +68,13 @@
             die(showAjaxMess(200,$share_member));
         }
     }else if($op == 'yaoqingma'){
+        header('Access-Control-Allow-Origin:*');
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
         $weixin_openid = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
-        if(!empty($unicode)){
+        if(empty($unicode)){
             message('活动暂时关闭！','index.php','success');
         }
-        $unicode = 'olMgBwFlMMm46w90gzTT0ao3BHCY';
+//        $unicode = 'olMgBwFlMMm46w90gzTT0ao3BHCY';
         $weixin  = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$unicode}'");
         if(empty($weixin['openid'])){
             //记住当前地址
@@ -101,7 +86,7 @@
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
         $info = checkIsAddShareActive($weixin['openid']);
         if(empty($info)){
-            $erweimaUrl = "images/weixin.jpg";
+            $erweimaUrl = "";
         }else{
             $erweimaUrl = $info['erweima'];
         }
