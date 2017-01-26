@@ -4,7 +4,7 @@
  * 用户每次近来活动主页优先创建 活动主表的记录
  */
 function checkIsAddShareActive($openid){
-    $id = 0;
+    $info = 0;
     if(!empty($openid)){
         //今天的凌晨时间
         $curt_time = strtotime(date("Y-m-d"),time());
@@ -13,15 +13,16 @@ function checkIsAddShareActive($openid){
         $info      = mysqld_select("select id,zero_time from ".table('share_active')." where openid='{$openid}'");
         $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
         if(empty($info)){
-            $data = array(
+            $info = array(
               'openid'      => $openid,
               'total_num'   => $rank_level*2,
               'createtime'  => time(),
               'modifytime'  => time(),
               'zero_time'   => $curt_time
             );
-            mysqld_insert('share_active',$data);
-            $id = mysqld_insertid();
+            mysqld_insert('share_active',$info);
+            $info['id'] = mysqld_insertid();
+            $erweima    = getShareActiveWeixinErweima($info['id']);
         }else{
             $id   = $info['id'];
             if($curt_time>$info['zero_time']){
@@ -33,7 +34,7 @@ function checkIsAddShareActive($openid){
             }
         }
     }
-    return $id;
+    return $info;
 }
 
 function getOpenidFromWeixin($openid){
@@ -50,6 +51,10 @@ function getOpenidFromWeixin($openid){
         }
     }
     return $openid;
+}
+
+function getShareActiveWeixinErweima($act_id){
+    $weixin = new WeixinTool();
 }
 /**
  * @content 得到今天已经分享出去的一些用户
@@ -234,3 +239,4 @@ function isReloadShareActivePage($openid){
         }
     }
 }
+

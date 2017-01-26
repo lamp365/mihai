@@ -86,7 +86,7 @@
     }else if($op == 'yaoqingma'){
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
         $weixin_openid = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
-        if(empty($unicode)){
+        if(!empty($unicode)){
             message('活动暂时关闭！','index.php','success');
         }
         $unicode = 'olMgBwFlMMm46w90gzTT0ao3BHCY';
@@ -99,7 +99,12 @@
         }
 
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
-        checkIsAddShareActive($weixin['openid']);
+        $info = checkIsAddShareActive($weixin['openid']);
+        if(empty($info)){
+            $erweimaUrl = "images/weixin.jpg";
+        }else{
+            $erweimaUrl = $info['erweima'];
+        }
         include themePage('shareactive_yqm');
     }
 

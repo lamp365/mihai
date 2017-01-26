@@ -11,9 +11,10 @@ class WeixinTool
     public  function pop_text()
     {
         $unicode = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
-        $weixin  = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where unionid='{$unicode}'");
+        $toUser  = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
+//        $weixin  = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where unionid='{$unicode}'");
 
-        $toUser   = $weixin['weixin_openid'];
+//        $toUser   = $weixin['weixin_openid'];
 
         $weixin_access_token = get_weixin_token();
         $url         = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$weixin_access_token}";
@@ -42,5 +43,32 @@ class WeixinTool
         }
     }
 
-
+    public function get_weixin_erweima($parame,$isTemp=true){
+        $weixin_access_token = get_weixin_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={$weixin_access_token}";
+        if($isTemp){
+            $post_data = array(
+                'expire_seconds'  => 3600*24*6,
+                'action_name'     => 'QR_SCENE',
+                'action_info'     => array(
+                    'scene'  => array(
+                        'scene_id'  => $parame
+                    )
+                ),
+            );
+        }else{
+            $post_data = array(
+                'action_name'     => 'QR_LIMIT_SCENE',
+                'action_info'     => array(
+                    'scene'  => array(
+                        'scene_id'  => $parame
+                    )
+                ),
+            );
+        }
+        $post_data = json_encode($post_data);
+        $result    = http_post($url,$post_data);
+        $result    = json_decode($result, true);
+        return urldecode($result['url']);
+    }
 }
