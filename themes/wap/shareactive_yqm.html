@@ -28,6 +28,8 @@
 <body >
 <div class="poster" >
     <img src="" alt="" class="poster_bg1">
+    <input type="hidden" class="erweima" value="<!--@php echo $erweimaUrl; @-->">
+    <input type="hidden" class="toyxian" value="<!--@php echo $touxiangUrl; @-->">
 </div>
 <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 <script>
@@ -42,16 +44,13 @@ $(function(){
             y: 0.42
         }]
     };
-    <!--@php if(empty($erweimaUrl)){ @-->
-    var erweimaURL = 'images/weixin.jpg';
-    <!--@php }else{  @-->
-    var erweimaURL = "<!--@php echo $erweimaUrl; @-->";
-    <!--@php }  @-->
-    <!--@php if(empty($weixin['avatar'])) {  @-->
-    var touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
-    <!--@php }else{  @-->
-    var touxiangURL = "<!--@php echo $weixin['avatar'];@-->";
-    <!--@php } @-->
+    var erweimaURL  = $(".erweima").val();
+    var touxiangURL = $(".erweima").val();
+    if(erweimaURL == '')
+         erweimaURL = 'images/weixin.jpg';
+    if(touxiangURL == '')
+         touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
+    
     var username = "<!--@php echo $weixin['nickname'];@-->";
     var winW = document.body.scrollWidth;
     var winH = winW * 1205 / 680;

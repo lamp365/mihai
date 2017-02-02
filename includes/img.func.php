@@ -183,3 +183,25 @@ function GrabImage($url,$filename="") {
     $img_dir = $dir.$filename;
     return $img_dir; 
 }
+
+
+function imgToBase64($image_file){
+    $image_info           = getimagesize($image_file);
+    $base64_image_content = "data:{$image_info['mime']};base64," . chunk_split(base64_encode(file_get_contents($image_file)));
+    return $base64_image_content;
+}
+
+function base64Toimg($base64_image_content){
+    //保存base64字符串为图片
+    //匹配出图片的格式
+    $res  = '';
+    if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)){
+        $type     = $result[2];
+        $name     = date("YmdHi").uniqid();
+        $new_file = "./images/{$name}.{$type}";
+        if (file_put_contents($new_file, base64_decode(str_replace($result[1], '', $base64_image_content)))){
+            $res = aliyunOSS::putObject($new_file);
+        }
+    }
+    return $res;
+}

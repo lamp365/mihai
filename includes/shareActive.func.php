@@ -29,18 +29,21 @@ function checkIsAddShareActive($openid){
             $id   = $info['id'];
             //如果二维码已经过6天了，再次获取
             $diff_time = time()-$info['createtime'];
+            $update    = array();
             if($diff_time > 3600*24*6){
-                $erweima         = getShareActiveWeixinErweima($info['id']);
-                $info['erweima'] = $erweima;
-                mysqld_update("share_active",array('erweima'=>$erweima),array('id'=>$id));
+                $erweima           = getShareActiveWeixinErweima($info['id']);
+                $info['erweima']   = $erweima;
+                $update['erweima'] = $erweima;
             }
             //如果过了第二天，则初始化活动参与次数
             if($curt_time>$info['zero_time']){
-                mysqld_update('share_active',array(
-                    'total_num'  => $rank_level*2,
-                    'zero_time'  => $curt_time,
-                    'modifytime' => time()
-                ),array('id'=>$id));
+                $update['total_num']  = $rank_level*2;
+                $update['zero_time']  = $curt_time;
+                $update['modifytime'] = time();
+            }
+
+            if(!empty($update)){
+                mysqld_update("share_active",$update,array('id'=>$id));
             }
         }
     }
