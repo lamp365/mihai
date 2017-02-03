@@ -20,8 +20,16 @@
         }else{
             //参与总人数
             $canyu_total = get_active_total_people();
+            //获取6个为2 等待开奖的
+
+            //获取1个推荐的
+
+            //获取礼品商品
+
+            //获取明天或者之后可以许愿的商品
         }
         include themePage('shareactive');
+
     }else if($op == 'list'){
         $openid = getOpenidFromWeixin($openid);
         if(empty($openid)){
@@ -41,8 +49,11 @@
         $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by id desc {$limit}";
         $shareActiveShop = mysqld_selectall($sql);
         if(!empty($shareActiveShop)){
-            foreach($shareActiveShop as $key=>$item){
-                $jindutiao  = round(($item['amount']-$item['dicount'])*100/$item['amount'],2).'%';   //进度条
+            foreach($shareActiveShop as $key=>&$item){
+                $diff_count        = $item['amount']-$item['dicount'];
+                $jindutiao         = round($diff_count*100/$item['amount'],2).'%';   //进度条
+                $item['jindutiao'] = $jindutiao;
+                $item['wish_num']  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id={$item['id']} and openid='{$openid}'");
             }
         }
 
@@ -93,14 +104,32 @@
                 'createtime' => time(),
                 'star_num'   => '2564',
             );
-            $res = mysqld_insert('addon7_request',$data);
-            if($res){
-                $total_num = $share_info['total_num']-1;
-                mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
-                die(showAjaxMess(200,"恭喜您许愿成功!"));
+            //商品的分数减去1  并判断当前商品是否已经满人
+            $award = mysqld_select("select id,dicount from ".table('addon7_award')." where id={$award_id}");
+            if($award['dicount']<1){
+                die(showAjaxMess(1002,"该礼品许愿已满！"));
             }else{
-                die(showAjaxMess(1002,'操作失败，稍后再试'));
+                $res = mysqld_insert('addon7_request',$data);
+                if($res){
+                    $total_num = $share_info['total_num']-1;
+                    $up_data   = array('dicount'=>$award['dicount'] - 1);
+                    if($award['dicount'] == 1){
+                        //如果刚好剩下一次许愿 则修改该商品 状态为1 表示已经满人
+                        $up_data['state']        = 1;
+                        $up_data['confirm_time'] = time();
+                    }
+                    mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
+                    mysqld_update("addon7_award",$up_data, array('id'=>$award_id));
+                    if($award['dicount'] == 1){
+                        //新添加一个商品为满人，统计是否有6个商品为满人的
+                        checkAwardGoodsIsFull();
+                    }
+                    die(showAjaxMess(200,"恭喜您许愿成功!"));
+                }else{
+                    die(showAjaxMess(1002,'操作失败，稍后再试'));
+                }
             }
+
         }else{
             die(showAjaxMess(1002,'今天已上限，请明天再来'));
         }

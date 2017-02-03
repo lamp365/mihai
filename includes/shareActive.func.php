@@ -358,7 +358,18 @@ function addShareActiveRecordMember($share_openid,$openid){
 
 }
 
+/**
+ * 统计总的参与人数
+ * @return bool|string
+ */
 function get_active_total_people(){
     $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
     return $total+72385;
+}
+
+function checkAwardGoodsIsFull(){
+    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_award')." where state=1");
+    if($total>=6){
+        mysqld_query("update ".table('addon7_award')." set `state`=2 where state=1 order by confirm_time desc limit 6");
+    }
 }

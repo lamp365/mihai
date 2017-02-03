@@ -25,7 +25,7 @@
 	<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
 	<div class="last-wrap ">
 		<div class="total-number-div">
-			<span class="">累计参与了</span><!--@php echo $canyu_total; @--><span class="">人次</span>
+			<span class="">累计参与了</span><span class="canyu_total"><!--@php echo $canyu_total; @--></span><span class="">次</span>
 		</div>
 		<ul class="last-wrap-list clearfix" id="act_list">
 			<!--@php if(!empty($shareActiveShop)){   foreach($shareActiveShop as $item){  @-->
@@ -43,7 +43,7 @@
 					<div class="play-now" onclick="playNow(this,<!--@php echo $item['id'];@-->)">新年许愿</div>
 					<div class="love">
 						<img onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
-						<span>111</span>
+						<span><!--@php echo $item['wish_num'];@--></span>
 					</div>
 				</div>
 				
@@ -137,14 +137,19 @@
 		}
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
-			tip(data.meaasge,1);
+			tip(data.message,1);
 			if( data.errno == 200 ){
 				//较少显示的次数，并爱心加1
 				cishu = cishu-1;
 				$(".active-num-btn span").html(cishu);
+
 				var wish_total = $(thisElement).parent().find('.love span').html();
 				wish_total = parseInt(wish_total) + 1;
 				$(thisElement).parent().find('.love span').html(wish_total);
+
+				var canyu_total = $(".total-number-div .canyu_total").html();
+				canyu_total     = parseInt(canyu_total)+1;
+				$(".total-number-div .canyu_total").html(canyu_total);
 			}
 		},"json");
 	}
@@ -211,7 +216,7 @@
 				" role='progressbar' aria-valuenow='80' aria-valuemin='0' aria-valuemax='100' style='width: "+data.jindutiao+"'>"+
 				"</div></div><div class='play-btn-div'><div class='play-now' onclick='playNow(this,"+data.id+")'>新年许愿</div>"+
 				"<div class='love'><img onclick='personalRecord(this,"+data.id+")' src='__RESOURCE__/recouse/images/love-yes.png'>"+
-				"<span>111</span></div></div></li>";
+				"<span>"+data.wish_num+"</span></div></div></li>";
 		$("#act_list").append(html);
 	}
 
