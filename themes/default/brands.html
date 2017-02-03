@@ -25,11 +25,14 @@
 			    float: left;
 			    font-size: 14px;
 			    height: 374px;
-			    margin: 0 7px 20px 0;
+			    margin: 0 7px 7px 0;
 			    overflow: hidden;			    
 			    width: 290px;
+			    +width: 288px;
 			    /*加这句是因为IE7动画问题*/
 			    position: relative;
+			    border: solid 1px #ededed;
+			    box-sizing: border-box;
 			}
 			.per-brand{
 				background-color: #fff;
@@ -78,7 +81,7 @@
 				width: 290px;
 				height: 180px;
 				display: block;
-				background: #24212A;
+				background: #fff;
 				position: relative;
 			}
 			.recommend-detail img{
@@ -96,7 +99,7 @@
 			    text-overflow: ellipsis;
 			    white-space: nowrap;
 			    font-size: 16px;
-			    color: #fff;
+			    color: #333;
 			}
 			.brand-detail .brandName{				
 			    overflow: hidden;
