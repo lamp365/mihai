@@ -205,6 +205,8 @@ if ($operation == 'into') {
   $blacklist = $_GP['blacklist'];
   $d_money = $_GP['d_money'];
   $h_money = $_GP['h_money'];
+  $allot = $_GP['allot'];
+  $ienter = $_GP['ienter'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -234,6 +236,12 @@ if ($operation == 'into') {
   if (!empty($h_money)) {
     $where.=" AND price<".$h_money;
   }
+  if (!empty($allot) AND $allot!='false') {
+    $where.=" AND salesman=''";
+  }
+  if (!empty($ienter) AND $ienter!='false') {
+    $where.=" AND status=0";
+  }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE id>0".$where." ORDER BY price DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
   // 总记录数
@@ -246,6 +254,19 @@ if ($operation == 'into') {
   $level_a = array();
   $shop_a = array();
   $manager_a = array();
+  $is_allot = 0;
+  $no_allot = 0;
+  $is_into = 0;
+  $no_into = 0;
+  // 已分配
+  $is_allotary = mysqld_select("SELECT count(id) as allotnum FROM ".table('shop_customers')." WHERE salesman<>NULL");
+  $is_allot = intval($is_allotary['allotnum']);
+  $no_allot = intval($total) - $is_allot;
+  // 已入驻
+  $is_intoary = mysqld_select("SELECT count(id) as intonum FROM ".table('shop_customers')." WHERE status=1");
+  $is_into = intval($is_intoary['intonum']);
+  $no_into = intval($total) - $is_into;
+
   foreach ($al_member as &$amv) {
     $manager_name = mysqld_select("SELECT name FROM ".table('shop_department_staff')." WHERE id=".$amv['salesman']);
     if (!empty($manager_name)) {
@@ -294,6 +315,8 @@ if ($operation == 'into') {
   $blacklist = $_GP['blacklist'];
   $d_money = $_GP['d_money'];
   $h_money = $_GP['h_money'];
+  $allot = $_GP['allot'];
+  $ienter = $_GP['ienter'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -318,6 +341,12 @@ if ($operation == 'into') {
   }
   if (!empty($h_money)) {
     $where.=" AND price<".$h_money;
+  }
+  if (!empty($allot) AND $allot!='false') {
+    $where.=" AND salesman=''";
+  }
+  if (!empty($ienter) AND $ienter!='false') {
+    $where.=" AND status=0";
   }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE salesman=0".$where);
@@ -361,6 +390,8 @@ if ($operation == 'into') {
   $blacklist = $_GP['blacklist'];
   $d_money = $_GP['d_money'];
   $h_money = $_GP['h_money'];
+  $allot = $_GP['allot'];
+  $ienter = $_GP['ienter'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -385,6 +416,12 @@ if ($operation == 'into') {
   }
   if (!empty($h_money)) {
     $where.=" AND price<".$h_money;
+  }
+  if (!empty($allot) AND $allot!='false') {
+    $where.=" AND salesman=''";
+  }
+  if (!empty($ienter) AND $ienter!='false') {
+    $where.=" AND status=0";
   }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE salesman=0".$where);

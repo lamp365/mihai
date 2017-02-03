@@ -82,11 +82,10 @@
             $url = mobile_url('regedit');
             message("请您先注册，才能获取二维码",$url,'error');
         }
-
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
         $info         = checkIsAddShareActive($weixin['openid']);
-        $erweimaUrl   = empty($info) ? '' : imgToBase64($info['erweima']);
-        $touxiangUrl  = empty($weixin['avatar']) ? '' : imgToBase64($weixin['avatar']);
+        $erweimaUrl   = empty($info) ? '' : saveWeixinImgToLocal($weixin['openid'],$info['erweima']);
+        $touxiangUrl  = empty($weixin['avatar']) ? '' : saveWeixinImgToLocal($weixin['openid'],$weixin['avatar'],false);
         include themePage('shareactive_yqm');
     }
 

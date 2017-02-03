@@ -273,7 +273,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                     }
                 }
                
-                if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || !empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
                     if ($state == 1 || (isset($_GP['code']) && isset($_GP['state']) && $_GP['state'] == 1)) {
                         $scope = "snsapi_userinfo";
                         

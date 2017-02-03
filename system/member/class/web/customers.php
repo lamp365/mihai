@@ -35,6 +35,8 @@ if ($operation == 'display') {
 	$blacklist = $_GP['blacklist'];
 	$d_money = $_GP['d_money'];
   	$h_money = $_GP['h_money'];
+  	$allot = $_GP['allot'];
+  	$ienter = $_GP['ienter'];
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -63,6 +65,12 @@ if ($operation == 'display') {
 	}
   	if (!empty($h_money)) {
 	    $where.=" AND price<".$h_money;
+	}
+	if (!empty($allot) AND $allot!='false') {
+		$where.=" AND salesman=''";
+	}
+	if (!empty($ienter) AND $ienter!='false') {
+		$where.=" AND status=0";
 	}
 
 	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
@@ -122,6 +130,8 @@ if ($operation == 'display') {
   $blacklist = $_GP['blacklist'];
   $d_money = $_GP['d_money'];
   $h_money = $_GP['h_money'];
+  $allot = $_GP['allot'];
+  $ienter = $_GP['ienter'];
 
   if (!empty($city)) {
     $where.=" AND a.city='".$city."'";
@@ -146,6 +156,12 @@ if ($operation == 'display') {
   }
   if (!empty($h_money)) {
     $where.=" AND price<".$h_money;
+  }
+  if (!empty($allot) AND $allot!='false') {
+	$where.=" AND salesman=''";
+  }
+  if (!empty($ienter) AND $ienter!='false') {
+	$where.=" AND status=0";
   }
 
   $al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC");
@@ -183,6 +199,8 @@ if ($operation == 'display') {
 	$blacklist = $_GP['blacklist'];
 	$d_money = $_GP['d_money'];
   	$h_money = $_GP['h_money'];
+  	$allot = $_GP['allot'];
+    $ienter = $_GP['ienter'];
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -207,6 +225,12 @@ if ($operation == 'display') {
 	}
 	if (!empty($h_money)) {
 		$where.=" AND price<".$h_money;
+	}
+	if (!empty($allot) AND $allot!='false') {
+		$where.=" AND salesman=''";
+	}
+	if (!empty($ienter) AND $ienter!='false') {
+		$where.=" AND status=0";
 	}
 
 	$al_client = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC");

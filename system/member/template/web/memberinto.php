@@ -10,7 +10,7 @@
 	    <div class="panel-body third-party">
 	        <div class="tab-content">
 	            <div class="tab-pane fade in active" id="tab1primary">
-	            数据总数：<?php  echo $total;?>
+	            数据总数：<?php  echo $total;?>&nbsp;已分配：<?php  echo $is_allot;?>&nbsp;&nbsp;未分配：<?php  echo $no_allot;?>&nbsp;&nbsp;已入驻：<?php  echo $is_into;?>&nbsp;&nbsp;未入驻：<?php  echo $no_into;?>
 		            <form action="<?php  echo web_url('memberinto',array('op'=>'display'));?>" method="post">
 						<ul class="search-ul">
 							<li>
@@ -97,6 +97,18 @@
 								<span class="left-span">黑名单</span>
 								<div class="checkbox-div">
 									<input type="checkbox" name="blacklist" class="blacklist" <?php if($blacklist){echo 'checked="checked"';}?>>
+								</div>
+							</li>
+							<li>
+								<span class="left-span">未分配</span>
+								<div class="checkbox-div">
+									<input type="checkbox" name="allot" class="allot" <?php if($allot){echo 'checked="checked"';}?>>
+								</div>
+							</li>
+							<li>
+								<span class="left-span">未入驻</span>
+								<div class="checkbox-div">
+									<input type="checkbox" name="ienter" class="ienter" <?php if($ienter){echo 'checked="checked"';}?>>
 								</div>
 							</li>
 							<li>
@@ -235,12 +247,14 @@ function batchDistribute(){
 		 	blacklist = $(".checkbox-div .blacklist").prop("checked"),
 		 	d_money = $(".d_money").val();
 		 	h_money = $(".h_money").val();
+		 	allot = $(".checkbox-div .allot").prop("checked");
+		 	ienter = $(".checkbox-div .ienter").prop("checked");
 
 		 	url = "<?php  echo web_url('memberinto',array('op' => 'check_allot'));?>";
 		 	if( department == 0){
 		 		alert("请选择部门");
 		 	}else{
-		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money},function(data){
+		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter},function(data){
 		 			$(".batch-distribute-result").modal();
 		 			$(".check_allot_total").text(data.total);
 				},'json');
@@ -260,8 +274,11 @@ function batchDistribute(){
 		 	blacklist = $(".checkbox-div .blacklist").prop("checked"),
 		 	d_money = $(".d_money").val();
 		 	h_money = $(".h_money").val();
+		 	allot = $(".checkbox-div .allot").prop("checked");
+		 	ienter = $(".checkbox-div .ienter").prop("checked");
+
 		 	url = "<?php  echo web_url('memberinto',array('op' => 'allot_all'));?>";
-		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money},function(data){
+		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter},function(data){
 		 		alert(data.message);
 		 		location.reload(true);
 		 	},'json');

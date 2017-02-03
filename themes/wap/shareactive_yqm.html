@@ -27,9 +27,7 @@
 
 <body >
 <div class="poster" >
-    <img src="" alt="" class="poster_bg1">
-    <input type="hidden" class="erweima" value="<!--@php echo $erweimaUrl; @-->">
-    <input type="hidden" class="toyxian" value="<!--@php echo $touxiangUrl; @-->">
+    <img src="" alt="" class="poster_bg">
 </div>
 <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 <script>
@@ -44,12 +42,12 @@ $(function(){
             y: 0.42
         }]
     };
-    var erweimaURL  = $(".erweima").val();
-    var touxiangURL = $(".erweima").val();
+    var erweimaURL  = "<!--@php echo $erweimaUrl; @-->";
+    var touxiangURL = "<!--@php echo $touxiangUrl; @-->";
     if(erweimaURL == '')
          erweimaURL = 'images/weixin.jpg';
     if(touxiangURL == '')
-         touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
+        touxiangURL = "__RESOURCE__/recouse/images/userface2.png";
     
     var username = "<!--@php echo $weixin['nickname'];@-->";
     var winW = document.body.scrollWidth;
@@ -98,6 +96,8 @@ $(function(){
                     erweimaImg.src = erweimaURL;
                     erweimaImg.onload = function() {
                         context.drawImage(erweimaImg, winW * x, winH * y, winW * 0.45, winW * 0.45);
+                        imgPath = mycanvas.toDataURL("image/jpeg");
+                        document.body.querySelector(".poster_bg").src = imgPath;
                     }
                     var touxiangImg = new Image;
                     touxiangImg.src = touxiangURL;
@@ -108,6 +108,8 @@ $(function(){
                         context.fillStyle = "red";
                         //从坐标点(158,185)开始绘制文字
                         context.fillText(username,158,185);
+                        imgPath = mycanvas.toDataURL("image/jpeg");
+                        document.body.querySelector(".poster_bg").src = imgPath;
                     }
                 } else {
                     document.getElementsByTagName('canvas')[0].style.display = "none";

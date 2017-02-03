@@ -263,6 +263,30 @@ function shareActive_addToalNum(){
 
 }
 
+function saveWeixinImgToLocal($weixin_openid,$weixin_img,$is_erweima=true){
+    if($is_erweima){
+        $name = $weixin_openid."_erweima.png";
+    }else{
+        $name = $weixin_openid."_touxiang.png";
+    }
+    $dir = "./attachment/shareactive";
+    if(!is_dir($dir)){
+        mkdir($dir,'0777');
+    }
+    $img_url = $dir."/".$name;
+    if(file_exists($img_url)){
+        return $img_url;
+    }else{
+        $content = file_get_contents($weixin_img);
+        $res     = file_put_contents($img_url,$content);
+        if($res){
+            return $img_url;
+        }else{
+            return '';
+        }
+    }
+
+}
 /*function encodeShareAccessKey($openid){
     $openid.="@@@share";
     return DESService::instance()->encode($openid);
