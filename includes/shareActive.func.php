@@ -271,7 +271,8 @@ function saveWeixinImgToLocal($weixin_openid,$weixin_img,$is_erweima=true){
     }
     $dir = "./attachment/shareactive";
     if(!is_dir($dir)){
-        mkdir($dir,'0777');
+        mkdir($dir,0777);
+        chmod($dir, 0777); //给目录操作权限
     }
     $img_url = $dir."/".$name;
     if(file_exists($img_url)){
