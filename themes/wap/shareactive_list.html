@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>夺宝</title>
+	<title>许愿</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,7 +11,7 @@
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 	<link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet"	type="text/css" />
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/indiana.css"/>
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/shareactive.css"/>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
@@ -22,18 +22,18 @@
 		<img src="__RESOURCE__/recouse/images/banner.jpg">
 	</div>
 	<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
-	<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余2次</div>
+	<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
 	<div class="last-wrap ">
 		<div class="total-number-div">
-			<span class="">累计参与了</span>123456<span class="">人次</span>
+			<span class="">累计参与了</span><!--@php echo $canyu_total; @--><span class="">人次</span>
 		</div>
 		<ul class="last-wrap-list clearfix" id="act_list">
 			<!--@php if(!empty($shareActiveShop)){   foreach($shareActiveShop as $item){  @-->
 			<li>
 				<div>
-					<img class="lazy" onclick="record(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo $item['dthumb'];@-->" src="images/loading.gif">
+					<img class="lazy" onclick="record(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo $item['logo'];@-->" src="images/loading.gif">
 				</div>
-				<div class="small-title"><!--@php echo $item['dtitle'];@--></div>
+				<div class="small-title"><!--@php echo $item['title'];@--></div>
 				<div class="progress">
 				  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $item['jindutiao'];@-->">
 				  	</div>
@@ -61,25 +61,7 @@
 		<div class="desc-more"><a href="">了解更多》</a></div>
 	</div>
 
-	<div class="modal fade record-modal" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">参与记录</h4>
-	      </div>
-	      <div class="modal-body">
-	        <p>2017-01-22 10:22 譄小芳参与了<span class="record-number">10人次</span></p>
-	        <p>2017-01-22 10:22 譄小芳参与了<span class="record-number">10人次</span></p>
-	        <p>2017-01-22 10:22 譄小芳参与了<span class="record-number">10人次</span></p>
-	        <p>2017-01-22 10:22 譄小芳参与了<span class="record-number">10人次</span></p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
+
 	<div class="modal fade personal-record-modal" tabindex="-1" role="dialog">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -88,8 +70,7 @@
 	        <h4 class="modal-title">参与记录</h4>
 	      </div>
 	      <div class="modal-body">
-	        <p>您于2017-01-22 10:22参与了<span class="record-number">10人次</span></p>
-	        <p>您的幸运号码为：8888888</p>
+
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -126,7 +107,11 @@
 <div class="footer_nav">
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=list" class="nav_index">主会场</a>
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=activity" class="nav_activity">活动</a>
+	<!--@php if($openid){  @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&accesskey=<!--@php echo $accesskey;@-->" class="nav_share">我的邀请</a>
+	<!--@php }else{ @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive" class="nav_share">我的邀请</a>
+	<!--@php }  @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=fansindex" class="nav_me">个人中心</a>
 </div>
 <script type="text/javascript">
@@ -136,6 +121,7 @@
 			threshold : 200, //控制灵敏度
 			effect : "fadeIn"
 		});
+		//活动规则
 		$(".active-fixed-btn").on("click",function(){
 			$(".activity-modal").modal();
 		});
@@ -143,27 +129,45 @@
 	})
 	
 	//立即领取,第一个参数是当前元素，第二个参数是商品id
-	function playNow(thisElement,id){
-		$.post("",{id:id},function(data){
-			alert("领取成功,你的参与编号为：12345678910");
-		},"json");
-	}
-	//参与记录,第一个参数是当前元素，第二个参数是商品id
-	function record(thisElement,id){
-		$(".record-modal").modal();
-		$.post("",{},function(data){
+	function playNow(thisElement,award_id){
+		var cishu = parseInt($(".active-num-btn span").html());
+		if(cishu != 0){
+			tip('今天已上限，请明天再来',1);
+			return;
+		}
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			tip(data.meaasge,1);
 			if( data.errno == 200 ){
-
+				//较少显示的次数，并爱心加1
+				cishu = cishu-1;
+				$(".active-num-btn span").html(cishu);
+				var wish_total = $(thisElement).parent().find('.love span').html();
+				wish_total = parseInt(wish_total) + 1;
+				$(thisElement).parent().find('.love span').html(wish_total);
 			}
 		},"json");
 	}
+
 	//个人参与记录,第一个参数是当前元素，第二个参数是商品id
-	function personalRecord(thisElement,id){
-		$(".personal-record-modal").modal();
-		$.post("",{},function(data){
-			if( data.errno == 200 ){
-
+	function personalRecord(thisElement,award_id){
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			if( data.errno != 200 ){
+				$(".personal-record-modal .modal-body").html("<p>"+data.message+"<p>");
+			}else{
+				//<p>您于2017-01-22 10:22参与了<span class="record-number">10人次</span></p>
+				//<p>您的幸运号码为：8888888</p>
+				var html = '';
+				var recorder = data.message;
+				for(var i = 0;i < recorder.length;i++){
+					var item      = recorder[i];
+					var date_time = Stringtotime(item.createtime);
+							html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的幸运号码为："+ item.star_num +"</p>"
+				}
+				$(".personal-record-modal .modal-body").html(html);
 			}
+			$(".personal-record-modal").modal();
 		},"json");
 	}
 
@@ -202,13 +206,50 @@
 		}
 	}
 	function LoadHtml(data){
-		var html ="<li><div><img class='lazy' onclick='record(this,"+data.id+")' data-original="+data.dthumb+" src='images/loading.gif'>"+
-				"</div><div class='small-title'>"+data.dtitle+"</div><div class='progress'><div class='progress-bar progress-bar-danger progress-bar-striped active'"+
+		var html ="<li><div><img class='lazy' onclick='record(this,"+data.id+")' data-original="+data.logo+" src='images/loading.gif'>"+
+				"</div><div class='small-title'>"+data.title+"</div><div class='progress'><div class='progress-bar progress-bar-danger progress-bar-striped active'"+
 				" role='progressbar' aria-valuenow='80' aria-valuemin='0' aria-valuemax='100' style='width: "+data.jindutiao+"'>"+
 				"</div></div><div class='play-btn-div'><div class='play-now' onclick='playNow(this,"+data.id+")'>新年许愿</div>"+
 				"<div class='love'><img onclick='personalRecord(this,"+data.id+")' src='__RESOURCE__/recouse/images/love-yes.png'>"+
 				"<span>111</span></div></div></li>";
 		$("#act_list").append(html);
+	}
+
+	//将后台返回的时间戳格式化为时间格式
+	function Stringtotime(time){
+		time = time*1000;
+		var datetime = new Date();
+		datetime.setTime(time);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+		var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+		var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+		var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
+		return year + "-" + month + "-" + date + " &nbsp " + hour + ":" + minute + "";
+	}
+	function tip(msg,autoClose){
+		var div = $("#poptip");
+		var content =$("#poptip_content");
+		if(div.length<=0){
+			div = $("<div id='poptip'></div>").appendTo(document.body);
+			content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+		}
+		else{
+			content.html(msg);
+			content.show(); div.show();
+		}
+		if(autoClose) {
+			setTimeout(function(){
+				content.fadeOut(500);
+				div.fadeOut(500);
+
+			},1000);
+		}
+	}
+	function tip_close(){
+		$("#poptip").fadeOut(500);
+		$("#poptip_content").fadeOut(500);
 	}
 </script>
 </body>

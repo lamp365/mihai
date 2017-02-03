@@ -90,7 +90,8 @@
 			$recommend_openid = getOpenshopSellerOpenid();
 			if(empty($recommend_openid)){
 				//从活动分享中获取推荐人的openid
-				$recommend_openid = getShareActiveCache();
+				$recommend_openid = getShareAccesskeyCookie();
+				cleanShareAccesskeyCookie();
 			}
 			$data = array(
 					'mobile' => $_GP['mobile'],
@@ -117,9 +118,6 @@
 				$loginid=save_member_login('',$openid);
 
 				integration_session_account($loginid,$oldsessionid, $unionid);
-
-			    //注册成功后，查看是否有活动分享过来的用户，有的话，给分享者参加活动次数加1
-			    shareActive_addToalNum();
 
 			    message('注册成功！', to_member_loginfromurl(), 'success');
 		}

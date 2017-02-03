@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>心愿</title>
+		<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+		<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="__RESOURCE__/recouse/css/shareactive.css" rel="stylesheet"	type="text/css" />
+		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+		
+		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	</head>
+
+	<body>
+		<!--@php  include page('header');@-->
+		<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
+		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@-->次</div>
+		<div style="background:#dc3737">
+			<div class="miandan-banner"></div>
+			<!--累计参与人数-->
+			
+			<!--存旧的参与人数-->
+			<input type="hidden" id="total_num_old" value="<!--@php echo $canyu_total; @-->"/>
+			
+			
+			<!--开奖中-->
+			<div class=" comment_h">
+				<div class="viewport-area">
+				<div class="total_num">
+					<ul class="num_list">	
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num" style="margin-right: 45px;">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num" style="margin-right: 45px;">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<!--右侧的6个-->
+				<div class="right_ele">
+					<ul>
+						<li>
+							<img src="https://img20.360buyimg.com/mobilecms/s350x350_jfs/t3880/14/194316126/29573/cc4965b1/58441f48N3d0a692b.jpg!q70.jpg" />
+						</li>
+					</ul>
+				</div>
+				</div>
+			</div>
+			
+			<!--推荐商品-->			
+			<div class=" recommend_list" style="height: 698px;background: url(__RESOURCE__/recouse/images/miandan_page02.jpg) no-repeat center center;">
+				<div class="viewport-area" style="height: 698px;">
+					<div class="left_img">
+						<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+					</div>
+					<div class="right_ele">
+						<!--商品名称-->
+						<p class="title">iphone7</p>
+						<!--商品描述-->
+						<p class="detail">玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有</p>
+						<div class="progress" style="width: 200px;margin: 0 auto;margin-bottom: 35px;">
+						   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+						</div>
+						<!--按钮-->
+						<p class="btn">新年许愿</p>
+					</div>
+				</div>
+			</div>
+			<!--心愿专区-->
+			<div class="recommend_list_two">
+				<div class="recommend_list_two_head"></div>
+				<div class="viewport-area-list">
+					<ul class="indiana_list">
+						<li class="per_indiana"> 
+							<!--商品图片-->
+							<div class="imgWrap" record_id="11">
+								<a>
+									<img src="https://img10.360buyimg.com/mobilecms/s250x250_jfs/t2608/187/309611781/238595/cc9e704b/570d2dbcN990913ed.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name">滋源（SEEYUONG）茶籽 控油 去屑 洗护 4件套（洗发535ml+护发535ml+洗发60ml+护发60ml)</p>
+							<!--人数-->
+
+							<!--进度条-->
+							<div class="progress">
+								<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 10%"></div>
+							</div>
+							
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+								<span>10次</span>
+							</div>
+						</li>
+						<li class="per_indiana"> 
+							<div class="imgWrap" record_id="22">
+								<a>
+									<img src="https://img10.360buyimg.com/mobilecms/s250x250_jfs/t3694/37/154827430/174137/5ef1fab3/5800ba8bN53967f99.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name">联想(Lenovo)小新Air13 Pro 13.3英寸14.8mm超轻薄笔记本电脑（i5 4G 256G PCIE SSD 940MX 2G FHD IPS）银</p>
+							<!--人数-->
+							
+							<!--进度条-->
+							<div class="progress">
+							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+							</div>
+							
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+								<span>10次</span>
+							</div>
+						</li>		
+						<li class="per_indiana"> 
+							<div class="imgWrap" record_id="22">
+								<a>
+									<img src="https://img12.360buyimg.com/mobilecms/s250x250_g13/M09/09/02/rBEhUlNaEJUIAAAAAAGlD-3hhPIAAMe8QORWlQAAaUn360.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name">361度男鞋 缓震耐磨跑鞋 网面百搭跑步鞋运动鞋 N 中灰/蓝 42</p>
+							<!--人数-->
+							
+							<!--进度条-->
+							<div class="progress">
+							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+							</div>
+							
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+								<span>10次</span>
+							</div>
+						</li>				
+						<li class="per_indiana"> 
+							<div class="imgWrap" record_id="22">
+								<a>
+									<img src="https://img12.360buyimg.com/mobilecms/s300x300_jfs/t3307/250/3583939231/157343/b05ee0ef/57f6f244Na2902904.jpg!q70.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name">一款迷你型的全自动洗衣机，内桶采用钻石型内孔设计，减轻对衣物的损伤，不同的洗涤模式，只要选择一下，一键启动，就可以等着拿洗好的衣物了，非常方便省力。</p>
+							<!--人数-->
+							<!--进度条-->
+							<div class="progress">
+							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+							</div>
+							
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+								<span>10次</span>
+							</div>
+						</li>	
+						<li class="per_indiana"> 
+							<div class="imgWrap" record_id="22">
+								<a>
+									<img src="https://img20.360buyimg.com/mobilecms/s350x350_jfs/t3880/14/194316126/29573/cc4965b1/58441f48N3d0a692b.jpg!q70.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name">(第167期）爱音乐的你怎能少得了一款属于自己的耳机呢，这款行走的耳机多种颜色任你选择，让你在路上也能随时随地听音乐，感受音乐的魅力，走在路上像一个DJ的感觉。</p>
+							<!--人数-->
+							
+							<!--进度条-->
+							<div class="progress">
+							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+							</div>
+							
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+								<span>10次</span>
+							</div>
+						</li>
+						<li class="per_indiana"> 
+							<div class="imgWrap" record_id="22">
+								<a>
+									<img src="https://img10.360buyimg.com/mobilecms/s300x300_jfs/t3820/242/3142486568/131146/90998f1c/587883d7Nbc4f68c6.jpg!q70.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name">(第167期）海信4K智能电视</p>
+							<!--人数-->
+							
+							<!--进度条-->
+							<div class="progress">
+							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+							</div>
+							
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
+								<span>10次</span>
+							</div>
+						</li>				
+					</ul>
+				</div>
+				<div class="recommend_list_two_footer"></div>
+			</div>
+			<!--弹出的参与记录-->
+			 <div class='modal fade indiana_record' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+				<div class='modal-dialog'>
+					<div class='modal-content'>
+						<div class='modal-header'> 
+							<button type='button' class='close' data-dismiss='modal' style="margin-top: -10px;">
+								<span aria-hidden='true'>&times;</span>
+								<span class='sr-only'>Close</span>
+							</button>
+							<h4 class='modal-title'>夺宝参与记录</h4>
+						</div>
+						<div class='modal-body'>
+							<ul>
+																
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>				
+			<!--预告-->
+			<div class="recommend_list_two" >
+				<div class="recommend_list_two_head" style="background:url(__RESOURCE__/recouse/images/miandan_list_xiaqi.jpg)no-repeat center; "></div>
+				<div class="viewport-area-list">
+					<ul class="indiana_list">
+						<li class="per_indiana" style="position: relative;"> 
+							<!--商品图片-->
+							<div class="share not-start" record_id="11">
+								<a>
+									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name" style="font-weight: bold;">(第168期）***</p>					
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin jqqd" id="myid1"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
+						</li>	
+						<li class="per_indiana" style="position: relative;"> 
+							<!--商品图片-->
+							<div class="share not-start" record_id="11">
+								<a>
+									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name" style="font-weight: bold;">(第168期）***</p>					
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin jqqd" id="myid2"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
+						</li>	
+						<li class="per_indiana" style="position: relative;"> 
+							<!--商品图片-->
+							<div class="share not-start" record_id="11">
+								<a>
+									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name" style="font-weight: bold;">(第168期）***</p>					
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin jqqd" id="myid3"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
+						</li>	
+						<li class="per_indiana" style="position: relative;"> 
+							<!--商品图片-->
+							<div class="share not-start" record_id="11">
+								<a>
+									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name" style="font-weight: bold;">(第168期）***</p>					
+							<!--立即参与按钮-->
+							<a href="javascript:void(0);" class="tojoin jqqd" id="myid4"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
+						</li>				
+					</ul>
+				</div>
+				<div class="recommend_list_two_footer"></div>
+			</div>
+			<!--晒单分享-->
+			<div class="recommend_list_two" ">
+				<div class="recommend_list_two_head"  style="background:url(__RESOURCE__/recouse/images/miandan_list_saidan.jpg)no-repeat center; " ></div>
+				<div class="viewport-area-list">
+					<ul class="indiana_list">
+						<li class="per_indiana" style="height: 400px;"> 
+						 <!--商品图片-->
+						<div class="share" record_id="11">
+							<a>
+								<img src="https://img11.360buyimg.com/n2/jfs/t3289/170/5774446166/91727/aa992fe1/587f5addNb8be13b5.jpg"/>
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
+						<!--人数-->
+						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
+						<div class="info">
+							<span class="xmjdh_left">
+								<a>
+									<p style="display: inline-block;">
+										<img src="__RESOURCE__/912865945439541.jpg">									
+									</p>
+									<em class="f1">觅海掌门人</em>
+								</a>
+							</span>
+							<span class="xmjdh_right">
+								<a href="javascript:;">								
+									<em>11</em>
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
+								</a>							
+							</span>
+						</div>
+					</li>
+					<li class="per_indiana" style="height: 400px;"> 
+						<!--商品图片-->
+						<div class="share" record_id="11">
+							<a>
+								<img src="https://img.alicdn.com/imgextra/i3/3013357780/TB2wxEZabplpuFjSspiXXcdfFXa_!!3013357780.jpg_430x430q90.jpg" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
+						<!--人数-->
+						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
+						<div class="info">
+							<span class="xmjdh_left">
+								<a>
+									<p style="display: inline-block;">
+										<img src="__RESOURCE__/912865945439541.jpg">									
+									</p>
+									<em class="f1">觅海掌门人</em>
+								</a>
+							</span>
+							<span class="xmjdh_right">
+								<a href="javascript:;">								
+									<em>11</em>
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
+								</a>							
+							</span>
+						</div>
+					</li>	
+					<li class="per_indiana" style="height: 400px;"> 
+						<!--商品图片-->
+						<div class="share" record_id="11">
+							<a>
+								<img src="https://img12.360buyimg.com/n2/jfs/t2614/264/1837915571/84898/213e1286/574ce145Nffb7e386.jpg" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
+						<!--人数-->
+						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
+						<div class="info">
+							<span class="xmjdh_left">
+								<a>
+									<p style="display: inline-block;">
+										<img src="__RESOURCE__/912865945439541.jpg">									
+									</p>
+									<em class="f1">觅海掌门人</em>
+								</a>
+							</span>
+							<span class="xmjdh_right">
+								<a href="javascript:;">								
+									<em>11</em>
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
+								</a>							
+							</span>
+						</div>
+					</li>	
+					<li class="per_indiana" style="height: 400px;"> 
+						<!--商品图片-->
+						<div class="share" record_id="11">
+							<a>
+								<img src="https://img14.360buyimg.com/n2/jfs/t3250/36/3044197712/43605/1f03392a/57eb427bNfbaf2fa3.jpg" />
+							</a>
+						</div>
+						<!--标题-->
+						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
+						<!--人数-->
+						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
+						<div class="info">
+							<span class="xmjdh_left">
+								<a>
+									<p style="display: inline-block;">
+										<img src="__RESOURCE__/912865945439541.jpg">									
+									</p>
+									<em class="f1">觅海掌门人</em>
+								</a>
+							</span>
+							<span class="xmjdh_right">
+								<a href="javascript:;">								
+									<em>11</em>
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
+								</a>							
+							</span>
+						</div>
+					</li>				
+					</ul>
+				</div>
+				<div class="recommend_list_two_footer"></div>
+			</div>
+			<!--活动规则的弹出框-->
+			<div class="modal fade activity-modal" tabindex="-1" role="dialog">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title">活动规则</h4>
+			      </div>
+			      <div class="modal-body">
+			        <div class="activity-rule">
+						<ul>
+							<li>1.新老用户均可参与</li>
+							<li>2.请登录后再进行分享</li>
+							<li>3.新老用户均可参与新老用户均可参与新老用户均可参与新老用户均可参与</li>
+							<li>4.新老用户均可参与新老用户均可参与</li>
+							<li>5.新老用户均可参与新老用户均可参与</li>
+						</ul>
+					</div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+			<!--@php  include themePage('footer');@-->	
+		</div>
+		
+		<script>
+			$(function(){				
+				var total_num_new_length;
+				var total_num_new;
+				var total_num_old = "000000000";
+				function getnum(){	
+					//获取旧的参与总人数
+					total_num_old = $("#total_num_old").val();
+					//异步获取最新的参与总人数
+//					$.post('', {}, function(s) {
+//						total_num_new = s;	
+//					});
+					//暂时写死
+					total_num_new = 800000;
+					
+					total_num_new_length = total_num_new.length;
+					if(total_num_old == total_num_new){
+						
+					}else{
+						//从最后一位开始遍历
+						var all_num = 10;
+						
+						for(var j = 1; j <= total_num_new_length;j++){							
+							var ge_new = total_num_new.substr(total_num_new_length-j,1);
+							var ge_old = total_num_old.substr(total_num_new_length-j,1);
+							
+							//新旧相差多少
+							var dif = ge_new - ge_old;
+							//要滚动的距离
+							var gap = dif * 27 * (-1);
+							var last_num = all_num - j;	
+							//滚动
+							$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},500);						
+						}	
+						//更新旧的参与人数
+
+						//$("#total_num_old").val(total_num_new);
+						total_num_old = total_num_new;
+					}					
+				}
+				var time = setInterval(function(){
+					getnum();
+				},1000)
+										
+				//点击一般商品的图片，弹出夺宝参与记录
+				$(".imgWrap").click(function(){
+					$(".indiana_record").modal();
+					//获取id
+					var record_id = $(this).attr("record_id");	
+					var len = $(".modal-body").children().length;					
+					var per_record  = '<li>'+
+									'<span class="time">2017-01-23  15:23 </span>'+
+									 '<span class="men">觅海掌门人</span>'+
+									 '参与了'+
+									 '<span class="num">10</span>'+									
+									 '人次'+
+								 '</li>';						
+					$(".modal-body ul").html(per_record);
+					
+				})
+				//点击免费领取按钮
+				$(".tojoin").click(function(){					
+					var record_id = $(this).parent().siblings(".imgWrap").attr("record_id");
+					alert("领取成功");
+				})				
+				//点击晒单分享的爱心
+				var love = 0 ; 
+				$(".transparent-png").click(function(){
+					if(love == 0){
+						$(this).attr("src","__RESOURCE__/recouse/images/love-yes.png");
+						var love_num = parseInt($(this).siblings("em").text());
+						$(this).siblings("em").text(love_num+1);
+						love = 1;
+					}else{
+						
+					}					
+				})
+				//推荐商品模块，新年许愿按钮
+				$(".recommend_list .right_ele .btn").click(function(){
+					alert("领取成功");
+				});
+
+				$(".active-fixed-btn").on("click",function(){
+					$(".activity-modal").modal();
+				});
+			})
+			//预告的倒计时
+			function countDown(time,id){
+	            var end_time = time * 1000,//月份是实际月份-1
+	                sys_second = (end_time-new Date().getTime())/1000;
+	            getTime(sys_second,id);
+	            var timer = setInterval(function(){
+	                if (sys_second > 1) {
+	                    sys_second -= 1;
+	                    getTime(sys_second,id);
+	                } else {
+	                    clearInterval(timer);
+	                }
+	            }, 1000);
+	        }
+	        function getTime(sys_second,id){
+	            var day = Math.floor((sys_second / 3600) / 24);
+	            var hour = Math.floor((sys_second / 3600) % 24);
+	            var minute = Math.floor((sys_second / 60) % 60);
+	            var second = Math.floor(sys_second % 60);
+	            if($(id+' .limit_d')){
+	                $(id+' .limit_d').text(day<10?"0"+day:day);
+	            }
+	            if( second <=0 && minute<=0 ){
+	                $(id).html("结束");
+	            }
+	            $(id+' .limit_h').text(hour<10?"0"+hour:hour);    //计算小时
+	            $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
+	            $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
+	        }
+	        //第一个参数结束时间的时间戳 第二个参数商品对应的ID
+	        countDown(2485523151,"#myid1");
+	        countDown(1485613151,"#myid2");
+	        countDown(1485713151,"#myid3");
+	        countDown(1485813151,"#myid4");
+		</script>		
+	</body>
+</html>

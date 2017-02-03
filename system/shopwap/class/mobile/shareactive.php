@@ -2,22 +2,26 @@
     $op     = empty($_GP['op'])? 'display' : $_GP['op'];
     $openid = checkIsLogin();
     if($op == 'display'){
-        $openid = getOpenidFromWeixin($openid);
-        //这里openid还可能是空，因为有些微信用户不一定绑定过用户信息
+        $openid    = getOpenidFromWeixin($openid);
+        $accesskey = $_GP['accesskey'];
 
-        $isOpenByWeixin = false;
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
-            $isOpenByWeixin = true;
-        }
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
         $share_info  = checkIsAddShareActive($openid);
-        //获取今天已经分享给谁了
-        $shareMember = getHasShareMember($share_info);
+
+        //如果带有加密信息，说明是分享进来的，则进行设置缓存
+        isReloadOrSetCache($openid,$accesskey);
 
         //记住当前地址
         tosaveloginfrom();
-        include themePage('shareactive');
+        if(is_mobile_request()){
+            //获取今天已经分享给谁了
+            $shareMember = getHasShareMember($share_info);
 
+        }else{
+            //参与总人数
+            $canyu_total = get_active_total_people();
+        }
+        include themePage('shareactive');
     }else if($op == 'list'){
         $openid = getOpenidFromWeixin($openid);
         if(empty($openid)){
@@ -25,20 +29,20 @@
             $url = mobile_url('login');
             message('请先登录，再参与！',$url,'success');
         }
+
+        $share_info = checkIsAddShareActive($openid);
+        //参与总人数
+        $canyu_total = get_active_total_people();
         //获取活动正在进行的商品 endtime就是活动开始时间
         $now_time = time();
         $psize    =  6;
         $pindex   = max(1, intval($_GP["page"]));
         $limit    = ' limit '.($pindex-1)*$psize.','.$psize;
-        $sql = "select a.*,d.title as dtitle from ".table('addon7_award')." as a left join ".table('shop_dish')." as d";
-        $sql .= " on a.dishid=d.id where a.state=0 and a.endtime<={$now_time} order by a.id desc {$limit}";
+        $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by id desc {$limit}";
         $shareActiveShop = mysqld_selectall($sql);
         if(!empty($shareActiveShop)){
             foreach($shareActiveShop as $key=>$item){
-                //从产品库中获取缩略图
                 $jindutiao  = round(($item['amount']-$item['dicount'])*100/$item['amount'],2).'%';   //进度条
-                $shareActiveShop[$key]['dthumb']    = getGoodsThumb($item['gid']);
-                $shareActiveShop[$key]['jindutiao'] = $jindutiao;
             }
         }
 
@@ -67,13 +71,47 @@
         }else{
             die(showAjaxMess(200,$share_member));
         }
+    }else if($op == 'canyu_recorder'){  //参与记录
+        $openid   = getOpenidFromWeixin($openid);
+        $award_id = $_GP['award_id'];
+        $recorder = mysqld_selectall("select createtime,star_num from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}'");
+        if(empty($recorder)){
+            die(showAjaxMess(1002,'暂无参与记录'));
+        }else{
+            die(showAjaxMess(200,$recorder));
+        }
+
+    }else if($op == 'wish'){  //进行许愿
+        $openid   = getOpenidFromWeixin($openid);
+        $award_id = $_GP['award_id'];
+        //判断今天是否可以参与
+        $share_info = checkIsAddShareActive($openid);
+        if($share_info['total_num']>0){
+            $data = array(
+                'openid'     => $openid,
+                'award_id'   => $award_id,
+                'createtime' => time(),
+                'star_num'   => '2564',
+            );
+            $res = mysqld_insert('addon7_request',$data);
+            if($res){
+                $total_num = $share_info['total_num']-1;
+                mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
+                die(showAjaxMess(200,"恭喜您许愿成功!"));
+            }else{
+                die(showAjaxMess(1002,'操作失败，稍后再试'));
+            }
+        }else{
+            die(showAjaxMess(1002,'今天已上限，请明天再来'));
+        }
+
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
         $weixin_openid = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
-        /*if(empty($unicode)){
-            message('活动暂时关闭！','index.php','success');
-        }*/
+        //if(empty($unicode)){
+            message('邀请码暂时不开放！','index.php','success');
+        //}
         $unicode = 'olMgBwFlMMm46w90gzTT0ao3BHCY';
         $weixin  = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$unicode}'");
         if(empty($weixin['openid'])){
@@ -84,8 +122,8 @@
         }
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
         $info         = checkIsAddShareActive($weixin['openid']);
-        $erweimaUrl   = empty($info) ? '' : saveWeixinImgToLocal($weixin['openid'],$info['erweima']);
-        $touxiangUrl  = empty($weixin['avatar']) ? '' : saveWeixinImgToLocal($weixin['openid'],$weixin['avatar'],false);
+        $erweimaUrl   = empty($info) ? '' : saveWeixinImgToLocal($weixin['weixin_openid'],$info['erweima']);
+        $touxiangUrl  = empty($weixin['avatar']) ? '' : saveWeixinImgToLocal($weixin['weixin_openid'],$weixin['avatar'],false);
         include themePage('shareactive_yqm');
     }
 

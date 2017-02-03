@@ -9,10 +9,11 @@ function checkIsAddShareActive($openid){
         //今天的凌晨时间
         $curt_time = strtotime(date("Y-m-d"),time());
         $member    = member_get($openid);
-        $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['experience']."' order by rank_level desc limit 1 " );
-        $info      = mysqld_select("select id,zero_time from ".table('share_active')." where openid='{$openid}'");
-        $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
+        $info      = mysqld_select("select * from ".table('share_active')." where openid='{$openid}'");
+
         if(empty($info)){
+            $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['experience']."' order by rank_level desc limit 1 " );
+            $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
             $info = array(
               'openid'      => $openid,
               'total_num'   => $rank_level*2,
@@ -21,28 +22,17 @@ function checkIsAddShareActive($openid){
               'zero_time'   => $curt_time
             );
             mysqld_insert('share_active',$info);
-            $erweima    = getShareActiveWeixinErweima($info['id']);
-            $info['id']      = mysqld_insertid();
-            $info['erweima'] = $erweima;
-            mysqld_update("share_active",array('erweima'=>$erweima),array('id'=>$info['id']));
         }else{
-            $id   = $info['id'];
-            //如果二维码已经过6天了，再次获取
-            $diff_time = time()-$info['createtime'];
-            $update    = array();
-            if($diff_time > 3600*24*6){
-                $erweima           = getShareActiveWeixinErweima($info['id']);
-                $info['erweima']   = $erweima;
-                $update['erweima'] = $erweima;
-            }
+            $id     = $info['id'];
+            $update = array();
+
             //如果过了第二天，则初始化活动参与次数
             if($curt_time>$info['zero_time']){
+                $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['experience']."' order by rank_level desc limit 1 " );
+                $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
                 $update['total_num']  = $rank_level*2;
                 $update['zero_time']  = $curt_time;
                 $update['modifytime'] = time();
-            }
-
-            if(!empty($update)){
                 mysqld_update("share_active",$update,array('id'=>$id));
             }
         }
@@ -91,15 +81,34 @@ function getHasShareMember($share_active,$num=10,$today=true){
         if($today){
             //获取当天凌晨年月日的时间戳
             $time  = strtotime(date('Y-m-d'),time());
-            $where = " and s.createtime = {$time}";
+            $where = " and createtime = {$time}";
         }
         if($num){
             $limit = "limit {$num}";
         }
-        $sql     = "select s.visted_openid,wx.* from ".table('share_active_record')." as s left join ".table('weixin_wxfans')." as wx ";
-        $sql    .= " on s.visted_openid=wx.openid  where s.active_id={$share_active['id']} {$where}  order by s.id desc {$limit}";
+        $sql     = "select * from ".table('share_active_record')." where active_id={$share_active['id']} {$where}  order by id desc {$limit} ";
         $member  = mysqld_selectall($sql);
-
+        if(!empty($member)){
+            foreach($member as $key=>&$item){
+                if(!empty($item['visted_weixin_openid'])){
+                    $man = mysqld_select("select nickname,avatar from ".table('weixin_wxfans')." where weixin_openid='{$item['visted_weixin_openid']}'");
+                    if($man){
+                        $item['nickname'] = $man['nickname'];
+                        $item['avatar']   = $man['avatar'];
+                    }else{
+                        unset($member[$key]);
+                    }
+                }else if(!empty($item['visted_openid'])){
+                    $man = mysqld_select("select realname,avatar from ".table('member')." where openid='{$item['visted_openid']}'");
+                    if($man){
+                        $item['nickname'] = $man['realname'];
+                        $item['avatar']   = $man['avatar'];
+                    }else{
+                        unset($member[$key]);
+                    }
+                }
+            }
+        }
     }
     return $member;
 }
@@ -145,27 +154,7 @@ function getShareActiveCache(){
     }
     return $share_openid;
 }
-/**
- * 解密accesskey  得到openid与当前用户比对，是自己的返回true,否则返回false
- * @param $openid  当前用户
- * @return bool
- */
-/*function checkAccessKeyIsSelf($openid){
-    $accesskey     = getShareAccesskeyCookie();
-    $decode_openid = decodeShareAccessKey($accesskey);
-    if($decode_openid){
-        if($openid == $decode_openid){
-            //说明是自己
-            return true;
-        }else{
-            //说明不是自己  或者当前用户还没登录无法比对
-            return false;
-        }
-    }else{
-        //解出来没值，说明，上次分享的用户没有登录
-        return false;
-    }
-}*/
+
 
 /**
  * @content   获取活动分享者的微信信息
@@ -196,61 +185,6 @@ function getShareActiveCache(){
     return $data;
 }*/
 
-/*function setShareAccesskeyCookie($accesskey){
-    $cookie      = new LtCookie();
-    $cookie->setCookie('shareAccesskey',$accesskey,time()+3600*2);
-
-}*/
-
-/**
- * @content 从cookie中获取分享者的accesskey
- * @return bool|string
- */
-/*function getShareAccesskeyCookie(){
-    $cookie        = new LtCookie();
-    $accesskey     = $cookie->getCookie('shareAccesskey');
-    return $accesskey;
-}
-function cleanShareAccesskeyCookie(){
-    $cookie      = new LtCookie();
-    $cookie->delCookie('shareAccesskey');
-}*/
-
-/**
- * @content 分享活动记录表  添加当天的成员
- * @param $activeId  主表share_active   id
- */
-function addShareActiveRecordMember($activeId,$weixin_openid){
-    if(!empty($activeId)){
-        $share_info  = mysqld_select("select openid from ".table('share_active')." where id={$activeId}");
-        if(empty($share_info)){
-            return '';
-        }
-        $own_openid    = getOpenidFromWeixin('');  //可能是空，微信用户第一次关注,还没登录注册
-        if(empty($own_openid)){
-            //判断weixin_openid是否一样
-            $share_weixin_info = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where openid='{$share_info['openid']}'");
-            if($share_weixin_info['weixin_openid'] == $weixin_openid){
-                return '';
-            }
-        }else if($own_openid == $share_info['openid']){
-            return '';
-        }
-
-        $time = strtotime(date("Y-m-d"),time());
-        $info = mysqld_select("select id from ".table('share_active_record')." where visted_openid='{$own_openid}' and createtime={$time}");
-        if(empty($info)){
-            $data = array(
-                'active_id'      => $activeId,
-                'visted_openid'  => $own_openid,
-                'visted_weixin_openid' => $weixin_openid,
-                'createtime'     => $time,
-            );
-            mysqld_insert('share_active_record',$data);
-        }
-    }
-}
-
 /**
  * 用户注册时候  通过缓存的cookie中取得分享者信息 并给该分享者总的参加活动次数加1
  */
@@ -263,6 +197,13 @@ function shareActive_addToalNum(){
 
 }
 
+/**
+ * @content 保存微信的图片到本地
+ * @param $weixin_openid
+ * @param $weixin_img    图片地址 二维码或者头像
+ * @param bool $is_erweima
+ * @return string
+ */
 function saveWeixinImgToLocal($weixin_openid,$weixin_img,$is_erweima=true){
     if($is_erweima){
         $name = $weixin_openid."_erweima.png";
@@ -288,7 +229,7 @@ function saveWeixinImgToLocal($weixin_openid,$weixin_img,$is_erweima=true){
     }
 
 }
-/*function encodeShareAccessKey($openid){
+function encodeShareAccessKey($openid){
     $openid.="@@@share";
     return DESService::instance()->encode($openid);
 }
@@ -305,30 +246,119 @@ function decodeShareAccessKey($accesskey){
         $openid = $codeArr['0'];
         return $openid;
     }
-}*/
-/*
-function isReloadShareActivePage($openid){
-    $accesskey = getShareAccesskeyCookie();
+}
+
+function isReloadOrSetCache($openid,$accesskey){
     if(empty($accesskey)){
-        if(empty($_GET['accesskey'])){
-            //给自己openid加密后，得到accesskey用于分享
+        if($openid){
+            //如果已经登录过，则让地址带上加密信息，便于分享出去
             $accesskey = encodeShareAccessKey($openid);
+            $url       = mobile_url('shareActive',array('op'=>'display', 'accesskey'=>$accesskey));
+            header("location:".$url);
+        }
+    }else{
+        //如果带有加密信息  缓存起来
+        $share_openid = decodeShareAccessKey($accesskey);
+        setShareAccesskeyCookie($accesskey);
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+            //微信端操作
+            $weixin_openid = get_weixin_session_account('weixin_openid');
+            addShareActiveRecordMember($share_openid,$weixin_openid);
         }else{
-            //获取当前
-            $accesskey = $_GET['accesskey'];
+            //非微信端操作
+            if($openid){
+                //如果已经登录，则进行 邀请添加会员的记录 share_active_record
+                addShareActiveRecordMember($share_openid,$openid);
+            }
         }
 
-        $url       = mobile_url('shareActive',array('op'=>'display', 'accesskey'=>$accesskey));
-        //把accesskey记入缓存，用于注册或者其他地方用到
-        setShareAccesskeyCookie($accesskey);
-        //再重新加载页面，是为了让cookie生效，也同时，让地址确保带上accesskey，便于分享
-        header("location:".$url);
+    }
+}
+
+
+function setShareAccesskeyCookie($accesskey){
+    $accesskey_cookie = getShareAccesskeyCookie();
+    if($accesskey != $accesskey_cookie){
+        $cookie      = new LtCookie();
+        $cookie->setCookie('shareAccesskey',$accesskey,time()+3600*2);
+    }
+}
+
+/**
+ * @content 从cookie中获取分享者的accesskey
+ * @return bool|string
+ */
+function getShareAccesskeyCookie(){
+    $cookie        = new LtCookie();
+    $accesskey     = $cookie->getCookie('shareAccesskey');
+    return $accesskey;
+}
+function cleanShareAccesskeyCookie(){
+    $cookie      = new LtCookie();
+    $cookie->delCookie('shareAccesskey');
+}
+
+
+/**
+ * 分享活动记录表  添加当天的成员
+ * @param $share_openid  分享者的openid
+ * @param $openid  个人openid
+ * @return string
+ */
+function addShareActiveRecordMember($share_openid,$openid){
+    if(empty($share_openid))
+        return '';
+
+    $share_info  = mysqld_select("select * from ".table('share_active')." where openid='{$share_openid}'");
+    if(empty($share_info))
+        return '';
+
+
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+        //微信端操作
+        $weixin_openid = $openid;
+        $own_openid    = getOpenidFromWeixin('');  //可能是空，微信用户第一次关注,还没登录注册
+        if($own_openid == $share_info['openid']){
+            return '';
+        }
+
+        $time = strtotime(date("Y-m-d"),time());
+        $where = " where visted_weixin_openid='{$weixin_openid}'";
+        if($own_openid){
+            $where = " where (visted_weixin_openid='{$weixin_openid}' or visted_openid='{$own_openid}')";
+        }
+        $where .= " and createtime={$time}";
+        $info = mysqld_select("select id from ".table('share_active_record')." {$where}");
+        if(empty($info)){
+            $data = array(
+                'active_id'      => $share_info['id'],
+                'visted_openid'  => $own_openid,
+                'visted_weixin_openid' => $weixin_openid,
+                'createtime'     => $time,
+            );
+            mysqld_insert('share_active_record',$data);
+        }
     }else{
-        //如果解出来的openid 不对，则说明上次没有登录就分享了，则清空缓存
-        $decode_share_openid = decodeShareAccessKey($accesskey);
-        if(!$decode_share_openid){
-            cleanShareAccesskeyCookie();
+        //非微信端操作
+        $time = strtotime(date("Y-m-d"),time());
+        if($openid == $share_info['openid'])
+            return '';
+
+        $info = mysqld_select("select id from ".table('share_active_record')." where visted_openid='{$openid}' and createtime={$time}");
+        if(empty($info)){
+            //分享者跟自己不是同一个人时
+            $data = array(
+                'active_id'      => $share_info['id'],
+                'visted_openid'  => $openid,
+                'createtime'     => $time,
+            );
+            mysqld_insert('share_active_record',$data);
         }
     }
-}*/
 
+}
+
+function get_active_total_people(){
+    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+    return $total+72385;
+}

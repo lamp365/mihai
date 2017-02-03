@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>夺宝</title>
+	<title>心愿</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,7 +11,7 @@
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 	<link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet"	type="text/css" />
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/indiana.css"/>
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/shareactive.css"/>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
@@ -20,7 +20,7 @@
 <body>
 <div class="activity clearfix">
 
-	<div class="activity-content">快获取邀请码邀请您的好友参与XXXXXXXX活动吧</div>
+	<div class="activity-content">快邀请您的好友参与心愿活动吧</div>
 
 	<a href="<!--@php echo mobile_url('shareActive',array('op'=>'list')); @-->">
 		<div class="activity-play-now">
@@ -30,7 +30,7 @@
 
 
 	<!--@php if(!empty($shareMember)){ @-->
-	<p class="user-title">今天谁参与了活动</p>
+	<p class="user-title">今天谁参与了您的邀请</p>
 	<ul class="user-list clearfix">
 		<!--@php foreach($shareMember as $item){   @-->
 		<li>
@@ -78,7 +78,11 @@
 <div class="footer_nav">
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=list" class="nav_index">主会场</a>
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=activity" class="nav_activity">活动</a>
+	<!--@php if($openid){  @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&accesskey=<!--@php echo $accesskey;@-->" class="nav_share">我的邀请</a>
+	<!--@php }else{ @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive" class="nav_share">我的邀请</a>
+	<!--@php }  @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=fansindex" class="nav_me">个人中心</a>
 </div>
 <script type="text/javascript">

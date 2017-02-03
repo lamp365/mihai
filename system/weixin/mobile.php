@@ -68,10 +68,6 @@ class weixinAddons extends BjSystemModule
                 if(!empty($reply)){
                     return $this->respText($reply['description'],$message);
                 }
-                //该活动结束后，可以去掉 把活动推荐人的openid缓存起来
-                setShareActiveCache($eventkey,$message['from']);
-                //添加邀请的活动成员
-                addShareActiveRecordMember($eventkey,$message['from']);
             }
             if ($message["type"] == "SCAN") {
 				if ( ! empty($message['eventkey']) ){
@@ -80,11 +76,6 @@ class weixinAddons extends BjSystemModule
                 }else{
                     $eventkey = '';
                 }
-
-                //该活动结束后，可以去掉 把活动推荐人的openid缓存起来
-                setShareActiveCache($eventkey,$message['from']);
-                //添加邀请的活动成员
-                addShareActiveRecordMember($eventkey,$message['from']);
             }
             
             if (empty($reply['id'])) {

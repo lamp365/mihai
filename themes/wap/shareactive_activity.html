@@ -10,7 +10,7 @@
 	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/indiana.css"/>
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/shareactive.css"/>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
@@ -71,7 +71,11 @@
 <div class="footer_nav">
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=list" class="nav_index">主会场</a>
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&op=activity" class="nav_activity">活动</a>
+	<!--@php if($openid){  @-->
+	<a href="index.php?mod=mobile&name=shopwap&do=shareactive&accesskey=<!--@php echo $accesskey;@-->" class="nav_share">我的邀请</a>
+	<!--@php }else{ @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=shareactive" class="nav_share">我的邀请</a>
+	<!--@php }  @-->
 	<a href="index.php?mod=mobile&name=shopwap&do=fansindex" class="nav_me">个人中心</a>
 </div>
 <script type="text/javascript">

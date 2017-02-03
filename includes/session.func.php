@@ -210,10 +210,11 @@ function get_session_account($useAccount = true, $mess_id = 0)
 /**
  * @content 微信打开时才会记录 MOBILE_SESSION_ACCOUNT
  * 存入值有 $sessionAccount = array(
-                'openid'  => $from_user,
-                'unionid' => $_GP['unionid']
+                'openid'         => $from_user,
+ *               'weixin_openid' => $from_user,
+                'unionid'        => $_GP['unionid']
             );
- * @param string $key  可以是openid 或者  unionid
+ * @param string $key  可以是openid 或者  unionid  weixin_openid
  * @return string
  */
 function get_weixin_session_account($key = ''){
