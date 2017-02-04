@@ -13,7 +13,7 @@
                    $stext =  floatval($object['nums']);
 				   $date = trim($object['date']);
                    // 找出开奖信息
-				   $points = mysqld_selectall("SELECT * FROM " .table('addon7_award')." WHERE state = 1 and date = '".$date."'");
+				   $points = mysqld_selectall("SELECT * FROM " .table('addon7_award')." WHERE state = 2 and date = '".$date."'");
 				   // 开始处理开奖信息
 				   $num = 0;
 				   foreach ( $points as $value ){
@@ -23,8 +23,8 @@
                              $str2 = $value['amount'];
 							 $result =  fmod($stext,$str2);
 							 $r_s = $result + 1;
-							 // 中奖号码
-							 $open = $result + 1000001;
+							 // 中奖号码 p24000003
+							 $open = "p".$points['id'].'00000'.$r_s;
 							 $date = array(
                                  'stext'=> $stext,
 								 'state' => 2,

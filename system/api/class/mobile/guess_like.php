@@ -33,6 +33,13 @@
 	      		$ary['marketprice'] = $g_v['marketprice'];
 	      		$ary['app_marketprice'] = $g_v['app_marketprice'];
 	      		$ary['timeprice'] = $g_v['timeprice'];
+	      		// 品牌
+				$brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$g_v['brand']);
+				$ary['brand'] = $brand['brand'];
+				// 国家
+				$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
+				$ary['country'] = $country['name'];
+				$ary['country_icon'] = download_pic($country['icon']);
 	      		$guess_ary[] = $ary;
 	      	}
 
@@ -57,6 +64,13 @@
       		$ary['marketprice'] = $good['marketprice'];
       		$ary['app_marketprice'] = $good['app_marketprice'];
       		$ary['timeprice'] = $good['timeprice'];
+      		// 品牌
+			$brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
+			$ary['brand'] = $brand['brand'];
+			// 国家
+			$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
+			$ary['country'] = $country['name'];
+			$ary['country_icon'] = download_pic($country['icon']);
       		$guess_ary[] = $ary;
 		}
 		$result['data']['guess'] = $guess_ary;
@@ -84,6 +98,13 @@
 	      		$ary['marketprice'] = $g_v['marketprice'];
 	      		$ary['app_marketprice'] = $g_v['app_marketprice'];
 	      		$ary['timeprice'] = $g_v['timeprice'];
+	      		// 品牌
+				$brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$g_v['brand']);
+				$ary['brand'] = $brand['brand'];
+				// 国家
+				$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
+				$ary['country'] = $country['name'];
+				$ary['country_icon'] = download_pic($country['icon']);
 	      		$guess_ary[] = $ary;
 	      	}
 

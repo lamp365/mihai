@@ -9,7 +9,7 @@ body,html{
 	max-width: 720px;
 	width: 100%;
 	margin: 0 auto;
-	margin-bottom: 50px;
+	//margin-bottom: 50px;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -22,6 +22,7 @@ body,html{
     margin-top: 10px;
     padding:0 3px 10px 3px;
     background-color: #fff;
+    position: relative;
 }
 .last-wrap-list li img{
 	width: 100%;
@@ -215,15 +216,25 @@ body,html{
 	display: block;
 	border-radius: 5px;
 }
-.total-number-div{
-	width: 96%;
-	margin: 0 auto;
-	background-color: #fff;
-	height: 35px;
-	line-height: 35px;
-	text-align: center;
-	border-radius: 3px;
+@media (max-width: 375px){
+    .total-number-div{
+        position: absolute;
+        top: 9%;
+        left: 21%;
+        color: #fff;
+        width: 69%;
+    }
 }
+@media (min-width: 376px) {
+    .total-number-div{
+        position: absolute;
+        top: 12%;
+        left: 21%;
+        color: #fff;
+        width: 69%;
+    }
+}
+
 .last-wrap .total-number-list li{
 	float: left;
 	width: 10px;
@@ -282,6 +293,9 @@ body,html{
     margin: 0 auto;
     margin-top: 10px;
 }
+.banner{
+	position: relative;
+}
 .banner img{
 	width: 100%;
 	max-width: 100%;
@@ -304,20 +318,22 @@ body,html{
 	width: 64px;
     top: 26px;
     right: 0px;
-    background-color: rgba(255,255,255,.7);
+    background-color: rgba(255,255,255,1);
     font-size: 12px;
     padding: 2px 10px;
     border-radius: 30px 0 0 30px;
+    z-index: 2;
 }
 .active-num-btn{
 	position: fixed;
     top: 58px;
     width: 64px;
     right: 0px;
-    background-color: rgba(255,255,255,.7);
+    background-color: rgba(255,255,255,1);
     font-size: 12px;
     padding: 2px 10px;
     border-radius: 30px 0 0 30px;
+    z-index: 2;
 }
 .active-num-btn img{
 	width: 16px;vertical-align: middle;margin-top: -1px;
@@ -332,4 +348,124 @@ body,html{
 .last-wrap-list .progress .active{
 	margin: 0;
     background-color: #ff4400;
+}
+.banner-product-list{
+    position: absolute;
+    top:12.5%;
+    left: 5%;
+    width: 90%;
+}
+.banner-product-list img{
+	width: 100%;
+	display: block;
+	max-width: 100%;
+}
+.banner-product-list li{
+    float: left;
+    width: 16.2%;
+    border: 1px solid #e5e5e5;
+    box-sizing: border-box;
+    margin-right: .6%;
+    position: relative;
+}
+.total_num{
+    width: 100%;
+    margin: 0 auto;
+    clear: both;
+    height: 65px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.total_num  .num_list{
+	vertical-align: middle;
+    overflow: hidden;
+    width: 100%;
+}
+.total_num .per_num{
+    float: left;
+    font-size: 18px;
+    padding: 0 3px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    overflow: hidden;
+    margin-right: 3px;
+    color: #fff;
+    background-color: #e8523b;
+}
+.soon-enter{
+    text-align: center;    
+    margin: 25px 0 10px 2.5%;    
+    border: 1px solid #f40;    
+    width: 95%;    
+    background-color: #f40;    
+    color: #fff;    
+    padding: 5px;
+    border-radius: 5px;    
+    box-sizing: border-box;
+}
+.not-start{
+    text-align: center;    margin: 25px 0 10px 2.5%;    border: 1px solid #f40;    width: 95%;    background-color: #f40;    color: #fff;    padding: 5px;
+    border-radius: 5px;    box-sizing: border-box;
+}
+
+.tojoin {
+    display: block;
+    width: 90%;
+    margin: 0 auto;
+    background-color: #f60;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 9px;
+    line-height: 40px;
+}
+.last-wrap-list .per_indiana .name{
+    width: 90%;
+    margin: 0 auto;
+}
+.last-wrap-list .per_indiana img{
+    padding: 5%;
+}
+.list-num{
+    width: 96%;
+    margin: 0 auto;
+}
+.list-num-before{
+   color: #f60;
+}
+.list-num-after{
+    color: #2af;
+}
+.banner-product-list .lock{
+    position: absolute;
+    top: -8px;
+    right: -3px;
+    width: 16px;
+    height: 16px;
+}
+.banner-product-list .full-num{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 16px;
+    font-size: 12px;
+    color: #ff4400;
+}
+.result-search{
+    position: absolute;
+    bottom: 1%;
+    width: 24%;
+    right: 5%;
+    height: 7%;
+}
+#result-time{
+    position: absolute;
+    bottom: 1%;
+    left: 5%;
+    color: #ff9292;
 }

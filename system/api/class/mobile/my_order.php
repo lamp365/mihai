@@ -118,6 +118,9 @@
 	    	$usa['p1'] = $good['p1'];
 	    	$usa['p2'] = $good['p2'];
 	    	$usa['p3'] = $good['p3'];
+	    	// 分类名
+	    	$category = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$usa['p1']);
+	    	$usa['category'] = $category['name'];
 	    	$usa['productprice'] = $good['productprice'];
 	    	$usa['marketprice'] = $good['marketprice'];
 	    	$usa['timeprice'] = $good['timeprice'];

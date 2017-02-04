@@ -16,18 +16,16 @@
 	<body>
 		<!--@php  include page('header');@-->
 		<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
-		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@-->次</div>
+		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
 		<div style="background:#dc3737">
 			<div class="miandan-banner"></div>
 			<!--累计参与人数-->
-			
-			<!--存旧的参与人数-->
-			<input type="hidden" id="total_num_old" value="<!--@php echo $canyu_total; @-->"/>
-			
-			
+		
 			<!--开奖中-->
 			<div class=" comment_h">
 				<div class="viewport-area">
+				<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search">查询结果》</a>
+				<div id="result-time"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
 				<div class="total_num">
 					<ul class="num_list">	
 						<li class="per_num">
@@ -162,9 +160,13 @@
 				<!--右侧的6个-->
 				<div class="right_ele">
 					<ul>
+						<!--@php if(!empty($toBeDraw)){ foreach($toBeDraw as $items){ @-->
 						<li>
-							<img src="https://img20.360buyimg.com/mobilecms/s350x350_jfs/t3880/14/194316126/29573/cc4965b1/58441f48N3d0a692b.jpg!q70.jpg" />
+							<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
+							<div class="full-num">123456</div><!-- 满员后的图片 -->
+							<img src="<!--@php echo download_pic($items['logo'],120,120,2);@-->">
 						</li>
+						<!--@php }} @-->
 					</ul>
 				</div>
 				</div>
@@ -174,18 +176,18 @@
 			<div class=" recommend_list" style="height: 698px;background: url(__RESOURCE__/recouse/images/miandan_page02.jpg) no-repeat center center;">
 				<div class="viewport-area" style="height: 698px;">
 					<div class="left_img">
-						<img src="__RESOURCE__/recouse/images/pc_load_left.png" />
+						<img src="<!--@php echo download_pic($recommand['logo'],350,350,2);@-->" />
 					</div>
 					<div class="right_ele">
 						<!--商品名称-->
-						<p class="title">iphone7</p>
+						<p class="title"><!--@php echo $recommand['title'];@--></p>
 						<!--商品描述-->
-						<p class="detail">玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有玫瑰金，64G，你值得拥有</p>
+						<p class="detail"><!--@php echo $recommand['names'];@--></p>
 						<div class="progress" style="width: 200px;margin: 0 auto;margin-bottom: 35px;">
-						   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+						   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $recommand['jindutiao'];@-->"></div>
 						</div>
 						<!--按钮-->
-						<p class="btn">新年许愿</p>
+						<p class="btn" onclick="make_wish(this,<!--@php echo $recommand['id'];@-->)">新年许愿</p>
 					</div>
 				</div>
 			</div>
@@ -194,144 +196,39 @@
 				<div class="recommend_list_two_head"></div>
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
+						<!--@php if(!empty($activeGoods)){   foreach($activeGoods as $item){  @-->
 						<li class="per_indiana"> 
 							<!--商品图片-->
-							<div class="imgWrap" record_id="11">
+							<div class="imgWrap" data-id="<!--@php echo $item['id'];@-->">
 								<a>
-									<img src="https://img10.360buyimg.com/mobilecms/s250x250_jfs/t2608/187/309611781/238595/cc9e704b/570d2dbcN990913ed.jpg" />
+									<img src="<!--@php echo download_pic($item['logo'],202,202,2);@-->" />
 								</a>
 							</div>
 							<!--标题-->
-							<p class="name">滋源（SEEYUONG）茶籽 控油 去屑 洗护 4件套（洗发535ml+护发535ml+洗发60ml+护发60ml)</p>
+							<p class="name"><!--@php echo $item['title'];@--></p>
 							<!--人数-->
 
 							<!--进度条-->
 							<div class="progress">
-								<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 10%"></div>
+								<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $item['jindutiao'];@-->"></div>
 							</div>
-							
+							<div class="list-num">
+								<span class="list-num-before">5930</span> / <span class="list-num-after">100000</span>
+							</div>
 							<div class="last">
 								<!--立即参与按钮-->
-								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
+								<!--@php if($item['forbiden']) { @-->
+								<a href="javascript:void(0);" class="tojoin_forbiden" onclick="playForbiden()">新年许愿</a>
+								<!--@php }else{   @-->
+								<a href="javascript:void(0);" class="tojoin" onclick="make_wish(this,<!--@php echo $item['id'];@-->)">新年许愿</a>
+								<!--@php } @-->
+
 								<!--爱心-->
-								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
-								<span>10次</span>
+								<img src="__RESOURCE__/recouse/images/love-yes.png" class="love"/>
+								<span class="love-num" data-id="<!--@php echo $item['id'];@-->" ><!--@php echo $item['wish_num'];@--></span>
 							</div>
 						</li>
-						<li class="per_indiana"> 
-							<div class="imgWrap" record_id="22">
-								<a>
-									<img src="https://img10.360buyimg.com/mobilecms/s250x250_jfs/t3694/37/154827430/174137/5ef1fab3/5800ba8bN53967f99.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name">联想(Lenovo)小新Air13 Pro 13.3英寸14.8mm超轻薄笔记本电脑（i5 4G 256G PCIE SSD 940MX 2G FHD IPS）银</p>
-							<!--人数-->
-							
-							<!--进度条-->
-							<div class="progress">
-							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
-							</div>
-							
-							<div class="last">
-								<!--立即参与按钮-->
-								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
-								<!--爱心-->
-								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
-								<span>10次</span>
-							</div>
-						</li>		
-						<li class="per_indiana"> 
-							<div class="imgWrap" record_id="22">
-								<a>
-									<img src="https://img12.360buyimg.com/mobilecms/s250x250_g13/M09/09/02/rBEhUlNaEJUIAAAAAAGlD-3hhPIAAMe8QORWlQAAaUn360.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name">361度男鞋 缓震耐磨跑鞋 网面百搭跑步鞋运动鞋 N 中灰/蓝 42</p>
-							<!--人数-->
-							
-							<!--进度条-->
-							<div class="progress">
-							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
-							</div>
-							
-							<div class="last">
-								<!--立即参与按钮-->
-								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
-								<!--爱心-->
-								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
-								<span>10次</span>
-							</div>
-						</li>				
-						<li class="per_indiana"> 
-							<div class="imgWrap" record_id="22">
-								<a>
-									<img src="https://img12.360buyimg.com/mobilecms/s300x300_jfs/t3307/250/3583939231/157343/b05ee0ef/57f6f244Na2902904.jpg!q70.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name">一款迷你型的全自动洗衣机，内桶采用钻石型内孔设计，减轻对衣物的损伤，不同的洗涤模式，只要选择一下，一键启动，就可以等着拿洗好的衣物了，非常方便省力。</p>
-							<!--人数-->
-							<!--进度条-->
-							<div class="progress">
-							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
-							</div>
-							
-							<div class="last">
-								<!--立即参与按钮-->
-								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
-								<!--爱心-->
-								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
-								<span>10次</span>
-							</div>
-						</li>	
-						<li class="per_indiana"> 
-							<div class="imgWrap" record_id="22">
-								<a>
-									<img src="https://img20.360buyimg.com/mobilecms/s350x350_jfs/t3880/14/194316126/29573/cc4965b1/58441f48N3d0a692b.jpg!q70.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name">(第167期）爱音乐的你怎能少得了一款属于自己的耳机呢，这款行走的耳机多种颜色任你选择，让你在路上也能随时随地听音乐，感受音乐的魅力，走在路上像一个DJ的感觉。</p>
-							<!--人数-->
-							
-							<!--进度条-->
-							<div class="progress">
-							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
-							</div>
-							
-							<div class="last">
-								<!--立即参与按钮-->
-								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
-								<!--爱心-->
-								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
-								<span>10次</span>
-							</div>
-						</li>
-						<li class="per_indiana"> 
-							<div class="imgWrap" record_id="22">
-								<a>
-									<img src="https://img10.360buyimg.com/mobilecms/s300x300_jfs/t3820/242/3142486568/131146/90998f1c/587883d7Nbc4f68c6.jpg!q70.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name">(第167期）海信4K智能电视</p>
-							<!--人数-->
-							
-							<!--进度条-->
-							<div class="progress">
-							   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
-							</div>
-							
-							<div class="last">
-								<!--立即参与按钮-->
-								<a href="javascript:void(0);" class="tojoin">新年许愿</a>
-								<!--爱心-->
-								<img src="__RESOURCE__/recouse/images/love-no.png" class="love"/>
-								<span>10次</span>
-							</div>
-						</li>				
+						<!--@php }}  @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
@@ -345,7 +242,7 @@
 								<span aria-hidden='true'>&times;</span>
 								<span class='sr-only'>Close</span>
 							</button>
-							<h4 class='modal-title'>夺宝参与记录</h4>
+							<h4 class='modal-title'>参与记录</h4>
 						</div>
 						<div class='modal-body'>
 							<ul>
@@ -360,6 +257,7 @@
 				<div class="recommend_list_two_head" style="background:url(__RESOURCE__/recouse/images/miandan_list_xiaqi.jpg)no-repeat center; "></div>
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
+						<!--@php if(!empty($toBeShow)){   foreach($toBeShow as $item){  @-->
 						<li class="per_indiana" style="position: relative;"> 
 							<!--商品图片-->
 							<div class="share not-start" record_id="11">
@@ -368,46 +266,12 @@
 								</a>
 							</div>
 							<!--标题-->
-							<p class="name" style="font-weight: bold;">(第168期）***</p>					
+							<p class="name" style="font-weight: bold;"><!--@php echo cut_title($item['title']);@--></p>
 							<!--立即参与按钮-->
-							<a href="javascript:void(0);" class="tojoin jqqd" id="myid1"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
-						</li>	
-						<li class="per_indiana" style="position: relative;"> 
-							<!--商品图片-->
-							<div class="share not-start" record_id="11">
-								<a>
-									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name" style="font-weight: bold;">(第168期）***</p>					
-							<!--立即参与按钮-->
-							<a href="javascript:void(0);" class="tojoin jqqd" id="myid2"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
-						</li>	
-						<li class="per_indiana" style="position: relative;"> 
-							<!--商品图片-->
-							<div class="share not-start" record_id="11">
-								<a>
-									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name" style="font-weight: bold;">(第168期）***</p>					
-							<!--立即参与按钮-->
-							<a href="javascript:void(0);" class="tojoin jqqd" id="myid3"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
-						</li>	
-						<li class="per_indiana" style="position: relative;"> 
-							<!--商品图片-->
-							<div class="share not-start" record_id="11">
-								<a>
-									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
-								</a>
-							</div>
-							<!--标题-->
-							<p class="name" style="font-weight: bold;">(第168期）***</p>					
-							<!--立即参与按钮-->
-							<a href="javascript:void(0);" class="tojoin jqqd" id="myid4"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>									
-						</li>				
+							<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
+						</li>
+						<script>countDown("<!--@php echo $item['endtime'];@-->","#myid<!--@php echo $item['id'];@-->");</script>
+						<!--@php }}  @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
@@ -418,7 +282,7 @@
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
 						<li class="per_indiana" style="height: 400px;"> 
-						 <!--商品图片-->
+						<!--商品图片-->
 						<div class="share" record_id="11">
 							<a>
 								<img src="https://img11.360buyimg.com/n2/jfs/t3289/170/5774446166/91727/aa992fe1/587f5addNb8be13b5.jpg"/>
@@ -502,7 +366,7 @@
 						</div>
 					</li>	
 					<li class="per_indiana" style="height: 400px;"> 
-						<!--商品图片-->
+						 <!--商品图片-->
 						<div class="share" record_id="11">
 							<a>
 								<img src="https://img14.360buyimg.com/n2/jfs/t3250/36/3044197712/43605/1f03392a/57eb427bNfbaf2fa3.jpg" />
@@ -533,7 +397,7 @@
 				</div>
 				<div class="recommend_list_two_footer"></div>
 			</div>
-			<!--活动规则的弹出框-->
+		<!--活动规则的弹出框-->
 			<div class="modal fade activity-modal" tabindex="-1" role="dialog">
 			  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
@@ -558,74 +422,78 @@
 			    </div>
 			  </div>
 			</div>	
-			<!--@php  include themePage('footer');@-->	
+		<!--@php  include themePage('footer');@-->	
 		</div>
 		
 		<script>
 			$(function(){				
 				var total_num_new_length;
 				var total_num_new;
-				var total_num_old = "000000000";
-				function getnum(){	
-					//获取旧的参与总人数
-					total_num_old = $("#total_num_old").val();
-					//异步获取最新的参与总人数
-//					$.post('', {}, function(s) {
-//						total_num_new = s;	
-//					});
-					//暂时写死
-					total_num_new = 800000;
-					
-					total_num_new_length = total_num_new.length;
+				var total_num_old;
+				
+				//为了看效果的，到时候把getnum这个方法删掉
+				function getnum(){
+					//每次都把旧的数先还原为0
+					total_num_old = "000000000"
+					//新的参与人数
+					total_num_new = "<!--@php echo $canyu_total; @-->";					
+					total_num_new_length = total_num_new.length;					
 					if(total_num_old == total_num_new){
 						
-					}else{
+					}else{						
 						//从最后一位开始遍历
-						var all_num = 10;
-						
-						for(var j = 1; j <= total_num_new_length;j++){							
+						var all_num = 10;						
+						for(var j = 1; j <= total_num_new_length;j++){								
 							var ge_new = total_num_new.substr(total_num_new_length-j,1);
-							var ge_old = total_num_old.substr(total_num_new_length-j,1);
-							
+							var ge_old = total_num_old.substr(total_num_new_length-j,1);							
 							//新旧相差多少
 							var dif = ge_new - ge_old;
 							//要滚动的距离
 							var gap = dif * 27 * (-1);
 							var last_num = all_num - j;	
 							//滚动
-							$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},500);						
-						}	
-						//更新旧的参与人数
-
-						//$("#total_num_old").val(total_num_new);
-						total_num_old = total_num_new;
+							$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},1000);						
+						}						
 					}					
 				}
+				getnum();
+				
+				//累计参与人数的滚动
+				function getnum2(){	
+					//每次都把旧的数先还原为0
+					total_num_old = "000000000"
+					//异步获取最新的参与总人数
+//					$.post('', {}, function(s) {
+//							
+//					});
+					//新的参与人数
+					total_num_new = "80126";				
+					total_num_new_length = total_num_new.length;					
+					if(total_num_old == total_num_new){
+						
+					}else{						
+						//从最后一位开始遍历
+						var all_num = 10;						
+						for(var j = 1; j <= total_num_new_length;j++){								
+							var ge_new = total_num_new.substr(total_num_new_length-j,1);
+							var ge_old = total_num_old.substr(total_num_new_length-j,1);							
+							//新旧相差多少
+							var dif = ge_new - ge_old;
+							//要滚动的距离
+							var gap = dif * 27 * (-1);
+							var last_num = all_num - j;	
+							//滚动
+							$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},1000);						
+						}						
+					}					
+				}
+				//三秒钟调用滚动一次
 				var time = setInterval(function(){
-					getnum();
-				},1000)
+					getnum2();
+				},3000)
 										
-				//点击一般商品的图片，弹出夺宝参与记录
-				$(".imgWrap").click(function(){
-					$(".indiana_record").modal();
-					//获取id
-					var record_id = $(this).attr("record_id");	
-					var len = $(".modal-body").children().length;					
-					var per_record  = '<li>'+
-									'<span class="time">2017-01-23  15:23 </span>'+
-									 '<span class="men">觅海掌门人</span>'+
-									 '参与了'+
-									 '<span class="num">10</span>'+									
-									 '人次'+
-								 '</li>';						
-					$(".modal-body ul").html(per_record);
-					
-				})
-				//点击免费领取按钮
-				$(".tojoin").click(function(){					
-					var record_id = $(this).parent().siblings(".imgWrap").attr("record_id");
-					alert("领取成功");
-				})				
+
+
 				//点击晒单分享的爱心
 				var love = 0 ; 
 				$(".transparent-png").click(function(){
@@ -635,14 +503,14 @@
 						$(this).siblings("em").text(love_num+1);
 						love = 1;
 					}else{
-						
+						$(this).attr("src","__RESOURCE__/recouse/images/love-no.png");
+						var love_num = parseInt($(this).siblings("em").text());
+						$(this).siblings("em").text(love_num-1);
+						love = 0;
 					}					
 				})
-				//推荐商品模块，新年许愿按钮
-				$(".recommend_list .right_ele .btn").click(function(){
-					alert("领取成功");
-				});
 
+				//活动规则
 				$(".active-fixed-btn").on("click",function(){
 					$(".activity-modal").modal();
 				});
@@ -650,16 +518,17 @@
 			//预告的倒计时
 			function countDown(time,id){
 	            var end_time = time * 1000,//月份是实际月份-1
-	                sys_second = (end_time-new Date().getTime())/1000;
+	            sys_second = (end_time-new Date().getTime())/1000;
 	            getTime(sys_second,id);
 	            var timer = setInterval(function(){
 	                if (sys_second > 1) {
 	                    sys_second -= 1;
 	                    getTime(sys_second,id);
 	                } else {
-	                    clearInterval(timer);
+	                    clearInterval(timer);	                   
 	                }
 	            }, 1000);
+	            
 	        }
 	        function getTime(sys_second,id){
 	            var day = Math.floor((sys_second / 3600) / 24);
@@ -671,16 +540,94 @@
 	            }
 	            if( second <=0 && minute<=0 ){
 	                $(id).html("结束");
+	                //window.location.reload();
 	            }
 	            $(id+' .limit_h').text(hour<10?"0"+hour:hour);    //计算小时
 	            $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
 	            $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
 	        }
-	        //第一个参数结束时间的时间戳 第二个参数商品对应的ID
-	        countDown(2485523151,"#myid1");
-	        countDown(1485613151,"#myid2");
-	        countDown(1485713151,"#myid3");
-	        countDown(1485813151,"#myid4");
+
+	        
+	        //新年许愿的爱心样式
+	        $(".love-num").each(function(){
+	        	var lovenum = $(this).text();	        	
+		        if(lovenum == 0){
+		        	$(this).parent().find(".love").attr("src","__RESOURCE__/recouse/images/love-no.png");
+		        }
+	        })
+
+	        //新年许愿的爱心点击事件 弹出夺宝参与记录
+	        $(".love").click(function(){
+				var award_id = $(this).next().data('id');
+	        	show_recorder(award_id);
+	        })
+			//点击一般商品的图片，弹出夺宝参与记录
+			$(".imgWrap").click(function(){
+				var award_id = $(this).data('id');
+				show_recorder(award_id)
+			})
+
+	        function show_recorder(award_id){
+				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
+				$.post(url,{'award_id':award_id},function(data){
+					if( data.errno != 200 ){
+						$(".indiana_record .modal-body").html("<p>"+data.message+"<p>");
+					}else{
+						//<p>您于2017-01-22 10:22参与了<span class="record-number">10人次</span></p>
+						//<p>您的幸运号码为：8888888</p>
+						var html = '';
+						var recorder = data.message;
+						for(var i = 0;i < recorder.length;i++){
+							var item      = recorder[i];
+							var date_time = Stringtotime(item.createtime);
+							html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的幸运号码为："+ item.star_num +"</p>"
+						}
+						$(".indiana_record .modal-body").html(html);
+					}
+					$(".indiana_record").modal();
+				},"json");
+			}
+
+			//许愿
+			function make_wish(thisElement,award_id){
+				var cishu = parseInt($(".active-num-btn span").html());
+				if(cishu == 0){
+					alert('今天已上限，请明天再来');
+					return;
+				}
+				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
+				$.post(url,{'award_id':award_id},function(data){
+					alert(data.message);
+					if( data.errno == 200 ){
+						//较少显示的次数，并爱心加1
+						cishu = cishu-1;
+						$(".active-num-btn span").html(cishu);
+
+						var wish_total = $(thisElement).parent().find('.love-num').html();
+						if(wish_total){
+							wish_total = parseInt(wish_total) + 1;
+							$(thisElement).parent().find('.love-num').html(wish_total);
+						}
+					}
+				},"json");
+			}
+
+			function playForbiden(){
+				alert('该心愿已满！');
+			}
+			//将后台返回的时间戳格式化为时间格式
+			function Stringtotime(time){
+				time = time*1000;
+				var datetime = new Date();
+				datetime.setTime(time);
+				var year = datetime.getFullYear();
+				var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+				var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+				var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+				var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+				var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
+				return year + "-" + month + "-" + date + " &nbsp " + hour + ":" + minute + "";
+			}
 		</script>		
 	</body>
 </html>

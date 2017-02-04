@@ -1,83 +1,35 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
-		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
-		<h3 class="header smaller lighter blue">
-					<?php 
-					if ($_GET['do'] == 'editaward'){ 
-						echo '编辑云购商品';
-                    }else{
-                        echo '添加云购商品';
-					}
-					?>
-					</h3>
-<form role="form" class="form-horizontal">
- <div class="form-group">
-           	<label class="col-sm-2 control-label no-padding-left" > 查询产品：</label>
-			<div class="col-sm-9">
-			<select  style="margin-right:15px;" id="pcates" name="pcates" onchange="fetchChildCategory(this.options[this.selectedIndex].value)"  autocomplete="off">
-                <option value="0">请选择一级分类</option>
-                <?php  if(is_array($category)) { foreach($category as $row) { ?>
-                <?php  if($row['parentid'] == 0) { ?>
-                <option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['pcate']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
-                <?php  } ?>
-                <?php  } } ?>
-            </select>
-            <select  id="cates_2" name="ccates" onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" autocomplete="off">
-                <option value="-1">请选择二级分类</option>
-                <?php  if(!empty($item['ccate']) && !empty($childrens[$item['pcate']])) { ?>
-                <?php  if(is_array($childrens[$item['pcate']])) { foreach($childrens[$item['pcate']] as $row) { ?>
-                <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['ccate']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-                <?php  } } ?>
-                <?php  } ?>
-            </select>
-			<select  id="cate_3" name="ccate2" autocomplete="off">
-                <option value="0">请选择三级分类</option>
-                <?php 
-				    if(!empty($item['ccate2']) && !empty($childrens[$item['ccate']])) { 
-				       if(is_array($childrens[$item['ccate']])) { 
-						   foreach($childrens[$item['ccate']] as $row) { 
-				?>
-                         <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['ccate2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-                <?php  } } } ?>
-            </select>
-		</div>
-  </div>
-  <div class="form-group">
-					<label class="col-sm-2 control-label no-padding-left" ></label>
-					<div class="col-sm-9">
-				    <a href="javascript:void(0)" onclick="findgoods()" class="btn btn-primary span2" name="submit" ><i class="icon-edit"></i>查找产品</a>    
-					</div>
-		</div>
-  </form>
- <hr>
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+<h3 class="header smaller lighter blue">
+		<?php 
+		if ($_GET['do'] == 'editaward'){ 
+			echo '编辑云购商品';
+		}else{
+			echo '添加云购商品';
+		}
+		?>
+</h3>
+
  <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" onsubmit="return fillform()">
         <input type="hidden" name="id" value="<?php  echo $award['id'];?>" />
 		<div class="form-group">
-		<label class="col-sm-2 control-label no-padding-left" > 选择产品：</label>
-		<div class="col-sm-9">
-			  <select name="c_goods" id="c_goods">
-			       <?php if (!empty($award['gname'])){ ?>
-                   <option value='<?php echo $award['gid']; ?>'><?php echo $award['gname']; ?></option>
-				   <?php }else{ ?>
-			       <option value='0'>未选择产品</option>
-				   <?php } ?>
-			  </select>
-		</div>
-       </div>			
+				<label class="col-sm-2 control-label no-padding-left" > 商品名称：</label>
+				<div class="col-sm-9">
+						<input type="text" name="title" id="title" maxlength="100" class="span7" style="width:320px;" value="<?php  echo $award['title'];?>" />
+				</div>
+		</div>		
         <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >特别描述</label>
-
-										<div class="col-sm-9">
-											 <input type="text" name="names"  value="<?php  echo $award['names'];?>" class="col-xs-10 col-sm-2" />
-										</div>
-									</div>
-					<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 首页推荐：</label>
-
-										<div class="col-sm-9">
-				 <input type="checkbox" name="isrecommand" value="1" id="isrecommand" <?php  if($award['isrecommand'] == 1) { ?> checked <?php  } ?> /> 首页推荐
-				 		
-										</div>
+				<label class="col-sm-2 control-label no-padding-left" >特别描述</label>
+				<div class="col-sm-9">
+						<input type="text" name="names"  value="<?php  echo $award['names'];?>" class="col-xs-10 col-sm-2" />
+				</div>
+		</div>
+		<div class="form-group">
+				<label class="col-sm-2 control-label no-padding-left" > 首页推荐：</label>
+				<div class="col-sm-9">
+				       <input type="checkbox" name="isrecommand" value="1" id="isrecommand" <?php  if($award['isrecommand'] == 1) { ?> checked <?php  } ?> /> 首页推荐	
+				</div>
 		</div>			
 					<div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 宣传图</label>

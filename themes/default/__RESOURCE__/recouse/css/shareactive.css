@@ -67,7 +67,7 @@ body{
 	height: auto;
 }
 .right_ele{
-height: 100%;
+	height: 100%;
     position: absolute;
     top: 277px;
     left: 454px;
@@ -172,9 +172,8 @@ height: 100%;
     margin: 0 auto;
     height:auto;
     transition: all 0.3s ease;
-    cursor: pointer;
 }
-.imgWrap a img:hover{
+.imgWrap:hover img{
 	transform: scale(1.2);
 }
 .per_indiana .name{
@@ -395,3 +394,82 @@ height: 100%;
 .not-start{
 	background-color: #f7f7f7;
 }
+.list-num{
+    width: 96%;
+    margin: 0 auto;
+	margin-bottom: 15px;
+}
+.list-num-before{
+   color: #f60;
+}
+.list-num-after{
+    color: #2af;
+}
+.right_ele .lock{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 26px;
+    background: white;
+}
+.viewport-area .right_ele li{
+	position:relative;
+}
+.right_ele .full-num{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+	color: #ff4400;
+}
+#result-time{
+	position: absolute;
+    top: 175px;
+    left: 456px;
+    color: #fff;
+    background-color: #ff973a;
+    padding: 4px 20px;
+    border-radius: 4px;
+}
+#result-time span{
+	margin:2px;
+}
+.result-search{
+	position: absolute;
+    top: 175px;
+    left: 1054px;
+    color: #dd5117!important;
+    padding: 4px 20px;
+    border-radius: 4px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

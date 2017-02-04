@@ -1,20 +1,8 @@
 <?php
-  $category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');
-		if (! empty($category)) {
-			$childrens = '';
-			foreach ($category as $cid => $cate) {
-				if (! empty($cate['parentid'])) {
-					$childrens[$cate['parentid']][$cate['id']] = array(
-						$cate['id'],
-						$cate['name']
-					);
-				}
-			}
-		}
   if (checksubmit("submit")) {
   	 $insert=array(
   	 	'names' => $_GP['names'],
-		 'gid' => $_GP['c_goods'],
+		 'title' => $_GP['title'],
   	 	'amount' => intval($_GP['amount']),
 		'dicount'=> intval($_GP['amount']),
 		'isrecommand'=>intval($_GP['isrecommand']),
@@ -27,26 +15,20 @@
   	     "deleted"=>0,
   	      'content' => htmlspecialchars_decode($_GP['content'])
   	 );
-  	 $c_p  = mysqld_select("SELECT * FROM ".table("shop_goods")." WHERE id = ".$_GP['c_goods']);
-     $dish = mysqld_select("select id from ".table('shop_dish')." where gid={$_GP['c_goods']}");
-	 $insert['p1']     = $c_p['pcate'];
-	 $insert['p2']     = $c_p['ccate'];
-	 $insert['p3']     = $c_p['ccate2'];
-	 $insert['dishid'] = $dish['id'];
-	 if (!empty($_FILES['logo']['tmp_name'])) {
-		$upload = file_upload($_FILES['logo']);
-		if (is_error($upload)) {
-			message($upload['message'], '', 'error');
-		}
-		$logo = $upload['path'];
-	 }
-	 if(!empty($logo))
-	 {
-		$insert['logo']=$logo;
-	 }
-
-     mysqld_insert('addon7_award', $insert);
-	 message('保存成功', web_url('awardlist'), 'success');
-  }
+  		 	   	if (!empty($_FILES['logo']['tmp_name'])) {
+                    $upload = file_upload($_FILES['logo']);
+                    if (is_error($upload)) {
+                        message($upload['message'], '', 'error');
+                    }
+                    $logo = $upload['path'];
+                }
+                if(!empty($logo))
+                {
+                	$insert['logo']=$logo;
+                }
+                
+		   mysqld_insert('addon7_award', $insert);
+			        message('保存成功', web_url('awardlist'), 'success');
+	}
 
  include addons_page('award');

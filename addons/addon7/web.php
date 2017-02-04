@@ -4,7 +4,7 @@
 // +----------------------------------------------------------------------
 // | Copyright (c) 2015 http://www.squdian.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: °Ù¼ÒÍþÐÅ <QQ:2752555327> <http://www.squdian.com>
+// | Author: ï¿½Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ <QQ:2752555327> <http://www.squdian.com>
 // +----------------------------------------------------------------------
 defined('SYSTEM_IN') or exit('Access Denied');
 class addon7Addons  extends BjModule {
@@ -47,6 +47,11 @@ class addon7Addons  extends BjModule {
 	{
 
 			$this->__web(__FUNCTION__);
+	}
+	public function do_shaidan()
+	{
+
+		$this->__web(__FUNCTION__);
 	}
 
 }

@@ -2,7 +2,6 @@
 set_time_limit(1800000) ;
 setlocale(LC_ALL, 'zh_CN');
 $cfg = globaSetting();
-require 'includes/hottpoic.func.php';
 
 $operation = ! empty($_GP['op']) ? $_GP['op'] : 'display';
 

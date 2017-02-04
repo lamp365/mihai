@@ -16,7 +16,7 @@ function checkIsAddShareActive($openid){
             $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
             $info = array(
               'openid'      => $openid,
-              'total_num'   => $rank_level*2,
+              'total_num'   => $rank_level*2+1,
               'createtime'  => time(),
               'modifytime'  => time(),
               'zero_time'   => $curt_time
@@ -30,7 +30,7 @@ function checkIsAddShareActive($openid){
             if($curt_time>$info['zero_time']){
                 $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['experience']."' order by rank_level desc limit 1 " );
                 $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
-                $update['total_num']  = $rank_level*2;
+                $update['total_num']  = $rank_level*2+1;
                 $update['zero_time']  = $curt_time;
                 $update['modifytime'] = time();
                 mysqld_update("share_active",$update,array('id'=>$id));
@@ -260,7 +260,8 @@ function isReloadOrSetCache($openid,$accesskey){
         //如果带有加密信息  缓存起来
         $share_openid = decodeShareAccessKey($accesskey);
         setShareAccesskeyCookie($accesskey);
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+        //暂时不做记录
+       /* if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
             //微信端操作
             $weixin_openid = get_weixin_session_account('weixin_openid');
             addShareActiveRecordMember($share_openid,$weixin_openid);
@@ -270,7 +271,7 @@ function isReloadOrSetCache($openid,$accesskey){
                 //如果已经登录，则进行 邀请添加会员的记录 share_active_record
                 addShareActiveRecordMember($share_openid,$openid);
             }
-        }
+        }*/
 
     }
 }
@@ -367,9 +368,114 @@ function get_active_total_people(){
     return $total+72385;
 }
 
+/**
+ * 每次有商品满人时检测是否够6个，6个的话，就进行跟新状态为2
+ */
 function checkAwardGoodsIsFull(){
-    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_award')." where state=1");
-    if($total>=6){
+    $total      = mysqld_selectcolumn("select count(id) from ".table('addon7_award')." where state=1");
+    $isToBeDraw = mysqld_select("select id from ".table('addon7_award')." where state=2");
+    if($total>=6 && !empty($isToBeDraw)){
         mysqld_query("update ".table('addon7_award')." set `state`=2 where state=1 order by confirm_time desc limit 6");
     }
+}
+
+/**
+ * @content 获取礼品 根据PC的页面  不同位置需要的数据，进行取数据
+ * @param $pos 根据PC的页面，由上到下 板块用1-4区分
+ * @return array|bool|mixed
+ */
+function get_active_goods($pos,$openid){
+    switch($pos){
+        case 1:
+            //6个状态是1 的即将进入开奖
+            $sql = "select * from ".table('addon7_award')." where state=1 order by confirm_time desc limit 6";
+            $res = mysqld_selectall($sql);
+            break;
+        case 2:
+            //推荐的
+            $sql = "select * from ".table('addon7_award')." where isrecommand=1 order by id  desc";
+            $res = mysqld_select($sql);
+            if(!empty($res)){
+                $diff_count        = $res['amount']-$res['dicount'];
+                $jindutiao         = round($diff_count*100/$res['amount'],2).'%';   //进度条
+                $res['jindutiao']  = $jindutiao;
+                if($openid){
+                    $res['wish_num']  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id={$res['id']} and openid='{$openid}'");
+                }else{
+                    $res['wish_num']  = 0;
+                }
+            }
+            break;
+        case 3:
+            //心愿专区
+            $now_time = time();
+            $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by id desc";
+            $res = mysqld_selectall($sql);
+
+            //如果有6个处于待开奖的 则页面禁止许愿
+            $sql2 = "select * from ".table('addon7_award')." where state=1 order by confirm_time desc limit 6";
+            $res2 = mysqld_selectall($sql2);
+            $forbiden    = false;
+            if(count($res2) == 6){
+                $forbiden = true;
+            }
+            if(!empty($res)){
+                foreach($res as $key=>&$item){
+                    $diff_count        = $item['amount']-$item['dicount'];
+                    $jindutiao         = round($diff_count*100/$item['amount'],2).'%';   //进度条
+                    $item['jindutiao'] = $jindutiao;
+                    if($openid){
+                        $item['wish_num']  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id={$item['id']} and openid='{$openid}'");
+                    }else{
+                        $item['wish_num']  = 0;
+                    }
+
+                    foreach($res2 as $val){
+                        if($item['id'] == $val['id']){
+                            $item['forbiden']  = $forbiden;
+                        }else{
+                            $item['forbiden']  = false;
+                        }
+                    }
+                }
+            }
+            break;
+        case 4:
+            //即将进入心愿专区
+            $now_time = time();
+            $sql = "select * from ".table('addon7_award')." where state=0 and endtime>{$now_time} order by endtime asc limit 4";
+            $res = mysqld_selectall($sql);
+    }
+    return $res;
+}
+
+/**
+ * 许愿一个就获得一个幸运号码
+ * @param $award_id
+ * @return array
+ */
+function get_star_num($award_id){
+    $info = mysqld_select("select star_num_order from ".table('addon7_request')." where award_id={$award_id} order by star_num_order desc limit 1");
+    if(empty($info)){
+        $next     = 1;
+        $star_num = "p".$award_id."00000".$next;
+    }else{
+        $next     = $info['star_num_order']+1;
+        $star_num = "p".$award_id."00000".$next;
+    }
+    return array('star_num'=>$star_num,'star_num_order'=>$next);
+}
+
+function cut_title($title){
+    $strlen = mb_strlen($title, 'utf-8');
+    if($strlen>=8){
+        $firstStr = mb_substr($title, 0, 2, 'utf-8');
+        $lastStr = mb_substr($title, -1, 2, 'utf-8');
+        $xing    = str_repeat("*",5);
+    }else{
+        $firstStr = mb_substr($title, 0, 1, 'utf-8');
+        $lastStr = mb_substr($title, -1, 1, 'utf-8');
+        $xing    = str_repeat("*",4);
+    }
+    return $firstStr.$xing.$lastStr;
 }

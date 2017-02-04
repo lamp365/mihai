@@ -12,9 +12,11 @@ switch($operation){
 
 		$note_id 	= intval ( $_GP ['note_id'] );
 		$isrecommand	= (int)$_GP['isrecommand'];
+		$ischeck = (int)$_GP['ischeck'];
 		
 		$data = array('isrecommand' 	=> $isrecommand,
-						'modifiedtime' 	=> time()
+						'modifiedtime' 	=> time(),
+						'check'			=> $ischeck
 		);
 		
 		mysqld_update ( 'note', $data, array ('note_id' => $note_id) );
@@ -29,6 +31,13 @@ switch($operation){
 
 		include page ( 'note' );
 
+		break;
+
+	case 'delete':
+		// 删除
+		$id = intval ( $_GP ['id'] );
+		mysqld_update ( 'note', array('deleted'=>1), array ('note_id' => $id) );
+		message ( '删除成功', refresh(), 'success' );
 		break;
 
 	default:			//列表页

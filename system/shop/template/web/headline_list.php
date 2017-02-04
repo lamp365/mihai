@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?>
 <?php  include page('header');?>
 <h3 class="header smaller lighter blue">
-	觅海头条列表&nbsp;&nbsp;&nbsp;
+	觅海头条列表&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-sm add-user" href="<?php echo web_url('headline', array('op' => 'add'))?>">新增头条</a>
 </h3>
 
 <table class="table table-striped table-bordered table-hover">
@@ -24,6 +24,7 @@
 			<td style="text-align: center;">
 				<a class="btn btn-xs btn-info" href="<?php echo web_url('headline', array('op' => 'edit', 'headline_id' => $value['headline_id']))?>"><i
 					class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;</a> &nbsp;&nbsp;
+				<a class="btn btn-xs btn-danger" href="<?php  echo web_url('headline', array('op'=>'delete','id' => $value['headline_id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;		</a>
 			</td>
 		</tr>
         <?php  } } ?>

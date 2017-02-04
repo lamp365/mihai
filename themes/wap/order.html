@@ -17,14 +17,22 @@
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/bjcommon.css">
 	<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/recouse/js/swiper.js"></script>
+<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
 <style type='text/css'>
 	.myoder .myoder-detail .price span.btn{  padding-right:5px;}
 	.myoder .myoder-detail .price span.btn:empty{display: none}
 	.my_nav div.cur a{padding-bottom:0;border-bottom:3px solid #e4393c;color:#e4393c}
+	@media(max-width: 350px){
+		.myoder .myoder-detail .name a{
+			width: 180px;
+		}
+	}
+	@media(min-width: 350px) and (max-width: 375px){
+		.myoder .myoder-detail .name a{
+			width: 217px;
+		}
+	}
 </style>
-
-<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
-
 </head>
 
 <script>
