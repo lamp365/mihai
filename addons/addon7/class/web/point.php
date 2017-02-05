@@ -10,34 +10,31 @@
 			  $object = mysqld_select("SELECT * FROM ".table("addon7_point")." WHERE vn=3 and id = ".$id);
 			  if ( $object ) {
 				   // 除数
-                   $stext =  floatval($object['nums']);
-				   $date = trim($object['date']);
+                   $stext =  intval($object['nums']);
+				   $date  = trim($object['date']);
                    // 找出开奖信息
 				   $points = mysqld_selectall("SELECT * FROM " .table('addon7_award')." WHERE state = 2 and date = '".$date."'");
 				   // 开始处理开奖信息
 				   $num = 0;
 				   foreach ( $points as $value ){
-					    $str2 = '';
 						$date = array();
                         if ( $value['amount'] > 0){
-                             $str2 = $value['amount'];
-							 $result =  fmod($stext,$str2);
+//							 $result =  fmod($stext,$value['amount']); //用point表中的 nums % amount   数据信息比去总的份数
+							 $result =  fmod($stext,$value['dicount']); //用point表中的 nums % amount   数据信息比去总的参与人数
 							 $r_s = $result + 1;
 							 // 中奖号码 p24000003
-							 $open = "p".$points['id'].'00000'.$r_s;
+							 $open = "p".$value['id'].'00000'.$r_s;
 							 $date = array(
-                                 'stext'=> $stext,
-								 'state' => 2,
-								 'sn'=> $open
+                                 'stext'  => $stext,
+								 'state'  => 3,  //已经开奖
+								 'sn'     => $open
 							 );
                              mysqld_update('addon7_award',$date,array('id'=>$value['id']));
 							 // 根据中奖号码，对云购号码进行设置
-							 $ob = mysqld_select("SELECT id,(star_num + count -1), star_num FROM ".table('addon7_request'). " WHERE star_num <= ".$r_s." and (star_num + count -1) >= ".$r_s." and award_id = ".$value['id']);
-							 if ( $ob ){
-								 $request = array(
-									 "status"=>1
-									 );
-								 mysqld_update('addon7_request',$request,array('id'=>$ob['id']));
+//							 $ob = mysqld_select("SELECT id,(star_num + count -1), star_num FROM ".table('addon7_request'). " WHERE star_num <= ".$r_s." and (star_num + count -1) >= ".$r_s." and award_id = ".$value['id']);
+							$ob  = mysqld_select("select id from ".table('addon7_request')." where award_id={$value['id']} and star_num_order={$r_s}");
+							if ( $ob ){
+								 mysqld_update('addon7_request',array("status"=>1),array('id'=>$ob['id']));
 							 }
 							 $num +=1;
 						}
@@ -51,24 +48,25 @@
                    message("无法开奖",create_url('site', array('name' => 'addon7','do' => 'point')),"error");
 			  }
 		   }
-		   $points = mysqld_selectall("SELECT id,date,confirm_time FROM " .table('addon7_award')." WHERE state = 1");
+
+		   $points = mysqld_selectall("SELECT id,date,lock_time FROM " .table('addon7_award')." WHERE state = 2");
 		   	$timer = array();
-				foreach ($points as $value ){
-                    $c = get_open_time($value['confirm_time'], 'Y-m-d');
-                    if ( empty($value['date']) ){
-                         $date = array(
-                            'date' => trim($c)
-						 );
-						 mysqld_update('addon7_award',$date,array('id'=>$value['id']));
-					}
-					// 找到已生成的数据
-				    $ck = mysqld_select("SELECT * FROM " . table('addon7_point')." where date  = '".trim($c)."' " );
-					if ( ! $ck ){
-						if ( !in_array( $c, $timer )){
-							 $timer[] = $c;
-						}
-					}
+			foreach ($points as $value ){
+				$c = get_open_time($value['lock_time'], 'Y-m-d');
+				if ( empty($value['date']) ){
+					 $date = array(
+						'date' => trim($c)
+					 );
+					 mysqld_update('addon7_award',$date,array('id'=>$value['id']));
+				}
+				// 找到已生成的数据
+				$ck = mysqld_select("SELECT * FROM " . table('addon7_point')." where date  = '".trim($c)."' " );
+				if ( empty($ck) && !in_array( $c, $timer )){
+					    //时间数组
+						 $timer[] = $c;
+				}
 			}
+
 			if ( count($timer) > 0 ){
 				 $check = 'on';
 			}else{
@@ -80,7 +78,7 @@
 			
 				foreach ( $timer as $value ){
 
-					if ( !$ck ){
+					if ( empty($ck) ){
                           $data=array(
 							'date'=>$value,
 							//'v1'=>$_CMS['account']['username'],
@@ -88,8 +86,8 @@
 							'states'=>0
 							);	   
 					}
+					mysqld_insert('addon7_point',$data);
 				}
-				mysqld_insert('addon7_point',$data);
 				message("添加成功",create_url('site', array('name' => 'addon7','do' => 'point')),"success");
 		  }
 		  if ($operation=='sign'){
@@ -130,6 +128,14 @@
   	            if (checksubmit('submit')) {
 					  if(	!empty($article['id'])) {  
 						    $key = 'v'.($article['vn']+1);
+						    if(!empty($_GP['nums']) && !is_numeric($_GP['nums'])){
+								message("请输入一个数字",refresh(),'error');
+							}
+
+						    if(($key == 'v3' || $key == 'v4') && empty($_GP['nums'])){
+								//最后一次如果还是空的话，不允许
+								message("请输入数据信息",refresh(),'error');
+							}
 							$data=array(
 		                       'nums'=>$_GP['nums'],
 							   'states'=>0

@@ -15,6 +15,7 @@
 
 										<div class="col-sm-9">
 													<input type="text" name="nums" class="col-xs-10 col-sm-3" value="<?php echo $article['nums'];?>" />
+											&nbsp;&nbsp;这个数据用于去计算，作为除数
 										</div>
 									</div>
 											   <div class="form-group">

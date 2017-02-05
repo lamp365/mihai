@@ -43,9 +43,9 @@
 				<tr>
 				    <th style="text-align:center;min-width:70px;">奖品图片</th>
 					<th style="text-align:center;min-width:100px;">奖品名称</th>
-					<th style="text-align:center;min-width:80px;">总量 / 剩余</th>
+					<th style="text-align:center;min-width:80px;">总量 / 已参与</th>
 					<th style="text-align:center; min-width:30px;">总价值</th>
-					<th style="text-align:center; min-width:30px;">单价</th>
+					<th style="text-align:center; min-width:30px;">单份</th>
 					<th style="text-align:center; min-width:30px;">状态</th>
 					<th style="text-align:center; min-width:150px;">云购明细</th>
 				    <th style="text-align:center; min-width:50px;">操作</th>
@@ -58,7 +58,7 @@
 					<td style="text-align:center;"><?php  echo $item['title'];?></td>
 					<td style="text-align:center;"><?php  echo $item['amount'].' / '.$item['dicount'];?></td>
 					<td style="text-align:center;"><?php  echo $item['price'];?> 元</td>
-					<td style="text-align:center;"><?php  echo $item['credit_cost'];?> 元</td>
+					<td style="text-align:center;"><?php  echo $item['credit_cost'];?> </td>
 					<td style="text-align:center;">
 					<?php  
 					    if ($item['endtime'] > time() ){ 
@@ -66,12 +66,14 @@
                         }else{
 							 if ( $item['state'] == 0 ){
 								  echo '进行中';
-							 }elseif ( $item['state'] == 1){
-								  echo '可以开奖';
+							 }else if($item['state'] == 1){
+								 echo '待锁定';
 							 }elseif ( $item['state'] == 2){
+								  echo "<font color='red'>可以开奖</font>";
+							 }elseif ( $item['state'] == 3){
 								  echo '已开奖';
 							 }else{
-                                  echo '已兑奖';
+								 echo "<font color='blue'>已兑奖</font>";
 							 }
 						}
 					?>

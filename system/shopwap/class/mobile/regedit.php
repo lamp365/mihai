@@ -90,8 +90,7 @@
 			$recommend_openid = getOpenshopSellerOpenid();
 			if(empty($recommend_openid)){
 				//从活动分享中获取推荐人的openid
-				$recommend_openid = getShareAccesskeyCookie();
-				cleanShareAccesskeyCookie();
+				$recommend_openid = getShareOpenidFromCookie();
 			}
 			$data = array(
 					'mobile' => $_GP['mobile'],

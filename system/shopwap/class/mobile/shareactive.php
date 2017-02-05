@@ -25,6 +25,13 @@
         //获取即将进入心愿专区的礼品
         $toBeShow    = get_active_goods(4,$openid);
         //获取心愿晒单
+        $shaidan     = get_active_shaidan();
+        //是否满6个了是的话锁定
+        $lock = false;
+        if(count($toBeDraw) == 6){
+            $lock     = true;
+            $drawTime = strtotime($toBeDraw[0]['date']);
+        }
 
         include themePage('shareactive');
 
@@ -54,54 +61,85 @@
             die(showAjaxMess(1002,'今天已上限，请明天再来'));
         }
 
-        $award    = mysqld_select("select id,dicount from ".table('addon7_award')." where id={$award_id}");
-        if($share_info['total_num']>=intval($award['credit_cost'])){
-            $star_num_arr = get_star_num($award_id);
-            $data = array(
-                'openid'         => $openid,
-                'award_id'       => $award_id,
-                'createtime'     => time(),
-                'star_num'       => $star_num_arr['star_num'],
-                'star_num_order' => $star_num_arr['star_num_order']
-            );
-            //商品的分数减去1  消耗个人的点数  并判断当前商品是否已经满人
-            if($award['state']==2){
-                die(showAjaxMess(1002,"该礼品许愿已满！"));
-            }else{
-                $res = mysqld_insert('addon7_request',$data);
-                if($res){
-                    if($award['dicount'] == 0){
-                        $total_num = $share_info['total_num']-intval($award['credit_cost']);
-                        mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
-                    }else{
-                        $total_num = $share_info['total_num']-intval($award['credit_cost']);
-                        $up_data   = array('dicount'=>$award['dicount'] - 1);
-                        if($award['dicount'] == 1){
-                            //如果刚好剩下一次许愿 则修改该商品 状态为1 表示已经满人
-                            $up_data['state']        = 1;
-                            $up_data['confirm_time'] = time();
-                        }
-                        mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
-                        mysqld_update("addon7_award",$up_data, array('id'=>$award_id));
-                        if($award['dicount'] == 1){
-                            //新添加一个商品为满人，统计是否有6个商品为满人的
-                            checkAwardGoodsIsFull();
-                        }
-                    }
-                    die(showAjaxMess(200,"恭喜您许愿成功!"));
-                }else{
-                    die(showAjaxMess(1002,'网络有误，稍后再试'));
-                }
-            }
-
-        }else{
+        $award    = mysqld_select("select * from ".table('addon7_award')." where id={$award_id}");
+        if($share_info['total_num'] < intval($award['credit_cost'])) {
             $num = $share_info['total_num'];
             die(showAjaxMess(1002,"您的点数只剩{$num}个"));
+        }
+        if($award['state']==2){
+            die(showAjaxMess(1002,"该礼品许愿已满！"));
+        }
+
+        $star_num_arr = get_star_num($award_id);
+        $data = array(
+            'openid'         => $openid,
+            'award_id'       => $award_id,
+            'createtime'     => time(),
+            'star_num'       => $star_num_arr['star_num'],
+            'star_num_order' => $star_num_arr['star_num_order']
+        );
+        //商品的分数减去1  消耗个人的点数  并判断当前商品是否已经满人
+
+        $res     = mysqld_insert('addon7_request',$data);
+        $last_id = mysqld_insertid();
+        if($last_id){
+            $total_num = $share_info['total_num']-intval($award['credit_cost']);
+            $dicount   = $award['dicount'] + 1;
+            $up_data   = array('dicount'=>$dicount);
+            if($award['amount'] == $dicount){
+                //如果刚好等于总的份数 则已经满人了
+                $up_data['state']        = 1;
+                $up_data['confirm_time'] = time();
+            }
+            mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
+            mysqld_update("addon7_award",$up_data, array('id'=>$award_id));
+            $is_full = '';
+            if($award['amount'] == $dicount){
+                //新添加一个商品为满人，统计是否有6个商品为满人的
+                $is_full = checkAwardGoodsIsFull();
+            }
+            //把参与总数计入缓存
+            if(class_exists('Memcached')){
+                $memcache = new Mcache();
+                $total    = $memcache->get('shareActiveTotalPeople');
+                if(!$total){
+                    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+                }
+                $total = $total+1;
+                $memcache->set('shareActiveTotalPeople',$total,time()+3600*2);
+            }
+
+            if($is_full){
+                //刷新页面 的标识
+                die(showAjaxMess(202,"恭喜您许愿成功!"));
+            }
+            die(showAjaxMess(200,"恭喜您许愿成功!"));
+        }else{
+            die(showAjaxMess(1002,'网络有误，稍后再试'));
         }
 
     }else if($op == 'result'){
 
         include themePage('shareactive_result');
+
+    }else if($op== 'clickzan') { //晒单点赞
+        $id = $_GP['id'];
+        if($id){
+            $key    = "activeShaidan-".$id;
+            $cookie = new LtCookie();
+            $res    = $cookie->getCookie($key);
+            if($res){
+               die(showAjaxMess(1002,'你已经点赞过了'));
+            }else{
+                mysqld_query("update ".table('share_active_shaidan')." set `zan_num`=zan_num+1 where id={$id}");
+                $cookie->setCookie($key,'yes',time()+3600*10);  //10个小时后可再次点击
+                die(showAjaxMess(200,'点赞成功！'));
+            }
+        }
+    }else if($op == 'canyu_total'){  //获取总的参与人数
+        $canyu_total = get_active_total_people();
+        die(showAjaxMess('200',$canyu_total));
+
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];

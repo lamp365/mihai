@@ -1,8 +1,10 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');
        if ( empty( $member ) ){
              $member=get_member_account(false);
-		     $member=member_get($member['openid']);
-	       	 $openid =$memberi['openid'] ;
+		   	 if(empty($member['openid'])){
+				 $member=member_get($member['openid']);
+			 }
+	       	 $openid =$member['openid'] ;
 	    }
 		$is_login=is_login_account();
 		$article_foot = getArticle(4,1);

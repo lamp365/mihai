@@ -7,12 +7,11 @@
 		<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="__RESOURCE__/recouse/css/shareactive.css" rel="stylesheet"	type="text/css" />
 		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-		
+
 		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 		<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 	</head>
-
 	<body>
 		<!--@php  include page('header');@-->
 		<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
@@ -25,7 +24,14 @@
 			<div class=" comment_h">
 				<div class="viewport-area">
 				<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search">查询结果》</a>
+				<!--@php if($lock && $drawTime){ @-->
 				<div id="result-time"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
+					<script>
+						$(function(){
+							countDown("<!--@php echo $drawTime;@-->","#result-time");
+						})
+					</script>
+				<!--@php } @-->
 				<div class="total_num">
 					<ul class="num_list">	
 						<li class="per_num">
@@ -162,8 +168,10 @@
 					<ul>
 						<!--@php if(!empty($toBeDraw)){ foreach($toBeDraw as $items){ @-->
 						<li>
+							<!--@php if($lock){ @-->
 							<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
-							<div class="full-num">123456</div><!-- 满员后的图片 -->
+							<div class="full-num"><!--@php echo $items['dicount'];@--></div><!-- 满员后 -->
+							<!--@php } @-->
 							<img src="<!--@php echo download_pic($items['logo'],120,120,2);@-->">
 						</li>
 						<!--@php }} @-->
@@ -213,16 +221,12 @@
 								<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $item['jindutiao'];@-->"></div>
 							</div>
 							<div class="list-num">
-								<span class="list-num-before">5930</span> / <span class="list-num-after">100000</span>
+								<span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span>
+								<span style="float: right;">所需点数:<!--@php echo intval($item['credit_cost']);@--></span>
 							</div>
 							<div class="last">
 								<!--立即参与按钮-->
-								<!--@php if($item['forbiden']) { @-->
-								<a href="javascript:void(0);" class="tojoin_forbiden" onclick="playForbiden()">新年许愿</a>
-								<!--@php }else{   @-->
-								<a href="javascript:void(0);" class="tojoin" onclick="make_wish(this,<!--@php echo $item['id'];@-->)">新年许愿</a>
-								<!--@php } @-->
-
+								<a href="javascript:void(0);" class="tojoin" data-fenshu="<!--@php echo intval($item['credit_cost']);@-->" onclick="make_wish(this,<!--@php echo $item['id'];@-->)">新年许愿</a>
 								<!--爱心-->
 								<img src="__RESOURCE__/recouse/images/love-yes.png" class="love"/>
 								<span class="love-num" data-id="<!--@php echo $item['id'];@-->" ><!--@php echo $item['wish_num'];@--></span>
@@ -260,7 +264,7 @@
 						<!--@php if(!empty($toBeShow)){   foreach($toBeShow as $item){  @-->
 						<li class="per_indiana" style="position: relative;"> 
 							<!--商品图片-->
-							<div class="share not-start" record_id="11">
+							<div class="share not-start" >
 								<a>
 									<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
 								</a>
@@ -270,129 +274,59 @@
 							<!--立即参与按钮-->
 							<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
 						</li>
-						<script>countDown("<!--@php echo $item['endtime'];@-->","#myid<!--@php echo $item['id'];@-->");</script>
+						<script>
+							$(function(){
+								countDown("<!--@php echo $item['endtime'];@-->","#myid<!--@php echo $item['id'];@-->");
+							})
+						</script>
 						<!--@php }}  @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
 			</div>
 			<!--晒单分享-->
-			<div class="recommend_list_two" ">
+			<div class="recommend_list_two" >
 				<div class="recommend_list_two_head"  style="background:url(__RESOURCE__/recouse/images/miandan_list_saidan.jpg)no-repeat center; " ></div>
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
+						<!--@php if(!empty($shaidan)){  foreach($shaidan as $data){  @-->
 						<li class="per_indiana" style="height: 400px;"> 
 						<!--商品图片-->
-						<div class="share" record_id="11">
+						<div class="share" data-id="<!--@php echo $data['id'];@-->">
 							<a>
-								<img src="https://img11.360buyimg.com/n2/jfs/t3289/170/5774446166/91727/aa992fe1/587f5addNb8be13b5.jpg"/>
+								<img src="<!--@php echo download_pic($data['thumb'],225,225,2);@-->"/>
 							</a>
 						</div>
 						<!--标题-->
-						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
+						<p class="name" style="font-weight: bold;"><!--@php echo $data['title'];@--></p>
 						<!--人数-->
-						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
+						<p class="detail"><!--@php echo mb_substr($data['content'],0,36);@--></p>
 						<div class="info">
 							<span class="xmjdh_left">
 								<a>
 									<p style="display: inline-block;">
-										<img src="__RESOURCE__/912865945439541.jpg">									
+										<!--@php if(empty($data['avatar'])){ @-->
+										<img src="__RESOURCE__/recouse/images/userface.png">
+										<!--@php }else{  @-->
+										<img src="<!--@php echo $data['avatar'];@-->">
+										<!--@php } @-->
 									</p>
-									<em class="f1">觅海掌门人</em>
+									<em class="f1"><!--@php echo $data['nickname'];@--></em>
 								</a>
 							</span>
 							<span class="xmjdh_right">
 								<a href="javascript:;">								
-									<em>11</em>
-									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
+									<em><!--@php echo $data['zan_num'];@--></em>
+									<!--@php if($data['zan_num'] == 0){ @-->
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">
+									<!--@php }else{  @-->
+									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-yes.png">
+									<!--@php } @-->
 								</a>							
 							</span>
 						</div>
 					</li>
-					<li class="per_indiana" style="height: 400px;"> 
-						<!--商品图片-->
-						<div class="share" record_id="11">
-							<a>
-								<img src="https://img.alicdn.com/imgextra/i3/3013357780/TB2wxEZabplpuFjSspiXXcdfFXa_!!3013357780.jpg_430x430q90.jpg" />
-							</a>
-						</div>
-						<!--标题-->
-						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
-						<!--人数-->
-						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
-						<div class="info">
-							<span class="xmjdh_left">
-								<a>
-									<p style="display: inline-block;">
-										<img src="__RESOURCE__/912865945439541.jpg">									
-									</p>
-									<em class="f1">觅海掌门人</em>
-								</a>
-							</span>
-							<span class="xmjdh_right">
-								<a href="javascript:;">								
-									<em>11</em>
-									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
-								</a>							
-							</span>
-						</div>
-					</li>	
-					<li class="per_indiana" style="height: 400px;"> 
-						<!--商品图片-->
-						<div class="share" record_id="11">
-							<a>
-								<img src="https://img12.360buyimg.com/n2/jfs/t2614/264/1837915571/84898/213e1286/574ce145Nffb7e386.jpg" />
-							</a>
-						</div>
-						<!--标题-->
-						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
-						<!--人数-->
-						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
-						<div class="info">
-							<span class="xmjdh_left">
-								<a>
-									<p style="display: inline-block;">
-										<img src="__RESOURCE__/912865945439541.jpg">									
-									</p>
-									<em class="f1">觅海掌门人</em>
-								</a>
-							</span>
-							<span class="xmjdh_right">
-								<a href="javascript:;">								
-									<em>11</em>
-									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
-								</a>							
-							</span>
-						</div>
-					</li>	
-					<li class="per_indiana" style="height: 400px;"> 
-						 <!--商品图片-->
-						<div class="share" record_id="11">
-							<a>
-								<img src="https://img14.360buyimg.com/n2/jfs/t3250/36/3044197712/43605/1f03392a/57eb427bNfbaf2fa3.jpg" />
-							</a>
-						</div>
-						<!--标题-->
-						<p class="name" style="font-weight: bold;">我中了iPhone7，哈哈哈</p>
-						<!--人数-->
-						<p class="detail">今天刚收到货就来晒单了，听说晒单运气会变好的哦，我来试试吧哎呀，真的觉得在自己最无</p>
-						<div class="info">
-							<span class="xmjdh_left">
-								<a>
-									<p style="display: inline-block;">
-										<img src="__RESOURCE__/912865945439541.jpg">									
-									</p>
-									<em class="f1">觅海掌门人</em>
-								</a>
-							</span>
-							<span class="xmjdh_right">
-								<a href="javascript:;">								
-									<em>11</em>
-									<img class="transparent-png" src="__RESOURCE__/recouse/images/love-no.png">								
-								</a>							
-							</span>
-						</div>
-					</li>				
+					<!--@php }} @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
@@ -428,46 +362,13 @@
 		<script>
 			$(function(){				
 				var total_num_new_length;
-				var total_num_new;
+				var total_num_new = "<!--@php echo $canyu_total; @-->";
 				var total_num_old;
-				
-				//为了看效果的，到时候把getnum这个方法删掉
-				function getnum(){
-					//每次都把旧的数先还原为0
-					total_num_old = "000000000"
-					//新的参与人数
-					total_num_new = "<!--@php echo $canyu_total; @-->";					
-					total_num_new_length = total_num_new.length;					
-					if(total_num_old == total_num_new){
-						
-					}else{						
-						//从最后一位开始遍历
-						var all_num = 10;						
-						for(var j = 1; j <= total_num_new_length;j++){								
-							var ge_new = total_num_new.substr(total_num_new_length-j,1);
-							var ge_old = total_num_old.substr(total_num_new_length-j,1);							
-							//新旧相差多少
-							var dif = ge_new - ge_old;
-							//要滚动的距离
-							var gap = dif * 27 * (-1);
-							var last_num = all_num - j;	
-							//滚动
-							$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},1000);						
-						}						
-					}					
-				}
-				getnum();
-				
+
 				//累计参与人数的滚动
-				function getnum2(){	
+				function getnum(total_num_new){
 					//每次都把旧的数先还原为0
-					total_num_old = "000000000"
-					//异步获取最新的参与总人数
-//					$.post('', {}, function(s) {
-//							
-//					});
-					//新的参与人数
-					total_num_new = "80126";				
+					total_num_old = "000000000";
 					total_num_new_length = total_num_new.length;					
 					if(total_num_old == total_num_new){
 						
@@ -487,28 +388,37 @@
 						}						
 					}					
 				}
+
 				//三秒钟调用滚动一次
+				var purl = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_total'));@-->";
 				var time = setInterval(function(){
-					getnum2();
-				},3000)
-										
+					//异步获取最新的参与总人数
+					$.post(purl, {}, function(data) {
+						total_num_new = data.message;
+						getnum(total_num_new);
+					},'json');
+				},3000);
+				getnum(total_num_new);
 
 
-				//点击晒单分享的爱心
-				var love = 0 ; 
+				//点击晒单分享的爱心 点赞
 				$(".transparent-png").click(function(){
-					if(love == 0){
-						$(this).attr("src","__RESOURCE__/recouse/images/love-yes.png");
-						var love_num = parseInt($(this).siblings("em").text());
-						$(this).siblings("em").text(love_num+1);
-						love = 1;
-					}else{
-						$(this).attr("src","__RESOURCE__/recouse/images/love-no.png");
-						var love_num = parseInt($(this).siblings("em").text());
-						$(this).siblings("em").text(love_num-1);
-						love = 0;
-					}					
-				})
+					var obj = this;
+					var zan_num = parseInt($(this).siblings("em").text());
+					var  id     = $(this).closest('.per_indiana').find('.share').data('id');
+					var url     = "<!--@php echo mobile_url('shareactive',array('op'=>'clickzan'));@-->";
+					$.post(url,{'id':id},function(data){
+						if(data.errno == 200){
+							$(obj).siblings("em").text(zan_num+1);
+							if(zan_num == 0){
+								$(obj).attr('src',"__RESOURCE__/recouse/images/love-yes.png");
+							}
+						}else{
+							alert(data.message);
+						}
+					},'json')
+
+				});
 
 				//活动规则
 				$(".active-fixed-btn").on("click",function(){
@@ -590,17 +500,33 @@
 
 			//许愿
 			function make_wish(thisElement,award_id){
-				var cishu = parseInt($(".active-num-btn span").html());
+				var is_login = "<!--@php echo $openid; @-->";
+				var cishu  = parseInt($(".active-num-btn span").html());
+				var fenshu = parseInt($(thisElement).data('fenshu'));
+				if(!is_login){
+					confirm('您还没登录！','',function(isconfirm){
+						if(isconfirm){
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 400});
+					return '';
+				}
 				if(cishu == 0){
-					alert('今天已上限，请明天再来');
-					return;
+					alert('今天已上限，请明天再来');return;
+				}
+				if(fenshu > cishu){
+					alert("您的点数只剩"+cishu+"个");return;
 				}
 				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 				$.post(url,{'award_id':award_id},function(data){
 					alert(data.message);
+					if(data.errno == 202){
+						window.location.reload();
+					}
 					if( data.errno == 200 ){
 						//较少显示的次数，并爱心加1
-						cishu = cishu-1;
+						cishu = cishu-fenshu;
 						$(".active-num-btn span").html(cishu);
 
 						var wish_total = $(thisElement).parent().find('.love-num').html();
@@ -608,13 +534,15 @@
 							wish_total = parseInt(wish_total) + 1;
 							$(thisElement).parent().find('.love-num').html(wish_total);
 						}
+
+						var list_num = $(thisElement).parent().prev().find('.list-num-before').html();
+						var list_num = parseInt(list_num)+1;
+						$(thisElement).parent().prev().find('.list-num-before').html(list_num);
 					}
 				},"json");
 			}
 
-			function playForbiden(){
-				alert('该心愿已满！');
-			}
+
 			//将后台返回的时间戳格式化为时间格式
 			function Stringtotime(time){
 				time = time*1000;

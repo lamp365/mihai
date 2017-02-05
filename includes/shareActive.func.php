@@ -2,6 +2,7 @@
 /**
  * @param $openid
  * 用户每次近来活动主页优先创建 活动主表的记录
+ * 没有则创建，有了则判断是否是第二天，是的话，跟新当天的可参与活动次数
  */
 function checkIsAddShareActive($openid){
     $info = array();
@@ -114,88 +115,24 @@ function getHasShareMember($share_active,$num=10,$today=true){
 }
 
 /**
- * 设置缓存，把自己的$weixin_openid作为key,  推荐人的openid作为值
- * 目前只用于微信，因为key是$weixin_openid
- * @param $act_id
+ * 用户注册的时候调用，获取是否有分享者分享过来的，有的话，返回分享者openid，
+ * 并给分享者加一次可参与的活动次数
+ * @return bool|int
  */
-function setShareActiveCache($act_id,$weixin_openid){
-    if(!empty($act_id)){
-        $share_info = mysqld_select("select openid from ".table('share_active')." where id={$act_id}");
-        if(!empty($share_info)){
-            $key      = "share_".$weixin_openid;
-            if(class_exists('Memcached')){
-                $memcache = new Mcache();
-                $memcache->set($key,$share_info['openid'],time()+3600*10);   //缓存10个小时
-            }else{
-                $cookie     = new LtCookie();
-                $cookie->setCookie($key,$share_info['openid'],time()+3600*10);
-            }
-        }
+function getShareOpenidFromCookie(){
+    $accesskey    = getShareAccesskeyCookie();
+    $share_openid = decodeShareAccessKey($accesskey);
+    if($share_openid){
+        //给分享者加1次机会
+        $time = time();
+        $res  = mysqld_query("update " .table('share_active'). " set `total_num`=total_num+1,`modifytime`={$time} where openid='{$share_openid}'");
+    }else{
+        $share_openid = 0;
     }
-}
-
-/**
- * @content 获取活动推荐人的openid  目前只用于微信，因为key是unionid
- * @param $own_openid
- * @return mixed|string
- */
-function getShareActiveCache(){
-    $weixin_openid = get_weixin_session_account('weixin_openid');
-    $share_openid  = 0;
-    if(!empty($weixin_openid)){
-        $key          = "share_".$weixin_openid;
-        if(class_exists('Memcached')){
-            $memcache       = new Mcache();
-            $share_openid   = $memcache->get($key);   //缓存10个小时
-        }else{
-            $cookie       = new LtCookie();
-            $share_openid = $cookie->getCookie($key);
-        }
-    }
+    cleanShareAccesskeyCookie();
     return $share_openid;
 }
 
-
-/**
- * @content   获取活动分享者的微信信息
- * @param string $openid  可以不给，不给的话，默认解密accesskey后得到的openid直接去查询微信信息
- * @return array|bool|mixed
- */
-/*function getSharerOfWeixin($openid=''){
-    $accesskey     = getShareAccesskeyCookie();
-    $decode_openid = decodeShareAccessKey($accesskey);
-    if($decode_openid){
-        //获取该分享者的微信
-        if(!empty($openid)){
-            if($openid == $decode_openid){
-                //如果是自己，不用再次查询
-                $data = array();
-            }else{
-                //如果不是自己，则需要得知上次分享者的微信
-                $data =  mysqld_select("select nickname from ".table('weixin_wxfans')." where openid={$decode_openid}");
-            }
-        }else{
-            //如果没有传入 openid ，直接解密后，获取分享者微信
-            $data =  mysqld_select("select nickname from ".table('weixin_wxfans')." where openid={$decode_openid}");
-        }
-    }else{
-        //解出来没值，说明，上次分享的用户没有登录
-        $data = array();
-    }
-    return $data;
-}*/
-
-/**
- * 用户注册时候  通过缓存的cookie中取得分享者信息 并给该分享者总的参加活动次数加1
- */
-function shareActive_addToalNum(){
-    $share_openid = getShareActiveCache();
-    if($share_openid){
-        $time = time();
-        $res  = mysqld_query("update " .table('share_active'). " set `total_num`=total_num+1,`modifytime`={$time} where openid='{$share_openid}'");
-    }
-
-}
 
 /**
  * @content 保存微信的图片到本地
@@ -259,7 +196,11 @@ function isReloadOrSetCache($openid,$accesskey){
     }else{
         //如果带有加密信息  缓存起来
         $share_openid = decodeShareAccessKey($accesskey);
-        setShareAccesskeyCookie($accesskey);
+        if($openid != $share_openid){
+            //当不是自己的时候记录缓存
+            setShareAccesskeyCookie($accesskey);
+        }
+
         //暂时不做记录
        /* if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
             //微信端操作
@@ -360,11 +301,20 @@ function addShareActiveRecordMember($share_openid,$openid){
 }
 
 /**
- * 统计总的参与人数
+ * 统计总的参与人数  因为前端用ajax不断请求，故加一层缓存
  * @return bool|string
  */
 function get_active_total_people(){
-    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+    if(class_exists('Memcached')){
+        $memcache = new Mcache();
+        $total    = $memcache->get('shareActiveTotalPeople');
+        if(!$total){
+            $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+            $memcache->set('shareActiveTotalPeople',$total,time()+3600*2); //存两个小时
+        }
+    }else{
+        $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+    }
     return $total+72385;
 }
 
@@ -373,10 +323,16 @@ function get_active_total_people(){
  */
 function checkAwardGoodsIsFull(){
     $total      = mysqld_selectcolumn("select count(id) from ".table('addon7_award')." where state=1");
-    $isToBeDraw = mysqld_select("select id from ".table('addon7_award')." where state=2");
-    if($total>=6 && !empty($isToBeDraw)){
-        mysqld_query("update ".table('addon7_award')." set `state`=2 where state=1 order by confirm_time desc limit 6");
+    $res        = '';
+    if($total>=6){
+        //更新前确保 当前有2的已经开奖了 才给新的更新
+        $isToBeDraw = mysqld_select("select id from ".table('addon7_award')." where state=2");
+        if(empty($isToBeDraw)){
+            $time = time();
+            $res  = mysqld_query("update ".table('addon7_award')." set `state`=2,`lock_time`={$time} where state=1 order by confirm_time desc limit 6");
+        }
     }
+    return $res;
 }
 
 /**
@@ -387,16 +343,17 @@ function checkAwardGoodsIsFull(){
 function get_active_goods($pos,$openid){
     switch($pos){
         case 1:
-            //6个状态是1 的即将进入开奖
-            $sql = "select * from ".table('addon7_award')." where state=1 order by confirm_time desc limit 6";
+            //6个状态是1 的即将进入开奖 按照完成时间倒序，最先的显示在后面
+            $sql = "select * from ".table('addon7_award')." where state=1 or state =2 order by confirm_time desc limit 6";
             $res = mysqld_selectall($sql);
             break;
         case 2:
-            //推荐的
-            $sql = "select * from ".table('addon7_award')." where isrecommand=1 order by id  desc";
+            //推荐的  条件最好不用 isrecommand 因为如果满了，那么这边就会空出来了，取不到推荐的
+            $sql = "select * from ".table('addon7_award')." where state<=1 order by isrecommand desc,id  desc";
             $res = mysqld_select($sql);
             if(!empty($res)){
-                $diff_count        = $res['amount']-$res['dicount'];
+                //dicount  可能会超过总的
+                $diff_count        = min($res['amount'],$res['dicount']);
                 $jindutiao         = round($diff_count*100/$res['amount'],2).'%';   //进度条
                 $res['jindutiao']  = $jindutiao;
                 if($openid){
@@ -411,31 +368,16 @@ function get_active_goods($pos,$openid){
             $now_time = time();
             $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by id desc";
             $res = mysqld_selectall($sql);
-
-            //如果有6个处于待开奖的 则页面禁止许愿
-            $sql2 = "select * from ".table('addon7_award')." where state=1 order by confirm_time desc limit 6";
-            $res2 = mysqld_selectall($sql2);
-            $forbiden    = false;
-            if(count($res2) == 6){
-                $forbiden = true;
-            }
             if(!empty($res)){
                 foreach($res as $key=>&$item){
-                    $diff_count        = $item['amount']-$item['dicount'];
+                    //dicount  可能会超过总的
+                    $diff_count        = min($item['amount'],$item['dicount']);
                     $jindutiao         = round($diff_count*100/$item['amount'],2).'%';   //进度条
                     $item['jindutiao'] = $jindutiao;
                     if($openid){
                         $item['wish_num']  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id={$item['id']} and openid='{$openid}'");
                     }else{
                         $item['wish_num']  = 0;
-                    }
-
-                    foreach($res2 as $val){
-                        if($item['id'] == $val['id']){
-                            $item['forbiden']  = $forbiden;
-                        }else{
-                            $item['forbiden']  = false;
-                        }
                     }
                 }
             }
@@ -449,6 +391,21 @@ function get_active_goods($pos,$openid){
     return $res;
 }
 
+/**
+ * @content 获取晒单4个
+ * @return bool|mixed
+ */
+function get_active_shaidan(){
+    $info = mysqld_selectall("select * from ".table('share_active_shaidan')." order by is_top desc,id desc limit 4");
+    if(!empty($info)){
+        foreach($info as $key => $item){
+            $member = member_get($item['openid']);
+            $info[$key]['nickname'] = empty($member['realname']) ? $member['mobile'] : $member['realname'];
+            $info[$key]['avatar']   = $member['avatar'];
+        }
+    }
+    return $info;
+}
 /**
  * 许愿一个就获得一个幸运号码
  * @param $award_id
@@ -466,6 +423,11 @@ function get_star_num($award_id){
     return array('star_num'=>$star_num,'star_num_order'=>$next);
 }
 
+/**
+ * @content截取标题为星星
+ * @param $title
+ * @return string
+ */
 function cut_title($title){
     $strlen = mb_strlen($title, 'utf-8');
     if($strlen>=8){

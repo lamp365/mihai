@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>夺宝</title>
+	<title>心愿</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,15 +21,24 @@
 	<div class="banner">
 		<img src="__RESOURCE__/recouse/images/miandan_wap01.jpg">
 		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search"></a>
+		<!--@php if($lock && $drawTime){ @-->
 		<div id="result-time"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
+		<script>
+			$(function(){
+				countDown("<!--@php echo $drawTime;@-->","#result-time");
+			})
+		</script>
+		<!--@php } @-->
 	</div>
 	<div class="banner">
 		<img src="__RESOURCE__/recouse/images/miandan_wap02.jpg">
 		<ul class="banner-product-list">
 			<!--@php if(!empty($toBeDraw)){ foreach($toBeDraw as $items){ @-->
 			<li>
+				<!--@php if($lock){ @-->
 				<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
-				<div class="full-num">123456</div>
+				<div class="full-num"><!--@php echo $items['dicount'];@--></div>
+				<!--@php } @-->
 				<img src="<!--@php echo download_pic($items['logo'],80,80,2);@-->">
 			</li>
 			<!--@php }} @-->
@@ -180,7 +189,7 @@
 			<li>
 
 				<div >
-					<img class="lazy"  data-original="<!--@php echo $item['logo'];@-->" src="images/loading.gif">
+					<img class="lazy"  data-original="<!--@php echo download_pic($item['logo'],200,200,2);@-->" src="images/loading.gif">
 				</div>
 				<div class="small-title"><!--@php echo $item['title'];@--></div>
 				<div class="progress">
@@ -188,14 +197,11 @@
 				  	</div>
 				</div>
 				<div class="list-num">
-					<span class="list-num-before">5930</span> / <span class="list-num-after">100000</span>
+					<span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span>
+					<span style="float: right;">所需点数:<!--@php echo intval($item['credit_cost']);@--></span>
 				</div>
 				<div class="play-btn-div">
-					<!--@php if($item['forbiden']) { @-->
-					<div class="play-now-forbiden" onclick="playForbiden()">新年许愿</div>
-					<!--@php }else{   @-->
-					<div class="play-now" onclick="playNow(this,<!--@php echo $item['id'];@-->)">新年许愿</div>
-					<!--@php } @-->
+					<div class="play-now" onclick="playNow(this,<!--@php echo $item['id'];@-->)" data-fenshu="<!--@php echo intval($item['credit_cost']);@-->">新年许愿</div>
 					<div class="love">
 						<img onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
 						<span><!--@php echo $item['wish_num'];@--></span>
@@ -217,10 +223,15 @@
 					</a>
 				</div>
 				<!--标题-->
-				<p class="name" style="font-weight: bold;"><!--@php echo $item['title'];@--></p>					
+				<p class="name" style="font-weight: bold;"><!--@php echo cut_title($item['title']);@--></p>
 				<!--立即参与按钮-->
-				<a href="javascript:void(0);" class="tojoin jqqd" id="myid1"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>								
+				<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
 			</li>
+			<script>
+				$(function(){
+					countDown("<!--@php echo $item['endtime'];@-->","#myid<!--@php echo $item['id'];@-->");
+				})
+			</script>
 			<!--@php }}  @-->
 		</ul>
 		<div class="banquan">福建觅海•版权所有</div>
@@ -281,15 +292,9 @@
 			$(".activity-modal").modal();
 		});
 		var total_num_new_length;
-		var total_num_new = "";
+		var total_num_new = "<!--@php echo $canyu_total; @-->";
 		var total_num_old = "000000000";
-		function getnum(){	
-			//异步获取最新的参与总人数
-		//					$.post('', {}, function(s) {
-		//						total_num_new = s;	
-		//					});
-			//暂时写死
-			total_num_new = "<!--@php echo $canyu_total; @-->";
+		function getnum(total_num_new){
 			total_num_new_length = total_num_new.length;
 			if(total_num_old == total_num_new){
 				
@@ -310,29 +315,56 @@
 				}
 			}					
 		}
+
+		var purl = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_total'));@-->";
 		var time = setInterval(function(){
-			getnum();
-		},1000)
-	})
+			//异步获取最新的参与总人数
+			$.post(purl, {}, function(data) {
+				total_num_new = data.message;
+				getnum(total_num_new);
+			},'json');
+		},3000);
+		getnum(total_num_new);
+	});
 
 	//立即领取,第一个参数是当前元素，第二个参数是商品id
 	function playNow(thisElement,award_id){
+		var is_login = "<!--@php echo $openid; @-->";
 		var cishu = parseInt($(".active-num-btn span").html());
+		var fenshu = parseInt($(thisElement).data('fenshu'));
+		if(!is_login){
+			confirm('您还没登录！','',function(isconfirm){
+				if(isconfirm){
+					var url = "<!--@php echo mobile_url('login'); @-->";
+					window.location.href = url;
+				}
+			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+			return '';
+		}
 		if(cishu == 0){
-			tip('今天已上限，请明天再来',1);
-			return;
+			tip('今天已上限，请明天再来',1);return;
+		}
+		if(fenshu > cishu){
+			tip("您的点数只剩"+cishu+"个",1);return;
 		}
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
 			tip(data.message,1);
+			if(data.errno == 202){
+				window.location.reload();
+			}
 			if( data.errno == 200 ){
 				//较少显示的次数，并爱心加1
-				cishu = cishu-1;
+				cishu = cishu-fenshu;
 				$(".active-num-btn span").html(cishu);
 
 				var wish_total = $(thisElement).parent().find('.love span').html();
 				wish_total = parseInt(wish_total) + 1;
 				$(thisElement).parent().find('.love span').html(wish_total);
+
+				var list_num = $(thisElement).parent().prev().find('.list-num-before').html();
+				var list_num = parseInt(list_num)+1;
+				$(thisElement).parent().prev().find('.list-num-before').html(list_num);
 			}
 		},"json");
 	}
@@ -359,10 +391,6 @@
 		},"json");
 	}
 
-
-	function playForbiden(){
-		tip('该心愿已满！',1);
-	}
 
 	//将后台返回的时间戳格式化为时间格式
 	function Stringtotime(time){
@@ -431,12 +459,6 @@
         $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
         $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
     }
-    //第一个参数结束时间的时间戳 第二个参数商品对应的ID
-    countDown(2485613151,"#myid1");
-    countDown(1485613151,"#myid2");
-    countDown(1485713151,"#myid3");
-    countDown(1485813151,"#myid4");
-	countDown(1985813151,"#result-time"); 
 </script>
 </body>
 </html>
