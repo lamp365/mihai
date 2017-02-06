@@ -31,7 +31,11 @@
 
 		<div class="col-sm-9">
 			<select  id="openid" name="openid" >
-				<option value="0">请选择中奖作者</option>
+				<?php if($article['openid']){ $member_people = member_get($article['openid']); ?>
+					<option value="<?php echo $article['openid'];?>"><?php echo empty($member_people['realname'])? $member_people['mobile'] : $member_people['realname'];?></option>
+				<?php }else{ ?>
+					<option value="0">请选择中奖作者</option>
+				<?php } ?>
 			</select>
 		</div>
 	</div>
@@ -107,7 +111,7 @@
 <script>
  function get_zuozhe(obj){
 	 var award_id = $(obj).val();
-	 if(award_id){
+	 if(award_id != 0){
 		 var url = "<?php echo web_url('shaidan',array('op'=>'get_zuozhe'));?>";
 		 $.post(url,{'award_id':award_id},function(data){
 			if(data.errno == 200){

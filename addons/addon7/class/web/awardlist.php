@@ -1,6 +1,6 @@
 <?php
 $pindex = max(1, intval($_GP['page']));
-$psize = 10;
+$psize = 24;
 $condition= '';
 $awardlist = array();
 if ( !empty($_GP['c']) && ($_GP['c'] == 'update') ){

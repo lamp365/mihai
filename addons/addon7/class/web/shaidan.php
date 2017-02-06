@@ -25,12 +25,12 @@ if($op == 'list'){
         $data = array(
             'title'     => $_GP['title'],
             'award_id'  => $_GP['award_id'],
-            'conten'    => $_GP['conten'],
+            'content'    => htmlspecialchars_decode($_GP['content'],ENT_NOQUOTES),
             'openid'    => $_GP['openid'],
             'modifiedtime'=>time()
         );
         if(!empty($_GP['zan_num'])){
-            $data['zan_num'] = $_GP['zan_num'];
+            $data['zan_num'] = intval($_GP['zan_num']);
         }
         if($_FILES['thumb']['error'] != 4){
             $upload = file_upload($_FILES['thumb']);
@@ -76,8 +76,14 @@ if($op == 'list'){
                 //找出对应昵称
                 if($nickname){
                     $member = member_get($items['openid']);
-                    $draw_member[$key]['nickname'] = empty($member['realname']) ? $member['mobile'] : empty($member['realname']);
+                    $draw_member[$key]['nickname'] = empty($member['realname']) ? $member['mobile'] : $member['realname'];
                 }
+            }
+        }else{
+            foreach($draw_member as $key => $items){
+                $member = member_get($items['openid']);
+                $draw_member[$key]['nickname'] = empty($member['realname']) ? $member['mobile'] : $member['realname'];
+
             }
         }
         die(showAjaxMess('200',$draw_member));

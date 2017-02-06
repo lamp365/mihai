@@ -22,7 +22,7 @@
 		<img src="__RESOURCE__/recouse/images/miandan_wap01.jpg">
 		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search"></a>
 		<!--@php if($lock && $drawTime){ @-->
-		<div id="result-time"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
+		<div id="result-time"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
 		<script>
 			$(function(){
 				countDown("<!--@php echo $drawTime;@-->","#result-time");
@@ -198,7 +198,7 @@
 				</div>
 				<div class="list-num">
 					<span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span>
-					<span style="float: right;">所需点数:<!--@php echo intval($item['credit_cost']);@--></span>
+					<span style="float: right;font-size: 12px;">需幸运数:<!--@php echo intval($item['credit_cost']);@--></span>
 				</div>
 				<div class="play-btn-div">
 					<div class="play-now" onclick="playNow(this,<!--@php echo $item['id'];@-->)" data-fenshu="<!--@php echo intval($item['credit_cost']);@-->">新年许愿</div>
@@ -225,7 +225,7 @@
 				<!--标题-->
 				<p class="name" style="font-weight: bold;"><!--@php echo cut_title($item['title']);@--></p>
 				<!--立即参与按钮-->
-				<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
+				<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
 			</li>
 			<script>
 				$(function(){
@@ -304,7 +304,7 @@
 				for(var j = 1; j <= total_num_new_length;j++){							
 					var ge_new = total_num_new.substr(total_num_new_length-j,1);
 					var ge_old = total_num_old.substr(total_num_new_length-j,1);
-					
+
 					//新旧相差多少
 					var dif = ge_new - ge_old;
 					//要滚动的距离
@@ -320,7 +320,7 @@
 		var time = setInterval(function(){
 			//异步获取最新的参与总人数
 			$.post(purl, {}, function(data) {
-				total_num_new = data.message;
+				total_num_new = data.message.toString();
 				getnum(total_num_new);
 			},'json');
 		},3000);
@@ -330,8 +330,6 @@
 	//立即领取,第一个参数是当前元素，第二个参数是商品id
 	function playNow(thisElement,award_id){
 		var is_login = "<!--@php echo $openid; @-->";
-		var cishu = parseInt($(".active-num-btn span").html());
-		var fenshu = parseInt($(thisElement).data('fenshu'));
 		if(!is_login){
 			confirm('您还没登录！','',function(isconfirm){
 				if(isconfirm){
@@ -341,15 +339,25 @@
 			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
 			return '';
 		}
+		confirm('确认许愿？','',function(isconfirm){
+			if(isconfirm){
+				sure_wish(thisElement,award_id);
+			}
+		},{confirmButtonText: '确认', cancelButtonText: '取消', width: 300});
+	}
+
+	function sure_wish(thisElement,award_id){
+		var cishu = parseInt($(".active-num-btn span").html());
+		var fenshu = parseInt($(thisElement).data('fenshu'));
 		if(cishu == 0){
-			tip('今天已上限，请明天再来',1);return;
+			alert('今天已上限，请明天再来');return;
 		}
 		if(fenshu > cishu){
-			tip("您的点数只剩"+cishu+"个",1);return;
+			alert("您的幸运数只剩"+cishu+"个");return;
 		}
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
-			tip(data.message,1);
+			alert(data.message);
 			if(data.errno == 202){
 				window.location.reload();
 			}
@@ -449,7 +457,12 @@
         var minute = Math.floor((sys_second / 60) % 60);
         var second = Math.floor(sys_second % 60);
         if($(id+' .limit_d')){
-            $(id+' .limit_d').text(day<10?"0"+day:day);
+            if( day <=0 ){
+        		$(id+' .limit_d').hide();
+        		$(id+' .limit_d_span').hide();
+        	}else{
+        		$(id+' .limit_d').text(day<10?"0"+day:day);
+        	}
         }
         if( second <=0 && minute<=0 ){
             $(id).html("结束");

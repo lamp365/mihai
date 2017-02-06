@@ -26,6 +26,7 @@
             	<?php  if(!empty($headline['pic'])) { 
 						$arrPic = explode(";", $headline['pic']);
 						foreach($arrPic as $key => $value){
+							if (!empty($value)) {
 				?>
 	            <li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 125px;  height: 130px;">
 	                <span class="item_box">
@@ -34,7 +35,7 @@
 	            
 	                <input type="hidden" value="<?php echo $value;?>" name="attachment[]">
 	            </li>
-	            <?php  } } ?>
+	            <?php  } } } ?>
 	        </ul>
 									</div>
 	</div>

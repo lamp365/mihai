@@ -1,10 +1,6 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <h3 class="header smaller lighter blue">开奖参数管理&nbsp;&nbsp;&nbsp;
-<?php if ($check == 'on'){ ?>
-<a href="<?php  echo web_url('point', array('op'=>'post'));?>" class="btn btn-primary">生成开奖数据</a>
-<?php }else{ ?>
-<a href="javascript:void(0)" class="btn btn-primary" Disabled>不需要生产开奖数据</a>
-<?php } ?>
+
 </h3>
 为落实责任人，只有当前签名的人可以修改数据。只有第三个人可以开奖，当开奖后，则任何人不得修改数据。
 <br/><Br/>
@@ -13,7 +9,7 @@
 	<tr>
 	<th class="text-center" >数据信息</th>
     <th class="text-center"  >图片参照</th>
-    <th class="text-center" width="100px">日期</th>
+    <th class="text-center" width="100px">开奖时间</th>
     <th class="text-center" >验证人一</th>
     <th class="text-center" >验证人二</th>
 	<th class="text-center" >验证人三</th>
@@ -25,7 +21,7 @@
 		 <tr>
 		 <td class="text-center"><?php echo $value['nums']; ?></td>
 		 <td class="text-center"><?php if (!empty($value['thumb'])){ ?><img src="<?php echo $value['thumb']; ?>" height="50" /><?php } ?></td>
-		 <td class="text-center"><?php echo $value['date']; ?></td>
+		 <td class="text-center"><?php echo date("Y-m-d H:i",get_open_time($value['lock_time'])); ?></td>
 		 <td class="text-center"><?php echo $value['v1']; ?></td>
 		 <td class="text-center"><?php echo $value['v2']; ?></td>
 		 <td class="text-center"><?php echo $value['v3']; ?></td>

@@ -18,6 +18,220 @@
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 </head>
 <body>
-记录查询记录查询记录查询记录查询记录查询
+<!--@php  include page('header');@-->
+	<div class="result-wrap">
+		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
+		<div class="one_result">
+			<!--@php if($drawtime == 0) { @-->
+				<div class="result-phase tobedraw" >等待揭晓 进行中...</div>
+			<!--@php }else if(time() > $drawtime){ @-->
+				<!--@php if($draw_arr[0]['state'] == 2){  @-->
+				<div class="result-phase tobedraw">正在颁奖 进行中...</div>
+				<!--@php }else{ @-->
+				<div class="result-phase"><!--@php echo date("Y-m-d",$drawtime);@--> 已揭晓</div>
+				<!--@php } @-->
+			<!--@php }else{ @-->
+				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d",$drawtime);@--> 进行中...</div>
+			<!--@php } @-->
+
+			<ul class="clearfix">
+				<!--@php foreach($draw_arr as $draw){  @-->
+				<li>
+					<div class="result-list-left">
+						<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],150,150,2);@-->">
+					</div>
+					<div class="result-list-right">
+						<div class="detail"><!--@php echo $draw['title'];@--></div>
+						<div class="number">总参与人次:<!--@php echo $draw['dicount'];@--></div>
+
+						<!--@php if($drawtime == 0) { @-->
+								<div class="result-detail">等待揭晓</div>
+						<!--@php }else if(time() > $drawtime){ @-->
+							<!--@php if($draw_arr[0]['state'] == 2){  @-->
+								<div class="result-detail">正在颁奖</div>
+							<!--@php }else{ @-->
+								<div class="user-detail">
+									<span>心愿幸运码:<span class="xinyuannum" style="color: #f60"><!--@php echo $draw['sn'];@--></span></span>
+									<span><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" style="cursor: pointer;width: 16px;margin-top: 2px;" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+								</div>
+							<!--@php } @-->
+						<!--@php }else{ @-->
+								<div class="result-djs">
+									<p>倒计时</p>
+									<span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span>
+								</div>
+								<script>
+									$(function(){
+										countDown(<!--@php echo $drawtime;@-->,".result-djs");
+									})
+								</script>
+						<!--@php } @-->
+
+					</div>
+				</li>
+				<!--@php } @-->
+			</ul>
+		</div>
+		<!--@php }} @-->
+	</div>
+	<div class="modal fade result-modal" tabindex="-1" role="dialog">
+	  	<div class="modal-dialog" role="document">
+	    	<div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">获得者参与记录</h4>
+		      	</div>
+		      	<div class="modal-body">
+		      	</div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+	<div class="modal fade you-result-modal" tabindex="-1" role="dialog">
+	  	<div class="modal-dialog" role="document">
+	    	<div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">您的参与记录</h4>
+		      	</div>
+		      	<div class="modal-body">
+		      		<div class="result-num">你的心愿码:<span class="the-number">10086868 10086870 10086867 10086866</span></div>
+		      	</div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+<!--@php include themePage('footer');@-->
+<script type="text/javascript">
+	function resultShow(thisObj,award_id){
+		var result_obj = $(thisObj).closest('.one_result').find('.result-phase');
+		if($(result_obj).hasClass("tobedraw")){
+			//如果是待开奖的  点击无反应
+			alert("请等待开奖处理完毕！");
+			return '';
+		}
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'draw_info'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			if( data.errno != 200 ){
+				alert(data.message);
+			}else{
+				$(".result-modal .modal-body").html("");
+				var num_arr  = data.message;
+				var xinyuannum = $(thisObj).parent(".result-list-left").siblings(".result-list-right").find(".xinyuannum").text();
+				var chusu    = $(thisObj).data('chushu');
+				var beichusu = $(thisObj).data('beichushu');
+				var yushu = chusu%beichusu+1;
+				var html = '';
+				var number_html = "";
+				$.each(data.message,function(index,element){
+					if( element.star_num != xinyuannum){
+						number_html+= "<span >"+element.star_num+"</span>";
+					}else{
+						number_html+= "<span style='color: #f60'>"+element.star_num+"</span>";
+					}
+				});
+				html = "<div>心愿幸运码:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
+		      		"<div class='number_html'><span>他的心愿码:</span>"+number_html+"</div>"+
+		      		"<div>"+
+		      			"<ul class='result-rule clearfix'>"+
+		      				"<li style='line-height: 40px;'>计算公式 = </li>"+
+		      				"<li>(</li>"+
+		      				"<li>"+
+		      					"<p>"+chusu+"</p>"+
+		      					"<span>描述描述</span>"+
+		      				"</li>"+
+		      				"<li>"+
+		      					"<p>%</p>"+
+		      					"<span>求余</span>"+
+		      				"</li>"+
+		      				"<li><p>"+beichusu+"</p><span>参与人次</span></li>"+
+		      				"<li>)</li>"+
+		      				"<li>+</li>"+
+		      				"<li>"+
+		      					"<p>1</p>"+
+		      					"<span>固定值</span>"+
+		      				"</li>"+
+		      				"<li><p>= "+yushu+"</p><span>余数</span></li>"+
+		      			"</ul>"+
+		      			"<ul class='result-rule clearfix' style='margin-top: 10px'>"+
+		      				"<li style='line-height: 36px;'>p18000001 = </li>"+
+		      				"<li>"+
+		      					"<p>p+</p>"+
+		      					"<span>描述描述</span>"+
+		      				"</li>"+
+		      				"<li>"+
+		      					"<p>18</p>"+
+		      					"<span>礼品id</span>"+
+		      				"</li>"+
+		      				"<li>+</li>"+
+		      				"<li><p>00000</p><span>固定值</span></li>"+
+		      				"<li>+</li>"+
+		      				"<li><p>"+yushu+"</p><span>余数</span></li>"+
+		      			"</ul>"+
+		      		"</div>";
+				$(".result-modal").modal();
+				$(".result-modal .modal-body").html(html);
+			}
+		},"json");
+	}
+	function youResultShow(thisObj,award_id){
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			if( data.errno != 200 ){
+				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
+			}else{
+				var html = "<div class='result-num'><span>您的心愿码:</span>";
+				var recorder = data.message;
+				for(var i = 0;i < recorder.length;i++){
+					var item    = recorder[i];
+					html = html + "<span>"+item.star_num + "</span>";
+				}
+				html = html + "</div>";
+				$(".you-result-modal .modal-body").html(html);
+			}
+			$(".you-result-modal").modal();
+		},"json");
+	}
+	//预告的倒计时
+	function countDown(time,id){
+        var end_time = time * 1000,//月份是实际月份-1
+        sys_second = (end_time-new Date().getTime())/1000;
+        getTime(sys_second,id);
+        var timer = setInterval(function(){
+            if (sys_second > 1) {
+                sys_second -= 1;
+                getTime(sys_second,id);
+            } else {
+                clearInterval(timer);	                   
+            }
+        }, 1000);
+        
+    }
+    function getTime(sys_second,id){
+        var day = Math.floor((sys_second / 3600) / 24);
+        var hour = Math.floor((sys_second / 3600) % 24);
+        var minute = Math.floor((sys_second / 60) % 60);
+        var second = Math.floor(sys_second % 60);
+        if($(id+' .limit_d')){
+           if( day <=0 ){
+        		$(id+' .limit_d').hide();
+        		$(id+' .limit_d_span').hide();
+        	}else{
+        		$(id+' .limit_d').text(day<10?"0"+day:day);
+        	}
+        }
+        if( second <=0 && minute<=0 ){
+            $(id).html("正在颁奖");
+            //window.location.reload();
+        }
+        $(id+' .limit_h').text(hour<10?"0"+hour:hour);    //计算小时
+        $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
+        $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
+    }
+</script>
 </body>
 </html>

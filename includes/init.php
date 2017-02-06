@@ -223,7 +223,12 @@ if (in_array($modulename, $system_module)) {
                         echo md5_file(__FILE__);
                         exit();
                     }
+                    
                     if($modulename == 'shopwap'){
+                    	
+                    	//新增访问记录
+                    	insertAccessLog(session_id());
+                    	
                         //商城访问量统计
                         trafficCount();
                     }

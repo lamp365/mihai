@@ -48,13 +48,29 @@
             die(showAjaxMess(200,$recorder));
         }
 
+    }else if($op == 'draw_info'){  //开奖情况 中奖人的信息
+        $award_id = $_GP['award_id'];
+        if(empty($award_id)){
+            die(showAjaxMess(1002,'参数有误'));
+        }else{
+            //获取中奖人
+            $drawer = mysqld_select("select openid from ".table('addon7_request')." where award_id = {$award_id} and status=1");
+            if($drawer){
+                $recorder = mysqld_selectall("select createtime,star_num from ".table('addon7_request')." where award_id = {$award_id} and openid='{$drawer['openid']}' order by id desc");
+                die(showAjaxMess(200,$recorder));
+            }else{
+                die(showAjaxMess(1002,'参数有误'));
+            }
+        }
     }else if($op == 'wish'){  //进行许愿
         $openid   = getOpenidFromWeixin($openid);
         if(empty($openid)){
             die(showAjaxMess(1002,'您还没登录！'));
         }
         $award_id = $_GP['award_id'];
-
+        if(empty($award_id)){
+            die(showAjaxMess(1002,'参数有误！'));
+        }
         //判断今天是否可以参与
         $share_info = checkIsAddShareActive($openid);
         if($share_info['total_num'] == 0){
@@ -64,7 +80,7 @@
         $award    = mysqld_select("select * from ".table('addon7_award')." where id={$award_id}");
         if($share_info['total_num'] < intval($award['credit_cost'])) {
             $num = $share_info['total_num'];
-            die(showAjaxMess(1002,"您的点数只剩{$num}个"));
+            die(showAjaxMess(1002,"您的幸运数只剩{$num}个"));
         }
         if($award['state']==2){
             die(showAjaxMess(1002,"该礼品许愿已满！"));
@@ -119,6 +135,26 @@
         }
 
     }else if($op == 'result'){
+        //把2和3 4的都取出来
+        $psize  =  24;
+        $pindex = max(1, intval($_GP["page"]));
+        $limit  = ' limit '.($pindex-1)*$psize.','.$psize;
+        $total  = $pager = '';
+
+        $drawRecorder = mysqld_selectall("select * from ".table('addon7_award')." where state>=2 order by lock_time desc");
+        if(!empty($drawRecorder)){
+            //按照时间6个显示按照开奖时间
+            $temp = array();
+            foreach($drawRecorder as $item){
+                $drawtime          = empty($item['date'])? 0 : strtotime($item['date']);
+                $item['drawtime']  = $drawtime;
+                $temp[$drawtime][] = $item;
+            }
+            $drawRecorder = $temp;
+
+            $total  = mysqld_selectcolumn("select count(id) from ".table('addon7_award')." where state>=2");
+            $pager  = pagination($total, $pindex, $psize);
+        }
 
         include themePage('shareactive_result');
 

@@ -162,9 +162,14 @@
 			
 			<tbody>
 				<?php  if(is_array($awardlist)) { foreach($awardlist as $key=>$item) { ?>
+				<?php if($win['sn'] == $item['star_num']){ ?>
+				<tr style="font-weight: bolder;color: red">
+				<?php }else{  ?>
 				<tr>
+				<?php }  ?>
 					<td style="text-align:center;"><?php  echo ++$key;?></td>
 					<td style="text-align:center;"><?php  echo $item['star_num'];?></td>
+
 <!--						<td style="text-align:center;">--><?php // echo $item['count'];?><!--</td>-->
 						<td style="text-align:center;"><?php  echo date("Y-m-d H:i:s",$item['createtime']);?></td>
 						<td style="text-align:center;"><?php  echo $item['pc_name'];?></td>

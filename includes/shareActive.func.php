@@ -328,8 +328,16 @@ function checkAwardGoodsIsFull(){
         //更新前确保 当前有2的已经开奖了 才给新的更新
         $isToBeDraw = mysqld_select("select id from ".table('addon7_award')." where state=2");
         if(empty($isToBeDraw)){
-            $time = time();
-            $res  = mysqld_query("update ".table('addon7_award')." set `state`=2,`lock_time`={$time} where state=1 order by confirm_time desc limit 6");
+            $time      = time();
+            $draw_time = get_open_time($time, 'Y-m-d');
+            $res  = mysqld_query("update ".table('addon7_award')." set `state`=2,`date`={$draw_time},`lock_time`={$time} where state=1 order by confirm_time desc limit 6");
+            //6个满了。生成开奖数据
+            $data = array(
+                'lock_time'  => $time,
+                'vn'         => 0,
+                'states'     =>0
+            );
+            mysqld_insert('addon7_point',$data);
         }
     }
     return $res;
@@ -344,7 +352,7 @@ function get_active_goods($pos,$openid){
     switch($pos){
         case 1:
             //6个状态是1 的即将进入开奖 按照完成时间倒序，最先的显示在后面
-            $sql = "select * from ".table('addon7_award')." where state=1 or state =2 order by confirm_time desc limit 6";
+            $sql = "select * from ".table('addon7_award')." where state=1 or state =2 order by confirm_time asc limit 6";
             $res = mysqld_selectall($sql);
             break;
         case 2:
@@ -440,4 +448,19 @@ function cut_title($title){
         $xing    = str_repeat("*",4);
     }
     return $firstStr.$xing.$lastStr;
+}
+
+/**
+ * @content 统计参与者的总次数
+ * @param $openid
+ * @param $award_id
+ * @return bool|int|string
+ */
+function getRecorderCount($openid,$award_id){
+    if($openid){
+        $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id = $award_id and openid='{$openid}'");
+    }else{
+        $total = 0;
+    }
+    return $total;
 }

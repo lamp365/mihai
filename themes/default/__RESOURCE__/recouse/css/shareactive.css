@@ -332,7 +332,7 @@ body{
 .active-num-btn{
 	position: fixed;
     top: 138px;
-    width: 70px;
+    width: 77px;
     right: 0px;
     background-color: rgba(255,255,255,1);
     font-size: 13px;
@@ -354,7 +354,7 @@ body{
 }
 .active-fixed-btn{
 	position: fixed;
-	width: 70px;
+	width: 77px;
     top: 100px;
     right: 0px;
     background-color: rgba(255,255,255,1);
@@ -443,20 +443,216 @@ body{
     padding: 4px 20px;
     border-radius: 4px;
 }
+.result-wrap{
+	width:1190px;
+	margin:0 auto;
+	margin-bottom: 30px;
+}
+.result-wrap ul li{
+	float: left;
+	width: 395px;
+    border: 1px solid #e4e4e4;
+    margin-top: -1px;
+    margin-left: -1px;
+    height: 163px;
+}
+.result-list-left{
+    width: 150px;
+    float: left;
+}
+.result-list-right{
+    float: left;
+    width: 240px;
+    padding: 15px 10px;
+    box-sizing: border-box;
+}
+.result-list-left img{
+    width: 100%;
+	cursor: pointer;
+    max-width: 100%;
+    display: block;
+    padding: 10px;
+    box-sizing: border-box;
+        margin-top: 5px;
+}
+.result-list-right .detail{
+	color: #333;
+    height: 41px;
+    overflow: hidden;
+    margin-bottom: 7px;
+}
+.result-list-right .result-djs{
+    text-align: center;
+    background-color: #f60;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    width: 130px;
+}
+.result-list-right .result-djs span{
+	padding: 2px;
+}
+.result-phase{
+	border: 1px solid #e4e4e4;
+    width: 1189px;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 15px;
+    box-sizing: border-box;
+    margin-left: -1px;
+    margin-top: 30px;
+    color: #f60;
+}
+.result-rule{
+	margin-top: 15px;
+}
+.result-rule li{
+	float: left;
+	margin: 0 5px;
+	line-height: 20px;
+	text-align: center;
+}
+.result-detail{
+	border: 1px solid #ffad77;
+    color: #f60;
+    width: 100px;
+    text-align: center;
+    line-height: 26px;
+}
+.result-list-right .number{
+	color: #999;
+	margin-bottom: 10px;
+}
+.modal-body{
+	overflow: hidden;
+}
+.result-num span,.number_html span{
+	float: left;
+	padding-right: 10px;
+}
+.number_html{
+	overflow: hidden;
+}
+.get_share_modal{
+	position: fixed;
+    top: 177px;
+    width: 77px;
+    right: 0px;
+    background-color: rgba(255,255,255,1);
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 30px 0 0 30px;
+    z-index: 9999;
+    cursor: pointer;
+}
 
+.get_share_modal img{
+	margin-top: -3px;
+    margin-right: 4px;
+    margin-left: 2px;
 
+}
+/*分享的样式*/
+.share-list{
+	
+	overflow: hidden;
+   	padding: 0 20px 0 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+.share-list li{
+	width: 58px;
+	height: 58px;
+	line-height: 58px;
+	margin-left: 25px;
+	text-align: center;
+	color: #fff;
+	border-radius: 4px;
+	//border: 1px solid #f4f4f4;
+	font-size: 12px;
+	float: left;
+}
+.weixin_li{
+	background:url(../images/share_icons.png) no-repeat center;
+	background-position: -211px -24px;
 
+}
+.weixin_li:hover{
+	background: #61cd67;
+}
+.weibo{
+	background:url(../images/share_icons.png) no-repeat center;
+	background-position: -29px -24px;
 
+}
+.weibo:hover{
+	background: #ff9c25;
+}
+.qq{
+	background:url(../images/share_icons.png) no-repeat center;
+	background-position: -87px -24px;
 
+}
+.qq:hover{
+	background: #0096e9;
+}
+.qqzone{
+	background:url(../images/share_icons.png) no-repeat center;
+	background-position: -147px -23px;
 
-
-
-
-
-
-
-
-
+}
+.qqzone:hover{
+	background: #f6b433;
+}
+.shade{
+	background-color: #000;
+	opacity: .5;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: 9999;
+	top: 0;
+	left: 0;
+	display: none;
+	filter:Alpha(opacity=50);
+}
+.wx_code_area{
+	width: 280px;
+	height: 380px;
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin: -190px 0 0 -140px;
+	z-index: 10000;
+	background-color: #fff;
+    border-radius: 5px;
+    text-align: center;
+}
+#wx_code{
+	margin: 0 auto; width: 200px; margin-top: 30px;
+}
+.wx_code_area_1{
+	font-size: 18px;color: #333;padding-top: 30px;
+}
+.wx_code_area_2{
+	font-size: 14px;color:#666;padding-top: 30px;
+}
+.shade-close{
+    top: -25px;
+    right: -25px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    line-height: 35px;
+    text-align: center;
+    background-color: #2f2f2f;
+    border-radius: 40px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+}
 
 
 

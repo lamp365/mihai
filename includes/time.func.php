@@ -6,6 +6,6 @@ function get_open_time($time, $type='m-d'){
 	}else{
        $open = strtotime('+1 d',$time);
 	}
-	$open = date($type,$open);
+    $open = $open+3600*15;  //开奖时间是那天的三点
 	return $open;
 }

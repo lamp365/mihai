@@ -7,7 +7,7 @@ $op = $_GP['op'];
 if ($op == 'token'){
 	 // type -1,正常类型  0，新增团  >0 参与的团购队伍ID
     //团购商品 时间还没开始的 不能开团
-    isCanGoupBuy($_GP['type'],$_GP['id']);
+//    isCanGoupBuy($_GP['type'],$_GP['id']);
      $goods = array(
              'id'=>$_GP['id'],
 			 'total'=>$_GP['total'],

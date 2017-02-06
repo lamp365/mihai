@@ -10,16 +10,15 @@
 			  $object = mysqld_select("SELECT * FROM ".table("addon7_point")." WHERE vn=3 and id = ".$id);
 			  if ( $object ) {
 				   // 除数
-                   $stext =  intval($object['nums']);
-				   $date  = trim($object['date']);
+                   $stext      =  intval($object['nums']);
+				   $lock_time  = trim($object['lock_time']);
                    // 找出开奖信息
-				   $points = mysqld_selectall("SELECT * FROM " .table('addon7_award')." WHERE state = 2 and date = '".$date."'");
+				   $points = mysqld_selectall("SELECT * FROM " .table('addon7_award')." WHERE state = 2 and lock_time = '".$lock_time."'");
 				   // 开始处理开奖信息
 				   $num = 0;
 				   foreach ( $points as $value ){
 						$date = array();
-                        if ( $value['amount'] > 0){
-//							 $result =  fmod($stext,$value['amount']); //用point表中的 nums % amount   数据信息比去总的份数
+                        if ( $value['dicount'] > 0){
 							 $result =  fmod($stext,$value['dicount']); //用point表中的 nums % amount   数据信息比去总的参与人数
 							 $r_s = $result + 1;
 							 // 中奖号码 p24000003
@@ -48,48 +47,6 @@
                    message("无法开奖",create_url('site', array('name' => 'addon7','do' => 'point')),"error");
 			  }
 		   }
-
-		   $points = mysqld_selectall("SELECT id,date,lock_time FROM " .table('addon7_award')." WHERE state = 2");
-		   	$timer = array();
-			foreach ($points as $value ){
-				$c = get_open_time($value['lock_time'], 'Y-m-d');
-				if ( empty($value['date']) ){
-					 $date = array(
-						'date' => trim($c)
-					 );
-					 mysqld_update('addon7_award',$date,array('id'=>$value['id']));
-				}
-				// 找到已生成的数据
-				$ck = mysqld_select("SELECT * FROM " . table('addon7_point')." where date  = '".trim($c)."' " );
-				if ( empty($ck) && !in_array( $c, $timer )){
-					    //时间数组
-						 $timer[] = $c;
-				}
-			}
-
-			if ( count($timer) > 0 ){
-				 $check = 'on';
-			}else{
-				 $check = 'off';
-			}
-		  if($operation=='post'){
-				//$article = mysqld_select("SELECT * FROM " . table('addon7_point')." where id='".intval($_GP['id'])."' " );
-				// 寻找需要开奖的信息，并进行批量生产
-			
-				foreach ( $timer as $value ){
-
-					if ( empty($ck) ){
-                          $data=array(
-							'date'=>$value,
-							//'v1'=>$_CMS['account']['username'],
-							'vn'=>0,
-							'states'=>0
-							);	   
-					}
-					mysqld_insert('addon7_point',$data);
-				}
-				message("添加成功",create_url('site', array('name' => 'addon7','do' => 'point')),"success");
-		  }
 		  if ($operation=='sign'){
                $c = mysqld_select("SELECT * FROM " . table('addon7_point')." where id= ".intval($_GP['id']));
 			   if ( ($c['v1'] == $_CMS['account']['username']) || ($c['v2'] == $_CMS['account']['username']) || ($c['v3'] == $_CMS['account']['username']) ){
@@ -161,6 +118,6 @@
 				}
 				include addons_page('point');
 			}else{
-		         $article_list = mysqld_selectall("SELECT * FROM " . table('addon7_point')." order by date desc" );
+		         $article_list = mysqld_selectall("SELECT * FROM " . table('addon7_point')." order by lock_time desc" );
         	     include addons_page('pointlist');
 			}

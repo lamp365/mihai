@@ -316,7 +316,7 @@ body,html{
 }
 .active-fixed-btn{
 	position: fixed;
-	width: 64px;
+	width: 66px;
     top: 26px;
     right: 0px;
     background-color: rgba(255,255,255,1);
@@ -328,7 +328,7 @@ body,html{
 .active-num-btn{
 	position: fixed;
     top: 58px;
-    width: 64px;
+    width: 66px;
     right: 0px;
     background-color: rgba(255,255,255,1);
     font-size: 12px;
@@ -469,4 +469,64 @@ body,html{
     bottom: 1%;
     left: 5%;
     color: #ff9292;
+}
+.result-list-left{
+    float: left;
+    width: 20%;
+}
+.result-list-left img{
+    width: 100%;
+    max-width: 100%;
+    display: block;
+        padding: 6px;
+    box-sizing: border-box;
+}
+.result-list-right{
+    float: left;
+    width: 80%;
+    padding-top: 6px;
+        padding-right: 5px;
+    box-sizing: border-box;
+}
+.result-wrap ul li{
+    list-style-type: none;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 10px 0;
+}
+.result-phase{
+    padding: 5px 0;
+    color: #999;
+    background-color: #ececec;
+    padding-left: 8px;
+}
+.result-list-right .detail{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.result-list-right .user-detail{
+    padding-top: 8px;
+    color: #999;
+}
+.result-rule li{
+    float: left;
+    text-align: center;
+    font-size: 12px;
+    margin: 0 2px;
+}
+.modal-body{
+overflow: hidden;}
+.result-djs{
+    margin-left: 15px;
+    color: #f60;
+}
+
+.result-num span,.number_html span{
+    float: left;
+    padding-right: 10px;
+}
+.number_html{
+    overflow: hidden;
 }
