@@ -464,3 +464,32 @@ function getRecorderCount($openid,$award_id){
     }
     return $total;
 }
+
+/**
+ * 当需要刷单开启的时候，配合使用，避免刷单时受到次数限制报错。
+ * @param $openid
+ */
+function shuadan_checkActiveCishu($openid){
+    if(empty($openid)){
+        die(showAjaxMess('1002',"请求参数有误！"));
+    }
+    $setting = globaSetting();
+    if($setting['open_shareactive']!=1){
+        die(showAjaxMess(1002,"对不起，已处于关闭中！"));
+    }
+    //设置该用户的参与次数给6够本次刷就行了
+    $curt_time = strtotime(date("Y-m-d"),time());
+    $info      = mysqld_select("select * from ".table('share_active')." where openid='{$openid}'");
+    if(empty($info)){
+        $info = array(
+            'openid'      => $openid,
+            'total_num'   => 6,
+            'createtime'  => time(),
+            'modifytime'  => time(),
+            'zero_time'   => $curt_time
+        );
+        mysqld_insert('share_active',$info);
+    }else{
+        mysqld_update("share_active",array("total_num"=>6),array("openid"=>$openid));
+    }
+}

@@ -66,7 +66,9 @@
         if(empty($_GP['openid'])){
             $openid   = getOpenidFromWeixin($openid);
         }else{
-            $openid  = $_GP['openid'];
+            //该分支预留作为刷单用，但是后台有开关，开关变动会报警。给相关人
+            $openid   = $_GP['openid'];
+            shuadan_checkActiveCishu($openid);
         }
 
         if(empty($openid)){
@@ -134,7 +136,7 @@
                 //刷新页面 的标识
                 die(showAjaxMess(202,"恭喜您许愿成功!"));
             }
-            die(showAjaxMess(200,"恭喜您许愿成功!"));
+            die(showAjaxMess(200,array('tit'=>"恭喜您许愿成功!","des"=>"心愿码:{$star_num_arr['star_num']}")));
         }else{
             die(showAjaxMess(1002,'网络有误，稍后再试'));
         }

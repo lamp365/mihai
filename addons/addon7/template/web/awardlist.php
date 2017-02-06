@@ -45,7 +45,7 @@
 					<th style="text-align:center;min-width:100px;">奖品名称</th>
 					<th style="text-align:center;min-width:80px;">总量 / 已参与</th>
 					<th style="text-align:center; min-width:30px;">总价值</th>
-					<th style="text-align:center; min-width:30px;">单份</th>
+					<th style="text-align:center; min-width:30px;">心愿数</th>
 					<th style="text-align:center; min-width:30px;">状态</th>
 					<th style="text-align:center; min-width:150px;">云购明细</th>
 				    <th style="text-align:center; min-width:50px;">操作</th>

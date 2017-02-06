@@ -7,8 +7,15 @@
 		   if($operation=='open'){
               $id = $_GP['id'];
 			  // 获取标准数字
-			  $object = mysqld_select("SELECT * FROM ".table("addon7_point")." WHERE vn=3 and id = ".$id);
-			  if ( $object ) {
+			  $object     = mysqld_select("SELECT * FROM ".table("addon7_point")." WHERE vn=3 and id = ".$id);
+			  //锁定时间  去获取开奖时间
+		      $lock_time  = trim($object['lock_time']);
+		      $draw_time = get_open_time($lock_time);
+			   if(time() < $draw_time){
+				   message("对不起，还没到开奖时间！",refresh(),'error');
+			   }
+
+		      if ( $object ) {
 				   // 除数
                    $stext      =  intval($object['nums']);
 				   $lock_time  = trim($object['lock_time']);

@@ -224,7 +224,7 @@
 							</div>
 							<div class="list-num">
 								<span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span>
-								<span style="float: right;">所需幸运数:<!--@php echo intval($item['credit_cost']);@--></span>
+								<span style="float: right;">所需心愿数:<!--@php echo intval($item['credit_cost']);@--></span>
 							</div>
 							<div class="last">
 								<!--立即参与按钮-->
@@ -259,11 +259,13 @@
 				</div>
 			</div>				
 			<!--预告-->
+
+			<!--@php if(!empty($toBeShow)){  @-->
 			<div class="recommend_list_two" >
 				<div class="recommend_list_two_head" style="background:url(__RESOURCE__/recouse/images/miandan_list_xiaqi.jpg)no-repeat center; "></div>
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
-						<!--@php if(!empty($toBeShow)){   foreach($toBeShow as $item){  @-->
+						<!--@php foreach($toBeShow as $item){  @-->
 						<li class="per_indiana" style="position: relative;"> 
 							<!--商品图片-->
 							<div class="share not-start" >
@@ -281,17 +283,20 @@
 								countDown("<!--@php echo $item['endtime'];@-->","#myid<!--@php echo $item['id'];@-->");
 							})
 						</script>
-						<!--@php }}  @-->
+						<!--@php }  @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
 			</div>
+			<!--@php }  @-->
+
+			<!--@php if(!empty($shaidan)){  @-->
 			<!--晒单分享-->
 			<div class="recommend_list_two" >
 				<div class="recommend_list_two_head"  style="background:url(__RESOURCE__/recouse/images/miandan_list_saidan.jpg)no-repeat center; " ></div>
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
-						<!--@php if(!empty($shaidan)){  foreach($shaidan as $data){  @-->
+						<!--@php  foreach($shaidan as $data){  @-->
 						<li class="per_indiana" style="height: 400px;"> 
 						<!--商品图片-->
 						<div class="share" data-id="<!--@php echo $data['id'];@-->">
@@ -328,11 +333,14 @@
 							</span>
 						</div>
 					</li>
-					<!--@php }} @-->
+					<!--@php } @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
 			</div>
+			<!--@php } @-->
+
+
 		<!--活动规则的弹出框-->
 			<div class="modal fade activity-modal" tabindex="-1" role="dialog">
 			  <div class="modal-dialog" role="document">
@@ -564,7 +572,7 @@
 						for(var i = 0;i < recorder.length;i++){
 							var item      = recorder[i];
 							var date_time = Stringtotime(item.createtime);
-							html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的幸运号码为："+ item.star_num +"</p>"
+							html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的心愿码为："+ item.star_num +"</p>"
 						}
 						$(".indiana_record .modal-body").html(html);
 					}
@@ -600,15 +608,17 @@
 					alert('今天已上限，请明天再来');return;
 				}
 				if(fenshu > cishu){
-					alert("您的幸运数只剩"+cishu+"个");return;
+					alert("您的心愿数只剩"+cishu+"个");return;
 				}
 				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 				$.post(url,{'award_id':award_id},function(data){
-					alert(data.message);
 					if(data.errno == 202){
+						alert(data.message);
 						window.location.reload();
 					}
 					if( data.errno == 200 ){
+						var msg = data.message;
+						alert(msg.tit,msg.des);
 						//较少显示的次数，并爱心加1
 						cishu = cishu-fenshu;
 						$(".active-num-btn span").html(cishu);
@@ -622,6 +632,8 @@
 						var list_num = $(thisElement).parent().prev().find('.list-num-before').html();
 						var list_num = parseInt(list_num)+1;
 						$(thisElement).parent().prev().find('.list-num-before').html(list_num);
+					}else{
+						alert(data.message);
 					}
 				},"json");
 			}

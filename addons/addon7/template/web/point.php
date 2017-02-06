@@ -5,7 +5,7 @@
 		 <div class="form-group">
 					<label class="col-sm-2 control-label no-padding" >日期确认:</label>
 								<div class="col-sm-9">
-											<?php echo $article['date']; ?>
+											<?php echo date("Y-m-d H:i",get_open_time($article['lock_time'])); ?>
 								  </div>
 					</div>
 									

@@ -97,7 +97,7 @@
 									</div>
 									
 									    <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 单份价格 </label>
+										<label class="col-sm-2 control-label no-padding-left" > 心愿数目 </label>
 
 										<div class="col-sm-9">
 											 <input type="text" name="credit_cost"  value="<?php  echo $award['credit_cost']==0?1:$award['credit_cost'];?>" class="col-xs-10 col-sm-2" />

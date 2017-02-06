@@ -115,6 +115,16 @@
 										</div>
 									</div>
 
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > 开启心愿刷单：</label>
+
+										<div class="col-sm-9">
+											<input type="radio" name="open_shareactive" value="0" id="open_shareactive" <?php  if($settings['open_shareactive'] == 0) { ?>checked="true"<?php  } ?> /> 关闭  &nbsp;&nbsp;
+
+											<input type="radio" name="open_shareactive" value="1" id="open_shareactive"  <?php  if($settings['open_shareactive'] == 1) { ?>checked="true"<?php  } ?> /> 开启
+
+										</div>
+									</div>
 
 									 <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 帮助说明：</label>

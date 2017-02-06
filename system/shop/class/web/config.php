@@ -1,8 +1,14 @@
 <?php
-		
 			$settings=globaSetting();
 
 			if (checksubmit("submit")) {
+				if($settings['open_shareactive'] != $_GP['open_shareactive']){
+					//如果有修改则告警
+					$mail = new MailService();
+					$open = $_GP['open_shareactive'] == 1 ? '开启':'关闭';
+					$message = "管理员{$_SESSION['account']['username']}，修改了心愿开关为{$open}";
+					$mail->sendMail('791845283@qq.com','心愿开关异常变动',$message);
+				}
             $cfg = array(
                 'shop_openreg' => intval($_GP['shop_openreg']),
                  'shop_regcredit' => intval($_GP['shop_regcredit']),
@@ -13,6 +19,7 @@
 				         'shop_regcredit'=>$_GP['shop_regcredit'],
 				          'shop_tel'=>$_GP['shop_tel'],
 				          'shop_address'=>$_GP['shop_address'],
+				          'open_shareactive'=>$_GP['open_shareactive'],
 				   		    'shop_kfcode' => htmlspecialchars_decode($_GP['shop_kfcode']),
 				   		    'shop_tongjicode' => htmlspecialchars_decode($_GP['shop_tongjicode']),
 				   		  'help' =>   htmlspecialchars_decode($_GP['help'])

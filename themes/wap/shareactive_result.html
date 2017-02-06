@@ -22,9 +22,7 @@
 
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
 		<div class="one_result">
-			<!--@php if($drawtime == 0) { @-->
-			<div class="result-phase tobedraw">等待揭晓</div>
-			<!--@php }else if(time() > $drawtime){ @-->
+			<!--@php if(time() > $drawtime){ @-->
 				<!--@php if($draw_arr[0]['state'] == 2){  @-->
 					<div class="result-phase tobedraw">正在颁奖</div>
 				<!--@php }else{ @-->
@@ -32,12 +30,16 @@
 				<!--@php } @-->
 
 			<!--@php }else{ @-->
-			<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--><span class="result-djs"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></span></div>
-			<script>
-				$(function(){
-					countDown(<!--@php echo $drawtime;@-->,"#result-phase");
-				})
-			</script>
+				<!--@php if($draw_arr[0]['state'] == 3){  @-->
+				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--></div>
+				<!--@php }else{ @-->
+				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--><span class="result-djs"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></span></div>
+				<script>
+					$(function(){
+						countDown(<!--@php echo $drawtime;@-->,"#result-phase");
+					})
+				</script>
+				<!--@php } @-->
 			<!--@php } @-->
 
 
@@ -135,7 +137,7 @@
 		      				"<li>(</li>"+
 		      				"<li>"+
 		      					"<p>"+chusu+"</p>"+
-		      					"<span>描述描述</span>"+
+		      					"<span>标准数据</span>"+
 		      				"</li>"+
 		      				"<li>"+
 		      					"<p>%</p>"+
@@ -154,7 +156,7 @@
 		      				"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
 		      				"<li>"+
 		      					"<p>p+</p>"+
-		      					"<span>描述描述</span>"+
+		      					"<span>固定</span>"+
 		      				"</li>"+
 		      				"<li>"+
 		      					"<p>"+award_id+"</p>"+

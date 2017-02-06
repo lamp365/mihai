@@ -22,16 +22,18 @@
 	<div class="result-wrap">
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
 		<div class="one_result">
-			<!--@php if($drawtime == 0) { @-->
-				<div class="result-phase tobedraw" >等待揭晓 进行中...</div>
-			<!--@php }else if(time() > $drawtime){ @-->
+			<!--@php if(time() > $drawtime){ @-->
 				<!--@php if($draw_arr[0]['state'] == 2){  @-->
 				<div class="result-phase tobedraw">正在颁奖 进行中...</div>
 				<!--@php }else{ @-->
 				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
 				<!--@php } @-->
 			<!--@php }else{ @-->
+				<!--@php if($draw_arr[0]['state'] == 3){  @-->
+				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
+				<!--@php }else{ @-->
 				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 进行中...</div>
+				<!--@php } @-->
 			<!--@php } @-->
 
 			<ul class="clearfix">
@@ -44,9 +46,7 @@
 						<div class="detail"><!--@php echo $draw['title'];@--></div>
 						<div class="number">总参与人次:<!--@php echo $draw['dicount'];@--></div>
 
-						<!--@php if($drawtime == 0) { @-->
-								<div class="result-detail">等待揭晓</div>
-						<!--@php }else if(time() > $drawtime){ @-->
+						<!--@php if(time() > $drawtime){ @-->
 							<!--@php if($draw_arr[0]['state'] == 2){  @-->
 								<div class="result-detail">正在颁奖</div>
 							<!--@php }else{ @-->
@@ -56,15 +56,22 @@
 								</div>
 							<!--@php } @-->
 						<!--@php }else{ @-->
-								<div class="result-djs">
-									<p>倒计时</p>
-									<span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span>
-								</div>
-								<script>
-									$(function(){
-										countDown(<!--@php echo $drawtime;@-->,".result-djs");
-									})
-								</script>
+							<!--@php if($draw_arr[0]['state'] == 3){  @-->
+							<div class="user-detail">
+								<span>心愿幸运码:<span class="xinyuannum" style="color: #f60"><!--@php echo $draw['sn'];@--></span></span>
+								<span><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" style="cursor: pointer;width: 16px;margin-top: 2px;" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+							</div>
+							<!--@php }else{ @-->
+							<div class="result-djs">
+								<p>倒计时</p>
+								<span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span>
+							</div>
+							<script>
+								$(function(){
+									countDown(<!--@php echo $drawtime;@-->,".result-djs");
+								})
+							</script>
+							<!--@php } @-->
 						<!--@php } @-->
 
 					</div>
@@ -144,7 +151,7 @@
 		      				"<li>(</li>"+
 		      				"<li>"+
 		      					"<p>"+chusu+"</p>"+
-		      					"<span>描述描述</span>"+
+		      					"<span>标准数据</span>"+
 		      				"</li>"+
 		      				"<li>"+
 		      					"<p>%</p>"+
@@ -163,7 +170,7 @@
 						"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
 		      				"<li>"+
 		      					"<p>p+</p>"+
-		      					"<span>描述描述</span>"+
+		      					"<span>固定</span>"+
 		      				"</li>"+
 		      				"<li>"+
 								"<p>"+award_id+"</p>"+
