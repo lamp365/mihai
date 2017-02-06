@@ -30,7 +30,7 @@
         $lock = false;
         if(count($toBeDraw) == 6){
             $lock     = true;
-            $drawTime = strtotime($toBeDraw[0]['date']);
+            $drawTime = $toBeDraw[0]['date'];
         }
 
         include themePage('shareactive');
@@ -63,7 +63,12 @@
             }
         }
     }else if($op == 'wish'){  //进行许愿
-        $openid   = getOpenidFromWeixin($openid);
+        if(empty($_GP['openid'])){
+            $openid   = getOpenidFromWeixin($openid);
+        }else{
+            $openid  = $_GP['openid'];
+        }
+
         if(empty($openid)){
             die(showAjaxMess(1002,'您还没登录！'));
         }
@@ -146,7 +151,7 @@
             //按照时间6个显示按照开奖时间
             $temp = array();
             foreach($drawRecorder as $item){
-                $drawtime          = empty($item['date'])? 0 : strtotime($item['date']);
+                $drawtime          = empty($item['date'])? 0 : $item['date'];
                 $item['drawtime']  = $drawtime;
                 $temp[$drawtime][] = $item;
             }

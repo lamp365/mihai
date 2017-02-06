@@ -28,10 +28,10 @@
 				<!--@php if($draw_arr[0]['state'] == 2){  @-->
 				<div class="result-phase tobedraw">正在颁奖 进行中...</div>
 				<!--@php }else{ @-->
-				<div class="result-phase"><!--@php echo date("Y-m-d",$drawtime);@--> 已揭晓</div>
+				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
 				<!--@php } @-->
 			<!--@php }else{ @-->
-				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d",$drawtime);@--> 进行中...</div>
+				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 进行中...</div>
 			<!--@php } @-->
 
 			<ul class="clearfix">
@@ -73,7 +73,9 @@
 			</ul>
 		</div>
 		<!--@php }} @-->
+		<!--@php echo $pager; @-->
 	</div>
+
 	<div class="modal fade result-modal" tabindex="-1" role="dialog">
 	  	<div class="modal-dialog" role="document">
 	    	<div class="modal-content">
@@ -155,22 +157,22 @@
 		      					"<p>1</p>"+
 		      					"<span>固定值</span>"+
 		      				"</li>"+
-		      				"<li><p>= "+yushu+"</p><span>余数</span></li>"+
+		      				"<li><p>= "+yushu+"</p><span>号数</span></li>"+
 		      			"</ul>"+
 		      			"<ul class='result-rule clearfix' style='margin-top: 10px'>"+
-		      				"<li style='line-height: 36px;'>p18000001 = </li>"+
+						"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
 		      				"<li>"+
 		      					"<p>p+</p>"+
 		      					"<span>描述描述</span>"+
 		      				"</li>"+
 		      				"<li>"+
-		      					"<p>18</p>"+
+								"<p>"+award_id+"</p>"+
 		      					"<span>礼品id</span>"+
 		      				"</li>"+
 		      				"<li>+</li>"+
 		      				"<li><p>00000</p><span>固定值</span></li>"+
 		      				"<li>+</li>"+
-		      				"<li><p>"+yushu+"</p><span>余数</span></li>"+
+		      				"<li><p>"+yushu+"</p><span>号数</span></li>"+
 		      			"</ul>"+
 		      		"</div>";
 				$(".result-modal").modal();
