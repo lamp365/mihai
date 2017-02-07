@@ -2,7 +2,6 @@
     $op     = empty($_GP['op'])? 'display' : $_GP['op'];
     $openid = checkIsLogin();
     if($op == 'display'){
-        $openid    = getOpenidFromWeixin($openid);
         $accesskey = $_GP['accesskey'];
 
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
@@ -18,14 +17,18 @@
         $canyu_total = get_active_total_people();
         //获取6个为1 等待开奖的
         $toBeDraw    = get_active_goods(1,$openid);
-        //获取1个推荐的
-        $recommand   = get_active_goods(2,$openid);
+        //获取1个推荐的 手机访问不需要
+        if(!is_mobile_request())
+            $recommand   = get_active_goods(2,$openid);
+
         //获取礼品商品 心愿专区
         $activeGoods = get_active_goods(3,$openid);
         //获取即将进入心愿专区的礼品
         $toBeShow    = get_active_goods(4,$openid);
-        //获取心愿晒单
-        $shaidan     = get_active_shaidan();
+        //获取心愿晒单 手机访问不需要
+        if(!is_mobile_request())
+            $shaidan     = get_active_shaidan();
+
         //是否满6个了是的话锁定
         $lock = false;
         if(count($toBeDraw) == 6){
@@ -33,10 +36,20 @@
             $drawTime = $toBeDraw[0]['date'];
         }
 
+        //wap端关于我们
+        if(is_mobile_request()){
+            $use_about = getArticle(1,5);
+            if ( !empty($use_about) ){
+                $use_about = mobile_url('article',array('name'=>'addon8','id'=>$use_about[0]['id']));
+            }else{
+                $use_about =  'javascript:void(0)';
+            }
+        }
+
         include themePage('shareactive');
 
     }else if($op == 'canyu_recorder'){  //参与记录
-        $openid   = getOpenidFromWeixin($openid);
+
         if(empty($openid)){
             die(showAjaxMess(1002,'您还没登录！'));
         }
@@ -63,9 +76,7 @@
             }
         }
     }else if($op == 'wish'){  //进行许愿
-        if(empty($_GP['openid'])){
-            $openid   = getOpenidFromWeixin($openid);
-        }else{
+        if(!empty($_GP['openid'])){
             //该分支预留作为刷单用，但是后台有开关，开关变动会报警。给相关人
             $openid   = $_GP['openid'];
             shuadan_checkActiveCishu($openid);

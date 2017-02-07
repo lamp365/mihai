@@ -4,7 +4,6 @@
 		   	 if(empty($member['openid'])){
 				 $member=member_get($member['openid']);
 			 }
-	       	 $openid =$member['openid'] ;
 	    }
 		$is_login=is_login_account();
 		$article_foot = getArticle(4,1);

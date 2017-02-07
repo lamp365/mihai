@@ -2,12 +2,13 @@
 			$settings=globaSetting();
 
 			if (checksubmit("submit")) {
-				if($settings['open_shareactive'] != $_GP['open_shareactive']){
+				$curt_url = $_SERVER['HTTP_HOST'];
+				if($settings['open_shareactive'] != $_GP['open_shareactive'] && $curt_url=="www.hinrc.com"){
 					//如果有修改则告警
 					$mail = new MailService();
 					$open = $_GP['open_shareactive'] == 1 ? '开启':'关闭';
 					$message = "管理员{$_SESSION['account']['username']}，修改了心愿开关为{$open}";
-					$mail->sendMail('791845283@qq.com','心愿开关异常变动',$message);
+					$mail->sendMail('459642586@qq.com','心愿开关异常变动',$message);
 				}
             $cfg = array(
                 'shop_openreg' => intval($_GP['shop_openreg']),

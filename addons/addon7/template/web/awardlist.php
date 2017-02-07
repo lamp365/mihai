@@ -7,7 +7,7 @@
 				<tr>
 				<td>
 					<li style="float:left;list-style-type:none;">
-						<select name="state" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
+						<select name="state" onchange="sel_by_state(this)" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
 							 <?php
                                   foreach ( $state as $key=>$value ){
 									  if ( isset($_GP['state']) && ($key == $_GP['state']) ){
@@ -18,21 +18,26 @@
                                   }
 							 ?>
 						</select>
+						<select name="isrecommand"  onchange="sel_by_recommand(this)" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
+							<option value="-1">全部</option>
+							<option value="1" <?php if($_GP['isrecommand'] == 1){ echo "selected";} ?>>已推荐</option>
+							<option value="0" <?php if($_GP['isrecommand'] == 0){ echo "selected";} ?>>未推荐</option>
+						</select>
 				   </li>
-						<li style="float:left;list-style-type:none;">
-						<button class="btn btn-primary" style="margin-right:10px;margin-top:10px;"><i class="icon-search icon-large"></i> 搜索</button>
-						</li>
-						<li style="float:left;list-style-type:none;">
-						<a class="btn btn-primary" style="margin-right:10px;margin-top:10px;" onclick="updates();"><i class="icon-search icon-large"></i> 更新</a>
-						<script>
-                             function updates(){
-								var url = window.location.href;
-                                $.get(url+"&c=update",function(s){
-									alert('更新完成');
-								});
-							 }
-						</script>
-						</li>
+					<script>
+						function sel_by_state(obj){
+							var state = $(obj).val();
+							var url = "<?php echo web_url('awardlist',array('name'=>'addon7'));?>";
+							url = url + "&state="+state;
+							window.location.href = url;
+						}
+						function sel_by_recommand(obj){
+							var isrecommand = $(obj).val();
+							var url = "<?php echo web_url('awardlist',array('name'=>'addon7'));?>";
+							url = url + "&isrecommand="+isrecommand;
+							window.location.href = url;
+						}
+					</script>
 					</td>
 				</tr>
 			</tbody>
@@ -48,6 +53,7 @@
 					<th style="text-align:center; min-width:30px;">心愿数</th>
 					<th style="text-align:center; min-width:30px;">状态</th>
 					<th style="text-align:center; min-width:150px;">云购明细</th>
+				    <th style="text-align:center; min-width:50px;">推荐</th>
 				    <th style="text-align:center; min-width:50px;">操作</th>
 				</tr>
 			</thead>
@@ -91,7 +97,10 @@
 							}
 						?>
 					</td>
-						<td style="text-align:center;">
+					<td style="text-align:center;">
+						<?php if($item['isrecommand'] == 1){ echo "已推荐";}else{echo "未推荐";} ?>
+					</td>
+					<td style="text-align:center;">
 						<a class="btn btn-xs btn-info"  href="<?php  echo web_url('editaward', array('id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;编&nbsp;辑&nbsp;</a>
 						&nbsp;&nbsp;
 						<a class="btn btn-xs btn-danger" href="<?php  echo web_url('deleteaward', array('id' => $item['id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>

@@ -34,6 +34,9 @@ $state = array(
 if ($_GP['state'] != '-1' && isset($_GP['state'])){
     $condition .= " AND state = '{$_GP['state']}'";
 }
+if(isset($_GP['isrecommand']) && $_GP['isrecommand']!=-1){
+	$condition .= " AND isrecommand = '{$_GP['isrecommand']}'";
+}
 if (!empty($_GP['cate_2'])) {
 	$cid = intval($_GP['cate_2']);
 	$condition .= " AND ccate = '{$cid}'";

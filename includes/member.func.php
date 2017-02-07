@@ -649,14 +649,17 @@ function isSelfAgent($str,$uid){
  * 一些场合，不需要跳转故再加一个方法
  */
 function checkIsLogin(){
-    //微信端 可以获取到 get_member_account 得到的openid就是weixin_openid
+    //微信端 如果从 get_member_account 中获取 得到的openid就是weixin_openid
+    //还不能判断就是登陆了
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+        //微信端存的 key 是 MOBILE_SESSION_ACCOUNT  登录后存的key 是 MOBILE_ACCOUNT
         if (! empty($_SESSION[MOBILE_ACCOUNT])) {
             return $_SESSION[MOBILE_ACCOUNT]['openid'];
         }else{
             return '';
         }
     }else{
+        //非微信端存的 可能有临时的 前面带有 _t
         $member = get_member_account(false);
         if(empty($member)){
             return '';

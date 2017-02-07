@@ -25,6 +25,7 @@
 			'endtime' =>  $endtime,
 			 'price' => $_GP['price'],
 		   'gold'=> $_GP['gold'],
+		  'isrecommand'=>intval($_GP['isrecommand']),
 		   'awardtype'=> intval($_GP['awardtype']),
 			'credit_cost' => intval($_GP['credit_cost']),
 			 'content' => htmlspecialchars_decode($_GP['content'])

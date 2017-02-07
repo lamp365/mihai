@@ -14,6 +14,9 @@
 		<div class="col-sm-9">
 			<input type="text" name="headtitle" class="input-height" value="<?php echo $headline['title'];?>">
 		</div>
+		<div class="col-sm-9">
+			(视频和图片只能二选一)
+		</div>
 	</div>
 	
 	<div class="form-group">
@@ -62,7 +65,11 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left"> 视频文件(mp4)：</label>
 		<div class="col-sm-9">
-			<?php  echo $headline['video'];?>
+			<?php if (!empty($headline['video'])) { ?>
+			<?php  echo $headline['video']; ?>
+			<a  href="<?php  echo create_url('site',array('name' => 'shop','do' => 'headline', 'op' => 'delvideo', 'vid' => $headline['headline_id']))?>" title="删除">删除</a>
+			<input type="hidden" value="<?php echo $headline['video'];?>" name="hidvideo">
+			<?php } ?>
 		</div>
 		<div class="col-sm-9">
 			<input name="video" id="video" type="file" />

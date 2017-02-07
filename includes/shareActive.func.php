@@ -122,6 +122,7 @@ function getHasShareMember($share_active,$num=10,$today=true){
 function getShareOpenidFromCookie(){
     $accesskey    = getShareAccesskeyCookie();
     $share_openid = decodeShareAccessKey($accesskey);
+    ppd($share_openid,'ssss');
     if($share_openid){
         //给分享者加1次机会
         $time = time();
@@ -357,7 +358,8 @@ function get_active_goods($pos,$openid){
             break;
         case 2:
             //推荐的  条件最好不用 isrecommand 因为如果满了，那么这边就会空出来了，取不到推荐的
-            $sql = "select * from ".table('addon7_award')." where state<=1 order by isrecommand desc,id  desc";
+            $now_time = time();
+            $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by isrecommand desc,id  desc";
             $res = mysqld_select($sql);
             if(!empty($res)){
                 //dicount  可能会超过总的
@@ -374,7 +376,7 @@ function get_active_goods($pos,$openid){
         case 3:
             //心愿专区
             $now_time = time();
-            $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by id desc";
+            $sql = "select * from ".table('addon7_award')." where state<=1 and isrecommand=0 and endtime<={$now_time} order by id desc";
             $res = mysqld_selectall($sql);
             if(!empty($res)){
                 foreach($res as $key=>&$item){

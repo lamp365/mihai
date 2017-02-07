@@ -6,7 +6,7 @@
 
 $operation = ! empty ( $_GP ['op'] ) ? $_GP ['op'] : '';
 
-switch($operation){
+switch($operation) {
 
 	case 'post':		//提交
 
@@ -16,9 +16,12 @@ switch($operation){
 		$video = $_GP ['video'];
 		$description = $_GP ['description'];
 
-		// dump($_GP['attachment']);
-		// dump($_GP['attachment-new']);
-		// return;
+		$headline = mysqld_select("SELECT * FROM ".table('headline')." WHERE headline_id=".$headline_id);
+
+		if (empty($title) or empty($description)) {
+			message ( '标题和内容不能为空！', refresh(), 'error' );
+		}
+
 		$data = array('isrecommand' 	=> $isrecommand,
 						'modifiedtime' 	=> time(),
 						'title'			=> $title,
@@ -32,9 +35,7 @@ switch($operation){
 			$pic .= ';';
 			$pic .= implode(';',$_GP['attachment-new']);
 		}
-		if (!empty($pic)) {
-			$data['pic'] = $pic;
-		}
+		$data['pic'] = $pic;
 		if (!empty($_FILES['thumb']['tmp_name'])) {
             $upload = file_upload($_FILES['thumb']);
             if (is_error($upload)) {
@@ -43,17 +44,30 @@ switch($operation){
 
             $data['video_img'] = $upload['path'];
         }
+        $data['video'] = '';
         if (!empty($_FILES['video']['tmp_name'])) {
         	if ($_FILES['video']['type'] != "video/mp4") {
         		message ( '视频只能上传MP4格式！', refresh(), 'error' );
         		return;
         	}
-            $upload = file_upload($_FILES['video']);
+            $upload = file_upload($_FILES['video'], true, '', '', 'other');
             if (is_error($upload)) {
                 message($upload['message'], '', 'error');
             }
 
             $data['video'] = $upload['path'];
+        }
+        if (empty($data['pic']) AND empty($data['video'])) {
+        	message ( '视频和图片不能都为空！', refresh(), 'error' );
+        }
+        if (!empty($data['pic']) AND !empty($data['video'])) {
+        	message ( '视频和图片只能二选一！', refresh(), 'error' );
+        }
+        if (!empty($data['pic']) AND !empty($_GP ['hidvideo'])) {
+        	message ( '视频和图片只能二选一！', refresh(), 'error' );
+        }
+        if (!empty($headline['pic']) AND !empty($headline['video'])) {
+        	message ( '视频和图片只能二选一！', refresh(), 'error' );
         }
 
 		if (empty($headline_id)) {
@@ -87,6 +101,13 @@ switch($operation){
 		$id = intval ( $_GP ['id'] );
 		mysqld_update ( 'headline', array('deleted'=>1), array ('headline_id' => $id) );
 		message ( '删除成功', refresh(), 'success' );
+		break;
+
+	case 'delvideo':
+		// 删除视频
+		$id = intval($_GP ['vid']);
+		mysqld_update ( 'headline', array('video'=>NULL), array ('headline_id' => $id) );
+		message ( '视频删除成功', refresh(), 'success' );
 		break;
 
 	default:			//列表页
