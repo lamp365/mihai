@@ -14,7 +14,6 @@ if ( $op == 'get' ){
 	   }else{
 		   die(showAjaxMess(1002,'当前优惠卷领取地址有误'));
 	   }
-
    }
    // 找到优惠卷的信息 send_start_date 	send_end_date
    $bonus = mysqld_select("SELECT * FROM " . table('bonus_type')." where type_id='".$id."' and deleted = 0 ");
@@ -40,7 +39,6 @@ if ( $op == 'get' ){
 	   }else{
 		   die(showAjaxMess(1002,'该优惠券已被抢光'));
 	   }
-
    }
    if ( $bonus['send_max'] > 0 ){
         $user_had = mysqld_selectcolumn("SELECT count(*) FROM " .table('bonus_user'). " WHERE openid = :openid and bonus_type_id = :bonus_type_id ", array(":bonus_type_id"=>$id, ":openid"=> $openid));
@@ -52,7 +50,7 @@ if ( $op == 'get' ){
 			}
 		}
    }
-   	if(!empty($openid)){
+   	if(!empty($openid) && $bonus['send_type'] != 4 ){
 			$bonus_sn=date("Ymd",time()).$id.rand(1000000,9999999);
 			$bonus_user = mysqld_select("SELECT * FROM " . table('bonus_user')."where bonus_sn='".$bonus_sn."'" );
 			while(!empty($bonus_user['bonus_id']))
@@ -72,7 +70,9 @@ if ( $op == 'get' ){
 			}else{
 				die(showAjaxMess(200,'恭喜，领取成功'));
 			}
-
+   }else{
+       // 活动用优惠卷处理
+	   message("恭喜","refresh", "success");
    }
    exit;
 }

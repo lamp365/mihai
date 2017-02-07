@@ -21,7 +21,9 @@
           	<?php echo $item['send_type']==0?'按用户发放':''; ?>
           	<?php echo $item['send_type']==1?'按商品发放':''; ?>
           	<?php echo $item['send_type']==2?'按订单金额发放':''; ?>
-          	<?php echo $item['send_type']==3?'线下发放的优惠券':''; ?></td>
+          	<?php echo $item['send_type']==3?'线下发放的优惠券':''; ?>
+			<?php echo $item['send_type']==4?'活动专享':''; ?>
+			</td>
            <td class="text-center"><?php echo $item['type_money']; ?></td>
           <td class="text-center"><?php echo $item['min_goods_amount']; ?> </td>
           <td class="text-center"><?php echo $item['sendcount']; ?></td>

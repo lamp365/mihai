@@ -257,7 +257,32 @@
 						</div>
 					</div>
 				</div>
-			</div>				
+			</div>
+
+			<!--@php if(!empty($allBonus)){   @-->
+			<!--优惠券-->
+			<div class="recommend_list_two">
+				<div class="recommend_list_two_head" style="background:url(__RESOURCE__/recouse/images/coupon_bg.jpg)no-repeat center; "></div>
+				<div class="viewport-area-list">
+					<div class="coupon-total-num">许愿总数:<!--@php echo $wish_total_num; @--></div>
+					<ul class="indiana_list">
+						<!--@php foreach($allBonus as $oneBonus){ @-->
+						<li class="per_indiana coupon_indiana"> 
+							<div class="coupon_indiana_left">
+								￥50
+							</div>
+							<!--@php if($oneBonus['is_get'] == 1){ @-->
+							<div class="coupon_indiana_right" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
+							<!--@php }else{ @-->
+							<div class="coupon_indiana_right to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">领取</div>
+							<!--@php } @-->
+						</li>
+						<!--@php } @-->
+					</ul>
+				</div>
+				<div class="recommend_list_two_footer"></div>
+			</div>
+			<!--@php } @-->
 			<!--预告-->
 
 			<!--@php if(!empty($toBeShow)){  @-->
@@ -641,6 +666,28 @@
 				},"json");
 			}
 
+			$(".to_get_bonus").click(function(){
+				var obj      = this;
+				var url      = "<!--@php echo mobile_url('shareactive',array('op'=>'get_bonuse')); @-->";
+				var bonus_id = $(this).data('id');
+				var is_login = "<!--@php echo $openid; @-->";
+				if(!is_login){
+					confirm('您还没登录！','',function(isconfirm){
+						if(isconfirm){
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 400});
+					return '';
+				}
+				$.post(url,{'bonus_id':bonus_id},function(data){
+					alert(data.message);
+					if(data.errno == 200){
+						//修改优惠卷的样式
+						$(obj).html('已领');
+					}
+				},'json')
+			})
 			//将后台返回的时间戳格式化为时间格式
 			function Stringtotime(time){
 				time = time*1000;

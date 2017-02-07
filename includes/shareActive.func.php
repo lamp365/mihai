@@ -495,3 +495,83 @@ function shuadan_checkActiveCishu($openid){
         mysqld_update("share_active",array("total_num"=>6),array("openid"=>$openid));
     }
 }
+
+/**
+ * 获取所有属于类型4 的优惠卷，并判断是否领取过
+ * @param $openid
+ * @return array
+ */
+function get_all_changebonus($openid){
+    $now_time = time();
+    $bonus = mysqld_selectall("select * from ".table('bonus_type')." where send_type=4 and send_start_date<={$now_time} and send_end_date>={$now_time}");
+    if(!empty($bonus)){
+        if($openid){
+            foreach($bonus as $key => &$one_bonus){
+                //查找用户是否领取过
+               $info =  mysqld_select("select bonus_id from ".table('bonus_user')." where bonus_type_id={$one_bonus['type_id']} and openid={$openid}");
+                if($info){
+                    //找到，标记为领取
+                    $one_bonus['is_get']     = 1;
+                    //兑换值 是 面额比去一个固定值  当前为5
+                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/5);
+                }else{
+                    //没找到，标记为没领取
+                    $one_bonus['is_get']     = 0;
+                    //兑换值 是 面额比去一个固定值  当前为5
+                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/5);
+                }
+            }
+        }else{
+            foreach($bonus as $key => &$one_bonus){
+                //未登录，标记为没领取
+                $one_bonus['is_get']     = 0;
+                //兑换值 是 面额比去一个固定值  当前为5
+                $one_bonus['change_num'] = ceil($one_bonus['type_money']/5);
+            }
+        }
+    }
+    return $bonus;
+}
+
+/**
+ * 兑换优惠卷，按照用户参与过的活动许愿次数，来判断是否可以领取优惠卷
+ * @param $openid
+ * @param $bonus_id
+ * @return string
+ */
+function toChangeBonus($openid,$bonus_id){
+    $info =  mysqld_select("select bonus_id from ".table('bonus_user')." where bonus_type_id={$bonus_id} and openid={$openid}");
+    if($info){
+        $msg = showAjaxMess(1002,"对不起，您已经领取过");
+    }else{
+        $total_num = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid}");
+        //获取该优惠卷
+        $now_time = time();
+        $bonus = mysqld_select("select * from ".table('bonus_type')." where type_id={$bonus_id} and send_type=4");
+        if(empty($bonus)){
+            $msg = showAjaxMess(1002,"对不起，非法访问！");
+        }else{
+            if($bonus['send_start_date']<= $now_time && $bonus['send_end_date']>=$now_time){
+                $change_num = ceil($bonus['type_money']/5);
+                if($total_num < $change_num){
+                    $msg = showAjaxMess(1002,"您的许愿数只有{$total_num}次");
+                }else{
+                    $bonus_sn = date("Ymd",time()).$bonus_id.rand(1000000,9999999);
+                    $data = array(
+                        'bonus_type_id' => $bonus_id,
+                        'bonus_sn'      => $bonus_sn,
+                        'openid'        => $openid,
+                        'deleted'       => 0,
+                        'isuse'         => 0,
+                        'createtime'    => time(),
+                    );
+                    mysqld_insert('bonus_user',$data);
+                    $msg = showAjaxMess(200,"已经领取成功！");
+                }
+            }else{
+                $msg = showAjaxMess(1002,"优惠卷发放时间已经结束");
+            }
+        }
+    }
+    return $msg;
+}

@@ -459,6 +459,7 @@ body{
     margin-left: -1px;
     height: 163px;
 }
+
 .result-list-left{
     width: 150px;
     float: left;
@@ -467,7 +468,7 @@ body{
 	float: left;
     width: 244px;
     box-sizing: border-box;
-    margin-top: 30px;
+    margin-top: 33px;
 }
 .result-list-left img{
     width: 100%;
@@ -492,7 +493,7 @@ body{
     color: #fff;
     padding: 5px;
     border-radius: 3px;
-    width: 150px;
+    width: 170px;
 }
 .result-list-right .result-djs span{
 	padding: 2px;
@@ -661,19 +662,74 @@ body{
     color: #fff;
     cursor: pointer;
 }
-/*.xinyuannum{
-	color: #fff;
-    padding: 3px 6px;
-    border-radius: 4px;
-    margin-left: 5px;
-    background-color: #f60;
+.xinyuannum{
+	color: #fa6185;
 }
-*/
+.user-detail-span{
+	background: url(../images/xingyuanma_bg.png) no-repeat center;
+    width: 180px;
+    height: 35px;
+    line-height: 35px;
+    color: #fff;
+    float: left;
+}
+.modal-body .xinyuandetail,.user-detail-span .xinyuandetail{
+    padding: 0 6px;
+}
+.modal-body .user-detail-span{
+	margin-bottom: 15px;
+}
+.user-detail .love-span{
+	float: left;
+    height: 35px;
+    line-height: 35px;
+}
+.user-detail .love-span img{
+    cursor: pointer;
+    width: 16px;
+    margin-top: -2px;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+.coupon_indiana{
+	height: 83px;
+	padding:0;
 
-
-
-
-
+}
+.coupon_indiana img{
+	width: 200px;
+	max-width: 100%;
+	display: block;
+}
+.coupon_indiana_left{
+    float: left;
+    width: 200px;
+    background: url(../images/coupon.jpg) no-repeat;
+    height: 82px;
+    position: relative;
+    text-align: right;
+    line-height: 82px;
+    color: #fff;
+    font-size: 35px;
+    padding-right: 11px;
+    box-sizing: border-box;
+}
+.coupon_indiana_right{
+	float: left;
+    width: 61px;
+    line-height: 82px;
+    text-align: center;
+    background: #d10236;
+    color: #fff;
+    cursor: pointer;
+}
+.coupon-total-num {
+    position: absolute;
+    top: -37px;
+    left: 10px;
+    color: #d21019;
+    font-size: 18px;
+}
 
 
 

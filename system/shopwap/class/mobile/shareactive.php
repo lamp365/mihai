@@ -29,6 +29,8 @@
         if(!is_mobile_request())
             $shaidan     = get_active_shaidan();
 
+        //获取所有优惠券
+        $allBonus   = get_all_changebonus($openid);
         //是否满6个了是的话锁定
         $lock = false;
         if(count($toBeDraw) == 6){
@@ -45,7 +47,8 @@
                 $use_about =  'javascript:void(0)';
             }
         }
-
+        //许愿总数
+        $wish_total_num  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid}");
         include themePage('shareactive');
 
     }else if($op == 'canyu_recorder'){  //参与记录
@@ -193,6 +196,18 @@
     }else if($op == 'canyu_total'){  //获取总的参与人数
         $canyu_total = get_active_total_people();
         die(showAjaxMess('200',$canyu_total));
+
+    }else if($op == 'get_bonuse'){//兑换优惠卷
+        if(empty($openid)){
+            die(showAjaxMess(1002,"对不起， 您还没登录！"));
+        }
+        $bonus_id = $_GP['bonus_id'];
+        if(empty($bonus_id)){
+            die(showAjaxMess(1002,"对不起，参数有误！"));
+        }
+
+        $res = toChangeBonus($openid,$bonus_id);
+        die($res);
 
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');

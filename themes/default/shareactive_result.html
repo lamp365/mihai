@@ -51,15 +51,15 @@
 								<div class="result-detail">正在颁奖</div>
 							<!--@php }else{ @-->
 								<div class="user-detail">
-									<span>心愿幸运码:<span class="xinyuannum" style="color: #f60"><!--@php echo $draw['sn'];@--></span></span>
-									<span><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" style="cursor: pointer;width: 16px;margin-top: 2px;" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+									<div class="user-detail-span"><span class="xinyuandetail">心愿幸运码:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
+									<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 								</div>
 							<!--@php } @-->
 						<!--@php }else{ @-->
 							<!--@php if($draw_arr[0]['state'] == 3){  @-->
 							<div class="user-detail">
-								<span>心愿幸运码:<span class="xinyuannum" style="color: #f60"><!--@php echo $draw['sn'];@--></span></span>
-								<span><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" style="cursor: pointer;width: 16px;margin-top: 2px;" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+								<span class="user-detail-span"><span class="xinyuandetail">心愿幸运码:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></span>
+								<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							</div>
 							<!--@php }else{ @-->
 							<div class="result-djs">
@@ -131,7 +131,7 @@
 		var yushu = chusu%beichusu+1;
 		var html = '';
 
-		html = "<div>心愿幸运码:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
+		html = "<div class='user-detail-span'><span class='xinyuandetail'>心愿幸运码:</span><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
       		"<div>"+
       			"<ul class='result-rule clearfix'>"+
       				"<li style='line-height: 40px;'>计算公式 = </li>"+
