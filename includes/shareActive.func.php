@@ -566,7 +566,7 @@ function toChangeBonus($openid,$bonus_id){
                         'createtime'    => time(),
                     );
                     mysqld_insert('bonus_user',$data);
-                    $msg = showAjaxMess(200,"已经领取成功！");
+                    $msg = showAjaxMess(200,"恭喜领取成功！");
                 }
             }else{
                 $msg = showAjaxMess(1002,"优惠卷发放时间已经结束");

@@ -363,14 +363,23 @@ function member_credit($openid, $fee, $type, $remark)
                 'remark' => $remark,
                 'type' => $type,
                 'fee' => intval($fee),
-                'account_fee' => $member['credit'] + $fee,
+                'account_fee' => $member['credit'] + intval($fee),
                 'createtime' => TIMESTAMP,
                 'openid' => $openid
             );
+            $bill = array(
+                'order_id' => $member['id'],
+                'type' => 5,
+                'openid' => $openid,
+                'money' => intval($fee),
+                'createtime' => time(),
+                'remark' => $remark
+            );
             mysqld_insert('member_paylog', $data);
+            mysqld_insert('bill', $bill);
             mysqld_update('member', array(
-                'credit' => $member['credit'] + $fee,
-                'experience' => $member['experience'] + $fee
+                'credit' => $member['credit'] + intval($fee),
+                'experience' => $member['experience'] + intval($fee)
             ), array(
                 'openid' => $openid
             ));
@@ -382,13 +391,22 @@ function member_credit($openid, $fee, $type, $remark)
                     'remark' => $remark,
                     'type' => $type,
                     'fee' => intval($fee),
-                    'account_fee' => $member['credit'] - $fee,
+                    'account_fee' => $member['credit'] - intval($fee),
                     'createtime' => TIMESTAMP,
                     'openid' => $openid
                 );
+                $bill = array(
+                    'order_id' => $member['id'],
+                    'type' => -5,
+                    'openid' => $openid,
+                    'money' => -intval($fee),
+                    'createtime' => time(),
+                    'remark' => $remark
+                );
                 mysqld_insert('member_paylog', $data);
+                mysqld_insert('bill', $bill);
                 mysqld_update('member', array(
-                    'credit' => $member['credit'] - $fee
+                    'credit' => $member['credit'] - intval($fee)
                 ), array(
                     'openid' => $openid
                 ));

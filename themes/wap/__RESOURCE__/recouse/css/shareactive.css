@@ -409,8 +409,16 @@ body,html{
     box-sizing: border-box;
 }
 .not-start{
-    text-align: center;    margin: 25px 0 10px 2.5%;    border: 1px solid #f40;    width: 95%;    background-color: #f40;    color: #fff;    padding: 5px;
-    border-radius: 5px;    box-sizing: border-box;
+    text-align: center;    
+    margin: 25px 0 10px 2.5%;    
+    border: 1px solid #f40;    
+    width: 95%;    
+    background-color: #f40;    
+    color: #fff;    
+    padding: 5px;
+    border-radius: 5px;    
+    box-sizing: border-box;    
+    font-size: 16px;
 }
 
 .tojoin {
@@ -529,4 +537,30 @@ overflow: hidden;}
 }
 .number_html{
     overflow: hidden;
+}
+.receive-btn{
+    background: #fa7826;
+    color: #fff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 0 5%;
+    padding: 5px 0;
+    text-align: center;
+}
+.coupon-total-num{
+    font-size: 14px;
+}
+.coupon-price{
+    position: absolute;
+    top: 14%;
+    right: 10%;
+    color: #fff;
+    font-size: 20px;
+}
+.need-number{
+    position: absolute;
+    top: 19%;
+    left: 10%;
+    color: #fff;
+    font-size: 14px;
 }

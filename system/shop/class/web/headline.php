@@ -72,6 +72,7 @@ switch($operation) {
 
 		if (empty($headline_id)) {
 			$data['createtime'] = time();
+			$data['uid'] = $_CMS['account']['id'];
 			// 新增
 			mysqld_insert('headline', $data);
 		}else{
@@ -86,6 +87,7 @@ switch($operation) {
 	case 'edit':		//编辑页
 
 		$headline = mysqld_select ( "SELECT * FROM " . table ( 'headline' ) . " where headline_id=".(int)$_GP ['headline_id'] );
+		$author = mysqld_select("SELECT * FROM ".table('user')." WHERE id=".$headline['uid']);
 
 		include page ( 'headline' );
 

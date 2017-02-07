@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-<form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
+<form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form">
     	    <input type="hidden" value="<?php echo $id ?>"  name="id"  />
 					<h3 class="header smaller lighter blue">修改密码</h3>
         <div class="form-group">
@@ -11,9 +11,28 @@
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> 手机号：</label>
+										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> 昵称：</label>
 										<div class="col-sm-9">
-											<input type="text"  name="mobile" class="col-xs-10 col-sm-2" value="<?php echo $account['mobile'];?>" />
+											<input type="text"  name="nickname" class="col-xs-10 col-sm-2" value="<?php echo $account['nickname'];?>" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left"> 头像：</label>
+
+										<div class="col-sm-9">
+												  <div class="fileupload fileupload-new" data-provides="fileupload">
+								                        <div class="fileupload-preview thumbnail" style="width: 150px; height: 100px;">
+								                        	 <?php  if(!empty($account['avatar'])) { ?>
+								                            <img src="<?php  echo $account['avatar'];?>" alt="" onerror="$(this).remove();">
+								                              <?php  } ?>
+								                            </div>
+								                        <div>
+								                         <input name="thumb" id="thumb" type="file" />
+								                            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">移除图片</a>
+								                        </div>
+								                    </div>
+																		</div>
 										</div>
 									</div>
 

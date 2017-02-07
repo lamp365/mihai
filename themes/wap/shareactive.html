@@ -212,6 +212,25 @@
 			<!--@php }}  @-->
 		</ul>
 
+		<!--@php if(!empty($allBonus)){   @-->
+		<div class="not-start">优惠券专区<span class="coupon-total-num"> ( 许愿总数:<span><!--@php echo $wish_total_num; @--></span> )</span></div>
+		<ul class="last-wrap-list clearfix">
+			<!--@php foreach($allBonus as $oneBonus){ @-->
+			<li class="per_indiana" style="position: relative;">
+				<img src="__RESOURCE__/recouse/images/coupon.jpg">
+				<span class="need-number">许愿数:<!--@php echo $oneBonus['change_num'];@--></span>
+				<span class="coupon-price">￥<!--@php echo $oneBonus['type_money'];@--></span>
+				<!--@php if($oneBonus['is_get'] == 1){ @-->
+				<div class="receive-btn" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
+				<!--@php }else{ @-->
+				<div class="receive-btn to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">领取</div>
+				<!--@php } @-->
+			</li>
+			<!--@php } @-->
+		</ul>
+		<!--@php } @-->
+
+
 		<!--@php if(!empty($toBeShow)){  @-->
 		<div class="not-start">即将进入心愿专区</div>
 		<ul class="last-wrap-list clearfix" id="act_list">	
@@ -370,7 +389,8 @@
 				//较少显示的次数，并爱心加1
 				cishu = cishu-fenshu;
 				$(".active-num-btn span").html(cishu);
-
+				var coupon_total_num = $(".coupon-total-num span").text();
+				$(".coupon-total-num span").text(parseInt(coupon_total_num)+1);
 				var wish_total = $(thisElement).parent().find('.love span').html();
 				wish_total = parseInt(wish_total) + 1;
 				if( wish_total ==1 ){
@@ -409,6 +429,29 @@
 		},"json");
 	}
 
+	$(".to_get_bonus").click(function(){
+		var obj      = this;
+		var url      = "<!--@php echo mobile_url('shareactive',array('op'=>'get_bonuse')); @-->";
+		var bonus_id = $(this).data('id');
+		var is_login = "<!--@php echo $openid; @-->";
+		if(!is_login){
+			confirm('您还没登录！','',function(isconfirm){
+				if(isconfirm){
+					var url = "<!--@php echo mobile_url('login'); @-->";
+					window.location.href = url;
+				}
+			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 400});
+			return '';
+		}
+		$.post(url,{'bonus_id':bonus_id},function(data){
+			alert(data.message);
+			if(data.errno == 200){
+				//修改优惠卷的样式
+				$(obj).html('已领');
+				$(obj).removeClass("to_get_bonus");
+			}
+		},'json')
+	})
 
 	//将后台返回的时间戳格式化为时间格式
 	function Stringtotime(time){

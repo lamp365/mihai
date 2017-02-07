@@ -118,6 +118,14 @@
 	<?php  } ?>
 
 	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left"> 作者：</label>
+
+		<div class="col-sm-9">
+			<?php echo $author['nickname'];?>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left"
 			for="form-field-1"> </label>
 

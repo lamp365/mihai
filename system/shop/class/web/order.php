@@ -692,8 +692,8 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 				if($res) {
 					//释放商品数量  卖出件数   佣金计算  和账单记录
 					oneUpdateOrderStock($order_good_id, false);
-					//扣除积分    不扣积分  因为是确认收货才给积分 退货说明还没确认收货
-			//			  member_credit($orderInfo['openid'],$orderInfo['credit'],false,'订单:'.$orderInfo['ordersn'].'退货扣除积分');
+					//扣除积分
+				    member_credit($orderInfo['openid'],$orderInfo['price'],'usecredit','订单:'.$orderInfo['ordersn'].'退货扣除积分');
 
 					$orderAllGood = mysqld_selectall("select id,status,type from ". table('shop_order_goods') ." where orderid={$order_id}");
 					$num = 0;

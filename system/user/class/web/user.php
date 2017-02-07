@@ -103,10 +103,20 @@ if ($operation == 'changepwduser') {
 
 				message('两次密码不一致！',refresh(),'error');
 			}
-			$data = array('mobile'=>$_GP['mobile']);
 			if(!empty($_GP['newpassword'])){
 				$data['password']  = md5($_GP['newpassword']);
 			}
+			// 头像
+			if (!empty($_FILES['thumb']['tmp_name'])) {
+	            $upload = file_upload($_FILES['thumb']);
+	            if (is_error($upload)) {
+	                message($upload['message'], '', 'error');
+	            }
+
+	            $data['avatar'] = $upload['path'];
+	        }
+	        // 昵称
+	        $data['nickname'] = $_GP['nickname'];
 			mysqld_update('user', $data,array('id'=> $account['id']));
 			message('资料修改成功！',create_url('site',array('name' => 'user','do' => 'user','op'=>'listuser')),'succes');
 		}else

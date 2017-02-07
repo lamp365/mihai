@@ -328,6 +328,9 @@ function paySuccessProcess($orderInfo)
 		
 		$objOpenIm->imMessagePush($immsg);
 	}
+
+	// 增加积分
+	member_credit($orderInfo['openid'], $orderInfo['price'], 'addcredit', '订单:'.$order['ordersn'].'新增积分');
 }
 
 
@@ -907,9 +910,9 @@ function sureUserCommisionToMoney($order_goods,$order){
 	}
 
 	//收货成功，买家得到积分   并记录账单
-	if ($total_credit != 0) {
-		member_credit($order['openid'], $total_credit, 'addcredit', '订单:'.$order['ordersn'].'完成新增积分');
-	}
+	// if ($total_credit != 0) {
+	// 	member_credit($order['openid'], $total_credit, 'addcredit', '订单:'.$order['ordersn'].'完成新增积分');
+	// }
 
 	//卖家冻结资金转为 金额  并且推送消息
 	if(!empty($usermoney)){

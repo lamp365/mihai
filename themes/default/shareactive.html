@@ -264,12 +264,13 @@
 			<div class="recommend_list_two">
 				<div class="recommend_list_two_head" style="background:url(__RESOURCE__/recouse/images/coupon_bg.jpg)no-repeat center; "></div>
 				<div class="viewport-area-list">
-					<div class="coupon-total-num">许愿总数:<!--@php echo $wish_total_num; @--></div>
+					<div class="coupon-total-num">许愿总数:<span><!--@php echo $wish_total_num; @--></span></div>
 					<ul class="indiana_list">
 						<!--@php foreach($allBonus as $oneBonus){ @-->
 						<li class="per_indiana coupon_indiana"> 
 							<div class="coupon_indiana_left">
-								￥50
+							<span class="need-number">许愿数:<!--@php echo $oneBonus['change_num'];@--></span>
+								￥<!--@php echo $oneBonus['type_money'];@-->
 							</div>
 							<!--@php if($oneBonus['is_get'] == 1){ @-->
 							<div class="coupon_indiana_right" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
@@ -647,7 +648,8 @@
 						//较少显示的次数，并爱心加1
 						cishu = cishu-fenshu;
 						$(".active-num-btn span").html(cishu);
-
+						var coupon_total_num = $(".coupon-total-num span").text();
+						$(".coupon-total-num span").text(parseInt(coupon_total_num)+1);
 						var wish_total = $(thisElement).parent().find('.love-num').html();
 						if(wish_total){
 							wish_total = parseInt(wish_total) + 1;
@@ -685,6 +687,7 @@
 					if(data.errno == 200){
 						//修改优惠卷的样式
 						$(obj).html('已领');
+						$(obj).removeClass("to_get_bonus");
 					}
 				},'json')
 			})
