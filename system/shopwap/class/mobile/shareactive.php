@@ -48,7 +48,9 @@
             }
         }
         //许愿总数
-        $wish_total_num  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid}");
+        $wish_total_num = 0;
+        if($openid)
+           $wish_total_num  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid}");
         include themePage('shareactive');
 
     }else if($op == 'canyu_recorder'){  //参与记录
