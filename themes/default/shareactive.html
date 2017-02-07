@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>心愿</title>
+		<title>觅海喊您来实现心愿啦</title>
 		<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 		<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="__RESOURCE__/recouse/css/shareactive.css" rel="stylesheet"	type="text/css" />
@@ -13,7 +13,7 @@
 		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.qrcode.min.js"></script>
 	</head>
-	<body>
+	<body >
 		<!--@php  include page('header');@-->
 		<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
 		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
@@ -530,7 +530,7 @@
 	            		$(id+' .limit_d').text(day<10?"0"+day:day);
 	            	}
 	            }
-	            if( second <=0 && minute<=0 ){
+	            if( day<=0 && hour<=0 &&second <=0 && minute<=0 ){
 	                $(id).html("结束");
 	                //window.location.reload();
 	            }
@@ -626,6 +626,9 @@
 						var wish_total = $(thisElement).parent().find('.love-num').html();
 						if(wish_total){
 							wish_total = parseInt(wish_total) + 1;
+							if( wish_total ==1 ){
+								$(thisElement).parent().find('.love').attr("src","__RESOURCE__/recouse/images/love-yes.png");
+							}
 							$(thisElement).parent().find('.love-num').html(wish_total);
 						}
 

@@ -17,7 +17,7 @@
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 </head>
-<body>
+<body >
 <!--@php  include page('header');@-->
 	<div class="result-wrap">
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
@@ -63,7 +63,7 @@
 							</div>
 							<!--@php }else{ @-->
 							<div class="result-djs">
-								<p>倒计时</p>
+								<span>倒计时</span>
 								<span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span>
 							</div>
 							<script>
@@ -123,69 +123,55 @@
 			alert("请等待开奖处理完毕！");
 			return '';
 		}
-		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'draw_info'));@-->";
-		$.post(url,{'award_id':award_id},function(data){
-			if( data.errno != 200 ){
-				alert(data.message);
-			}else{
-				$(".result-modal .modal-body").html("");
-				var num_arr  = data.message;
-				var xinyuannum = $(thisObj).parent(".result-list-left").siblings(".result-list-right").find(".xinyuannum").text();
-				var chusu    = $(thisObj).data('chushu');
-				var beichusu = $(thisObj).data('beichushu');
-				var yushu = chusu%beichusu+1;
-				var html = '';
-				var number_html = "";
-				$.each(data.message,function(index,element){
-					if( element.star_num != xinyuannum){
-						number_html+= "<span >"+element.star_num+"</span>";
-					}else{
-						number_html+= "<span style='color: #f60'>"+element.star_num+"</span>";
-					}
-				});
-				html = "<div>心愿幸运码:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
-		      		"<div class='number_html'><span>他的心愿码:</span>"+number_html+"</div>"+
-		      		"<div>"+
-		      			"<ul class='result-rule clearfix'>"+
-		      				"<li style='line-height: 40px;'>计算公式 = </li>"+
-		      				"<li>(</li>"+
-		      				"<li>"+
-		      					"<p>"+chusu+"</p>"+
-		      					"<span>标准数据</span>"+
-		      				"</li>"+
-		      				"<li>"+
-		      					"<p>%</p>"+
-		      					"<span>求余</span>"+
-		      				"</li>"+
-		      				"<li><p>"+beichusu+"</p><span>参与人次</span></li>"+
-		      				"<li>)</li>"+
-		      				"<li>+</li>"+
-		      				"<li>"+
-		      					"<p>1</p>"+
-		      					"<span>固定值</span>"+
-		      				"</li>"+
-		      				"<li><p>= "+yushu+"</p><span>号数</span></li>"+
-		      			"</ul>"+
-		      			"<ul class='result-rule clearfix' style='margin-top: 10px'>"+
-						"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
-		      				"<li>"+
-		      					"<p>p+</p>"+
-		      					"<span>固定</span>"+
-		      				"</li>"+
-		      				"<li>"+
-								"<p>"+award_id+"</p>"+
-		      					"<span>礼品id</span>"+
-		      				"</li>"+
-		      				"<li>+</li>"+
-		      				"<li><p>00000</p><span>固定值</span></li>"+
-		      				"<li>+</li>"+
-		      				"<li><p>"+yushu+"</p><span>号数</span></li>"+
-		      			"</ul>"+
-		      		"</div>";
-				$(".result-modal").modal();
-				$(".result-modal .modal-body").html(html);
-			}
-		},"json");
+		$(".result-modal .modal-body").html("");
+
+		var xinyuannum = $(thisObj).parent(".result-list-left").siblings(".result-list-right").find(".xinyuannum").text();
+		var chusu    = $(thisObj).data('chushu');
+		var beichusu = $(thisObj).data('beichushu');
+		var yushu = chusu%beichusu+1;
+		var html = '';
+
+		html = "<div>心愿幸运码:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
+      		"<div>"+
+      			"<ul class='result-rule clearfix'>"+
+      				"<li style='line-height: 40px;'>计算公式 = </li>"+
+      				"<li>(</li>"+
+      				"<li>"+
+      					"<p>"+chusu+"</p>"+
+      					"<span>标准数据</span>"+
+      				"</li>"+
+      				"<li>"+
+      					"<p>%</p>"+
+      					"<span>求余</span>"+
+      				"</li>"+
+      				"<li><p>"+beichusu+"</p><span>参与人次</span></li>"+
+      				"<li>)</li>"+
+      				"<li>+</li>"+
+      				"<li>"+
+      					"<p>1</p>"+
+      					"<span>固定值</span>"+
+      				"</li>"+
+      				"<li><p>= "+yushu+"</p><span>号数</span></li>"+
+      			"</ul>"+
+      			"<ul class='result-rule clearfix' style='margin-top: 10px'>"+
+				"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
+      				"<li>"+
+      					"<p>p+</p>"+
+      					"<span>固定</span>"+
+      				"</li>"+
+      				"<li>"+
+						"<p>"+award_id+"</p>"+
+      					"<span>礼品id</span>"+
+      				"</li>"+
+      				"<li>+</li>"+
+      				"<li><p>00000</p><span>固定值</span></li>"+
+      				"<li>+</li>"+
+      				"<li><p>"+yushu+"</p><span>号数</span></li>"+
+      			"</ul>"+
+      		"</div>";
+		$(".result-modal").modal();
+		$(".result-modal .modal-body").html(html);
+
 	}
 	function youResultShow(thisObj,award_id){
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
@@ -233,7 +219,7 @@
         		$(id+' .limit_d').text(day<10?"0"+day:day);
         	}
         }
-        if( second <=0 && minute<=0 ){
+        if( day<=0 && hour<=0 && second <=0 && minute<=0 ){
             $(id).html("正在颁奖");
             //window.location.reload();
         }

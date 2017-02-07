@@ -104,6 +104,8 @@ body{
     position: absolute;
     top: 282px;
     left: 200px;
+    border: 1px solid #dcdcdc;
+    border-radius: 3px;
 }
 .recommend_list .left_img img{
 	width: 100%;
@@ -172,6 +174,7 @@ body{
     margin: 0 auto;
     height:auto;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 .imgWrap:hover img{
 	transform: scale(1.2);
@@ -461,10 +464,10 @@ body{
     float: left;
 }
 .result-list-right{
-    float: left;
-    width: 240px;
-    padding: 15px 10px;
+	float: left;
+    width: 244px;
     box-sizing: border-box;
+    margin-top: 30px;
 }
 .result-list-left img{
     width: 100%;
@@ -473,13 +476,15 @@ body{
     display: block;
     padding: 10px;
     box-sizing: border-box;
-        margin-top: 5px;
+    margin-top: 6px;
 }
 .result-list-right .detail{
-	color: #333;
-    height: 41px;
-    overflow: hidden;
+    color: #333;
     margin-bottom: 7px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
 }
 .result-list-right .result-djs{
     text-align: center;
@@ -487,7 +492,7 @@ body{
     color: #fff;
     padding: 5px;
     border-radius: 3px;
-    width: 130px;
+    width: 150px;
 }
 .result-list-right .result-djs span{
 	padding: 2px;
@@ -495,13 +500,16 @@ body{
 .result-phase{
 	border: 1px solid #e4e4e4;
     width: 1189px;
-    height: 36px;
-    line-height: 36px;
+    height: 45px;
+    line-height: 45px;
     padding-left: 15px;
     box-sizing: border-box;
     margin-left: -1px;
     margin-top: 30px;
-    color: #f60;
+    color: #666;
+    background: #fafafa;
+    border-radius: 5px 5px 0 0;
+    font-size: 16px;
 }
 .result-rule{
 	margin-top: 15px;
@@ -653,10 +661,14 @@ body{
     color: #fff;
     cursor: pointer;
 }
-
-
-
-
+/*.xinyuannum{
+	color: #fff;
+    padding: 3px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+    background-color: #f60;
+}
+*/
 
 
 

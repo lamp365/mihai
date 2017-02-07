@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>心愿</title>
+	<title>觅海喊您来实现心愿啦</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -189,7 +189,7 @@
 			<li>
 
 				<div >
-					<img class="lazy"  data-original="<!--@php echo download_pic($item['logo'],200,200,2);@-->" src="images/loading.gif">
+					<img class="lazy" onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo download_pic($item['logo'],200,200,2);@-->" src="images/loading.gif">
 				</div>
 				<div class="small-title"><!--@php echo $item['title'];@--></div>
 				<div class="progress">
@@ -238,7 +238,7 @@
 		<!--@php }  @-->
 
 		<div class="banquan">福建觅海•版权所有</div>
-		<div class="desc-more"><a href="">了解更多》</a></div>
+		<div class="desc-more"><a href="<!--@php echo $use_about; @-->">了解更多》</a></div>
 	<div class="modal fade personal-record-modal" tabindex="-1" role="dialog">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -373,6 +373,9 @@
 
 				var wish_total = $(thisElement).parent().find('.love span').html();
 				wish_total = parseInt(wish_total) + 1;
+				if( wish_total ==1 ){
+					$(thisElement).parent().find('.love img').attr("src","__RESOURCE__/recouse/images/love-yes.png");
+				}
 				$(thisElement).parent().find('.love span').html(wish_total);
 
 				var list_num = $(thisElement).parent().prev().find('.list-num-before').html();
@@ -471,7 +474,7 @@
         		$(id+' .limit_d').text(day<10?"0"+day:day);
         	}
         }
-        if( second <=0 && minute<=0 ){
+        if(day<=0 && hour<=0 && second <=0 && minute<=0 ){
             $(id).html("结束");
             //window.location.reload();
         }
