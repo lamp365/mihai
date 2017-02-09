@@ -590,6 +590,44 @@
                     </li>
                 <?php }?>
 
+                <?php if (checkAdmin() ||in_array("shop-img",$menurule)) { ?>
+                    <li class="shangpin">
+                        <!-- 导航第一级 -->
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-shopping-cart"></i>
+                            <span class="menu-text">图片管理</span>
+
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
+                                <li> <a  onclick="navtoggle('图片管理 - > 图片列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'img_mange','op'=>'display'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        图片列表
+                                    </a>
+                                </li>
+                            <?php }else{
+                                foreach($parentMenuList[MenuEnum::IMG_MANGE] as $row){
+                                    $zi = "图片管理 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                                }
+
+                            }?>
+                        </ul>
+                    </li>
+                <?php }?>
+
+
                 <?php if (checkAdmin() ||in_array("shop-order",$menurule)) { ?>
                     <li class="dingdan">
                         <!-- 导航第一级 -->

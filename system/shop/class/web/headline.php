@@ -73,9 +73,9 @@ switch($operation) {
 
             $data['video'] = $upload['path'];
         }
-        if (empty($data['pic']) AND empty($data['video'])) {
-        	message ( '视频和图片不能都为空！', refresh(), 'error' );
-        }
+        // if (empty($data['pic']) AND empty($data['video'])) {
+        // 	message ( '视频和图片不能都为空！', refresh(), 'error' );
+        // }
         if (!empty($data['pic']) AND !empty($data['video'])) {
         	message ( '视频和图片只能二选一！', refresh(), 'error' );
         }

@@ -132,6 +132,10 @@ class shopAddons  extends BjSystemModule {
 	public function do_app_weixin(){
 		$this->__web(__FUNCTION__);
 	}
+
+	public function do_img_mange(){
+		$this->__web(__FUNCTION__);
+	}
 	
 
   	public function setOrderCredit($openid,$id , $minus = true,$remark='') {

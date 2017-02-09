@@ -132,8 +132,9 @@
 			<?php echo $article_headline['title'];?>
 	    </div>        
 	</div>
-	
-	
+	<!--@php if(!empty($article_headline['video'])){ @-->
+	<video src="<?php echo $article_headline['video'];?>" width="100%" controls="controls"></video>
+	<!--@php } @-->
 	<div class="headline-content">
 		<!--发布者-->
 		<div class="health-men">

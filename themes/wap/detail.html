@@ -483,13 +483,13 @@
                                 </h4>
                                 <!--@php if(!empty($row['piclist'])){ @-->
                                 <ul class="img-list" data-clicked="0" data-key="<!--@php echo $key;@-->">
-                                    <!--@php foreach($row['piclist'] as $picurl){ @-->
                                     <li>
+                                    <!--@php foreach($row['piclist'] as $picurl){ @-->
                                         <a class="fancybox_<!--@php echo $key;@-->" href="<!--@php echo download_pic($picurl['img'],650);@-->" data-fancybox-group="gallery">
                                             <img src="<!--@php echo download_pic($picurl['img'],50,50,1);@-->"/>
                                         </a>
-                                    </li>
                                     <!--@php } @-->
+                                    </li>
                                 </ul>
                                 <!--@php } @-->
                                 

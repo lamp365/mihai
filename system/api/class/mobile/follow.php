@@ -144,10 +144,16 @@
 					$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 					$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 					$openid = $member ['openid'];
+					$lastid = $_GP ['lastid'];
+					$u_where = '';
+					if (!empty($lastid)) {
+						$page = 1;
+						$u_where = " and f.follow_id<".$lastid;
+					}
 						
-					$sql = "SELECT SQL_CALC_FOUND_ROWS f.followed_openid,f.mutual_attention,m.nickname,m.avatar,m.member_description FROM " . table('follow') . " as f,".table('member')." as m ";
+					$sql = "SELECT SQL_CALC_FOUND_ROWS f.follow_id,f.followed_openid,f.mutual_attention,m.nickname,m.avatar,m.member_description FROM " . table('follow') . " as f,".table('member')." as m ";
 					$sql.= " WHERE f.followed_openid = m.openid ";
-					$sql.= " and f.follower_openid = '".$openid."' ";
+					$sql.= " and f.follower_openid = '".$openid."' ".$u_where;
 					$sql.= " order by f.createtime desc ";
 					$sql.= " limit ".(($page-1)*$limit).','.$limit;
 						

@@ -11,9 +11,10 @@ require_once "{$dir}/TopSdk.php";
 use OSS\OssClient;
 use OSS\Core\OssException;
 /**
- * Class Common
+ * Class aliyunOSS
  *
- * 示例程序【Samples/*.php】 的Common类，用于获取OssClient实例和其他公用方法
+ * 获取OssClient实例和其他公用方法
+ * 阿里云文档 https://promotion.aliyun.com/ntms/act/ossdoclist.html
  */
 class aliyunOSS
 {
@@ -207,15 +208,15 @@ class aliyunOSS
     /**
      * 列出Bucket内所有文件, 注意如果符合条件的文件数目超过设置的max-keys， 用户需要使用返回的nextMarker作为入参，通过
      * @param string $prefix 模糊查询
+     $prefix        限定返回的Object 必须以Prefix作为前缀。注意使用prefix查询时，返回的key中仍会包含Prefix。
+     $delimiter     用于对Object名字进行分组的字符。所有名字包含指定的前缀且第一次出现Delimiter字符之间的Object作为一组元素
+     $nextMarker    设定结果从Marker之后按字母排序的第一个开始返回。作为下一页的标记
+     $maxkeys = 1000 限定此次返回Object的最大数，如果不设定，默认为100，MaxKeys取值不能大于1000。
      * @return null
      */
-    public static function listObjects($prefix = '')
+    public static function listObjects($prefix = '',$delimiter='',$nextMarker='',$maxkeys=50)
     {
         $ossClient = self::getOssClient();
-        $prefix = $prefix;  //限定返回的Object 必须以Prefix作为前缀。注意使用prefix查询时，返回的key中仍会包含Prefix。
-        $delimiter = '/';  //用于对Object名字进行分组的字符。所有名字包含指定的前缀且第一次出现Delimiter字符之间的Object作为一组元素
-        $nextMarker = '';  //设定结果从Marker之后按字母排序的第一个开始返回。
-        $maxkeys = 1000;  //限定此次返回Object的最大数，如果不设定，默认为100，MaxKeys取值不能大于1000。
         $options = array(
             'delimiter' => $delimiter,
             'prefix' => $prefix,
@@ -230,14 +231,25 @@ class aliyunOSS
             return '';
         }
 
-        $objectList = $listObjectInfo->getObjectList(); // 文件列表
-
-       /* if (!empty($objectList)) {
-            foreach ($objectList as $objectInfo) {
-                print($objectInfo->getKey() . "\n");
+        $data = array();
+        //下一页的标记
+        $nextMarker     = $listObjectInfo->getNextMarker();
+        if($delimiter){
+            $objectList = $listObjectInfo->getPrefixList();
+            if (!empty($objectList)) {
+                foreach ($objectList as $objectInfo) {
+                    $data[] = $objectInfo->getPrefix();
+                }
             }
-        }*/
-        return $objectList;
+        }else{
+            $objectList = $listObjectInfo->getObjectList(); // 文件列表
+            if (!empty($objectList)) {
+                foreach ($objectList as $objectInfo) {
+                    $data[] = $objectInfo->getKey();
+                }
+            }
+        }
+        return array("data"=>$data,'nextMarker'=>$nextMarker);
     }
 
     /**

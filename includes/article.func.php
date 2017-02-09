@@ -134,6 +134,11 @@ function get_article_member($item){
         $item['reply_nickname'] = empty($member['nickname']) ? substr_cut($member['mobile']) : $member['nickname'];
         $item['reply_avatar']   = empty($member['avatar']) ? '' : download_pic($member['avatar'],150);
     }
+    if(!empty($item['uid'])){
+        $member = mysqld_select("select nickname,avatar from ".table('user')." where id={$item['uid']}");
+        $item['nickname'] = $member['nickname'];
+        $item['avatar']   = empty($member['avatar']) ? '' : download_pic($member['avatar'],150);
+    }
     return $item;
 }
 

@@ -11,6 +11,7 @@ class MenuEnum {
     const TUAN_GOU_MANGE        = '10';       //团购管理
     const SHOP_SALE_MANGE       = '30';       //出售中的宝贝
     const PRODUCT_MANGE         = '50';       //产品库管理
+    const IMG_MANGE             = '60';       //图片库管理
     const ORDER_MANGE           = '70';       //订单管理
     const DATA_REPORT_MANGE     = '90';       //数据报表
     const YUN_GOU_MANGE         = '100';       //一元云购
@@ -32,6 +33,7 @@ class MenuEnum {
         self::TUAN_GOU_MANGE        => '换购管理',
         self::SHOP_SALE_MANGE       => '出售中的宝贝',
         self::PRODUCT_MANGE         => '产品库管理',
+        self::IMG_MANGE             => '图片管理',
         self::ORDER_MANGE           => '订单管理',
         self::DATA_REPORT_MANGE     => '数据报表',
         self::YUN_GOU_MANGE         => '一元云购',
@@ -52,6 +54,7 @@ class MenuEnum {
         self::TUAN_GOU_MANGE        => 'shop-mess',
         self::SHOP_SALE_MANGE       => 'shop-dish',
         self::PRODUCT_MANGE         => 'shop-category',
+        self::IMG_MANGE             => 'shop-img',
         self::ORDER_MANGE           => 'shop-order',
         self::DATA_REPORT_MANGE     => 'addon6',
         self::YUN_GOU_MANGE         => 'addon7',
