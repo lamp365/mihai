@@ -19,12 +19,14 @@
 </head>
 <body >
 <!--@php  include page('header');@-->
+<div class="result-last-wrap">
+	<div style="background-color: #c8161e;height: 400px;"></div>
 	<div class="result-wrap">
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
 		<div class="one_result">
 			<!--@php if(time() > $drawtime){ @-->
 				<!--@php if($draw_arr[0]['state'] == 2){  @-->
-				<div class="result-phase tobedraw">正在颁奖 进行中...</div>
+				<div class="result-phase tobedraw">小觅正在努力实现愿望 进行中...</div>
 				<!--@php }else{ @-->
 				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
 				<!--@php } @-->
@@ -51,14 +53,14 @@
 								<div class="result-detail">正在颁奖</div>
 							<!--@php }else{ @-->
 								<div class="user-detail">
-									<div class="user-detail-span"><span class="xinyuandetail">心愿幸运码:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
+									<div class="user-detail-span"><span class="xinyuandetail">心愿幸运数:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
 									<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 								</div>
 							<!--@php } @-->
 						<!--@php }else{ @-->
 							<!--@php if($draw_arr[0]['state'] == 3){  @-->
 							<div class="user-detail">
-								<span class="user-detail-span"><span class="xinyuandetail">心愿幸运码:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></span>
+								<span class="user-detail-span"><span class="xinyuandetail">心愿幸运数:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></span>
 								<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							</div>
 							<!--@php }else{ @-->
@@ -106,7 +108,7 @@
 	        		<h4 class="modal-title">您的参与记录</h4>
 		      	</div>
 		      	<div class="modal-body">
-		      		<div class="result-num">你的心愿码:<span class="the-number">10086868 10086870 10086867 10086866</span></div>
+		      		<div class="result-num">您的心愿数字:<span class="the-number">10086868 10086870 10086867 10086866</span></div>
 		      	</div>
 		      	<div class="modal-footer">
 		        	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -114,6 +116,7 @@
 		    </div>
 	  	</div>
 	</div>
+</div>
 <!--@php include themePage('footer');@-->
 <script type="text/javascript">
 	function resultShow(thisObj,award_id){
@@ -131,7 +134,7 @@
 		var yushu = chusu%beichusu+1;
 		var html = '';
 
-		html = "<div class='user-detail-span'><span class='xinyuandetail'>心愿幸运码:</span><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
+		html = "<div class='user-detail-span'><span class='xinyuandetail'>心愿幸运数:</span><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
       		"<div>"+
       			"<ul class='result-rule clearfix'>"+
       				"<li style='line-height: 40px;'>计算公式 = </li>"+
@@ -151,22 +154,7 @@
       					"<p>1</p>"+
       					"<span>固定值</span>"+
       				"</li>"+
-      				"<li><p>= "+yushu+"</p><span>号数</span></li>"+
-      			"</ul>"+
-      			"<ul class='result-rule clearfix' style='margin-top: 10px'>"+
-				"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
-      				"<li>"+
-      					"<p>p+</p>"+
-      					"<span>固定</span>"+
-      				"</li>"+
-      				"<li>"+
-						"<p>"+award_id+"</p>"+
-      					"<span>礼品id</span>"+
-      				"</li>"+
-      				"<li>+</li>"+
-      				"<li><p>00000</p><span>固定值</span></li>"+
-      				"<li>+</li>"+
-      				"<li><p>"+yushu+"</p><span>号数</span></li>"+
+      				"<li><p>= "+yushu+"</p><span>幸运数</span></li>"+
       			"</ul>"+
       		"</div>";
 		$(".result-modal").modal();
@@ -179,11 +167,11 @@
 			if( data.errno != 200 ){
 				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
-				var html = "<div class='result-num'><span>您的心愿码:</span>";
+				var html = "<div class='result-num'><span>您的心愿数字是:</span>";
 				var recorder = data.message;
 				for(var i = 0;i < recorder.length;i++){
 					var item    = recorder[i];
-					html = html + "<span>"+item.star_num + "</span>";
+					html = html + "<span>"+item.star_num_order + "</span>";
 				}
 				html = html + "</div>";
 				$(".you-result-modal .modal-body").html(html);

@@ -11,14 +11,14 @@
 	
 	$member=get_member_account(true,true);
 	
-	//觅海头条列表(无需登录也能查看)
-	if($op=='list')
+	//图片的觅海头条列表(无需登录也能查看)
+	if($op=='pic_list')
 	{
 		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 		
-		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.openid,h.title,h.pic,h.description,h.createtime,m.nickname,m.avatar FROM " . table('headline') . " as h,".table('member')." as m ";
-		$sql.= " WHERE h.openid=m.openid and h.deleted=0 ";
+		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.pic,h.description,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
+		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.video IS NULL or h.video='') ";
 		
 		//推荐
 		if(isset($_GP['isrecommand']))
@@ -28,17 +28,61 @@
 		
 		$sql.= " order by h.createtime desc";
 		$sql.= " limit ".(($page-1)*$limit).','.$limit;
-	
+
 		$arrHeadline = mysqld_selectall($sql);
 		
 		$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+		
+		if(!empty($arrHeadline))
+		{
+			foreach($arrHeadline as $key => $value)
+			{
+				$arrHeadline[$key]['collectionCnt']	= getHeadlineCollectionCount($value['headline_id']);			//收藏数
+				$arrHeadline[$key]['isCollection'] 	= isCollection($value['headline_id'],$member);					//是否已收藏
+			}
+		}
 		
 		$result['data']['headline'] = $arrHeadline;
 		$result['data']['total'] 	= $total['total'];
 		$result['code'] 			= 1;
 	}
-	//他人笔记列表
-	elseif($op=='other_list')
+	//视频的觅海头条列表
+	elseif($op=='video_list')
+	{
+		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
+		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
+	
+		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.description,h.video,h.video_img,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
+		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.pic IS NULL or h.pic='')";
+	
+		//推荐
+		if(isset($_GP['isrecommand']))
+		{
+			$sql.= " and h.isrecommand= ".(int)$_GP['isrecommand'];
+		}
+	
+		$sql.= " order by h.createtime desc";
+		$sql.= " limit ".(($page-1)*$limit).','.$limit;
+	
+		$arrHeadline = mysqld_selectall($sql);
+	
+		$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+		
+		if(!empty($arrHeadline))
+		{
+			foreach($arrHeadline as $key => $value)
+			{
+				$arrHeadline[$key]['collectionCnt']	= getHeadlineCollectionCount($value['headline_id']);			//收藏数
+				$arrHeadline[$key]['isCollection'] 	= isCollection($value['headline_id'],$member);					//是否已收藏
+			}
+		}
+	
+		$result['data']['headline'] = $arrHeadline;
+		$result['data']['total'] 	= $total['total'];
+		$result['code'] 			= 1;
+	}
+	//他人头条列表
+	/*elseif($op=='other_list')
 	{
 		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
@@ -50,9 +94,9 @@
 			$result ['code'] 	= 0;
 		}
 		else{
-			$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.openid,h.title,h.pic,h.description,h.createtime,m.nickname,m.avatar FROM " . table('headline') . " as h,".table('member')." as m ";
-			$sql.= " WHERE h.openid=m.openid and h.deleted=0 ";
-			$sql.= " and h.openid='".$openid."' ";
+			$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.openid,h.title,h.pic,h.description,h.createtime,m.nickname,m.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
+			$sql.= " WHERE h.uid=u.id and h.deleted=0 ";
+			$sql.= " and h.uid='".$openid."' ";
 			$sql.= " order by h.createtime desc";
 			$sql.= " limit ".(($page-1)*$limit).','.$limit;
 			
@@ -64,7 +108,7 @@
 			$result['data']['total'] 	= $total['total'];
 			$result['code'] 			= 1;
 		}
-	}
+	}*/
 	//觅海头条详情
 	elseif($op=='detail')
 	{
@@ -77,8 +121,8 @@
 			$result ['code'] 	= 0;
 		}
 		else{
-			$sql = "SELECT h.headline_id,h.openid,h.title,h.description,h.pic,h.address,h.createtime,m.nickname,m.avatar FROM " . table('headline') . " as h,".table('member')." as m ";
-			$sql.= " WHERE h.openid=m.openid and h.headline_id={$headline_id} ";
+			$sql = "SELECT h.headline_id,h.uid,h.title,h.description,h.pic,h.video,h.video_img,h.address,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
+			$sql.= " WHERE h.uid=u.id and h.headline_id={$headline_id} ";
 			$sql.= " and h.deleted=0 ";
 			$sql.= " order by h.createtime desc ";
 			
@@ -91,12 +135,11 @@
 				$result['code'] 	= 0;
 			}
 			else{
-				$collectionCnt = mysqld_select("SELECT count(collection_id) cnt FROM " . table('headline_collection') . " where headline_id={$headline_id} ");
 				$commentCnt 	= mysqld_select("SELECT count(comment_id) cnt FROM " . table('headline_comment') . " where headline_id={$headline_id} ");
 				
 				$headlineInfo['isFollow'] 		= isFollowed( $headlineInfo ['openid'],$member);		//是否已关注
 				$headlineInfo['isCollection'] 	= isCollection($headline_id,$member);					//是否已收藏
-				$headlineInfo['collectionCnt'] 	= $collectionCnt['cnt'];								//收藏数
+				$headlineInfo['collectionCnt'] 	= getHeadlineCollectionCount($headline_id);				//收藏数
 				$headlineInfo['commentCnt']		= $commentCnt['cnt'];									//评论数
 				$headlineInfo['share_url'] 		= getArticleUrl($headline_id,'headline');
 				
@@ -106,7 +149,7 @@
 		}
 	}
 	else{
-		
+		/*
 		if(!empty($member) AND $member != 3)
 		{
 			switch($op)
@@ -312,6 +355,7 @@
 			$result['message'] 	= "用户还未登陆";
 			$result['code'] 	= 2;
 		}
+		*/
 	}
 	
 	echo apiReturn($result);
@@ -349,3 +393,15 @@
 		}
 	}
 	
+	
+	/**
+	 * 头条的收藏数量
+	 *
+	 * @param $headline_id: int 头条ID
+	 */
+	function getHeadlineCollectionCount($headline_id)
+	{
+		$collectionCnt = mysqld_select("SELECT count(collection_id) cnt FROM " . table('headline_collection') . " where headline_id={$headline_id} ");
+	
+		return $collectionCnt['cnt'];							//收藏数
+	}

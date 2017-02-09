@@ -15,6 +15,7 @@ switch($operation) {
 		$title = $_GP ['headtitle'];
 		$video = $_GP ['video'];
 		$description = $_GP ['description'];
+		$preview = $_GP ['preview'];
 
 		$headline = mysqld_select("SELECT * FROM ".table('headline')." WHERE headline_id=".$headline_id);
 
@@ -25,13 +26,28 @@ switch($operation) {
 		$data = array('isrecommand' 	=> $isrecommand,
 						'modifiedtime' 	=> time(),
 						'title'			=> $title,
-						'description'	=> $description
+						'description'	=> $description,
+						'preview'		=> $preview
 		);
 		$pic = '';
 		if (!empty($_GP['attachment'])) {
+			foreach ($_GP['attachment'] as $atk => &$atv) {
+				if (empty($atv)) {
+					unset($_GP['attachment'][$atk]);
+				}
+			}
+			unset($atv);
+			$_GP['attachment'] = array_merge($_GP['attachment']);
 			$pic .= implode(';',$_GP['attachment']);
 		}
 		if (!empty($_GP['attachment-new'])) {
+			foreach ($_GP['attachment-new'] as $atnk => &$atnv) {
+				if (empty($atnv)) {
+					unset($_GP['attachment-new'][$atnk]);
+				}
+			}
+			unset($atnv);
+			$_GP['attachment-new'] = array_merge($_GP['attachment-new']);
 			$pic .= ';';
 			$pic .= implode(';',$_GP['attachment-new']);
 		}

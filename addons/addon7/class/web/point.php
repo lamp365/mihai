@@ -16,9 +16,8 @@
 			   }
 
 		      if ( $object ) {
-				   // 除数
+				   // 除数 标准数字
                    $stext      =  intval($object['nums']);
-				   $lock_time  = trim($object['lock_time']);
                    // 找出开奖信息
 				   $points = mysqld_selectall("SELECT * FROM " .table('addon7_award')." WHERE state = 2 and lock_time = '".$lock_time."'");
 				   // 开始处理开奖信息
@@ -33,7 +32,8 @@
 							 $date = array(
                                  'stext'  => $stext,
 								 'state'  => 3,  //已经开奖
-								 'sn'     => $open
+								 'sn'     => $r_s
+//								 'sn'     => $open
 							 );
                              mysqld_update('addon7_award',$date,array('id'=>$value['id']));
 							 // 根据中奖号码，对云购号码进行设置

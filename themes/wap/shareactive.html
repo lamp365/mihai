@@ -213,13 +213,13 @@
 		</ul>
 
 		<!--@php if(!empty($allBonus)){   @-->
-		<div class="not-start">优惠券专区<span class="coupon-total-num"> ( 许愿总数:<span><!--@php echo $wish_total_num; @--></span> )</span></div>
+		<div class="not-start">优惠券专区<span class="coupon-total-num"> ( 许愿池:<span><!--@php echo $wish_total_num; @--></span> )</span></div>
 		<ul class="last-wrap-list clearfix">
 			<!--@php foreach($allBonus as $oneBonus){ @-->
-			<li class="per_indiana" style="position: relative;">
+			<li class="per_indiana" style="position: relative;border:none">
 				<img src="__RESOURCE__/recouse/images/coupon.jpg">
-				<span class="need-number">许愿数:<!--@php echo $oneBonus['change_num'];@--></span>
-				<span class="coupon-price">￥<!--@php echo $oneBonus['type_money'];@--></span>
+				<span class="need-number">心愿值:<!--@php echo $oneBonus['change_num'];@--></span>
+				<span class="coupon-price"><!--@php echo intval($oneBonus['type_money']);@--><span class="yuan">元</span></span>
 				<!--@php if($oneBonus['is_get'] == 1){ @-->
 				<div class="receive-btn" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
 				<!--@php }else{ @-->
@@ -421,7 +421,7 @@
 				for(var i = 0;i < recorder.length;i++){
 					var item      = recorder[i];
 					var date_time = Stringtotime(item.createtime);
-					html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的心愿码为："+ item.star_num +"</p>"
+					html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的心愿数字为："+ item.star_num_order +"</p>"
 				}
 				$(".personal-record-modal .modal-body").html(html);
 			}

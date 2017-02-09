@@ -25,7 +25,7 @@
 			<!--开奖中-->
 			<div class=" comment_h">
 				<div class="viewport-area">
-				<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search">查询结果》</a>
+				<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search" target="_blank">查询结果》</a>
 				<!--@php if($lock && $drawTime){ @-->
 				<div id="result-time"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
 					<script>
@@ -264,18 +264,18 @@
 			<div class="recommend_list_two">
 				<div class="recommend_list_two_head" style="background:url(__RESOURCE__/recouse/images/coupon_bg.jpg)no-repeat center; "></div>
 				<div class="viewport-area-list">
-					<div class="coupon-total-num">许愿总数:<span><!--@php echo $wish_total_num; @--></span></div>
-					<ul class="indiana_list">
+					<div class="coupon-total-num">心愿池:<span><!--@php echo $wish_total_num; @--></span></div>
+					<ul class="indiana_list" style="margin-left: 36px;">
 						<!--@php foreach($allBonus as $oneBonus){ @-->
 						<li class="per_indiana coupon_indiana"> 
 							<div class="coupon_indiana_left">
-							<span class="need-number">许愿数:<!--@php echo $oneBonus['change_num'];@--></span>
-								￥<!--@php echo $oneBonus['type_money'];@-->
+								<span class="need-number">心愿值:<!--@php echo $oneBonus['change_num'];@--></span>
+								<span class="coupon_indiana_price"><!--@php echo intval($oneBonus['type_money']);@--><span class="yuan">元</span></span>
 							</div>
 							<!--@php if($oneBonus['is_get'] == 1){ @-->
-							<div class="coupon_indiana_right" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
+							<div class="coupon_indiana_right" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领取</div>
 							<!--@php }else{ @-->
-							<div class="coupon_indiana_right to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">领取</div>
+							<div class="coupon_indiana_right to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">立即领取</div>
 							<!--@php } @-->
 						</li>
 						<!--@php } @-->
@@ -598,7 +598,7 @@
 						for(var i = 0;i < recorder.length;i++){
 							var item      = recorder[i];
 							var date_time = Stringtotime(item.createtime);
-							html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的心愿码为："+ item.star_num +"</p>"
+							html = html + "<p>您于"+ date_time +"参与了该心愿&nbsp;&nbsp;&nbsp;&nbsp;您的心愿数字为："+ item.star_num_order +"</p>"
 						}
 						$(".indiana_record .modal-body").html(html);
 					}
@@ -686,7 +686,7 @@
 					alert(data.message);
 					if(data.errno == 200){
 						//修改优惠卷的样式
-						$(obj).html('已领');
+						$(obj).html('已领取');
 						$(obj).removeClass("to_get_bonus");
 					}
 				},'json')

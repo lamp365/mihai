@@ -9,6 +9,8 @@
 	$op = $_GP ['op'];
 	
 	$member = get_member_account ( true, true );
+
+	$lastid = $_GP ['lastid'];
 	
 	if (! empty ( $member ) and $member != 3) {
 		
@@ -72,20 +74,67 @@
 				
 				break;
 			
-			default :			//收藏列表显示
+			case 'pic_list' :			//图片收藏列表显示
 				
 				$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 				$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
+				$u_where = '';
+				if (!empty($lastid)) {
+					$page = 1;
+					$u_where = " and h.headline_id<".$lastid;
+				}
 				
-				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.openid,h.title,h.pic,m.nickname,m.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('member')." as m ";
-				$sql.= " WHERE h.headline_id=c.headline_id and h.openid=m.openid ";
-				$sql.= " and c.openid='".$member ['openid']."' ";
-				$sql.= " and h.deleted=0 order by h.createtime desc";
+				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.uid,h.title,h.pic,h.description,h.preview,u.nickname,u.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('user')." as u ";
+				$sql.= " WHERE h.headline_id=c.headline_id and h.uid=u.id ";
+				$sql.= " and c.openid='".$member ['openid']."' ".$u_where;
+				$sql.= " and h.deleted=0 and (h.video IS NULL or h.video='') order by h.createtime desc";
 				$sql.= " limit ".(($page-1)*$limit).','.$limit;
 
 				$arrHeadlineCollection = mysqld_selectall($sql);
 				
 				$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+				
+				if(!empty($arrHeadlineCollection))
+				{
+					foreach($arrHeadlineCollection as $key => $value)
+					{
+						$arrHeadlineCollection[$key]['collectionCnt']	= getHeadlineCollectionCount($value['headline_id']);			//收藏数
+					}
+				}
+				
+				$result['data']['collection'] 	= $arrHeadlineCollection;
+				$result['data']['total'] 		= $total['total'];
+				$result['code'] 				= 1;
+				
+				break;
+				
+			case 'video_list' :			//视频收藏列表显示
+				
+				$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
+				$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
+				$u_where = '';
+				if (!empty($lastid)) {
+					$page = 1;
+					$u_where = " and h.headline_id<".$lastid;
+				}
+				
+				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.uid,h.title,h.video,h.video_img,h.description,h.preview,u.nickname,u.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('user')." as u ";
+				$sql.= " WHERE h.headline_id=c.headline_id and h.uid=u.id ";
+				$sql.= " and c.openid='".$member ['openid']."' ".$u_where;
+				$sql.= " and h.deleted=0 and (h.pic IS NULL or h.pic='') order by h.createtime desc";
+				$sql.= " limit ".(($page-1)*$limit).','.$limit;
+			
+				$arrHeadlineCollection = mysqld_selectall($sql);
+				
+				$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+				
+				if(!empty($arrHeadlineCollection))
+				{
+					foreach($arrHeadlineCollection as $key => $value)
+					{
+						$arrHeadlineCollection[$key]['collectionCnt']	= getHeadlineCollectionCount($value['headline_id']);			//收藏数
+					}
+				}
 				
 				$result['data']['collection'] 	= $arrHeadlineCollection;
 				$result['data']['total'] 		= $total['total'];
@@ -103,4 +152,17 @@
 	
 	echo apiReturn ( $result );
 	exit ();
+	
+	
+	/**
+	 * 头条的收藏数量
+	 *
+	 * @param $headline_id: int 头条ID
+	 */
+	function getHeadlineCollectionCount($headline_id)
+	{
+		$collectionCnt = mysqld_select("SELECT count(collection_id) cnt FROM " . table('headline_collection') . " where headline_id={$headline_id} ");
+	
+		return $collectionCnt['cnt'];							//收藏数
+	}
 			

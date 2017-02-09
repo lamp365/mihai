@@ -1,7 +1,6 @@
 <?php
 	/**
 	 * app 收藏的商品
-	 * @author WZW
 	 * 
 	 */
 
@@ -26,7 +25,14 @@
 	if ($op == 'get') {
 		$pindex = max(1, intval($_GP['page']));
     	$psize = 20;
-		$collection = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS id, dish_id, openshop_id, createtime FROM ".table('goods_collection')." WHERE openid='".$member['openid']."' AND deleted=0 ORDER BY createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+    	$lastid = $_GP['lastid'];
+    	$where = '';
+    	if (!empty($lastid)) {
+    		$where.=" AND id<".$lastid;
+    		$pindex = 1;
+    	}
+
+		$collection = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS id, dish_id, openshop_id, createtime FROM ".table('goods_collection')." WHERE openid='".$member['openid']."' AND deleted=0".$where." ORDER BY createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
 		$total = mysqld_select("SELECT FOUND_ROWS() as total;");
 		foreach ($collection as &$c_v) {
 			$good = get_good(array(

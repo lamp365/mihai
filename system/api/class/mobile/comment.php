@@ -41,6 +41,14 @@
 			exit;
 		}
 
+		$order_good = mysqld_select("SELECT iscomment FROM ".table('shop_order_goods')." WHERE orderid=".$order_id." AND goodsid=".$goods_id);
+		if ($order_good['iscomment'] == '1') {
+			$result['message'] 	= "该订单商品已评论过";
+			$result['code'] 	= 0;
+			echo apiReturn($result);
+			exit;
+		}
+
 		$gid = mysqld_select("SELECT gid FROM ".table('shop_dish')." WHERE id=".$goods_id);
 		$gid = $gid['gid'];
 		// 评论信息

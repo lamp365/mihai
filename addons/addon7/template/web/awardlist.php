@@ -93,7 +93,7 @@
                                   echo '-';
 							  }
 				         	}else{
-                                echo '中奖号码:'.$item['sn'].'<br/>标准数据'.$item['stext'].'<br/>数据日期'.$item['date'];
+                                echo '中奖号码:'.$item['sn'].'<br/>标准数据'.$item['stext'].'<br/>开奖日期'.date("Y-m-d H:i",$item['date']);
 							}
 						?>
 					</td>

@@ -59,7 +59,7 @@
             die(showAjaxMess(1002,'您还没登录！'));
         }
         $award_id = $_GP['award_id'];
-        $recorder = mysqld_selectall("select createtime,star_num from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}' order by id desc");
+        $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}' order by id desc");
         if(empty($recorder)){
             die(showAjaxMess(1002,'您暂无参与记录'));
         }else{
@@ -74,7 +74,7 @@
             //获取中奖人
             $drawer = mysqld_select("select openid from ".table('addon7_request')." where award_id = {$award_id} and status=1");
             if($drawer){
-                $recorder = mysqld_selectall("select createtime,star_num from ".table('addon7_request')." where award_id = {$award_id} and openid='{$drawer['openid']}' order by id desc");
+                $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$drawer['openid']}' order by id desc");
                 die(showAjaxMess(200,$recorder));
             }else{
                 die(showAjaxMess(1002,'参数有误'));
@@ -152,7 +152,7 @@
                 //刷新页面 的标识
                 die(showAjaxMess(202,"恭喜您许愿成功!"));
             }
-            die(showAjaxMess(200,array('tit'=>"恭喜您许愿成功!","des"=>"心愿码:{$star_num_arr['star_num']}")));
+            die(showAjaxMess(200,array('tit'=>"恭喜您许愿成功!","des"=>"心愿数字:{$star_num_arr['star_num_order']}")));
         }else{
             die(showAjaxMess(1002,'网络有误，稍后再试'));
         }

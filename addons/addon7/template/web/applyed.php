@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-<h3 class="header smaller lighter blue">中奖者</h3>
+<h3 class="header smaller lighter blue" style="display: inline-block">中奖者</h3>&nbsp;&nbsp;<span>开奖时间：<?php  echo date("Y-m-d H:i",$win['date']);?></span>
 		<table class="table table-striped table-bordered table-hover">
 			<thead >
 				<tr>
@@ -150,7 +150,7 @@
 			<thead >
 				<tr>
 					<th style="text-align:center;max-width:100px;">序号</th>
-					<th style="text-align:center;min-width:100px;">云购号码</th>
+					<th style="text-align:center;min-width:100px;">心愿数字</th>
 <!--					<th style="text-align:center;min-width:30px;">购买份数</th>-->
 					<th style="text-align:center;min-width:30px;">购买时间</th>
 				    <th style="text-align:center; min-width:60px;">姓名</th>
@@ -162,13 +162,13 @@
 			
 			<tbody>
 				<?php  if(is_array($awardlist)) { foreach($awardlist as $key=>$item) { ?>
-				<?php if($win['sn'] == $item['star_num']){ ?>
+				<?php if($win['sn'] == $item['star_num_order']){ ?>
 				<tr style="font-weight: bolder;color: red">
 				<?php }else{  ?>
 				<tr>
 				<?php }  ?>
 					<td style="text-align:center;"><?php  echo ++$key;?></td>
-					<td style="text-align:center;"><?php  echo $item['star_num'];?></td>
+					<td style="text-align:center;"><?php  echo $item['star_num_order'];?></td>
 
 <!--						<td style="text-align:center;">--><?php // echo $item['count'];?><!--</td>-->
 						<td style="text-align:center;"><?php  echo date("Y-m-d H:i:s",$item['createtime']);?></td>

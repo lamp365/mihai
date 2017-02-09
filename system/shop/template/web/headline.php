@@ -3,6 +3,10 @@
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/themes/default/default.css" />
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/kindeditor-min.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/lang/zh_CN.js"></script>  
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/ueditor.config.js?x=201508021"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/ueditor.all.min.js?x=141"></script>
+<script type="text/javascript">var ue = UE.getEditor('container');</script>
+
 
 <h3 class="header smaller lighter blue">觅海头条编辑</h3>
 
@@ -77,10 +81,17 @@
 	</div>
 	
 	<div class="form-group">
-		<label class="col-sm-2 control-label no-padding-left"> 内容：</label>
+		<label class="col-sm-2 control-label no-padding-left"> 内容预览：</label>
 
 		<div class="col-sm-9">
-			<textarea style="height: 150px; margin: 0px; width: 379px;" id="description" name="description" cols="50"><?php echo $headline['description'];?></textarea>
+			<textarea style="height: 150px; margin: 0px; width: 379px;" id="preview" name="preview" cols="50"><?php echo $headline['preview'];?></textarea>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left"> 内容：</label>
+		<div class="col-sm-9">
+	    	<textarea  id="container" name="description" ><?php  echo $headline['description'];?></textarea>
 		</div>
 	</div>
 

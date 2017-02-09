@@ -16,7 +16,8 @@
 	{
 		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
-		
+		$openid = checkIsLogin();								// 账户验证
+	
 		$sql = "SELECT SQL_CALC_FOUND_ROWS n.note_id,n.openid,n.title,n.pic,n.description,n.address,n.createtime,m.nickname,m.avatar FROM " . table('note') . " as n,".table('member')." as m ";
 		$sql.= " WHERE n.openid=m.openid and n.deleted=0 ";
 		
@@ -26,12 +27,31 @@
 			$sql.= " and n.isrecommand= ".(int)$_GP['isrecommand'];
 		}
 		
+		if(!empty($openid))
+		{
+			$sql.= " and (n.`check`=1 or n.openid='".$openid."') ";
+		}
+		else{
+			$sql.= " and n.`check`=1 ";
+		}
+		
 		$sql.= " order by n.createtime desc";
 		$sql.= " limit ".(($page-1)*$limit).','.$limit;
-	
+
 		$arrNote = mysqld_selectall($sql);
 		
 		$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+		
+		if(!empty($arrNote))
+		{
+			foreach($arrNote as $key => $value)
+			{
+				$arrNote[$key]['collectionCnt']	= getNoteCollectionCount($value['note_id']);			    //收藏数
+				$arrNote[$key]['isCollection']	= isCollection($value['note_id'],$member);				//是否已收藏
+				// 内容截取
+				$arrNote[$key]['description'] = msubstr($value['description'],0,120);
+			}
+		}
 		
 		$result['data']['note'] = $arrNote;
 		$result['data']['total']= $total['total'];
@@ -53,12 +73,24 @@
 			$sql = "SELECT SQL_CALC_FOUND_ROWS n.note_id,n.openid,n.title,n.pic,n.description,n.address,n.createtime,m.nickname,m.avatar FROM " . table('note') . " as n,".table('member')." as m ";
 			$sql.= " WHERE n.openid=m.openid and n.deleted=0 ";
 			$sql.= " and n.openid='".$openid."' ";
+			$sql.= " and n.`check`=1 ";
 			$sql.= " order by n.createtime desc";
 			$sql.= " limit ".(($page-1)*$limit).','.$limit;
 			
 			$arrNote = mysqld_selectall($sql);
 			
 			$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+			
+			if(!empty($arrNote))
+			{
+				foreach($arrNote as $key => $value)
+				{
+					$arrNote[$key]['collectionCnt']	= getNoteCollectionCount($value['note_id']);					//收藏数
+					$arrNote[$key]['isCollection']	= isCollection($value['note_id'],$member);				//是否已收藏
+					// 内容截取
+				     $arrNote[$key]['description'] = msubstr($value['description'],0,120);
+				}
+			}
 			
 			$result['data']['note'] = $arrNote;
 			$result['data']['total']= $total['total'];
@@ -91,12 +123,11 @@
 				$result['code'] 	= 0;
 			}
 			else{
-				$collectionCnt 	= mysqld_select("SELECT count(collection_id) cnt FROM " . table('note_collection') . " where note_id={$note_id} ");
 				$commentCnt 	= mysqld_select("SELECT count(comment_id) cnt FROM " . table('note_comment') . " where note_id={$note_id} ");
 				
 				$noteInfo['isFollow']		= isFollowed ( $noteInfo ['openid'],$member );		//是否已经被关注
 				$noteInfo['isCollection']	= isCollection($note_id,$member);					//是否已收藏
-				$noteInfo['collectionCnt']	= $collectionCnt['cnt'];							//收藏数
+				$noteInfo['collectionCnt']	= getNoteCollectionCount($note_id);					//收藏数
 				$noteInfo['commentCnt']		= $commentCnt['cnt'];								//评论数
 				$noteInfo['share_url']		= getArticleUrl($note_id,'note');
 				
@@ -288,6 +319,16 @@
 					$sql.= " limit ".(($page-1)*$limit).','.$limit;
 					
 					$arrNote = mysqld_selectall($sql);
+						
+					if(!empty($arrNote))
+					{
+						foreach($arrNote as $key => $value)
+						{
+							$arrNote[$key]['collectionCnt']	= getNoteCollectionCount($value['note_id']);					//收藏数
+							// 内容截取
+				            $arrNote[$key]['description'] = msubstr($value['description'],0,120);
+						}
+					}
 					
 					$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
 					
@@ -347,4 +388,16 @@
 		else{
 			return 0;
 		}
+	}
+	
+	/**
+	 * 笔记的收藏数量
+	 * 
+	 * @param $note_id:int 笔记ID
+	 */
+	function getNoteCollectionCount($note_id)
+	{
+		$collectionCnt 	= mysqld_select("SELECT count(collection_id) cnt FROM " . table('note_collection') . " where note_id={$note_id} ");
+		
+		return $collectionCnt['cnt'];							//收藏数
 	}

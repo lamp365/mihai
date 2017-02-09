@@ -109,6 +109,15 @@
 				{
 				    member_credit($openid,$shop_regcredit,"addcredit","注册系统赠送积分");
 				}
+				// 老用户积分赠送
+				$regular = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE mobile='".$_GP['mobile']."' AND status=0");
+				if (!empty($regular)) {
+					// 老用户积分为消费金额的一半
+					$regular_credit = intval((float)$regular['price']/2);
+					mysqld_query("UPDATE ".table('member')." SET credit=credit+".$regular_credit." WHERE openid='".$openid."'");
+					// 该老用户更改为已入驻
+					mysqld_update('shop_customers', array('status'=>1), array('mobile'=>$_GP['mobile']));
+				}
 				
 				$member=get_session_account();
 					$oldsessionid = $member['openid'];

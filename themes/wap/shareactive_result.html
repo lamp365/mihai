@@ -19,12 +19,14 @@
 </head>
 <body>
 	<div class="result-wrap">
-
+		<div class="title-bg">
+			<img src="__RESOURCE__/recouse/images/shareactive_result_bg.jpg">
+		</div>
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
 		<div class="one_result">
 			<!--@php if(time() > $drawtime){ @-->
 				<!--@php if($draw_arr[0]['state'] == 2){  @-->
-					<div class="result-phase tobedraw">正在颁奖</div>
+					<div class="result-phase tobedraw">小觅正在努力实现愿望</div>
 				<!--@php }else{ @-->
 					<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--></div>
 				<!--@php } @-->
@@ -53,11 +55,13 @@
 						<div class="detail"><!--@php echo $draw['title'];@--></div>
 						<div class="user-detail">
 							<!--@php if($draw['state'] ==2 ){ @-->
-								等待揭晓<span style="margin-left: 10px;">总参与人次:<!--@php echo $draw['dicount'];@--></span>
-							<!--@php }else{ @-->
-								<p>总参与人次:<!--@php echo $draw['dicount'];@--></p>
-								<span>心愿幸运码:<span style="color: #f60" class="xinyuannum"><!--@php echo $draw['sn'];@--></span></span>
-								<span style="margin-left: 10px;"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" style="width: 16px;margin-top: 2px;" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+								<div><span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span></div>
+								<span class="question"  class="xinyuannum">???</span>
+								<span class="user-detail-right" ><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+							<!--@php }elseif($draw['state'] > 2){ @-->
+                                <div><span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span></div >
+								<span>心愿数字:<span style="color: #f60" class="xinyuannum"><!--@php echo $draw['sn'];@--></span></span>
+								<span class="user-detail-right-2"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							<!--@php } @-->
 						</div>
 					</div>
@@ -117,7 +121,7 @@
 		var yushu = chusu%beichusu+1;
 		var html = '';
 
-		html = "<div>心愿幸运码:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
+		html = "<div>心愿幸运数:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
       		"<div>"+
       			"<p style='text-align:center'>计算公式</p>"+
       			"<ul class='result-rule clearfix'>"+
@@ -137,22 +141,7 @@
       					"<p>1</p>"+
       					"<span>固定值</span>"+
       				"</li>"+
-      				"<li><p>= "+yushu+"</p><span>号数</span></li>"+
-      			"</ul>"+
-      			"<ul class='result-rule clearfix' style='margin-top: 10px'>"+
-      				"<li style='line-height: 36px;'>p"+award_id+"00000"+ yushu +" = </li>"+
-      				"<li>"+
-      					"<p>p+</p>"+
-      					"<span>固定</span>"+
-      				"</li>"+
-      				"<li>"+
-      					"<p>"+award_id+"</p>"+
-      					"<span>礼品id</span>"+
-      				"</li>"+
-      				"<li>+</li>"+
-      				"<li><p>00000</p><span>固定值</span></li>"+
-      				"<li>+</li>"+
-      				"<li><p>"+yushu+"</p><span>号数</span></li>"+
+      				"<li><p>= "+yushu+"</p><span>幸运数</span></li>"+
       			"</ul>"+
       		"</div>";
 		$(".result-modal").modal();
@@ -165,11 +154,11 @@
 			if( data.errno != 200 ){
 				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
-				var html = "<div class='result-num'><span>您的心愿码:</span>";
+				var html = "<div class='result-num'><span>您的心愿数字是:</span>";
 				var recorder = data.message;
 				for(var i = 0;i < recorder.length;i++){
 					var item    = recorder[i];
-					html = html + "<span>"+item.star_num + "</span>";
+					html = html + "<span>"+item.star_num_order + "</span>";
 				}
 				html = html + "</div>";
 				$(".you-result-modal .modal-body").html(html);
@@ -206,7 +195,7 @@
         	}
         }
         if( day<=0 && hour<=0 && second <=0 && minute<=0 ){
-            $(id).html("正在颁奖");
+            $(id).html("小觅正在努力实现愿望");
             //window.location.reload();
         }
 

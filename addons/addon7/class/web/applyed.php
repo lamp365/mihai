@@ -7,6 +7,9 @@
 	       'shiptype' =>$_GP['type'],
 	       'shipstr' =>$_GP['shipstr']
 	   );
+      if($_GP['type'] != 'xian_chan' && empty($_GP['shipping'])){
+          message("物流单号不能为空！",refresh(),'error');
+      }
        $res = mysqld_update('addon7_award', $ship, array('id'=>$_GP['id']));
        if($res && !empty($_GP['draw_id'])){
            $draw_data = array(

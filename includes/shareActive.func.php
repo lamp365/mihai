@@ -503,7 +503,7 @@ function shuadan_checkActiveCishu($openid){
  */
 function get_all_changebonus($openid){
     $now_time = time();
-    $bonus = mysqld_selectall("select * from ".table('bonus_type')." where send_type=4 and send_start_date<={$now_time} and send_end_date>={$now_time}");
+    $bonus = mysqld_selectall("select * from ".table('bonus_type')." where send_type=4 and send_start_date<={$now_time} and send_end_date>={$now_time} limit 8");
     if(!empty($bonus)){
         if($openid){
             foreach($bonus as $key => &$one_bonus){

@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/jquery-ui-1.10.3.min.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/bootstrap3/js/bootstrap-dropdown.js"></script>
 <style type="text/css">
 	.icon-pencil{
 		padding: 0 8px;
@@ -35,10 +36,6 @@
 	.wholesale-td{
 		position: relative;
 	}
-	.wholesale-cogs{
-		position: absolute;
-    	top: 41px;
-	}
 	.vip-form-desc{
 		text-align: left;
 	    margin: 0 auto;
@@ -55,10 +52,20 @@
 	.shop-list-tr select{
 		margin-right:10px;height:30px; line-height:28px; padding:2px 0;
 	}
+	#dLabel{
+		cursor: pointer;
+		padding-right: 15px;
+	}
+	.wholesale-price{
+		color: #d22046;
+    	font-weight: bold;
+	}
+	.wholesale-div li{
+		padding: 5px 0 5px 10px;
+	}
 </style>
 <h3 class="header smaller lighter blue">觅海全球购</h3> 
 <form action=""  class="form-horizontal" method="post">
-
 	<table class="table table-striped table-bordered table-hover">
 			<tbody>
 				<tr class="shop-list-tr">
@@ -133,7 +140,7 @@
     <th class="text-center" >首图</th>
     <th class="text-center" >产品库编号</th>
 	<th class="text-center" >条形码</th>
-    <th class="text-center">产品名称</th>
+    <th class="text-center" >产品名称</th>
 	<th class="text-center" ><a href="<?php echo $sorturl."&orderprice=".$oprice; ?>">价格</a></th>
 	<th class="text-center"><a href="<?php echo $sorturl."&ordertprice=".$otprice; ?>">特别价格</a></th>
     <th class="text-center">批发价格（美元)</th>
@@ -162,14 +169,17 @@
 					<td style="text-align:center;" ><?php  echo $item['marketprice'];?></td>
 					<td style="text-align:center;" ><?php  echo $item['timeprice'];?></td>
 					<td style="text-align:center;" class="wholesale-td">
-						<div class="wholesale-div" ajax_id="<?php  echo $item['id'];?>">
-					     <?php if ( isset( $item['purchase_price'] ) ){ foreach ( $item['purchase_price'] as $purchase_price ){ ?>
-					           <span class="label label-danger wholesale" style="margin-left:5px;"><?php echo $purchase_price['name'].$purchase_price['vip_price']; ?></span>  					     	   
-						 <?php }}?>
-						 </div>
-						<?php if(isHasPowerOperateField('shop_dish','vip_price')){ ?>
-						 <i class="wholesale-cogs icon-cog" ajax-vip-price-id="<?php  echo $item['id'];?>"></i>
-						<?php } ?>
+						<div class="dropdown">
+						  	<i class="icon-eye-open" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+							<ul class="dropdown-menu wholesale-div" ajax_id="<?php  echo $item['id'];?>" aria-labelledby="dLabel">
+							     <?php if ( isset( $item['purchase_price'] ) ){ foreach ( $item['purchase_price'] as $purchase_price ){ ?>
+								    <li><div class="wholesale"><?php echo $purchase_price['name']; ?>：<span class="wholesale-price"><?php echo $purchase_price['vip_price']; ?></span></div></li>  	   
+								 <?php }}?>
+							</ul>
+							<?php if(isHasPowerOperateField('shop_dish','vip_price')){ ?>
+							 <i class="wholesale-cogs icon-cog" ajax-vip-price-id="<?php  echo $item['id'];?>"></i>
+							<?php } ?>
+						</div>
 					</td>
 					<td style="text-align:center;" class="product-stock">
 						<input type="text" name="" class="modify-stock form-control modify-input" ajax-stock-id="<?php  echo $item['id'];?>"><span><?php  echo $item['total'];?></span>
@@ -437,7 +447,7 @@
 						$.each(data.message.vip_data,function(data_i,data_val){
 							$.each(data.message.vip_list,function(list_i,list_val){
 								if( data_val.v2 == list_val.id ){
-									save_get_html += "<span class='label label-danger wholesale' style='margin-left:5px;''>"+list_val.name+data_val.vip_price+"</span>";
+									save_get_html += "<li><div class='wholesale' >"+list_val.name+"：<span class='wholesale-price'>"+data_val.vip_price+"</span></div></li>";
 								}else{
 									return;
 								}

@@ -9,6 +9,8 @@
 	$op = $_GP ['op'];
 	
 	$member = get_member_account ( true, true );
+
+	$lastid = $_GP ['lastid'];
 	
 	if (! empty ( $member ) and $member != 3) {
 		
@@ -76,16 +78,31 @@
 				
 				$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 				$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
+				$u_where = '';
+				if (!empty($lastid)) {
+					$page = 1;
+					$u_where = " and n.note_id<".$lastid;
+				}
 				
-				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,n.note_id,n.openid,n.title,n.pic,m.nickname,m.avatar FROM " . table('note_collection') . " as c,".table('note') . " as n,".table('member')." as m ";
+				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,n.note_id,n.openid,n.title,n.pic,n.description,m.nickname,m.avatar FROM " . table('note_collection') . " as c,".table('note') . " as n,".table('member')." as m ";
 				$sql.= " WHERE n.note_id=c.note_id and n.openid=m.openid ";
-				$sql.= " and c.openid='".$member ['openid']."' ";
+				$sql.= " and c.openid='".$member ['openid']."' ".$u_where;
 				$sql.= " and n.deleted=0 order by n.createtime desc";
 				$sql.= " limit ".(($page-1)*$limit).','.$limit;
-				
+			
 				$arrNoteCollection = mysqld_selectall($sql);
 				
 				$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+				
+				if(!empty($arrNoteCollection))
+				{
+					foreach($arrNoteCollection as $key => $value)
+					{
+						$arrNoteCollection[$key]['collectionCnt']	= getNoteCollectionCount($value['note_id']);					//收藏数
+						// 内容截取
+			            $arrNoteCollection[$key]['description'] = msubstr($value['description'],0,120);
+					}
+				}
 				
 				$result['data']['collection'] 	= $arrNoteCollection;
 				$result['data']['total'] 		= $total['total'];
@@ -103,4 +120,16 @@
 	
 	echo apiReturn ( $result );
 	exit ();
-			
+	
+	
+	/**
+	 * 笔记的收藏数量
+	 *
+	 * @param $note_id:int 笔记ID
+	 */
+	function getNoteCollectionCount($note_id)
+	{
+		$collectionCnt 	= mysqld_select("SELECT count(collection_id) cnt FROM " . table('note_collection') . " where note_id={$note_id} ");
+	
+		return $collectionCnt['cnt'];							//收藏数
+	}

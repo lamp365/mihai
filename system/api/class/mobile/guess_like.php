@@ -40,6 +40,9 @@
 				$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
 				$ary['country'] = $country['name'];
 				$ary['country_icon'] = download_pic($country['icon']);
+				// 分类名
+		    	$category = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$g_v['p1']);
+		    	$ary['category'] = $category['name'];
 	      		$guess_ary[] = $ary;
 	      	}
 
@@ -71,6 +74,9 @@
 			$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
 			$ary['country'] = $country['name'];
 			$ary['country_icon'] = download_pic($country['icon']);
+			// 分类名
+	    	$category = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$good['p1']);
+	    	$ary['category'] = $category['name'];
       		$guess_ary[] = $ary;
 		}
 		$result['data']['guess'] = $guess_ary;
@@ -105,6 +111,9 @@
 				$country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
 				$ary['country'] = $country['name'];
 				$ary['country_icon'] = download_pic($country['icon']);
+				// 分类名
+		    	$category = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$g_v['p1']);
+		    	$ary['category'] = $category['name'];
 	      		$guess_ary[] = $ary;
 	      	}
 

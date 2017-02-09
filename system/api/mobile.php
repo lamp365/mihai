@@ -368,6 +368,21 @@ class apiAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
+    
+    public function do_free_config()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_free_order()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_dish_list2()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
 	
     public function getPaytypebycode($code)
     {

@@ -50,7 +50,7 @@
 							
 						</div>
 						<div class="product-title">
-							<div class="product-name product-img-click" product_id="<!--@php echo $dish_list_value['id']; @-->"><!--@php echo $dish_list_value['title']; @--></div>
+							<div class="product-name product-img-click" onclick="productName(this)" product_id="<!--@php echo $dish_list_value['id']; @-->"><!--@php echo $dish_list_value['title']; @--></div>
 							<div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
 								<div class='modal-dialog modal-lg'>
 									<div class='modal-content'>
@@ -86,9 +86,9 @@
 							</div>
 						</div>
 						<!--@php if ( $dish_list_value['selected'] == 0 ){ @-->
-						<div class="col-action"><span class='col-check' id="<!--@php echo $dish_list_value['id']; @-->">选择</span></div>
+						<div class="col-action"><span onclick="colcheck(this)" class='col-check' id="<!--@php echo $dish_list_value['id']; @-->">选择</span></div>
                          <!--@php  }else{ @-->
-						<div class="col-action"><span class='col-check added' id="<!--@php echo $dish_list_value['id']; @-->">已选</span></div>
+						<div class="col-action"><span onclick="colcheck(this)" class='col-check added' id="<!--@php echo $dish_list_value['id']; @-->">已选</span></div>
 						<!--@php } @-->
 
 					</li>
@@ -316,27 +316,7 @@
 	    		$(".address-area .address_item:gt(0)").hide();
 	    		e.stopPropagation();
 	    	})
-			$(".product-img-click").on("click",function(){
-				var content_this = $(this);
-				var content_id = content_this.attr("product_id");
-				var siblings_detail = 	content_this.siblings(".product-detail");
-				var content_len = siblings_detail.find(".modal-body").children().length;
-					siblings_detail.modal();
-				//如何已有详情直接返回
-				if( content_len > 1){
-					return false;
-				}else{
-					$.post("",{type:'get_content',id:content_id},function(data){
-						if(data.errno == 200){
-							$(".ajax-load").hide();
-							siblings_detail.find(".modal-body").append("<div class='modal-body-content'>"+data.message.content+"</div>");
-						}else{
-							$(".ajax-load").hide();
-							alert(data.message);
-						}
-					},'json')
-				};
-			});
+
 			$(".click").click(function(){
 		         $(".filter").addClass("move"); 
 				  changeDivHeight("html",0); 
@@ -349,30 +329,7 @@
 			   $("html").css("height","auto");
 			});
 
-			//单个选择商品
-			$(".col-check").on("click",function(){
-				var psize = $(".pagenum select").val();
-				var add_good_html = "";
-				var add_id = $(this).attr("id");
-				var this_check = $(this);
-				var add_num = parseInt(this_check.parents(".col-action").siblings(".col-num").find(".goodsnum").val());
-				var addObj = {};
-				if( this_check.hasClass("added")){
-					return false;
-				}else{
-					addObj[add_id] = add_num;
-					$.post("",{type:"add_goods",psize:psize,goods:addObj},function(data){
-						//0添加成功
-						if(data.result==0){
-							$(".tab .selected span").text(data.max_purchase);
-							this_check.addClass("added");
-							this_check.text('已选');
-						}else if(data.result==1){
-							alert(data.info);
-						}
-					},"json");
-				}
-			});
+
 			$(".selected").on("click",function(){
 				getGoods();
 				addressFun();
@@ -444,6 +401,51 @@
 			 }
 	    }  
 
+		function productName(obj){
+			var content_this = $(obj);
+				var content_id = content_this.attr("product_id");
+				var siblings_detail = 	content_this.siblings(".product-detail");
+				var content_len = siblings_detail.find(".modal-body").children().length;
+					siblings_detail.modal();
+				//如何已有详情直接返回
+				if( content_len > 1){
+					return false;
+				}else{
+					$.post("",{type:'get_content',id:content_id},function(data){
+						if(data.errno == 200){
+							$(".ajax-load").hide();
+							siblings_detail.find(".modal-body").append("<div class='modal-body-content'>"+data.message.content+"</div>");
+						}else{
+							$(".ajax-load").hide();
+							alert(data.message);
+						}
+					},'json')
+				};
+		}
+
+	    //单个选择商品
+	    function colcheck(obj){
+	    	var add_good_html = "";
+				var add_id = $(obj).attr("id");
+				var this_check = $(obj);
+				var add_num = parseInt(this_check.parents(".col-action").siblings(".col-num").find(".goodsnum").val());
+				var addObj = {};
+				if( this_check.hasClass("added")){
+					return false;
+				}else{
+					addObj[add_id] = add_num;
+					$.post("",{type:"add_goods",goods:addObj},function(data){
+						//0添加成功
+						if(data.result==0){
+							$(".tab .selected span").text(data.max_purchase);
+							this_check.addClass("added");
+							this_check.text('已选');
+						}else if(data.result==1){
+							alert(data.info);
+						}
+					},"json");
+				}
+	    }
 	    function changeDivHeight(obj, h){  
 		      if (window.innerHeight)
 	             winHeight = window.innerHeight;

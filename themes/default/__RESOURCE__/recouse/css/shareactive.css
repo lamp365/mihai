@@ -447,14 +447,17 @@ body{
     border-radius: 4px;
 }
 .result-wrap{
-	width:1190px;
-	margin:0 auto;
-	margin-bottom: 30px;
+    width: 1022px;
+    margin: 0 auto;
+    background: url(../images/index_shadow.png) no-repeat center;
+    margin-top: -200px;
+    margin-bottom: 30px;
+
 }
 .result-wrap ul li{
 	float: left;
-	width: 395px;
-    border: 1px solid #e4e4e4;
+	width: 332px;
+   
     margin-top: -1px;
     margin-left: -1px;
     height: 163px;
@@ -465,8 +468,8 @@ body{
     float: left;
 }
 .result-list-right{
-	float: left;
-    width: 244px;
+    float: left;
+    width: 180px;
     box-sizing: border-box;
     margin-top: 33px;
 }
@@ -500,13 +503,12 @@ body{
 }
 .result-phase{
 	border: 1px solid #e4e4e4;
-    width: 1189px;
+    width: 1000px;
     height: 45px;
     line-height: 45px;
     padding-left: 15px;
     box-sizing: border-box;
     margin-left: -1px;
-    margin-top: 30px;
     color: #666;
     background: #fafafa;
     border-radius: 5px 5px 0 0;
@@ -692,50 +694,80 @@ body{
     margin-left: 8px;
 }
 .coupon_indiana{
-	height: 83px;
-	padding:0;
-
+    height: 109px;
+    width: 218px;
+    padding: 0;
+    position: relative;
+    border: none;
+    margin-right: 51px;
+    margin-bottom: 27px;
 }
 .coupon_indiana img{
-	width: 200px;
+	width: 109px;
 	max-width: 100%;
 	display: block;
 }
 .coupon_indiana_left{
-    float: left;
-    width: 200px;
-    background: url(../images/coupon.jpg) no-repeat;
-    height: 82px;
+    width: 218px;
+    background: url(../images/coupon.png) no-repeat;
+    height: 109px;
     position: relative;
     text-align: right;
-    line-height: 82px;
     color: #fff;
     font-size: 35px;
     padding-right: 11px;
     box-sizing: border-box;
 }
 .coupon_indiana_right{
-	float: left;
-    width: 61px;
-    line-height: 82px;
+    position: absolute;
+    width: 30px;
     text-align: center;
-    background: #d10236;
     color: #fff;
     cursor: pointer;
+    top: 24px;
+    right: 6px;
+    font-size: 18px;
+    line-height: 20px;
+}
+.to_get_bonus{
+    color: #72100a;
+    top: 14px;
 }
 .coupon-total-num {
     position: absolute;
     top: -37px;
-    left: 10px;
+    left: 37px;
     color: #d21019;
     font-size: 18px;
 }
 .need-number{
-    font-size: 14px;
+    font-size: 18px;
+    position: absolute;
+    bottom: 7px;
+    left: 0;
+    width: 174px;
+    color: #fdefcc;
+    text-align: center;
 }
-
-
-
-
+.coupon_indiana_price{
+    font-size: 64px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 174px;
+    color: #fff1c7;
+    text-align: center;
+}
+.coupon_indiana_price .yuan{
+    font-size: 27px;
+}
+.result-last-wrap{
+    
+}
+.one_result{
+    width: 1000px;
+    background-color: #fff;
+    margin: 0 auto;
+}
 
 

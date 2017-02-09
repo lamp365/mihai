@@ -306,6 +306,21 @@ video {
 .hotPic:hover .nav-box{
 	display: block;
 }
+.m-productfloor .new-border{
+	border:none;
+}
+.m-productfloor .new-border .w-activlist{
+    border-top: 1px solid #eaeaea;
+    border-right: none;
+    box-sizing: border-box;
+    border-bottom: 1px solid #eaeaea;
+}
+.m-productfloor .new-border .party{
+	border:1px solid #eaeaea ;
+	padding-right: 20px;
+    height: 442px;
+    border-left: none;
+}
 </style>
 
 </head>
@@ -622,7 +637,7 @@ video {
     			 	</li>
     			 </ul>
     		</div>
-    		<div class="cont clearfix"style="width: 1188px;overflow: hidden;border-left:1px solid #eaeaea;border-bottom:none;border-right:1px solid #eaeaea;">
+    		<div class="cont clearfix" style="width: 1188px;overflow: hidden;border-left:1px solid #eaeaea;border-bottom:none;border-right:1px solid #eaeaea;">
 			    <div class="limit_item">
     			<ul class="limits">    				
 					<!--@php if ( is_array($limts) ){ foreach ( $limts  as $limit_values ){ @-->
@@ -729,7 +744,7 @@ video {
                             </ul>
                             <a target="_blank"  href="<!--@php  echo mobile_url('goodlist', array('pcate' => $c_model['id'],'op'=>'dish'))@-->" class="u-btn-more">更多好货&nbsp;<i class="icon-angle-right"></i></a>
 					</div>
-					<div class="cont clearfix">
+					<div class="cont clearfix new-border">
                           <div class="partl">
 								<a href="<!--@php  echo mobile_url('goodlist', array('pcate' => $c_model['id'],'op'=>'dish'))@-->" target="_blank" >
 								     <img height="444px" width="246px" src="<!--@php echo $c_model['adv']; @-->" />

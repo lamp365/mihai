@@ -3,7 +3,6 @@
 	 * app 用户注册接口
 	 * @var unknown
 	 */
-
 	$telephone = trim($_GP['telephone']);
 
 	$member = mysqld_select ( "SELECT * FROM " . table ( 'member' ) . " where mobile=:mobile ", array (':mobile' => $telephone ) );
@@ -83,6 +82,16 @@
 					$mcache = new Mcache();
 					// 登陆初始化
 					$mcache->init_msession($_REQUEST['device_code']);
+				}
+
+				// 老用户积分赠送
+				$regular = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE mobile='".$telephone."' AND status=0");
+				if (!empty($regular)) {
+					// 老用户积分为消费金额的一半
+					$regular_credit = intval((float)$regular['price']/2);
+					mysqld_query("UPDATE ".table('member')." SET credit=credit+".$regular_credit." WHERE openid='".$openid."'");
+					// 该老用户更改为已入驻
+					mysqld_update('shop_customers', array('status'=>1), array('mobile'=>$telephone));
 				}
 				
 				//释放验证码信息
