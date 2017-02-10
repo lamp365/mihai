@@ -122,6 +122,16 @@ function vip_member_login($mobile, $pwd)
     $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile  limit 1", array(
         ':mobile' => $mobile
     ));
+   // 结合用户注册时间，和最后登录时间来双重判断用户的登录信息
+   $createtime = $member['createtime'];
+   $lastime    = $member['lastime'];
+   $timeend   = 30 * 24  * 60 * 60;
+   if ( ($createtime + $timeend) < time() ){
+           $paytime = mysqld_select("SELECT * FROM ".table('shop_order'). " WHERE  status >= 1 and openid = :openid ORDER BY paytime desc", array(':openid'=>$member['openid']) );
+		   if (( $paytime['paytime'] + $lastime) < time() ){
+                 return -3;
+		   }
+   }
    // parent_roler_id 身份id 父级	son_roler_id
     if ( !empty($member['parent_roler_id']) && !empty($member['son_roler_id']) ){
           $check = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['son_roler_id']." and pid = ".$member['parent_roler_id']." and (type = 2 or type = 3) ");

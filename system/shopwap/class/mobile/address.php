@@ -43,6 +43,7 @@
                 'realname' => $_GP['realname'],
                 'mobile' => $_GP['mobile'],
                 'city' => $_GP['city'],
+				'province'=>$_GP['province'],
                 'area' => $_GP['area'],
                 'address' => $_GP['address'],
                 'province' => $_GP['province'],

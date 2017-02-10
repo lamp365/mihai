@@ -242,6 +242,23 @@ if (!empty($member) AND $member != 3) {
 				// 使用余额抵扣
 				if ($use_balance == 1) {
 					$use_member = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$member['openid']."'");
+					
+					############## 免单余额抵扣 start ##############
+					$freeorder_gold = $use_member['freeorder_gold'];
+					
+					if ($freeorder_gold >= (float)$order_data['price']) {
+						$freeorder_gold = (float)$order_data['price'];
+					}
+					
+					$order_data['price'] = (float)$order_data['price'] - $freeorder_gold;
+					if ($order_data['price'] <= 0) {
+						$order_data['price'] = 0;
+					}
+					
+					$order_data['freeorder_price'] = $freeorder_gold;
+					############## 免单余额抵扣 end ##############
+					
+					
 					$balance = (float)$use_member['gold'];
 					if ($balance >= (float)$order_data['price']) {
 						$balance = (float)$order_data['price'];
@@ -256,7 +273,7 @@ if (!empty($member) AND $member != 3) {
 					$order_data['has_balance'] = 1;
 					$order_data['balance_sprice'] = $balance;
 					// 扣除账户余额
-					$member_ary = array('gold' => (float)$use_member['gold'] - $balance);
+					$member_ary = array('gold' => (float)$use_member['gold'] - $balance,'freeorder_gold' => (float)$use_member['freeorder_gold'] - $freeorder_gold);
 					mysqld_update ('member',$member_ary,array('openid' =>$openid));
 				}
 				

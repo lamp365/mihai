@@ -84,7 +84,7 @@
 					$u_where = " and c.collection_id<".$lastid;
 				}
 				
-				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.uid,h.title,h.pic,h.description,h.preview,u.nickname,u.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('user')." as u ";
+				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.uid,h.title,h.pic,h.preview,u.nickname,u.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('user')." as u ";
 				$sql.= " WHERE h.headline_id=c.headline_id and h.uid=u.id ";
 				$sql.= " and c.openid='".$member ['openid']."' ".$u_where;
 				$sql.= " and h.deleted=0 and (h.video IS NULL or h.video='') order by c.createtime desc";
@@ -118,10 +118,10 @@
 					$u_where = " and c.collection_id<".$lastid;
 				}
 				
-				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.uid,h.title,h.video,h.video_img,h.description,h.preview,u.nickname,u.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('user')." as u ";
+				$sql = "SELECT SQL_CALC_FOUND_ROWS c.collection_id,h.headline_id,h.uid,h.title,h.video,h.video_img,h.preview,u.nickname,u.avatar FROM " . table('headline_collection') . " as c,".table('headline') . " as h,".table('user')." as u ";
 				$sql.= " WHERE h.headline_id=c.headline_id and h.uid=u.id ";
 				$sql.= " and c.openid='".$member ['openid']."' ".$u_where;
-				$sql.= " and h.deleted=0 and (h.pic IS NULL or h.pic='') order by c.createtime desc";
+				$sql.= " and h.deleted=0 and (h.video IS NOT NULL and h.video!='') order by c.createtime desc";
 				$sql.= " limit ".(($page-1)*$limit).','.$limit;
 			
 				$arrHeadlineCollection = mysqld_selectall($sql);

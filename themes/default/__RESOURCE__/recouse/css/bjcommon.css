@@ -108,6 +108,20 @@ body{
     text-align: center;
     width: 280px;
 }
+.headermain{
+  width:100%;
+  min-width:1200px;
+  overflow:hidden;
+  background:url("../images/headerbg.jpg") no-repeat center top;
+}
+.to_erweima{
+   background:#fff;
+}
+.indexmain{
+   width:100%;
+   overflow:hidden;
+   background:url("../images/shopindex.jpg") no-repeat center top;
+}
 .yongjin {
     background: rgba(0, 0, 0, 0) url("../images/DDZnewIndex_04.jpg") no-repeat scroll 79px -4px;
     border-right: 1px solid #ebebeb;
@@ -135,14 +149,15 @@ body{
     text-align: center;
 }
 .navtop{
-   height:60px;
-   line-height:60px;
-   background:#1D2736;
+   height:30px;
+   line-height:30px;
+   background:#F2F2F2;
+   border-bottom:1px solid #ededee;
    padding:0 20px;
-   color:#CCCED1;
+   color:#666;
 }
 .navtop .center{
-   width:100%;
+   width:1190px;
    margin:0 auto;
 }
 .navtop .center .le a{
@@ -182,14 +197,12 @@ body{
 	right:5px;
 }
 .navtop .center .re a{
-   color:#CCCED1;
-   padding:0px 30px;
-   border-right:1px solid #141C28;
-   border-left:1px solid #303947;
+   color:#333;
+   padding:0px 14px;
    float:left;
 }
 .navtop .center .re a:hover{
-   color:#fff;
+   color:#333;
 }
 .customnav {
     margin: 0 auto 19px;

@@ -159,12 +159,12 @@
 
     }else if($op == 'result'){
         //把2和3 4的都取出来
-        $psize  =  24;
+        $psize  =  18;
         $pindex = max(1, intval($_GP["page"]));
         $limit  = ' limit '.($pindex-1)*$psize.','.$psize;
         $total  = $pager = '';
 
-        $drawRecorder = mysqld_selectall("select * from ".table('addon7_award')." where state>=2 order by lock_time desc");
+        $drawRecorder = mysqld_selectall("select * from ".table('addon7_award')." where state>=2 order by lock_time desc {$limit}");
         if(!empty($drawRecorder)){
             //按照时间6个显示按照开奖时间
             $temp = array();
@@ -177,6 +177,15 @@
 
             $total  = mysqld_selectcolumn("select count(id) from ".table('addon7_award')." where state>=2");
             $pager  = pagination($total, $pindex, $psize);
+        }
+
+        //当手机端滑动的时候加载下一页
+        if ($_GP['nextpage'] == 'ajax' && $_GP['page'] > 1 ){
+            if ( empty($drawRecorder) ){
+                die(showAjaxMess(1002,'查无数据！'));
+            }else{
+                die(showAjaxMess(200,$drawRecorder));
+            }
         }
 
         include themePage('shareactive_result');
@@ -210,6 +219,14 @@
 
         $res = toChangeBonus($openid,$bonus_id);
         die($res);
+
+    }else if($op == 'recorderCount'){//当前参与的记录
+        $award_id = $_GP['award_id'];
+        if(empty($award_id)){
+            die(showAjaxMess(200,"0"));
+        }
+        $total    = getRecorderCount($openid,$award_id);
+        die(showAjaxMess(200,$total));
 
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');

@@ -23,7 +23,7 @@
 		</div>
 	</div>
 	
-	<!-- <div class="form-group">
+	<div class="form-group">
 									<label class="col-sm-2 control-label no-padding-left" > 图片：</label>
 
 									<div class="col-sm-9">
@@ -45,7 +45,7 @@
 	            <?php  } } } ?>
 	        </ul>
 									</div>
-	</div> -->
+	</div>
 
 	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left"> 视频封面：</label>

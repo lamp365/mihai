@@ -24,6 +24,11 @@ if (checksubmit("submit")) {
 	if ($loginid == -2 ){
         message("账户身份错误!");
 	}
+	if ($loginid == -3 ){
+        // 找出业务员的信息
+        $relation  = mysqld_select("SELECT a.*,b.username,b.mobile FROM ".table('member')." as a LEFT JOIN ".table('user')." as b ON a.relation_uid = b.id WHERE a.mobile = ".$_GP['mobile']);
+        message("尊敬的用户您好，您的账户长期未操作，已经被系统锁定，如需解锁请联系您的业务员!<br/>".$relation['username'].":".$relation['mobile']);
+	}
     if (empty($loginid)) {
         message("用户名或密码错误");
     } else {

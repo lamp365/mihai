@@ -302,7 +302,7 @@ switch ($login_type) {
 		
 		break;
 }
-
+ifApp($openid);
 echo apiReturn($result);
 exit;
 

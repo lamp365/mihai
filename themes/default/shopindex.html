@@ -453,69 +453,6 @@ video {
 			</script>
 
 	</div>
-   <!--健康文化-->
-    <div class="viewport mhnews" id="a1" style="display: none;">
-    	<div class="mhheadline"> </div>
-    	<!--每个头条，一行显示4个-->
-    	<div class="per-mhnews">    		 
-    		<ul>    			
-    		<!--@php if (is_array($article_healty)){ foreach ($article_healty as $val){ @-->
-    			<li>
-    				<a target="_blank" href="<!--@php  echo mobile_url('article',array('name'=>'addon8','id'=>$val['id']))@-->">
-    					<!--文章图片-->
-    					<img src="<!--@php  echo $val['thumb']@-->" />
-    					<!--文章标题-->
-    					<p><!--@php  echo $val['title']@--></p>
-    					<!--文章内容-->
-    					<span><!--@php  echo $val['description']@--></span>
-    				</a>
-    				<div style="overflow: hidden;">
-    					<!--文章的热门标签-->
-	    				<span class="hottag">热门</span>
-	    				<!--查看了文章的人数-->
-	    				<span class="see">
-	    					<img src="__RESOURCE__/recouse/images/seenum.png" />
-	    					<span class="seenum"><!--@php  echo $val['readcount']@--></span>
-	    				</span> 
-    				</div>
-    			</li>
-    			<!--@php }}@-->
-    		</ul>
-    	</div>
-    	<div class="seemore">
-    		<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'healty'))?>">查看更多</a>    		
-    	</div>
-    </div>
-    <!--觅海头条-->  
-   <script src="__RESOURCE__/recouse/js/swiper-3.4.0.jquery.min.js" type="text/javascript" charset="utf-8"></script>
-   <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/swiper-3.4.0.min.css"/>
-   <div class="viewport" id="23" style="border-bottom: solid 1px #eee;margin: 50px auto;display: none;">
-    	<!--头条模块图-->
-    	<div class="mhimg">
-    		<img src="__RESOURCE__/recouse/images/mhheadl.png"/>
-    	</div>
-    	<!--右侧的滚动的文章列表-->
-    	<div class="newslist swiper-container">
-    		<div class="swiper-wrapper">
-    			<!--一个slide是一个文章标题-->
-				<!--@php if (is_array($article_headline)){ foreach ($article_headline as $val){ @-->
-		        <div class="swiper-slide">
-					<!--@php if(empty($val['avatar'])){ @-->
-					<img src="__RESOURCE__/recouse/images/userface.png"/>
-					<!--@php }else{ @-->
-					<img src="<!--@php  echo $val['avatar']@-->"/>
-					<!--@php } @-->
-		        	<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline','id'=>$val['headline_id']))?>">
-						<!--@php  echo $val['title'];@-->
-					</a>
-		        </div>
-				<!--@php }}@-->
-			</div>
-    	</div>
-    	<div class="notemore">
-    		<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline'))?>">查看更多</a>
-    	</div>
-   </div>
    <!--滚动控制-->
    <script>        
 	  var mySwiper = new Swiper ('.swiper-container', {
@@ -525,73 +462,6 @@ video {
 	    slidesPerView :3,   	    
 	  })        
   </script>
-    <!--晒物笔记-->
-    <div class="viewport" id="3" style="display: none;">
-    	<!--笔记模块图-->
-    	<div class="mhheadline noteimg" style="background: url(__RESOURCE__/recouse/images/note.png) no-repeat;"> </div>
-    	<!--笔记列表，默认出两行，第二行的最后一个只显示图片，用来点击显示更多笔记，显示更多笔记不用跳转新页面-->
-    	<div class="notelist">
-    		<ul>
-				<!--@php if(!empty($article_note)){  $j=0; $num = count($article_note); foreach($article_note as $val){ $j++; @-->
-					<!--@php  if($j == 8 || ($num<=8 && $j == $num)){ @-->
-						<!--最后一个笔记-->
-						<li>
-							<!--笔记图片-->
-							<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>" class="notepic">
-								<?php $pic = explode(';',$val['pic']); ?>
-								<img src="<?php echo download_pic($pic[0],180); ?>"/>
-							</a>
-							<!--查看更多-->
-							<div class="lookmore">
-								<div>
-									<span></span>
-									<span></span>
-									<span></span>
-								</div>
-								<p>查看更多笔记</p>
-							</div>
-						</li>
-					<!--@php  }else{ @-->
-						<li>
-							<!--笔记图片-->
-							<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>" class="notepic">
-								<?php $pic = explode(';',$val['pic']); ?>
-								<img src="<?php echo download_pic($pic[0],180); ?>"/>
-							</a>
-							<!--图片下面的东西-->
-							<div class="noteinfo">
-								<!--笔记详情-->
-								<a target="_blank" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>">
-									<p>
-										<!--@php echo  msubstr($val['description'],0,100); @-->
-									</p>
-								</a>
-								<!--头像，用户名-->
-								<div>
-									<!--@php if(empty($val['avatar'])){  @-->
-									<img src="__RESOURCE__/recouse/images/icon2.png" />
-									<!--@php }else{ @-->
-									<img src="<!--@php echo $val['avatar']; @-->" alt="">
-									<!--@php } @-->
-									<h3><!--@php echo $val['nickname']; @--></h3>
-								</div>
-							</div>
-						</li>
-					<!--@php  } @-->
-
-				<!--@php }} @-->
-
-    		</ul>    		
-    	</div>
-    	<script>
-    		//点击查看更多笔记，直接在当前页出现隐藏的笔记，点击一次出三行
-    		$(".lookmore").click(function(){
-    			var url = "<!--@php echo mobile_url('article_list',array('op'=>'note','name'=>'addon8'));@-->";
-				window.open(url);
-    		})
-    	</script>
-    </div>
-    
 	<script type="text/javascript">
 	$(function(){
 		$(".left-fixed").on("click",function(){
@@ -600,8 +470,9 @@ video {
 		rightNavShow(1);
 	})
 	</script>
+	<div class="indexmain">
     <div class="viewport">
-	    <div class="m-productfloor" id="adsgd1">
+	    <div class="m-productfloor" id="235hnm1234">
 		    <script>
                  function countDown(time,id){
 						var end_time = time * 1000,//月份是实际月份-1
@@ -649,9 +520,7 @@ video {
     					</a>
 						</div>
 						<div class="txt">
-						     <a href="<!--@php  echo mobile_url('detail', array('id'=>$limit_values['id']))@-->" target="_blank" >
-								<h3 class="desc"><!--@php echo $limit_values['description']; @--></h3>
-							</a>
+	
 							<a href="<!--@php  echo mobile_url('detail', array('id'=>$limit_values['id']))@-->" target="_blank" >
 								<p class="title "><!--@php echo $limit_values['title']; @--></p>
 							</a>
@@ -806,6 +675,7 @@ video {
 				</div>
 		  <!--@php } @-->
 	</div>
+</div>
 <!--@php include themePage('footer');@-->
 
 <!--@php if ($isNewUserBonus ){ @-->

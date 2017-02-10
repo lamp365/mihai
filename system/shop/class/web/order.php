@@ -25,7 +25,11 @@ if ($operation == 'display') {
 	$sendtype = !isset($_GP['sendtype']) ? 0 : $_GP['sendtype'];
 	$condition = 'A.ordertype<>-2';   //批发订单不显示在订单列表里
 	$param_ordersn=$_GP['ordersn'];
-
+    //业务员只能查看跟自己有关联客户的订单
+	if(isAgentAdmin()){
+		$amdin_uid = $_SESSION['account']['id'];
+		$condition .= " AND A.relation_uid={$amdin_uid}";
+	}
 	if (!empty($_GP['ordersn'])) {
 		$condition .= " AND A.ordersn LIKE '%{$_GP['ordersn']}%'";
 	}
@@ -590,6 +594,8 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 		);
 		mysqld_insert('aftersales_log',$data);
 
+		//返还免单金额
+		returnFreeOrderPrice($orderInfo,$aftersales);
 
 		//给买家APP推送消息
 		$order_good = mysqld_select("select * from ". table('shop_order_goods') ." where id={$order_good_id}");
@@ -675,6 +681,7 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 				if ($ov['bstatus'] != '2') {
 					continue;
 				}
+				//财务确认退钱流程
 				$order_good_id = $ov['order_good_id'];
 				$order_id      = $ov['orderid'];
 				$aftersales   = mysqld_select("select aftersales_id,refund_price from ". table('aftersales') ." where order_goods_id={$order_good_id}");
@@ -778,4 +785,46 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 	}
 
 	include page('order_audit');
+}
+
+/**
+ * 返还免单金额
+ * 
+ * @param $orderInfo:array 订单信息数组
+ * @param $aftersales: 退款信息数组
+ * 
+ */
+function returnFreeOrderPrice($orderInfo,$aftersales)
+{
+	//使用了免单余额 并且 退款金额大于订单的实付金额时
+	if (!empty($orderInfo['freeorder_price']) && $aftersales['refund_price']>$orderInfo['price']) {
+			
+		$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$orderInfo['openid']."'");
+			
+		$freeorder_gold_endtime = strtotime('Sunday')+24*3600-1;						//周天的23:59:59
+		$freeorder_price		= $aftersales['refund_price']-$orderInfo['price'];		//退款时，大于实付款总额部分，作为免单余额退回
+		
+		//退回免单余额大于下单时使用的免单金额时
+		if($freeorder_price>$orderInfo['freeorder_price'])
+		{
+			$freeorder_price = $orderInfo['freeorder_price'];
+		}
+		
+		//已有本期免单金额时
+		if($mem['freeorder_gold_endtime']==$freeorder_gold_endtime)
+		{
+			$memberData = array('freeorder_gold' 		=> $freeorder_price+$mem['freeorder_gold'],
+								'freeorder_gold_endtime'=> $freeorder_gold_endtime
+			);
+		}
+		else{
+			$memberData = array('freeorder_gold' 		=> $freeorder_price,
+								'freeorder_gold_endtime'=> $freeorder_gold_endtime
+			);
+		}
+		
+	
+		mysqld_update ('member',$memberData,array('openid' =>$orderInfo['openid']));
+		mysqld_update ('aftersales',array('refund_freeorder_price'=>$freeorder_price),array('aftersales_id' =>$aftersales['aftersales_id']));
+	}
 }

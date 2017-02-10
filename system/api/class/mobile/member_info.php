@@ -104,7 +104,11 @@
 				
 				$objOpenIm = new OpenIm();
 				
-				$memberinfo = mysqld_select("SELECT openid,realname,nickname,member_description,avatar,mobile,freeorder_gold,freeorder_gold_endtime FROM " . table('member') . " where openid=:openid ", array(':openid' => $openid));
+				$memberinfo = mysqld_select("SELECT openid,realname,nickname,member_description,avatar,mobile,gold,freeorder_gold,freeorder_gold_endtime FROM " . table('member') . " where openid=:openid ", array(':openid' => $openid));
+
+				if ($memberinfo['freeorder_gold_endtime'] > time()) {
+					$memberinfo['freeorder_gold'] = 0;
+				}
 				
 				$resp = $objOpenIm->getUserInfo($openid); 
 

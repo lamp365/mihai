@@ -767,7 +767,44 @@
                         </ul>
                     </li>
                 <?php }?>
-
+                <?php if (checkAdmin() || in_array("shop-purchase",$menurule)) { ?>
+                    <li class="shangjia">
+                        <!-- 导航第一级 -->
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-tasks"></i>
+                            <span class="menu-text"> 批发管理 </span>
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+                        <ul class="submenu">  
+						  <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
+                               <li> <a  onclick="navtoggle('批发管理 - > 订单管理')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'purchase','op'=>'display'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        批发订单
+                                    </a>   
+							   </li>
+							   <li> <a  onclick="navtoggle('批发管理 - > 渠道商列表')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'purchase'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        渠道商列表
+                                    </a>   
+							   </li>
+						  <?php
+						       }else{
+							   foreach($parentMenuList[MenuEnum::SHOP_DITCH_MANGE] as $row){
+                                    $zi = "批发管理 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                             }}?>
+                        </ul>
+                    </li>
+                <?php   }  ?>
                 <?php if (checkAdmin() ||in_array("shop-set",$menurule)) { ?>
                     <li class="jichu">
                         <!-- 导航第一级 -->
@@ -959,6 +996,13 @@
                                         红包管理
                                     </a>
                                 </li>
+                                
+                                <li> <a  onclick="navtoggle('营销管理 - > 免单管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'free_order','op'=>'new_list'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        免单管理
+                                    </a>
+                                </li>
+                                
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::YINGXIAO_MANGE] as $row){
                                     $zi = "营销管理 - > {$row['moddescription']}";
@@ -1211,8 +1255,6 @@
                         </ul>
                     </li>
                 <?php }?>
-
-
                 <?php if (empty($menurule) ||in_array("user-user",$menurule)) { ?>
                     <li class="xitong">
                         <!-- 导航第一级 -->
@@ -1335,7 +1377,7 @@
 					<ul>
 						<li class="jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
 						<li class="huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
-						<li class="shangjia"><i class="icon-sitemap"></i><span>商家管理<span></li>
+						<li class="shangjia"><i class="icon-sitemap"></i><span>渠道管理<span></li>
 						<li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
 						<li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
 						<li class="yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>

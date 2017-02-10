@@ -314,6 +314,7 @@
                     'description' => $_GP['description'],
                     'content' => htmlspecialchars_decode($_GP['content']),
                     'dishsn' => $_GP['dishsn'],
+					'explain' => $_GP['explain'],
                     'productsn' => $_GP['productsn'],
 //                    'marketprice' => $marketprice,
                     'weight' => $_GP['weight'],
@@ -328,6 +329,7 @@
                     'ishot' => intval($_GP['ishot']),
                     'isjingping' => intval($_GP['isjingping']),
                      'issendfree' => intval($_GP['issendfree']),
+					'ispurchase'=>intval($_GP['ispurchase']),
 //                    'type' => $_GP['type'],								//促销类型
                     'ishot' => intval($_GP['ishot']),
                     'isdiscount' => intval($_GP['isdiscount']),
@@ -690,7 +692,7 @@
 				}
 			}
             $pindex = max(1, intval($_GP['page']));
-            $psize = 10;
+            $psize = 20;
             $condition = ' a.deleted=0 ';
 			$sorturl = create_url('site', array('name' => 'shop','do' => 'dish','op'=>'list'));
             if (!empty($_GP['keyword'])) {

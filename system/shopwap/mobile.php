@@ -5,8 +5,11 @@ require WEB_ROOT . '/system/member/lib/rank.php';
 
 class shopwapAddons extends BjSystemModule
 {
-
     public function do_outchargegold()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
+	public function do_free_list()
     {
         $this->__mobile(__FUNCTION__);
     }

@@ -21,7 +21,7 @@ function get_goods($array=array()){
 		$field = $array['field'];
 	}
 	else{
-		$field = ' a.*,b.title as btitle,b.thumb as imgs,b.goodssn,b.content as bcontent,b.productprice as price, b.marketprice as market, b.brand ';
+		$field = ' a.*,b.title as btitle,b.thumb as imgs,b.goodssn,b.content as bcontent,b.description as goodesc, b.productprice as price, b.marketprice as market, b.brand ';
 	}
 	
 	$where = $limit = $order = '';
@@ -40,6 +40,7 @@ function get_goods($array=array()){
 		 $result[$key]['thumb'] = $val['imgs']; //good表中的图片
 		 $result[$key]['small'] = download_pic($val['imgs'],'400','400');
 		 $val['marketprice'] = get_limit_price($val);
+		 $result[$key]['desc'] = !empty($val['description'])?$val['description']:$val['goodesc'];
 		 $result[$key]['productprice'] = ($val['productprice']==0.00)?$val['price']:$val['productprice'];
 		 $result[$key]['marketprice'] = ($val['marketprice']==0.00)?$val['market']:$val['marketprice'];
 		 $result[$key]['title'] = !empty($val['title'])?$val['title']:$val['btitle'];

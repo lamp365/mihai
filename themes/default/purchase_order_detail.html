@@ -291,12 +291,7 @@
 						
 							<div class="pull-left">
 								<select id="paystop"  class="form-control" style="float:left;width:100px;height:30px;line-height:15px;font-size:12px;">
-									<!--@php  foreach($payments as $payment) { @-->
-									<!--@php  if($payment['code']==$item['paytypecode']) { @-->
-									<!--@php  $select = "selected"; @-->
-									<!--@php  }else{ $select = ""; }@-->
-									<option value="<!--@php  echo $payment['code'];@-->" <!--@php echo $select @--> > <!--@php  echo $payment['name'];@--></option>
-									<!--@php  } @-->
+								    <option value="alipay" selected=""> 支付宝</option>
 								</select>
 								<!--@php if($item['paytypecode']!='delivery'){   @-->
 								<a href="javascript:;" onclick="toppay();"
@@ -523,13 +518,8 @@
 			<div class="myoder-total" style='margin: 10px 0'>
 
 				<div class="pull-right">
-					    <select id="pays"  class="form-control" style="float:left;width:100px;height:30px;line-height:15px;font-size:12px;">
-						<!--@php  foreach($payments as $payment) { @-->
-						<!--@php  if($payment['code']==$item['paytypecode']) { @-->
-						<!--@php  $select = "selected"; @-->
-						<!--@php  }else{ $select = ""; }@-->
-						<option value="<!--@php  echo $payment['code'];@-->" <!--@php echo $select @--> > <!--@php  echo $payment['name'];@--></option>
-						<!--@php  } @-->
+					 <select id="pays"  class="form-control" style="float:left;width:100px;height:30px;line-height:15px;font-size:12px;">
+						 <option value="alipay" selected=""> 支付宝</option>
 					</select>
 					<!--@php if($item['paytypecode']!='delivery'){   @-->
 					<a href="javascript:;" onclick="topay();" class="btn btn-danger btn-sm" style="float:left;width:100px;margin-left:10px;">立即支付</a>

@@ -73,14 +73,8 @@
 		}else{
 			$pwd='';
 		}
-		//if ( !isset($_COOKIE['mess']) ){
-               //message("请选择食堂","index.php");	
-		//}else{
-               //$mess = unserialize($_COOKIE['mess']);
-			   //$mess = $mess['mess_id'];
-		//}
-		$shop_regcredit=intval($cfg['shop_regcredit']);
-		$openid=date("YmdH",time()).rand(100,999);
+		  $shop_regcredit=intval($cfg['shop_regcredit']);
+		  $openid=date("YmdH",time()).rand(100,999);
 		  $hasmember = mysqld_select("SELECT * FROM " . table('member') . " WHERE openid = :openid ", array(':openid' => $openid));
 			if(!empty($hasmember['openid']))
 			{

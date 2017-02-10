@@ -10,6 +10,7 @@ class MenuEnum {
     //菜单显示   把距离拉开是为了 以免以后中间要插入一些菜单
     const TUAN_GOU_MANGE        = '10';       //团购管理
     const SHOP_SALE_MANGE       = '30';       //出售中的宝贝
+	const SHOP_DITCH_MANGE     = '40';       //批发管理
     const PRODUCT_MANGE         = '50';       //产品库管理
     const IMG_MANGE             = '60';       //图片库管理
     const ORDER_MANGE           = '70';       //订单管理
@@ -31,6 +32,7 @@ class MenuEnum {
 
     public static $getMenuEnumValues = array(
         self::TUAN_GOU_MANGE        => '换购管理',
+		self::SHOP_DITCH_MANGE      => '批发管理',
         self::SHOP_SALE_MANGE       => '出售中的宝贝',
         self::PRODUCT_MANGE         => '产品库管理',
         self::IMG_MANGE             => '图片管理',
@@ -53,6 +55,7 @@ class MenuEnum {
     public static $getMenuEnumUrl = array(
         self::TUAN_GOU_MANGE        => 'shop-mess',
         self::SHOP_SALE_MANGE       => 'shop-dish',
+		self::SHOP_DITCH_MANGE      => 'shop-purchase',
         self::PRODUCT_MANGE         => 'shop-category',
         self::IMG_MANGE             => 'shop-img',
         self::ORDER_MANGE           => 'shop-order',

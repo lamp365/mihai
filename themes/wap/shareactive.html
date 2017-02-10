@@ -18,9 +18,15 @@
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 </head>
 <body>
+
 	<div class="banner">
 		<img src="__RESOURCE__/recouse/images/miandan_wap01.jpg">
+		<!--@php if(empty($_GP['is_app'])){  @-->
 		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search"></a>
+		<!--@php }else{ @-->
+		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result','is_app'=>1))@-->" class="result-search"></a>
+		<!--@php } @-->
+
 		<!--@php if($lock && $drawTime){ @-->
 		<div id="result-time"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
 		<script>
@@ -179,6 +185,7 @@
 					</ul>
 				</div>
 		</div>
+		<div class="banner-title"><div>BEST GIFT</div>心愿专区</div>
 	</div>
 	<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
 	<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
@@ -213,7 +220,10 @@
 		</ul>
 
 		<!--@php if(!empty($allBonus)){   @-->
-		<div class="not-start">优惠券专区<span class="coupon-total-num"> ( 许愿池:<span><!--@php echo $wish_total_num; @--></span> )</span></div>
+		<div class="not-start">
+			<div class="coupon_title">优惠券专区<span class="coupon-total-num"> ( 许愿池:<span><!--@php echo $wish_total_num; @--></span> )</span></div>
+			<img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg">
+		</div>
 		<ul class="last-wrap-list clearfix">
 			<!--@php foreach($allBonus as $oneBonus){ @-->
 			<li class="per_indiana" style="position: relative;border:none">
@@ -229,10 +239,8 @@
 			<!--@php } @-->
 		</ul>
 		<!--@php } @-->
-
-
 		<!--@php if(!empty($toBeShow)){  @-->
-		<div class="not-start">即将进入心愿专区</div>
+		<div class="not-start"><div class="coupon_title">即将进入心愿专区</div><img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg"></div>
 		<ul class="last-wrap-list clearfix" id="act_list">	
 			<!--@php  foreach($toBeShow as $item){  @-->
 			<li class="per_indiana" style="position: relative;"> 
@@ -300,10 +308,12 @@
 	  </div>
 
 	</div>
-
+<!--@php if(!empty($_GP['is_app'])){ @-->
 <!--@php include themePage('footer');@-->
-
+<!--@php } @-->
 <script type="text/javascript">
+	var openid_val = "<!--@php echo $openid; @-->";
+	var is_app     = "<!--@php echo $_GP['is_app']; @-->";
 	$(function(){
 		$("img.lazy").lazyload({
 			placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
@@ -351,12 +361,15 @@
 
 	//立即领取,第一个参数是当前元素，第二个参数是商品id
 	function playNow(thisElement,award_id){
-		var is_login = "<!--@php echo $openid; @-->";
-		if(!is_login){
+		if(!openid_val){
 			confirm('您还没登录！','',function(isconfirm){
 				if(isconfirm){
-					var url = "<!--@php echo mobile_url('login'); @-->";
-					window.location.href = url;
+					if(is_app){
+						AppLogin();
+					}else{
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
 				}
 			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
 			return '';
@@ -407,6 +420,7 @@
 		},"json");
 	}
 
+
 	//个人参与记录,第一个参数是当前元素，第二个参数是商品id
 	function personalRecord(thisElement,award_id){
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
@@ -433,14 +447,18 @@
 		var obj      = this;
 		var url      = "<!--@php echo mobile_url('shareactive',array('op'=>'get_bonuse')); @-->";
 		var bonus_id = $(this).data('id');
-		var is_login = "<!--@php echo $openid; @-->";
-		if(!is_login){
+
+		if(!openid_val){
 			confirm('您还没登录！','',function(isconfirm){
 				if(isconfirm){
-					var url = "<!--@php echo mobile_url('login'); @-->";
-					window.location.href = url;
+					if(is_app){
+						AppLogin();
+					}else{
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
 				}
-			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 400});
+			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
 			return '';
 		}
 		$.post(url,{'bonus_id':bonus_id},function(data){
@@ -525,6 +543,47 @@
         $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
         $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
     }
+
+    //判断iOS还是Android系统
+	function browserFun(){
+		var ua = navigator.userAgent.toLowerCase();
+		if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+			return 'ios';
+		}
+		if(navigator.userAgent.match(/android/i)){
+			return 'android';
+		}
+	}
+	function isLogin(msg){
+        //处理app登录
+        var ua = browserFun();
+        //is_login  0未登录 1已登录
+        if( ua == "ios" ){
+        	//msg no不需要再发请求，msg yes 继续发请求
+            if( msg.openid !=""){
+                openid_val = msg.openid;
+            }else{
+                return;
+            }
+        }
+/*        else if( ua=="android" ){
+			openid_val = msg.openid;
+        }*/
+    }
+	//app登录
+	function AppLogin(){
+		var app = browserFun();
+		if( app == "ios" ){
+			window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
+		}else if( app=="android" ){
+			window.JsInterface.login("toreload");
+		}
+	}
+	function toreload(){
+		var url = "<!--@php echo mobile_url('shareactive',array('is_app'=>1));@-->";
+		window.location.href=url;
+	}
+
 </script>
 </body>
 </html>

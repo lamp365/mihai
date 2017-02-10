@@ -79,6 +79,20 @@
 			$all_pv += $pv;
 			$ips_list[$i]['pv'] = $pv;
 		}
+        // 注册用户数，根据时间来获取
+        // 第一阶段时间：  2017/1/21 - 2017/4/30
+		$timefirst = strtotime("2017-1-19");
+		$timeend = strtotime("2017-4-30");
+		// 找出这个阶段的用户注册数量
+        $users = mysqld_selectcolumn("SELECT count(*) FROM " . table('member') . "  WHERE createtime >= {$timefirst} and istemplate = 0 ");
+        // 找出这个阶段的销售金额
+		$totalprice = mysqld_selectcolumn("SELECT sum(price) FROM ".table('shop_order')." where ordertype <> -2 and status >= 1 and createtime >= {$timefirst}");
+
+
+
+
+
+
 
         // 找出访问数量最多的产品
         $view_pro = "SELECT count(shop_id) as num, shop_id FROM ".table('traffic_count')." where shop_id > 0 group by shop_id order by num desc limit 5";

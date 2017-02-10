@@ -55,12 +55,12 @@
 						<div class="detail"><!--@php echo $draw['title'];@--></div>
 						<div class="user-detail">
 							<!--@php if($draw['state'] ==2 ){ @-->
-								<div><span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span></div>
+								<div><span class="list-num-before"><!--@php echo $draw['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $draw['amount'];@--></span></div>
 								<span class="question"  class="xinyuannum">???</span>
 								<span class="user-detail-right" ><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							<!--@php }elseif($draw['state'] > 2){ @-->
-                                <div><span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span></div >
-								<span>心愿数字:<span style="color: #f60" class="xinyuannum"><!--@php echo $draw['sn'];@--></span></span>
+                                <div><span class="list-num-before"><!--@php echo $draw['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $draw['amount'];@--></span></div >
+								<span>幸运数字:<span style="color: #f60" class="xinyuannum wish-number"><!--@php echo $draw['sn'];@--></span></span>
 								<span class="user-detail-right-2"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							<!--@php } @-->
 						</div>
@@ -71,7 +71,13 @@
 			<!--@php } @-->
 		</div>
 		<!--@php }} @-->
-		<!--@php echo $pager; @-->
+
+	</div>
+
+	<input type="hidden" value="2" id="page"/>
+	<div class="ajax_next_page">
+		<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+		正在加载
 	</div>
 
 	<div class="modal fade result-modal" tabindex="-1" role="dialog">
@@ -103,7 +109,9 @@
 		    </div>
 	  	</div>
 	</div>
+	<!--@php if(!empty($_GP['is_app'])){ @-->
 	<!--@php include themePage('footer');@-->
+	<!--@php } @-->
 <script type="text/javascript">
 	function resultShow(thisObj,award_id){
 		var result_obj = $(thisObj).closest('.one_result').find('.result-phase');
@@ -121,7 +129,7 @@
 		var yushu = chusu%beichusu+1;
 		var html = '';
 
-		html = "<div>心愿幸运数:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
+		html = "<div>幸运数字:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
       		"<div>"+
       			"<p style='text-align:center'>计算公式</p>"+
       			"<ul class='result-rule clearfix'>"+
@@ -203,6 +211,87 @@
         $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
         $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
     }
+
+	var index = 1; //默认开关状态是打开
+	$(function(){
+		//滚动条到底部时就加载剩下数据
+		$(window).scroll(function(){
+			if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+				if( index == 1){
+					$(".ajax_next_page").show();
+					var url = "<!--@php echo mobile_url('shareactive',array('op'=>'result'));@-->";
+					index = 0; //关闭开关
+					var page = $("#page").val(); //第一次传的是2
+					$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
+						if(s.errno != 200){
+							//如果没有数据
+							$(".ajax_next_page").hide();
+						}else{
+							$("#page").val(++page);
+							var art_data = s.message;
+							for(var i in art_data){
+								//循环拼接 html下一页数据
+								LoadHtml(art_data[i],i);
+							}
+							index = 1;  //加载完后重新打开开关
+							$(".ajax_next_page").hide();
+						}
+					}, 'json');
+
+				}
+			}
+		})
+	})
+	function LoadHtml(draw,time){
+		time = Stringtotime(time);
+		var html = '<div class="one_result"><div class="result-phase">'+ time +'</div><ul>';
+		for(var j =0 ; j<draw.length;j++){
+			var item = draw[j];
+			//获取参与记录的总次数
+			var url = "<!--@php echo mobile_url('shareactive',array('op'=>'recorderCount'));@-->";
+			$.ajax({
+				url:url,
+				type: "POST",
+				async: false,
+				data : {award_id:item.id},
+				dataType:'json',
+				success:function(response,xml){
+					var total = response.message;
+					html = html + '<li class="clearfix">'+
+									'<div class="result-list-left">'+
+										'<img data-chushu="'+ item.stext +'" data-beichushu="'+ item.dicount +'" onclick="resultShow(this,'+ item.id +')" src="'+ item.logo +'">'+
+									'</div>'+
+									'<div class="result-list-right">'+
+										'<div class="detail">'+ item.title +'</div>'+
+										'<div class="user-detail">'+
+											'<div><span class="list-num-before">'+ item.dicount +'</span> / <span class="list-num-after">'+ item.amount +'</span></div>'+
+											'<span>幸运数字:<span style="color: #f60" class="xinyuannum wish-number">'+ item.sn +'</span></span>'+
+											'<span class="user-detail-right-2"><img onclick="youResultShow(this,'+ item.id +')" src="__RESOURCE__/recouse/images/love-yes.png">×'+ total +'</span>'+
+										'</div>'+
+									'</div>'+
+							     '</li>';
+
+				}
+			});
+		}
+		html = html + "</ul></div>";
+		$(".result-wrap").append(html);
+	}
+
+
+	//将后台返回的时间戳格式化为时间格式
+	function Stringtotime(time){
+		time = time*1000;
+		var datetime = new Date();
+		datetime.setTime(time);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+		var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+		var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+		var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
+		return year + "-" + month + "-" + date + " &nbsp " + hour + ":" + minute + "";
+	}
 </script>
 </body>
 </html>

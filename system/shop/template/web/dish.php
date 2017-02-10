@@ -322,13 +322,17 @@
 		</div>
 </div>
  <div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 自定义名称（默认为产品库名称）：</label>
-
-			<div class="col-sm-4">
-				<input type="text" name="dishname" id="dishname" class="form-control" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
-			</div>
+	    <label class="col-sm-2 control-label no-padding-left" > 自定义名称（默认为产品库名称）：</label>
+		<div class="col-sm-4">
+			   <input type="text" name="dishname" id="dishname" class="form-control" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
+		</div>
 </div>
-
+ <div class="form-group">
+	    <label class="col-sm-2 control-label no-padding-left" > 批发说明（用于批发产品的说明）：</label>
+		<div class="col-sm-4">
+		           <textarea style="height:100px;"  id="explain" name="explain" cols="70"><?php  echo $item['explain'];?></textarea>  
+		</div>
+</div>
 
  <?php foreach($extend_category as $key => $extend_arr){  if($key==0){ $show_zi = "扩展分类：";}else{ $show_zi=' '; } ?>
 
@@ -460,7 +464,7 @@
 		   <?php if ( is_array($dish_vip_list) && !empty($dish_vip_list) ){ foreach ( $dish_vip_list as $key=>$dish_vip_list_value ){ ?>
 	 	   <div class="form-group form-inline vip-form">
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
-	 	   		<div class="col-sm-4">
+	 	   		<div class="col-sm-5">
 					  <select name="v2[]" class="form-control vip-select" onchange='changeFun(this)'>
 					  		<option value="-1">--请选择--</option>
 					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
@@ -473,14 +477,14 @@
 					  <input type="text" name="vip_price[]" class="form-control vip_price" value="<?php echo $dish_vip_list_value['vip_price']; ?>" placeholder="请输入价格"/>
 					  </div>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
 				</div>
 	 	   </div>
 		   <?php }}else{ ?>
             <div class="form-group form-inline vip-form">
 	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
-	 	   		<div class="col-sm-4">
+	 	   		<div class="col-sm-5">
 					  <select name="v2[]" class="form-control" onchange='changeFun(this)'>
 					  		<option value="-1">--请选择--</option>
 					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
@@ -489,7 +493,7 @@
 					  </select>
 					  <input type="text" name="vip_price[]" class="form-control vip_price" value="" placeholder="请输入价格"/>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
 				</div>
 	 	   </div>
@@ -573,6 +577,7 @@
 				 		 		 		 <input type="checkbox" name="ishot" value="1"  <?php  if($item['ishot'] == 1) { ?>checked="true"<?php  } ?> /> 热卖
 				 		 		 		  <input type="checkbox" name="isjingping" value="1"<?php  if($item['isjingping'] == 1) { ?>checked="true"<?php  } ?> /> 精品
 										   <input type="checkbox" name="isdiscount" value="1"<?php  if($item['isdiscount'] == 1) { ?>checked="true"<?php  } ?> /> 活动
+										    <input type="checkbox" name="ispurchase" value="1"<?php  if($item['ispurchase'] == 1) { ?>checked="true"<?php  } ?> /> 批发推荐
                     &nbsp;   
 										</div>
 		</div>

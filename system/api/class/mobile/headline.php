@@ -17,7 +17,7 @@
 		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 		
-		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.pic,h.description,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
+		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.pic,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
 		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.video IS NULL or h.video='') ";
 		
 		//推荐
@@ -52,8 +52,8 @@
 		$page 	= $_GP['page'] ? (int)$_GP['page'] : 1;			//页码
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 	
-		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.description,h.video,h.video_img,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
-		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.pic IS NULL or h.pic='')";
+		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.video,h.video_img,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
+		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.video IS NOT NULL and h.video!='')";
 	
 		//推荐
 		if(isset($_GP['isrecommand']))

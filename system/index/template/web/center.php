@@ -380,8 +380,8 @@ $(function () {
             }
         }]
     });*/
-	  hiddenall();
-	  document.getElementById('container').style.display='block';
+	hiddenall();
+	document.getElementById('container').style.display='block';
       //支付金额初始化
     Highcharts.setOptions({
         colors: ['#ff426d', '#27b9e5', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
@@ -390,6 +390,7 @@ $(function () {
         credits: {
             enabled:false
         },
+		
         title: {
             text: '24小时累计图',
             x: -20 //center
@@ -428,7 +429,53 @@ $(function () {
             data: [<?php echo implode(',',$yes_arr); ?>]
         }]
     });
-
+    
+	 $('#target').highcharts({
+		chart: {
+            type: 'column'
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y:.1f}'
+                }
+            }
+        },
+        title: {
+            text: '第一阶段战略目标',
+            x: -20 //center
+        },
+        subtitle: {
+            text: '战略目标从2017-1-19至2017-4-30',
+            x: -20
+        },
+        xAxis: {
+            categories: ['用户注册', '日均访问', '销售金额', '完成综合比'],
+            crosshair:true
+        },
+        yAxis: {
+            title: {
+                text: '支付金额'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#ddd'
+            }]
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        series: [{
+            name: '当前数据',
+            data: [<?php echo $users.','.$users.','.$totalprice.','.$users; ?>]
+        }, {
+            name: '目标计划',
+            data: [10000,2000,0,100]
+        }]
+    });
 
 });
 
@@ -442,6 +489,12 @@ $(function () {
 		<!--begin map-->
 	
 		<!--end map-->
+		<div class="main-payment" style="margin-bottom:20px;">
+            <div class="small-title">第一阶段目标</div>
+            <div class="payment-amount-area" style="width:100%;">
+                <div class="payment-amount" id="target" style="width:100%;"></div>
+            </div>
+		</div>
 		<!--begin main-->
         <div class="main-payment">
             <div class="small-title">支付金额统计</div>

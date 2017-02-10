@@ -151,6 +151,32 @@ class aliyunOSS
     /*******************************************************************************/
 
     /**
+     * 创建目录
+     * $dir 目录名
+     */
+    public static function createDir($dir)
+    {
+        $time      = date("Y-m-d H:i:s");
+        $content   = "这是一个{$dir}目录，创建时间{$time}";
+        $fileName  = $dir."/Readme.txt";
+        $ossClient = self::getOssClient();
+        $options = array();
+        try {
+            $res = $ossClient->putObject(self::bucket, $fileName, $content, $options);
+        } catch (OssException $e) {
+            printf(__FUNCTION__ . ": FAILED\n");
+            printf($e->getMessage() . "\n");
+            return '';
+        }
+        return $res;
+    }
+
+    public static function doesDirExist($dir){
+        $fileName  = $dir."/Readme.txt";
+        $res = self::doesObjectExist($fileName);
+        return $res;
+    }
+    /**
      * 把本地变量的内容存到文件  如果是远程图片，则把图片变成二进制流，在写入文件中
      *
      * 简单上传,上传指定变量的内存值作为object的内容
@@ -214,7 +240,7 @@ class aliyunOSS
      $maxkeys = 1000 限定此次返回Object的最大数，如果不设定，默认为100，MaxKeys取值不能大于1000。
      * @return null
      */
-    public static function listObjects($prefix = '',$delimiter='',$nextMarker='',$maxkeys=50)
+    public static function listObjects($prefix = '',$delimiter='',$nextMarker='',$maxkeys=1000)
     {
         $ossClient = self::getOssClient();
         $options = array(

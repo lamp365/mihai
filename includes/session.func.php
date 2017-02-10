@@ -247,7 +247,24 @@ function is_login_account()
 }
 function is_vip_account()
 {
+	// 判断是否登录，如果是，则更新登录时间
     if (! empty($_SESSION[VIP_MOBILE_ACCOUNT])) {
+		$member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid  limit 1", array(
+            ':openid' => $_SESSION[VIP_MOBILE_ACCOUNT]['openid']
+        ));
+		$createtime = $member['createtime'];
+	    $lastime    = $member['lastime'];
+	    $timeend   = 30 * 24  * 60 * 60;
+	    if ( ($createtime + $timeend) < time() ){
+			  $paytime = mysqld_select("SELECT * FROM ".table('shop_order'). " WHERE  status >= 1 and openid = :openid ORDER BY paytime desc", array(':openid'=>$member['openid']) );
+			  if (( $paytime['paytime'] + $lastime) < time() ){
+                   return false;
+			  }
+	    }
+		if ( !empty($_SESSION[VIP_MOBILE_ACCOUNT]['openid']) ){
+               $data = array('lastime'=>time());
+			   mysqld_update('member', $data, array('openid'=>$_SESSION[VIP_MOBILE_ACCOUNT]['openid']));
+		}
         return true;
     }
     return false;

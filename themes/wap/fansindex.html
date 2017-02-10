@@ -172,11 +172,12 @@
     <div class="panel member-nav">
         <ul class="side-nav">
            <!--@php  if($is_login){@-->
+            <li><a href="<!--@php  echo mobile_url('freepay')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的免单</span><i class="arrow"></i></a></li>
 			<li><a href="<!--@php  echo mobile_url('identity')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的实名认证</span><i class="arrow"></i></a></li>
-				<li><a href="<!--@php  echo mobile_url('rechargegold')@-->">&nbsp;&nbsp;<i class="icon-credit-card icon_i" ></i>&nbsp;<span class="text">余额充值</span><i class="arrow"></i></a></li>
-             <li><a href="<!--@php  echo mobile_url('outchargegold')@-->">&nbsp;&nbsp;<i class="icon-money icon_i" ></i>&nbsp;<span class="text">余额提现</span><i class="arrow"></i></a></li> 
-			  <li><a href="<!--@php  echo mobile_url('bonus')@-->">&nbsp;&nbsp;<i class="icon-heart icon_i" ></i>&nbsp;<span class="text">我的优惠券</span><i class="arrow"></i></a></li> 	
-			 <li><a href="<!--@php  echo mobile_url('address',array('from'=>'fansindex'))@-->">&nbsp;&nbsp;<i class="icon-book icon_i"></i>&nbsp;<span class="text">管理收货地址</span><i class="arrow"></i></a></li>
+			<li><a href="<!--@php  echo mobile_url('rechargegold')@-->">&nbsp;&nbsp;<i class="icon-credit-card icon_i" ></i>&nbsp;<span class="text">余额充值</span><i class="arrow"></i></a></li>
+            <li><a href="<!--@php  echo mobile_url('outchargegold')@-->">&nbsp;&nbsp;<i class="icon-money icon_i" ></i>&nbsp;<span class="text">余额提现</span><i class="arrow"></i></a></li> 
+			<li><a href="<!--@php  echo mobile_url('bonus')@-->">&nbsp;&nbsp;<i class="icon-heart icon_i" ></i>&nbsp;<span class="text">我的优惠券</span><i class="arrow"></i></a></li> 	
+			<li><a href="<!--@php  echo mobile_url('address',array('from'=>'fansindex'))@-->">&nbsp;&nbsp;<i class="icon-book icon_i"></i>&nbsp;<span class="text">管理收货地址</span><i class="arrow"></i></a></li>
               <!--@php  }else{@-->            
             <li><a href="<!--@php  echo mobile_url('help')@-->">&nbsp;&nbsp;<i class="icon-question-sign icon_i"></i>&nbsp;<span class="text">帮助说明</span><i class="arrow"></i></a></li>
  		<!--@php } @-->

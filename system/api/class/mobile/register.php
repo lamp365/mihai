@@ -89,7 +89,7 @@
 				if (!empty($regular)) {
 					// 老用户积分为消费金额的一半
 					$regular_credit = intval((float)$regular['price']/2);
-					mysqld_query("UPDATE ".table('member')." SET credit=credit+".$regular_credit." WHERE openid='".$openid."'");
+					member_credit($openid, $regular_credit, 'addcredit', '尊贵天猫老客户积分赠送');
 					// 该老用户更改为已入驻
 					mysqld_update('shop_customers', array('status'=>1), array('mobile'=>$telephone));
 				}
@@ -97,7 +97,7 @@
 				//释放验证码信息
 				unset ( $_SESSION['api'][$telephone] );
 				unset ( $_SESSION['api']['sms_code_expired'] );
-					
+				ifApp($loginid);
 				$result['message'] 			= '注册成功！';
 				$result['data']['openid'] 	= $openid;
 				$result['code'] 			= 1;

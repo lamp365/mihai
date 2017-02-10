@@ -23,46 +23,49 @@
 	<div style="background-color: #c8161e;height: 400px;"></div>
 	<div class="result-wrap">
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
-		<div class="one_result">
-			<!--@php if(time() > $drawtime){ @-->
-				<!--@php if($draw_arr[0]['state'] == 2){  @-->
-				<div class="result-phase tobedraw">小觅正在努力实现愿望 进行中...</div>
-				<!--@php }else{ @-->
+			<!--@php if((time() > $drawtime && $draw_arr[0]['state'] != 2) || (time() <= $drawtime && $draw_arr[0]['state'] == 3 ) ){ @-->
+			<div class="one_result">
 				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
-				<!--@php } @-->
-			<!--@php }else{ @-->
-				<!--@php if($draw_arr[0]['state'] == 3){  @-->
-				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
-				<!--@php }else{ @-->
-				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 进行中...</div>
-				<!--@php } @-->
-			<!--@php } @-->
+				<ul class="clearfix">
+					<!--@php foreach($draw_arr as $draw){  @-->
+					<li>
+						<div class="result-list-left">
+							<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],150,150,2);@-->">
+						</div>
+						<div class="result-list-right">
+							<div class="detail"><!--@php echo $draw['title'];@--></div>
+							<div class="number">总参与人次:<!--@php echo $draw['dicount'];@--></div>
 
-			<ul class="clearfix">
-				<!--@php foreach($draw_arr as $draw){  @-->
-				<li>
-					<div class="result-list-left">
-						<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],150,150,2);@-->">
-					</div>
-					<div class="result-list-right">
-						<div class="detail"><!--@php echo $draw['title'];@--></div>
-						<div class="number">总参与人次:<!--@php echo $draw['dicount'];@--></div>
-
-						<!--@php if(time() > $drawtime){ @-->
-							<!--@php if($draw_arr[0]['state'] == 2){  @-->
-								<div class="result-detail">正在颁奖</div>
-							<!--@php }else{ @-->
-								<div class="user-detail">
-									<div class="user-detail-span"><span class="xinyuandetail">心愿幸运数:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
-									<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
-								</div>
-							<!--@php } @-->
-						<!--@php }else{ @-->
-							<!--@php if($draw_arr[0]['state'] == 3){  @-->
 							<div class="user-detail">
-								<span class="user-detail-span"><span class="xinyuandetail">心愿幸运数:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></span>
+								<div class="user-detail-span"><span class="xinyuandetail">心愿幸运数:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
 								<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							</div>
+
+						</div>
+					</li>
+					<!--@php } @-->
+				</ul>
+			</div>
+
+			<!--@php }else{  @-->
+			<div class="one_result">
+				<!--@php if(time() > $drawtime){ @-->
+				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 颁奖中...</div>
+				<!--@php }else{  @-->
+				<div class="result-phase tobedraw">小觅正在努力实现愿望 进行中...</div>
+				<!--@php } @-->
+				<ul class="clearfix">
+					<!--@php foreach($draw_arr as $draw){  @-->
+					<li>
+						<div class="result-list-left">
+							<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],150,150,2);@-->">
+						</div>
+						<div class="result-list-right">
+							<div class="detail"><!--@php echo $draw['title'];@--></div>
+							<div class="number">总参与人次:<!--@php echo $draw['dicount'];@--></div>
+
+							<!--@php if(time() > $drawtime){ @-->
+							<div class="result-detail">正在颁奖</div>
 							<!--@php }else{ @-->
 							<div class="result-djs">
 								<span>倒计时</span>
@@ -74,13 +77,13 @@
 								})
 							</script>
 							<!--@php } @-->
-						<!--@php } @-->
 
-					</div>
-				</li>
-				<!--@php } @-->
-			</ul>
-		</div>
+						</div>
+					</li>
+					<!--@php } @-->
+				</ul>
+			</div>
+			<!--@php }@-->
 		<!--@php }} @-->
 		<!--@php echo $pager; @-->
 	</div>

@@ -114,8 +114,13 @@
 											<input name="shop_kfcode"  type="hidden" value='<?php  echo $settings['shop_kfcode'];?>'/>
 										</div>
 									</div>
-
-									<div class="form-group">
+                                    <div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > 消息通知：</label>
+										<div class="col-sm-9">
+										   <input name="news"  class="col-xs-6"  type="text" value='<?php  echo $settings['news'];?>' />
+									    </div>
+									</div>
+<div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 开启心愿刷单：</label>
 
 										<div class="col-sm-9">

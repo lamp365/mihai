@@ -4,6 +4,8 @@
 */
 $title = '批发采购';
 $is_login = is_vip_account();
+$news = isset($cfg['news'])?$cfg['news']:'';
+$news = explode("#", $news);
 $issendfree = 0;
 // 获取用户的参数
 $member = get_vip_member_account(true, true);
@@ -61,6 +63,8 @@ if ( $user_a['type'] == 2 ){
 	 $gank   = mysqld_select("SELECT * FROM ".table('rolers')." WHERE type = 2 and pid = 0 ");
      $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id'].$limit);
 	 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']."  $condition and b.deleted=0  AND b.status = '1' ");
+
+     $best_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.ispurchase = 1 and b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']);
      $currency = 2;
 	 $brand_list = mysqld_selectall("SELECT * FROM ".table('shop_brand')." WHERE pifa = 1 ");
 }else{
@@ -112,6 +116,7 @@ if ( !empty($_GP['brandbid']) ){
 $purchase = get_purchase_cart($openid, $user_a['type']);
 // 已选商品数量
 $max_purchase = count($purchase);
+$best_purchase = array();
 foreach( $dish_list as &$dish_list_value){
 	  if ( isset( $purchase[$dish_list_value['id']] ) ){
 			 $dish_list_value['selected'] = 1;
@@ -125,6 +130,26 @@ foreach( $dish_list as &$dish_list_value){
 	  $dish_list_value['currency'] = $currency;
 }
 unset($dish_list_value);
+foreach( $best_list as &$best_list_value){
+	  if ( isset( $purchase[$best_list_value['id']] ) ){
+			 $best_list_value['selected'] = 1;
+	  }else{
+			 $best_list_value['selected'] = 0;
+	  }
+	  unset($best_list_value['content']);
+	  $best_list_value['price'] = $best_list_value['marketprice'];
+	  $best_list_value['thumb'] = $best_list_value['good_img'];
+	  $best_list_value = price_check($best_list_value, $member['parent_roler_id'],$member['son_roler_id'], $user_a['type']);
+	  $best_list_value['currency'] = $currency;
+	  // 找出推荐的批发产品;
+	  list($best_list_value['purchase_name'],  $best_list_value['purchase_desc']) = explode("#", $best_list_value['explain']);
+	  if (empty($best_list_value['purchase_desc'])) {
+             $best_list_value['purchase_desc'] = $best_list_value['purchase_name'];
+		     $best_list_value['purchase_name'] = $best_list_value['title'];
+	  }
+	  $best_purchase[] = $best_list_value;
+}
+unset($best_list_value);
 $pager  = pagination($total, $page, $psize,'.product-lists');
 // 设置汇率
 $exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
@@ -136,13 +161,16 @@ if ( $exchange_rate ){
 if (!empty($_POST['page'])){
             if ( is_array($dish_list) && !empty($dish_list) ){ foreach ( $dish_list as $dish_list_value ){ 
 				if ( $dish_list_value["selected"] == 0 ){
-                   $html_select = '<div class="col-action"><span class="col-check" id="'. $dish_list_value["id"] .'">选择</span></div>';
+                   $html_select = '<div class="col-action"><span class="col-check" onclick="colcheck(this)" id="'. $dish_list_value["id"] .'">选择</span></div>';
 				}else{
-                   $html_select = '<div class="col-action"><span class="col-check added" id="'. $dish_list_value["id"] .'">已选</span></div>';
+                   $html_select = '<div class="col-action"><span class="col-check added" onclick="colcheck(this)" id="'. $dish_list_value["id"] .'">已选</span></div>';
 			    }
 				$html .='<li>
 						<div class="product-img">
 							<img class="product-img-click" product_id="'. $dish_list_value["id"] .'"  src="'. $dish_list_value["thumb"] .'" >
+						</div>
+						<div class="product-title">
+							<div class="product-name" onclick="productName(this)" product_id="'. $dish_list_value["id"] .'">'. $dish_list_value["title"] .'</div>
 							<div class="modal fade product-detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">  
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
@@ -160,13 +188,10 @@ if (!empty($_POST['page'])){
 								</div>
 							</div>
 						</div>
-						<div class="product-title">
-							<div class="product-name" product_id="'. $dish_list_value["id"] .'">'. $dish_list_value["title"] .'</div>
-						</div>
 						<div class="product-price">
 							<span><i>$</i>'. $dish_list_value["price"] .'</span>
 						</div>
-						<div class="col-num" cartid="'. $dish_list_value["id"] .'">
+						<div class="col-num" cartid="'. $dish_list_value["id"] .'"> 
 							<div class="input-group">
 								<span class="input-group-btn">
 									<button class="btn btn-default btn-sm btn-reduce" type="button" onclick="reduceNum('. $dish_list_value["id"] .')">-</button>
@@ -218,8 +243,8 @@ switch ( $op ){
 		     $cart_data = array(":openid"=>$openid, ":goodstype"=>$user_a['type'], ":goodsid"=>$_GP['id']);
 		     $total = mysqld_select("SELECT * FROM ".table('shop_purchase_cart')." WHERE openid = :openid and goodstype = :goodstype and goodsid = :goodsid ", $cart_data);
              $query = mysqld_select("SELECT a.gid,a.thumb,a.pcate,a.issendfree, a.title,b.content,b.weight,b.coefficient FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$_GP['id']);
-             $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.18;
-		     $freight    =  $query['weight'] * $total['total'] * $coefficient * 2.2046 * 3.25 ;
+             $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] :1.22;
+		     $freight    =  $query['weight'] * $total['total'] * $coefficient * 2.2046 * 3.5 ;
 			 die(json_encode(array(
 			   "errno"=>200,
 			   "shiprice"=> $freight
@@ -258,8 +283,8 @@ switch ( $op ){
 		if ( $max_purchase > 0 ){
              foreach( $purchase as $key=>$purchase_value ){
                   $query = mysqld_select("SELECT a.gid,a.thumb,a.pcate,a.issendfree, a.title,b.content,b.weight,b.coefficient,b.thumb as good_img FROM ".table('shop_dish')." as a left join ".table('shop_goods')." as b on a.gid=b.id where a.id =".$key);
-                  $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.12;
-		          $freight    =  $query['weight'] * $purchase_value['total'] * $coefficient * 2.2046 * 3.25 ;
+                  $coefficient = $query['coefficient'] > 0 ? $query['coefficient'] : 1.22;
+		          $freight    =  $query['weight'] * $purchase_value['total'] * $coefficient * 2.2046 * 3.5 ;
 				  $purchase_ship += $freight;
 				  $purchase[$key]['freight'] = $freight;
 				  $purchase[$key]['id'] = $purchase_value['goodsid'];

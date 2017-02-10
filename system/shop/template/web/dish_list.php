@@ -140,7 +140,7 @@
     <th class="text-center" >首图</th>
     <th class="text-center" >产品库编号</th>
 	<th class="text-center" >条形码</th>
-    <th class="text-center" >产品名称</th>
+    <th class="text-center" width="300">产品名称</th>
 	<th class="text-center" ><a href="<?php echo $sorturl."&orderprice=".$oprice; ?>">价格</a></th>
 	<th class="text-center"><a href="<?php echo $sorturl."&ordertprice=".$otprice; ?>">特别价格</a></th>
     <th class="text-center">批发价格（美元)</th>
@@ -155,8 +155,8 @@
 				 		<input type="checkbox" class="dishvalue" name="disvalue[]" value="<?php  echo $item['id'];?>"/>
 				 		<?php  echo $item['id'];?>				 			
 				 	</td>
-				 	<td><p style="text-align:center"> 				                          
-				        <img src="<?php  echo $item['imgs'];?>" height="60" width="60">				        	
+				 	<td><p style="text-align:center;padding:0;margin:0;"> 				                          
+				        <img src="<?php  echo $item['imgs'];?>" height="40" width="40">				        	
 				        </p>
 				    </td>
                     <td style="text-align:center;"><?php  echo $item['gid'];?></td>

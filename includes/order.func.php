@@ -147,9 +147,28 @@ function update_order_status($id, $status,$dishinfo='') {
 			}
     	}
     	// 如果有使用余额抵扣，退还余额
-		if ($order['has_balance'] == '1' AND $order['return_balance'] == '0') {
+		if (($order['has_balance'] == '1' AND $order['return_balance'] == '0') || !empty($order['freeorder_price'])) {
+			
 			$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
-			mysqld_update ('member',array('gold' => (float)$mem['gold']+(float)$order['balance_sprice']),array('openid' =>$order['openid']));
+			
+			$freeorder_gold_endtime = strtotime('Sunday')+24*3600-1;	//周天的23:59:59
+				
+			//已有本期免单金额时
+			if($mem['freeorder_gold_endtime']==$freeorder_gold_endtime)
+			{
+				$memberData = array('freeorder_gold' 		=> $order['freeorder_price']+$mem['freeorder_gold'],
+									'freeorder_gold_endtime'=> $freeorder_gold_endtime
+				);
+			}
+			else{
+				$memberData = array('freeorder_gold' 		=> $order['freeorder_price'],
+									'freeorder_gold_endtime'=> $freeorder_gold_endtime
+				);
+			}
+			
+			$memberData['gold'] = (float)$mem['gold']+(float)$order['balance_sprice'];
+			
+			mysqld_update ('member',$memberData,array('openid' =>$order['openid']));
 			// 余额已退还设为1
 			mysqld_update('shop_order', array('return_balance' => 1), array('id'=> $id));
 		}

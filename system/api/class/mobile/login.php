@@ -55,11 +55,10 @@
 				$userinfos['nick'] 		= '掌门人'.random(5);
 				$userinfos['name'] 		= $userinfos['nick'];
 				$userinfos['icon_url'] 	= IM_ICON_URL;
-				
 				//创建IM账号
 				$objOpenIm->createUser($userinfos);
 			}
-
+            ifApp($loginid);
 			$result['message'] 			= "账户登陆成功。";
 			$result['data']['openid'] 	= $loginid;
 			$result['code'] 			= 1;

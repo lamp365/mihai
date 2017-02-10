@@ -13,7 +13,7 @@
             $cfg = array(
                 'shop_openreg' => intval($_GP['shop_openreg']),
                  'shop_regcredit' => intval($_GP['shop_regcredit']),
-						  	'shop_keyword' => $_GP['shop_keyword'],
+				 'shop_keyword' => $_GP['shop_keyword'],
 				   		  'shop_description' => $_GP['shop_description'],
 				   		  'shop_title' => $_GP['shop_title'],
 				   		    'shop_icp' => $_GP['shop_icp'],
@@ -23,6 +23,7 @@
 				          'open_shareactive'=>$_GP['open_shareactive'],
 				   		    'shop_kfcode' => htmlspecialchars_decode($_GP['shop_kfcode']),
 				   		    'shop_tongjicode' => htmlspecialchars_decode($_GP['shop_tongjicode']),
+				         'news'=> htmlspecialchars_decode($_GP['news']),
 				   		  'help' =>   htmlspecialchars_decode($_GP['help'])
             );
       

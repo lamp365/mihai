@@ -68,11 +68,12 @@ switch ( $_GP['api'] ){
 			     }else{
 					 $sendtype = 0;
 					 // 设置配送运费
-					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.18;
-					 $freight = $good_template['weight'] * $goods_value['total'] * $good_template['coefficient'] * 2.2046 * 3.25 * $exchange_rate_value;
+					 $good_template['coefficient'] = $good_template['coefficient'] > 0 ? $good_template['coefficient'] : 1.22;
+					 $freight = $good_template['weight'] * $goods_value['total'] * $good_template['coefficient'] * 2.2046 * 3.5 * $exchange_rate_value;
 			      } 
-				  $goods_value['price'] = round($goods_value['price'] * $exchange_rate_value,2);
-				  $had_goods_price += $goods_value['price'] * $goods_value['total'];
+				  $goods_value['price'] = $goods_value['price'] * $exchange_rate_value;
+				  $goods_price = round($goods_value['price'] * $goods_value['total'],2);
+				  $had_goods_price += $goods_price;
 				  $shiprice += $freight;
 			}else{
 				 $goods_value['issendfree'] = $good_template['issendfree'];

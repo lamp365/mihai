@@ -319,6 +319,8 @@
 					$sql.= " limit ".(($page-1)*$limit).','.$limit;
 					
 					$arrNote = mysqld_selectall($sql);
+					
+					$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
 						
 					if(!empty($arrNote))
 					{
@@ -330,7 +332,7 @@
 						}
 					}
 					
-					$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
+					
 					
 					$result['data']['note'] = $arrNote;
 					$result['data']['total']= $total['total'];

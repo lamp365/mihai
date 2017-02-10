@@ -280,7 +280,7 @@
 	                                  		<!--@php echo $item['title']@-->
 	                                    </a>
 	                                  </div>   
-	                                  <div class="txt1"><!--@php echo $item['description']@--></div>        
+	                                  <div class="txt1"><!--@php echo $item['desc']@--></div>        
 									 <div class="txt">
 									 	<img src="__RESOURCE__/recouse/images/comment.png" />
 									 	<!--@php echo $item['count']?$item['count']:0;@-->
@@ -321,7 +321,8 @@
 		                                  	<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" >
 		                                      <!--@php echo $item['title']@-->
 		                                   </a>
-	                                  </div>   
+	                                  </div>
+									   <div class="txt1"><!--@php echo $item['desc']@--></div>        
 	                            </div>
 	                         </li>
 	             <!--@php  } } @-->
@@ -359,7 +360,8 @@
 	                                  		<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" >
 		                                  		<!--@php echo $item['title']@-->
 		                                    </a>
-	                                  </div>   
+	                                  </div> 
+									   <div class="txt1"><!--@php echo $item['desc']@--></div>        
 	                            </div>
 	                         </li>
 	             <!--@php  } } @-->

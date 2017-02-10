@@ -14,7 +14,7 @@ switch($operation) {
 		$isrecommand	= (int)$_GP['isrecommand'];
 		$title = $_GP ['headtitle'];
 		$video = $_GP ['video'];
-		$description = $_GP ['description'];
+		$description = $_REQUEST['description'];
 		$preview = $_GP ['preview'];
 
 		$headline = mysqld_select("SELECT * FROM ".table('headline')." WHERE headline_id=".$headline_id);

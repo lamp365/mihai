@@ -1,14 +1,70 @@
 <!--@php  include themePage('purchase_header');@-->
 <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 <div class="wrap">
-	<div class="notice-message">
-		<span><img style="width: 20px;" src="__RESOURCE__/recouse/images/notice.png"></span>
-		<span>这是消息通知模块这是消息通知模块这是消息通知模块这是消息通知模块这是消息通知模块</span>
-	</div>
-	<div class="crumbs">
+    <div class="crumbs">
 		<span>当前位置：</span>
 		<a href="<?php  echo mobile_url('purchase_order',array('name'=>'shopwap')); ?>">商品中心</a>	
 	</div>
+    <!--@php if ( is_array($news) && !empty($news) ){ @-->
+	 <!--@php foreach($news as $news_value){ @-->
+	<div class="notice-message" style="margin-top:10px;">
+		<span><img style="width: 20px;" src="__RESOURCE__/recouse/images/notice.png"></span>
+		<span><!--@php echo $news_value; @--></span>	
+	</div>
+	<!--@php } @-->
+	<!--@php } @-->
+	<!--@php if ( is_array($best_purchase) && !empty($best_purchase) ){ @-->
+	<h4 class="historyLabal" style="margin-top: 20px;">
+		     	<b>全网最热门的商品推荐</b>
+    </h4>
+	<div class="browseHistory" style="margin-top:15px;">
+        <ul id="m2Con" class="os_box_list" style="border-top:1px solid #ededed;border-bottom:1px solid #ededed;">
+              <!--@php  foreach ( $best_purchase as $best_purchase_value ){ @-->
+                      <li class="purchase_list" style="width:390px;height:270px;overflow:hidden;border:none;">			  
+							 <div class="item" style="width:50%;float:left;">
+	                                 <div class="img">
+	                                  		<a class="product-name" product_id="<!--@php echo $best_purchase_value['id']; @-->">
+		                                  <img data-original="<!--@php echo $best_purchase_value['thumb']; @-->" class="lazy" src="images/loading.gif" style="display: inline;">
+		                                   </a>
+										   <div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+												<div class='modal-dialog modal-lg'>
+													<div class='modal-content'>
+														<div class='modal-header'> 
+															<button type='button' class='close' data-dismiss='modal'>
+																<span aria-hidden='true'>&times;</span>
+																<span class='sr-only'>Close</span>
+															</button>
+															<h4 class='modal-title' id='myModalLabel'><!--@php echo $best_purchase_value['title']; @--></h4>
+														</div>
+														<div class='modal-body'>
+															<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+														</div>
+													</div>
+												</div>
+											</div>
+	                                  </div>	
+									  <div class="buy" style="position:relative;">
+	                                      <span class='price'><span class="currency-span">$</span><!--@php echo $best_purchase_value['price']; @--></span>
+									<!--@php if ( $best_purchase_value['selected'] == 0 ){ @-->
+									<div class="conl-action" style="position:absolute; right:10px; bottom:0;"><span class='col-check' productid="<!--@php echo $best_purchase_value['id']; @-->">加入购物车</span></div>
+									 <!--@php  }else{ @-->
+									<div class="conl-action" style="position:absolute; right:10px; bottom:0;"><span class='col-check added' productid="<!--@php echo $best_purchase_value['id']; @-->">已添加</span></div>
+									<!--@php } @-->
+	                                  </div>
+	                          </div>
+							  <div style="float:right;width:50%;text-align:left;">
+					              <div style="margin-top:20px;padding: 0 5px;">
+                                    <span class="label label-success">产品</span><br/><!--@php echo $best_purchase_value['purchase_name']; @-->
+								  </div>
+							      <div style="padding:5px;">
+                                    <span class="label label-success">说明</span><br/><!--@php echo $best_purchase_value['purchase_desc']; @-->
+								  </div>
+							  </div>
+					  </li>
+			  <!--@php } @-->
+		</ul>
+	</div>
+	<!--@php } @-->
 	<div class="l-member">
 		<!--@php  include themePage('purchase_leftmenu');@-->
 	</div>
@@ -16,7 +72,7 @@
 		<div class="personalTitle pT">
 				商品中心
 		</div>
-		<div class="brand-list">
+		<div class="brand-list" style="display:none;">
 			<ul>
 				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
 				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
@@ -26,7 +82,7 @@
 			</ul>
 		</div>
 		<div class="tab">
-			<p class="select on">选择商品</p>
+			<p class="select on">加入购物车</p>
 			<p class="selected">已选商品(<span><!--@php echo $max_purchase; @--></span>)</p>
 		</div>
 		<div class="tab-div">
@@ -169,15 +225,15 @@
 							</div>
 						</td>
 						<!--@php if ( $dish_list_value['selected'] == 0 ){ @-->
-						<td class="conl-action"><span class='col-check' id="<!--@php echo $dish_list_value['id']; @-->">选择商品</span></td>
+						<td class="conl-action"><span class='col-check' id="<!--@php echo $dish_list_value['id']; @-->">加入购物车</span></td>
                          <!--@php  }else{ @-->
-						<td class="conl-action"><span class='col-check added' id="<!--@php echo $dish_list_value['id']; @-->">已选择</span></td>
+						<td class="conl-action"><span class='col-check added' id="<!--@php echo $dish_list_value['id']; @-->">已添加</span></td>
 						<!--@php } @-->
 					</tr>
 					<!--@php }} @-->
 					<tr>
 						<td width="40px" class="th-check col-label"><img src="__RESOURCE__/recouse/images/cart_circle.png"></td>
-						<td colspan="5"><span class="batch-check" style="margin:10px 0;">批量选择商品</span></td>
+						<td colspan="5"><span class="batch-check" style="margin:10px 0;">批量加入购物车</span></td>
 					</tr>
 				</table>
 				<!--@php echo $pager; @-->
@@ -286,7 +342,7 @@
 				</div>
 				<div class="add-list-area-tip">
 					<img class="lazy" src="__RESOURCE__/recouse/images/icon_network_error_retry.png">
-					<p style="margin-top: 40px;color: #cccccc;font-size: 18px;">你还没有选择商品，请选择商品</p>
+					<p style="margin-top: 40px;color: #cccccc;font-size: 18px;">你还没有加入购物车，请加入购物车</p>
 				</div>
 
 
@@ -308,7 +364,6 @@
 										订单号：<span class="confirm-order-num"></span>&nbsp;&nbsp;&nbsp;&nbsp;支付金额：<span class="confirm-order-price false"></span> 	
 										<div class="pull-right" style="margin-right: 0">
 									    	<select id="pays" class="form-control" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;border: 1px solid #ccc!important;line-height:15px;font-size:12px;background: url('__RESOURCE__/recouse/images/arrow.png') no-repeat scroll right center transparent;  background:#fff\0;  padding-right: 14px;text-align: left;">
-												<option value="weixin"> 微信支付</option>
 												<option value="alipay" selected=""> 支付宝</option>
 											</select>
 											<a href="javascript:;" onclick="topay();" class="btn btn-danger btn-sm" style="float:left;width:100px;margin-left:10px;">立即支付</a>
@@ -528,13 +583,21 @@ $(function(){
 			$(".th-check img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
 		}
 	});
-	//单个选择商品
+	//单个加入购物车
 	$("body").on("click",".col-check",function(){
 			var psize = $(".pagenum select").val();
 			var add_good_html = "";
 			var add_id = $(this).attr("id");
+			if ( add_id == "" || add_id == "null" || add_id ==undefined)
+			{
+			    add_id = $(this).attr("productid"); 
+			}
 			var this_check = $(this);
 			var add_num = parseInt($(this).parent(".conl-action").siblings(".col-num").find(".goodsnum").val());
+			if ( isNaN(add_num) )
+			{
+			    add_num = 1;
+			}
 			var addObj = {};
 			if( this_check.hasClass("added")){
 				return false;
@@ -544,15 +607,18 @@ $(function(){
 					//0添加成功
 					if(data.result==0){
 						$(".tab .selected span").text(data.max_purchase);
-						this_check.addClass("added");
-						this_check.text('已选择');
+					    $('.product-list .conl-action span[id='+add_id+']').addClass("added").text("已添加");
+						if($('.purchase_list span[productid='+add_id+']').length!=0){
+							$('.purchase_list span[productid='+add_id+']').addClass("added").text("已添加");
+						}
+						getGoods();
 					}else if(data.result==1){
 						alert(data.info);
 					}
 				},"json");
 			}
 	});
-	//批量选择商品
+	//批量加入购物车
 	$("body").on("click",".batch-check",function(){
 		var allCheckObj = {};
 		var idArr = [];
@@ -580,7 +646,7 @@ $(function(){
 			if(data.result==0){
 				$(".tab .selected span").text(data.max_purchase);
 				for(var i = 0; i < idArr.length; i++){
-					$(".col-check[id="+idArr[i]+"]").text("已选择");
+					$(".col-check[id="+idArr[i]+"]").text("已添加");
 					$(".col-check[id="+idArr[i]+"]").addClass("added");
 				}
 			}else if(data.result==1){
@@ -598,7 +664,10 @@ $(function(){
 		$.post("",{type:"del_good",id:parseInt(removeId)},function(data){
 			if(data.result==0){
 				if($('.product-list .conl-action span[id='+removeId+']').length!=0){
-					$('.product-list .conl-action span[id='+removeId+']').removeClass("added").text("选择商品");
+					$('.product-list .conl-action span[id='+removeId+']').removeClass("added").text("加入购物车");
+				}
+				if($('.purchase_list span[productid='+removeId+']').length!=0){
+					$('.purchase_list span[productid='+removeId+']').removeClass("added").text("加入购物车");
 				}
 				getGoods();
 			}else{
