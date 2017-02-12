@@ -7,6 +7,7 @@
  */
 
 $op = empty($_GP['op']) ? 'display' : $_GP['op'];
+
 if($op == 'display'){
     //下一页标记
     $nextMarker = empty($_GP['nextMarker'])? '' : $_GP['nextMarker'];
@@ -32,7 +33,22 @@ if($op == 'display'){
             $nextMarker = $dir_list_arr['nextMarker'];
         }
     }
+    if($nextMarker){
+        $url_arr    = parse_url(WEBSITE_ROOT.$_SERVER['REQUEST_URI']);
+        $url_query  = changeParame($url_arr['query'],'nextMarker',$nextMarker);
+        $nextMarker = WEBSITE_ROOT."index.php?".$url_query;
+    }
 
+    if($prefix){
+        $prefix_explode = explode('/',$prefix);
+        if(count($prefix_explode) == 1){
+            $pre_dir    = '';
+            $search_key = $prefix_explode[0];
+        }else{
+            $pre_dir    = $prefix_explode[0];
+            $search_key = $prefix_explode[1];
+        }
+    }
     include page('img_mange');
 }else if($op == 'addDir'){
     if(empty($_GP['dirname'])){
@@ -70,5 +86,54 @@ if($op == 'display'){
             $res = aliyunOSS::deleteObject($prefix);
         }
         message("已经删除",refresh(),'success');
+    }
+}else if($op == 'getImgSize'){
+    //获取图片大小
+    if(empty($_GP['type'])){
+        $img_url =  $_GP['img_url'];
+    }else{
+        $img_url = download_pic( $_GP['img_url'],$_GP['width'],$_GP['height'],$_GP['type']);
+    }
+    die(showAjaxMess(200,$img_url));
+}else if($op == 'getDir'){
+    //获取目录
+    $pic_list_arr = aliyunOSS::listObjects('','/','');
+    $pic_list     = $pic_list_arr['data'];
+    die(showAjaxMess(200,$pic_list));
+}else if($op == 'uploadPic'){
+    //上传图片
+    if($_GP['sel_dir'] == -1){
+        message("请选择目录",refresh(),'error');
+    }
+    if(empty($_GP['sel_dir'])){
+        $dir = date("Ym",time());
+    }else{
+        $dir = $_GP['sel_dir'];
+    }
+    $file = $_FILES['picture'];
+
+    if($file['error'] != 0){
+        message("去不起，你没有上传文件！",refresh(),'error');
+    }
+    //允许15M
+    $limit = 15000*1024;   //媒体允许15造
+    if ($limit < filesize($file['tmp_name'])) {
+        $daxiao = tosize($limit);
+        message("上传的文件超过大小限制，请上传小于 " . $daxiao . " 的文件",refresh(),'error');
+    }
+    $http_type =  WEB_HTTP;
+    $picname   = date('YmdHi',time()).uniqid();
+    $extention = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $fileName  = $picname. ".{$extention}";
+
+    $result    = aliyunOSS::uploadFile($file['tmp_name'],$fileName,$dir);
+    $data = array();
+    if($result){
+        $url     = str_replace('http://',$http_type,$result['oss-request-url']);
+        $prefix  = $dir.'/'.$picname;
+        $backUrl = web_url('img_mange',array("prefix"=>$prefix));
+        message("上传成功！",$backUrl,'success');
+    }else{
+        message("上传失败，稍后再试！",refresh(),'error');
     }
 }

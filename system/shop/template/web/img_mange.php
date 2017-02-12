@@ -58,6 +58,12 @@
 		font-size: 10px;
 		display: none;
 	}
+	.next_page{
+		display: inline-block;
+		padding-right: 15px;
+		margin-bottom:20px;
+		float: left;
+	}
 </style>
 <h3 class="header smaller lighter blue">图片列表</h3>
 
@@ -113,27 +119,72 @@
 		})
 	</script>
 <?php }else{ ?>
+	<ul id="myTab" class="nav nav-tabs">
+		<li class="active">
+			<a href="#pic_search" data-toggle="tab">
+				图片搜索
+			</a>
+		</li>
+		<li><a href="#pic_upload" data-toggle="tab">图片上传</a></li>
+	</ul>
+	<div id="myTabContent" class="tab-content">
+		<div class="tab-pane fade in active" id="pic_search">
+			<table class="table table-striped table-bordered table-hover purchase-table-list">
+				<tbody>
+				<tr>
+					<td>
+						<li>
+							<select name="sel_dir" id="sel_dir2" style="height: 28px;line-height: 28px;">
 
-<form action="<?php echo web_url('img_mange',array('op'=>'display'));?>" class="form-horizontal" method="post">
-	<table class="table table-striped table-bordered table-hover purchase-table-list">
-		<tbody>
-		<tr>
-			<td>
-				<li>
-					<input style="margin-right:5px;width: 300px; height:30px; line-height:28px; padding:2px 0" name="prefix" id="" type="text" placeholder="模糊匹配图片标题" value="<?php echo $prefix; ?>">
-				</li>
-				<li >
-					<button class="btn btn-primary btn-sm" style="margin-right:10px;"><i class="icon-search icon-large"></i> 搜索</button>
-				</li>
+							</select>
+						</li>
+						<li>
+							<input style="margin-right:5px;width: 300px; height:30px; line-height:28px; padding:2px 0" name="prefix" id="prefix" type="text" placeholder="模糊匹配图片标题" value="<?php echo $search_key; ?>">
+						</li>
+						<li >
+							<button class="btn btn-primary btn-sm" style="margin-right:10px;" onclick="get_search()"><i class="icon-search icon-large"></i> 搜索</button>
+						</li>
 
-				<li style="float: right;">
-					<a class="btn btn-primary btn-sm" style="margin-right:10px;" href="<?php echo web_url('img_mange');?>"> 返回目录 </a>
-				</li>
-			</td>
-		</tr>
-		</tbody>
-	</table>
-</form>
+						<li style="float: right;">
+							<a class="btn btn-primary btn-sm" style="margin-right:10px;" href="<?php echo web_url('img_mange');?>"> 返回目录 </a>
+						</li>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="pic_upload">
+			<table class="table table-striped table-bordered table-hover purchase-table-list">
+				<tbody>
+				<form action="<?php echo web_url('img_mange',array('op'=>"uploadPic"));?>" method="post" enctype="multipart/form-data">
+				<tr>
+					<td>
+						<li style="line-height: 26px;">上传文件：</li>
+						<li>
+							<select name="sel_dir" id="sel_dir" style="height: 28px;line-height: 28px;">
+
+							</select>
+						</li>
+						<li>
+							<input style="line-height: 26px;" name="picture" type="file" value="" id="picture">
+						</li>
+
+						<li>
+							<button type="submit" class="btn btn-warning btn-sm">确认上传</button>
+						</li>
+
+
+						<li style="float: right;">
+							<a class="btn btn-primary btn-sm" style="margin-right:10px;" href="<?php echo web_url('img_mange');?>"> 返回目录 </a>
+						</li>
+					</td>
+				</tr>
+				</form>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
 <div style="position: relative;">
 	<table class="table table-striped table-bordered table-hover">
 		<tr >
@@ -142,77 +193,156 @@
 			<th class="text-center">URL地址</th>
 			<th class="text-center" style="width: 310px;">操作</th>
 		</tr>
-
-		<tr>
-			<td style="text-align:center;">88</td>
-			<td style="text-align:center;">88</td>
-			<td style="text-align:center;">88</td>
-			<td style="text-align:center;">88</td>
+		<?php if(!empty($pic_list)){  $img_arr = array('png','jpg','jpeg','gif') ;foreach($pic_list as $key => $pic_one){  ?>
+		<tr class="one_pic">
+			<td style="text-align:center;"><?php echo ++$key;?></td>
+			<td style="text-align:center;" class="thumb">
+				<?php $pic_explode = explode(".",$pic_one);
+						if(in_array(strtolower($pic_explode[1]),$img_arr)) {
+							$purl = aliyunOSS::aliurl."/".$pic_one;
+							$small_pic = download_pic($purl,50,50,2);
+							echo "<img class='is_pic' src='{$small_pic}'/>";
+						}else{
+							echo "不是图片";
+						}
+				?>
+			</td>
+			<td style="text-align:center;"><?php $purl = aliyunOSS::aliurl."/".$pic_one; echo "<a href='{$purl}' target='_blank'>{$purl}</a>"; ?></td>
+			<td style="text-align:center;">
+				<span <?php echo "data-pic='{$purl}'";?> onclick="setPic(this)" style="cursor: pointer">设置大小</span>
+			</td>
 		</tr>
-
+		<?php }} ?>
 	</table>
-	<div class="big-img-show">
-		<img src="">
-	</div>
 </div>
+	<script>
+		function setPic(obj){
+			var the_obj = $(obj).closest('.one_pic').find(".thumb img");
+			if(the_obj.length == 0){
+				alert("对不起，不是图片");
+			}else{
+				$("#hide_img_url").val($(obj).data('pic'));
+				$("#myModal").modal("show");
+			}
+		}
+		function get_search(){
+			if($("#prefix").val() == '' && $("#sel_dir2").val() == -1){
+				alert("不能为空！");
+			}else{
+				var url     = "<?php echo web_url('img_mange',array('op'=>'display'));?>";
+				var pre_dir = $("#sel_dir2").val();
+				if(pre_dir == -1){
+					pre_dir = '';
+				}else{
+					pre_dir = pre_dir+"/";
+				}
+				var prefix = pre_dir+$("#prefix").val()
+				url = url+ "&prefix="+prefix;
+				window.location.href=url;
+			}
+		}
+
+		$(function(){
+			$(".getImgSize").click(function(){
+				var url = "<?php echo web_url('img_mange',array('op'=>"getImgSize"));?>";
+				if($("#sel_type").val() == 0){
+					$(".show_res").show();
+					$(".show_res").find("a").attr("href",$("#hide_img_url").val());
+					$(".show_res").find("a").html($("#hide_img_url").val());
+					return '';
+				}else if($("#width").val() == '' && $("#height").val()==''){
+					alert("请设置宽或高！");
+					return '';
+				}
+				if($("#sel_type").val()>1 && ($("#width").val() == '' || $("#height").val()=='')){
+					alert('',"固定拉伸和裁减，宽和高都要设置");
+					return '';
+				}
+				var json_data = {
+					'type'   : $("#sel_type").val(),
+					'img_url': $("#hide_img_url").val(),
+					'width'  : $("#width").val(),
+					'height' : $("#height").val()
+				};
+				$.post(url,json_data,function(data){
+					var img_url = data.message;
+					$(".show_res").show();
+					$(".show_res").find("a").attr("href",img_url);
+					$(".show_res").find("a").html(img_url);
+				},'json');
+			});
+
+			//获取目录
+			var url = "<?php echo web_url('img_mange',array('op'=>'getDir')); ?>";
+			$.post(url,{},function(data){
+				var dir = data.message;
+				var opt = "<option value='-1'>请选择目录</option>";
+				var opt = opt+"<option value='0'>按最新时间目录</option>";
+				var pre_dir = "<?php echo $pre_dir;?>";
+
+				var opt2 = "<option value='-1'>请选择目录</option>";
+				for(var i=0; i< dir.length;i++){
+					var the_dir = dir[i];
+					var the_dir = the_dir.replace('/','');
+					opt = opt+"<option value='"+ the_dir +"'>"+ the_dir +"</option>";
+
+					if(pre_dir == the_dir){
+						opt2 = opt2+"<option value='"+ the_dir +"' selected>"+ the_dir +"</option>";
+					}else{
+						opt2 = opt2+"<option value='"+ the_dir +"'>"+ the_dir +"</option>";
+					}
+
+				}
+				$("#sel_dir").html(opt);
+				$("#sel_dir2").html(opt2);
+			},'json');
+		})
+
+	</script>
 <?php } ?>
 
+<div style="clear: both"></div>
+<?php if(!empty($_GP['nextMarker'])){   ?>
+<p class="next_page"><a href="javascript:history.back(-1);">上一页</a></p>
+<?php } ?>
 
-<?php if(!empty($nextMarker)){ $curl = WEBSITE_ROOT.$_SERVER['REQUEST_URI']; $curl = $curl."&nextMarker={$nextMarker}";?>
-<p class="next_page"><a href="<?php echo $curl;?>">下一页</a></p>
+<?php if(!empty($nextMarker)){ ?>
+<p class="next_page"><a href="<?php echo $nextMarker;?>">下一页</a></p>
 <?php } ?>
 
 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<form action="" method="post" class="reply_form">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myModalLabel">评论回复</h4>
+				<h4 class="modal-title" id="myModalLabel">设置大小</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label for="reply">内容：</label>
-					<textarea type="text" class="form-control" id="reply" name="reply" placeholder="请输入回复"></textarea>
+					<select name="type" id="sel_type" class="form-control">
+						<option value="0">选择类型</option>
+						<option value="1">按宽或高等比显示</option>
+						<option value="2">按宽高拉伸显示</option>
+						<option value="3">按宽高裁减显示</option>
+					</select>
 				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" name="width" id="width" placeholder="请输入宽度">
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" name="height" id="height" placeholder="请输入高度">
+				</div>
+				<input type="hidden" value="" name="img_url" id="hide_img_url">
+				<p style="display: none;" class="show_res"><a href="" target="_blank"></a></p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="submit" class="btn btn-primary">确定回复</button>
+				<button type="button" class="btn btn-primary getImgSize">获取图片</button>
 			</div>
 		</div><!-- /.modal-content -->
-		</form>
 	</div><!-- /.modal -->
 </div>
 
-<script>
-
-$(function(){
-	$(".piclist img").on("click",function(){
-		var bigImg = $(this).parent(".onepic").attr("imghref");
-		$(".big-img-show").fadeIn();
-		$(".big-img-show").find("img").attr("src",bigImg);
-	});
-	$(".big-img-show").on("click",function(){
-		$(this).fadeOut();
-	});
-	$(".sel_system").change(function(){
-		var system = $(this).val();
-		if(system != 0){
-			var url = "<?php echo web_url('dish',array('op'=>'comment'));?>";
-			url += "&system="+system;
-			window.location.href= url;
-		}
-	});
-})
-$(".reply").click(function(){
-	var id = $(this).data('id');
-	var url = "<?php echo web_url('dish',array('op'=>'replycomment')); ?>";
-	url = url + '&id='+id;
-	$("#myModal").modal('show');
-	$(".reply_form").attr('action',url);
-})
-</script>
 <?php  include page('footer');?>

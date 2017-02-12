@@ -228,6 +228,10 @@
         $total    = getRecorderCount($openid,$award_id);
         die(showAjaxMess(200,$total));
 
+    }else if($op == 'rule'){
+        //活动规则
+        include themePage('shareactive_rule');
+
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];

@@ -1,0 +1,49 @@
+@charset "utf-8";
+/*心愿活动规则页面*/
+*{
+	padding: 0;
+	margin: 0;
+}
+.rule{
+	margin: 0 auto;
+	width: 100%;
+	position: relative;
+}
+.rule img{
+	width: 100%;
+}
+.rule a{
+	position: absolute;
+	display: block;
+	width: 40px;
+	height: 20px;	
+}
+.rule #register{	
+	top:19%;
+	left:53%;
+}
+.rule #login{
+	top:33%;
+	left: 35%;
+}
+.rule #toxuyuan{
+	width: 83px;
+	height: 25px;
+	top: 15%;
+	right:19%;
+}
+.rule #toxuyuan2{
+	width: 180px;
+	height: 70px;
+	left:29%;
+	bottom:22%;
+}
+.rule #toxuyuan2:hover{
+	border: none;
+}
+.rule #upgrade{
+	width: 70px;
+	height: 22px;
+	bottom: 1%;
+	left:18%;
+}

@@ -542,19 +542,16 @@ body,html{
     font-size: 12px;
     margin: 0 2px;
 }
-.modal-body{
-overflow: hidden;}
+/*.modal-body{padding: 15px 2px;}*/
 .result-djs{
     margin-left: 15px;
     color: #f60;
 }
-
-.result-num span,.number_html span{
-    float: left;
-    padding-right: 10px;
+.the-number{
+    word-break: break-all;
 }
-.number_html{
-    overflow: hidden;
+.the-number span{
+    padding-right: 10px;
 }
 .receive-btn{
     text-align: center;

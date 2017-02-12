@@ -112,7 +112,7 @@ if ($operation == 'into') {
         //   'updatetime' => time(),
         //   'status' => $status,
         //   );
-        if (!empty($dv)) {
+        if (!empty($dv) AND !empty($dv[2])) {
           $xdata = array(
             'username' => $dv[1],
             'wanwan' => $dv[0],
@@ -259,11 +259,11 @@ if ($operation == 'into') {
   $is_into = 0;
   $no_into = 0;
   // 已分配
-  $is_allotary = mysqld_select("SELECT count(id) as allotnum FROM ".table('shop_customers')." WHERE salesman<>NULL");
+  $is_allotary = mysqld_select("SELECT count(id) as allotnum FROM ".table('shop_customers')." WHERE salesman<>''".$where);
   $is_allot = intval($is_allotary['allotnum']);
   $no_allot = intval($total) - $is_allot;
   // 已入驻
-  $is_intoary = mysqld_select("SELECT count(id) as intonum FROM ".table('shop_customers')." WHERE status=1");
+  $is_intoary = mysqld_select("SELECT count(id) as intonum FROM ".table('shop_customers')." WHERE status=1".$where);
   $is_into = intval($is_intoary['intonum']);
   $no_into = intval($total) - $is_into;
 

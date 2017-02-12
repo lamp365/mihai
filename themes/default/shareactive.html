@@ -7,17 +7,16 @@
 		<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="__RESOURCE__/recouse/css/shareactive.css" rel="stylesheet"	type="text/css" />
 		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/shareactice-rule.css"/>
+		<link rel="shortcut icon" href="favicon.ico"/>
 		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 		<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
-		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.qrcode.min.js"></script>
 	</head>
 	<body >
 		<!--@php  include page('header');@-->
 		<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
 		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
-		<div class="get_share_modal"><img src="__RESOURCE__/recouse/images/goodshare.png">好友分享</div>
 		<div style="background:#dc3737">
 			<div class="miandan-banner"></div>
 			<!--累计参与人数-->
@@ -333,7 +332,7 @@
 						<!--标题-->
 						<p class="name" style="font-weight: bold;"><!--@php echo $data['title'];@--></p>
 						<!--人数-->
-						<p class="detail"><!--@php echo mb_substr(strip_tags($data['content']),0,36);@--></p>
+						<p class="detail"><!--@php echo mb_substr($data['content'],0,36);@--></p>
 						<div class="info">
 							<span class="xmjdh_left">
 								<a>
@@ -366,77 +365,11 @@
 			</div>
 			<!--@php } @-->
 
-
-		<!--活动规则的弹出框-->
-			<div class="modal fade activity-modal" tabindex="-1" role="dialog">
-			  <div class="modal-dialog" role="document">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			        <h4 class="modal-title">活动规则</h4>
-			      </div>
-			      <div class="modal-body">
-			        <div class="activity-rule">
-						<ul>
-							<li>1.新老用户均可参与</li>
-							<li>2.请登录后再进行分享</li>
-							<li>3.新老用户均可参与新老用户均可参与新老用户均可参与新老用户均可参与</li>
-							<li>4.新老用户均可参与新老用户均可参与</li>
-							<li>5.新老用户均可参与新老用户均可参与</li>
-						</ul>
-					</div>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>	
-			<!--点击分享弹出的-->
-			<div class="modal fade" taria-hidden="true" id="share-list" style="top: 40%;">
-				<div class="modal-dialog" style="width: 230px;">
-					<div class="modal-content">							  	
-					  	<div class="modal-body">
-							<ul class="share-list">
-								<a href="javascript:;"><li class="weixin_li" textval="微信"></li></a>
-								<a href="javascript:;" target="_blank"><li class="weibo" textval="新浪微博"></li></a>
-								<a href="javascript:;" target="_blank"><li class="qq" textval="QQ"></li></a>
-								<a href="javascript:;" target="_blank"><li class="qqzone" textval="QQ空间"></li></a>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="shade"></div>
-			<div class="wx_code_area">
-				<p class="shade-close">&times</p>
-				<p class="wx_code_area_1" >分享到微信朋友圈</p>
-				<div id="wx_code"></div>
-				<p class="wx_code_area_2">扫描上方二维码 分享到微信</p>
-			</div>
 		<!--@php  include themePage('footer');@-->	
 		</div>
 		
 		<script>
-			$(function(){	
-				$(".get_share_modal").click(function(){
-						var url    = window.location.href;
-						var location_href = encodeURIComponent(url);//分享的链接
-						var title = "分享的内容";//需要分享的内容
-						var picurl = $(".jqzoom img").attr('src');//需要分享的图片地址
-						shareFun(location_href,title,picurl);
-						$("#share-list").modal('show');
-				})		
-				$(".share-btn").on("click",function(){
-					$(".share-list").toggle();
-				})
-				$(".share-list a").hover(function(){
-					var hover_val = $(this).find("li").attr("textval");
-					$(this).find("li").text(hover_val);
-				},function(){
-					$(this).find("li").text('');
-				});	
-
+			$(function(){				
 				var total_num_new_length;
 				var total_num_new = "<!--@php echo $canyu_total; @-->";
 				var total_num_old;
@@ -470,7 +403,7 @@
 				var time = setInterval(function(){
 					//异步获取最新的参与总人数
 					$.post(purl, {}, function(data) {
-						total_num_new = data.message.toString();
+						total_num_new = data.message;
 						getnum(total_num_new);
 					},'json');
 				},3000);
@@ -496,9 +429,9 @@
 
 				});
 
-				//活动规则
-				$(".active-fixed-btn").on("click",function(){
-					$(".activity-modal").modal();
+				//点击活动规则，跳转到规则页面
+				$(".active-fixed-btn").on("click",function(){					
+					window.location.href="<!--@php echo mobile_url('shareactive',array('op'=>'rule'));@-->";
 				});
 			})
 			//预告的倒计时
@@ -516,33 +449,6 @@
 	            }, 1000);
 	            
 	        }
-	        function shareFun(location_href,title,picurl){
-				$(".share-list .qqzone").on("click",function(){
-					var qqzone_share_url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?summary='+title+'&url='+location_href+'&pics='+picurl;
-					$(this).parent("a").attr("href",qqzone_share_url);
-				});
-				$(".share-list .weibo").on("click",function(){
-					var weibo_share_url = 'http://v.t.sina.com.cn/share/share.php?title='+title+'&url='+location_href+'&content=utf-8&sourceUrl='+location_href+'&pic='+picurl;
-					$(this).parent("a").attr("href",weibo_share_url);
-				});
-				$(".share-list .qq").on("click",function(){
-					var qq_share_url = 'http://connect.qq.com/widget/shareqq/index.html?summary='+title+'&url='+location_href+'&pics='+picurl;
-					$(this).parent("a").attr("href",qq_share_url);
-				});
-				$(".share-list .weixin_li").on("click",function(){
-					$(".wx_code_area,.shade").show();
-					$("#wx_code").qrcode({ 
-					    render: "table", //table方式 
-					    width: 200, //宽度 
-					    height:200, //高度 
-					    text: location_href //二维码的链接 
-					}); 
-				});
-				$(".wx_code_area .shade-close").on("click",function(){
-					$(".wx_code_area,.shade").hide();
-					$("#wx_code").empty();
-				});
-			}
 	        function getTime(sys_second,id){
 	            var day = Math.floor((sys_second / 3600) / 24);
 	            var hour = Math.floor((sys_second / 3600) % 24);

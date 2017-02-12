@@ -116,6 +116,40 @@
 	border: none;
 	text-align: center;
 }
+.cutbox{
+border-bottom: 0;
+    padding: 15px 40px;
+    position: absolute;
+    top: 24px;
+    left: 0;
+    z-index: 2;
+}
+.cutbox .infobox{
+	margin-bottom: 0;
+	line-height: 28px;
+}
+.cutbox .balance{
+	text-align: left;
+	line-height: 28px;
+	color: #333;
+}
+.balance-input{
+	margin-top: -2px!important;
+    margin-right: 5px!important;
+    width: 15px;
+    height: 15px;
+}
+
+.accounts .infobox .coupon-title{
+	display: inline-block;color: #333;font-size: 14px;font-weight: normal;float: left;margin-right: 10px;width: 79px;
+    text-align: right;
+}
+#choose-discount{
+	float: left;line-height: 23px;margin-top: 3px;    margin-left: 7px;
+}
+.carFoot{
+	position: relative;
+}
 </style>
 
     </head>
@@ -292,22 +326,27 @@
 		</ul></div>
 		</div>
 		
-	
 		<div class="carFoot">
+
+		<div class="cutbox">
+			<!-- 余额抵扣 -->
+			<p class="balance"><input class="balance-input" type="checkbox" name="balance">余额抵扣:<em style="width: 133px; display: inline-block;">￥1111</em></p>
 			<!--select优惠券-->
 			<!--@php  if(!empty($bonus_list)) {  @-->
 			<div class="infobox" style="background: none">
-				<select class="payStyle" id="choose-discount" name='bonus' style="float: right;width: 170px;;line-height: 23px;margin-top: 5px;" onchange="discount()">
+				<h2 class="coupon-title" >我的优惠券:</h2>	
+				<select class="payStyle" id="choose-discount" name='bonus'  onchange="discount()">
 					<option  value="0">不使用优惠券</option>	
 					<!--@php  if(is_array($bonus_list)) { foreach($bonus_list as $bonus) { @-->
 				 	<option  value="<!--@php echo $bonus['bonus_sn']@-->" ><!--@php echo $bonus['type_name']@--></option>	
 				 	<!--@php  } } @-->
 				 </select>
-				<h2 style="display: inline-block;color: #333;font-size: 14px;font-weight: normal;float: right;margin-right: 10px;">优惠券:</h2>				
+							
 			</div>			
 			<!--@php  } @-->
-			<div class="itemAmount clearfix">
-				<p><input style="margin: 0;" type="checkbox" name="">使用余额抵扣:<em style="padding-left: 53px;">1111</em></p>
+		</div>
+			<div class="itemAmount clearfix" style="position: relative;">
+				
 				<div class="settlementAmount" style="height: auto;">
 					<p><em class="price" id="goodvalue"><a>&yen;</a><span><!--@php  echo number_format($totalprice,2,'.','');@--></span></em></p>
 					<p><em class="price" id="dispatchprice"><a>&yen;</a><span><!--@php  echo number_format($dispatchprice,2,'.','');@--></span></em></p>

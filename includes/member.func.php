@@ -703,3 +703,21 @@ function checkIsLogin(){
         }
     }
 }
+
+/**
+ * @return int
+ * @return int
+ * 验证用户是否APP首次登录，并赠送积分
+ * 
+ */
+function ifApp($openid=''){
+    if ( !empty($openid) ){
+        $member = mysqld_select("SELECT * FROM " . table('member') . " where ifapp = 0 and openid=:openid limit 1", array(
+            ':openid' => $openid
+        )); 
+		if ($member){
+			mysqld_update('member', array('ifapp'=>1), array('openid'=>$openid));
+            member_credit($openid, 50, 'addcredit', '首次登陆APP积分赠送50');
+		}
+	}
+}

@@ -53,7 +53,7 @@ class FileUpload
                 'mp3',
                 'mp4'
             );
-            $limit = 15000*1024;   //媒体允许10造
+            $limit = 15000*1024;   //媒体允许15造
         }
         if ($type == 'other') {
             $extentions = array(

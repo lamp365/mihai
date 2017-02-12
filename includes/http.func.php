@@ -146,3 +146,17 @@ function getUrlQuery($array_query)
     $params = implode('&',$tmp);
     return $params;
 }
+
+/**
+ * 修改uri中的部分参数，再返回
+ * @param $uri
+ * @param $key
+ * @param $val
+ * @return string
+ */
+function changeParame($uri,$key,$val){
+    $uri_arr = convertUrlQuery($uri);
+    $uri_arr[$key] = $val;
+    $uri = getUrlQuery($uri_arr);
+    return $uri;
+}

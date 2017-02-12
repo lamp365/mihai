@@ -140,10 +140,14 @@
 					                </tr>
 					            </thead>
 						        <tbody>
+						        <!-- date('Y-m-d H:i',$almv['lasttime']) -->
 						        <?php  if(is_array($al_client)) { 
-	 								foreach($al_client as $almv) { ?>
+	 								foreach($al_client as $almv) { 
+	 									if (empty($almv['mobile'])) {
+	 										continue;
+	 									}
+	 									?>
 					                <tr>
-					                    <!-- <td class="text-center"><?php  echo $almv['wanwan'];?></td> -->
 					                    <td class="text-center"><?php  echo $almv['username'];?></td>
 					                    <td class="text-center"><?php  echo $almv['mobile'];?></td>
 					                    <td class="text-center"><?php  echo $almv['email'];?></td>
@@ -152,7 +156,11 @@
 					                    <td class="text-center"><?php  echo $almv['blacklist'];?></td>
 					                    <td class="text-center"><?php  echo $almv['city'];?></td>
 					                    <td class="text-center"><?php  echo $almv['address'];?></td>
-					                    <td class="text-center"><?php  echo date('Y-m-d H:i',$almv['lasttime']);?></td>
+					                    <td class="text-center"><?php  if (!empty($almv['lasttime'])) {
+					                    	echo date('Y-m-d H:i',$almv['lasttime']);
+					                    }else{
+					                    	echo 'NULL';
+					                    } ?></td>
 					                    <td class="text-center"><?php  echo $almv['buytimes'];?></td>
 					                    <td class="text-center"><?php  echo $almv['price'];?></td>
 					                    <td class="text-center"><?php  echo $almv['level'];?></td>

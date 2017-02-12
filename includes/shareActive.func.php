@@ -512,21 +512,21 @@ function get_all_changebonus($openid){
                 if($info){
                     //找到，标记为领取
                     $one_bonus['is_get']     = 1;
-                    //兑换值 是 面额比去一个固定值  当前为5
-                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/5);
+                    //兑换值 是 面额比去一个固定值  当前为3
+                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/3);
                 }else{
                     //没找到，标记为没领取
                     $one_bonus['is_get']     = 0;
-                    //兑换值 是 面额比去一个固定值  当前为5
-                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/5);
+                    //兑换值 是 面额比去一个固定值  当前为3
+                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/3);
                 }
             }
         }else{
             foreach($bonus as $key => &$one_bonus){
                 //未登录，标记为没领取
                 $one_bonus['is_get']     = 0;
-                //兑换值 是 面额比去一个固定值  当前为5
-                $one_bonus['change_num'] = ceil($one_bonus['type_money']/5);
+                //兑换值 是 面额比去一个固定值  当前为3
+                $one_bonus['change_num'] = ceil($one_bonus['type_money']/3);
             }
         }
     }
@@ -552,7 +552,7 @@ function toChangeBonus($openid,$bonus_id){
             $msg = showAjaxMess(1002,"对不起，非法访问！");
         }else{
             if($bonus['send_start_date']<= $now_time && $bonus['send_end_date']>=$now_time){
-                $change_num = ceil($bonus['type_money']/5);
+                $change_num = ceil($bonus['type_money']/3);
                 if($total_num < $change_num){
                     $msg = showAjaxMess(1002,"您的许愿数只有{$total_num}次");
                 }else{

@@ -282,32 +282,6 @@
 	    </div>
 	  </div>
 	</div>
-
-	<div class="modal fade activity-modal" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">活动规则</h4>
-	      </div>
-	      <div class="modal-body">
-	        <div class="activity-rule">
-				<ul>
-					<li>1.新老用户均可参与</li>
-					<li>2.请登录后再进行分享</li>
-					<li>3.新老用户均可参与新老用户均可参与新老用户均可参与新老用户均可参与</li>
-					<li>4.新老用户均可参与新老用户均可参与</li>
-					<li>5.新老用户均可参与新老用户均可参与</li>
-				</ul>
-			</div>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	      </div>
-	    </div>
-	  </div>
-
-	</div>
 <!--@php if(!empty($_GP['is_app'])){ @-->
 <!--@php include themePage('footer');@-->
 <!--@php } @-->
@@ -320,8 +294,9 @@
 			threshold : 200, //控制灵敏度
 			effect : "fadeIn"
 		});
+		//点击活动规则，跳转到规则页面
 		$(".active-fixed-btn").on("click",function(){
-			$(".activity-modal").modal();
+			window.location.href="<!--@php echo mobile_url('shareactive',array('op'=>'rule'));@-->";
 		});
 		var total_num_new_length;
 		var total_num_new = "<!--@php echo $canyu_total; @-->";

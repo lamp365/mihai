@@ -32,6 +32,7 @@
 				
 				$result['data']['free_info']= $freeConfig;
 				$result['data']['dish_list']= $arrDish;
+				$result['data']['url']		= '';				//活动说明URL
 				$result['code'] 			= 1;
 				
 				break;

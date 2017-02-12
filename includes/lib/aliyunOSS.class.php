@@ -22,6 +22,7 @@ class aliyunOSS
     const accessKeyId     = 'LTAIJBblVhGuzn2j';
     const accessKeySecret = 'CcxMOcoXA6PXVdRE2XjImWPLRwzpnJ';
     const bucket          = 'hinrc';
+    const aliurl          = WEB_HTTP."hinrc.oss-cn-shanghai.aliyuncs.com";
     private static $self  = NULL;
     /**
      * 根据Config配置，得到一个OssClient实例
@@ -213,13 +214,14 @@ class aliyunOSS
      * 上传指定的本地文件内容
      * @param string $new_fileName 给文件重命名
      * @param string $filePath     文件路劲
+     * @param string $dir          存放目录 不给默认为最新的时间为目录
      * @return null
      */
-    public static function uploadFile($filePath,$new_fileName)
+    public static function uploadFile($filePath,$new_fileName,$dir='')
     {
         $ossClient = self::getOssClient();
         $options = array();
-        $dir          = date("Ym",time());
+        $dir          = empty($dir) ? date("Ym",time()) : $dir;
         $new_fileName = $dir.'/'.$new_fileName;
         try {
            $res =  $ossClient->uploadFile(self::bucket, $new_fileName, $filePath, $options);
@@ -240,7 +242,7 @@ class aliyunOSS
      $maxkeys = 1000 限定此次返回Object的最大数，如果不设定，默认为100，MaxKeys取值不能大于1000。
      * @return null
      */
-    public static function listObjects($prefix = '',$delimiter='',$nextMarker='',$maxkeys=1000)
+    public static function listObjects($prefix = '',$delimiter='',$nextMarker='',$maxkeys=50)
     {
         $ossClient = self::getOssClient();
         $options = array(
