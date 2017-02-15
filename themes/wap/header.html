@@ -84,14 +84,15 @@ jQuery(document).ready(function($) {
 			$(".to_concern").hide();
 		})
 		$(".to_concern_btn").click(function(){
-			$(".to_concern_modal").modal();
+			$(".guanzhu_modal").fadeIn();
+			$(".guanzhu_box").fadeIn();
 		})
 	});
 </script>
 </head>
 <body>
 
-   <!--@php if(is_show_follow()){ @-->
+   <!--@php if(!is_show_follow()){ @-->
 	<!--立即关注-->
 	<div class="to_concern">
 		<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
@@ -100,15 +101,10 @@ jQuery(document).ready(function($) {
 		<img src="__RESOURCE__/recouse/images/cha.png" class="close_concern"/>
 	</div>
 	<!--点击立即关注弹出的二维码-->
-	<div class="modal fade to_concern_modal" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">	  
-	      <div class="modal-body">	      	
-			<img src="__RESOURCE__/recouse/images/weixin.jpg" />
-	      </div>	      
-	    </div>
-	  </div>
-	</div>
+   <div class="guanzhu_modal" id="weixin_guanzhu"></div>
+   <div class="guanzhu_box">
+	   <img src="__RESOURCE__/recouse/images/weixin.jpg" />
+   </div>
 	<!--@php }  @-->
 
 <div class="WX_search1" id="mallHead" style="padding-bottom: 2px;">

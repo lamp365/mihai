@@ -3621,30 +3621,29 @@ button.swiper-pagination-bullet {
 	right:45px;
 	top: 10.5px;
 }
-.to_concern_modal .modal-header{
-	border-bottom: none;
-}
-.to_concern .close_concern{
-	width: 22px;
+.guanzhu_modal{
 	position: absolute;
-	right: 10px;
-	top: 12px;
+	width:100%;
+	height: 1600px;
+	display: none;
+	background:#000;
+	opacity: 0.3;
+	filter:alpha(opacity=0.3);
+	z-index: 990;
 }
-.to_concern_modal .modal-dialog{
-	width: 160px;
-	left: 50%;
-	margin-left: -80px;
-	top: 50%;
-	margin-top: -80px;
+.guanzhu_box{
+	position: absolute;
+	display: none;
+	top:28%;
+	left:50%;
+	width: 210px;
+	margin-left: -105px;
+	min-height: 30px;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	overflow: hidden;
+	z-index: 9999;
 }
-.to_concern_modal .modal-body{
-	text-align: center;
-	padding: 0;
-}
-.to_concern_modal img{
+.guanzhu_box img{
 	width: 100%;
-}
-.to_concern_modal .modal-content{
-	background: none;
-	border: none;
 }
