@@ -1394,13 +1394,14 @@ $(".share-list a").hover(function(){
 			var qq_share_url = 'http://connect.qq.com/widget/shareqq/index.html?summary='+title+'&url='+location_href+'&pics='+picurl;
 			$(this).parent("a").attr("href",qq_share_url);
 		});
+		var url2 = decodeURIComponent(url);
 		$(".share-list .weixin_li").on("click",function(){
 			$(".wx_code_area,.shade").show();
 			$("#wx_code").qrcode({ 
 			    render: "canvas", //canvas方式
 			    width: 200, //宽度 
 			    height:200, //高度 
-			    text: url //二维码的链接 
+			    text: url2 //二维码的链接
 			}); 
 		});
 		$(".wx_code_area .shade-close").on("click",function(){
