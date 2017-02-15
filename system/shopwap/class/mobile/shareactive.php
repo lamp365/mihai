@@ -1,6 +1,17 @@
 <?php
     $op     = empty($_GP['op'])? 'display' : $_GP['op'];
     $openid = checkIsLogin();
+    $weixin_config = globaSetting(array(
+             "weixin_appId",
+             "weixin_appSecret"
+     ));
+    $appId = $weixin_config['weixin_appId'];
+    $appsecret = $weixin_config['weixin_appSecret'];
+    $timestamp = time();
+    $jsapi_ticket = make_ticket($appId,$appsecret);
+    $nonceStr = make_nonceStr();
+	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    $signature = make_signature($nonceStr,$timestamp,$jsapi_ticket,$url);
     if($op == 'display'){
         $accesskey = $_GP['accesskey'];
 
@@ -17,9 +28,8 @@
         $canyu_total = get_active_total_people();
         //获取6个为1 等待开奖的
         $toBeDraw    = get_active_goods(1,$openid);
-        //获取1个推荐的 手机访问不需要
-        if(!is_mobile_request())
-            $recommand   = get_active_goods(2,$openid);
+        //获取1个推荐的
+        $recommand   = get_active_goods(2,$openid);
 
         //获取礼品商品 心愿专区
         $activeGoods = get_active_goods(3,$openid);
@@ -91,9 +101,7 @@
             die(showAjaxMess(1002,'您还没登录！'));
         }
         $award_id = $_GP['award_id'];
-        if(empty($award_id)){
-            die(showAjaxMess(1002,'参数有误！'));
-        }
+
         //判断今天是否可以参与
         $share_info = checkIsAddShareActive($openid);
         if($share_info['total_num'] == 0){
@@ -102,8 +110,10 @@
 
         $award    = mysqld_select("select * from ".table('addon7_award')." where id={$award_id}");
         if($share_info['total_num'] < intval($award['credit_cost'])) {
-            $num = $share_info['total_num'];
-            die(showAjaxMess(1002,"您的幸运数只剩{$num}个"));
+            $num      = $share_info['total_num'];
+            $need_num = intval($award['credit_cost']);
+            $msg      = array('num'=>"您的心愿数只剩{$num}个",'need_num'=>"当前需要{$need_num}个");
+            die(showAjaxMess(1004,$msg));
         }
         if($award['state']==2){
             die(showAjaxMess(1002,"该礼品许愿已满！"));
@@ -152,14 +162,19 @@
                 //刷新页面 的标识
                 die(showAjaxMess(202,"恭喜您许愿成功!"));
             }
-            die(showAjaxMess(200,array('tit'=>"恭喜您许愿成功!","des"=>"心愿数字:{$star_num_arr['star_num_order']}")));
+            if($star_num_arr['star_num_order'] == 1){
+                $des = "您是第一个许愿者哦，棒棒的！";
+            }else{
+                $des = "许愿越多，实现几率越大哟~~";
+            }
+            die(showAjaxMess(200,array('tit'=>"获得心愿数字:{$star_num_arr['star_num_order']}","des"=>$des)));
         }else{
             die(showAjaxMess(1002,'网络有误，稍后再试'));
         }
 
     }else if($op == 'result'){
         //把2和3 4的都取出来
-        $psize  =  18;
+        $psize  =  24;
         $pindex = max(1, intval($_GP["page"]));
         $limit  = ' limit '.($pindex-1)*$psize.','.$psize;
         $total  = $pager = '';
@@ -232,6 +247,18 @@
         //活动规则
         include themePage('shareactive_rule');
 
+    }else if($op == 'getStandData'){
+        //获取标准数据的截图
+    	$lock_time = $_GP['lock_time'];
+        if(empty($lock_time)){
+            die(showAjaxMess(1002,'参数有误！'));
+        }
+        $res = mysqld_select("select thumb from ".table('addon7_point')." where lock_time={$lock_time}");
+        if(empty($res)){
+            die(showAjaxMess(1002,'查无信息'));
+        }else{
+            die(showAjaxMess(200,$res['thumb']));
+        }
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];

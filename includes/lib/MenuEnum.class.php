@@ -20,6 +20,7 @@ class MenuEnum {
     const TAXS_MANGE            = '130';       //税率管理
     const GEXING_MANGE          = '150';       //个性管理
     const MEMBER_MANGE          = '170';       //会员管理
+	const T_MEMBER_MANGE          = '180';       //第三方用户管理
     const YINGXIAO_MANGE        = '190';      //营销管理
     const SHOP_MANGE            = '210';      //商城配置
     const TEMPLATE_MANGE        = '230';      //模板设置
@@ -43,6 +44,7 @@ class MenuEnum {
         self::TAXS_MANGE            => '税率管理',
         self::GEXING_MANGE          => '个性设置',
         self::MEMBER_MANGE          => '会员管理',
+		self::T_MEMBER_MANGE          => '第三方用户管理',     //第三方用户管理
         self::YINGXIAO_MANGE        => '营销管理',
         self::SHOP_MANGE            => '商城配置',
         self::TEMPLATE_MANGE        => '模板设置',
@@ -65,6 +67,7 @@ class MenuEnum {
         self::TAXS_MANGE            => 'shop-taxrate',
         self::GEXING_MANGE          => 'shop-set',
         self::MEMBER_MANGE          => 'member-list',
+		self::T_MEMBER_MANGE          => 'member-info',     //第三方用户管理
         self::YINGXIAO_MANGE        => 'bonus-bonus',
         self::SHOP_MANGE            => 'shop-config',
         self::TEMPLATE_MANGE        => 'template-set',

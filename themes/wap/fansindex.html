@@ -9,11 +9,13 @@
     <title>个人中心</title>
     <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" rel="stylesheet" href="<!--@php echo RESOURCE_ROOT;@-->addons/common/fontawesome3/css/font-awesome.min.css" />
+    <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/fcommom.css?version=20150713">
 	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/fd.css">
 	<script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/js/webuploader/webuploader.css" />
 	<script src="__RESOURCE__/recouse/js/webuploader/webuploader.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
   <style>
 
 	
@@ -68,8 +70,30 @@
 	text-align: center;
 	line-height: 40px;
 }
-   </style>
-
+.distributor-div{
+    width: 95%;
+    margin: 0 auto;
+    padding-bottom: 5px;
+    overflow: hidden;
+}
+.distributor-div-left,.distributor-div-right{
+    float: left;
+    width: 50%;
+    font-size: 13px;
+}
+.distributor-div-right{
+    text-align: right;
+}
+.distributor-wrap{
+    background-color: #fff;
+    border: 1px solid #dfdfdf;
+    padding: 10px 0;
+    border-radius: 0;
+    margin-top: -1rem;
+    border-right: none;
+    border-left: none;
+}
+</style>
 </head>
 
 <body class="body-gray" style="min-width: 320px;max-width: 640px;margin:0 auto;">
@@ -144,6 +168,15 @@
                 </li>
             </ul>
         </div>
+        <div class="panel member-nav distributor-wrap">
+            <div class="distributor-div">
+                <span class="distributor-div-left"><!--@php  if($is_login){@-->  <!--@php   $member_rank_model=member_rank_model($member['experience']);if(empty($member_rank_model)){ echo '无';}else{echo $member_rank_model['rank_name'];}@--> <!--@php }else{@--> 非会员 <!--@php }@--></span>
+                <span class="distributor-div-right">下一级的等级</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="<!--@php  echo empty($member['credit'])?0:$member['credit'];@-->" aria-valuemin="0" aria-valuemax=" <!--@php  echo $member_rank_model['rank_next']['experience'];@-->" style="width: <!--@php echo  empty($member['credit'])?0:$member['credit']/$member_rank_model['rank_next']['experience']*100;@-->%;line-height:15px;font-size:11px;"><!--@php echo $member['credit'].'/'.$member_rank_model['rank_next']['experience'].'['.$member_rank_model['rank_next']['rank_name'].']'; @--></div>
+            </div>
+        </div>
 	 <!--@php  if($is_login){@-->
 	   <div class="panel member-nav" style="margin:0;">
         <ul class="side-nav" style="border-bottom:none;">
@@ -172,7 +205,7 @@
     <div class="panel member-nav">
         <ul class="side-nav">
            <!--@php  if($is_login){@-->
-            <li><a href="<!--@php  echo mobile_url('freepay')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的免单</span><i class="arrow"></i></a></li>
+            <li><a href="<!--@php  echo mobile_url('free')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的免单</span><i class="arrow"></i></a></li>
 			<li><a href="<!--@php  echo mobile_url('identity')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的实名认证</span><i class="arrow"></i></a></li>
 			<li><a href="<!--@php  echo mobile_url('rechargegold')@-->">&nbsp;&nbsp;<i class="icon-credit-card icon_i" ></i>&nbsp;<span class="text">余额充值</span><i class="arrow"></i></a></li>
             <li><a href="<!--@php  echo mobile_url('outchargegold')@-->">&nbsp;&nbsp;<i class="icon-money icon_i" ></i>&nbsp;<span class="text">余额提现</span><i class="arrow"></i></a></li> 

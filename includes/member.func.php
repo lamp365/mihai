@@ -426,7 +426,53 @@ function member_credit($openid, $fee, $type, $remark)
     }
     return false;
 }
-
+//该方法注意使用，因为资金不是退到用户上同时购买是，也不是扣该用户上的钱，都是通过微信或者支付宝第三方产生流动
+function member_freegold($openid, $fee, $type, $remark)
+{
+    $member = member_get($openid);
+    if (! empty($member['openid'])) {
+        if (! is_numeric($fee) || $fee < 0) {
+            message("输入数字非法，请重新输入");
+        }
+        if ($type == 'addgold') {
+            $data = array(
+                'remark' => $remark,
+                'type' => $type,
+                'fee' => $fee,
+                'account_fee' => $member['freeorder_gold'] + $fee,
+                'createtime' => TIMESTAMP,
+                'openid' => $openid
+            );
+            mysqld_insert('member_paylog', $data);
+            mysqld_update('member', array(
+                'gold' => $member['freeorder_gold'] + $fee
+            ), array(
+                'openid' => $openid
+            ));
+            return true;
+        }
+        if ($type == 'usegold') {
+            if ($member['gold'] >= $fee) {
+                $data = array(
+                    'remark' => $remark,
+                    'type' => $type,
+                    'fee' => $fee,
+                    'account_fee' => $member['freeorder_gold'] - $fee,
+                    'createtime' => TIMESTAMP,
+                    'openid' => $openid
+                );
+                mysqld_insert('member_paylog', $data);
+                mysqld_update('member', array(
+                    'gold' => $member['freeorder_gold'] - $fee
+                ), array(
+                    'openid' => $openid
+                ));
+                return true;
+            }
+        }
+    }
+    return false;
+}
 //该方法注意使用，因为资金不是退到用户上同时购买是，也不是扣该用户上的钱，都是通过微信或者支付宝第三方产生流动
 function member_gold($openid, $fee, $type, $remark)
 {
@@ -720,4 +766,25 @@ function ifApp($openid=''){
             member_credit($openid, 50, 'addcredit', '首次登陆APP积分赠送50');
 		}
 	}
+}
+
+/**
+ * 记录用户账单的收支情况
+ * @param $openid :用户ID
+ * @param $fee:收支费用
+ * @param $account_fee:用户账号剩余金额
+ * @param unknown $type:收支类型
+ * @param unknown $remark :收支备注
+ */
+function insertMemberPaylog($openid, $fee,$account_fee, $type, $remark)
+{
+	$data = array('remark' 			=> $remark,
+					'type' 			=> $type,
+					'fee' 			=> $fee,
+					'account_fee' 	=> $account_fee,
+					'createtime' 	=> TIMESTAMP,
+					'openid' 		=> $openid
+	);
+
+	return mysqld_insert('member_paylog', $data);
 }

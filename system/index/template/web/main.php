@@ -646,11 +646,6 @@
                                         所有订单
                                     </a>
                                 </li>
-                                <li> <a  onclick="navtoggle('批发订单 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'purchase','op' => 'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        批发订单
-                                    </a>
-                                </li>
                                 <li> <a  onclick="navtoggle('拼团订单 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'groupbuy','op' => 'list'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         拼团订单
@@ -873,12 +868,7 @@
                                         分销商列表
                                     </a>
                                 </li>
-                                <li>
-                                    <a onclick="navtoggle('渠道商列表 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'purchase'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        渠道商列表
-                                    </a>
-                                </li>
+                     
                                 <li>
                                     <a onclick="navtoggle('虚拟用户 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'dummy'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>
@@ -918,7 +908,7 @@
                     </li>
                 <?php }?>
 
-                <?php if (checkAdmin() ||in_array("member-list",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("member-info",$menurule)) { ?>
                     <li class="huiyuan">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -949,7 +939,7 @@
                                     </a>
                                 </li>
                             <?php }else{
-                                foreach($parentMenuList[MenuEnum::MEMBER_MANGE] as $row){
+                                foreach($parentMenuList[MenuEnum::T_MEMBER_MANGE] as $row){
                                     $zi = "第三方用户导入 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
@@ -1212,7 +1202,20 @@
                                         <i class="icon-double-angle-right"></i>图文笔记管理
                                     </a>
                                 </li>
-                            <?php }?>
+                            <?php }else{ 
+                                foreach($parentMenuList[MenuEnum::SOCIAL_MANGE] as $row){
+                                    $zi = "社区管理 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                                }  }?>
                         </ul>
                     </li>
                 <?php }?>
@@ -1251,7 +1254,21 @@
                                         app版本管理
                                     </a>
                                 </li>
-                            <?php }?>
+                            <?php }else{
+                                foreach($parentMenuList[MenuEnum::APP_MANGE] as $row){
+                                    $zi = "微信设置 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                            <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                                <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                            </a></li>
+                                            ";
+                                }
+                            }?>
                         </ul>
                     </li>
                 <?php }?>

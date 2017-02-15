@@ -38,7 +38,11 @@
 								break;
 								
 						case 4:
-								echo '社区顶部';
+								echo '觅海头条';
+								break;
+								
+						case 5:
+								echo '晒物笔记';
 								break;
 									
 						default:

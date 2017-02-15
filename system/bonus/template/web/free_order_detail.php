@@ -33,6 +33,7 @@
 				<tr>
 					<th style="text-align: center;">订单编号</th>
 					<th style="text-align: center;">宝贝</th>
+					<th style="text-align: center;">买家</th>
 					<th style="text-align: center;">免单金额</th>
 					<th style="text-align: center;">免单状态</th>
 					<th style="text-align: center;">平台处理说明</th>
@@ -44,6 +45,7 @@
 		        <tr style="text-align: center;">
 					<td><?php echo $value['ordersn'];?></td>
 					<td><?php echo $value['title'];?></td>
+					<td><?php echo '收货人：'.$value['address_realname'].'<br>电话：'.$value['address_mobile']; ?></td>
 					<td><?php echo $value['price']*$value['total']; ?></td>
 					<td><?php 
 						if ($value['free_status'] == -1)
@@ -64,6 +66,8 @@
 		        <?php  } } ?>
 		     </tbody>
 		</table>
+		
+		<?php  echo $pager;?>
     </div>
 
     <br/>

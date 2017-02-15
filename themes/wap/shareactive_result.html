@@ -49,7 +49,8 @@
 			<ul>
 				<li class="clearfix">
 					<div class="result-list-left">
-						<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],90,90,2);@-->">
+						<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],350,350,2);@-->">
+						<input type="hidden" value="<!--@php echo $draw['lock_time'];@-->" />
 					</div>
 					<div class="result-list-right">
 						<div class="detail"><!--@php echo $draw['title'];@--></div>
@@ -88,10 +89,7 @@
 	        		<h4 class="modal-title">开奖公式</h4>
 		      	</div>
 		      	<div class="modal-body">
-		      	</div>
-		      	<div class="modal-footer">
-		        	<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
-		      	</div>
+		      	</div>		      	
 		    </div>
 	  	</div>
 	</div>
@@ -100,7 +98,7 @@
 	    	<div class="modal-content">
 	     		<div class="modal-header">
 	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        		<h4 class="modal-title">您的参与记录</h4>
+	        		<h4 class="modal-title">您的心愿数字</h4>
 		      	</div>
 		      	<div class="modal-body"></div>
 		      	<div class="modal-footer">
@@ -109,7 +107,7 @@
 		    </div>
 	  	</div>
 	</div>
-	<!--@php if(!empty($_GP['is_app'])){ @-->
+	<!--@php if(empty($_GP['is_app'])){ @-->
 	<!--@php include themePage('footer');@-->
 	<!--@php } @-->
 <script type="text/javascript">
@@ -128,11 +126,26 @@
 		var beichusu = $(thisObj).data('beichushu');
 		var yushu = chusu%beichusu+1;
 		var html = '';
-
-		html = "<div>幸运数字:<span class='xinyuannum' style='color: #f60;margin-left:10px;'>"+xinyuannum+"</span></div>"+
+		var lock_time = $(thisObj).next().val();
+		var url ="<!--@php echo mobile_url('shareactive',array('op'=>'getStandData'));@-->";
+		url = url +"&lock_time="+lock_time;
+		$.post(url,{},function(data){
+			if(data.errno != 200){
+				alert("网络异常，稍后再试");
+				return '';
+			}
+			var gupiao_url = data.message;
+			html = 
       		"<div>"+
-      			"<p style='text-align:center'>计算公式</p>"+
-      			"<ul class='result-rule clearfix'>"+
+      		"<div class='gupiao'>"+
+      			"<img src='"+gupiao_url+"' />"+
+      			"<p>标准数据为:"+      			
+      				chusu+
+      			"</p>"+
+      		"</div>"+
+      		"<div class='user-detail-span'><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
+      			"<ul class='result-rule'>"+
+      				"<li style='line-height: 40px;'>计算公式 = </li>"+
       				"<li>(</li>"+
       				"<li>"+
       					"<p>"+chusu+"</p>"+
@@ -148,12 +161,14 @@
       				"<li>"+
       					"<p>1</p>"+
       					"<span>固定值</span>"+
-      				"</li>"+
-      				"<li><p>= "+yushu+"</p><span>幸运数</span></li>"+
+      				"</li>"+  
+      				"<br/>"+
+      				"<li><p>= "+yushu+"</p><span>=幸运数</span></li>"+
       			"</ul>"+
       		"</div>";
-		$(".result-modal").modal();
-		$(".result-modal .modal-body").html(html);
+			$(".result-modal").modal();
+			$(".result-modal .modal-body").html(html);
+		},'json');
 
 	}
 	function youResultShow(thisObj,award_id){
@@ -162,7 +177,7 @@
 			if( data.errno != 200 ){
 				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
-				var html = "<div class='result-num'><span>您的心愿数字是:</span>";
+				var html = "<div class='result-num'>";
 				var recorder = data.message;
 				for(var i = 0;i < recorder.length;i++){
 					var item    = recorder[i];

@@ -1,10 +1,32 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<style type="text/css">
+	.hide-tr{
+			display: none;
+		}
+</style>
 <div class="customers-wrap" style="margin-top: 20px;min-height: 300px;">
 	<div class="panel with-nav-tabs panel-default">	
 	    <div class="panel-body third-party">
 	        <div class="tab-content">
 	            <div class="tab-pane fade in active" id="tab1primary">
-	            数据总数：<?php  echo $total;?>
+	            	<?php if ($is_allot>0) { ?>
+	            	
+	            	已入驻 / 已分配：<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
+				  	<div class="progress">
+					  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>">
+					    <?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
+					  </div>
+					</div>
+					<?php } ?>
+					<?php if ($total>0) { ?>
+					已分配 / 数据总数：<?php echo round(($is_allot/$total)*100,'2').'%'; ?>
+				  	<div class="progress">
+					  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_allot/$total)*100,'2').'%'; ?>">
+					    <?php echo round(($is_allot/$total)*100,'2').'%'; ?>
+					  </div>
+					</div>
+					<?php } ?>
+					
 		            <form action="<?php  echo web_url('customers',array('op'=>'display'));?>" method="post">
 						<ul class="search-ul">
 							<li>
@@ -13,13 +35,16 @@
 									<option value="0" >请选择城市</option>
 									<?php  if(is_array($city_a)) { 
 	 								foreach($city_a as $cav) {
-	 									if ($cav == $city) {
+	 									if (empty($cav['city'])) {
+	 										continue;
+	 									}
+	 									if ($cav['city'] == $city) {
 	 										$csed = "selected";
 	 									}else{
 	 										$csed = "";
 	 									}
 	 									?>
-	 									<option value="<?php  echo $cav;?>" <?php  echo $csed;?>><?php  echo $cav;?></option>
+	 									<option value="<?php  echo $cav['city'];?>" <?php  echo $csed;?>><?php  echo $cav['city'];?></option>
 	 								<?php  } } ?>
 								</select>
 							</li>
@@ -29,13 +54,16 @@
 									<option value="0" >请选择会员等级</option>
 			                        <?php  if(is_array($level_a)) { 
 	 								foreach($level_a as $lav) { 
-	 									if ($lav == $level) {
+	 									if (empty($lav['level'])) {
+	 										continue;
+	 									}
+	 									if ($lav['level'] == $level) {
 	 										$lsed = "selected";
 	 									}else{
 	 										$lsed = "";
 	 									}
 	 									?>
-	 									<option value="<?php  echo $lav;?>" <?php  echo $lsed;?>><?php  echo $lav;?></option>
+	 									<option value="<?php  echo $lav['level'];?>" <?php  echo $lsed;?>><?php  echo $lav['level'];?></option>
 	 								<?php  } } ?>
 								</select>
 							</li>
@@ -45,13 +73,16 @@
 									<option value="0" >请选择店铺</option>
 			                        <?php  if(is_array($shop_a)) { 
 	 								foreach($shop_a as $sav) { 
-	 									if ($sav == $shop) {
+	 									if (empty($sav['shop'])) {
+	 										continue;
+	 									}
+	 									if ($sav['shop'] == $shop) {
 	 										$ssed = "selected";
 	 									}else{
 	 										$ssed = "";
 	 									}
 	 									?>
-	 									<option value="<?php  echo $sav;?>" <?php  echo $ssed;?>><?php  echo $sav;?></option>
+	 									<option value="<?php  echo $sav['shop'];?>" <?php  echo $ssed;?>><?php  echo $sav['shop'];?></option>
 	 								<?php  } } ?>
 								</select>
 							</li>
@@ -73,10 +104,7 @@
 								</select>
 							</li>
 							<?php } ?>
-							<li>
-								<span class="left-span">金额范围</span>
-								<input type="text" name="d_money" class="d_money input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="h_money input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
-							</li>
+							
 							<li>
 								<span class="left-span">差评</span>
 								<div class="checkbox-div">
@@ -108,25 +136,36 @@
 								</div>
 							</li>
 							<li>
-								<input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+								<div class="btn-group">
+								  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+								  <button type="button" class="btn btn-primary btn-sm dropdown-toggle add-more-btn" data-toggle="dropdown">
+								    <span class="caret"></span>
+								    <span class="sr-only">Toggle Dropdown</span>
+								  </button>
+								</div>
 							</li>
 							<?php  if ($is_boos) {
 	                    		echo '<li><input type="button" name="button" value=" 分 配 "  class="btn btn-primary btn-sm batch-distribute"></li>';
 	                    	}?>
+	                    	<ul class=" hide-tr" style="width: 100%;overflow: hidden;padding: 0">
+								<li>
+									<span class="left-span">金额范围</span>
+									<input type="text" name="d_money" class="d_money input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="h_money input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
+								</li>
+							</ul>
 						</ul>
+						
 						<div class="panel panel-default third-party-user-list">
-				            <table class="table">
-					            <thead >
+				            <table class="table table-striped table-bordered">
+					            <tbody >
 					                <tr>
 					                    <!-- <th >旺旺</th> -->
 					                    <th width="60px">姓名</th>
 					                    <th>手机</th>
-					                    <th>邮箱</th>
+					                 
 					                    <th>差评</th>
-					                    <th>退过款</th>
-					                    <th>黑名单</th>
-					                    <th>城市</th>
-					                    <th width="150px;">地址</th>
+					                    <th>退款</th>
+					                    <th>黑名单</th>		                 
 					                    <th>上次购买时间</th>
 					                    <th>购买次数</th>
 					                    <th>购买金额</th>
@@ -138,8 +177,6 @@
 					                    <th>联系时间</th>
 					                    <th>操作</th>
 					                </tr>
-					            </thead>
-						        <tbody>
 						        <!-- date('Y-m-d H:i',$almv['lasttime']) -->
 						        <?php  if(is_array($al_client)) { 
 	 								foreach($al_client as $almv) { 
@@ -150,12 +187,12 @@
 					                <tr>
 					                    <td class="text-center"><?php  echo $almv['username'];?></td>
 					                    <td class="text-center"><?php  echo $almv['mobile'];?></td>
-					                    <td class="text-center"><?php  echo $almv['email'];?></td>
+					                    
 					                    <td class="text-center"><?php  echo $almv['review'];?></td>
 					                    <td class="text-center"><?php  echo $almv['refund'];?></td>
 					                    <td class="text-center"><?php  echo $almv['blacklist'];?></td>
-					                    <td class="text-center"><?php  echo $almv['city'];?></td>
-					                    <td class="text-center"><?php  echo $almv['address'];?></td>
+					              
+					
 					                    <td class="text-center"><?php  if (!empty($almv['lasttime'])) {
 					                    	echo date('Y-m-d H:i',$almv['lasttime']);
 					                    }else{
@@ -173,8 +210,8 @@
 					                    	<?php  if ($is_boos) {
 					                    		echo '<a class="btn btn-xs btn-info single-distribute" data_id="'.$almv['id'].'" href="javascript:;"><i class="icon-edit">分配</i></a>';
 					                    	}?>
-						                    &nbsp<a class="btn btn-xs btn-info contact <?php  if ($almv['contact']=='1') {echo 'btn-danger';}?>" data_id="<?php  echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"><?php  if ($almv['contact']=='0') {echo '联系';}else{echo '已联系';}?></i></a>
-						                    &nbsp<a class="btn btn-xs btn-info send-message" data_id="<?php  echo $almv['id'];?>" href="javascript:;"><i class="icon-edit">发短信</i></a>
+						                    &nbsp<a class="btn btn-xs btn-info contact <?php  if ($almv['contact']=='1') {echo 'btn-danger';}?>" data_id="<?php  echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"><?php  if ($almv['contact']=='0') {echo '联系';}else{echo '联系';}?></i></a>
+						                    &nbsp<a class="btn btn-xs btn-info send-message" data_id="<?php  echo $almv['id'];?>" href="javascript:;" data_name="<?php  echo $almv['username'];?>"><i class="icon-edit">发短信</i></a>
 					                    </td>
 					                </tr>
 					            <?php  } } ?>
@@ -257,30 +294,46 @@
 <?php  echo $pager;?>
 <script>
 $(function(){
+	$(".add-more-btn").click(function(){
+		$(".hide-tr").toggle();
+	});
 	//联系操作
 	$(".contact").on("click",function(){
+		if (!confirm('此操作不可撤销，是否确认？')) {
+			return false;
+		}
 		var $this = $(this);
 		var data_id = $this.attr("data_id");
 		var url = "<?php  echo web_url('customers',array('op'=>'contact'));?>";
 		$.post(url,{data_id:data_id},function(data){
-			if( data.message == 1 ){
-				$this.addClass("btn-danger");
-				$this.find("i").text("已联系");
-				$this.parent("td").siblings(".contact_state").text("已联系");
-				$this.parent("td").siblings(".contact_time").text(Stringtotime(data.ctime));
-			}else{
-				$this.removeClass("btn-danger");
-				$this.find("i").text("联系");
-				$this.parent("td").siblings(".contact_state").text("未联系");
-			}
+			$this.addClass("btn-danger");
+			$this.find("i").text("联系");
+			$this.parent("td").siblings(".contact_state").text("联系");
+			$this.parent("td").siblings(".contact_time").text(Stringtotime(data.ctime));
+			// if( data.message == 1 ){
+				
+			// }else{
+			// 	$this.removeClass("btn-danger");
+			// 	$this.find("i").text("联系");
+			// 	$this.parent("td").siblings(".contact_state").text("未联系");
+			// }
 		},'json');
 	});
 	//发送短信
-	// $(".send-message").on("click",function(){
-	// 	var $this = $(this);
-	// 	var data_id = $this.attr("data_id");
-	// 	$(".message-demo").modal();
-	// });
+	$(".send-message").on("click",function(){
+		var $this = $(this);
+		var data_name = $this.attr("data_name");
+		if (!confirm('是否确认向客户<'+data_name+'>发送短信？')) {
+			return false;
+		}
+		var data_id = $this.attr("data_id");
+		// $(".message-demo").modal();
+		var url = "<?php  echo web_url('customers',array('op'=>'sendsms'));?>";
+		$.post(url,{data_id:data_id},function(data){
+			data = eval(data);
+			alert(data.message);
+		},'json');
+	});
 	function Stringtotime(time){
 		time = time*1000;
 		var datetime = new Date();

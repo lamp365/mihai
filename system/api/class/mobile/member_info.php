@@ -104,16 +104,16 @@
 				
 				$objOpenIm = new OpenIm();
 				
-				$memberinfo = mysqld_select("SELECT openid,realname,nickname,member_description,avatar,mobile,gold,freeorder_gold,freeorder_gold_endtime FROM " . table('member') . " where openid=:openid ", array(':openid' => $openid));
+				$memberinfo = mysqld_select("SELECT openid,realname,nickname,member_description,avatar,mobile,gold,freeorder_gold,freeorder_gold_endtime,experience FROM " . table('member') . " where openid=:openid ", array(':openid' => $openid));
 
-				if ($memberinfo['freeorder_gold_endtime'] > time()) {
+				if (intval($memberinfo['freeorder_gold_endtime']) < time()) {
 					$memberinfo['freeorder_gold'] = 0;
 				}
 				
 				$resp = $objOpenIm->getUserInfo($openid); 
 
 				$order_ary = array();
-				for ($i=1; $i < 5; $i++) { 
+				for ($i=1; $i < 6; $i++) { 
 					$order_ary[$i] = get_member_order($i, $openid);
 				}
 				
@@ -127,7 +127,12 @@
 				//发布的头条数量
 				//$headlineCount 	= mysqld_select("SELECT count(headline_id) as cnt FROM " . table('headline') . " where openid=:openid and deleted=0 ", array(':openid' => $openid));
 
-				
+				$member_rank_model = member_rank_model($memberinfo['experience']);
+				if(empty($member_rank_model)) { 
+					$memberinfo['rank'] = '无';
+				}else{
+					$memberinfo['rank'] = $member_rank_model['rank_name']; 
+				}
 				$memberinfo['fansCnt'] 		= $followedCount['cnt'];		//粉丝数
 				$memberinfo['followCnt'] 	= $followerCount['cnt'];		//关注别人的数量
 				$memberinfo['noteCnt'] 		= $noteCount['cnt'];			//发布的笔记数量
@@ -147,7 +152,7 @@
 		$result['message'] 	= "用户还未登陆。";
 		$result['code'] 	= 2;
 	}
-	
+	// dump($result);
 	echo json_encode($result);
 	exit;
 	
@@ -169,10 +174,15 @@
     	}elseif ($status == 2) {
     		// 团购中
     		$where.= " AND e.status<>0 AND e.finish=0";
+    	}elseif ($status == 5) {
+    		// 待评价
+    		$u_status = 3;
+    		$where.= " AND a.status=$u_status AND b.iscomment=0";
     	}else{
     		return false;
     	}
-		$order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.isdraw, a.isprize, e.status as group_status, a.status FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where);
+		$order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id,a.isdraw, a.isprize, e.status as group_status, a.status, b.iscomment FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid left join ".table('team_buy_member')." as c on a.id=c.order_id left join ".table('team_buy_group')." as e on c.group_id=e.group_id WHERE ".$where);
+		// .table('shop_order_goods')." as b on a.id=b.orderid left join "
 		// 总记录数
 		$total = mysqld_select("SELECT FOUND_ROWS() as total;");
 		$total['total'] = intval($total['total']);
@@ -202,7 +212,27 @@
 		    		}
 		    	}
 			}
+
+			// 处理单订单多商品
+			$orderid_ary = array();
+			foreach ($order as $orrk => $orrv) {
+				foreach ($orderid_ary as $ody) {
+					if ($orrv['id'] == $ody['orderid']) {
+						$order[$ody['key']]['goods'][] = $orrv['goods'][0];
+						// unset($order[$orrk]);
+						$total['total'] -= 1;
+						continue 2;
+					}
+				}
+				$oa = array();
+				$oa['orderid'] = $orrv['id'];
+				$oa['key'] = $orrk;
+				$orderid_ary[] = $oa;
+			}
+			// 重新排列数组下标
+			$order = array_merge($order);
 		}
 		
+		// return count($order);
 		return $total['total'];
 	}

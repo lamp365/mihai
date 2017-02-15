@@ -127,7 +127,9 @@
                 $cid = intval($_GP['cate_1']);
                 $condition .= " AND pcate = '{$cid}'";
             }
-    
+            if(isset($_GP['status']) && $_GP['status']!='-1'){
+                $condition .= " AND status = '{$_GP['status']}'";
+            }
             $list = mysqld_selectall("SELECT * FROM " . table('shop_mess') . " WHERE  deleted=0 $condition ORDER BY status DESC, displayorder DESC, id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 			foreach ( $list as &$c ){
                $c['count'] = mysqld_selectcolumn('SELECT COUNT(*) FROM '. table('shop_mess_comment') .'WHERE messid = '.$c['id']);

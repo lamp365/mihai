@@ -33,9 +33,9 @@
 			<td><?php echo getFreeAmount($value['id'],$period['monday_time'],$period['sunday_time']);?></td>
 			<td><?php echo getFreeMemberCount($value['id'],$period['monday_time'],$period['sunday_time']);?></td>
 			<td>
-				<?php if(date('N')==1 && empty($arrFreeConfig)){?>
+
 				<a class="btn btn-xs btn-info" href="javascript:void(0);" onclick="formSubmit('<?php echo $value['id'];?>')"><i class="icon-edit"></i>&nbsp;免&nbsp;单&nbsp;</a>
-				<?php }?>
+
 			</td>
 		</tr>
         <?php  } } ?>

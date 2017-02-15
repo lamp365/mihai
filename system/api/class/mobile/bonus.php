@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * app 优惠券
-	 * @author WZW
+	 * 
 	 * 
 	 */
 
@@ -133,7 +133,7 @@
 		$order = mysqld_selectall("SELECT id FROM " . table('shop_order')." where openid='".$member['openid']."' ");
 		if($order)
 		{
-			$result['message'] 	= "非新手会员，无法领取新手";
+			$result['message'] 	= "非新手会员，无法领取新手礼";
 			$result['code'] 	= 0;
 		}
 		//是否已经领过券

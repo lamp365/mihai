@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-        <h3 class="header smaller lighter blue">积分商品列表</h3>
+        <h3 class="header smaller lighter blue">许愿商品列表</h3>
 		<h5 class="smaller red">提示: 可以删除还没开始的云购产品，不能删除及编辑已经开始的云购产品</h5>
 <form action=""  class="form-horizontal" method="post">
 	<table class="table table-striped table-bordered table-hover">
@@ -24,6 +24,7 @@
 							<option value="0" <?php if($_GP['isrecommand'] == 0){ echo "selected";} ?>>未推荐</option>
 						</select>
 				   </li>
+					<li style="line-height: 50px;">总价值：<?php echo getShareTotalPrice();?>元</li>
 					<script>
 						function sel_by_state(obj){
 							var state = $(obj).val();
@@ -52,6 +53,7 @@
 					<th style="text-align:center; min-width:30px;">总价值</th>
 					<th style="text-align:center; min-width:30px;">心愿数</th>
 					<th style="text-align:center; min-width:30px;">状态</th>
+					<th style="text-align:center; min-width:30px;">开始时间</th>
 					<th style="text-align:center; min-width:150px;">云购明细</th>
 				    <th style="text-align:center; min-width:50px;">推荐</th>
 				    <th style="text-align:center; min-width:50px;">操作</th>
@@ -61,7 +63,7 @@
 				<?php  if(is_array($awardlist)) { foreach($awardlist as $item) { ?>
 				<tr>
 				    <td style="text-align:center;"><img src="<?php echo $item['imgs'];?>" width="50" height="50" /></td>
-					<td style="text-align:center;"><?php  echo $item['title'];?></td>
+					<td style="text-align:center;white-space: normal;word-break: break-all;max-width: 230px;"><?php  echo $item['title'];?></td>
 					<td style="text-align:center;"><?php  echo $item['amount'].' / '.$item['dicount'];?></td>
 					<td style="text-align:center;"><?php  echo $item['price'];?> 元</td>
 					<td style="text-align:center;"><?php  echo $item['credit_cost'];?> </td>
@@ -84,6 +86,7 @@
 						}
 					?>
 					</td>
+					<th style="text-align:center;"><?php  echo date("Y-m-d H:i",$item['endtime']);?> </th>
 				    <td style="text-align:center;">
 					    <?php
                             if ( empty($item['sn']) ){

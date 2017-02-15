@@ -3,10 +3,10 @@
 
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >
 		   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 前台界面:</label>
+										<label class="col-sm-2 control-label no-padding-left" > 活动界面:</label>
 
 										<div class="col-sm-9">
-												    <a href="<?php  echo create_url('mobile',array('name' => 'addon7','do' => 'index'))?>" target="_blank"><?php echo WEBSITE_ROOT;?><?php  echo create_url('mobile',array('name' => 'addon7','do' => 'index'))?></a>
+												    <a href="<?php  echo create_url('mobile',array('name' => 'shopwap','do' => 'shareactive'))?>" target="_blank"><?php echo WEBSITE_ROOT;?><?php  echo create_url('mobile',array('name' => 'shopwap','do' => 'shareactive'))?></a>
                 
 										</div>
 									</div>

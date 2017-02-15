@@ -1397,7 +1397,7 @@ $(".share-list a").hover(function(){
 		$(".share-list .weixin_li").on("click",function(){
 			$(".wx_code_area,.shade").show();
 			$("#wx_code").qrcode({ 
-			    render: "table", //table方式 
+			    render: "canvas", //canvas方式
 			    width: 200, //宽度 
 			    height:200, //高度 
 			    text: url //二维码的链接 

@@ -28,8 +28,9 @@
 						</li>
 						<li style="float:left;list-style-type:none;">
 						 <select name="status" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
-							<option value="1" selected>开通中</option>
-							<option value="0" >已关闭</option>
+							<option value="-1">状态</option>
+							<option value="1" <?php if($_GP['status'] == 1){ echo "selected";}?>>开通中</option>
+							<option value="0" <?php if(isset($_GP['status']) && $_GP['status'] == 0){ echo "selected";}?>>已关闭</option>
 						</select>
 						</li>
 						

@@ -9,7 +9,7 @@ class shopwapAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
-	public function do_free_list()
+	public function do_free()
     {
         $this->__mobile(__FUNCTION__);
     }
@@ -296,7 +296,10 @@ class shopwapAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
-
+	 public function do_free_charge_rule()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
     public function getCartTotal($goodid='')
     {
 		if (!empty($goodid) ){

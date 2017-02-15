@@ -60,6 +60,15 @@ header("Expires:0");
 	}else{
 		$addresslist      =   mysqld_selectall("SELECT * FROM " . table('shop_address') . " WHERE  deleted = 0 and openid = :openid order by isdefault desc ", array(':openid' => $openid));
 	}
+	 // 找出用户的免单金额及余额
+    $user_data = mysqld_select("SELECT * FROM ".table("member")." WHERE openid = :openid limit 1", array(':openid'=>$openid));
+    if ( $user_data['freeorder_gold_endtime'] >= time() ){
+		  $user_free  = $user_balance_data['freeorder_gold'];
+	}else{
+          $user_free  = 0;
+    }
+	$user_gold         = $user_data['gold'];
+	$user_balance     =  $user_gold + $user_free;
 	 // 直接购买操作代码
      if (!empty($id) && $_GP['op'] != 'cart' ) {
 		    update_group_status($id);
@@ -390,10 +399,38 @@ header("Expires:0");
    				message("没有获取到付款方式");	
    			}
    			$paytype=$this->getPaytypebycode($payment['code']);
+			$free_if = $gold_if = 0;
+			if (isset($_GP['balance'])){
+				$pay_price        =  $totalprice + $dispatchprice + $taxtot;
+			    $free_use    =  $user_free >= $pay_price ? $pay_price :  $user_free;
+				// 这条有问题
+				if ($free_use == $pay_price){
+                    $gold_use  =  0 ;  
+				}else{
+                    if ($user_gold >= $pay_price - $free_use){
+                          $gold_use = $pay_price - $free_use;
+					}else{
+                          $gold_use = $user_gold;
+					}
+				}
+                $pay_price   =  $pay_price - $free_use - $gold_use;
+				if ( $free_use > 0 ){
+					$free_if  = 1;
+                    member_freegold($openid,$free_use,'usegold','免单余额抵扣'.$free_use.'元');
+				}
+				if ( $gold_use > 0 ){
+					$gold_if  = 1;
+                    member_gold($openid,$gold_use,'usegold','余额抵扣'.$gold_use.'元');
+				}
+			}else{
+				$free_use         =  0 ;
+				$gold_use         =  0 ;
+                $pay_price        =  $totalprice + $dispatchprice + $taxtot;
+			}
             $data = array(
                 'openid' => $openid,	
                 'ordersn' => $ordersns,
-                'price' => $totalprice + $dispatchprice + $taxtot, // 产品金额+运费
+                'price' => $pay_price, // 产品金额+运费
                 'dispatchprice' => $dispatchprice,
                 'goodsprice' => $goodsprice,
 				'ifcustoms'   => $ifcustoms,
@@ -410,6 +447,9 @@ header("Expires:0");
                 'paytypename' => $payment['name'],
                 'remark' => $_GP['remark'],
                 'addressid'=> $address['id'],
+				'has_balance' => $gold_if,
+				'balance_sprice'=>$gold_use,
+				'freeorder_price'=>$free_use,
                 'address_mobile' => $address['mobile'],
                 'address_realname' => $address['realname'],
                 'address_province' => $address['province'],
@@ -503,7 +543,7 @@ header("Expires:0");
             }else{
 				$cookie->delCookie('goods');  //设置在mycart.php中
 			}
-            clearloginfrom(); 
+            clearloginfrom();
             header("Location:".mobile_url('pay', array('orderid' => $orderid,'topay'=>'1')) );
         }else{
             $_SESSION['token'] = md5(microtime(true));

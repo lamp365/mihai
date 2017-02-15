@@ -5,6 +5,7 @@
  */
 
 $operation = ! empty ( $_GP ['op'] ) ? $_GP ['op'] : '';
+$admin = $_CMS['account']['id'];
 
 switch($operation) {
 
@@ -16,18 +17,34 @@ switch($operation) {
 		$video = $_GP ['video'];
 		$description = $_REQUEST['description'];
 		$preview = $_GP ['preview'];
+		$ischeck = (int)$_GP['ischeck'];
 
 		$headline = mysqld_select("SELECT * FROM ".table('headline')." WHERE headline_id=".$headline_id);
 
 		if (empty($title) or empty($description)) {
 			message ( '标题和内容不能为空！', refresh(), 'error' );
 		}
+		$contents =  htmlspecialchars_decode($_GP['description']);
+		preg_match_all('<img.*?src=\"(.*?.*?)\".*?>',$contents,$match);
+		$oldimg   =  $match[1];
+		foreach ( $oldimg as $key=>$oldimg_value ){
+			  // 将本地的图片上传到阿里云上
+			  if ( strstr($oldimg_value, 'ueditor' )){
+					$picurl   = rtrim(WEBSITE_ROOT,'/').$oldimg_value;
+				    $newimg   = aliyunOSS::putObject($picurl);
+				    $contents = str_replace($oldimg_value, $newimg['oss-request-url'],$contents);
+				    //删除本地图片
+				    $unlink_pic = ".".$oldimg_value;  //相对路径
+				  	 @unlink ($unlink_pic);
+			  }
+		 }
 
 		$data = array('isrecommand' 	=> $isrecommand,
 						'modifiedtime' 	=> time(),
 						'title'			=> $title,
-						'description'	=> $description,
-						'preview'		=> $preview
+						'description'	=> $contents,
+						'preview'		=> $preview,
+						'ischeck'		=> $ischeck
 		);
 		$pic = '';
 		if (!empty($_GP['attachment'])) {
@@ -60,7 +77,7 @@ switch($operation) {
 
             $data['video_img'] = $upload['path'];
         }
-        $data['video'] = '';
+        // $data['video'] = '';
         if (!empty($_FILES['video']['tmp_name'])) {
         	if ($_FILES['video']['type'] != "video/mp4") {
         		message ( '视频只能上传MP4格式！', refresh(), 'error' );
@@ -76,15 +93,15 @@ switch($operation) {
         // if (empty($data['pic']) AND empty($data['video'])) {
         // 	message ( '视频和图片不能都为空！', refresh(), 'error' );
         // }
-        if (!empty($data['pic']) AND !empty($data['video'])) {
-        	message ( '视频和图片只能二选一！', refresh(), 'error' );
-        }
-        if (!empty($data['pic']) AND !empty($_GP ['hidvideo'])) {
-        	message ( '视频和图片只能二选一！', refresh(), 'error' );
-        }
-        if (!empty($headline['pic']) AND !empty($headline['video'])) {
-        	message ( '视频和图片只能二选一！', refresh(), 'error' );
-        }
+        // if (!empty($data['pic']) AND !empty($data['video'])) {
+        // 	message ( '视频和图片只能二选一！', refresh(), 'error' );
+        // }
+        // if (!empty($data['pic']) AND !empty($_GP ['hidvideo'])) {
+        // 	message ( '视频和图片只能二选一！', refresh(), 'error' );
+        // }
+        // if (!empty($headline['pic']) AND !empty($headline['video'])) {
+        // 	message ( '视频和图片只能二选一！', refresh(), 'error' );
+        // }
 
 		if (empty($headline_id)) {
 			$data['createtime'] = time();
@@ -111,6 +128,7 @@ switch($operation) {
 
 	case 'add':
 		// 新增
+		$author = mysqld_select("SELECT * FROM ".table('user')." WHERE id=".$admin);
 		include page ( 'headline' );
 		break;
 

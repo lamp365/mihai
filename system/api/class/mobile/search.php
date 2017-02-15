@@ -12,13 +12,13 @@
 		{
 			case 'price_low':  		//价格从低到高
 		
-				$order = "IF( d.istime =  '1', d.timeprice, d.app_marketprice ) asc ,d.id desc";
+				$order = "IF( d.type !=  '0', d.timeprice, d.app_marketprice ) asc ,d.id desc";
 		
 				break;
 		
 			case 'price_high':  	//价格从高到低
 		
-				$order = "IF( d.istime =  '1', d.timeprice, d.app_marketprice ) DESC ,d.id desc";
+				$order = "IF( d.type !=  '0', d.timeprice, d.app_marketprice ) DESC ,d.id desc";
 		
 				break;
 					

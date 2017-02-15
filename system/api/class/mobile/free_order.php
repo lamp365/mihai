@@ -32,7 +32,7 @@
 				
 				$result['data']['free_info']= $freeConfig;
 				$result['data']['dish_list']= $arrDish;
-				$result['data']['url']		= '';				//活动说明URL
+				$result['data']['url']		= WEBSITE_ROOT.'index.php?mod=mobile&op=rule&name=shopwap&do=free_charge_rule';				//活动说明URL
 				$result['code'] 			= 1;
 				
 				break;

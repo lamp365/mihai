@@ -330,7 +330,7 @@ border-bottom: 0;
 
 		<div class="cutbox">
 			<!-- 余额抵扣 -->
-			<p class="balance"><input class="balance-input" type="checkbox" name="balance">余额抵扣:<em style="width: 133px; display: inline-block;">￥1111</em></p>
+			<p class="balance"><label><input class="balance-input" type="checkbox" name="balance">余额抵扣:</label><em style="width: 133px; display: inline-block;">￥<!--@php echo $user_balance; @--></em></p>
 			<!--select优惠券-->
 			<!--@php  if(!empty($bonus_list)) {  @-->
 			<div class="infobox" style="background: none">

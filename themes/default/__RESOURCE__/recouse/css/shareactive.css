@@ -104,8 +104,6 @@ body{
     position: absolute;
     top: 282px;
     left: 200px;
-    border: 1px solid #dcdcdc;
-    border-radius: 3px;
 }
 .recommend_list .left_img img{
 	width: 100%;
@@ -123,7 +121,7 @@ body{
 	color:#fff;
 }
 .recommend_list .right_ele .title{
-	font-size: 30px;
+	font-size: 25px;
 	margin-top: 100px;
 }
 .recommend_list .right_ele .detail{
@@ -159,7 +157,7 @@ body{
 }
 .imgWrap{
     width: 225px;
-    margin-bottom: 14px;
+   // margin-bottom: 14px;
     overflow: hidden;
     height: 225px;
 }
@@ -180,9 +178,8 @@ body{
 	transform: scale(1.2);
 }
 .per_indiana .name{
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space:nowrap;
+    overflow: hidden;
+    height: 42px;
 }
 .progress{
 	width: 100%;
@@ -334,7 +331,7 @@ body{
 
 .active-num-btn{
 	position: fixed;
-    top: 138px;
+    top: 249px;
     width: 77px;
     right: 0px;
     background-color: rgba(255,255,255,1);
@@ -342,6 +339,7 @@ body{
     padding: 4px 10px;
     border-radius: 30px 0 0 30px;
     z-index: 9999;
+    border: 1px solid #e0e0e0;    
 }
 .active-num-btn img{
 	width: 16px;
@@ -358,7 +356,7 @@ body{
 .active-fixed-btn{
 	position: fixed;
 	width: 77px;
-    top: 100px;
+    top: 215px;
     right: 0px;
     background-color: rgba(255,255,255,1);
     font-size: 13px;
@@ -366,6 +364,7 @@ body{
     border-radius: 30px 0 0 30px;
     z-index: 9999;
 	cursor: pointer;
+    border: 1px solid #e0e0e0;
 }
 .miandan-banner{
 	background:url(../images/miandan_banner.jpg) no-repeat center;
@@ -398,9 +397,10 @@ body{
 	background-color: #f7f7f7;
 }
 .list-num{
-    width: 96%;
+    width: 100%;
     margin: 0 auto;
 	margin-bottom: 10px;
+    font-size: 13px;
 }
 .list-num-before{
    color: #f60;
@@ -431,7 +431,7 @@ body{
     top: 175px;
     left: 456px;
     color: #fff;
-    background-color: #ff973a;
+    background-color: #d70b17;
     padding: 4px 20px;
     border-radius: 4px;
 }
@@ -442,34 +442,33 @@ body{
 	position: absolute;
     top: 175px;
     left: 1054px;
-    color: #dd5117!important;
+    color: #fff!important;
     padding: 4px 20px;
     border-radius: 4px;
+    background-color: #d70b17;
 }
 .result-wrap{
-    width: 1022px;
-    margin: 0 auto;
-    background: url(../images/index_shadow.png) no-repeat center;
-    margin-top: -200px;
-    margin-bottom: 30px;
-
+    background: #f3f4ef;
+    padding-bottom: 30px;
 }
-.result-wrap ul li{
-	float: left;
-	width: 332px;
-   
-    margin-top: -1px;
-    margin-left: -1px;
-    height: 163px;
+.result-wrap .one_result ul li{
+    float: left;
+    width: 388px;
+    height: 165px;
+    background-color: #fff;
+    margin: 0 8px 8px 0;
 }
-
+.active{
+    margin: 0;
+}
 .result-list-left{
-    width: 150px;
+    width: 190px;
+    height: 190px;
     float: left;
 }
 .result-list-right{
     float: left;
-    width: 180px;
+    width: 230px;
     box-sizing: border-box;
     margin-top: 33px;
 }
@@ -478,17 +477,14 @@ body{
 	cursor: pointer;
     max-width: 100%;
     display: block;
-    padding: 10px;
+    padding: 15px;
     box-sizing: border-box;
     margin-top: 6px;
 }
 .result-list-right .detail{
     color: #333;
-    margin-bottom: 7px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: bold;
+    height: 45px;
 }
 .result-list-right .result-djs{
     text-align: center;
@@ -496,23 +492,22 @@ body{
     color: #fff;
     padding: 5px;
     border-radius: 3px;
-    width: 170px;
+    width: 105px;
 }
 .result-list-right .result-djs span{
 	padding: 2px;
 }
 .result-phase{
-	border: 1px solid #e4e4e4;
-    width: 1000px;
+    width: 1181px;
     height: 45px;
     line-height: 45px;
     padding-left: 15px;
     box-sizing: border-box;
-    margin-left: -1px;
-    color: #666;
-    background: #fafafa;
-    border-radius: 5px 5px 0 0;
+    color: #333;
+    background: #fff;
     font-size: 16px;
+    margin-bottom: 15px;
+    margin-top: 7px;
 }
 .result-rule{
 	margin-top: 15px;
@@ -523,6 +518,12 @@ body{
 	line-height: 20px;
 	text-align: center;
 }
+.modal-body .result-rule{
+    margin-top: 0;
+    float: left;
+    width: 490px;
+    margin-left: 20px;
+}
 .result-detail{
 	border: 1px solid #ffad77;
     color: #f60;
@@ -531,8 +532,9 @@ body{
     line-height: 26px;
 }
 .result-list-right .number{
-	color: #999;
+	color: #666;
 	margin-bottom: 10px;
+    font-size: 12px;
 }
 .modal-body{
 	overflow: hidden;
@@ -546,7 +548,7 @@ body{
 }
 .get_share_modal{
 	position: fixed;
-    top: 177px;
+    top: 284px;
     width: 77px;
     right: 0px;
     background-color: rgba(255,255,255,1);
@@ -555,10 +557,11 @@ body{
     border-radius: 30px 0 0 30px;
     z-index: 9999;
     cursor: pointer;
+    border: 1px solid #e0e0e0;
 }
 
 .get_share_modal img{
-	margin-top: -3px;
+	margin-top: 3px;
     margin-right: 4px;
     margin-left: 2px;
 
@@ -665,21 +668,23 @@ body{
     cursor: pointer;
 }
 .xinyuannum{
-	color: #fa6185;
+	color: #fff;
 }
 .user-detail-span{
 	background: url(../images/xingyuanma_bg.png) no-repeat center;
-    width: 180px;
+    width: 51px;
     height: 35px;
     line-height: 35px;
     color: #fff;
     float: left;
+    text-align: center;
 }
 .modal-body .xinyuandetail,.user-detail-span .xinyuandetail{
     padding: 0 6px;
 }
 .modal-body .user-detail-span{
-	margin-bottom: 15px;
+    float: left;
+    width: 51px;
 }
 .user-detail .love-span{
 	float: left;
@@ -761,13 +766,73 @@ body{
 .coupon_indiana_price .yuan{
     font-size: 27px;
 }
-.result-last-wrap{
-    
-}
 .one_result{
-    width: 1000px;
-    background-color: #fff;
+    width: 1190px;
     margin: 0 auto;
 }
-
-
+ .small-title{
+    text-align: center;
+    padding: 50px 0;
+    margin-top: -144px;
+}
+.result-wrap .past-record ul li{
+    width: 190px;
+    height: auto;
+    margin: 0 8px 8px 0;
+    background-color: #fff;
+}
+.past-record .result-list-left,.past-record .result-list-right{
+    float: none;
+    margin: 0 auto;
+}
+.past-record .result-list-right{
+    width: 190px;
+    padding: 0 10px;
+}
+.user-detail{
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.result-last-wrap{background: #f3f4ef;}
+.oning-img {
+    width: 150px;
+    height: 150px;
+}
+.oning-img img{
+    width: 150px;
+}
+.younump span{
+    padding: 2px 10px;
+    background-color: #f75858;
+    color: #fff;
+    border-radius: 5px;
+    margin-right: 5px;
+    float: left;
+    margin-bottom: 5px;
+}
+.result-num,.younump{
+    overflow: hidden;
+}
+.result-num span{
+    padding: 2px 10px;
+    background-color: #f75858;
+    color: #fff;
+    border-radius: 5px;
+    margin-right: 5px;
+    float: left;
+    margin-bottom: 5px;
+}
+.need-love-num img{
+    width: 16px;
+    margin-top: 3px;
+    float: right;
+}
+.gupiao{
+	padding: 0 0 10px 0;
+	border-bottom: solid 1px #eee;
+	margin-bottom: 10px;
+}
+.gupiao img{
+	width: auto;
+	max-height: 100px;
+}

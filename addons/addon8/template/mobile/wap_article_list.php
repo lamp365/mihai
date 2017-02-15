@@ -8,11 +8,13 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/swiper-3.3.1.min.css"/>
 	<link href="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjcommon.css" rel="stylesheet"  type="text/css" />
 	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/waterfloor.js"></script>		
+	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/waterfloor.js"></script>	
+	<script type="text/javascript" src="__RESOURCE__/recouse/js/swiper.js"></script>	
 </head>
 
 <style type="text/css">
@@ -209,12 +211,48 @@
 		border: solid 1px #f8f8f8;
 		box-sizing: border-box;
 	}
+	/*热门视频*/
+	.hot-video {
+		width: 100%;
+		overflow: hidden;
+		padding: 10px 0 10px 0;
+	}
+	.hot-video ul{
+		width: 100%;
+		max-height: 100px;		
+	}	 
+	.hot-video ul li{
+		width: 30%;
+		overflow: hidden;
+		float: left;
+		list-style: none;
+		text-align:center;
+		margin-left: 2.5%;
+		padding: 0;
+	}
+	.hot-video ul li img{
+		width: 100%;  
+		height:auto;
+	   	vertical-align: middle;
+	}
+	.hot-video ul li video{
+		width: 100%;  
+		height:auto;
+	   	vertical-align: middle;
+	}
+	.hot_title{
+		padding: 10px 0 0 10px;		
+		font-size: 16px;
+		font-weight: bold;
+		line-height: 32px;
+	}
+	
 </style>
 
 <body>
 <div style="height: 100%;background: white;position: relative;">
 
-	<div class="top_header" style="border-bottom: none;background: #fff;">
+	<div class="top_header" style="border-bottom: none;background: #fff;display: none;">
 		<div class="header_title" style="font-size: 16px;line-height: 45px;">
 			<a href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'healty'))?>"  <?php if($_GP['op']=='healty' || empty($_GP['op'])){ echo "class='art_active'"; } ?> >健康文化</a>
 			<a href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline'))?>"  <?php if($_GP['op']=='headline'){ echo "class='art_active'"; } ?>>觅海头条</a>
@@ -257,9 +295,40 @@
 				</div>
 			</div>
 			<!--觅海头条-->
-		<?php }else if($_GP['op'] == 'headline'){  ?>			
-			<div class="mhheadline">
-				<h3></h3>
+		<?php }else if($_GP['op'] == 'headline'){  ?>
+			<p class="hot_title">
+				<img style="width: 25px;margin-top: 2px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/hot-video.png"/>
+				热门视频
+				<a href="#" style="float: right;margin-right: 10px;color:rgb(171,171,171);font-size: 14px;line-height: 26px;">更多视频 ></a>
+			</p>
+			<div class="swiper-container hot-video">				
+				<ul class="swiper-wrapper">							
+					<li class="swiper-slide">					
+						<video src="/i/movie.ogg" controls="controls"></video>					
+					</li>	
+					<li class="swiper-slide">					
+						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif" />					
+					</li>
+					<li class="swiper-slide">					
+						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/bg4.png" />					
+					</li>	
+					<li class="swiper-slide">					
+						<img src="<?php echo WEBSITE_ROOT.'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />					
+					</li>	
+					<li class="swiper-slide">					
+						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif" />					
+					</li>
+					<li class="swiper-slide">					
+						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/appload01.jpg" />					
+					</li>				
+				</ul>				
+			</div>	
+			<h3 style="background: #eee;height: 10px;"></h3>		
+			<div class="mhheadline">				
+				<p class="hot_title">
+					<img style="width: 20px;margin-top: 4px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/hot-new.png"/>
+					觅海头条
+				</p>				
 				<ul>
 					<?php if(!empty($article_list)){ ?>
 					<!--一个li是一篇文章，总共4个静态文章，分别表现不同的图片数量-->

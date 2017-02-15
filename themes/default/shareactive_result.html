@@ -7,6 +7,7 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="format-detection" content="telephone=no">
+	<link rel="shortcut icon" href="favicon.ico"/>
 	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 	<link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet"	type="text/css" />
@@ -20,24 +21,28 @@
 <body >
 <!--@php  include page('header');@-->
 <div class="result-last-wrap">
-	<div style="background-color: #c8161e;height: 400px;"></div>
+	<div style="background:url(__RESOURCE__/recouse/images/shareactive_result.jpg);height: 572px"></div>
+	<div class="small-title">
+					<img src="__RESOURCE__/recouse/images/shareactive_small_title.png">
+				</div>
 	<div class="result-wrap">
 		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
 			<!--@php if((time() > $drawtime && $draw_arr[0]['state'] != 2) || (time() <= $drawtime && $draw_arr[0]['state'] == 3 ) ){ @-->
-			<div class="one_result">
+			<div class="one_result past-record">
 				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 已揭晓</div>
 				<ul class="clearfix">
 					<!--@php foreach($draw_arr as $draw){  @-->
 					<li>
 						<div class="result-list-left">
-							<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],150,150,2);@-->">
+							<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],190,190,2);@-->">
+							<input type="hidden" value="<!--@php echo $draw['lock_time'];@-->" />
 						</div>
 						<div class="result-list-right">
 							<div class="detail"><!--@php echo $draw['title'];@--></div>
 							<div class="number">总参与人次:<!--@php echo $draw['dicount'];@--></div>
 
 							<div class="user-detail">
-								<div class="user-detail-span"><span class="xinyuandetail">心愿幸运数:</span><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
+								<div class="user-detail-span"><span class="xinyuannum" ><!--@php echo $draw['sn'];@--></span></div>
 								<span class="love-span"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)"  src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
 							</div>
 
@@ -48,7 +53,8 @@
 			</div>
 
 			<!--@php }else{  @-->
-			<div class="one_result">
+			<div class="one_result awards-ing">
+				
 				<!--@php if(time() > $drawtime){ @-->
 				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--> 颁奖中...</div>
 				<!--@php }else{  @-->
@@ -57,7 +63,7 @@
 				<ul class="clearfix">
 					<!--@php foreach($draw_arr as $draw){  @-->
 					<li>
-						<div class="result-list-left">
+						<div class="result-list-left oning-img">
 							<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],150,150,2);@-->">
 						</div>
 						<div class="result-list-right">
@@ -68,7 +74,6 @@
 							<div class="result-detail">正在颁奖</div>
 							<!--@php }else{ @-->
 							<div class="result-djs">
-								<span>倒计时</span>
 								<span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span>
 							</div>
 							<script>
@@ -122,7 +127,7 @@
 </div>
 <!--@php include themePage('footer');@-->
 <script type="text/javascript">
-	function resultShow(thisObj,award_id){
+	function resultShow(thisObj,award_id){		
 		var result_obj = $(thisObj).closest('.one_result').find('.result-phase');
 		if($(result_obj).hasClass("tobedraw")){
 			//如果是待开奖的  点击无反应
@@ -135,11 +140,26 @@
 		var chusu    = $(thisObj).data('chushu');
 		var beichusu = $(thisObj).data('beichushu');
 		var yushu = chusu%beichusu+1;
+		var lock_time = $(thisObj).next().val();
 		var html = '';
-
-		html = "<div class='user-detail-span'><span class='xinyuandetail'>心愿幸运数:</span><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
+		var url ="<!--@php echo mobile_url('shareactive',array('op'=>'getStandData'));@-->";
+		url = url +"&lock_time="+lock_time;
+		$.post(url,{},function(data){
+			if(data.errno != 200){
+				alert("网络异常，稍后再试");
+				return '';
+			}
+			var gupiao_url = data.message;
+			html = 
       		"<div>"+
-      			"<ul class='result-rule clearfix'>"+
+      		"<div class='gupiao'>"+
+      			"<img src='"+gupiao_url+"' />"+
+      			"<p>标准数据为:"+      			
+      				chusu+
+      			"</p>"+
+      		"</div>"+
+      		"<div class='user-detail-span'><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
+      			"<ul class='result-rule'>"+
       				"<li style='line-height: 40px;'>计算公式 = </li>"+
       				"<li>(</li>"+
       				"<li>"+
@@ -160,8 +180,9 @@
       				"<li><p>= "+yushu+"</p><span>幸运数</span></li>"+
       			"</ul>"+
       		"</div>";
-		$(".result-modal").modal();
-		$(".result-modal .modal-body").html(html);
+			$(".result-modal").modal();
+			$(".result-modal .modal-body").html(html);
+		},'json');
 
 	}
 	function youResultShow(thisObj,award_id){
@@ -170,7 +191,7 @@
 			if( data.errno != 200 ){
 				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
-				var html = "<div class='result-num'><span>您的心愿数字是:</span>";
+				var html = "<div class='result-num'>";
 				var recorder = data.message;
 				for(var i = 0;i < recorder.length;i++){
 					var item    = recorder[i];

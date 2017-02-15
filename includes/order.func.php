@@ -58,7 +58,7 @@ function get_order($array=array()) {
     if (!empty($array['where'])){
         $where = $array['where'];
     }
-    $list = mysqld_select("SELECT id, status, taxprice, dispatchprice, price, isprize, isdraw, addressid, address_address, address_province, address_realname, address_city, address_mobile, address_area, openid, ordersn, dispatch, goodsprice, hasbonus, bonusprice, has_balance, balance_sprice, updatetime, express, expresssn, expresscom, createtime, paytime, sendtime, completetime, closetime, ifcustoms FROM ".table('shop_order')." WHERE $where");
+    $list = mysqld_select("SELECT id, status, taxprice, dispatchprice, price, isprize, isdraw, addressid, address_address, address_province, address_realname, address_city, address_mobile, address_area, openid, ordersn, dispatch, goodsprice, hasbonus, bonusprice, has_balance, balance_sprice, freeorder_price, updatetime, express, expresssn, expresscom, createtime, paytime, sendtime, completetime, closetime, ifcustoms FROM ".table('shop_order')." WHERE $where");
     if ($list['has_balance'] == '1') {
     	// (string)$list['price'] += $list['balance_sprice'];
     	// $list['price'] = (string)$list['price'];
@@ -92,6 +92,9 @@ function get_order($array=array()) {
     	$ov['productprice'] = (float)$good['productprice'];
 		$ov['marketprice'] =(float)$good['marketprice'];
 		$ov['timeprice'] = (float)$good['timeprice'];
+		if (empty($ov['goodprice'])) {
+			$ov['goodprice'] = $ov['marketprice'];
+		}
 		$ov['draw'] = $good['draw'];
 		$list['sum_commision'] += $ov['commision'];
 		$shop = mysqld_select("SELECT shopname FROM ".table('openshop')." WHERE openid='".$ov['seller_openid']."'");
@@ -150,20 +153,14 @@ function update_order_status($id, $status,$dishinfo='') {
 		if (($order['has_balance'] == '1' AND $order['return_balance'] == '0') || !empty($order['freeorder_price'])) {
 			
 			$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
-			
-			$freeorder_gold_endtime = strtotime('Sunday')+24*3600-1;	//周天的23:59:59
 				
-			//已有本期免单金额时
-			if($mem['freeorder_gold_endtime']==$freeorder_gold_endtime)
+			//该笔订单下单时间是在免单金额使用期内时
+			if(($mem['freeorder_gold_endtime']-7*24*3600) < $order['createtime'])
 			{
-				$memberData = array('freeorder_gold' 		=> $order['freeorder_price']+$mem['freeorder_gold'],
-									'freeorder_gold_endtime'=> $freeorder_gold_endtime
-				);
-			}
-			else{
-				$memberData = array('freeorder_gold' 		=> $order['freeorder_price'],
-									'freeorder_gold_endtime'=> $freeorder_gold_endtime
-				);
+				$memberData = array('freeorder_gold' => $order['freeorder_price']+$mem['freeorder_gold']);
+				
+				//记录用户账单的免单金额收支情况
+				insertMemberPaylog($mem['openid'], $order['freeorder_price'],$memberData['freeorder_gold'], 'addgold', '取消订单后，免单余额返还'.$order['freeorder_price'].'元');
 			}
 			
 			$memberData['gold'] = (float)$mem['gold']+(float)$order['balance_sprice'];
@@ -354,15 +351,176 @@ function paySuccessProcess($orderInfo)
 
 
 #############################################订单生成前的信息  start#############################################
+
 /**
- * 返回从购物车下单的订单信息
+ * app 1.0 返回从购物车下单的订单信息
+ *
+ * @param $cart_ids : array 购物车ID
+ * @param $openid : 用户ID
+ * @param $orderBy : 购物车排序SQL(库存不足时，该商品分配给最早添加到购物车的店铺使用)
+ *
+ */
+function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
+
+	$goodsprice = 0; 			// 商品总金额
+	$taxtotal 	= 0; 			// 税收总额
+	$ships 		= 0; 			// 运费总额
+	$allgoods 	= array (); 	// 商品列表
+	$result 	= array (); 	// 返回值数组
+	$issendfree	= 0;			// 是否免邮
+	$ifcustoms  = 0;			// 是否需要清关材料
+
+	$cartSql =  "SELECT c.id,c.goodsid,c.total,c.seller_openid,s.id as shop_id,s.shopname FROM " . table ( 'shop_cart' ) . " c ";
+	$cartSql.= " left join " . table('openshop') . " s on s.openid=c.seller_openid ";
+	$cartSql.= " WHERE c.id in(" . implode ( ',', $cart_ids ) . ") and c.session_id='" . $openid . "' ";
+	$cartSql.= $orderBy;
+
+	$list = mysqld_selectall ( $cartSql );
+
+	if (! empty ( $list )) {
+
+		$total 		= 0;			//商品件数
+		$arrOutStock= array();		//超出库存的商品ID数组
+
+		foreach ( $list as $g ) {
+			$item = get_good (array('table' => 'shop_dish',
+					'where' => 'a.id=' . $g ['goodsid'] . ' and a.deleted=0 and a.status=1 and a.total>0 ',
+					'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
+			) );
+
+			if (empty ( $item )) {
+				continue;
+			}
+			//同一个商品所属不同店家超出库存时
+			elseif(in_array($item['id'], $arrOutStock))
+			{
+				continue;
+			}
+
+			// 初始化税率金额
+			$taxprice = 0;
+
+			// 对购买数量进行处理，如果购买数量大于库存，则将购买数量设置为库存
+			if ($g ['total'] > $item ['quantity']) {
+				$g ['total'] = $item ['quantity'];
+
+				$arrOutStock[] = $item ['id'];
+			}
+			// 有设置限购件数并且大于限购件数
+			elseif ($item ['max_buy_quantity'] > 0 && $g ['total'] > $item ['max_buy_quantity']) {
+				$g ['total'] = $item ['max_buy_quantity'];
+
+				$arrOutStock[] = $item ['id'];
+			}
+
+			$item ['total'] = $g ['total'];
+				
+				
+			switch($item['type'])
+			{
+				case '1':		//团购商品
+				case '2':		//秒杀商品
+						
+					$item ['marketprice'] = $item ['marketprice'];		//以一般商品价格购买
+
+					break;
+						
+				case '3':		//今日特价
+				case '4':		//限时促销
+
+					// 获取商品的下单价格
+					if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
+						$item ['marketprice'] = $item ['timeprice'];
+					}
+						
+					break;
+						
+				default:		//一般商品
+						
+					$item ['marketprice'] = $item ['timeprice'];
+					break;
+			}
+				
+			// 获得单品总价
+			$item ['totalprice'] = $item ['total'] * $item ['marketprice'];
+			// 打包税率费用初始化
+			$taxarray = array (
+					array (
+							'taxid' => $item ['taxid'],
+							'id' 	=> $item ['id'],
+							'count' => $item ['total'],
+							'price' => $item ['marketprice']
+					)
+			);
+			$taxprice = get_taxs ( $taxarray );
+			$taxprice = $taxprice ['all_sum_tax'];
+			$item ['taxprice'] = $taxprice;
+			$taxtotal += $taxprice; // 税收总额
+				
+			// 设置积分
+			$item ['credit'] 		= $item ['total'] * $item ['credit_cost'];
+			//设置卖家openid
+			$item['seller_openid'] 	= $g['seller_openid'];
+			//卖家店铺名
+			$item['shopname'] 		= $g['shopname'];
+				
+			// 商品列表
+			$allgoods [] = $item;
+			// 获得订单总额
+			$goodsprice += $item ['totalprice'];
+			//订单商品总件数
+			$total += $item ['total'];
+		}
+
+		if (! empty ( $allgoods )) {
+				
+			########### 获取运费     start ################
+			$issendfree = $item['issendfree'];
+			if (empty ( $issendfree )) {
+				$issendfree = isPromotionFreeShips($goodsprice,$total);
+			}
+			// 获取运费
+			$shipCost = shipcost($allgoods);
+				
+			//非免邮
+			if(empty ( $issendfree ))
+			{
+				$ships = $shipCost['price'];
+			}
+			########### 获取运费     end  ################
+				
+			//清关材料
+			$ifcustoms = $shipCost['ifcustoms'];
+				
+				
+			$result ['data'] ['dish_list'] 	= $allgoods; 		// 商品列表
+			$result ['data'] ['goodsprice'] = $goodsprice; 		// 商品总金额(不含税和运费)
+			$result ['data'] ['taxtotal'] 	= $taxtotal; 		// 税收总额
+			$result ['data'] ['ships'] 		= $ships; 			// 运费总额
+			$result ['data'] ['ifcustoms'] 	= $ifcustoms; 		// 清关材料
+			$result ['code'] 				= 1;
+		} else {
+			$result ['message'] = "没有可以购买的商品!";
+			$result ['code'] 	= 0;
+		}
+	} else {
+
+		$result ['message'] = "购物车商品不存在!";
+		$result ['code'] 	= 0;
+	}
+
+	return $result;
+}
+
+/**
+ * app3.0 返回从购物车下单的订单信息
  *
  * @param $cart_ids : array 购物车ID
  * @param $openid : 用户ID
  * @param $orderBy : 购物车排序SQL(库存不足时，该商品分配给最早添加到购物车的店铺使用)
  * 
  */
-function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
+function getConfirmOrderInfoByCart3($cart_ids, $openid,$orderBy) {
 	
 	$goodsprice = 0; 			// 商品总金额
 	$taxtotal 	= 0; 			// 税收总额
@@ -515,8 +673,145 @@ function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
 	return $result;
 }
 
+
 /**
- * 返回立即购买时的订单信息
+ * app1.0 返回立即购买时的订单信息
+ *
+ * @param $dish_id 商品ID
+ * @param $total 购买的商品件数
+ * @param $buy_type 购买方式(0:单独购买  1:团购)
+ * @param $seller_openid 卖家openid
+ *
+ * @return $result: array
+ */
+function getConfirmOrderInfoByNow($dish_id, $total,$buy_type,$seller_openid) {
+
+	$goodsprice = 0; 			// 商品总金额
+	$taxtotal 	= 0; 			// 税收总额
+	$ships 		= 0; 			// 运费总额
+	$allgoods 	= array (); 	// 商品列表
+	$result 	= array (); 	// 返回值数组
+	$issendfree	= 0;			// 是否免邮
+	$ifcustoms  = 0;			// 是否需要清关材料
+
+	// 获得产品信息
+	$item = get_good (array('table' => 'shop_dish',
+			'where' => 'a.id=' . $dish_id . ' and a.deleted=0 ',
+			'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
+	) );
+
+	//店铺信息
+	$shop = mysqld_select ( "SELECT shopname FROM " . table ( 'openshop' ) . " WHERE openid='" . $seller_openid . "' " );
+
+	if (empty ( $item )) {
+		$result ['message'] = "抱歉，该商品不存在!";
+		$result ['code'] = 0;
+
+	} elseif (empty($item ['quantity'])) {
+
+		$result ['message'] = "库存不足，无法购买！";
+		$result ['code'] = 0;
+
+	} elseif (! $item ['status']) {
+
+		$result ['message'] = "抱歉，该商品已经下架，无法购买了！";
+		$result ['code'] = 0;
+	} else {
+		// 获取数量如果为空则数量为1
+		if (empty ( $total )) {
+			$total = 1;
+		}
+
+		// 对购买数量进行处理，如果购买数量大于库存，则将购买数量设置为库存
+		if ($total > $item ['quantity']) {
+			$total = $item ['quantity'];
+		}
+		// 有设置限购件数并且大于限购件数
+		elseif ($item ['max_buy_quantity'] > 0 && $total > $item ['max_buy_quantity']) {
+			$total = $item ['max_buy_quantity'];
+		}
+		$item ['total'] = $total;
+
+		// 进行促销价格和正常价格的比对
+		if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
+
+			//团购商品时
+			if($item ['type']==1)
+			{
+				//以团购方式购买时
+				if($buy_type)
+				{
+					$item ['marketprice'] = $item ['timeprice'];
+				}
+			}
+			else{
+				$item ['marketprice'] = $item ['timeprice'];
+			}
+		}
+		//app端一般商品也用timeprice字段
+		elseif($item ['type']==0)
+		{
+			$item ['marketprice'] = $item ['timeprice'];
+		}
+
+		// 获得单品总价
+		$item ['totalprice'] = $total * $item ['marketprice'];
+		// 打包税率费用初始化
+		$taxarray = array (
+				array (
+						'taxid' => $item ['taxid'],
+						'id' 	=> $item ['id'],
+						'count' => $total,
+						'price' => $item ['marketprice']
+				)
+		);
+		$taxprice = get_taxs ( $taxarray );
+		$taxprice = $taxprice ['all_sum_tax'];
+		$item ['taxprice'] = $taxprice;
+		$taxtotal = $taxprice;
+		// 设置积分
+		$item ['credit'] 		= $total * $item ['credit_cost'];
+		//设置卖家openid
+		$item['seller_openid']	= $seller_openid;
+		//卖家店铺名
+		$item['shopname']		= !empty($shop) ? $shop['shopname'] : null;
+
+		// 商品列表
+		$allgoods [] = $item;
+		// 获得订单总额
+		$goodsprice += $item ['totalprice'];
+
+		########### 获取运费     start ################
+		$issendfree = $item['issendfree'];
+		if (empty ( $issendfree )) {
+			$issendfree = isPromotionFreeShips($goodsprice,$total);
+		}
+		// 获取运费
+		$shipCost = shipcost($allgoods);
+
+		//非免邮
+		if(empty ( $issendfree ))
+		{
+			$ships = $shipCost['price'];
+		}
+		########### 获取运费     end  ################
+
+		//清关材料
+		$ifcustoms = $shipCost['ifcustoms'];
+
+		$result ['data'] ['dish_list'] 		= $allgoods; 		// 商品列表
+		$result ['data'] ['goodsprice'] 	= $goodsprice; 		// 商品总金额(不含税和运费)
+		$result ['data'] ['taxtotal'] 		= $taxtotal; 		// 税收总额
+		$result ['data'] ['ships'] 			= $ships; 			// 运费总额
+		$result ['data'] ['ifcustoms'] 		= $ifcustoms; 		// 清关材料
+		$result ['code'] 					= 1;
+	}
+
+	return $result;
+}
+
+/**
+ * app3.0 返回立即购买时的订单信息
  *
  * @param $dish_id 商品ID
  * @param $total 购买的商品件数
@@ -525,7 +820,7 @@ function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
  * 
  * @return $result: array
  */
-function getConfirmOrderInfoByNow($dish_id, $total,$buy_type,$seller_openid) {
+function getConfirmOrderInfoByNow3($dish_id, $total,$buy_type,$seller_openid) {
 	
 	$goodsprice = 0; 			// 商品总金额
 	$taxtotal 	= 0; 			// 税收总额

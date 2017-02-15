@@ -44,7 +44,7 @@ if (!empty($_GP['cate_2'])) {
 	$cid = intval($_GP['cate_1']);
 	$condition .= " AND pcate = '{$cid}'";
 }
-$awardlist = mysqld_selectall("SELECT * FROM " . table('addon7_award') . " WHERE  deleted=0 $condition ORDER BY createtime DESC, id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+$awardlist = mysqld_selectall("SELECT * FROM " . table('addon7_award') . " WHERE  deleted=0 $condition ORDER BY endtime DESC, id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 foreach($awardlist as $key=>$val){
 	   if ( empty($val['logo'])){
 			$lists = mysqld_select("SELECT thumb FROM " . table('shop_goods') . " WHERE  id = ".$val['gid']);

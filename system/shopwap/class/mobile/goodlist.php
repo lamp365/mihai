@@ -97,7 +97,9 @@
             	$condition .= " AND a.p1 = '{$cid}'";
             }
       }
-      $categorys = mysqld_selectall("SELECT * FROM ".table('shop_category')." where parentid = ".$parent);
+
+//模板和下文都没用到该变量
+//      $categorys = mysqld_selectall("SELECT * FROM ".table('shop_category')." where parentid = ".$parent);
 	  if ( !empty($_GP['bid']) ){
             $bid = intval($_GP['bid']);
 			$brand = mysqld_select("SELECT a.*,b.name,b.icon as cicon FROM ".table('shop_brand')." a left join ".table('shop_country')." b on a.country_id = b.id where a.id = ".$bid);
@@ -125,6 +127,7 @@
             $condition .= " AND istime = 1 ";
             $sorturl.="&istime=1";
         }
+
 	  $list = get_goods(array(
 			 'table'=> $table,
 			 'where' => $condition,

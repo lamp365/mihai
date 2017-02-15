@@ -18,7 +18,7 @@
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 		
 		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.pic,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
-		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.video IS NULL or h.video='') ";
+		$sql.= " WHERE h.uid=u.id and h.deleted=0 and h.ischeck=1 and (h.video IS NULL or h.video='') ";
 		
 		//推荐
 		if(isset($_GP['isrecommand']))
@@ -53,7 +53,7 @@
 		$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//每页记录数
 	
 		$sql = "SELECT SQL_CALC_FOUND_ROWS h.headline_id,h.uid,h.title,h.video,h.video_img,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
-		$sql.= " WHERE h.uid=u.id and h.deleted=0 and (h.video IS NOT NULL and h.video!='')";
+		$sql.= " WHERE h.uid=u.id and h.deleted=0 and h.ischeck=1 and (h.video IS NOT NULL and h.video!='')";
 	
 		//推荐
 		if(isset($_GP['isrecommand']))
@@ -123,7 +123,7 @@
 		else{
 			$sql = "SELECT h.headline_id,h.uid,h.title,h.description,h.pic,h.video,h.video_img,h.address,h.preview,h.createtime,u.nickname,u.avatar FROM " . table('headline') . " as h,".table('user')." as u ";
 			$sql.= " WHERE h.uid=u.id and h.headline_id={$headline_id} ";
-			$sql.= " and h.deleted=0 ";
+			$sql.= " and h.deleted=0 and h.ischeck=1 ";
 			$sql.= " order by h.createtime desc ";
 			
 			$headlineInfo = mysqld_select($sql);

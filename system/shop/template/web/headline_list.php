@@ -10,6 +10,7 @@
 			<th style="text-align: center; width: 30px">ID</th>
 			<th style="text-align: center;">标题</th>
 			<th style="text-align: center;">是否推荐</th>
+			<th style="text-align: center;">审核通过</th>
 			<th style="text-align: center;">创建时间</th>
 			<th style="text-align: center;">操作</th>
 		</tr>
@@ -20,6 +21,7 @@
 			<td><?php echo $value['headline_id'];?></td>
 			<td><?php echo $value['title'];?></td>
 			<td><?php echo empty($value['isrecommand'])?'否':'是'; ?></td>
+			<td><?php echo empty($value['ischeck'])?'否':'已审核'; ?></td>
 			<td><?php echo date('Y-m-d H:i:s',$value['createtime']);?></td>
 			<td style="text-align: center;">
 				<a class="btn btn-xs btn-info" href="<?php echo web_url('headline', array('op' => 'edit', 'headline_id' => $value['headline_id']))?>"><i

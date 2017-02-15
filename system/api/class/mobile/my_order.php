@@ -124,7 +124,11 @@
 	    	$usa['productprice'] = $good['productprice'];
 	    	$usa['marketprice'] = $good['marketprice'];
 	    	$usa['timeprice'] = $good['timeprice'];
-	    	$usa['goodprice'] = $l_v['goodprice'];
+	    	if (empty($l_v['goodprice'])) {
+	    		$usa['goodprice'] = $good['marketprice'];
+	    	}else{
+	    		$usa['goodprice'] = $l_v['goodprice'];
+	    	}
 	    	$usa['draw'] = $good['draw'];
 	    	$usa['goodsid'] = $l_v['goodsid'];
 	    	unset($l_v['goodsid']);

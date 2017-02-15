@@ -11,6 +11,16 @@ class apiAddons extends BjSystemModule
 	 */
 	public function __construct()
 	{
+		//app接口访问暂停时
+		if(API_MAINTAIN)
+		{
+			$result['message']	= '亲，服务器维护中，请稍等';
+			$result['code'] 	= 0;
+				
+			echo apiReturn($result);
+			exit;
+		}
+		
 		//不是debug模式下
 		if(!API_DEBUG)
 		{
@@ -173,8 +183,18 @@ class apiAddons extends BjSystemModule
     {
     	$this->__mobile(__FUNCTION__);
     }
+    
+    public function do_confirm3()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
 	
     public function do_place_order()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_place_order3()
     {
     	$this->__mobile(__FUNCTION__);
     }
@@ -235,6 +255,11 @@ class apiAddons extends BjSystemModule
     }
     
     public function do_payment_order()
+    {
+    	$this->__mobile(__FUNCTION__);
+    }
+    
+    public function do_payment_order3()
     {
     	$this->__mobile(__FUNCTION__);
     }

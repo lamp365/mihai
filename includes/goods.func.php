@@ -360,7 +360,7 @@ function get_change_goods($orderprice = 0){
 		 }
 		 $category_id = implode(',', $category_id );
 		 // 根据区间来获取换购产品
-		 $change_goods = mysqld_selectall("SELECT * FROM ". table ('shop_mess'). " WHERE pcate in ({$category_id}) order by marketprice");
+		 $change_goods = mysqld_selectall("SELECT * FROM ". table ('shop_mess'). " WHERE deleted=0 and status=1 and  pcate in ({$category_id}) order by marketprice");
 		if(!empty($change_goods)){
 			 foreach($change_goods as $row) {
 				 $data[$row['id']] = $row;

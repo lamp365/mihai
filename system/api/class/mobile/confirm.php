@@ -30,7 +30,7 @@
 				
 				// 购物车ID为空时
 				if (empty ( $cart_ids )) {
-					$result ['message'] = "请选择购物车商品";
+					$result ['message'] = "请选择购物车商品!";
 					$result ['code'] 	= 0;
 				} else {
 				
@@ -41,7 +41,7 @@
 						$result = getConfirmOrderInfoByCart ( $cart_ids,$openid,' order by c.seller_openid ');
 					}
 					else{
-						$result ['message'] = "购物车参数格式不正确";
+						$result ['message'] = "购物车参数格式不正确!";
 						$result ['code'] 	= 0;
 					}
 				}
@@ -50,17 +50,17 @@
 				
 			default:
 				
-				$result ['message'] = "操作不合法";
+				$result ['message'] = "操作不合法!";
 				$result ['code'] 	= 0;
 				
 				break;
 		}
 		
 	}elseif ($member == 3) {
-		$result['message'] 	= "该账号已在别的设备上登录";
+		$result['message'] 	= "该账号已在别的设备上登录！";
 		$result['code'] 	= 3;
 	}else {
-		$result ['message'] = "用户还未登陆";
+		$result ['message'] = "用户还未登陆。";
 		$result ['code'] 	= 2;
 	}
 	
@@ -90,22 +90,8 @@
 		
 		
 		$result ['data']['totalprice'] 	= $result ['data']['goodsprice']+$result ['data']['taxtotal']+$result ['data']['ships'];
-		
-		//app2.0及以上版本时
-		if(isset($_GP['versioncode']) && $_GP['versioncode']>=200)
-		{
-			$result ['data']['payment_list']= getPayment (); 					// 支付方式
-		}
-		//app1.0版本时
-		else{
-			$payment_list = mysqld_selectall ( "select code,name,id from " . table ( "payment" ) . " where enabled=1 and code='alipay' order by `order` desc" );
-			
-			$result ['data']['payment_list']= $payment_list; 					// 支付方式
-		}
-		
+		$result ['data']['payment_list']= getPayment (); 					// 支付方式
 		$result ['data']['bonus_list']	= get_bonus_list (array('openid'=>$openid,'goods'=>$result ['data']['dish_list'],'price'=>$result ['data']['goodsprice'])); 	// 优惠券
-		$use_member = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$member ['openid']."'");
-		$result ['data']['balance_sprice'] = $use_member['gold']; 		// 账户余额
 	}
 	
 	echo apiReturn ( $result );

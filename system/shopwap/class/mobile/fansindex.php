@@ -22,11 +22,12 @@
 			}else{
 				$avatar = $member['avatar'];
 			}
-			
 			if ($is_login) {
-				$member_rank_model = member_rank_model($member['experience']);
+				$member_rank_model = member_rank_model($member['credit']);
 			} else {
 				$is_login = is_login_account();
+				$member_rank_model = member_rank_model($member['credit']);
+				
 			}
 			$fansindex_menu_list = mysqld_selectall("SELECT * FROM " . table('shop_diymenu') . " where menu_type='fansindex' order by torder desc");
 			$cart_list = mysqld_selectall("SELECT a.*,b.id as bid , c.thumb,c.id as cid FROM " . table('shop_cart') . " a left join " . table('shop_dish') . " b on a.goodsid = b.id left join " . table('shop_goods') . " c on c.id = b.gid WHERE  session_id = '" . $openid . "'");

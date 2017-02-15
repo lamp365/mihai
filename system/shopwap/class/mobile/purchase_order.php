@@ -62,8 +62,7 @@ if ( $user_a['type'] == 2 ){
 	 // 找到批发权限
 	 $gank   = mysqld_select("SELECT * FROM ".table('rolers')." WHERE type = 2 and pid = 0 ");
      $dish_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id'].$limit);
-	 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id WHERE a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']."  $condition and b.deleted=0  AND b.status = '1' ");
-
+	 $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_dish_vip') . " as a left join ".table('shop_dish')." as b on a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.deleted = 0 and b.status = 1 and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']."  $condition");
      $best_list = mysqld_selectall("SELECT a.*,b.*,c.goodssn,c.thumb as good_img FROM ".table('shop_dish_vip')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.dish_id = b.id LEFT JOIN ".table('shop_goods')." as c on b.gid = c.id WHERE b.ispurchase = 1 and b.deleted = 0 and b.status = 1 $condition and a.v1 = ".$gank['pid']." and a.v2 = ".$gank['id']);
      $currency = 2;
 	 $brand_list = mysqld_selectall("SELECT * FROM ".table('shop_brand')." WHERE pifa = 1 ");
@@ -130,6 +129,7 @@ foreach( $dish_list as &$dish_list_value){
 	  $dish_list_value['currency'] = $currency;
 }
 unset($dish_list_value);
+if ( is_array($best_list) && !empty($best_list) ){
 foreach( $best_list as &$best_list_value){
 	  if ( isset( $purchase[$best_list_value['id']] ) ){
 			 $best_list_value['selected'] = 1;
@@ -149,15 +149,19 @@ foreach( $best_list as &$best_list_value){
 	  }
 	  $best_purchase[] = $best_list_value;
 }
+
 unset($best_list_value);
+}
 $pager  = pagination($total, $page, $psize,'.product-lists');
 // 设置汇率
 $exchange_rate = mysqld_select("SELECT * FROM ".table('config')." WHERE name = 'exchange_rate' limit 1 ");
+
 if ( $exchange_rate ){
     $exchange_rate_value =  $exchange_rate['value'] > 5 ? $exchange_rate['value'] : 6.8972;
 }else{
     $exchange_rate_value = 6.8972;
 }
+
 if (!empty($_POST['page'])){
             if ( is_array($dish_list) && !empty($dish_list) ){ foreach ( $dish_list as $dish_list_value ){ 
 				if ( $dish_list_value["selected"] == 0 ){

@@ -13,7 +13,7 @@ function checkIsAddShareActive($openid){
         $info      = mysqld_select("select * from ".table('share_active')." where openid='{$openid}'");
 
         if(empty($info)){
-            $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['experience']."' order by rank_level desc limit 1 " );
+            $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['credit']."' order by rank_level desc limit 1 " );
             $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
             $info = array(
               'openid'      => $openid,
@@ -29,7 +29,7 @@ function checkIsAddShareActive($openid){
 
             //如果过了第二天，则初始化活动参与次数
             if($curt_time>$info['zero_time']){
-                $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['experience']."' order by rank_level desc limit 1 " );
+                $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['credit']."' order by rank_level desc limit 1 " );
                 $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
                 $update['total_num']  = $rank_level*2+1;
                 $update['zero_time']  = $curt_time;
@@ -122,18 +122,17 @@ function getHasShareMember($share_active,$num=10,$today=true){
 function getShareOpenidFromCookie(){
     $accesskey    = getShareAccesskeyCookie();
     $share_openid = decodeShareAccessKey($accesskey);
-    ppd($share_openid,'ssss');
     if($share_openid){
         //给分享者加1次机会
         $time = time();
         $res  = mysqld_query("update " .table('share_active'). " set `total_num`=total_num+1,`modifytime`={$time} where openid='{$share_openid}'");
+        member_credit($share_openid, 20, 'addcredit', '邀请朋友注册获得20积分');
     }else{
         $share_openid = 0;
     }
     cleanShareAccesskeyCookie();
     return $share_openid;
 }
-
 
 /**
  * @content 保存微信的图片到本地
@@ -316,7 +315,7 @@ function get_active_total_people(){
     }else{
         $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
     }
-    return $total+72385;
+    return $total+43584;
 }
 
 /**
@@ -359,8 +358,16 @@ function get_active_goods($pos,$openid){
         case 2:
             //推荐的  条件最好不用 isrecommand 因为如果满了，那么这边就会空出来了，取不到推荐的
             $now_time = time();
-            $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by isrecommand desc,id  desc";
+            $sql = "select * from ".table('addon7_award')." where state<=1 and isrecommand=1 and endtime<={$now_time} order by id  desc";
             $res = mysqld_select($sql);
+            //如果推荐的没有了，则按照id 自己推荐一个
+            if(empty($res)){
+                $sql = "select * from ".table('addon7_award')." where state<=1 and endtime<={$now_time} order by id  desc";
+                $res = mysqld_select($sql);
+                if(!empty($res)){
+                    mysqld_update("addon7_award",array('isrecommand'=>1),array('id'=>$res['id']));
+                }
+            }
             if(!empty($res)){
                 //dicount  可能会超过总的
                 $diff_count        = min($res['amount'],$res['dicount']);
@@ -406,7 +413,7 @@ function get_active_goods($pos,$openid){
  * @return bool|mixed
  */
 function get_active_shaidan(){
-    $info = mysqld_selectall("select * from ".table('share_active_shaidan')." order by is_top desc,id desc limit 4");
+    $info = mysqld_selectall("select * from ".table('share_active_shaidan')." order by is_top desc,id desc");
     if(!empty($info)){
         foreach($info as $key => $item){
             $member = member_get($item['openid']);
@@ -439,15 +446,24 @@ function get_star_num($award_id){
  * @return string
  */
 function cut_title($title){
+    $title  = trim($title);
     $strlen = mb_strlen($title, 'utf-8');
-    if($strlen>=8){
+    if($strlen>=10){
+        $leng     = $strlen - 4;
+        $firstStr = mb_substr($title, 0, 4, 'utf-8');
+        $lastStr  = mb_substr($title, 10, $leng, 'utf-8');
+        $xing    = str_repeat(" ?     ",6);
+        $xing    = "<span class='wenhao'>{$xing}</span>";
+    }else if($strlen>=6){
         $firstStr = mb_substr($title, 0, 2, 'utf-8');
         $lastStr = mb_substr($title, -1, 2, 'utf-8');
-        $xing    = str_repeat("*",5);
+        $xing    = str_repeat(" ?     ",6);
+        $xing    = "<span class='wenhao'>{$xing}</span>";
     }else{
-        $firstStr = mb_substr($title, 0, 1, 'utf-8');
+        $firstStr = mb_substr($title, 0, 2, 'utf-8');
         $lastStr = mb_substr($title, -1, 1, 'utf-8');
-        $xing    = str_repeat("*",4);
+        $xing    = str_repeat(" ?     ",6);
+        $xing    = "<span class='wenhao'>{$xing}</span>";
     }
     return $firstStr.$xing.$lastStr;
 }
@@ -512,21 +528,21 @@ function get_all_changebonus($openid){
                 if($info){
                     //找到，标记为领取
                     $one_bonus['is_get']     = 1;
-                    //兑换值 是 面额比去一个固定值  当前为3
-                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/3);
+                    //兑换值 是 面额比去一个固定值  当前为1
+                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/1);
                 }else{
                     //没找到，标记为没领取
                     $one_bonus['is_get']     = 0;
-                    //兑换值 是 面额比去一个固定值  当前为3
-                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/3);
+                    //兑换值 是 面额比去一个固定值  当前为1
+                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/1);
                 }
             }
         }else{
             foreach($bonus as $key => &$one_bonus){
                 //未登录，标记为没领取
                 $one_bonus['is_get']     = 0;
-                //兑换值 是 面额比去一个固定值  当前为3
-                $one_bonus['change_num'] = ceil($one_bonus['type_money']/3);
+                //兑换值 是 面额比去一个固定值  当前为1
+                $one_bonus['change_num'] = ceil($one_bonus['type_money']/1);
             }
         }
     }
@@ -552,7 +568,7 @@ function toChangeBonus($openid,$bonus_id){
             $msg = showAjaxMess(1002,"对不起，非法访问！");
         }else{
             if($bonus['send_start_date']<= $now_time && $bonus['send_end_date']>=$now_time){
-                $change_num = ceil($bonus['type_money']/3);
+                $change_num = ceil($bonus['type_money']/1);
                 if($total_num < $change_num){
                     $msg = showAjaxMess(1002,"您的许愿数只有{$total_num}次");
                 }else{
@@ -574,4 +590,15 @@ function toChangeBonus($openid,$bonus_id){
         }
     }
     return $msg;
+}
+
+//获取活动的总价格
+//因为有涉及一批假的数据，故总数要减去假数据的钱
+function getShareTotalPrice(){
+    $sql   = "select sum(price) as total from ".table('addon7_award');
+    $res   = mysqld_select($sql);
+    $total = 0;
+    if(!empty($res))
+     $total = $res['total']-8354;
+    return $total;
 }

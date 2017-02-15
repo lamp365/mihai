@@ -13,13 +13,7 @@ switch($operation){
 		$category_id= intval ( $_GP ['category_id'] );
 		$period 	= getLastWeekPeriod();					//上周一到周天的时间戳
 		
-		//不是周一时
-		if(date('N')!=1){
-			
-			message ( '请在允许的时间内进行免单配置！', web_url ( 'free_order'), 'error' );
-		}
-		//免单分类为空
-		elseif(empty($category_id))
+		if(empty($category_id))
 		{
 			message ( '请选择免单分类！', web_url ( 'free_order',array('op' =>'new')), 'error' );
 		}
@@ -73,13 +67,21 @@ switch($operation){
 	case 'free_detail':			//免单详情
 		
 		$free_id 	= (int)$_GP['free_id'];
-		$period 	= getLastWeekPeriod();		//上周一到周天的时间戳
+		$period 	= getLastWeekPeriod();				//上周一到周天的时间戳
+		$pindex 	= max(1, intval($_GP['page']));		//页码
+		$psize 		= 10;								//每页显示记录数
 		
 		$free_config = mysqld_select ( "SELECT f.*,c.name FROM " . table ( 'free_config' ) .' f,'.table('shop_category'). " c where c.id = f.category_id and f.free_id=$free_id" );
 		
 		if($free_config)
 		{
-			$list = mysqld_selectall ( "SELECT o.ordersn,og.*,d.title FROM " . table ( 'shop_order_goods' ).' og,'.table ( 'shop_order' ).' o,' .table('shop_dish'). " d where og.orderid=o.id and og.goodsid=d.id and free_id = $free_id ");
+			$listSql = "SELECT SQL_CALC_FOUND_ROWS o.ordersn,o.address_realname,o.address_mobile,og.*,d.title FROM " . table ( 'shop_order_goods' ).' og,'.table ( 'shop_order' ).' o,' .table('shop_dish'). " d where og.orderid=o.id and og.goodsid=d.id and free_id = $free_id ";
+			$listSql.= " limit ".($pindex - 1) * $psize . ',' . $psize;
+			
+			$list = mysqld_selectall ($listSql);
+			
+			$total = mysqld_select("SELECT FOUND_ROWS() as total;");
+			$pager = pagination($total['total'], $pindex, $psize);
 			
 			include page ( 'free_order_detail' );
 		}
@@ -125,6 +127,9 @@ switch($operation){
 					
 				//用户免单金额更新
 				mysqld_update('member',$memberData,array('openid'=>$orderInfo['openid']));
+				
+				//记录用户账单的免单金额收支情况
+				insertMemberPaylog($orderInfo['openid'],$orderInfo['price']*$orderInfo['total'],$memberData['freeorder_gold'], 'addgold', '免单申请审核通过后，免单余额充值'.$orderInfo['price']*$orderInfo['total'].'元');
 			}
 			
 			message ( '免单处理成功！', web_url ( 'free_order',array('op' =>'free_detail','free_id'=>$free_id)), 'success' );

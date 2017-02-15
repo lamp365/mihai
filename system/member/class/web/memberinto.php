@@ -285,20 +285,15 @@ if ($operation == 'into') {
     }
   }
   unset($amv);
-  $all_m = mysqld_selectall("SELECT * FROM ".table('shop_customers'));
-  foreach ($all_m as $alm) {
-    $city_a[] = $alm['city'];
-    $level_a[] = $alm['level'];
-    $shop_a[] = $alm['shop'];
-    $department_al = mysqld_selectall("SELECT department FROM ".table('shop_department')." ORDER BY createtime ASC");
-    foreach ($department_al as $dalv) {
-      $manager_a[] = $dalv['department'];
-    }
-  }
 
-  $city_a = array_unique($city_a);
-  $level_a = array_unique($level_a);
-  $shop_a = array_unique($shop_a);
+  $city_a = mysqld_selectall("SELECT city FROM ".table('shop_customers')." GROUP BY city");
+  $level_a = mysqld_selectall("SELECT level FROM ".table('shop_customers')." GROUP BY level");
+  $shop_a = mysqld_selectall("SELECT shop FROM ".table('shop_customers')." GROUP BY shop");
+  $salesman_a = mysqld_selectall("SELECT salesman FROM ".table('shop_customers')." GROUP BY salesman");
+  $department_al = mysqld_selectall("SELECT department FROM ".table('shop_department')." ORDER BY createtime ASC");
+  foreach ($department_al as $dalv) {
+    $manager_a[] = $dalv['department'];
+  }
   $manager_a = array_unique($manager_a);
 
   $pager = pagination($total, $pindex, $psize);

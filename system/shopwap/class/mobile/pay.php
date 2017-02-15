@@ -17,6 +17,17 @@ if (($order['paytype'] != 3 && $order['status'] > 0) && (! ($order['paytype'] ==
     message('抱歉，您的订单已经付款或是被关闭，请重新进入付款！', mobile_url('myorder'), 'error');
 }
 
+// 余额付款直接完成作业
+if ($order['price'] <= 0){
+    if($order['status']==0){
+         mysqld_update('shop_order', array('status'=>1), array('id' => $orderid, 'openid' => $openid));
+		 paySuccessProcess($order);	//支付成功后的处理
+		 require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
+		 mailnotice($orderid);
+         message('支付成功！',WEBSITE_ROOT.mobile_url('myorder',array('status'=>99)),'success');
+		exit;
+    }
+}
 $ordergoods = mysqld_selectall("SELECT goodsid,shopgoodsid,optionid,total FROM " . table('shop_order_goods') . " WHERE orderid = '{$orderid}'");
 if (! empty($ordergoods)) {
     $goodsids = array();
@@ -52,7 +63,8 @@ $payment = mysqld_select("select * from " . table("payment") . " where enabled=1
 if (empty($payment['id'])) {
     message("未找到付款方式，付款失败");
 }
-if ($order['paytypecode'] != $paytypecode) {
+
+if ($order['paytypecode'] != $paytypecode && $order['price'] > 0 ) {
     $paytype = $this->getPaytypebycode($paytypecode);
     mysqld_update('shop_order', array(
         'paytypecode' => $payment['code'],

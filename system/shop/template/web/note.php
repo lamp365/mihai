@@ -39,12 +39,12 @@
 		<label class="col-sm-2 control-label no-padding-left"> 是否推荐：</label>
 
 		<div class="col-sm-9">
-			<input type="radio" name="isrecommand" value="1" id="isrecommand"
-				<?php  if(empty($note) || $note['isrecommand'] == 1) { ?> checked="true"
-				<?php  } ?> /> 是 &nbsp;&nbsp;&nbsp; 
-				<input type="radio" name="isrecommand" value="0" id="isrecommand"
-				<?php  if(!empty($note) && $note['isrecommand'] == 0) { ?> checked="true"
-				<?php  } ?> /> 否
+			<input type="radio" name="isrecommand" value="0" id="isrecommand"
+				<?php  if(empty($note) || $note['isrecommand'] == 0) { ?> checked="true"
+				<?php  } ?> /> 否 &nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="isrecommand" value="1" id="isrecommand"
+				<?php  if(!empty($note) && $note['isrecommand'] == 1) { ?> checked="true"
+				<?php  } ?> /> 是
 		</div>
 	</div>
 

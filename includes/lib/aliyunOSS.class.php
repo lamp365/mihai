@@ -22,7 +22,7 @@ class aliyunOSS
     const accessKeyId     = 'LTAIJBblVhGuzn2j';
     const accessKeySecret = 'CcxMOcoXA6PXVdRE2XjImWPLRwzpnJ';
     const bucket          = 'hinrc';
-    const aliurl          = WEB_HTTP."hinrc.oss-cn-shanghai.aliyuncs.com";
+    const aliurl          = "http://hinrc.oss-cn-shanghai.aliyuncs.com";
     private static $self  = NULL;
     /**
      * 根据Config配置，得到一个OssClient实例

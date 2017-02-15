@@ -1,4 +1,9 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<style type="text/css">
+	.hide-tr{
+			display: none;
+		}
+</style>
 <div class="memberinto-wrap">
 	<div class="panel with-nav-tabs panel-default">	
 	    <div class="panel-heading">
@@ -10,7 +15,24 @@
 	    <div class="panel-body third-party">
 	        <div class="tab-content">
 	            <div class="tab-pane fade in active" id="tab1primary">
-	            数据总数：<?php  echo $total;?>&nbsp;已分配：<?php  echo $is_allot;?>&nbsp;&nbsp;未分配：<?php  echo $no_allot;?>&nbsp;&nbsp;已入驻：<?php  echo $is_into;?>&nbsp;&nbsp;未入驻：<?php  echo $no_into;?>
+	            	<?php if ($is_allot>0) { ?>
+	            	
+	            	已入驻 / 已分配：<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
+				  	<div class="progress">
+					  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>">
+					    <?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
+					  </div>
+					</div>
+					<?php } ?>
+					<?php if ($total>0) { ?>
+					已分配 / 数据总数：<?php echo round(($is_allot/$total)*100,'2').'%'; ?>
+				  	<div class="progress">
+					  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_allot/$total)*100,'2').'%'; ?>">
+					    <?php echo round(($is_allot/$total)*100,'2').'%'; ?>
+					  </div>
+					</div>
+					<?php } ?>
+
 		            <form action="<?php  echo web_url('memberinto',array('op'=>'display'));?>" method="post">
 						<ul class="search-ul">
 							<li>
@@ -19,13 +41,16 @@
 									<option value="0" >请选择城市</option>
 									<?php  if(is_array($city_a)) { 
 	 								foreach($city_a as $cav) {
-	 									if ($cav == $city) {
+	 									if (empty($cav['city'])) {
+	 										continue;
+	 									}
+	 									if ($cav['city'] == $city) {
 	 										$csed = "selected";
 	 									}else{
 	 										$csed = "";
 	 									}
 	 									?>
-	 									<option value="<?php  echo $cav;?>" <?php  echo $csed;?>><?php  echo $cav;?></option>
+	 									<option value="<?php  echo $cav['city'];?>" <?php  echo $csed;?>><?php  echo $cav['city'];?></option>
 	 								<?php  } } ?>
 								</select>
 							</li>
@@ -35,13 +60,16 @@
 									<option value="0" >请选择会员等级</option>
 			                        <?php  if(is_array($level_a)) { 
 	 								foreach($level_a as $lav) { 
-	 									if ($lav == $level) {
+	 									if (empty($lav['level'])) {
+	 										continue;
+	 									}
+	 									if ($lav['level'] == $level) {
 	 										$lsed = "selected";
 	 									}else{
 	 										$lsed = "";
 	 									}
 	 									?>
-	 									<option value="<?php  echo $lav;?>" <?php  echo $lsed;?>><?php  echo $lav;?></option>
+	 									<option value="<?php  echo $lav['level'];?>" <?php  echo $lsed;?>><?php  echo $lav['level'];?></option>
 	 								<?php  } } ?>
 								</select>
 							</li>
@@ -51,13 +79,16 @@
 									<option value="0" >请选择店铺</option>
 			                        <?php  if(is_array($shop_a)) { 
 	 								foreach($shop_a as $sav) { 
-	 									if ($sav == $shop) {
+	 									if (empty($sav['shop'])) {
+	 										continue;
+	 									}
+	 									if ($sav['shop'] == $shop) {
 	 										$ssed = "selected";
 	 									}else{
 	 										$ssed = "";
 	 									}
 	 									?>
-	 									<option value="<?php  echo $sav;?>" <?php  echo $ssed;?>><?php  echo $sav;?></option>
+	 									<option value="<?php  echo $sav['shop'];?>" <?php  echo $ssed;?>><?php  echo $sav['shop'];?></option>
 	 								<?php  } } ?>
 								</select>
 							</li>
@@ -77,10 +108,7 @@
 	 								<?php  } } ?>
 								</select>
 							</li>
-							<li>
-								<span class="left-span">金额范围</span>
-								<input type="text" name="d_money" class="d_money input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="h_money input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
-							</li>
+							
 							<li>
 								<span class="left-span">差评</span>
 								<div class="checkbox-div">
@@ -112,20 +140,34 @@
 								</div>
 							</li>
 							<li>
-								<input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+								
+								<div class="btn-group">
+								  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
+								  <button type="button" class="btn btn-primary btn-sm dropdown-toggle add-more-btn" data-toggle="dropdown">
+								    <span class="caret"></span>
+								    <span class="sr-only">Toggle Dropdown</span>
+								  </button>
+								</div>
 							</li>
 							<li>
 								<input type="button" name="button" value=" 分 配 "  class="btn btn-primary btn-sm batch-distribute">
 							</li>
+							<ul class="hide-tr" style="width: 100%;overflow: hidden;padding: 0">
+								<li >
+									<span class="left-span">金额范围</span>
+									<input type="text" name="d_money" class="d_money input-height" placeholder="最低金额" value="<?php echo $d_money;?>"> ~ <input type="text" name="h_money" class="h_money input-height" placeholder="最高金额" value="<?php echo $h_money;?>">
+								</li>
+							</ul>
 						</ul>
+						
 						<div class="panel panel-default third-party-user-list">
-				            <table class="table">
+				            <table class="table table-striped table-bordered">
 					            <thead >
 					                <tr>
 					                    <!-- <th>旺旺</th> -->
 					                    <th width="60px">姓名</th>
 					                    <th>手机</th>
-					                    <th>邮箱</th>
+					                    <th style="display:none;">邮箱</th>
 					                    <th>差评</th>
 					                    <th>退过款</th>
 					                    <th>黑名单</th>
@@ -151,7 +193,7 @@
 					                <tr>
 					                    <td class="text-center"><?php  echo $almv['username'];?></td>
 					                    <td class="text-center"><?php  echo $almv['mobile'];?></td>
-					                    <td class="text-center"><?php  echo $almv['email'];?></td>
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['email'];?></td>
 					                    <td class="text-center"><?php  echo $almv['review'];?></td>
 					                    <td class="text-center"><?php  echo $almv['refund'];?></td>
 					                    <td class="text-center"><?php  echo $almv['blacklist'];?></td>
@@ -168,7 +210,7 @@
 					                    <td class="text-center"><?php  echo $almv['shop'];?></td>
 					                    <td class="text-center manager_name"><?php  echo $almv['salesman'];?></td>
 					                    <td class="text-center"><?php  echo $almv['status'];?></td>
-					                    <td class="text-center"><a  class="btn btn-xs btn-info edit-distribute" data_id="<?php echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"></i>分配</a></td>
+					                    <td class="text-center"><a  class="btn btn-xs btn-info single-distribute" data_id="<?php echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"></i>分配</a></td>
 					                </tr>
 					            <?php  } } ?>
 					            </tbody>
@@ -237,7 +279,9 @@ $(function(){
 			$(".refund_form").submit();
 		}
 	});
-	
+	$(".add-more-btn").click(function(){
+		$(".hide-tr").toggle();
+	});
 	batchDistribute();
 	singleDistribute();
 });

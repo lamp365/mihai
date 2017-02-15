@@ -25,10 +25,11 @@ function get_bonus_list($order_date=array()){
 	$bonus_list = array();
 	// 开始过滤不适用的优惠卷
 	foreach ( $bonus as $bonus_value ) {
-		 // 排查按商品发放的优惠卷
+
 		 $goods = array();
 		 // 默认为可以适用
 		 $iscan = 0;
+		// 排查按商品发放的优惠卷
          if ( ($bonus_value['send_type'] == 1) && !empty($order_date['goods'])){
                $goods = mysqld_selectall("SELECT good_id FROM".table('bonus_good')." WHERE bonus_type_id = ".$bonus_value['type_id']);
 	           foreach ( $order_date['goods'] as $goods_value ) {
@@ -40,8 +41,8 @@ function get_bonus_list($order_date=array()){
 				  }  
 			   }
 		 }
-		 // 排查满减的优惠卷
-		 if ( $bonus_value['send_type'] == 2 or $bonus_value['send_type'] == 0){
+		 // 排查满减的优惠卷   或者  //按照特殊活动的优惠卷
+		if ( $bonus_value['send_type'] == 2 or $bonus_value['send_type'] == 0 or $bonus_value['send_type'] == 4){
                if ($bonus_value['min_goods_amount'] <= $order_date['price'] ){
                   $iscan =1;
 			   }
@@ -50,5 +51,6 @@ function get_bonus_list($order_date=array()){
                $bonus_list[] = $bonus_value;
 		 }
 	}
+
     return $bonus_list;
 }

@@ -170,12 +170,14 @@
 					<td style="text-align:center;" ><?php  echo $item['timeprice'];?></td>
 					<td style="text-align:center;" class="wholesale-td">
 						<div class="dropdown">
+						    <?php if ( isset($item['purchase_price']) && !empty($item['purchase_price']) ){ ?>
 						  	<i class="icon-eye-open" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
 							<ul class="dropdown-menu wholesale-div" ajax_id="<?php  echo $item['id'];?>" aria-labelledby="dLabel">
-							     <?php if ( isset( $item['purchase_price'] ) ){ foreach ( $item['purchase_price'] as $purchase_price ){ ?>
+							     <?php foreach ( $item['purchase_price'] as $purchase_price ){ ?>
 								    <li><div class="wholesale"><?php echo $purchase_price['name']; ?>：<span class="wholesale-price"><?php echo $purchase_price['vip_price']; ?></span></div></li>  	   
-								 <?php }}?>
+								 <?php }?>
 							</ul>
+							<?php } ?>
 							<?php if(isHasPowerOperateField('shop_dish','vip_price')){ ?>
 							 <i class="wholesale-cogs icon-cog" ajax-vip-price-id="<?php  echo $item['id'];?>"></i>
 							<?php } ?>
@@ -230,7 +232,7 @@
 									  <select  class="form-control set-select">
 									  		<option value="-1">--请选择--</option>
 									  </select>
-				                      <div class="input-group">
+				                      <div class="input-group col-sm-3">
 				                       <span class="input-group-addon">$</span>
 									   <input type="text"  class="form-control vip_price" value="" placeholder="请输入价格"/>
 									  </div>
@@ -404,14 +406,14 @@
 							currency_tap = '$';
 						}
 						get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
-								"<select  class='form-control set-select' onchange='changeFun(this)' v2='"+data_value.v2+"'></select><div class='input-group'><span class='input-group-addon'>"+currency_tap+"</span>"+
+								"<select  class='form-control set-select' onchange='changeFun(this)' v2='"+data_value.v2+"'></select><div class='input-group col-sm-3'><span class='input-group-addon'>"+currency_tap+"</span>"+
 								"<input type='text'  class='form-control vip_price' value='"+data_value.vip_price+"' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
 								"class='btn btn-danger remove_vip' >移除</a></div></div>";						
 					});
 					$(".vip-form-area").html(get_html);
 				}else{
 					get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
-								"<select  class='form-control set-select' vid='' onchange='changeFun(this)'></select><div class='input-group'><span class='input-group-addon'>"+currency_tap+"</span>"+
+								"<select  class='form-control set-select' vid='' onchange='changeFun(this)'></select><div class='input-group col-sm-3'><span class='input-group-addon'>"+currency_tap+"</span>"+
 								"<input type='text'  class='form-control vip_price' value='' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
 								"class='btn btn-danger remove_vip' >移除</a></div></div>";
 					$(".vip-form-area").html(get_html);

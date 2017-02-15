@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
     <title>我的免单</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
     <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
     <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
     <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
@@ -38,13 +39,16 @@
             </ul>
            <!--  本期免单 -->
             <div class="freepay-tab-div div-show">
+            <!--@php if(empty($dish_list_new)){ @-->
             <!--本期没有免单,暂时隐藏了该div后续开发请用PHP去控制-->
-                <div class="nothing" style="display: none;">
-                    <p class="nothing-p">免单分类：男性营养</p>
+                <div class="nothing">
+                    <p class="nothing-p">免单分类：<!--@php echo $freeConfig['name'];@--></p>
                     <img src="__RESOURCE__/recouse/images/freepay_nothing_bg.png">
                     <p class="nothing-tip">您还没有获得免单的商品</p>
                 </div>
+            <!--@php }else{  @-->
             <!--本期免单列表-->
+
                 <div class="freepay-list">
                     <ul class="freepay-list-title">
                         <li class="freepay-img">产品图片</li>
@@ -52,69 +56,36 @@
                         <li class="freepay-state">免单状态</li>
                     </ul>
                     <div class="title">
-                        2017.01.23期（分类：女性营养）
+                        <!--@php echo date("Y.m.d",$freeConfig['free_starttime']);@--> 期（分类：<!--@php echo $freeConfig['name'];@-->）
                     </div>
                     <ul class="freepay-product-ul">
+                        <!--@php foreach($dish_list_new as $one_list){ @-->
                         <li>
-                            <div class="freepay-product-list clearfix">
+                            <div class="freepay-product-list clearfix curt_list">
                                 <div class="freepay-left">
-                                    <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
+                                    <img src="<!--@php echo download_pic($one_list['thumb'],100,100,2);@-->">
                                 </div>
                                 <div class="freepay-right">
-                                    <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒</div>
+                                    <div class="product-name"><a href="<!--@php echo mobile_url('detail',array('id'=>$one_list['id'])); @-->" target="_blank"><!--@php echo $one_list['title']; @--></a></div>
+                                    <!--@php if($one_list['free_status'] == 1){ @-->
                                     <div class="state oning">免单申请中</div>
-                                    <div class="product-price-div clearfix">
-                                        <div class="product-price"><span>￥</span>289.33</div>
-                                        <div class="product-number">X1</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="freepay-product-list clearfix">
-                                <div class="freepay-left">
-                                    <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                </div>
-                                <div class="freepay-right">
-                                    <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
+                                    <!--@php }else if($one_list['free_status'] == 2){ @-->
+                                    <div class="state success">申请成功</div>
+                                    <!--@php }else if($one_list['free_status'] == -1){ @-->
+                                    <div class="state error">申请失败</div>
+                                    <!--@php }else{ @-->
                                     <div class="state"></div>
+                                    <!--@php } @-->
+
                                     <div class="product-price-div clearfix">
-                                        <div class="product-price"><span>￥</span>289.33</div>
-                                        <div class="product-number">X1</div>
+                                        <div class="product-price"><span>￥</span><!--@php echo $one_list['price']; @--></div>
+                                        <div class="product-number">X<!--@php echo $one_list['total']; @--></div>
                                     </div>
                                 </div>
                             </div>
                         </li>
-                        <li>
-                            <div class="freepay-product-list clearfix">
-                                <div class="freepay-left">
-                                    <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                </div>
-                                <div class="freepay-right">
-                                    <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
-                                    <div class="state"></div>
-                                    <div class="product-price-div clearfix">
-                                        <div class="product-price"><span>￥</span>289.33</div>
-                                        <div class="product-number">X1</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="freepay-product-list clearfix">
-                                <div class="freepay-left">
-                                    <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                </div>
-                                <div class="freepay-right">
-                                    <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
-                                    <div class="state"></div>
-                                    <div class="product-price-div clearfix">
-                                        <div class="product-price"><span>￥</span>289.33</div>
-                                        <div class="product-number">X1</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                        <!--@php } @-->
+
                     </ul>
                 </div>
                 <div class="rule-div">
@@ -129,135 +100,67 @@
                     </div>
                 </div>
                 <div class="apply-btn-div">
+                    <!--@php if($dish_list_new[0]['free_status'] ==0 ){ @-->
                     <div class="apply-btn">申请免单</div>
+                    <!--@php } @-->
                 </div>
+
+                <!--@php } @-->
+
             </div>
             <!--  往期记录 -->
             <div class="freepay-tab-div">
                 <!--本期没有免单-->
-                <div class="nothing" style="display: none;">
+                <!--@php if(empty($arrFreeConfig)){  @-->
+                <div class="nothing">
                     <p class="nothing-p">&nbsp;</p>
                     <img src="__RESOURCE__/recouse/images/freepay_nothing_bg.png">
                     <p class="nothing-tip">您还没有获得免单的商品</p>
                 </div>
+                <!--@php }else{ @-->
                 <ul class="freepay-list-title">
                     <li class="freepay-img">产品图片</li>
                     <li class="freepay-name">产品名称</li>
                     <li class="freepay-state">免单状态</li>
                 </ul>
                 <ul>
+                    <!--@php foreach($arrFreeConfig as $old_list){ @-->
                     <li class="freepay-list">
                         <div class="title">
-                            2017.01.23期（分类：女性营养）
+                            <!--@php echo date("Y.m.d",$old_list['free_starttime']);@-->期（分类：<!--@php echo $old_list['name'];@-->）
                         </div>
                         <ul class="freepay-product-ul">
+                            <!--@php if(!empty($old_list['dish_list'])){  foreach($old_list['dish_list'] as $this_dish){ @-->
                             <li>
                                 <div class="freepay-product-list clearfix">
                                     <div class="freepay-left">
-                                        <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
+                                        <img src="<!--@php echo download_pic($this_dish['thumb'],100,100,2);@-->">
                                     </div>
                                     <div class="freepay-right">
-                                        <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
+                                        <div class="product-name"><a href="<!--@php echo mobile_url('detail',array('id'=>$this_dish['id'])); @-->" target="_blank"><!--@php echo $this_dish['title']; @--></a></div>
+                                        <!--@php if($this_dish['free_status'] == 1){ @-->
                                         <div class="state oning">免单申请中</div>
-                                        <div class="product-price-div clearfix">
-                                            <div class="product-price"><span>￥</span>289.33</div>
-                                            <div class="product-number">X1</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="freepay-product-list clearfix">
-                                    <div class="freepay-left">
-                                        <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                    </div>
-                                    <div class="freepay-right">
-                                        <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
+                                        <!--@php }else if($this_dish['free_status'] == 2){ @-->
+                                        <div class="state success">申请成功</div>
+                                        <!--@php }else if($this_dish['free_status'] == -1){ @-->
+                                        <div class="state error">申请失败</div>
+                                        <!--@php }else{ @-->
                                         <div class="state overdue">逾期未申请</div>
+                                        <!--@php } @-->
                                         <div class="product-price-div clearfix">
-                                            <div class="product-price"><span>￥</span>289.33</div>
-                                            <div class="product-number">X1</div>
+                                            <div class="product-price"><span>￥</span><!--@php echo $this_dish['price']; @--></div>
+                                            <div class="product-number">X<!--@php echo $this_dish['total']; @--></div>
                                         </div>
                                     </div>
                                 </div>
                             </li>
+                            <!--@php }} @-->
                         </ul>
                     </li>
-                    <li class="freepay-list">
-                        <div class="title">
-                            2017.01.23期（分类：女性营养）
-                        </div>
-                        <ul class="freepay-product-ul">
-                            <li>
-                                <div class="freepay-product-list clearfix">
-                                    <div class="freepay-left">
-                                        <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                    </div>
-                                    <div class="freepay-right">
-                                        <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
-                                        <div class="state error">申请失败</div>
-                                        <div class="product-price-div clearfix">
-                                            <div class="product-price"><span>￥</span>289.33</div>
-                                            <div class="product-number">X1</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="freepay-product-list clearfix">
-                                    <div class="freepay-left">
-                                        <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                    </div>
-                                    <div class="freepay-right">
-                                        <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
-                                        <div class="state error">申请失败</div>
-                                        <div class="product-price-div clearfix">
-                                            <div class="product-price"><span>￥</span>289.33</div>
-                                            <div class="product-number">X1</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="freepay-list">
-                        <div class="title">
-                            2017.01.09期（分类：中老年营养）
-                        </div>
-                        <ul class="freepay-product-ul">
-                            <li>
-                                <div class="freepay-product-list clearfix">
-                                    <div class="freepay-left">
-                                        <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                    </div>
-                                    <div class="freepay-right">
-                                        <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
-                                        <div class="state success">申请成功</div>
-                                        <div class="product-price-div clearfix">
-                                            <div class="product-price"><span>￥</span>289.33</div>
-                                            <div class="product-number">X1</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="freepay-product-list clearfix">
-                                    <div class="freepay-left">
-                                        <img src="http://odozak4lg.bkt.clouddn.com/201610241357580da2d854363.jpg?imageView/2/w/400/h/400">
-                                    </div>
-                                    <div class="freepay-right">
-                                        <div class="product-name">美国进口 GNC葡萄籽精华胶100mg200粒GNC葡萄籽精华胶100mg200粒粒粒葡...</div>
-                                        <div class="state success">申请成功</div>
-                                        <div class="product-price-div clearfix">
-                                            <div class="product-price"><span>￥</span>289.33</div>
-                                            <div class="product-number">X1</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+                    <!--@php } @-->
                 </ul>
+                <!--@php } @-->
+
             </div>
         </div>
     </div>
@@ -265,29 +168,7 @@
          <!--@php include themePage('leftmenu');@-->
     </div>  
 </div>
-    <div class="modal fade rule-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">活动规则</h4>
-                </div>
-                <div class="modal-body">
-                    <ol>
-                        <li>1.在觅海免单节活动开幕后完成订单的用户均有机会参与到免单活动中来。</li>
-                        <li>2.以7天为一个活动周期（周一至周天），周一为免单开奖日，在周一我们会随机抽取一个分类，对该分类下的商品进行免单。</li>
-                        <li>3.是否获得免单机会以最终订单确认收货时间为准，即订单确认收货时间对应的活动周期。（假设顾客张三2017年1月1日在觅海掌门人中购买了一笔商品订单，于2017年1月5日确认收货，那么他所购买的商品参与的免单活动周期为2017年1月2日至2017年1月8日，再假设该免单期开出的免单分类为【男性营养】，那么顾客张三2017年1月5日确认的收货的订单里属于【男性营养】分类下的商品将获得全额免单）。</li>
-                        <li>4.在获得免单机会后，请在当周周三前在个人中心【我的免单】中提交申请，否则将失去免单就会。提交申请后我们的客服人员将在24小时完成审核，并将免单金额打入您的余额账户中。</li>
-                        <li>5.免单金额仅可在购物过程中作为现金抵用，不可提现。免单金额需在获得免单的那个周期内使用完，逾期将清零。</li>
-                        <li>6.本活动最终解释权归福建觅海网络科技有限公司所有。</li>
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <!--@php include themePage('footer');@-->
 </body>
 <script>
@@ -301,12 +182,19 @@ $(function(){
 
     });
     $(".apply-btn").on("click",function(){
-        $.post("",{},function(data){
-            //alert("我们已经收到您的免单申请，客服人员将在24小时内处理，并将免单金额打入您的余额账户中，请耐心等待。");
+        var url = "<!--@php echo mobile_url('free',array('op'=>'free_apply'));@-->";
+        $.post(url,{},function(data){
+            if( data.errno == 200 ){
+                $(".curt_list .state").addClass("oning").text("免单申请中");
+                $(".apply-btn").remove();
+                alert(data.message,'','',{type:'success'});
+            }else{
+                alert('',data.message);
+            }
         },"json");
     });
     $(".header_rule").on("click",function(){
-        $(".rule-modal").modal();
+        window.open("<!--@php echo mobile_url('free',array('op'=>'rule'));@-->");
     })
 })
 </script>

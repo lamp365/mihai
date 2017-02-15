@@ -98,25 +98,22 @@
                     'recommend_openid' => empty($recommend_openid)? '' : $recommend_openid,
 			);
 				mysqld_insert('member', $data);
-				
 				if(!empty($shop_regcredit))
 				{
 				    member_credit($openid,$shop_regcredit,"addcredit","注册系统赠送积分");
 				}
-				// 老用户积分赠送
-				$regular = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE mobile='".$_GP['mobile']."' AND status=0");
-				if (!empty($regular)) {
+			   // 老用户积分赠送
+			   $regular = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE mobile='".$telephone."' AND status=0");
+		       if (!empty($regular)) {
 					// 老用户积分为消费金额的一半
-					$regular_credit = intval((float)$regular['price']/2);
-					mysqld_query("UPDATE ".table('member')." SET credit=credit+".$regular_credit." WHERE openid='".$openid."'");
+					$regular_credit = intval((float)$regular['price']/10);
+					member_credit($openid, $regular_credit, 'addcredit', '尊贵天猫老客户积分赠送');
 					// 该老用户更改为已入驻
-					mysqld_update('shop_customers', array('status'=>1), array('mobile'=>$_GP['mobile']));
+					mysqld_update('shop_customers', array('status'=>1), array('mobile'=>$telephone));
 				}
-				
 				$member=get_session_account();
-					$oldsessionid = $member['openid'];
-					$unionid      = $member['unionid'];
-
+				$oldsessionid = $member['openid'];
+				$unionid      = $member['unionid'];
 				$loginid=save_member_login('',$openid);
 
 				integration_session_account($loginid,$oldsessionid, $unionid);

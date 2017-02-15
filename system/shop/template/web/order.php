@@ -130,7 +130,9 @@
 				</td>
 				<th ><label for="">总金额:</label></th>
 				<td >
-						<?php  echo $order['price']?>
+					<?php  echo $order['price']+$order['balance_sprice']+$order['freeorder_price']?>
+					<span>现金支付：<?php  echo $order['price']?></span>
+					<span>余额抵扣：<?php  echo $order['balance_sprice']+$order['freeorder_price']?></span>
 				</td>
 			</tr>
 			<tr>

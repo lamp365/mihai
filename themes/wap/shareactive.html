@@ -16,9 +16,9 @@
 	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	<script type="text/JavaScript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 </head>
 <body>
-
 	<div class="banner">
 		<img src="__RESOURCE__/recouse/images/miandan_wap01.jpg">
 		<!--@php if(empty($_GP['is_app'])){  @-->
@@ -185,18 +185,55 @@
 					</ul>
 				</div>
 		</div>
-		<div class="banner-title"><div>BEST GIFT</div>心愿专区</div>
+		<div class="banner-title">在一起过福年</div>
 	</div>
 	<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
-	<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
-
+	<!--@php if($openid){ @-->
+		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
+	<!--@php }else{ @-->
+		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/user_ico.png"><a href="<?php  echo mobile_url('login',array('name'=>'shopwap')); ?>">您未登陆</a></div>
+	<!--@php } @-->
+	
+	<!-- 推荐专区 -->
+	<div class="last-wrap recommand">
+		<ul class="last-wrap-list clearfix">
+			<li>
+				<div class="recommand-left">
+					<img class="lazy" onclick="personalRecord(this,<!--@php echo $recommand['id'];@-->)" data-original="<!--@php echo download_pic($recommand['logo'],350,350,2);@-->" src="images/loading.gif">
+				</div>
+				<div class="recommand-right">
+					<div class="small-title"><!--@php echo $recommand['title'];@--></div>
+					<div class="progress">
+					  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $recommand['jindutiao'];@-->">
+					  	</div>
+					</div>
+					<div class="list-num">
+						<span class="list-num-before"><!--@php echo $recommand['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $recommand['amount'];@--></span>
+						<span style="float: right;font-size: 12px;">需心愿数:<!--@php echo intval($recommand['credit_cost']);@--></span>
+					</div>
+					<div class="play-btn-div">
+						<div class="play-now" style="width: 65%" onclick="playNow(this,<!--@php echo $recommand['id'];@-->)" data-fenshu="<!--@php echo intval($recommand['credit_cost']);@-->">新年许愿</div>
+						<div class="love" style="width: 35%">
+							<img onclick="personalRecord(this,<!--@php echo $recommand['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
+							<span><!--@php echo $recommand['wish_num'];@--></span>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div class="not-start">
+		<div class="coupon_title">心愿专区</div>
+		<img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg">
+	</div>
+<!-- 心愿专区 -->
 	<div class="last-wrap " style="padding-top: 0">
 		<ul class="last-wrap-list clearfix">
 			<!--@php if(!empty($activeGoods)){   foreach($activeGoods as $item){  @-->
 			<li>
 
 				<div >
-					<img class="lazy" onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo download_pic($item['logo'],200,200,2);@-->" src="images/loading.gif">
+					<img class="lazy" onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo download_pic($item['logo'],350,350,2);@-->" src="images/loading.gif">
 				</div>
 				<div class="small-title"><!--@php echo $item['title'];@--></div>
 				<div class="progress">
@@ -251,7 +288,7 @@
 					</a>
 				</div>
 				<!--标题-->
-				<p class="name" style="font-weight: bold;"><!--@php echo cut_title($item['title']);@--></p>
+				<p class="name" style="font-weight: bold;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;"><!--@php echo cut_title($item['title']);@--></p>
 				<!--立即参与按钮-->
 				<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
 			</li>
@@ -271,7 +308,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">参与记录</h4>
+	        <h4 class="modal-title">您的心愿数字</h4>
 	      </div>
 	      <div class="modal-body">
 
@@ -282,7 +319,7 @@
 	    </div>
 	  </div>
 	</div>
-<!--@php if(!empty($_GP['is_app'])){ @-->
+<!--@php if(empty($_GP['is_app'])){ @-->
 <!--@php include themePage('footer');@-->
 <!--@php } @-->
 <script type="text/javascript">
@@ -360,10 +397,10 @@
 		var cishu = parseInt($(".active-num-btn span").html());
 		var fenshu = parseInt($(thisElement).data('fenshu'));
 		if(cishu == 0){
-			alert('今天已上限，请明天再来');return;
+			alert('许愿数已用完，请明天再来哦~',"邀请好友注册参与，可获得更多许愿数呢！",'',{type:'warning'});return;
 		}
 		if(fenshu > cishu){
-			alert("您的心愿数只剩"+cishu+"个");return;
+			alert("您的心愿数只剩"+cishu+"个","当前需要"+fenshu+"个");return;
 		}
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
@@ -373,7 +410,7 @@
 			}
 			if( data.errno == 200 ){
 				var msg = data.message;
-				alert(msg.tit,msg.des);
+				alert(msg.tit,msg.des,'',{type:'success'});
 				//较少显示的次数，并爱心加1
 				cishu = cishu-fenshu;
 				$(".active-num-btn span").html(cishu);
@@ -389,6 +426,9 @@
 				var list_num = $(thisElement).parent().prev().find('.list-num-before').html();
 				var list_num = parseInt(list_num)+1;
 				$(thisElement).parent().prev().find('.list-num-before').html(list_num);
+			}else if(data.errno == 1004){
+				var msg = data.message;
+				alert(msg.num,msg.need_num);
 			}else{
 				alert(data.message);
 			}
@@ -406,12 +446,13 @@
 				//<p>您于2017-01-22 10:22参与了<span class="record-number">10人次</span></p>
 				//<p>您的幸运号码为：8888888</p>
 				var html = '';
+				var num_html = '';
 				var recorder = data.message;
 				for(var i = 0;i < recorder.length;i++){
 					var item      = recorder[i];
-					var date_time = Stringtotime(item.createtime);
-					html = html + "<p>您于"+ date_time +"参与了该心愿<p><p>您的心愿数字为："+ item.star_num_order +"</p>"
+					num_html = num_html + "<span>"+item.star_num_order+"</span>";
 				}
+				html = "<p class='younump'>"+num_html+"</p>"
 				$(".personal-record-modal .modal-body").html(html);
 			}
 			$(".personal-record-modal").modal();
@@ -474,7 +515,6 @@
 			setTimeout(function(){
 				content.fadeOut(500);
 				div.fadeOut(500);
-
 			},1000);
 		}
 	}
@@ -530,20 +570,14 @@
 		}
 	}
 	function isLogin(msg){
-        //处理app登录
         var ua = browserFun();
-        //is_login  0未登录 1已登录
         if( ua == "ios" ){
-        	//msg no不需要再发请求，msg yes 继续发请求
             if( msg.openid !=""){
                 openid_val = msg.openid;
             }else{
                 return;
             }
         }
-/*        else if( ua=="android" ){
-			openid_val = msg.openid;
-        }*/
     }
 	//app登录
 	function AppLogin(){
@@ -559,6 +593,41 @@
 		window.location.href=url;
 	}
 
+</script>
+<script>
+	wx.config({
+		debug: false,
+		appId: '<?php echo $appId?>',
+		timestamp: <?php echo $timestamp?>,
+		nonceStr: '<?php echo $nonceStr?>',
+		signature: '<?php echo $signature?>',
+		jsApiList: [
+			'checkJsApi',
+			'onMenuShareTimeline',
+			'onMenuShareAppMessage',
+			'onMenuShareQQ',
+			'onMenuShareWeibo',
+			'onMenuShareQZone',
+		  ]
+	});
+
+	wx.ready(function () {
+		var shareData = {
+			title: '快来和我一起参加觅海心愿节',
+			desc: '免费参与，每日都可以许愿，分享更有好礼',
+			link: '',
+			imgUrl: 'http://www.hinrc.com/images/getheadimg.jpg'
+		};
+		wx.onMenuShareAppMessage(shareData);
+		wx.onMenuShareTimeline(shareData);
+		wx.onMenuShareQQ(shareData);
+		wx.onMenuShareWeibo(shareData);
+		wx.onMenuShareQZone(shareData);
+	});
+
+	wx.error(function (res) {
+	  alert(res.errMsg);
+	});
 </script>
 </body>
 </html>

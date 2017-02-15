@@ -109,13 +109,17 @@
 	</div>
 	
         <!--@php  } @-->
-
+		<div style="padding-left: 10px;padding-top: 10px;">
+			<span>现金支付：<!--@php  echo $item['price'];@--></span>
+			<span>余额抵扣：<!--@php  echo $item['balance_sprice']+$item['freeorder_price'];@--></span>
+		</div>
 	<div class="myoder-total">
+
 		<span>共：<span class="false">
 					<!--@php  if($item['dispatchprice']<=0) { @-->
-                        <!--@php  echo $item['price'];@--> 元
+                        <!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@--> 元
 					<!--@php  } else { @-->
-                        <!--@php  echo $item['price'];@--> 元 
+                        <!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@--> 元 
                          <span style="font-size: 12px;">(含运费<!--@php echo $item['dispatchprice'];@-->/税费: <!--@php  echo $item['taxprice'];@-->) </span>
 					<!--@php  } @-->
 				 </span>

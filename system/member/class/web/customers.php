@@ -2,10 +2,10 @@
 defined('SYSTEM_IN') or exit('Access Denied');
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 $client_status = array('0' => '未入驻', '1' => '已入驻');
-$contact_status = array('0' => '未联系', '1' => '已联系');
+$contact_status = array('0' => '否', '1' => '已联系');
 // 根据当前后台账号进行展示
 $admin = $_CMS['account']['username'];
-// $admin = 'meigong';
+// $admin = 'yanfa';
 $n_user = mysqld_select("SELECT * FROM ".table('shop_department_staff')." WHERE admin='".$admin."'");
 
 if ($operation == 'display') {
@@ -76,35 +76,38 @@ if ($operation == 'display') {
 	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 	// 总记录数
   	$data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
+	if ( is_array($al_client) ){
   	foreach ($al_client as &$aclv) {
   		if (mysqld_select("SELECT * FROM ".table('member')." WHERE mobile=".$aclv['mobile'])) {
 			$aclv['status'] = '1';
 			mysqld_update('shop_customers', array('status'=>1), array('id'=>$aclv['id']));
 	    }
   	}
-  	unset($aclv);
+	unset($aclv);
+	}
+  	
   	$total = $data_total['total'];
 	$city_a = array();
 	$level_a = array();
 	$shop_a = array();
 	$staff_a = array();
-	$all_c = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id ".$uw1." ORDER BY a.updatetime DESC");
+	// $all_c = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id ".$uw1." ORDER BY a.updatetime DESC");
 	$all_sta = mysqld_selectall("SELECT * FROM ".table('shop_department_staff')." ".$uw2);
-	if (!empty($all_c)) {
-		foreach ($all_c as $acv) {
-			$city_a[] = $acv['city'];
-			$level_a[] = $acv['level'];
-	    	$shop_a[] = $acv['shop'];
-		}
-	}
+	// if (!empty($all_c)) {
+	// 	foreach ($all_c as $acv) {
+	// 		$city_a[] = $acv['city'];
+	// 		$level_a[] = $acv['level'];
+	//     	$shop_a[] = $acv['shop'];
+	// 	}
+	// }
 	if (!empty($all_sta)) {
 		foreach ($all_sta as $aslv) {
 			$staff_a[] = $aslv['name'];
 		}
 	}
-	$city_a = array_unique($city_a);
-	$level_a = array_unique($level_a);
-	$shop_a = array_unique($shop_a);
+	$city_a = mysqld_selectall("SELECT a.city FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id ".$uw1." GROUP BY a.city");
+	$level_a = mysqld_selectall("SELECT a.level FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id ".$uw1." GROUP BY a.level");
+	$shop_a = mysqld_selectall("SELECT a.shop FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id ".$uw1." GROUP BY a.shop");
 	$staff_a = array_unique($staff_a);
 
 	if ($n_user['identity'] == '2') {
@@ -254,6 +257,37 @@ if ($operation == 'display') {
 		$result['ctime'] = time();
 	}else{
 		$result['message'] = 0;
+	}
+	echo json_encode($result);
+}elseif ($operation == 'sendsms') {
+	// 发送短信
+	$con_id = $_GP['data_id'];
+	if (!empty($con_id)) {
+		$cus = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE id=".$con_id);
+		$telphone = $cus['mobile'];
+		if (date('Y-m-d',$cus['sms_time']) == date('Y-m-d')) {
+			$result['message'] = '今日已发过短信!';
+			echo json_encode($result);
+			return;
+		}
+		if ( !empty($telphone) and preg_match("/^1[34578]{1}\d{9}$/",$telphone) ){
+			 $code = get_code();
+			 if (file_exists(WEB_ROOT . '/includes/TopSdk.php')) {
+			 	require WEB_ROOT . '/includes/TopSdk.php';
+			 	$respObject = send_sms($telphone,$code,'SMS_47070001');
+			 	//如果发送失败
+				if (isset($respObject->code))
+				{
+					$result['message'] = '发送失败!';
+				}
+				else{
+					mysqld_update('shop_customers', array('sms_time' => time()), array('id'=> $con_id));
+					$result['message'] = '发送成功!';
+				}
+			 }
+		}
+	}else{
+		$result['message'] = '发送失败!';
 	}
 	echo json_encode($result);
 }

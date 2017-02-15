@@ -96,15 +96,28 @@
 	</div>
 
 	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left"> 审核通过：</label>
+
+		<div class="col-sm-9">
+			<input type="radio" name="ischeck" value="0" id="ischeck"
+				<?php  if(empty($headline) || $headline['ischeck'] == 0) { ?> checked="true"
+				<?php  } ?> /> 否 &nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="ischeck" value="1" id="ischeck"
+				<?php  if(!empty($headline) && $headline['ischeck'] == 1) { ?> checked="true"
+				<?php  } ?> /> 是
+		</div>
+	</div>
+
+	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left"> 是否推荐：</label>
 
 		<div class="col-sm-9">
-			<input type="radio" name="isrecommand" value="1" id="isrecommand"
-				<?php  if(empty($headline) || $headline['isrecommand'] == 1) { ?> checked="true"
-				<?php  } ?> /> 是 &nbsp;&nbsp;&nbsp; 
-				<input type="radio" name="isrecommand" value="0" id="isrecommand"
-				<?php  if(!empty($headline) && $headline['isrecommand'] == 0) { ?> checked="true"
-				<?php  } ?> /> 否
+			<input type="radio" name="isrecommand" value="0" id="isrecommand"
+				<?php  if(empty($headline) || $headline['isrecommand'] == 0) { ?> checked="true"
+				<?php  } ?> /> 否 &nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="isrecommand" value="1" id="isrecommand"
+				<?php  if(!empty($headline) && $headline['isrecommand'] == 1) { ?> checked="true"
+				<?php  } ?> /> 是
 		</div>
 	</div>
 	
