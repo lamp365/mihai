@@ -90,10 +90,12 @@ jQuery(document).ready(function($) {
 </script>
 </head>
 <body>
+
+   <!--@php if(is_show_follow()){ @-->
 	<!--立即关注-->
 	<div class="to_concern">
 		<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
-		<span>客服24小时服务不离线</span>
+		<span>关注觅海，了解最新活动</span>
 		<p class="to_concern_btn">立即关注</p>
 		<img src="__RESOURCE__/recouse/images/cha.png" class="close_concern"/>
 	</div>
@@ -101,16 +103,14 @@ jQuery(document).ready(function($) {
 	<div class="modal fade to_concern_modal" tabindex="-1" role="dialog">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">	  
-	   	 <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">扫描二维码，关注微信公众号</h4>
-	      </div>
-	      <div class="modal-body">
+	      <div class="modal-body">	      	
 			<img src="__RESOURCE__/recouse/images/weixin.jpg" />
 	      </div>	      
 	    </div>
 	  </div>
 	</div>
+	<!--@php }  @-->
+
 <div class="WX_search1" id="mallHead" style="padding-bottom: 2px;">
 		<form class="WX_search_frm1" action="index.php" id="searchForm"
 			name="searchForm">

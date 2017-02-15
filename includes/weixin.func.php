@@ -45,5 +45,34 @@ function get_share_js_parame(){
 	}else{
 		return array();
 	}
+}
 
+/**
+ * 是否显示 关注公众号的提示，用于wap端，需要有这个提示
+ * @return bool|string
+ */
+function is_show_follow(){
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+		//微信端进入的 会缓存  MOBILE_SESSION_ACCOUNT这个key
+		$follow  = $_SESSION['MOBILE_SESSION_ACCOUNT']['follow'];
+		if($follow){
+			return true;
+		}
+		//缓存没有，则查看数据库
+		$unionid = $_SESSION['MOBILE_SESSION_ACCOUNT']['unionid'];
+		if(empty($unionid)){
+			return '';
+		}
+		//查看是否已经订阅
+		$res = mysqld_select("select follow from ".table('weixin_wxfans')." where unionid={$unionid}");
+		if(empty($res) || $res['follow']==0){
+			return '';
+		}else{
+			$_SESSION['MOBILE_SESSION_ACCOUNT']['follow'] = 1;
+			return true;
+		}
+
+	}else{
+		return '';
+	}
 }

@@ -68,6 +68,9 @@ switch($operation) {
 			$pic .= ';';
 			$pic .= implode(';',$_GP['attachment-new']);
 		}
+		if ($pic[0] == ";") {
+			substr($pic,1);
+		}
 		$data['pic'] = $pic;
 		if (!empty($_FILES['thumb']['tmp_name'])) {
             $upload = file_upload($_FILES['thumb']);
