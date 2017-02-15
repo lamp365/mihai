@@ -594,13 +594,15 @@
 	}
 
 </script>
+<!--@php if(!empty($weixin_share)){ @-->
 <script>
+
 	wx.config({
 		debug: false,
-		appId: '<?php echo $appId?>',
-		timestamp: <?php echo $timestamp?>,
-		nonceStr: '<?php echo $nonceStr?>',
-		signature: '<?php echo $signature?>',
+		appId: "<?php echo $weixin_share['weixin_appid']?>",
+		timestamp:"<?php echo $weixin_share['timestamp']?>",
+		nonceStr: "<?php echo $weixin_share['nonceStr']?>",
+		signature: "<?php echo $weixin_share['signature']?>",
 		jsApiList: [
 			'checkJsApi',
 			'onMenuShareTimeline',
@@ -629,5 +631,6 @@
 	  alert(res.errMsg);
 	});
 </script>
+<!--@php } @-->
 </body>
 </html>

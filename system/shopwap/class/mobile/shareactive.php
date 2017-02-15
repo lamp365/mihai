@@ -1,17 +1,9 @@
 <?php
-    $op     = empty($_GP['op'])? 'display' : $_GP['op'];
-    $openid = checkIsLogin();
-    $weixin_config = globaSetting(array(
-             "weixin_appId",
-             "weixin_appSecret"
-     ));
-    $appId = $weixin_config['weixin_appId'];
-    $appsecret = $weixin_config['weixin_appSecret'];
-    $timestamp = time();
-    $jsapi_ticket = make_ticket($appId,$appsecret);
-    $nonceStr = make_nonceStr();
-	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-    $signature = make_signature($nonceStr,$timestamp,$jsapi_ticket,$url);
+    $op           = empty($_GP['op'])? 'display' : $_GP['op'];
+    $openid       = checkIsLogin();
+    //获取微信分享的一些参数
+    $weixin_share = get_share_js_parame();
+
     if($op == 'display'){
         $accesskey = $_GP['accesskey'];
 
