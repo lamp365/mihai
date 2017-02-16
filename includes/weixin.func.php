@@ -54,22 +54,25 @@ function get_share_js_parame(){
 function is_show_follow(){
 	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 		//微信端进入的 会缓存  MOBILE_SESSION_ACCOUNT这个key
-		$follow  = $_SESSION['MOBILE_SESSION_ACCOUNT']['follow'];
+		$follow  = $_SESSION[MOBILE_SESSION_ACCOUNT]['follow'];
 		if($follow){
-			return true;
+			//已经订阅
+			return '';
 		}
 		//缓存没有，则查看数据库
-		$unionid = $_SESSION['MOBILE_SESSION_ACCOUNT']['unionid'];
+		$unionid = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
 		if(empty($unionid)){
 			return '';
 		}
 		//查看是否已经订阅
-		$res = mysqld_select("select follow from ".table('weixin_wxfans')." where unionid={$unionid}");
+		$res = mysqld_select("select follow from ".table('weixin_wxfans')." where unionid='{$unionid}'");
 		if(empty($res) || $res['follow']==0){
-			return '';
-		}else{
-			$_SESSION['MOBILE_SESSION_ACCOUNT']['follow'] = 1;
+			//未订阅
 			return true;
+		}else{
+			//已经订阅
+			$_SESSION[MOBILE_SESSION_ACCOUNT]['follow'] = 1;
+			return '';
 		}
 
 	}else{
