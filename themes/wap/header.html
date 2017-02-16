@@ -81,18 +81,24 @@ jQuery(document).ready(function($) {
 			}
 		});
 		$(".close_concern").click(function(){
-			$(".to_concern").hide();
+			$(".to_concern").fadeOut();
+			$(".guanzhu_box").fadeOut();
+			$(".guanzhu_modal").fadeOut();
 		})
 		$(".to_concern_btn").click(function(){
 			$(".guanzhu_modal").fadeIn();
 			$(".guanzhu_box").fadeIn();
+		})
+		$(".guanzhu_modal").click(function(){
+			$(".guanzhu_modal").fadeOut();
+			$(".guanzhu_box").fadeOut();
 		})
 	});
 </script>
 </head>
 <body>
 
-   <!--@php if(!is_show_follow()){ @-->
+   <!--@php if(is_show_follow()){ @-->
 	<!--立即关注-->
 	<div class="to_concern">
 		<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />

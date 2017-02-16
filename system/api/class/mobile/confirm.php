@@ -88,9 +88,10 @@
 			$result['data']['identity'] = $identity;
 		}
 		
+		$payment_list = mysqld_selectall ( "select code,name,id from " . table ( "payment" ) . " where enabled=1 and code='alipay' order by `order` desc" );
 		
 		$result ['data']['totalprice'] 	= $result ['data']['goodsprice']+$result ['data']['taxtotal']+$result ['data']['ships'];
-		$result ['data']['payment_list']= getPayment (); 					// 支付方式
+		$result ['data']['payment_list']= $payment_list; 					// 支付方式
 		$result ['data']['bonus_list']	= get_bonus_list (array('openid'=>$openid,'goods'=>$result ['data']['dish_list'],'price'=>$result ['data']['goodsprice'])); 	// 优惠券
 	}
 	

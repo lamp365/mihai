@@ -423,9 +423,8 @@
 				}
 				$(thisElement).parent().find('.love span').html(wish_total);
 
-				var list_num = $(thisElement).parent().prev().find('.list-num-before').html();
-				var list_num = parseInt(list_num)+1;
-				$(thisElement).parent().prev().find('.list-num-before').html(list_num);
+				var list_num = msg.tit.split(":");
+				$(thisElement).parent().prev().find('.list-num-before').html(list_num[1]);
 			}else if(data.errno == 1004){
 				var msg = data.message;
 				alert(msg.num,msg.need_num);

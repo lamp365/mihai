@@ -212,6 +212,7 @@
 					                    	}?>
 						                    &nbsp<a class="btn btn-xs btn-info contact <?php  if ($almv['contact']=='1') {echo 'btn-danger';}?>" data_id="<?php  echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"><?php  if ($almv['contact']=='0') {echo '联系';}else{echo '联系';}?></i></a>
 						                    &nbsp<a class="btn btn-xs btn-info send-message" data_id="<?php  echo $almv['id'];?>" href="javascript:;" data_name="<?php  echo $almv['username'];?>"><i class="icon-edit">发短信</i></a>
+						                    &nbsp<a class="btn btn-xs btn-info remark" data_id="<?php  echo $almv['id'];?>" href="javascript:;" ><i class="icon-edit">备注</i></a>
 					                    </td>
 					                </tr>
 					            <?php  } } ?>
@@ -285,6 +286,30 @@
 								</div>
 							</div>
 						</div>
+						<div class='modal fade set_remark' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+							<div class='modal-dialog'>
+								<div class='modal-content'>
+									<div class='modal-header'> 
+										<button type='button' class='close' data-dismiss='modal'>
+											<span aria-hidden='true'>&times;</span>
+											<span class='sr-only'>Close</span>
+										</button>
+										<h4 class='modal-title' class='myModalLabel'>备注</h4>
+									</div>
+									<div class='modal-body'>
+										<div class="department-wrap">
+											<div class="department-step-1">
+												<textarea style="height: 150px; margin: 0px; width: 570px;" id="remark_text" name="remark_text" cols="50"></textarea>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-primary setup-btn" >保存</button>
+									    <button class="btn btn-default" type="button" data-dismiss="modal">关闭</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
 	            </div>
 	        </div>
@@ -333,6 +358,30 @@ $(function(){
 			data = eval(data);
 			alert(data.message);
 		},'json');
+	});
+	//备注
+	$(".remark").on("click",function(){
+		var $this = $(this);
+		var data_id = $this.attr("data_id");
+		$(".set_remark").modal();
+		$(".set_remark").on("shown.bs.modal", function(){
+			var url = "<?php  echo web_url('customers',array('op'=>'get_remark'));?>";
+			$.post(url,{data_id:data_id},function(data){
+				// data = eval(data);
+				$("#remark_text").text(data.text);
+			},'json');
+		});
+		$(".set_remark .setup-btn").on("click",function(){
+			var remark = $(".remark_text").text();
+			var url = "<?php  echo web_url('customers',array('op'=>'set_remark'));?>";
+			$.post(url,{data_id:data_id,remark:remark},function(data){
+					if( data.message == 1){
+						alert("保存成功");
+					}else{
+						alert("保存失败");
+					}
+				},'json');
+		});
 	});
 	function Stringtotime(time){
 		time = time*1000;

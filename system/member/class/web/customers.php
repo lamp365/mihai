@@ -73,7 +73,7 @@ if ($operation == 'display') {
 		$where.=" AND status=0";
 	}
 
-	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.lasttime DESC,a.contact ASC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 	// 总记录数
   	$data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
 	if ( is_array($al_client) ){
@@ -284,10 +284,19 @@ if ($operation == 'display') {
 					mysqld_update('shop_customers', array('sms_time' => time()), array('id'=> $con_id));
 					$result['message'] = '发送成功!';
 				}
-			 }
+			}
 		}
 	}else{
 		$result['message'] = '发送失败!';
+	}
+	echo json_encode($result);
+}elseif ($operation == 'get_remark') {
+	// 获取备注
+	$data_id = $_GP['data_id'];
+
+	if (!empty($data_id)) {
+		$re = mysqld_select("SELECT remark FROM ".table('shop_customers')."WHERE id=".$data_id);
+		$result['text'] = $re['remark'];
 	}
 	echo json_encode($result);
 }

@@ -69,7 +69,7 @@ switch($operation) {
 			$pic .= implode(';',$_GP['attachment-new']);
 		}
 		if ($pic[0] == ";") {
-			substr($pic,1);
+			$pic = substr($pic,1);
 		}
 		$data['pic'] = $pic;
 		if (!empty($_FILES['thumb']['tmp_name'])) {

@@ -311,6 +311,8 @@ function get_active_total_people(){
         if(!$total){
             $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
             $memcache->set('shareActiveTotalPeople',$total,time()+3600*2); //存两个小时
+        }else{
+            logRecord("已经从缓存中得到总数：{$total}",'shareactive');
         }
     }else{
         $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));

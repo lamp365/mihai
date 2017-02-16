@@ -72,10 +72,12 @@ function get_weixin_token($refresh = false)
         $content = http_get($url);
 		
         if (empty($content)) {
+            logRecord("微信授权失败！当前appid：{$appid}",'weixin_server');
             message('获取微信公众号授权失败, 请稍后重试！');
         }
         $token = @json_decode($content, true);
         if (empty($token) || ! is_array($token)) {
+            logRecord("微信获取token失败！",'weixin_server');
             message('获取微信公众号授权失败, 请稍后重试！ 公众平台返回原始数据为:' . $token);
         }
         if (empty($token['access_token']) || empty($token['expires_in'])) {
@@ -128,6 +130,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 $content = http_get($oauth2_code);
                 $token = @json_decode($content, true);
                 if (empty($token) || ! is_array($token) || empty($token['access_token']) || empty($token['openid'])) {
+                    logRecord("微信授权失败啦！当前appid：{$appid},,code:{$code},,secret:{$secret}",'weixin_server');
                     message('获取微信公众号授权失败');
                     exit();
                 }

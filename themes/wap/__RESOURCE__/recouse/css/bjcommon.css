@@ -3603,14 +3603,22 @@ button.swiper-pagination-bullet {
 }
 .to_concern img{
 	vertical-align: middle;
-	margin-left: 4%;
+	margin-left: 2%;
+	width: 32px;
 }
 .to_concern span{
 	margin-left:5px;	
+	font-size: 15px;
+}
+.to_concern .close_concern{
+	width: 22px;
+	position: absolute;
+	right: 7px;
+	top: 12px;
 }
 .to_concern p{
 	display: inline-block;
-	width: 80px;
+	width: 70px;
 	height: 24px;
 	color: rgb(247,77,133);
 	text-align: center;
@@ -3618,7 +3626,7 @@ button.swiper-pagination-bullet {
 	border-radius: 12px;
 	background: #fff;
 	position: absolute;
-	right:45px;
+	right:35px;
 	top: 10.5px;
 }
 .guanzhu_modal{
