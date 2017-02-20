@@ -29,6 +29,9 @@
 				$member_rank_model = member_rank_model($member['credit']);
 				
 			}
+			//余额等于 现金余额加免单余额
+			$member['gold'] = getMemberBalance($member['gold'],$member['freeorder_gold'],$member['freeorder_gold_endtime']);
+
 			$fansindex_menu_list = mysqld_selectall("SELECT * FROM " . table('shop_diymenu') . " where menu_type='fansindex' order by torder desc");
 			$cart_list = mysqld_selectall("SELECT a.*,b.id as bid , c.thumb,c.id as cid FROM " . table('shop_cart') . " a left join " . table('shop_dish') . " b on a.goodsid = b.id left join " . table('shop_goods') . " c on c.id = b.gid WHERE  session_id = '" . $openid . "'");
 			$totlist = count($cart_list);

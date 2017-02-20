@@ -129,6 +129,7 @@ if ( $op == 'list' ){
    $bouns = get_bonus_list($dates);
    exit;
 }
+//下单时获取优惠卷金额 ajax请求直接返回值
 if ( $op == 'get_price' ){
    $bounsn = $_GP['id'];
    $bonus = mysqld_select("select bonus_user.*,bonus_type.type_name,bonus_type.type_money,bonus_type.use_start_date,bonus_type.use_end_date from " . table("bonus_user")." bonus_user left join  " . table("bonus_type")." bonus_type on bonus_type.type_id=bonus_user.bonus_type_id where bonus_user.deleted=0  and `openid`=:openid and bonus_user.isuse = 0 and bonus_user.bonus_sn = :bonus_sn ",array(':openid'=>$openid,':bonus_sn'=>$bounsn));
@@ -138,6 +139,14 @@ if ( $op == 'get_price' ){
       echo 0;
    }
    exit;
+}
+//下单时获取余额  ajax请求直接返回值
+if($op == 'balance'){
+	$gold                   = $member['gold'];   //余额
+	$freeorder_gold         = $member['freeorder_gold'];  //免单返现金额
+	$freeorder_gold_endtime = $member['freeorder_gold_endtime'];  //免单金额使用期限
+	$balance  = getMemberBalance($gold,$freeorder_gold,$freeorder_gold_endtime);
+	die($balance);
 }
 $bonuslist = mysqld_selectall("select bonus_user.*,bonus_type.type_name,bonus_type.type_money,bonus_type.use_start_date,bonus_type.use_end_date from " . table("bonus_user")." bonus_user left join  " . table("bonus_type")." bonus_type on bonus_type.type_id=bonus_user.bonus_type_id where bonus_type.deleted=0 and bonus_user.deleted=0  and bonus_user.openid =:openid and bonus_user.isuse = 0 and bonus_type.use_end_date > :use_end_date order by isuse,bonus_type.send_type ",array(':openid'=>$openid,':use_end_date'=>time()));
 include themePage('bonuslist');

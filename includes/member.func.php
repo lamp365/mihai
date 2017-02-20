@@ -788,3 +788,19 @@ function insertMemberPaylog($openid, $fee,$account_fee, $type, $remark)
 
 	return mysqld_insert('member_paylog', $data);
 }
+
+/**
+ * @content 获得用户的余额
+ * @param $gold  余额
+ * @param $free_gold  免单返现金额
+ * @param $free_time  免单使用期限
+ * @return mixed
+ */
+function getMemberBalance($gold,$free_gold,$free_time){
+    if(time()>$free_time){
+        return $gold;
+    }else{
+        $total = $gold+$free_gold;
+        return $total;
+    }
+}

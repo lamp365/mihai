@@ -58,7 +58,7 @@
     }else if($op == 'canyu_recorder'){  //参与记录
 
         if(empty($openid)){
-            die(showAjaxMess(1002,'您还没登录！'));
+            die(showAjaxMess(1000,'您还没登录！'));
         }
         $award_id = $_GP['award_id'];
         $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}' order by id desc");

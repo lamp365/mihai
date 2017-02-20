@@ -51,7 +51,7 @@
 		</ul>
 	</div>
 	<div class="banner">
-		<img src="__RESOURCE__/recouse/images/miandan_wap03.jpg">
+		<img src="__RESOURCE__/recouse/images/miandan_wap030101.jpg">
 		<div class="total-number-div">
 				<div class="total_num">
 					<ul class="num_list">	
@@ -185,6 +185,13 @@
 					</ul>
 				</div>
 		</div>
+		
+	</div>
+
+	<video controls="controls" poster="__RESOURCE__/recouse/images/video_poster.jpg" style="display: block;" src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201701/20170217184258a6d392575d8.mp4" width="100%"></video>
+	<div class="video-title">纽约旗舰店客户恭祝中国区用户愿望实现</div>
+	<div class="banner">
+		<img src="__RESOURCE__/recouse/images/miandan_tuijian_bg.jpg">
 		<div class="banner-title">在一起过福年</div>
 	</div>
 	<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
@@ -193,7 +200,7 @@
 	<!--@php }else{ @-->
 		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/user_ico.png"><a href="<?php  echo mobile_url('login',array('name'=>'shopwap')); ?>">您未登陆</a></div>
 	<!--@php } @-->
-	
+
 	<!-- 推荐专区 -->
 	<div class="last-wrap recommand">
 		<ul class="last-wrap-list clearfix">
@@ -222,9 +229,9 @@
 			</li>
 		</ul>
 	</div>
+	
 	<div class="not-start">
-		<div class="coupon_title">心愿专区</div>
-		<img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg">
+		<div class="coupon_title">总有人会实现的为什么不会是你呢</div>
 	</div>
 <!-- 心愿专区 -->
 	<div class="last-wrap " style="padding-top: 0">
@@ -256,26 +263,25 @@
 			<!--@php }}  @-->
 		</ul>
 
-		<!--@php if(!empty($allBonus)){   @-->
-		<div class="not-start">
-			<div class="coupon_title">优惠券专区<span class="coupon-total-num"> ( 许愿池:<span><!--@php echo $wish_total_num; @--></span> )</span></div>
-			<img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg">
-		</div>
-		<ul class="last-wrap-list clearfix">
-			<!--@php foreach($allBonus as $oneBonus){ @-->
-			<li class="per_indiana" style="position: relative;border:none">
-				<img src="__RESOURCE__/recouse/images/coupon.jpg">
-				<span class="need-number">心愿值:<!--@php echo $oneBonus['change_num'];@--></span>
-				<span class="coupon-price"><!--@php echo intval($oneBonus['type_money']);@--><span class="yuan">元</span></span>
-				<!--@php if($oneBonus['is_get'] == 1){ @-->
-				<div class="receive-btn" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
-				<!--@php }else{ @-->
-				<div class="receive-btn to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">领取</div>
-				<!--@php } @-->
-			</li>
+<!--@php if(!empty($allBonus)){   @-->
+	<div class="not-start">
+		<div class="coupon_title">我们为您先备下了这些好礼</div>
+	</div>
+	<ul class="last-wrap-list clearfix">
+		<!--@php foreach($allBonus as $oneBonus){ @-->
+		<li class="per_indiana" style="position: relative;border:none">
+			<img src="__RESOURCE__/recouse/images/coupon.jpg">
+			<span class="coupon-price"><!--@php echo intval($oneBonus['type_money']);@--><span class="yuan">元</span></span>
+			<!--@php if($oneBonus['is_get'] == 1){ @-->
+			<div class="receive-btn" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
+			<!--@php }else{ @-->
+			<div class="receive-btn to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">领取</div>
 			<!--@php } @-->
-		</ul>
+		</li>
 		<!--@php } @-->
+	</ul>
+	<!--@php } @-->
+
 		<!--@php if(!empty($toBeShow)){  @-->
 		<div class="not-start"><div class="coupon_title">即将进入心愿专区</div><img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg"></div>
 		<ul class="last-wrap-list clearfix" id="act_list">	
@@ -439,7 +445,19 @@
 	function personalRecord(thisElement,award_id){
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
-			if( data.errno != 200 ){
+			if( data.errno == 1000 ){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						if(is_app){
+							AppLogin();
+						}else{
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}else if( data.errno == 1002 ){
 				$(".personal-record-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
 				//<p>您于2017-01-22 10:22参与了<span class="record-number">10人次</span></p>

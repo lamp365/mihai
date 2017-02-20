@@ -16,7 +16,7 @@
 <table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>
-			<th style="text-align: center; width: 30px">ID</th>
+			<th style="text-align: center; width: 60px">免单ID</th>
 			<th style="text-align: center;">分类</th>
 			<th style="text-align: center;">免单期间</th>
 			<th style="text-align: center;">免单金额</th>

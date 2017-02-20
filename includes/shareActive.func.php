@@ -14,13 +14,14 @@ function checkIsAddShareActive($openid){
 
         if(empty($info)){
             $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['credit']."' order by rank_level desc limit 1 " );
-            $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
+            $rank_level= empty($rank['rank_level']) ? 1 : $rank['rank_level'];
             $info = array(
-              'openid'      => $openid,
-              'total_num'   => $rank_level*2+1,
-              'createtime'  => time(),
-              'modifytime'  => time(),
-              'zero_time'   => $curt_time
+              'openid'          => $openid,
+              'total_num'       => $rank_level*2+1,
+              'share_total_num' => 0,
+              'createtime'      => time(),
+              'modifytime'      => time(),
+              'zero_time'       => $curt_time
             );
             mysqld_insert('share_active',$info);
         }else{
@@ -32,12 +33,15 @@ function checkIsAddShareActive($openid){
                 $rank      = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['credit']."' order by rank_level desc limit 1 " );
                 $rank_level= empty($rank['rank_level']) ? 2 : $rank['rank_level'];
                 $update['total_num']  = $rank_level*2+1;
+                $info['total_num']    = $rank_level*2+1;
                 $update['zero_time']  = $curt_time;
                 $update['modifytime'] = time();
                 mysqld_update("share_active",$update,array('id'=>$id));
             }
         }
     }
+    //总次数 = 每天的次数+分享出去的次数
+    $info['total_num'] += $info['share_total_num'];
     return $info;
 }
 
@@ -125,7 +129,7 @@ function getShareOpenidFromCookie(){
     if($share_openid){
         //给分享者加1次机会
         $time = time();
-        $res  = mysqld_query("update " .table('share_active'). " set `total_num`=total_num+1,`modifytime`={$time} where openid='{$share_openid}'");
+        $res  = mysqld_query("update " .table('share_active'). " set `share_total_num`=share_total_num+1,`modifytime`={$time} where openid='{$share_openid}'");
         member_credit($share_openid, 20, 'addcredit', '邀请朋友注册获得20积分');
     }else{
         $share_openid = 0;
@@ -312,7 +316,7 @@ function get_active_total_people(){
             $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
             $memcache->set('shareActiveTotalPeople',$total,time()+3600*2); //存两个小时
         }else{
-            logRecord("已经从缓存中得到总数：{$total}",'shareactive');
+//            logRecord("已经从缓存中得到总数：{$total}",'shareactive');
         }
     }else{
         $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
@@ -531,20 +535,20 @@ function get_all_changebonus($openid){
                     //找到，标记为领取
                     $one_bonus['is_get']     = 1;
                     //兑换值 是 面额比去一个固定值  当前为1
-                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/1);
+                    $one_bonus['change_num'] = $one_bonus['send_max'];
                 }else{
                     //没找到，标记为没领取
                     $one_bonus['is_get']     = 0;
                     //兑换值 是 面额比去一个固定值  当前为1
-                    $one_bonus['change_num'] = ceil($one_bonus['type_money']/1);
+                    $one_bonus['change_num'] = $one_bonus['send_max'];
                 }
             }
         }else{
             foreach($bonus as $key => &$one_bonus){
                 //未登录，标记为没领取
                 $one_bonus['is_get']     = 0;
-                //兑换值 是 面额比去一个固定值  当前为1
-                $one_bonus['change_num'] = ceil($one_bonus['type_money']/1);
+                //兑换值 是 面额比去一个固定值
+                $one_bonus['change_num'] = $one_bonus['send_max'];
             }
         }
     }
@@ -570,7 +574,7 @@ function toChangeBonus($openid,$bonus_id){
             $msg = showAjaxMess(1002,"对不起，非法访问！");
         }else{
             if($bonus['send_start_date']<= $now_time && $bonus['send_end_date']>=$now_time){
-                $change_num = ceil($bonus['type_money']/1);
+                $change_num = $bonus['send_max'];
                 if($total_num < $change_num){
                     $msg = showAjaxMess(1002,"您的许愿数只有{$total_num}次");
                 }else{

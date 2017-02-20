@@ -8,7 +8,7 @@
 	$limit 	= $_GP['limit'] ? (int)$_GP['limit'] : 10;		//显示的记录数
 
 	//类目信息
-	$arrCategory = mysqld_selectall("SELECT id,name,adv_wap FROM " . table('shop_category') . "  where deleted=0 and enabled=1 and isrecommand=1 order by displayorder desc");
+	$arrCategory = mysqld_selectall("SELECT id,name,adv_wap FROM " . table('shop_category') . "  where deleted=0 and enabled=1 and isrecommand=1 and parentid=0 order by displayorder desc");
 
 	if(!empty($arrCategory))
 	{

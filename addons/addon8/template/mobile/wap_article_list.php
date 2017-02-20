@@ -8,13 +8,14 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="format-detection" content="telephone=no">
-	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/swiper-3.3.1.min.css"/>
+	<link rel="stylesheet" type="text/css" href="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/swiper-3.3.1.min.css"/>
 	<link href="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjcommon.css" rel="stylesheet"  type="text/css" />
-	<link rel='stylesheet' type='text/css'href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
+	<link rel='stylesheet' type='text/css' href='<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/css/bjdetail.css' />
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/script/waterfloor.js"></script>	
-	<script type="text/javascript" src="__RESOURCE__/recouse/js/swiper.js"></script>	
+	<script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/swiper.js"></script>	
+
 </head>
 
 <style type="text/css">
@@ -219,16 +220,17 @@
 	}
 	.hot-video ul{
 		width: 100%;
-		max-height: 100px;		
+
 	}	 
 	.hot-video ul li{
-		width: 30%;
+		width: 33%;
 		overflow: hidden;
 		float: left;
 		list-style: none;
 		text-align:center;
-		margin-left: 2.5%;
+		margin-left:3%;
 		padding: 0;
+		border-radius: 4px;
 	}
 	.hot-video ul li img{
 		width: 100%;  
@@ -246,12 +248,129 @@
 		font-weight: bold;
 		line-height: 32px;
 	}
-	
+	.hot_title .more-video{
+		float: right;
+		margin-right: 10px;
+		color:#b7b7b7;
+		font-size: 14px;
+		line-height: 26px;
+		font-weight: 400;
+	}
+	.swiper-slide{
+		position: relative;
+	}
+	.swiper-wrapper .paly-icon{
+	    position: absolute;
+	    top: 1px;
+	    right: 3px;
+	    width: 25px;
+	    height: 25px;
+	}
+	.swiper-wrapper .video-num{
+    position: absolute;
+    left: 6px;
+    bottom: 44px;
+    background: rgba(0,0,0,.5);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 50px;
+	}
+	.swiper-wrapper .video-num img{
+	    float: left;
+	    width: 13px;
+	    margin-top: 4px;
+	}
+	.swiper-wrapper .video-num span{
+		float: left;
+		font-size: 12px;
+		    margin-left: 5px;
+	}
+	.video-title{
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    display: -webkit-box;
+	    -webkit-line-clamp: 2;
+	    -webkit-box-orient: vertical;
+	    height: 40px;
+	}
+	.hot_title_small_title{
+    padding-left: 4px;
+    border-left: 2px solid #ff2741;
+    line-height: 23px;
+    height: 20px;
+    display: inline-block;
+	}
+	.new-article-list{
+		width: 96%;
+		margin-left: 4%;
+	}
+	.new-article-list .list-left{
+		width: 35%;
+		float: left;
+	}
+	.new-article-list .list-left img{
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		border-radius: 4px;
+	}
+	.new-article-list .list-right{
+		width: 65%;
+		float: left;
+		    padding-left: 3%;
+    box-sizing: border-box;
+	}
+	.article-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 50px;
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+    font-family: "微软雅黑";
+	}
+	.article-detail{
+		overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 43px;
+    margin-top: 5px;
+	}
+	.mhheadline .new-article-list li{
+		padding: 15px 0;
+		border-bottom: none;
+	}
+	.head-banner img{
+		width: 100%;
+		max-height: 150px;
+	}
+	/*移动端1px处理*/
+@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min-device-pixel-ratio:2) {
+ .good-content {
+	border: none;
+	background-image: -webkit-linear-gradient(90deg,#eee,#eee 50%,transparent 50%);
+	background-image: -moz-linear-gradient(90deg,#eee,#eee 50%,transparent 50%);
+	background-image: -o-linear-gradient(90deg,#eee,#eee 50%,transparent 50%);
+	background-image: linear-gradient(0,#eee,#eee 50%,transparent 50%);
+	background-size: 100% 1px;
+	background-repeat: no-repeat;
+	background-position: bottom
+	}
+}
 </style>
 
 <body>
 <div style="height: 100%;background: white;position: relative;">
-
+	<div class="head-banner">
+		
+		<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170214130958a29102a4b73.jpg"/>
+			
+	</div>
 	<div class="top_header" style="border-bottom: none;background: #fff;display: none;">
 		<div class="header_title" style="font-size: 16px;line-height: 45px;">
 			<a href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'healty'))?>"  <?php if($_GP['op']=='healty' || empty($_GP['op'])){ echo "class='art_active'"; } ?> >健康文化</a>
@@ -263,72 +382,116 @@
 	<div class="mhnews-wap">
 		<!--健康文化-->
 		<?php if($_GP['op'] == 'healty' || empty($_GP['op'])){  ?>
-			<div class="healthy">
-				<ul>
-					<!--一个li是一篇文章-->
-					<?php if (is_array($article_list)){ foreach ($article_list as $val){ ?>
-						<li>
-							<a href="<?php echo mobile_url('article',array('id'=>$val['id']));?>">
-								<!--文章大图-->
-								<?php if(empty($val['thumb'])){ ?>
-									<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif"/>
-								<?php }else{  ?>
-									<img src="<?php echo $val['thumb'];?>"/>
-								<?php } ?>
-								<!--文章标题-->
-								<p><?php  echo $val['title']?></p>
-							</a>
-							<!--发布日期-->
-							<div style="position: absolute;top: 0;right:2%;width: 45px;height: 41px;">
-								<img class="healthy-data" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/healthy-data.png"/>
-								<!--日期-->
-								<span><?php  echo date("m/d",$val['createtime']);?></span>
-							</div>
-						</li>
-					<?php }}?>
-					<!--底部-->
-				</ul>
-				<div style="position: relative;height: 30px;">
-					<span style="width: 20%;height: 2px;background: #ccc;display: inline-block;position: absolute;top: 10px;left:5%;"></span>
-					<span style="width: 40%;display: inline-block;position: absolute;top: 0px;left: 30%;color: #666;text-align: center;">我是有底线的哦~</span>
-					<span style="width: 20%;height: 2px;background: #ccc;display: inline-block;position: absolute;top: 10px;right: 5%;"></span>
-				</div>
-			</div>
+
 			<!--觅海头条-->
 		<?php }else if($_GP['op'] == 'headline'){  ?>
 			<p class="hot_title">
-				<img style="width: 25px;margin-top: 2px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/hot-video.png"/>
-				热门视频
-				<a href="#" style="float: right;margin-right: 10px;color:rgb(171,171,171);font-size: 14px;line-height: 26px;">更多视频 ></a>
+				<span class="hot_title_small_title">热门视频</span>
+				<a href="#" class='more-video'>更多视频 ></a>
 			</p>
 			<div class="swiper-container hot-video">				
 				<ul class="swiper-wrapper">							
-					<li class="swiper-slide">					
-						<video src="/i/movie.ogg" controls="controls"></video>					
+					<li class="swiper-slide">	
+						<a href="#">				
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg" />
+							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">	
+							<div class="video-num">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/eye.png">
+								<span>1236</span>
+							</div>	
+							<div class="video-title">我只是一个标题我只是一个标题我只是一个标题我只是一个标题我只是一个标题</div>
+						</a>		
 					</li>	
-					<li class="swiper-slide">					
-						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif" />					
-					</li>
-					<li class="swiper-slide">					
-						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/bg4.png" />					
+					<li class="swiper-slide">	
+						<a href="#">				
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg" />
+							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">	
+							<div class="video-num">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/eye.png">
+								<span>12</span>
+							</div>	
+							<div class="video-title">我只是一个标题我只是一个标题我只是一个标题我只是一个标题我只是一个标题</div>
+						</a>		
 					</li>	
-					<li class="swiper-slide">					
-						<img src="<?php echo WEBSITE_ROOT.'themes/wap/__RESOURCE__'; ?>/912865945439541.jpg" />					
+					<li class="swiper-slide">	
+						<a href="#">				
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg" />
+							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">	
+							<div class="video-num">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/eye.png">
+								<span>12346</span>
+							</div>	
+							<div class="video-title">我只是一个标题</div>
+						</a>		
 					</li>	
-					<li class="swiper-slide">					
-						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/mhheadline.gif" />					
-					</li>
-					<li class="swiper-slide">					
-						<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/appload01.jpg" />					
+					<li class="swiper-slide">	
+						<a href="#">				
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg" />
+							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">	
+							<div class="video-num">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/eye.png">
+								<span>456</span>
+							</div>	
+							<div class="video-title">我只是一个标题我只是一个标题我只是一个标题我只是一个标题我只是一个标题</div>
+						</a>		
+					</li>	
+					<li class="swiper-slide">	
+						<a href="#">				
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg" />
+							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">	
+							<div class="video-num">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/eye.png">
+								<span>123456</span>
+							</div>
+							<div class="video-title">我只是一个标题我只是一个标题我只是一个标题我只是一个标题我只是一个标题</div>	
+						</a>		
+					</li>	
+					<li class="swiper-slide">	
+						<a href="#">				
+							<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg" />
+							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">	
+							<div class="video-num">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/eye.png">
+								<span>123456</span>
+							</div>
+							<div class="video-title">我只是一个标题我只是一个标题我只是一个标题我只是一个标题我只是一个标题</div>	
+						</a>		
 					</li>				
 				</ul>				
 			</div>	
 			<h3 style="background: #eee;height: 10px;"></h3>		
 			<div class="mhheadline">				
 				<p class="hot_title">
-					<img style="width: 20px;margin-top: 4px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/hot-new.png"/>
-					觅海头条
-				</p>				
+					<!-- <img style="width: 20px;margin-top: 4px;" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/hot-new.png"/>
+					觅海头条 -->
+					<span class="hot_title_small_title">觅海头条</span>
+				</p>
+				<!--新头条样式-->
+				<ul class="new-article-list">
+					<li class="good-content">
+						<a href="">
+							<div class="list-left">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg">
+							</div>
+							<div class="list-right">
+								<div class="article-title">我是文章标题标题我是文章标题标题我是文章标题标题我是文章标题标题我是文章标题标题</div>
+								<div class="article-detail">我是文章详情我是文章详情我是文章详情我是文章详情我是文章详情我是文章详情我是文章详情</div>
+							</div>
+						</a>
+					</li>
+					<li class="good-content">
+						<a href="">
+							<div class="list-left">
+								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/download_01.jpg">
+							</div>
+							<div class="list-right">
+								<div class="article-title">我是文章标题标题我是文章标题标题我是文章标题标题我是文章标题标题我是文章标题标题</div>
+								<div class="article-detail">我是文章详情我是文章详情我是文章详情我是文章详情我是文章详情我是文章详情我是文章详情</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<!--旧版头条样式-->
 				<ul>
 					<?php if(!empty($article_list)){ ?>
 					<!--一个li是一篇文章，总共4个静态文章，分别表现不同的图片数量-->
@@ -363,39 +526,12 @@
 					<?php }}else{
 						echo "<p style='text-align: center;line-height: 50px;'>敬请期待！</p>";
 					} ?>
-
-
 				</ul>
 			</div>
 			<!--晒物笔记-->
 		<?php }else { ?>	
 			
-				<div class="wrap" id="wrap">
 
-					<?php if (is_array($article_list)){ foreach ($article_list as $key=>$val){ ?>
-					<div>						
-						<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
-							<?php $pic = explode(';',$val['pic']); ?>
-							<img src="<?php echo download_pic($pic[0],180); ?>"/>
-						</a>
-						<a href="<?php echo mobile_url('article',array('op'=>'note','id'=>$val['note_id']));?>">
-							<p class="title"><?php echo $val['title']; ?></p>
-							<p class="detail" style="padding-top: 0;"><?php echo msubstr($val['description'],0,100); ?></p>
-						</a>						
-						<p class="men">
-							<?php if(empty($val['avatar'])){ ?>
-								<img src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/icon2.png" />
-							<?php }else{ ?>
-								<img src="<?php echo $val['avatar']; ?>" />
-							<?php } ?>						
-							<span><?php echo $val['nickname']; ?></span>
-						</p>							
-					</div>	
-					<?php }}else{
-						echo "<p style='text-align: center;line-height: 50px;'>敬请期待！</p>";
-					}?>
-											
-				</div>
 		
 		<?php } ?>
 	</div>
@@ -597,4 +733,5 @@ function Load(art_data){
 	    return month + "/" + date;  
 	}  
 </script>
+
 </html>

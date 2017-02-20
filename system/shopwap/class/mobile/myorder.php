@@ -38,7 +38,8 @@ if ($op == 'cancelsend') {
     }
     if(($item['paytype']==3&&$item['status']==1)||$item['status']==0)
     {
-        mysqld_update('shop_order', array('status' => -1,'updatetime'=>time()), array('id' => $orderid, 'openid' => $openid ));
+        //退还余额和优惠卷 并关闭订单
+        update_order_status($orderid,-1);
         message('订单已关闭！', mobile_url('myorder',array('status'=>$_GP['fromstatus'])), 'success');
     }
     if($item['status']==2)

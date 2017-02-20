@@ -1,7 +1,7 @@
 <?php
 defined('SYSTEM_IN') or exit('Access Denied');
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
-$client_status = array('0' => '未入驻', '1' => '已入驻');
+$client_status = array('0' => '无', '1' => '已入驻');
 $contact_status = array('0' => '否', '1' => '已联系');
 // 根据当前后台账号进行展示
 $admin = $_CMS['account']['username'];
@@ -37,6 +37,8 @@ if ($operation == 'display') {
   	$h_money = $_GP['h_money'];
   	$allot = $_GP['allot'];
   	$ienter = $_GP['ienter'];
+  	$mobile = $_GP['find_mobile'];
+  	$is_allot = 0;
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -70,10 +72,13 @@ if ($operation == 'display') {
 		$where.=" AND salesman=''";
 	}
 	if (!empty($ienter) AND $ienter!='false') {
-		$where.=" AND status=0";
+		$where.=" AND status=1";
+	}
+	if (!empty($mobile)) {
+		$where.=" AND mobile=".$mobile;
 	}
 
-	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.lasttime DESC,a.contact ASC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.contact ASC,a.lasttime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 	// 总记录数
   	$data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
 	if ( is_array($al_client) ){
@@ -85,8 +90,21 @@ if ($operation == 'display') {
   	}
 	unset($aclv);
 	}
-  	
   	$total = $data_total['total'];
+  	$datajs = json_encode($al_client);
+
+  	$no_allot = 0;
+	$is_into = 0;
+	$no_into = 0;
+	// 已分配
+	$is_allotary = mysqld_select("SELECT count(a.id) as allotnum FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." AND salesman<>''");
+	$is_allot = intval($is_allotary['allotnum']);
+	$no_allot = intval($total) - $is_allot;
+	// 已入驻
+	$is_intoary = mysqld_select("SELECT count(a.id) as intonum FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." AND status=1");
+	$is_into = intval($is_intoary['intonum']);
+	$no_into = intval($total) - $is_into;
+
 	$city_a = array();
 	$level_a = array();
 	$shop_a = array();
@@ -124,6 +142,9 @@ if ($operation == 'display') {
 }elseif ($operation == 'check_allot') {
   // 检查分配
   $where = "a.salesman=".$n_user['id']." AND b.department=".$n_user['department'];
+  if ($admin == 'root') {
+  	$where = "a.id<>0";
+  }
   $city = $_GP['city'];
   $level = $_GP['member'];
   $shop = $_GP['shop'];
@@ -135,6 +156,9 @@ if ($operation == 'display') {
   $h_money = $_GP['h_money'];
   $allot = $_GP['allot'];
   $ienter = $_GP['ienter'];
+  $mobile = $_GP['find_mobile'];
+  $hide_data = $_GP['hide_data'];
+  $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
 
   if (!empty($city)) {
     $where.=" AND a.city='".$city."'";
@@ -155,24 +179,29 @@ if ($operation == 'display') {
     $where.=" AND a.blacklist='是'";
   }
   if (!empty($d_money)) {
-    $where.=" AND price>".$d_money;
+    $where.=" AND a.price>".$d_money;
   }
   if (!empty($h_money)) {
-    $where.=" AND price<".$h_money;
+    $where.=" AND a.price<".$h_money;
   }
   if (!empty($allot) AND $allot!='false') {
-	$where.=" AND salesman=''";
+	$where.=" AND a.salesman=''";
   }
   if (!empty($ienter) AND $ienter!='false') {
-	$where.=" AND status=0";
+	$where.=" AND a.status=0";
+  }
+  if (!empty($mobile)) {
+	$where.=" AND a.mobile='".$mobile."'";
   }
 
-  $al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC");
+  $al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where);
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
   if (empty($al_client)) {
     $data_total['total'] = 0;
   }
+  
+  $data_total['total_now'] = count($hide_data);
   echo json_encode($data_total);
 }elseif ($operation == 'allot_ones') {
 	// 单个分配
@@ -193,6 +222,9 @@ if ($operation == 'display') {
 }elseif ($operation == 'allot_all') {
 	// 批量分配
 	$where = "a.salesman=".$n_user['id']." AND b.department=".$n_user['department'];
+	if ($admin == 'root') {
+  		$where = "a.id<>0";
+    }
 	$city = $_GP['city'];
 	$level = $_GP['member'];
 	$shop = $_GP['shop'];
@@ -204,6 +236,9 @@ if ($operation == 'display') {
   	$h_money = $_GP['h_money'];
   	$allot = $_GP['allot'];
     $ienter = $_GP['ienter'];
+    $mobile = $_GP['find_mobile'];
+    $hide_data = $_GP['hide_data'];
+    $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -224,19 +259,22 @@ if ($operation == 'display') {
 		$where.=" AND a.blacklist='是'";
 	}
 	if (!empty($d_money)) {
-		$where.=" AND price>".$d_money;
+		$where.=" AND a.price>".$d_money;
 	}
 	if (!empty($h_money)) {
-		$where.=" AND price<".$h_money;
+		$where.=" AND a.price<".$h_money;
 	}
 	if (!empty($allot) AND $allot!='false') {
-		$where.=" AND salesman=''";
+		$where.=" AND a.salesman=''";
 	}
 	if (!empty($ienter) AND $ienter!='false') {
-		$where.=" AND status=0";
+		$where.=" AND a.status=0";
+	}
+	if (!empty($mobile)) {
+		$where.=" AND a.mobile=".$mobile;
 	}
 
-	$al_client = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.updatetime DESC");
+	$al_client = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where);
 	if (empty($al_client)) {
 		$result['message'] = '客户查询失败!';
 	}else{
@@ -298,5 +336,33 @@ if ($operation == 'display') {
 		$re = mysqld_select("SELECT remark FROM ".table('shop_customers')."WHERE id=".$data_id);
 		$result['text'] = $re['remark'];
 	}
+	echo json_encode($result);
+}elseif ($operation == 'set_remark') {
+	// 设置备注
+	$data_id = $_GP['data_id'];
+	$remark = $_GP['remark'];
+
+	if (!empty($data_id) && !empty($remark)) {
+		$re = mysqld_update('shop_customers', array('remark'=>$remark),array('id'=>$data_id));
+		if ($re) {
+			$result['message'] = "更新成功!";
+		}else{
+			$result['message'] = "更新失败，内容没有改动!";
+		}
+	}else{
+		$result['message'] = "更新失败，请检查内容是否为空!";
+	}
+	echo json_encode($result);
+}elseif ($operation == 'allot_all_now') {
+	// 分配当前数据
+	$hide_data = $_GP['hide_data'];
+    $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
+    $staff = $_GP['department'];
+
+    foreach ($hide_data as $almv) {
+		$man = mysqld_select("SELECT id FROM ".table('shop_department_staff')." WHERE name='".$staff."'");
+		mysqld_update('shop_customers', array('salesman' => $man['id'], 'updatetime' => time()), array('id'=> $almv['id']));
+	}
+	$result['message'] = '批量分配完成!';
 	echo json_encode($result);
 }

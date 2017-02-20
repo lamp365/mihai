@@ -61,14 +61,10 @@ header("Expires:0");
 		$addresslist      =   mysqld_selectall("SELECT * FROM " . table('shop_address') . " WHERE  deleted = 0 and openid = :openid order by isdefault desc ", array(':openid' => $openid));
 	}
 	 // 找出用户的免单金额及余额
-    $user_data = mysqld_select("SELECT * FROM ".table("member")." WHERE openid = :openid limit 1", array(':openid'=>$openid));
-    if ( $user_data['freeorder_gold_endtime'] >= time() ){
-		  $user_free  = $user_balance_data['freeorder_gold'];
-	}else{
-          $user_free  = 0;
-    }
-	$user_gold         = $user_data['gold'];
-	$user_balance     =  $user_gold + $user_free;
+    $user_data    = mysqld_select("SELECT * FROM ".table("member")." WHERE openid = :openid limit 1", array(':openid'=>$openid));
+    $user_balance = getMemberBalance($user_data['gold'],$user_balance_data['freeorder_gold'],$user_data['freeorder_gold_endtime']);
+
+
 	 // 直接购买操作代码
      if (!empty($id) && $_GP['op'] != 'cart' ) {
 		    update_group_status($id);
@@ -226,6 +222,7 @@ header("Expires:0");
             header("location: " . mobile_url('myorder'));
             exit();
         }
+
         // 获取可获得的换购产品
 		$change_goods = get_change_goods($totalprice);
 		
@@ -316,6 +313,11 @@ header("Expires:0");
 			 )));
 		}
         if (checksubmit('submit')) {
+			//有验证，先验证，验证不过 就不用往下走数据库
+			if (empty($_GP['payment']) ) {
+				message('请选择支付方式！');
+			}
+
 			$groupbuy = true;
 			if ( isset($good['type']) && $good['type'] == 0 ){
 				// 开始进行库存的判断然后再进行是否创建团购的操作
@@ -356,9 +358,7 @@ header("Expires:0");
                 message('请选择配送方式！');
             }
 			*/
-             if (empty($_GP['payment']) ) {
-                message('请选择支付方式！');
-             }
+
              //商品价格
              $goodsprice = 0;
              $goodscredit=0;
@@ -369,21 +369,7 @@ header("Expires:0");
                   }
                   $goodscredit+= intval($row['credit']);
               }
-        	  $hasbonus=0;
-        	  $bonusprice=0;
-        	  if(is_login_account()){
-        	 if (!empty($_GP['bonus'])) {
-        	  //检测优惠券是否有效
-        	 $bonus_sn=$_GP['bonus'];
-        	 $use_bonus = mysqld_select("select * from ".table('bonus_user')." where deleted=0 and isuse=0 and bonus_sn=:bonus_sn and openid =:openid limit 1",array(":bonus_sn"=>$bonus_sn,":openid"=>$openid));
-             if(!empty($use_bonus['bonus_id'])){
-             $bonus_type = mysqld_select("select * from ".table('bonus_type')." where deleted=0 and type_id=:type_id and min_goods_amount<=:min_goods_amount  and use_start_date<=:use_start_date and use_end_date>=:use_end_date",array(":type_id"=>$use_bonus['bonus_type_id'],":min_goods_amount"=>$goodsprice,":use_start_date"=>time(),":use_end_date"=>time()));
-				 if(!empty($bonus_type['type_id'])){}else{message("优惠券已过期，请选择'无'可继续购买操作。");}
-			  }else{
-           		 message("未找到相关优惠券");
-              }
-            } 
-          }
+
           //$dispatchid = intval($_GP['dispatch']);
           //$dispatchitem = mysqld_select("select sendtype,express from ".table('shop_dispatch')." where id=:id limit 1",array(":id"=>$dispatchid));
            //
@@ -400,32 +386,36 @@ header("Expires:0");
    			}
    			$paytype=$this->getPaytypebycode($payment['code']);
 			$free_if = $gold_if = 0;
+			$pay_price   =  $totalprice + $dispatchprice + $taxtot;
+
+			//先扣除优惠卷 后扣除 余额
+			$hasbonus   = $bonusprice = 0;
+			if(is_login_account() && !empty($_GP['bonus'])){
+				//检测优惠券是否有效
+				$bonus_sn  = $_GP['bonus'];
+				$use_bonus = mysqld_select("select * from ".table('bonus_user')." where deleted=0 and isuse=0 and bonus_sn=:bonus_sn and openid =:openid limit 1",array(":bonus_sn"=>$bonus_sn,":openid"=>$openid));
+				if(empty($use_bonus['bonus_id'])){
+					message("未找到相关优惠券",refresh(),'error');
+				}
+				$bonus_type = mysqld_select("select * from ".table('bonus_type')." where deleted=0 and type_id=:type_id and min_goods_amount<=:min_goods_amount  and use_start_date<=:use_start_date and use_end_date>=:use_end_date",array(":type_id"=>$use_bonus['bonus_type_id'],":min_goods_amount"=>$goodsprice,":use_start_date"=>time(),":use_end_date"=>time()));
+				if(empty($bonus_type['type_id'])){
+					message("优惠券已过期，请选择'无'可继续购买操作。",refresh(),'error');
+				}
+				$hasbonus   = 1;
+				$bonusprice = $bonus_type['type_money'];
+				$pay_price  = $pay_price - $bonusprice;
+			}
+			//最后扣除余额
 			if (isset($_GP['balance'])){
-				$pay_price        =  $totalprice + $dispatchprice + $taxtot;
-			    $free_use    =  $user_free >= $pay_price ? $pay_price :  $user_free;
-				// 这条有问题
-				if ($free_use == $pay_price){
-                    $gold_use  =  0 ;  
-				}else{
-                    if ($user_gold >= $pay_price - $free_use){
-                          $gold_use = $pay_price - $free_use;
-					}else{
-                          $gold_use = $user_gold;
-					}
-				}
-                $pay_price   =  $pay_price - $free_use - $gold_use;
-				if ( $free_use > 0 ){
-					$free_if  = 1;
-                    member_freegold($openid,$free_use,'usegold','免单余额抵扣'.$free_use.'元');
-				}
-				if ( $gold_use > 0 ){
-					$gold_if  = 1;
-                    member_gold($openid,$gold_use,'usegold','余额抵扣'.$gold_use.'元');
-				}
+				$balance_result   = operation_member_balance($openid,$pay_price,$user_data);
+				$pay_price        = $balance_result['pay_price'];
+				$free_use         = $balance_result['free_use'];
+				$gold_use         = $balance_result['gold_use'];
+				$free_if          = $free_use > 0 ? 1 : 0;
+				$gold_if          = $gold_use > 0 ? 1 : 0;
 			}else{
 				$free_use         =  0 ;
 				$gold_use         =  0 ;
-                $pay_price        =  $totalprice + $dispatchprice + $taxtot;
 			}
             $data = array(
                 'openid' => $openid,	
@@ -457,23 +447,18 @@ header("Expires:0");
                 'address_area' => $address['area'],
                 'address_address' => $address['address'],
                 'source' => get_mobile_type(),
+				'hasbonus'     => $hasbonus,
+				'bonusprice'   => $bonusprice,
                 'createtime' => time()
             );
             mysqld_insert('shop_order', $data);
             $orderid = mysqld_insertid();
-            if(is_login_account()){
-            //插入优惠券
-              if (!empty($bonus_type) && $bonus_sn) {
-        	    $use_bonus = mysqld_select("select * from ".table('bonus_user')." where deleted=0 and isuse=0 and bonus_sn=:bonus_sn limit 1",array(":bonus_sn"=>$bonus_sn));
-	            if(!empty($use_bonus['bonus_id']))
-	            {
-		           	    $bonusprice=$bonus_type['type_money'];
-						$hasbonus = 1;
-		           	 	mysqld_update('bonus_user',array('isuse'=>1,'bonus_sn'=>$bonus_sn,'used_time'=>time()),array('bonus_id'=>$use_bonus['bonus_id']));
-                        mysqld_update('shop_order', array('price' => $goodsprice + $dispatchprice + $taxtot -$bonusprice,'hasbonus'=>$hasbonus,'bonusprice'=>$bonusprice),array('id'=>$orderid));
-	            }
-            }
-          }
+
+            //更新优惠券为已经使用
+              if ($hasbonus == 1) {
+				   mysqld_update('bonus_user',array('isuse'=>1,'bonus_sn'=>$bonus_sn,'used_time'=>time(),'order_id'=>$orderid),array('bonus_id'=>$use_bonus['bonus_id']));
+              }
+
             //如果有换购商品，则进行货存处理
 			if(!empty($dish_good_detail)){
 				$allgoods[]    = $dish_good_detail;  //并入order_goods表中
@@ -514,7 +499,8 @@ header("Expires:0");
 				// 进行库存的操作
 				if ( $row['totalcnf'] != 2 ){
 					$row['total'] = $row['total'] - $row['buynum'];
-                    mysqld_update('shop_dish',array('total'=> $row['total']), array('id'=>$row['id']));
+					$row['sales'] = $row['sales'] + $row['buynum'];
+                    mysqld_update('shop_dish',array('total'=> $row['total'],'sales'=>$row['sales']), array('id'=>$row['id']));
 				}
 				if(!empty($row['seller_openid'])){
 					$d['seller_openid'] = $row['seller_openid'];
@@ -565,3 +551,46 @@ header("Expires:0");
 		$bonus_list = get_bonus_list($bonus_order);
   	}	
        include themePage('confirm');
+
+/**
+ * @content 计算用户的余额抵扣
+ * @param $openid
+ * @param $pay_price
+ * @param $user_data
+ * @return array
+ */
+function operation_member_balance($openid,$pay_price,$user_data){
+	$free_gold   = $user_data['freeorder_gold'];
+	if(time() > $user_data['freeorder_gold_endtime']){
+		//免单余额有使用期限，过了期限则作废
+		$free_gold = 0;
+	}
+	$user_gold   = $user_data['gold'];
+	//免单金额 与  支付总额 取小的 为当前可以免去的金额就为总额
+	$free_use    =  min($free_gold,$pay_price);
+
+	if ($free_use == $pay_price){
+		//当免单的余额 足够抵用总的价格 就不用抵扣 用户余额
+		$gold_use  =  0 ;
+	}else{
+		if ($user_gold >= $pay_price - $free_use){
+			//当用户余额大于剩下的钱
+			$gold_use = $pay_price - $free_use;
+		}else{
+			//当用户余额小于剩下的钱   用户余额全部拿来使用
+			$gold_use = $user_gold;
+		}
+	}
+	$pay_price   =  $pay_price - $free_use - $gold_use;
+	if ( $free_use > 0 ){
+		member_freegold($openid,$free_use,'usegold','免单余额抵扣'.$free_use.'元');
+	}
+	if ( $gold_use > 0 ){
+		member_gold($openid,$gold_use,'usegold','余额抵扣'.$gold_use.'元');
+	}
+	return array(
+		'pay_price' => $pay_price,
+		'free_use'  => $free_use,
+		'gold_use'  => $gold_use
+	);
+}

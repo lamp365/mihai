@@ -11,7 +11,7 @@
 	            <div class="tab-pane fade in active" id="tab1primary">
 	            	<?php if ($is_allot>0) { ?>
 	            	
-	            	已入驻 / 已分配：<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
+	            	已入驻(<?php echo $is_into; ?>) / 已分配(<?php echo $is_allot; ?>)：<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
 				  	<div class="progress">
 					  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>">
 					    <?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
@@ -19,7 +19,7 @@
 					</div>
 					<?php } ?>
 					<?php if ($total>0) { ?>
-					已分配 / 数据总数：<?php echo round(($is_allot/$total)*100,'2').'%'; ?>
+					已分配(<?php echo $is_allot; ?>) / 数据总数(<?php echo $total; ?>)：<?php echo round(($is_allot/$total)*100,'2').'%'; ?>
 				  	<div class="progress">
 					  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_allot/$total)*100,'2').'%'; ?>">
 					    <?php echo round(($is_allot/$total)*100,'2').'%'; ?>
@@ -104,6 +104,10 @@
 								</select>
 							</li>
 							<?php } ?>
+							<li>
+								<span class="left-span">手机号</span>
+								<input type="text" name="find_mobile" class="find_mobile input-height" placeholder="手机号码" value="<?php echo $mobile;?>">
+							</li>
 							
 							<li>
 								<span class="left-span">差评</span>
@@ -130,7 +134,7 @@
 								</div>
 							</li>
 							<li>
-								<span class="left-span">未入驻</span>
+								<span class="left-span">已入驻</span>
 								<div class="checkbox-div">
 									<input type="checkbox" name="ienter" class="ienter" <?php if($ienter){echo 'checked="checked"';}?>>
 								</div>
@@ -202,7 +206,11 @@
 					                    <td class="text-center"><?php  echo $almv['price'];?></td>
 					                    <td class="text-center"><?php  echo $almv['level'];?></td>
 					                    <td class="text-center"><?php  echo $almv['shop'];?></td>
-					                    <td class="text-center staff_name"><?php  echo $almv['name'];?></td>
+					                    <td class="text-center staff_name"><?php if (empty($almv['name'])) {
+					                    	echo "无";
+					                    }else{
+					                    	echo $almv['name'];
+					                    } ?></td>
 					                    <td class="text-center"><?php  echo $client_status[$almv['status']];?></td>
 					                    <td class="text-center staff_name contact_state" ><?php  echo $contact_status[$almv['contact']];?></td>
 					                    <td class="text-center contact_time"><?php  if(!empty($almv['contact_time'])){echo date('Y-m-d H:i',$almv['contact_time']);}else{echo '未联系';} ?></td>
@@ -212,13 +220,14 @@
 					                    	}?>
 						                    &nbsp<a class="btn btn-xs btn-info contact <?php  if ($almv['contact']=='1') {echo 'btn-danger';}?>" data_id="<?php  echo $almv['id'];?>" href="javascript:;"><i class="icon-edit"><?php  if ($almv['contact']=='0') {echo '联系';}else{echo '联系';}?></i></a>
 						                    &nbsp<a class="btn btn-xs btn-info send-message" data_id="<?php  echo $almv['id'];?>" href="javascript:;" data_name="<?php  echo $almv['username'];?>"><i class="icon-edit">发短信</i></a>
-						                    &nbsp<a class="btn btn-xs btn-info remark" data_id="<?php  echo $almv['id'];?>" href="javascript:;" ><i class="icon-edit">备注</i></a>
+						                    &nbsp<a class="btn btn-xs btn-info remark <?php  if (!empty($almv['remark'])) {echo 'btn-danger';}?>" data_id="<?php  echo $almv['id'];?>" href="javascript:;" ><i class="icon-edit">备注</i></a>
 					                    </td>
 					                </tr>
 					            <?php  } } ?>
 					            </tbody>
 				            </table>
 				        </div>
+				        <input type="hidden" name="hide_data" class="hide_data" value='<?php echo $datajs; ?>'>
 				        <?php  if (empty($al_client)) {
 				        echo '<div class="text-center">暂无分配客户</div>';
 				        } ?>
@@ -239,6 +248,12 @@
 											<span style="margin-left: 15px;">是否要分配</span>
 											<span class="btn btn-danger btn-sm check_allot_close">取消</span>
 											<span class="btn btn-success btn-sm check_allot_sure">确定</span>
+										</div>
+										<div class="check_allot_now">
+											<span>当前的数据:</span>
+											<span class="check_allot_total_now"></span>
+											<span style="margin-left: 15px;">是否要分配</span>
+											<span class="btn btn-success btn-sm check_allot_sure_now">分配当前数据</span>
 										</div>
 									</div>
 									<div class="modal-footer">
@@ -355,7 +370,7 @@ $(function(){
 		// $(".message-demo").modal();
 		var url = "<?php  echo web_url('customers',array('op'=>'sendsms'));?>";
 		$.post(url,{data_id:data_id},function(data){
-			data = eval(data);
+			var data = eval(data);
 			alert(data.message);
 		},'json');
 	});
@@ -372,14 +387,12 @@ $(function(){
 			},'json');
 		});
 		$(".set_remark .setup-btn").on("click",function(){
-			var remark = $(".remark_text").text();
+			var remark = $("#remark_text").val();
 			var url = "<?php  echo web_url('customers',array('op'=>'set_remark'));?>";
 			$.post(url,{data_id:data_id,remark:remark},function(data){
-					if( data.message == 1){
-						alert("保存成功");
-					}else{
-						alert("保存失败");
-					}
+					var data = eval(data);
+					alert(data.message);
+					$(".set_remark").modal('hide');
 				},'json');
 		});
 	});
@@ -409,16 +422,20 @@ function batchDistribute(){
 		 	blacklist = $(".checkbox-div .blacklist").prop("checked"),
 		 	d_money = $(".d_money").val();
 		 	h_money = $(".h_money").val();
+		 	find_mobile = $(".find_mobile").val();
 		 	allot = $(".checkbox-div .allot").prop("checked");
 		 	ienter = $(".checkbox-div .ienter").prop("checked");
+		 	hide_data = $(".hide_data").val();
 
 		 	url = "<?php  echo web_url('customers',array('op' => 'check_allot'));?>";
+		 	var url2 = "<?php  echo web_url('customers',array('op' => 'check_allot_now'));?>";
 		 	if( department == 0){
 		 		alert("请选择员工");
 		 	}else{
-		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter},function(data){
+		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,find_mobile:find_mobile,hide_data:hide_data},function(data){
 		 			$(".batch-distribute-result").modal();
 		 			$(".check_allot_total").text(data.total);
+		 			$(".check_allot_total_now").text(data.total_now);
 				},'json');
 		 	}
 	});
@@ -436,11 +453,22 @@ function batchDistribute(){
 		 	blacklist = $(".checkbox-div .blacklist").prop("checked"),
 		 	d_money = $(".d_money").val();
 		 	h_money = $(".h_money").val();
+		 	find_mobile = $(".find_mobile").val();
 		 	allot = $(".checkbox-div .allot").prop("checked");
 		 	ienter = $(".checkbox-div .ienter").prop("checked");
 		 	
 		 	url = "<?php  echo web_url('customers',array('op' => 'allot_all'));?>";
-		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter},function(data){
+		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,find_mobile:find_mobile},function(data){
+		 		alert(data.message);
+		 		location.reload(true);
+		 	},'json');
+	});
+	$(".check_allot_sure_now").on("click",function(){
+		 	hide_data = $(".hide_data").val();
+		 	department = $(".department").val();
+		 	
+		 	url = "<?php  echo web_url('customers',array('op' => 'allot_all_now'));?>";
+		 	$.post(url,{hide_data:hide_data,department:department},function(data){
 		 		alert(data.message);
 		 		location.reload(true);
 		 	},'json');

@@ -388,7 +388,7 @@ if (!empty($member) AND $member != 3) {
 			
 			$order_goods_id = (int)$_GP['order_goods_id'];
 			
-			$aftersalesLog = mysqld_selectall("SELECT aftersales_id,order_goods_id,status,title,content,createtime FROM " . table('aftersales_log') . " WHERE order_goods_id = :order_goods_id ", array(':order_goods_id' => $order_goods_id));
+			$aftersalesLog = mysqld_selectall("SELECT aftersales_id,order_goods_id,status,title,content,createtime FROM " . table('aftersales_log') . " WHERE order_goods_id = :order_goods_id order by createtime asc", array(':order_goods_id' => $order_goods_id));
 			
 			if(!empty($aftersalesLog))
 			{

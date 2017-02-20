@@ -153,8 +153,9 @@ nav{display: block;}
               	<span id="jingDouNum">
               		<a target="_blank" href="<!--@php  echo mobile_url('member',array('op'=>'list','type'=>2))@-->" style="font-weight:normal;">              			
               	
-					<div class="progress" style="height:15px;">
-						<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="<!--@php  echo empty($member['credit'])?0:$member['credit'];@-->" aria-valuemin="0" aria-valuemax="	<!--@php  echo $member_rank_model['rank_next']['experience'];@-->" style="width: <!--@php echo  empty($member['credit'])?0:$member['credit']/$member_rank_model['rank_next']['experience']*100;@-->%;line-height:15px;font-size:11px;"><!--@php echo $member['credit'].'/'.$member_rank_model['rank_next']['experience'].'['.$member_rank_model['rank_next']['rank_name'].']'; @--></div>
+					<div class="progress" style="height:15px;position: relative;width: 100%">
+						<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="<!--@php  echo empty($member['credit'])?0:$member['credit'];@-->" aria-valuemin="0" aria-valuemax="	<!--@php  echo $member_rank_model['rank_next']['experience'];@-->" style="width: <!--@php echo  empty($member['credit'])?0:$member['credit']/$member_rank_model['rank_next']['experience']*100;@-->%;line-height:15px;font-size:11px;"></div>
+            <div style="position: absolute;top: -1px;font-size: 12px;color: #333;text-align: center;width: 100%;"><!--@php echo $member['credit'].'/'.$member_rank_model['rank_next']['experience'].'['.$member_rank_model['rank_next']['rank_name'].']'; @--></div>
 					</div>
               		</a>
               	</span>

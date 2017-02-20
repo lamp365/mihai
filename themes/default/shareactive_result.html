@@ -188,7 +188,15 @@
 	function youResultShow(thisObj,award_id){
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
-			if( data.errno != 200 ){
+			if( data.errno == 1000){
+				confirm('您还没登录！','',function(isconfirm){
+						if(isconfirm){
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 400});
+					return '';
+			}else if( data.errno == 1002 ){
 				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
 				var html = "<div class='result-num'>";

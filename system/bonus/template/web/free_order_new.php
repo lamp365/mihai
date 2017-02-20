@@ -16,7 +16,7 @@
 <table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>
-			<th style="text-align: center; width: 30px">ID</th>
+			<th style="text-align: center; width: 60px">分类ID</th>
 			<th style="text-align: center;">分类</th>
 			<th style="text-align: center;">免单期间</th>
 			<th style="text-align: center;">免单金额</th>
@@ -33,9 +33,9 @@
 			<td><?php echo getFreeAmount($value['id'],$period['monday_time'],$period['sunday_time']);?></td>
 			<td><?php echo getFreeMemberCount($value['id'],$period['monday_time'],$period['sunday_time']);?></td>
 			<td>
-
+				<?php if(date('N')==1 && empty($arrFreeConfig)){?>
 				<a class="btn btn-xs btn-info" href="javascript:void(0);" onclick="formSubmit('<?php echo $value['id'];?>')"><i class="icon-edit"></i>&nbsp;免&nbsp;单&nbsp;</a>
-
+				<?php }?>
 			</td>
 		</tr>
         <?php  } } ?>

@@ -62,6 +62,20 @@
             <div class="col-sm-9"><span style="color: red"><?php echo $afterSale['refund_price'];?></span></div>
         </div>
         <?php } ?>
+        
+        <?php if($afterSale['refund_gold']>0){ ?>
+        <div class="row">
+            <div class="col-sm-1" style="text-align: right">返还余额：</div>
+            <div class="col-sm-9"><span style="color: red"><?php echo $afterSale['refund_gold'];?></span></div>
+        </div>
+        <?php } ?>
+        
+        <?php if($afterSale['refund_freeorder_price']>0){ ?>
+        <div class="row">
+            <div class="col-sm-1" style="text-align: right">返还免单余额：</div>
+            <div class="col-sm-9"><span style="color: red"><?php echo $afterSale['refund_freeorder_price'];?></span></div>
+        </div>
+        <?php } ?>
 
         <?php if(!empty($delivery_corp)){ ?>
         <div class="row">
@@ -167,9 +181,20 @@
                     <label><input type="radio" checked="checked" name="status" value="2" class="tongyi">同意</label>
                     <label> <input type="radio" name="status" value="-1" class="tongyi">不同意</label>
                 </div>
+                
                 <div class="form-group">
-                    <label for="jine">退款金额</label>
-                    <input type="text" name="refund_price" class="form-control" id="jine" placeholder="请输入金额" value="<?php echo $order['price']*$order['total']+$order['taxprice'];?>">
+                    <label for="jine">退款现金 (参考值：<?php echo round((($order['price']*$order['total'])/$orderInfo['goodsprice'])*$orderInfo['price'],2);?>)</label>
+                    <input type="text" name="refund_price" class="form-control" id="jine" placeholder="请输入金额" value="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="jine">返还余额 (参考值：<?php echo round((($order['price']*$order['total'])/$orderInfo['goodsprice'])*$orderInfo['balance_sprice'],2);?>)</label>
+                    <input type="text" name="refund_gold" class="form-control" placeholder="请输入返还余额" value="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="jine">返还免单余额 (参考值：<?php echo round((($order['price']*$order['total'])/$orderInfo['goodsprice'])*$orderInfo['freeorder_price'],2);?>)</label>
+                    <input type="text" name="refund_freeorder_price" class="form-control" placeholder="请输入返还免单余额" value="">
                 </div>
                 <div class="form-group">
                     <label for="name">处理说明(如告知地址)</label>

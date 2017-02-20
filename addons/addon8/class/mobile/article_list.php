@@ -1,7 +1,11 @@
 <?php
 $op = empty($_GP['op']) ? 'healty' : $_GP['op'];
 $cfg=globaSetting();
-
+if($_GP['id'] && $op !== 'healty' && is_mobile_request()){
+	$parame = array('id' => $_GP['id'],'name'=>'addon8','do'=>'article','op'=>$op);
+	$url = create_url('mobile', $parame);
+	header("location:{$url}");
+}
    if($op == 'healty'){
 	   //健康文化
 	   $psize =  12;

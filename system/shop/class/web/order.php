@@ -347,9 +347,12 @@ else if($operation == 'open')    //开启订单
 
 else if($operation =='close')    //关闭订单
 {
+	//退还余额和优惠卷 并关闭订单
+	update_order_status($_GP['id'],-1);
+	//记录管理员操作日志
 	$order      = mysqld_select("select retag from ". table('shop_order') ." where id={$_GP['id']}");
 	$json_retag = setOrderRetagInfo($order['retag'], '关闭订单：关闭了订单');
-	mysqld_update('shop_order', array('status' => -1,'remark'=>$_GP['remark'],'retag'=>$json_retag,'closetime'=>time()), array('id' => $_GP['id']));
+	mysqld_update('shop_order', array('remark'=>$_GP['remark'],'retag'=>$json_retag), array('id' => $_GP['id']));
 	message('订单关闭操作成功！', refresh(), 'success');
 }
 
@@ -413,7 +416,8 @@ elseif($operation == 'identity')
 	$afterSale       = mysqld_select("select * from ". table('aftersales') ." where order_goods_id={$_GP['order_good_id']}");
 	$afterSaleLog    = mysqld_selectall("select * from ". table('aftersales_log') ." where aftersales_id={$afterSale['aftersales_id']} order by log_id asc");
 	$afterSaleDialog = mysqld_selectall("select * from ".table('aftersales_dialog')." where aftersales_id={$afterSale['aftersales_id']} order by id asc");
-	$order        = mysqld_select("select id,type,status,price,taxprice,total from ". table('shop_order_goods') ." where id={$_GP['order_good_id']}");
+	$order        = mysqld_select("select id,type,status,price,taxprice,total from ". table('shop_order_goods') ." where id={$_GP['order_good_id']}");		//订单商品信息
+	$orderInfo		= mysqld_select("select price,goodsprice,balance_sprice,freeorder_price from ". table('shop_order') ." where id={$orderid}");			//订单信息
 
 	//物流货运
 	$dispatchlist = mysqld_selectall("SELECT code,name FROM " . table('dispatch')." where sendtype=0" );
@@ -469,17 +473,24 @@ else if($operation == 'aftersale_dialog')
 }
 else if($operation == 'aftersale_chuli')    //平台处理是否退换货
 {
-	if(empty($_GP['refund_price']))
-		message('金额不能为空!',refresh(),'error');
+	if(empty($_GP['refund_price']) && empty($_GP['refund_gold']) && empty($_GP['refund_freeorder_price']) && $_GP['status'] == '2')
+		message('退款现金或余额不能为空!',refresh(),'error');
 
 	$afterSale = mysqld_select("select * from ". table('aftersales') ." where order_goods_id={$_GP['order_good_id']}");
+	$orderInfo = mysqld_select("select id,price,goodsprice,balance_sprice,freeorder_price from ". table('shop_order') ." where id={$_GP['orderid']}");			//订单信息
+	
 	if(!empty($afterSale)){
 		$data = array(
 			'admin_explanation' => $_GP['admin_explanation'],
 			'modifiedtime'      => date("Y-m-d H:i:s")
 		);
 		if($_GP['status'] == '2'){
-			$data['refund_price']  = $_GP['refund_price'];
+			
+			$arrRefund = filterRefundInfo($orderInfo,array('refund_price'=>$_GP['refund_price'],'refund_gold'=>$_GP['refund_gold'],'refund_freeorder_price'=>$_GP['refund_freeorder_price']));
+			
+			$data['refund_price']  			= $arrRefund['refund_price'];
+			$data['refund_gold']  			= $arrRefund['refund_gold'];				//返还余额
+			$data['refund_freeorder_price'] = $arrRefund['refund_freeorder_price'];		//返还免单余额
 		}
 		mysqld_update('aftersales',$data,array('aftersales_id'=>$afterSale['aftersales_id']));
 
@@ -555,7 +566,7 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 {   // 确认退款
 	$order_good_id = $_GP['order_good_id'];
 	$order_id      = $_GP['order_id'];
-	$aftersales   = mysqld_select("select aftersales_id,refund_price from ". table('aftersales') ." where order_goods_id={$order_good_id}");
+	$aftersales   = mysqld_select("select aftersales_id,refund_price,refund_gold,refund_freeorder_price from ". table('aftersales') ." where order_goods_id={$order_good_id}");
 	$orderInfo    = mysqld_select("select * from ". table('shop_order') ." where id={$order_id}");
 
 	if(empty($aftersales)||empty($orderInfo))
@@ -582,7 +593,7 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 			mysqld_update('shop_order', array('status' => -1,'closetime'=>time()), array('id' => $order_id));
 
 		//记录售后日志
-		$xinxi = "卖家已经给您退款¥{$aftersales['refund_price']}元";
+		$xinxi = "卖家已经给您退款现金¥{$aftersales['refund_price']}元; 返还余额：{$aftersales['refund_gold']}; 返还免单余额：{$aftersales['refund_freeorder_price']}";
 		$descript = array('description'=>$xinxi);
 		$data = array(
 			'aftersales_id'  => $aftersales['aftersales_id'],
@@ -595,7 +606,7 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 		mysqld_insert('aftersales_log',$data);
 
 		//返还免单金额
-		returnFreeOrderPrice($orderInfo,$aftersales);
+		returnPriceToMember($orderInfo,$aftersales);
 
 		//给买家APP推送消息
 		$order_good = mysqld_select("select * from ". table('shop_order_goods') ." where id={$order_good_id}");
@@ -606,6 +617,8 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 订单编号：{$orderInfo['ordersn']}
 购买商品：{$dishInfo['title']}
 退款金额：{$aftersales['refund_price']}
+返还余额：{$aftersales['refund_gold']}
+返还免单余额：{$aftersales['refund_freeorder_price']}
 下单时间：{$time}";
 		pushOrderImMessage(IM_ORDER_FROM_USER,$orderInfo['openid'],$msg);
 
@@ -616,6 +629,8 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 订单编号：{$orderInfo['ordersn']}
 购买商品：{$dishInfo['title']}
 退款金额：{$aftersales['refund_price']}
+返还余额：{$aftersales['refund_gold']}
+返还免单余额：{$aftersales['refund_freeorder_price']}
 下单时间：{$time}";
 			pushOrderImMessage(IM_ORDER_FROM_USER,$order_good['seller_openid'],$msg);
 		}
@@ -787,63 +802,162 @@ else if($operation == 'sureBackMoney')     //财务确认退钱
 	include page('order_audit');
 }
 
+
 /**
- * 返还免单金额
- * 
- * @param $orderInfo:array 订单信息数组
- * @param $aftersales: 退款信息数组
- * 
+ * 对现金、余额等进行过滤
+ *
+ * @param  $orderInfo : array 订单信息
+ * @param  $arrRefund : array 返还的金额数组
+ *
+ * @return $arrRefund : array 过滤后的金额数组
  */
-function returnFreeOrderPrice($orderInfo,$aftersales)
+function filterRefundInfo($orderInfo,$arrRefund)
 {
-	//使用了免单余额 并且 退款金额大于订单的实付金额时
-	if (!empty($orderInfo['freeorder_price']) && $aftersales['refund_price']>$orderInfo['price']) {
-		
-		//用户信息
-		$mem			= mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$orderInfo['openid']."'");				
-		//订单的已有的余额退款记录
-		$arrAftersales 	= mysqld_selectall("SELECT og.id,a.refund_freeorder_price FROM ".table('shop_order_goods')." og,".table('aftersales')." a WHERE og.id=a.order_goods_id and a.refund_freeorder_price>0.00 and og.orderid=".$orderInfo['id']);
-			
-		$freeorder_gold_endtime = strtotime('Sunday')+24*3600-1;						//周天的23:59:59
-		$freeorder_price		= $aftersales['refund_price']-$orderInfo['price'];		//退款时，大于实付款总额部分，作为免单余额退回
-		
-		//退回免单余额大于下单时使用的免单金额时
-		if($freeorder_price>$orderInfo['freeorder_price'])
+	//同一笔订单中已有的退款记录
+	$arrAftersales 	= mysqld_selectall("SELECT og.id,a.refund_price,a.refund_gold,a.refund_freeorder_price FROM ".table('shop_order_goods')." og,".table('aftersales')." a WHERE og.id=a.order_goods_id and og.orderid=".$orderInfo['id']);
+	
+	
+	#################### 现金  start####################
+	//使用了现金时
+	if (!empty($orderInfo['price'])) {
+	
+		//扣除已有的现金退款记录
+		if(!empty($arrAftersales))
 		{
-			$freeorder_price = $orderInfo['freeorder_price'];
+			foreach($arrAftersales as $value)
+			{
+				$orderInfo['price'] = $orderInfo['price']-(float)$value['refund_price'];
+			}
 		}
 		
+		//退回现金大于下单时使用的现金金额时
+		if($arrRefund['refund_price']>$orderInfo['price'])
+		{
+			$arrRefund['refund_price'] = $orderInfo['price'];
+		}
+	}
+	else{
+		$arrRefund['refund_price'] = 0.00;
+	}
+	
+	//返还现金比0.00元少时
+	if($arrRefund['refund_price']<0.00)
+	{
+		$arrRefund['refund_price'] = 0.00;
+	}
+	#################### 现金  end####################
+	
+	
+	
+	#################### 余额  start####################
+	//使用了余额时
+	if ($orderInfo['balance_sprice']>0) {
+
 		//扣除已有的余额退款记录
 		if(!empty($arrAftersales))
 		{
 			foreach($arrAftersales as $value)
 			{
-				$freeorder_price = $freeorder_price-$value['refund_freeorder_price'];
+				$orderInfo['balance_sprice'] = $orderInfo['balance_sprice']-(float)$value['refund_gold'];
 			}
 		}
 		
-		
-		if($freeorder_price>0)
+		//退回免单余额大于下单时使用的免单金额时
+		if($arrRefund['refund_gold']>$orderInfo['balance_sprice'])
 		{
+			$arrRefund['refund_gold'] = $orderInfo['balance_sprice'];
+		}
+		
+	}
+	else{
+		$arrRefund['refund_gold'] = 0.00;
+	}
+
+	//返还余额比0.00元少时
+	if($arrRefund['refund_gold']<0.00)
+	{
+		$arrRefund['refund_gold'] = 0.00;
+	}
+	#################### 余额  end####################
+	
+	
+	
+	#################### 免单余额  start####################
+	//使用了免单余额时
+	if ($orderInfo['freeorder_price']>0) {
+	
+		//扣除已有的余额退款记录
+		if(!empty($arrAftersales))
+		{
+			foreach($arrAftersales as $value)
+			{
+				$orderInfo['freeorder_price'] = $orderInfo['freeorder_price']-(float)$value['refund_freeorder_price'];
+			}
+		}
+		
+		//退回免单余额大于下单时使用的免单金额时
+		if($arrRefund['refund_freeorder_price']>$orderInfo['freeorder_price'])
+		{
+			$arrRefund['refund_freeorder_price'] = $orderInfo['freeorder_price'];
+		}
+	}
+	else{
+		$arrRefund['refund_freeorder_price'] = 0.00;
+	}
+	
+	//返还免单余额比0.00元少时
+	if($arrRefund['refund_freeorder_price']<0.00)
+	{
+		$arrRefund['refund_freeorder_price'] = 0.00;
+	}
+	#################### 免单余额  end####################
+	
+
+	return $arrRefund;
+}
+
+/**
+ * 返还余额及免单金额
+ * 
+ * @param $orderInfo:array 订单信息数组
+ * @param $aftersales: 退款信息数组
+ * 
+ */
+function returnPriceToMember($orderInfo,$aftersales)
+{
+	//有返还余额或者免单金额时
+	if ($aftersales['refund_gold']>0 || $aftersales['refund_freeorder_price']>0 ) {
+		
+		//用户信息
+		$mem = mysqld_select("SELECT gold,freeorder_gold_endtime,freeorder_gold FROM ".table('member')." WHERE openid='".$orderInfo['openid']."'");				
+		
+		if($aftersales['refund_gold']>0)
+		{
+			$memberData['gold'] = $mem['gold']+$aftersales['refund_gold'];
+			
+			//记录用户账单的余额收支情况
+			insertMemberPaylog($orderInfo['openid'], $aftersales['refund_gold'],$memberData['gold'], 'addgold', '订单编号：'.$orderInfo['ordersn'].'退款后，余额返还'.$aftersales['refund_gold'].'元');
+		}
+		
+		if($aftersales['refund_freeorder_price']>0)
+		{
+			$freeorder_gold_endtime = strtotime('Sunday')+24*3600-1;						//周天的23:59:59
+				
 			//已有本期免单金额时
 			if($mem['freeorder_gold_endtime']==$freeorder_gold_endtime)
 			{
-				$memberData = array('freeorder_gold' 		=> $freeorder_price+$mem['freeorder_gold'],
-									'freeorder_gold_endtime'=> $freeorder_gold_endtime
-				);
+				$memberData['freeorder_gold'] 			= $aftersales['refund_freeorder_price']+$mem['freeorder_gold'];
+				$memberData['freeorder_gold_endtime'] 	= $freeorder_gold_endtime;
 			}
 			else{
-				$memberData = array('freeorder_gold' 		=> $freeorder_price,
-									'freeorder_gold_endtime'=> $freeorder_gold_endtime
-				);
+				$memberData['freeorder_gold'] 			= $aftersales['refund_freeorder_price'];
+				$memberData['freeorder_gold_endtime'] 	= $freeorder_gold_endtime;
 			}
-			
-			
-			mysqld_update ('member',$memberData,array('openid' =>$orderInfo['openid']));
-			mysqld_update ('aftersales',array('refund_freeorder_price'=>$freeorder_price),array('aftersales_id' =>$aftersales['aftersales_id']));
-			
+				
 			//记录用户账单的免单金额收支情况
-			insertMemberPaylog($orderInfo['openid'], $freeorder_price,$memberData['freeorder_gold'], 'addgold', '订单编号：'.$orderInfo['ordersn'].'退款后，免单余额返还'.$freeorder_price.'元');
+			insertMemberPaylog($orderInfo['openid'], $aftersales['refund_freeorder_price'],$memberData['freeorder_gold'], 'addgold', '订单编号：'.$orderInfo['ordersn'].'退款后，免单余额返还'.$aftersales['refund_freeorder_price'].'元');
 		}
+		
+		mysqld_update ('member',$memberData,array('openid' =>$orderInfo['openid']));
 	}
 }

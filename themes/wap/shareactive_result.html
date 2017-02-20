@@ -143,7 +143,7 @@
       				chusu+
       			"</p>"+
       		"</div>"+
-      		"<div class='user-detail-span'><span class='xinyuannum'>"+xinyuannum+"</span></div>"+
+      		"<div class='user-detail-span'><span class='xinyuannum' style='margin-bottom: 10px;display: block;'>幸运数 &nbsp;= "+xinyuannum+"</span></div>"+
       			"<ul class='result-rule'>"+
       				"<li style='line-height: 40px;'>计算公式 = </li>"+
       				"<li>(</li>"+
@@ -162,8 +162,7 @@
       					"<p>1</p>"+
       					"<span>固定值</span>"+
       				"</li>"+  
-      				"<br/>"+
-      				"<li><p>= "+yushu+"</p><span>=幸运数</span></li>"+
+      				
       			"</ul>"+
       		"</div>";
 			$(".result-modal").modal();
@@ -174,7 +173,19 @@
 	function youResultShow(thisObj,award_id){
 		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
 		$.post(url,{'award_id':award_id},function(data){
-			if( data.errno != 200 ){
+			if( data.errno == 1000 ){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						if(is_app){
+							AppLogin();
+						}else{
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}else if( data.errno == 1002 ){
 				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
 			}else{
 				var html = "<div class='result-num'>";

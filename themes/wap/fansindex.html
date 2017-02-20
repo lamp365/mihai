@@ -173,8 +173,9 @@
                 <span class="distributor-div-left"><!--@php  if($is_login){@-->  <!--@php   $member_rank_model=member_rank_model($member['experience']);if(empty($member_rank_model)){ echo '无';}else{echo $member_rank_model['rank_name'];}@--> <!--@php }else{@--> 非会员 <!--@php }@--></span>
                 <span class="distributor-div-right">下一级的等级</span>
             </div>
-            <div class="progress">
-                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="<!--@php  echo empty($member['credit'])?0:$member['credit'];@-->" aria-valuemin="0" aria-valuemax=" <!--@php  echo $member_rank_model['rank_next']['experience'];@-->" style="width: <!--@php echo  empty($member['credit'])?0:$member['credit']/$member_rank_model['rank_next']['experience']*100;@-->%;line-height:15px;font-size:11px;"><!--@php echo $member['credit'].'/'.$member_rank_model['rank_next']['experience'].'['.$member_rank_model['rank_next']['rank_name'].']'; @--></div>
+            <div class="progress" style="height: 15px;position:relative;">
+                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="<!--@php  echo empty($member['credit'])?0:$member['credit'];@-->" aria-valuemin="0" aria-valuemax=" <!--@php  echo $member_rank_model['rank_next']['experience'];@-->" style="width: <!--@php echo  empty($member['credit'])?0:$member['credit']/$member_rank_model['rank_next']['experience']*100;@-->%;line-height:15px;font-size:11px;"></div>
+                 <div style="position: absolute;top:2px;font-size: 12px;color: #333;text-align: center;width: 100%;"><!--@php echo $member['credit'].'/'.$member_rank_model['rank_next']['experience'].'['.$member_rank_model['rank_next']['rank_name'].']'; @--></div>
             </div>
         </div>
 	 <!--@php  if($is_login){@-->
@@ -205,8 +206,8 @@
     <div class="panel member-nav">
         <ul class="side-nav">
            <!--@php  if($is_login){@-->
-            <li><a href="<!--@php  echo mobile_url('free')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的免单</span><i class="arrow"></i></a></li>
-			<li><a href="<!--@php  echo mobile_url('identity')@-->">&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的实名认证</span><i class="arrow"></i></a></li>
+            <li><a href="<!--@php  echo mobile_url('free')@-->">&nbsp;&nbsp;<img src="__RESOURCE__/recouse/images/freepay.png" style="width: 23px;margin-left:2px;margin-right:4px;">&nbsp;<span class="text">我的免单</span><i class="arrow"></i></a></li>
+			<li><a href="<!--@php  echo mobile_url('identity')@-->">&nbsp;&nbsp;&nbsp;<i class="icon-user icon_i" ></i>&nbsp;<span class="text">我的实名认证</span><i class="arrow"></i></a></li>
 			<li><a href="<!--@php  echo mobile_url('rechargegold')@-->">&nbsp;&nbsp;<i class="icon-credit-card icon_i" ></i>&nbsp;<span class="text">余额充值</span><i class="arrow"></i></a></li>
             <li><a href="<!--@php  echo mobile_url('outchargegold')@-->">&nbsp;&nbsp;<i class="icon-money icon_i" ></i>&nbsp;<span class="text">余额提现</span><i class="arrow"></i></a></li> 
 			<li><a href="<!--@php  echo mobile_url('bonus')@-->">&nbsp;&nbsp;<i class="icon-heart icon_i" ></i>&nbsp;<span class="text">我的优惠券</span><i class="arrow"></i></a></li> 	

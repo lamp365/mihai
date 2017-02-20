@@ -130,7 +130,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                 $content = http_get($oauth2_code);
                 $token = @json_decode($content, true);
                 if (empty($token) || ! is_array($token) || empty($token['access_token']) || empty($token['openid'])) {
-                    logRecord("微信授权失败啦！当前appid：{$appid},,code:{$code},,secret:{$secret}",'weixin_server');
+                    logRecord("微信授权失败啦！{$content}",'weixin_server_new');
                     message('获取微信公众号授权失败');
                     exit();
                 }

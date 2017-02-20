@@ -153,8 +153,34 @@ switch($operation) {
 		
 		$pindex= max(1, intval($_GP['page']));
 		$limit = 20;
+		// 获取当前后台账号
+		$admin_name = $_CMS['account']['username'];
+		$where = '';
+		if ($admin_name != 'root') {
+			// 获取当前账号ID
+			$admin_id = $_CMS['account']['id'];
+			// $role_name = mysqld_select("SELECT b.name FROM ".table('rolers_relation')." as a left join ".table('rolers')." as b on a.rolers_id=b.id WHERE a.uid=".$admin_id);
+			// if ($role_name['name'] != "头条管理员") {
+			// 	$where.= " AND uid=".$admin_id;
+			// }
+			$has_rule = getAdminHasRule($_CMS['account']['id']);
+			if (!empty($has_rule)) {
+				$is_admin = false;
+				foreach ($has_rule as $hrv) {
+					if ($hrv['modname'] == 'shop' AND $hrv['moddo'] == 'headline' AND $hrv['modop'] == 'editor') {
+						// 是主编
+						$is_admin = true;
+					}
+				}
+				if ($is_admin == false) {
+					$where.= " AND uid=".$admin_id;
+				}
+			}else{
+				$where.= " AND uid=".$admin_id;
+			}
+		}
 
-		$list = mysqld_selectall ( "SELECT SQL_CALC_FOUND_ROWS * FROM " . table ( 'headline' ) . " where deleted=0 ORDER BY createtime DESC limit ".(($pindex-1)*$limit).','.$limit);
+		$list = mysqld_selectall ( "SELECT SQL_CALC_FOUND_ROWS * FROM " . table ( 'headline' ) . " where deleted=0".$where." ORDER BY createtime DESC limit ".(($pindex-1)*$limit).','.$limit);
 
 		$total = mysqld_select("SELECT FOUND_ROWS() as total;");	//总记录数
 		

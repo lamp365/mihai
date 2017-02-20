@@ -178,7 +178,7 @@ if ($op == 'add') {
             $cookie = new LtCookie();
             $cookie->delCookie('choose_cart');
             $cookie->setCookie('choose_cart',$_GP['cart_ids']);
-            $url = mobile_url('confirm');
+            $url = mobile_url('confirm',array('op'=>'cart'));
             header("location: " .$url);
         }
     }else {

@@ -24,8 +24,16 @@ if ($order['price'] <= 0){
 		 paySuccessProcess($order);	//支付成功后的处理
 		 require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
 		 mailnotice($orderid);
-         message('支付成功！',WEBSITE_ROOT.mobile_url('myorder',array('status'=>99)),'success');
-		exit;
+        if($order['ifcustoms'] != 2){
+            //上传清关材料
+            $order_cookie =  new LtCookie();
+            $order_cookie->setCookie('success', serialize($order));
+            message('支付成功！',WEBSITE_ROOT.mobile_url('success'),'success');
+        }else{
+            message('支付成功！',WEBSITE_ROOT.mobile_url('myorder',array('status'=>99)),'success');
+        }
+
+        exit;
     }
 }
 $ordergoods = mysqld_selectall("SELECT goodsid,shopgoodsid,optionid,total FROM " . table('shop_order_goods') . " WHERE orderid = '{$orderid}'");

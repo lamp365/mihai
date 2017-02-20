@@ -21,6 +21,7 @@
 		overflow: hidden;
 		margin-left: 5%;		
 		box-sizing: border-box;
+		margin-bottom: 50px;
 	}
 	.headline-content .health-men{
 		width: 100%;		
@@ -71,14 +72,14 @@
 		margin-right: -10px;
 	}
 	.headline-content .health-men .attention span{
-		padding: 3px;
-		height: 30px;
-		line-height: 30px;
-		text-align: center;		
-		border: 1px solid #F43776;
-		border-radius: 4px;
-		color: #F43776;	
-		font-size: 12px;	
+    padding: 6px 8px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #F43776;
+    border-radius: 4px;
+    color: #F43776;
+    font-size: 12px;
 	}
 	
 	.headline-detail .title{
@@ -133,7 +134,9 @@
 	    </div>        
 	</div>
 	<!--@php if(!empty($article_headline['video'])){ @-->
-	<video src="<?php echo $article_headline['video'];?>" width="100%" controls="controls"></video>
+	<video src="<?php echo $article_headline['video'];?>" width="100%" controls="controls" poster="">
+
+	</video>
 	<!--@php } @-->
 	<div class="headline-content">
 		<!--发布者-->
@@ -142,7 +145,6 @@
 			<div class="info">
 				<img src="<?php if(empty($article_member['avatar'])){ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; }else{ echo download_pic($article_member['avatar'],60,60); }?>" />
 				<p class="name" style="margin-top: 15px;">
-					<span class="lz" style="float: left;">楼主</span>
 					<span style="width: 70%;display: inline-block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height: 22px;line-height: 22px;">
    						 <?php if(!empty($article_member['nickname'])){ echo $article_member['nickname'];}else{ echo substr_cut($article_member['mobile']); } ?>  	
    					 </span>
@@ -150,10 +152,8 @@
 					<!--<span style="color: #999;font-size: 14px;margin-top: 5px;">发布于<?php echo date("Y-m-d",$article_headline['createtime']);?></span>-->									
 				</p>
 			</div>
-			<!--关注按钮-->
-			<div class="attention">
-				<span class="guanzhu wap_guanzhu">+关注</span>
-			</div>
+
+
 		</div>
 		<!--文章内容-->
 		<div class="headline-detail">
@@ -182,77 +182,15 @@
 				<span style="float: right;"><?php echo $collect_num;?>人收藏</span>
 			</div>			
 					
-			<!--评论-->
-        	<div style="padding:3% 5% 0 5%;">
-        		  <img style="width: 100%;" src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/comment@3x.png" />        		 
-        	</div>
-			<?php if(empty($article_comment)){ ?>
-				<!--没有评论-->
-				<div style="width: 100%;line-height: 100px;height: 100px;text-align: center;border-bottom: solid 1px #eee;">
-					勾搭评论别害羞，聊骚要做第一人~
-				</div>
-			<?php }else{ ?>
-				<!--有评论-->
-				<?php foreach($article_comment as $row){  ?>
-					<?php $member_comment = member_get($row['openid']); ?>
-					<div class="health-men" style="margin-left: -10px;border-bottom: none;">
-						<!--一条评论内容-->
-						<div class="info"style="width: 100%;border-bottom: solid 1px #eee;border-top: none;">
-							<!--头像-->
-							<img src="<?php if(!empty($member_comment['avatar'])){ echo $member_comment['avatar'];}else{ echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__/912865945439541.jpg'; } ?>" />
-							<p class="name">
-							<span style="color: #4c4c4c;font-size: 14px;">
-								<?php if(!empty($member_comment['nickname'])){ echo $member_comment['nickname'];}else{ echo substr_cut($member_comment['mobile']); } ?>
-							</span>
-								<!--发布时间-->
-								<span style="color: #999;font-size: 12px;margin-top: 5px;display: block;"><?php echo date("Y-m-d H:i",$article_comment['createtime']);?></p>
-							</p>
-							<!--评论内容-->
-							<div style="clear: both;margin-left: 60px;"><?php echo $article_comment['comment'];?></div>
-						</div>
-					</div>
-				<?php } ?>
-			<?php } ?>
-
-			
-			<!--更多评论-->
-			<div style="text-align: center;margin-top: 30px;clear: both;color: #999;padding: 15px 0px 10px 0px;" class='wap_more' >
-				<a href="javascript:;" style="color: #999;font-size: 14px;">
-					查看更多评论
-				</a>
-			</div>
-			
 		</div>		
 	</div>
-		<h3 style="height: 50px;"></h3>
-		<!--底部栏 -->
-		<div style="background: #F8F8F8;height: 50px;width: 100%;position: fixed;bottom: 49px;left: 0;" class="heal-foot">
-			<input type="text" readOnly="true"  style="outline: none;background: #FFFFFF;border: 1px solid #DCDDE3;border-radius: 29px;height: 30px;margin: 10px;text-indent: 20px;width: 57%;" placeholder="写下评论……" value="" class="wap_guanzhu"/>
-
-			<ul style="float: right;list-style: none;">
-				<li>
-					<a class="wap_more" href="javascript:;">
-						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/health-comment@2x.png"  <?php if($notApp){ echo "class='wap_more'";}else{ echo "class='app_more'";}?> />
-					</a>
-				</li>
-				
-				<li>
-					<a href="javascript:;" class="wap_guanzhu">
-						<img src="<?php echo WEBSITE_ROOT . 'themes/' . 'wap' . '/__RESOURCE__'; ?>/recouse/images/clle@2x.png" />
-					</a>
-				</li>
-			</ul>
-		</div>	
+	
 			
 	<?php include themePage('footer'); ?>	
 	
 </body>
 <script src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/js/appwakeup.js"></script>
-<script>
-	window.onload = function(){
-		appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
-	}
-</script>
+
 <script>
 	
 	$("#return").click(function(){
@@ -264,14 +202,7 @@
 			 $("#return").attr("href",newHref);							
 		}
 		window.history.back(-1);
-    })
+    });
 
-	$(".wap_more").click(function(){
-		var url = "<?php echo create_url('mobile', array('id' => $_GP['id'],'op'=>'comment_list','name'=>'addon8','do'=>'article','table'=>'headline')); ?>"
-		window.location.href = url;
-	})
-	$(".wap_guanzhu").click(function(){
-		tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
-	})
 </script>
 </html>

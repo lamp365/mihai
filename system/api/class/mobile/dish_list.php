@@ -13,19 +13,19 @@
 	{
 		case 'price_low':  		//价格从低到高
 			
-			$order = "IF( a.type !=  '0', a.timeprice, a.app_marketprice ) asc ,a.id desc";
+			$order = " a.timeprice asc ,a.id desc";
 			
 			break;
 			
 		case 'price_high':  	//价格从高到低
 
-			$order = "IF( a.type !=  '0', a.timeprice, a.app_marketprice ) DESC ,a.id desc";
+			$order = " a.timeprice DESC ,a.id desc";
 					
 			break;
 			
 		case 'commision':		//佣金
 			
-			$order = 'a.commision*a.app_marketprice desc,a.id desc';
+			$order = 'a.commision*a.timeprice desc,a.id desc';
 			
 			break;
 			

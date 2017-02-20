@@ -25,8 +25,9 @@ function updateOrderStock($id , $minus = true) {
         $usermoney  = array();
         $str_link   = '';
         foreach ($ordergoods as $item) {
-        	$goods = mysqld_select("SELECT * FROM " . table('shop_dish') . "  WHERE id='".$item['goodsid']."'");
-            if ($minus) {  //卖出
+            /* 库存在 下单的时候开始扣跟app同步，不在支付后扣库存
+             * $goods = mysqld_select("SELECT * FROM " . table('shop_dish') . "  WHERE id='".$item['goodsid']."'");
+             * if ($minus) {  //卖出
                 $data = array();
                  if($goods['totalcnf']!=1)
                  {
@@ -44,7 +45,7 @@ function updateOrderStock($id , $minus = true) {
                 $data['sales'] = $goods['sales'] - $item['total'];
                 mysqld_update('shop_dish', $data, array('id' => $item['goodsid']));
 
-            }
+            }*/
 
             //记录卖家得到的佣金账单  bill每个产品对应一个记录
             if(!empty($item['seller_openid']) && !empty($item['commision'])){  //如果有卖家openid则，则计算佣金

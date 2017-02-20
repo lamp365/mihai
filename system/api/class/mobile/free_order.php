@@ -45,19 +45,29 @@
 				$configSql.= " where f.category_id=c.id ";
 				$configSql.= " and f.free_endtime<='".$period['monday_time']."' ";
 				$configSql.= " order by f.free_endtime desc";
-				$configSql.= " limit 0,12 ";		//固定最近12期记录
+				$configSql.= " limit 0,50 ";		//固定最近50期记录
 				
-				//最近12期的免单记录
-				$arrFreeConfig = mysqld_selectall($configSql);
+				//最近50期的免单记录
+				$arrTmp = mysqld_selectall($configSql);
 				
-				if(!empty($arrFreeConfig))
+				$arrFreeConfig = array();
+				
+				if(!empty($arrTmp))
 				{
-					foreach($arrFreeConfig as $key => $value)
+					foreach($arrTmp as $key => $value)
 					{
-						$arrFreeConfig[$key]['dish_list'] = getFreeDish($value,$member['openid']);
+						$arrTmp[$key]['dish_list'] = getFreeDish($value,$member['openid']);
+						
+						//如果有命中的订单商品时
+						if(!empty($arrTmp[$key]['dish_list']))
+						{
+							$arrFreeConfig[] = $arrTmp[$key];
+						}
 					}
 				}
-
+				
+				unset($arrTmp);
+				
 				$result['data']['list'] = $arrFreeConfig;
 				$result['code'] 		= 1;
 				

@@ -17,7 +17,7 @@
 	            <div class="tab-pane fade in active" id="tab1primary">
 	            	<?php if ($is_allot>0) { ?>
 	            	
-	            	已入驻 / 已分配：<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
+	            	已入驻(<?php echo $is_into; ?>) / 已分配(<?php echo $is_allot; ?>)：<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
 				  	<div class="progress">
 					  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>">
 					    <?php echo round(($is_into/$is_allot)*100,'2').'%'; ?>
@@ -25,7 +25,7 @@
 					</div>
 					<?php } ?>
 					<?php if ($total>0) { ?>
-					已分配 / 数据总数：<?php echo round(($is_allot/$total)*100,'2').'%'; ?>
+					已分配(<?php echo $is_allot; ?>) / 数据总数(<?php echo $total; ?>)：<?php echo round(($is_allot/$total)*100,'2').'%'; ?>
 				  	<div class="progress">
 					  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo round(($is_allot/$total)*100,'2').'%'; ?>">
 					    <?php echo round(($is_allot/$total)*100,'2').'%'; ?>

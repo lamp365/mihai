@@ -17,7 +17,7 @@ function getCartProducts($openid)
 	$sql.= " WHERE c.session_id = '" . $openid . "' ";
 	$sql.= " and d.status = 1 ";
 	$sql.= " and d.deleted = 0 ";
-	$sql.= " and g.status = 1 ";
+	//$sql.= " and g.status = 1 ";
 	$sql.= " and g.deleted = 0 ";
 	$sql.= " and d.total > 0 ";
 	$sql.= " order by c.seller_openid ";
@@ -42,7 +42,7 @@ function countCartProducts($openid)
 	$sql.= " WHERE c.session_id = '" . $openid . "' ";
 	$sql.= " and d.status = 1 ";
 	$sql.= " and d.deleted = 0 ";
-	$sql.= " and g.status = 1 ";
+	//$sql.= " and g.status = 1 ";
 	$sql.= " and g.deleted = 0 ";
 	$sql.= " and d.total > 0 ";
 
@@ -68,7 +68,7 @@ function updateCartProducts($openid,$productId, $qty,$seller_openid){
 	$sql.= " WHERE d.status = 1 ";
 	$sql.= " and d.id = {$productId} ";
 	$sql.= " and d.deleted = 0 ";
-	$sql.= " and g.status = 1 ";
+	//$sql.= " and g.status = 1 ";
 	$sql.= " and g.deleted = 0 ";
 	$sql.= " and d.total > 0 ";
 
@@ -120,7 +120,7 @@ function addProductsToCart($openid,$productId, $qty,$seller_openid){
 	$sql.= " WHERE d.status = 1 ";
 	$sql.= " and d.id = {$productId} ";
 	$sql.= " and d.deleted = 0 ";
-	$sql.= " and g.status = 1 ";
+	//$sql.= " and g.status = 1 ";
 	$sql.= " and g.deleted = 0 ";
 	$sql.= " and d.total > 0 ";
 

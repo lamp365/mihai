@@ -140,9 +140,7 @@ function update_order_status($id, $status,$dishinfo='') {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
     		// 释放库存减掉销量
-			$total = $dishinfo['total'] + $ogv['total'];
-			$sales = $dishinfo['sales'] - $ogv['total'];
-    		mysqld_query("UPDATE ".table('shop_dish')." SET total=".$total.", sales=".$sales." WHERE id=".$ogv['goodsid']);
+    		mysqld_query("UPDATE ".table('shop_dish')." SET `total`=total+".$ogv['total'].", `sales`=sales-".$ogv['total']." WHERE id=".$ogv['goodsid']);
     		// 如果已付款 订单有卖家openid，则扣除冻结佣金
     		if ($order['status'] == 1 && !empty($ogv['seller_openid'])) {
 				$remark = "订单:{$order['ordersn']}已经取消了";
@@ -1358,13 +1356,31 @@ function group_buy_aftersale($orderGoodInfo,$orderInfo){
  * 为方便操作，如果不填写$openid 则全表订单同时处理
  */
 function order_auto_close($openid = ''){
+	$res = '';
+	if(class_exists('Memcached')) {
+		$memcache = new Mcache();
+//		$res = $memcache->get('order_auto_close');
+	}
+	if($res){
+		//说明3小时之前更新过一次，不用再次更新
+		return '';
+	}
 	$normal = 72 * 60 * 60;
 	$where = ' (ordertype = 0 or ordertype=3) and status = 0 and createtime <= '.(time()-$normal);
-    $info   = array(
-		'status'=> -1,
-		'closetime'=>time()
-	);
-	mysqld_update('shop_order',$info,$where);
+	$sql   = "select id from ".table('shop_order')." where {$where}";
+	$data  = mysqld_selectall($sql);
+	if($data){
+		//每条每条 进行关闭，并退回优惠卷和余额
+		foreach($data as $orderid){
+			update_order_status($orderid['id'],-1);
+		}
+
+		//如果查出来有数据  则记录缓存，这里不用每次查询更新，可每3小时更新一次
+		if(class_exists('Memcached')) {
+			$memcache2 = new Mcache();
+			$memcache2->set('order_auto_close','yes',time()+3600*3);
+		}
+	}
 }
 
 /**

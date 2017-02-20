@@ -377,7 +377,13 @@ body{padding-bottom:55px;min-width: 320px;max-width: 640px;margin:0 auto;}
 
 <div class="infobox ">
     <div class="jiesuan_xinix"><strong>结算</strong></div>
-    <div class="jiesuan_xinix"><input style="margin-top: -2px;" type="checkbox" name="balance">余额抵扣<span class="zonge"><!--@php echo $user_balance; @--></span><span >¥ </span></div>
+    <div class="jiesuan_xinix balance">
+        <label>
+        <!--@php if($user_balance != 0){ @-->
+        <input style="margin-top: -2px;" type="checkbox" name="balance" value="1">
+        <!--@php } @-->
+        余额抵扣(¥<!--@php echo $user_balance; @-->)</label><span class="balance-value-num">0.00</span><span >¥ </span>
+    </div>
     <div class="jiesuan_xinix">商品总额 <span class="zonge"><!--@php  echo number_format($totalprice,2,'.','');@--></span><span >¥ </span></div>
     <div class="jiesuan_xinix">运费 <span class="yunfei"><!--@php  echo number_format($dispatchprice,2,'.','');@--></span><span >¥ </span></div>
     <div class="jiesuan_xinix">税费 <span class="shuifei"><!--@php  echo number_format($taxtot,2,'.','');@--></span><span >¥ </span></div>
@@ -635,9 +641,28 @@ function delcountprice(){
         $(".zonge").html(parseFloat(goodvalue).toFixed(2));
         $(".yunfei").html(parseFloat(dispatchprice).toFixed(2));
         $(".shuifei").html(parseFloat(taxtot).toFixed(2));
-        var total   = parseFloat(goodvalue) + parseFloat(dispatchprice) + parseFloat(taxtot) - parseFloat(discount);
-        $(".jinge").html(parseFloat(total).toFixed(2)); //应付金额，保留两位小数
-        $("#totalprice").html(parseFloat(total).toFixed(2));
+        var total   = parseFloat(goodvalue) + parseFloat(dispatchprice) + parseFloat(taxtot) - parseFloat(discount)-parseFloat(balance);
+
+        var last_total = goodvalue + dispatchprice + taxtot;
+        var new_total = "";//应付金额
+        new_total = goodvalue + dispatchprice + taxtot - discount-balance;
+
+        if($(".balance input[name=balance]").prop("checked")){
+          $(".balance-value-num").text(parseFloat(balance).toFixed(2));
+        }
+        if( $(".payStyle input[name=bonus]:checked").val() != 0 ){
+          if( parseFloat(balance) > parseFloat(last_total-discount) ){
+            $(".balance-value-num").text(parseFloat(last_total-discount).toFixed(2));
+            new_total = '0.00';
+          }
+        }else{
+          if( parseFloat(balance) > parseFloat(last_total) ){
+            $(".balance-value-num").text(parseFloat(last_total).toFixed(2));
+            new_total = '0.00';
+          }
+        }
+        $(".jinge").html(parseFloat(new_total).toFixed(2)); //应付金额，保留两位小数
+        $("#totalprice").html(parseFloat(new_total).toFixed(2));
     },'json');
 }
 
@@ -645,7 +670,9 @@ $(".sel_bonus").click(function(){
     //如果选择不使用优惠券，则优惠金额显示0
     if($(this).val() == 0){
         $(".youhui").html("0.00");
-        countprice();//调用计算应付金额函数
+
+        delcountprice();
+       // countprice();//调用计算应付金额函数
         return;
     }
     //异步传的值是select的value
@@ -654,7 +681,8 @@ $(".sel_bonus").click(function(){
     $.post(url, {'id' : bonusvalue,'op':'get_price'}, function(s) {
         if (s != 0){
             $(".youhui").html(s); //商品优惠一栏显示值，等于选择的优惠券金额
-            countprice();         //调用计算应付金额函数
+            delcountprice();
+            //countprice();         //调用计算应付金额函数
         }else{
             tip('优惠券错误',1500);
         }
@@ -671,7 +699,28 @@ function countprice(){
     $(".jinge").html(parseFloat(total).toFixed(2)); //应付金额，保留两位小数
     $("#totalprice").html(parseFloat(total).toFixed(2));
 }
+var balance = 0;
+//余额抵扣
+$("input[name='balance']").click(function(){
+    isChecked = this.checked;
+    if(isChecked){
+        var url   = "<!--@php echo mobile_url('bonus');@-->";
+        $.post(url, {'op':'balance'}, function(s) {
+            if (s != 0){
+                //结算一栏显示余额抵扣
+                balance = s;
 
+                delcountprice();//调用计算应付金额函数
+            }else{
+                alert('非法操作');
+            }
+        });
+    }else{
+        //移除掉余额抵扣
+        balance = 0;
+        delcountprice();
+    }
+})
  </script>
             
  

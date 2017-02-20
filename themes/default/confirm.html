@@ -150,6 +150,9 @@ border-bottom: 0;
 .carFoot{
 	position: relative;
 }
+.balance-value,.balance-value-num{
+	display: none;
+}
 </style>
 
     </head>
@@ -223,7 +226,7 @@ border-bottom: 0;
 		 <h2>支付方式</h2>
 		 <ul class="payStyle payWay" id="_<!--@php echo $d['id'];@-->">
 		 	 	<!--@php  if(is_array($payments)) { foreach($payments as $v) { @-->
-					   <li><label><input name='payment'  type="radio"  value="<!--@php echo $v['code']@-->"  /><img src="__RESOURCE__/recouse/images/icon-<!--@php echo $v['code']@-->.png" /><!--@php echo $v['name']@--></label></li>
+					   <li><label><input name='payment'  type="radio"  value="<!--@php echo $v['code']@-->"  <!--@php if($v['code'] == 'alipay'){ echo "checked"; } @-->/><img src="__RESOURCE__/recouse/images/icon-<!--@php echo $v['code']@-->.png" /><!--@php echo $v['name']@--></label></li>
 		       <!--@php  }  } else { echo '<li><label>请配置支付方式</label></li>'; } @-->
 		  </ul>
 		</div>
@@ -330,7 +333,14 @@ border-bottom: 0;
 
 		<div class="cutbox">
 			<!-- 余额抵扣 -->
-			<p class="balance"><label><input class="balance-input" type="checkbox" name="balance">余额抵扣:</label><em style="width: 133px; display: inline-block;">￥<!--@php echo $user_balance; @--></em></p>
+			<p class="balance">
+				<label>
+				<!--@php if($user_balance != 0){ @-->
+				<input  class="balance-input" type="checkbox" name="balance" value="1">
+				<!--@php } @-->
+				余额抵扣:</label>
+				<em style="width: 133px; display: inline-block;"><span style="font-size: 12px">￥</span><span class="balance_price"><!--@php echo $user_balance; @--></span></em>
+			</p>
 			<!--select优惠券-->
 			<!--@php  if(!empty($bonus_list)) {  @-->
 			<div class="infobox" style="background: none">
@@ -353,6 +363,7 @@ border-bottom: 0;
 					<p><em class="price" id="taxtot"><a>&yen;</a><span><!--@php  echo number_format($taxtot,2,'.','');@--></span></em></p>
 					<!--优惠金额-->
 					<p><em class="price" id="discount" style="color: #E4393C;"><a style="color: #E4393C;">-&yen;</a><span>0.00</span></em></p>
+					<p class="balance-value-num"><em class="balance-value-price" style="color: #E4393C;"><a style="color: #E4393C;">-&yen;</a><span></span></em></p>
 					<p><em class="totalprice" id="totalprice" ><a style="color: #E4393C;font-weight: bold;font-size: 18px;">&yen;</a><span><!--@php  echo number_format(($totalprice+$taxtot+$dispatchprice),2,'.','');@--></span></em></p>
 				</div>
 				<div class="settlementItem clearfix" style="height: auto;">
@@ -360,6 +371,7 @@ border-bottom: 0;
 					<p><em>运费:</em></p>
 					<p><em>税费:</em></p>
 					<p><em>商品优惠:</em></p>
+					<p class="balance-value"><em>余额抵扣:<span></span></em></p>
 					<p><em>应付金额:</em></p>
 				</div>
 			</div>
@@ -571,6 +583,7 @@ border-bottom: 0;
 			delcountprice();//调用计算应付金额函数
 			return;
 		}
+
 		var url   = "<!--@php echo mobile_url('bonus');@-->";
 		$.post(url, {'id' : bonusvalue,'op':'get_price'}, function(s) {
 		    if (s != 0){
@@ -639,10 +652,30 @@ border-bottom: 0;
 		var dispatchprice = s.ships;//运费
 		var taxtot =  s.tax;//税费
 		var discount = parseFloat($("#discount span").text());//商品优惠
+		var last_total = goodvalue + dispatchprice + taxtot;
+		var new_total = "";//应付金额
 		$("#goodvalue span").text(parseFloat(goodvalue).toFixed(2));
 		$("#dispatchprice span").text(parseFloat(dispatchprice).toFixed(2));
 		$("#taxtot span").text(parseFloat(taxtot).toFixed(2));
-		$("#totalprice span").text(parseFloat(goodvalue + dispatchprice + taxtot - discount).toFixed(2)); //应付金额，保留两位小数	
+		new_total = goodvalue + dispatchprice + taxtot - discount-balance;
+		if($(".balance-input").prop("checked")){
+			$(".balance-value-num,.balance-value").show();
+			$(".balance-value-num span").text(parseFloat(balance).toFixed(2));
+		}
+		
+		if( $("select[name=bonus]").val() != 0 ){
+			if( parseFloat(balance) > parseFloat(last_total-discount) ){
+				$(".balance-value-num span").text(parseFloat(last_total-discount).toFixed(2));
+				new_total = '0.00';
+			}
+		}else{
+			if( parseFloat(balance) > parseFloat(last_total) ){
+				$(".balance-value-num span").text(parseFloat(last_total).toFixed(2));
+				new_total = '0.00';
+			}
+		}
+
+		$("#totalprice span").text(parseFloat(new_total).toFixed(2)); //应付金额，保留两位小数	
 	  },'json');	
 	}
 	$(".text").on("blur",function(){
@@ -703,12 +736,35 @@ border-bottom: 0;
 				}
 			}
 		}
-	})
+	});
 	
 	//点击换购种类的样式控制
 	$(".redemption-baner li").click(function(){
 		$(this).addClass("choosetype");
 		$(this).siblings().removeClass("choosetype");
+	});
+	var balance = 0;
+	//余额抵扣
+	$("input[name='balance']").click(function(){
+		isChecked = this.checked;
+		if(isChecked){
+			var url   = "<!--@php echo mobile_url('bonus');@-->";
+			$.post(url, {'op':'balance'}, function(s) {
+				if (s != 0){
+					//结算一栏显示余额抵扣
+					balance = parseFloat(s).toFixed(2);
+					delcountprice();//调用计算应付金额函数
+				}else{
+					alert('非法操作');
+				}
+			});
+		}else{
+			//移除掉余额抵扣
+			balance = 0;
+			$(".balance-value-num,.balance-value").hide();
+			delcountprice();//调用计算应付金额函数
+		}
 	})
+
 </script>
 </html>   

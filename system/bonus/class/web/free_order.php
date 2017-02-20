@@ -13,7 +13,13 @@ switch($operation){
 		$category_id= intval ( $_GP ['category_id'] );
 		$period 	= getLastWeekPeriod();					//上周一到周天的时间戳
 		
-		if(empty($category_id))
+		//不是周一时
+		if(date('N')!=1){
+			
+			message ( '请在允许的时间内进行免单配置！', web_url ( 'free_order'), 'error' );
+		}
+		//免单分类为空
+		elseif(empty($category_id))
 		{
 			message ( '请选择免单分类！', web_url ( 'free_order',array('op' =>'new')), 'error' );
 		}
