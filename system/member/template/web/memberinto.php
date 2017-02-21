@@ -140,6 +140,12 @@
 								</div>
 							</li>
 							<li>
+								<span class="left-span">有商品</span>
+								<div class="checkbox-div">
+									<input type="checkbox" name="h_good" class="h_good" <?php if($h_good){echo 'checked="checked"';}?>>
+								</div>
+							</li>
+							<li>
 								
 								<div class="btn-group">
 								  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
@@ -168,11 +174,12 @@
 					                    <th width="60px">姓名</th>
 					                    <th>手机</th>
 					                    <th style="display:none;">邮箱</th>
-					                    <th>差评</th>
-					                    <th>退过款</th>
-					                    <th>黑名单</th>
+					                    <th style="display:none;">差评</th>
+					                    <th style="display:none;">退过款</th>
+					                    <th style="display:none;">黑名单</th>
 					                    <th>城市</th>
 					                    <th width="150px">地址</th>
+					                    <th width="180px">上次购买商品</th>
 					                    <th>上次购买时间</th>
 					                    <th>购买次数</th>
 					                    <th>购买金额</th>
@@ -194,11 +201,12 @@
 					                    <td class="text-center"><?php  echo $almv['username'];?></td>
 					                    <td class="text-center"><?php  echo $almv['mobile'];?></td>
 					                    <td class="text-center" style="display:none;"><?php  echo $almv['email'];?></td>
-					                    <td class="text-center"><?php  echo $almv['review'];?></td>
-					                    <td class="text-center"><?php  echo $almv['refund'];?></td>
-					                    <td class="text-center"><?php  echo $almv['blacklist'];?></td>
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['review'];?></td>
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['refund'];?></td>
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['blacklist'];?></td>
 					                    <td class="text-center"><?php  echo $almv['city'];?></td>
 					                    <td class="text-center"><?php  echo $almv['address'];?></td>
+					                    <td class="text-center"><?php  echo $almv['last_good'];?></td>
 					                    <td class="text-center"><?php if (!empty($almv['lasttime'])) {
 					                    	echo date('Y-m-d H:i',$almv['lasttime']);
 					                    }else{
@@ -260,6 +268,18 @@
 											<button type="button" class="refund btn btn-md btn-warning btn-sm">开始导入</button>
 										</li>
 									</td>
+									
+								</tr>	
+								<tr>
+									<td>
+										<li style="line-height: 26px;">商品表单：</li>
+										<li >
+											<input style="line-height: 26px;" name="mygoods" type="file"   value="" />
+										</li>
+										<li >
+											<button type="button" class="ingood btn btn-md btn-warning btn-sm">开始导入</button>
+										</li>
+									</td>
 								</tr>	
 							</tbody>		
 						</table>
@@ -275,6 +295,13 @@ $(function(){
 	$(".refund").click(function(){
 		if(confirm('确定开始导入')){
 			var url = "<?php  echo web_url('memberinto',array('op'=>'into'));?>";
+			$(".refund_form").attr('action',url);
+			$(".refund_form").submit();
+		}
+	});
+	$(".ingood").click(function(){
+		if(confirm('确定开始导入')){
+			var url = "<?php  echo web_url('memberinto',array('op'=>'into_goods'));?>";
 			$(".refund_form").attr('action',url);
 			$(".refund_form").submit();
 		}
@@ -300,12 +327,13 @@ function batchDistribute(){
 		 	h_money = $(".h_money").val();
 		 	allot = $(".checkbox-div .allot").prop("checked");
 		 	ienter = $(".checkbox-div .ienter").prop("checked");
+		 	h_good = $(".checkbox-div .h_good").prop("checked");
 
 		 	url = "<?php  echo web_url('memberinto',array('op' => 'check_allot'));?>";
 		 	if( department == 0){
 		 		alert("请选择部门");
 		 	}else{
-		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter},function(data){
+		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,h_good:h_good},function(data){
 		 			$(".batch-distribute-result").modal();
 		 			$(".check_allot_total").text(data.total);
 				},'json');
@@ -327,9 +355,10 @@ function batchDistribute(){
 		 	h_money = $(".h_money").val();
 		 	allot = $(".checkbox-div .allot").prop("checked");
 		 	ienter = $(".checkbox-div .ienter").prop("checked");
+		 	h_good = $(".checkbox-div .h_good").prop("checked");
 
 		 	url = "<?php  echo web_url('memberinto',array('op' => 'allot_all'));?>";
-		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter},function(data){
+		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,h_good:h_good},function(data){
 		 		alert(data.message);
 		 		location.reload(true);
 		 	},'json');

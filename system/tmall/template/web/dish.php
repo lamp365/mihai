@@ -428,7 +428,25 @@
 			</div>
 		</div>
 	 <?php } ?>
+	 <div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 天猫店铺：</label>
 
+		<div class="col-sm-2">
+				  <select class="input-height" name="tmall_shop">
+					<option value="0">请选择店铺</option>
+					<?php  if(is_array($tmall_shop)) { 
+					foreach($tmall_shop as $manv) { 
+						if ($manv['id'] == $item['tmall_id']) {
+							$mased = "selected";
+						}else{
+							$mased = "";
+						}
+						?>
+						<option value="<?php  echo $manv['id'];?>" <?php  echo $mased;?>><?php  echo $manv['department'];?></option>
+					<?php  } } ?>
+				</select>
+		</div>
+	</div>
 	 <?php if(isHasPowerOperateField('shop_dish','marketprice') || empty($_GP['id'])){ ?>
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 促销价格：</label>

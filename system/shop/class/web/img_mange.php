@@ -113,7 +113,7 @@ if($op == 'display'){
     $file = $_FILES['picture'];
 
     if($file['error'] != 0){
-        message("去不起，你没有上传文件！",refresh(),'error');
+        message("对不起，你没有上传文件！",refresh(),'error');
     }
     //允许15M
     $limit = 15000*1024;   //媒体允许15造
@@ -122,9 +122,17 @@ if($op == 'display'){
         message("上传的文件超过大小限制，请上传小于 " . $daxiao . " 的文件",refresh(),'error');
     }
     $http_type =  WEB_HTTP;
-    $picname   = date('YmdHi',time()).uniqid();
-    $extention = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $fileName  = $picname. ".{$extention}";
+
+    if($_GP['rename_type'] == 2){
+        //按照图片原名
+        $fileName  = $file['name'];
+        $picname   = pathinfo($fileName, PATHINFO_FILENAME);
+    }else{
+        //系统命名
+        $extention = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $picname   = date('YmdHi',time()).uniqid();
+        $fileName  = $picname. ".{$extention}";
+    }
 
     $result    = aliyunOSS::uploadFile($file['tmp_name'],$fileName,$dir);
     $data = array();
@@ -136,4 +144,44 @@ if($op == 'display'){
     }else{
         message("上传失败，稍后再试！",refresh(),'error');
     }
+}else if($op == 'fugai_pic'){
+    //覆盖原来图片
+    $hide_old_pic = $_GP['hide_old_pic'];
+    $old_pic_arr  = explode('/',$hide_old_pic);
+    if(count($old_pic_arr) != 2){
+        message("对不起，文件地址有误！",refresh(),'error');
+    }
+    $file = $_FILES['fugai_pic'];
+    if($file['error'] != 0){
+        message("对不起，你没有上传文件！",refresh(),'error');
+    }
+    //允许15M
+    $limit = 15000*1024;   //媒体允许15造
+    if ($limit < filesize($file['tmp_name'])) {
+        $daxiao = tosize($limit);
+        message("上传的文件超过大小限制，请上传小于 " . $daxiao . " 的文件",refresh(),'error');
+    }
+    $http_type =  WEB_HTTP;
+
+    $picname   = pathinfo($old_pic_arr[1], PATHINFO_FILENAME);
+    $fileName  = $old_pic_arr[1];
+    $dir       = $old_pic_arr[0];
+
+    //先删除原图，在上传此图
+    $res       = aliyunOSS::deleteObject($hide_old_pic);
+    $result    = aliyunOSS::uploadFile($file['tmp_name'],$fileName,$dir);
+    $data = array();
+    if($result){
+        $url     = str_replace('http://',$http_type,$result['oss-request-url']);
+        $prefix  = $dir.'/'.$picname;
+        $backUrl = web_url('img_mange',array("prefix"=>$prefix));
+        message("更改成功！",$backUrl,'success');
+    }else{
+        message("上传失败，稍后再试！",refresh(),'error');
+    }
+}else if($op == 'batupload'){
+    //批量上传
+    $dir_list_arr = aliyunOSS::listObjects('','/');
+    $dir_arr      = $dir_list_arr['data'];
+    include page('img_batupload');
 }

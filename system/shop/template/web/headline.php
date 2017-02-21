@@ -91,7 +91,7 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left"> 内容：</label>
 		<div class="col-sm-9">
-	    	<textarea  id="container" name="description" ><?php  echo $headline['description'];?></textarea>
+	    	<textarea  id="container" name="description" style="min-height: 500px;"><?php  echo $headline['description'];?></textarea>
 		</div>
 	</div>
 

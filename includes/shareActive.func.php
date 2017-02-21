@@ -358,8 +358,21 @@ function get_active_goods($pos,$openid){
     switch($pos){
         case 1:
             //6个状态是1 的即将进入开奖 按照完成时间倒序，最先的显示在后面
-            $sql = "select * from ".table('addon7_award')." where state=1 or state =2 order by confirm_time asc limit 6";
+            $sql = "select * from ".table('addon7_award')." where state=1 order by confirm_time asc";
             $res = mysqld_selectall($sql);
+            if(!empty($res)){
+                foreach($res as $key=>&$item){
+                    //dicount  可能会超过总的
+                    $diff_count        = min($item['amount'],$item['dicount']);
+                    $jindutiao         = round($diff_count*100/$item['amount'],2).'%';   //进度条
+                    $item['jindutiao'] = $jindutiao;
+                    if($openid){
+                        $item['wish_num']  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id={$item['id']} and openid='{$openid}'");
+                    }else{
+                        $item['wish_num']  = 0;
+                    }
+                }
+            }
             break;
         case 2:
             //推荐的  条件最好不用 isrecommand 因为如果满了，那么这边就会空出来了，取不到推荐的
@@ -389,7 +402,7 @@ function get_active_goods($pos,$openid){
         case 3:
             //心愿专区
             $now_time = time();
-            $sql = "select * from ".table('addon7_award')." where state<=1 and isrecommand=0 and endtime<={$now_time} order by id desc";
+            $sql = "select * from ".table('addon7_award')." where state=0 and isrecommand=0 and endtime<={$now_time} order by id desc";
             $res = mysqld_selectall($sql);
             if(!empty($res)){
                 foreach($res as $key=>&$item){

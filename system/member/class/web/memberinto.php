@@ -189,7 +189,7 @@ if ($operation == 'into') {
     message('导入完成!',refresh(),'success'); 
     // dump($cf_num);
   }else{
-    message('请上传退款表单!',refresh(),'error');
+    message('请上传表单!',refresh(),'error');
   }
 }elseif ($operation == 'display') {
   // 展示及查询
@@ -207,6 +207,7 @@ if ($operation == 'into') {
   $h_money = $_GP['h_money'];
   $allot = $_GP['allot'];
   $ienter = $_GP['ienter'];
+  $h_good = $_GP['h_good'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -241,6 +242,9 @@ if ($operation == 'into') {
   }
   if (!empty($ienter) AND $ienter!='false') {
     $where.=" AND status=0";
+  }
+  if (!empty($h_good) AND $h_good!='false') {
+    $where.=" AND last_good<>''";
   }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE id>0".$where." ORDER BY price DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
@@ -312,6 +316,7 @@ if ($operation == 'into') {
   $h_money = $_GP['h_money'];
   $allot = $_GP['allot'];
   $ienter = $_GP['ienter'];
+  $h_good = $_GP['h_good'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -342,6 +347,9 @@ if ($operation == 'into') {
   }
   if (!empty($ienter) AND $ienter!='false') {
     $where.=" AND status=0";
+  }
+  if (!empty($h_good) AND $h_good!='false') {
+    $where.=" AND last_good!=''";
   }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE salesman=0".$where);
@@ -387,6 +395,7 @@ if ($operation == 'into') {
   $h_money = $_GP['h_money'];
   $allot = $_GP['allot'];
   $ienter = $_GP['ienter'];
+  $h_good = $_GP['h_good'];
 
   if (!empty($city)) {
     $where.=" AND city='".$city."'";
@@ -418,6 +427,9 @@ if ($operation == 'into') {
   if (!empty($ienter) AND $ienter!='false') {
     $where.=" AND status=0";
   }
+  if (!empty($h_good) AND $h_good!='false') {
+    $where.=" AND last_good<>''";
+  }
 
   $al_member = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('shop_customers')." WHERE salesman=0".$where);
   if (empty($al_member)) {
@@ -436,4 +448,47 @@ if ($operation == 'into') {
     $result['message'] = '批量分配完成!';
   }
   echo json_encode($result);
+}elseif ($operation == 'into_goods') {
+  // 导入最后购买商品
+  $myxls = '';
+  set_time_limit(0);
+  if ($_FILES['mygoods']['error'] != 4) {
+    $upload = file_upload($_FILES['mygoods'], false, NULL, NULL,$type='other');
+    if (is_error($upload)) {
+        message($upload['message'], '', 'error');
+    }
+    $myxls = $upload['path'];
+
+    if (!file_exists($myxls)) {
+      message('文件上传失败，请重试!',refresh(),'error');
+    }
+    $csvreader = new CsvReader($myxls);
+    $line_number = $csvreader->get_lines();
+    $arrobj = new arrayiconv();
+    $rows = ceil($line_number / 20);
+    $cf_num = 0;
+    for ( $i = 0; $i < $rows; $i++ ){
+      $arr = $csvreader->get_data(20,$i*20+1);
+      $arr = $arrobj->Conversion($arr,"GBK","utf-8");
+      if ($i == 0){
+        array_shift($arr);
+      }
+      foreach ($arr as $dv) {
+        if (empty($dv[3])) {
+          continue;
+        }
+        $mobile_a = explode(" ",$dv[3]);
+        $mobile = $mobile_a[0];
+        $customer = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE mobile='".$mobile."'");
+        if (!empty($customer)) {
+          if (empty($customer['last_good']) OR (strtotime($dv[1]) > $customer['lasttime'])) {
+            mysqld_update("shop_customers", array('last_good'=>$dv[2],'lasttime'=>strtotime($dv[1])), array('mobile'=>$mobile));
+          }
+        }
+      }
+    }
+    message('导入完成!',refresh(),'success'); 
+  }else{
+    message('请上传表单!',refresh(),'error');
+  }
 }

@@ -26,7 +26,16 @@
 		<!--@php }else{ @-->
 		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result','is_app'=>1))@-->" class="result-search"></a>
 		<!--@php } @-->
-
+		<div style="text-align: center;background-color: #e42604;color: #fff;margin-top: -30px;padding-bottom: 15px;font-size: 16px;font-weight: bold;
+    letter-spacing: 1px;">每天更新次数 记得来点点</div>
+    <div style="    text-align: center;
+    background-color: #e42604;
+    color: #fff;
+    margin-top: -10px;
+    padding-bottom: 15px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    font-weight: bold;">【觅海心愿 百分百好礼】</div>
 		<!--@php if($lock && $drawTime){ @-->
 		<div id="result-time"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
 		<script>
@@ -35,26 +44,52 @@
 			})
 		</script>
 		<!--@php } @-->
-	</div>
-	<div class="banner">
-		<img src="__RESOURCE__/recouse/images/miandan_wap02.jpg">
-		<ul class="banner-product-list">
+
+		<!--即将开奖区域-->
+		<div class="first-future">
+			<ul class="last-wrap-list clearfix">
 			<!--@php if(!empty($toBeDraw)){ foreach($toBeDraw as $items){ @-->
-			<li>
-				<!--@php if($lock){ @-->
-				<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
-				<div class="full-num"><!--@php echo $items['dicount'];@--></div>
-				<!--@php } @-->
-				<img src="<!--@php echo download_pic($items['logo'],80,80,2);@-->">
-			</li>
+				<li>
+					<!--@php if($lock){ @-->
+					<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
+					<!--@php } @-->
+					<div class="recommand-left">
+						<img class="lazy" onclick="personalRecord(this,<!--@php echo $items['id'];@-->)" data-original="<!--@php echo download_pic($items['logo'],80,80,2);@-->" src="images/loading.gif">
+					</div>
+					<div class="recommand-right">
+						<div class="small-title"><!--@php echo $items['title'];@--></div>
+						<div class="first-future-detail"><!--@php echo $items['names'];@--></div>
+						<div class="progress">
+						  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $items['jindutiao'];@-->">
+						  	</div>
+						</div>
+						<div class="list-num">
+							<span class="list-num-before"><!--@php echo $items['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $items['amount'];@--></span>
+							<span style="float: right;font-size: 12px;"><!-- <span>需心愿数:</span> -->
+								<!--@php for( $i =0; $i < intval($items['credit_cost']); $i++){ @-->
+								<img style="display:inline-block;width: 14px;padding: 0;margin-top: 3px;" src="__RESOURCE__/recouse/images/love-yes.png"/>
+								<!--@php } @-->
+							</span>
+						</div>
+						<div class="play-btn-div">
+							<div class="play-now" style="width: 65%" onclick="playNow(this,<!--@php echo $items['id'];@-->)" data-fenshu="<!--@php echo intval($items['credit_cost']);@-->">新年许愿</div>
+							<div class="love" style="width: 35%">
+								<img onclick="personalRecord(this,<!--@php echo $items['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
+								<span><!--@php echo $items['wish_num'];@--></span>
+							</div>
+						</div>
+					</div>
+				</li>
 			<!--@php }} @-->
-		</ul>
+			</ul>
+		</div>
 	</div>
-	<div class="banner">
-		<img src="__RESOURCE__/recouse/images/miandan_wap030101.jpg">
-		<div class="total-number-div">
+
+	<video controls="controls" poster="__RESOURCE__/recouse/images/video_poster.jpg" style="display: block;" src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201701/20170217184258a6d392575d8.mp4" width="100%"></video>
+	<div class="video-title">纽约旗舰店客户恭祝中国区用户愿望实现</div>
+	<div class="total-number-div">
 				<div class="total_num">
-					<ul class="num_list">	
+					<ul class="num_list">
 						<li class="per_num">
 							<ul>
 								<li>0</li>
@@ -185,11 +220,6 @@
 					</ul>
 				</div>
 		</div>
-		
-	</div>
-
-	<video controls="controls" poster="__RESOURCE__/recouse/images/video_poster.jpg" style="display: block;" src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201701/20170217184258a6d392575d8.mp4" width="100%"></video>
-	<div class="video-title">纽约旗舰店客户恭祝中国区用户愿望实现</div>
 	<div class="banner">
 		<img src="__RESOURCE__/recouse/images/miandan_tuijian_bg.jpg">
 		<div class="banner-title">在一起过福年</div>
@@ -375,6 +405,16 @@
 			},'json');
 		},3000);
 		getnum(total_num_new);
+
+		function totalNumLeft(){
+			var body_width = $("body").width();
+			var my_width = (body_width-171)/2;
+			$(".total-number-div").css("paddingLeft",my_width);
+		}
+		totalNumLeft();
+		$(window).resize(function(){
+			totalNumLeft();
+		})
 	});
 
 	//立即领取,第一个参数是当前元素，第二个参数是商品id

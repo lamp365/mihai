@@ -17,8 +17,8 @@
 		
 		foreach($banner_list as $value)
 		{
-			//首页顶部
-			if($value['position']==1)
+			//首页顶部、觅海头条、图文笔记
+			if($value['position']==1 || $value['position']==4 || $value['position']==5)
 			{
 				$value['param'] = getUrlParam($value['link']);
 			}

@@ -179,6 +179,7 @@ function getFreeAmount($category_id,$starttime,$endtime)
 	$sql ='SELECT sum(og.price*og.total) as total_price FROM ' . table('shop_order') . ' o,'. table('shop_order_goods').' og,'.table('shop_dish').' d ';
 	$sql.=' where o.id=og.orderid and og.goodsid=d.id ';
 	$sql.=' and o.status=3 ';
+	$sql.=' and o.ordertype!=-2 ';			//批发订单除外
 	$sql.=' and og.status in (-2,-1,0) ';
 	$sql.=' and o.completetime>= '.$starttime;
 	$sql.=' and o.completetime<= '.$endtime;
@@ -205,6 +206,7 @@ function getFreeMemberCount($category_id,$starttime,$endtime)
 	$sql ='SELECT count(DISTINCT o.openid) as cnt FROM ' . table('shop_order') . ' o,'. table('shop_order_goods').' og,'.table('shop_dish').' d ';
 	$sql.=' where o.id=og.orderid and og.goodsid=d.id ';
 	$sql.=' and o.status=3 ';
+	$sql.=' and o.ordertype!=-2 ';			//批发订单除外
 	$sql.=' and og.status in (-2,-1,0) ';
 	$sql.=' and o.completetime>= '.$starttime;
 	$sql.=' and o.completetime<= '.$endtime;

@@ -607,6 +607,11 @@
                                         图片列表
                                     </a>
                                 </li>
+                                <li> <a  onclick="navtoggle('图片管理 - > 批量上传')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'img_mange','op'=>'batupload'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        批量上传
+                                    </a>
+                                </li>
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::IMG_MANGE] as $row){
                                     $zi = "图片管理 - > {$row['moddescription']}";

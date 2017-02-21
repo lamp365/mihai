@@ -140,6 +140,12 @@
 								</div>
 							</li>
 							<li>
+								<span class="left-span">有商品</span>
+								<div class="checkbox-div">
+									<input type="checkbox" name="h_good" class="h_good" <?php if($h_good){echo 'checked="checked"';}?>>
+								</div>
+							</li>
+							<li>
 								<div class="btn-group">
 								  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
 								  <button type="button" class="btn btn-primary btn-sm dropdown-toggle add-more-btn" data-toggle="dropdown">
@@ -166,10 +172,10 @@
 					                    <!-- <th >旺旺</th> -->
 					                    <th width="60px">姓名</th>
 					                    <th>手机</th>
-					                 
-					                    <th>差评</th>
-					                    <th>退款</th>
-					                    <th>黑名单</th>		                 
+					                    <th style="display:none;">差评</th>
+					                    <th style="display:none;">退款</th>
+					                    <th style="display:none;">黑名单</th>	
+					                    <th>上次购买商品</th>
 					                    <th>上次购买时间</th>
 					                    <th>购买次数</th>
 					                    <th>购买金额</th>
@@ -191,12 +197,10 @@
 					                <tr>
 					                    <td class="text-center"><?php  echo $almv['username'];?></td>
 					                    <td class="text-center"><?php  echo $almv['mobile'];?></td>
-					                    
-					                    <td class="text-center"><?php  echo $almv['review'];?></td>
-					                    <td class="text-center"><?php  echo $almv['refund'];?></td>
-					                    <td class="text-center"><?php  echo $almv['blacklist'];?></td>
-					              
-					
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['review'];?></td>
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['refund'];?></td>
+					                    <td class="text-center" style="display:none;"><?php  echo $almv['blacklist'];?></td>
+					                    <td class="text-center"><?php  echo $almv['last_good'];?></td>
 					                    <td class="text-center"><?php  if (!empty($almv['lasttime'])) {
 					                    	echo date('Y-m-d H:i',$almv['lasttime']);
 					                    }else{
@@ -375,26 +379,32 @@ $(function(){
 		},'json');
 	});
 	//备注
-	$(".remark").on("click",function(){
+	var data_id = '';
+	$(".remark").on("click",function(e){
+		e.stopPropagation();
 		var $this = $(this);
-		var data_id = $this.attr("data_id");
+		data_id = $this.attr("data_id");
+		$("#remark_text").text('');
 		$(".set_remark").modal();
-		$(".set_remark").on("shown.bs.modal", function(){
-			var url = "<?php  echo web_url('customers',array('op'=>'get_remark'));?>";
-			$.post(url,{data_id:data_id},function(data){
-				// data = eval(data);
-				$("#remark_text").text(data.text);
+
+		//$(".set_remark").on("shown.bs.modal", function(){
+		var url = "<?php  echo web_url('customers',array('op'=>'get_remark'));?>";
+		$.post(url,{data_id:data_id},function(data){
+			$("#remark_text").text(data.text);
+		},'json');
+		//});
+		
+	});
+	$(".set_remark .setup-btn").on("click",function(){
+		var remark = $("#remark_text").val();
+		var url = "<?php  echo web_url('customers',array('op'=>'set_remark'));?>";
+		$.post(url,{data_id:data_id,remark:remark},function(data){
+				var data = eval(data);
+				alert(data.message);
+				// $("#remark_text").text('');
+				$(".set_remark").modal('hide');
+				location.reload(true);
 			},'json');
-		});
-		$(".set_remark .setup-btn").on("click",function(){
-			var remark = $("#remark_text").val();
-			var url = "<?php  echo web_url('customers',array('op'=>'set_remark'));?>";
-			$.post(url,{data_id:data_id,remark:remark},function(data){
-					var data = eval(data);
-					alert(data.message);
-					$(".set_remark").modal('hide');
-				},'json');
-		});
 	});
 	function Stringtotime(time){
 		time = time*1000;
@@ -426,13 +436,14 @@ function batchDistribute(){
 		 	allot = $(".checkbox-div .allot").prop("checked");
 		 	ienter = $(".checkbox-div .ienter").prop("checked");
 		 	hide_data = $(".hide_data").val();
+		 	h_good = $(".checkbox-div .h_good").prop("checked");
 
 		 	url = "<?php  echo web_url('customers',array('op' => 'check_allot'));?>";
-		 	var url2 = "<?php  echo web_url('customers',array('op' => 'check_allot_now'));?>";
+		 	// var url2 = "<?php  echo web_url('customers',array('op' => 'check_allot_now'));?>";
 		 	if( department == 0){
 		 		alert("请选择员工");
 		 	}else{
-		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,find_mobile:find_mobile,hide_data:hide_data},function(data){
+		 		$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,find_mobile:find_mobile,hide_data:hide_data,h_good:h_good},function(data){
 		 			$(".batch-distribute-result").modal();
 		 			$(".check_allot_total").text(data.total);
 		 			$(".check_allot_total_now").text(data.total_now);
@@ -456,9 +467,10 @@ function batchDistribute(){
 		 	find_mobile = $(".find_mobile").val();
 		 	allot = $(".checkbox-div .allot").prop("checked");
 		 	ienter = $(".checkbox-div .ienter").prop("checked");
+		 	h_good = $(".checkbox-div .h_good").prop("checked");
 		 	
 		 	url = "<?php  echo web_url('customers',array('op' => 'allot_all'));?>";
-		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,find_mobile:find_mobile},function(data){
+		 	$.post(url,{city:city,member:member,shop:shop,department:department,bad:bad,refund:refund,blacklist:blacklist,d_money:d_money,h_money:h_money,allot:allot,ienter:ienter,find_mobile:find_mobile,h_good:h_good},function(data){
 		 		alert(data.message);
 		 		location.reload(true);
 		 	},'json');

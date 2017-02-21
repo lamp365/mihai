@@ -43,6 +43,16 @@ switch($operation){
 			$data['link_type'] 	= (int)$_GP['link_type'];
 			$data['link']		= trim($_GP['link']);
 		}
+		//觅海头条
+		elseif($position==4)
+		{
+			$data['link']		= trim($_GP['link']);
+		}
+		//晒物笔记
+		elseif($position==5)
+		{
+			$data['link']		= trim($_GP['link']);
+		}
 
 		if (! empty ( $banner_id )) {
 				

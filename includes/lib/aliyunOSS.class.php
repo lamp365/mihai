@@ -185,7 +185,7 @@ class aliyunOSS
      * @param string $content  要写入的内容
      * @return null
      */
-    public static function putObject($content,$fileName='')
+    public static function putObject($content,$fileName='',$dir='')
     {
         $extentionArr = array( 'gif', 'jpg', 'jpeg', 'png');
         $extention = pathinfo($content, PATHINFO_EXTENSION);
@@ -195,6 +195,10 @@ class aliyunOSS
             if(empty($fileName)){
                 $fileName = $picName;
             }
+            if(empty($dir)){
+                $dir = date("Ym");
+            }
+            $fileName = $dir.'/'.$fileName;
         }else{
             return '1';
         }

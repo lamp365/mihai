@@ -72,6 +72,8 @@
 			<p class="help-block" id="J_link_example2">【类目列表页链接示例】   http://www.hinrc.com/index.php?cate_id=15</p>
 			<p class="help-block" id="J_link_example3">【搜索结果页链接示例】   http://www.hinrc.com/index.php?keyword=test</p>
 			<p class="help-block" id="J_link_example4">【自定义H5页链接示例】   http://www.hinrc.com/index.php?mod=mobile&name=addon8&id=28&do=article&is_app=1</p>
+			<p class="help-block" id="J_link_example4">【觅海头条链接示例】  http://www.hinrc.com/headline.html?op=detail&headline_id=18</p>
+			<p class="help-block" id="J_link_example4">【晒物笔记链接示例】  http://www.hinrc.com/note.html?note_id=2&op=detail</p>
 		</div>
 	</div>
 
@@ -106,11 +108,11 @@
 
 		if($("#J_position").val()==1)
 		{
-			$('#J_link_div').show();
+			//$('#J_link_div').show();
 			$('#J_link_type_div').show();
 		}
 		else{
-			$('#J_link_div').hide();
+			//$('#J_link_div').hide();
 			$('#J_link_type_div').hide();
 		}
 		
@@ -118,11 +120,11 @@
 
 			if($(this).val()==1)
 			{
-				$('#J_link_div').show();
+				//$('#J_link_div').show();
 				$('#J_link_type_div').show();
 			}
 			else{
-				$('#J_link_div').hide();
+				//$('#J_link_div').hide();
 				$('#J_link_type_div').hide();
 			}
 			  

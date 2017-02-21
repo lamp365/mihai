@@ -98,9 +98,9 @@
                     <!--@php } @-->
                 </div>
             </div>
-        </div>
+        
         <!--@php } @-->
-
+        </div>
         
         <!--  往期记录 -->
         <div class="freepay-tab-div">
@@ -170,7 +170,6 @@ $(function(){
         $(this).addClass("liactive");
         index = $(this).index();
         $(".freepay-tab-div").eq(index).addClass("div-show").siblings().removeClass("div-show");
-
     });
     $(".apply-btn").on("click",function(){
         var url = "<!--@php echo mobile_url('free',array('op'=>'free_apply'));@-->";

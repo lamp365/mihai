@@ -10,6 +10,8 @@
 
 class FileUpload
 {
+    public $dir          = '';  //设置存放在阿里下的目录
+    public $save_oldname = '';  //是否保存为图片原名
     public function uploadRemotePic($urlpic)
     {
         if(empty($urlpic))
@@ -177,8 +179,14 @@ class FileUpload
 
     public function uploadByAli($file,$extention){
         $http_type =  $this->http_type()?'https://':'http://';
-        $fileName  = date('YmdHi',time()).uniqid(). ".{$extention}";
-        $result    = aliyunOSS::uploadFile($file['tmp_name'],$fileName);
+        if($this->save_oldname){
+            $fileName  = $file['name'];
+        }else{
+            $fileName  = date('YmdHi',time()).uniqid(). ".{$extention}";
+        }
+
+        $dir       = $this->dir;
+        $result    = aliyunOSS::uploadFile($file['tmp_name'],$fileName,$dir);
         $data = array();
         if($result){
             $data['path']    = str_replace('http://',$http_type,$result['oss-request-url']);

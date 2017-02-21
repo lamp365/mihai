@@ -14,7 +14,7 @@ if(!empty($free_list))
 {
 	//加入虚假数据
 	$free_list['free_member_count'] = $free_list['free_member_count']+intval($free_list['free_starttime'] / 2896753);
-	$free_list['free_amount'] 		= $free_list['free_amount']+intval($free_list['free_endtime'] / 2896753);
+	$free_list['free_amount'] 		= $free_list['free_amount']+intval($free_list['free_endtime'] / 16453);
 }
 
 

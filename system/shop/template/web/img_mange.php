@@ -165,6 +165,13 @@
 
 							</select>
 						</li>
+						<li style="line-height: 26px;">文件命名：</li>
+						<li>
+							<select name="rename_type"  style="height: 28px;line-height: 28px;">
+								<option value="1">系统随机命名</option>
+								<option value="2">按照文件原名</option>
+							</select>
+						</li>
 						<li>
 							<input style="line-height: 26px;" name="picture" type="file" value="" id="picture">
 						</li>
@@ -198,6 +205,7 @@
 			<td style="text-align:center;"><?php echo ++$key;?></td>
 			<td style="text-align:center;" class="thumb">
 				<?php $pic_explode = explode(".",$pic_one);
+				      $purl = '';
 						if(in_array(strtolower($pic_explode[1]),$img_arr)) {
 							$purl = aliyunOSS::aliurl."/".$pic_one;
 							$small_pic = download_pic($purl,50,50,2);
@@ -207,14 +215,45 @@
 						}
 				?>
 			</td>
-			<td style="text-align:center;"><?php $purl = aliyunOSS::aliurl."/".$pic_one; echo "<a href='{$purl}' target='_blank'>{$purl}</a>"; ?></td>
 			<td style="text-align:center;">
-				<span <?php echo "data-pic='{$purl}'";?> onclick="setPic(this)" style="cursor: pointer">设置大小</span>
+				<?php $purl2 = aliyunOSS::aliurl."/".$pic_one; echo "<a href='{$purl2}' target='_blank'>{$purl2}</a>"; ?>&nbsp;&nbsp;
+				<span class="btn btn-primary btn-xs" data-url="<?php echo $purl2;?>" onclick="copy_url(this)">复制链接</span>
+			</td>
+			<td style="text-align:center;">
+				<span <?php echo "data-pic='{$purl}'";?> onclick="setPic(this)" style="cursor: pointer" class="btn btn-info btn-sm">设置大小</span>
+				<?php if($purl){ ?>
+				<span class="btn btn-primary btn-sm" data-url="<?php echo $pic_one;?>" onclick="fugai_pic(this)">覆盖原图</span>
+				<?php } ?>
 			</td>
 		</tr>
 		<?php }} ?>
 	</table>
 </div>
+
+	<div class="modal fade" id="fufai_pic_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<form action="<?php echo web_url('img_mange',array('op'=>"fugai_pic"));?>" method="post" enctype="multipart/form-data">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">覆盖图片(<span class="tit"></span>)</h4>
+				</div>
+				<div class="modal-body">
+					<div>原图：<img class="old_pic_url" src=""></div>
+					<input type="hidden" name="hide_old_pic" value="">
+					<div style="margin-top: 15px;">
+						<input style="line-height: 26px;" name="fugai_pic" type="file" value="">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="submmit" class="btn btn-primary">确认覆盖</button>
+				</div>
+			</div><!-- /.modal-content -->
+			</form>
+		</div><!-- /.modal -->
+	</div>
+
 	<script>
 		function setPic(obj){
 			var the_obj = $(obj).closest('.one_pic').find(".thumb img");
@@ -298,6 +337,19 @@
 			},'json');
 		})
 
+		function fugai_pic(obj){
+			var picname = $(obj).data('url');
+			var picurl  = $(obj).closest('.one_pic').find('.is_pic').attr('src');
+			$("#fufai_pic_modal .tit").html(picname);
+			$("#fufai_pic_modal").find("input[name='hide_old_pic']").val(picname);
+			$("#fufai_pic_modal .old_pic_url").attr('src',picurl);
+			$("#fufai_pic_modal").modal('show');
+		}
+		//copy
+		function copy_url(obj){
+			var url = $(obj).data('url');
+			alert(url);
+		}
 	</script>
 <?php } ?>
 

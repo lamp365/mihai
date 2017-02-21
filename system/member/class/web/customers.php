@@ -39,6 +39,7 @@ if ($operation == 'display') {
   	$ienter = $_GP['ienter'];
   	$mobile = $_GP['find_mobile'];
   	$is_allot = 0;
+  	$h_good = $_GP['h_good'];
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -63,35 +64,41 @@ if ($operation == 'display') {
 		$where.=" AND a.salesman=".$man['id'];
 	}
 	if (!empty($d_money)) {
-	    $where.=" AND price>".$d_money;
+	    $where.=" AND a.price>".$d_money;
 	}
   	if (!empty($h_money)) {
-	    $where.=" AND price<".$h_money;
+	    $where.=" AND a.price<".$h_money;
 	}
 	if (!empty($allot) AND $allot!='false') {
-		$where.=" AND salesman=''";
+		$where.=" AND a.salesman=''";
 	}
 	if (!empty($ienter) AND $ienter!='false') {
-		$where.=" AND status=1";
+		$where.=" AND a.status=1";
 	}
 	if (!empty($mobile)) {
-		$where.=" AND mobile=".$mobile;
+		$where.=" AND a.mobile=".$mobile;
+	}
+	if (!empty($h_good) AND $h_good!='false') {
+	    $where.=" AND a.last_good!=''";
 	}
 
-	$al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.contact ASC,a.lasttime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+	$al_sql = "SELECT SQL_CALC_FOUND_ROWS a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where." ORDER BY a.contact ASC,a.lasttime DESC,a.contact_time DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
+	$al_client = mysqld_selectall($al_sql);
 	// 总记录数
   	$data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
 	if ( is_array($al_client) ){
-  	foreach ($al_client as &$aclv) {
-  		if (mysqld_select("SELECT * FROM ".table('member')." WHERE mobile=".$aclv['mobile'])) {
-			$aclv['status'] = '1';
-			mysqld_update('shop_customers', array('status'=>1), array('id'=>$aclv['id']));
-	    }
-  	}
-	unset($aclv);
+		$al_id = array();
+	  	foreach ($al_client as &$aclv) {
+	  		if (mysqld_select("SELECT * FROM ".table('member')." WHERE mobile=".$aclv['mobile'])) {
+				$aclv['status'] = '1';
+				mysqld_update('shop_customers', array('status'=>1), array('id'=>$aclv['id']));
+		    }
+	  	}
+		unset($aclv);
 	}
   	$total = $data_total['total'];
-  	$datajs = json_encode($al_client);
+  	// $datajs = json_encode($al_client);
+  	$datajs = $al_sql;
 
   	$no_allot = 0;
 	$is_into = 0;
@@ -157,8 +164,13 @@ if ($operation == 'display') {
   $allot = $_GP['allot'];
   $ienter = $_GP['ienter'];
   $mobile = $_GP['find_mobile'];
+  $h_good = $_GP['h_good'];
   $hide_data = $_GP['hide_data'];
-  $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
+  $hide_data = htmlspecialchars_decode($hide_data);
+  if (substr($hide_data, -1) == '=') {
+  	$hide_data.="''";
+  }
+  $hide_data = mysqld_selectall($hide_data);
 
   if (!empty($city)) {
     $where.=" AND a.city='".$city."'";
@@ -193,8 +205,12 @@ if ($operation == 'display') {
   if (!empty($mobile)) {
 	$where.=" AND a.mobile='".$mobile."'";
   }
+  if (!empty($h_good) AND $h_good!='false') {
+	    $where.=" AND a.last_good<>''";
+	}
 
   $al_client = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.id, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where);
+
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
   if (empty($al_client)) {
@@ -237,8 +253,9 @@ if ($operation == 'display') {
   	$allot = $_GP['allot'];
     $ienter = $_GP['ienter'];
     $mobile = $_GP['find_mobile'];
-    $hide_data = $_GP['hide_data'];
-    $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
+    // $hide_data = $_GP['hide_data'];
+    // $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
+    $h_good = $_GP['h_good'];
 
 	if (!empty($city)) {
 		$where.=" AND a.city='".$city."'";
@@ -272,6 +289,9 @@ if ($operation == 'display') {
 	}
 	if (!empty($mobile)) {
 		$where.=" AND a.mobile=".$mobile;
+	}
+	if (!empty($h_good) AND $h_good!='false') {
+	    $where.=" AND a.last_good<>''";
 	}
 
 	$al_client = mysqld_selectall("SELECT a.*, b.name FROM ".table('shop_customers')." as a left join ".table('shop_department_staff')." as b on a.salesman=b.id WHERE ".$where);
@@ -344,11 +364,7 @@ if ($operation == 'display') {
 
 	if (!empty($data_id) && !empty($remark)) {
 		$re = mysqld_update('shop_customers', array('remark'=>$remark),array('id'=>$data_id));
-		if ($re) {
-			$result['message'] = "更新成功!";
-		}else{
-			$result['message'] = "更新失败，内容没有改动!";
-		}
+		$result['message'] = "更新成功!";
 	}else{
 		$result['message'] = "更新失败，请检查内容是否为空!";
 	}
@@ -356,7 +372,8 @@ if ($operation == 'display') {
 }elseif ($operation == 'allot_all_now') {
 	// 分配当前数据
 	$hide_data = $_GP['hide_data'];
-    $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
+    // $hide_data = json_decode(htmlspecialchars_decode($hide_data), true);
+    $hide_data = mysqld_selectall(htmlspecialchars_decode($hide_data));
     $staff = $_GP['department'];
 
     foreach ($hide_data as $almv) {

@@ -18,7 +18,7 @@
 
         //参与总人数
         $canyu_total = get_active_total_people();
-        //获取6个为1 等待开奖的
+        //获取为1 等待开奖的
         $toBeDraw    = get_active_goods(1,$openid);
         //获取1个推荐的
         $recommand   = get_active_goods(2,$openid);
@@ -124,7 +124,19 @@
         $res     = mysqld_insert('addon7_request',$data);
         $last_id = mysqld_insertid();
         if($last_id){
-            $total_num = $share_info['total_num']-intval($award['credit_cost']);
+            //因为上面获取的时候已经累加过了，所以这里要减回去
+            $total_num       = $share_info['total_num']-$share_info['share_total_num'];
+            $share_total_num = $share_info['share_total_num'];
+            if($total_num>=intval($award['credit_cost'])){
+                $lift_num      = 0;
+                $total_num     = $total_num -intval($award['credit_cost']);
+                $share_updata  = array('total_num'=>$total_num);
+            }else{
+                $lift_num  = intval($award['credit_cost']) - $total_num;
+                $total_num = $share_total_num - $lift_num;
+                $share_updata  = array('total_num'=>0,'share_total_num'=>$total_num);
+            }
+
             $dicount   = $award['dicount'] + 1;
             $up_data   = array('dicount'=>$dicount);
             if($award['amount'] == $dicount){
@@ -132,7 +144,7 @@
                 $up_data['state']        = 1;
                 $up_data['confirm_time'] = time();
             }
-            mysqld_update("share_active",array('total_num'=>$total_num), array('id'=>$share_info['id']));
+            mysqld_update("share_active",$share_updata, array('id'=>$share_info['id']));
             mysqld_update("addon7_award",$up_data, array('id'=>$award_id));
             $is_full = '';
             if($award['amount'] == $dicount){
