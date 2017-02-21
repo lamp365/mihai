@@ -216,7 +216,7 @@ if ($op == 'returnpay') {
 
     }
 
-    $goods = mysqld_selectall("SELECT g.id, o.goodsid, o.total as order_total, o.status as order_status, o.type as order_type, g.title, g.thumb,o.id as order_good_id, o.aid, o.price as marketprice,o.optionid,o.iscomment,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
+    $goods = mysqld_selectall("SELECT g.id, o.goodsid, o.total as order_total, o.status as order_status, o.type as order_type, g.title, g.thumb,g.pcate,o.id as order_good_id, o.aid, o.price as marketprice,o.optionid,o.iscomment,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
         . " WHERE o.orderid='{$orderid}'");
 
     if ($item['ordertype'] == '1') {
@@ -332,7 +332,7 @@ if ($op == 'returnpay') {
     $pager = pagination($total, $pindex, $psize,'.myoderlist');
     if (!empty($listorder)) {
         foreach ($listorder as &$orderow) {
-            $goods = mysqld_selectall("SELECT g.id, g.title, g.thumb, o.price as marketprice,o.total,o.optionid,o.aid,o.status as order_status, o.type as order_type,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
+            $goods = mysqld_selectall("SELECT g.id, g.title, g.thumb,g.pcate, o.price as marketprice,o.total,o.optionid,o.aid,o.status as order_status, o.type as order_type,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.shopgoodsid=g.id "
                 . " WHERE o.orderid='{$orderow['id']}'");
             /*
             foreach ($goods as &$item) {

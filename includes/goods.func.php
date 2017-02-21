@@ -693,3 +693,8 @@ function getDishId($id){
 	$dish = mysqld_select("select id from ".table('shop_dish')." where gid={$id}");
 	return $dish['id'];
 }
+
+function getGoodsCategory($pcate){
+	$catecory = mysqld_select("select name from ".table('shop_category')." where id={$pcate}");
+	return $catecory['name'];
+}

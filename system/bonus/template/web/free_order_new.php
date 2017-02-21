@@ -21,6 +21,9 @@
 			<th style="text-align: center;">免单期间</th>
 			<th style="text-align: center;">免单金额</th>
 			<th style="text-align: center;">免单人数</th>
+			<th style="text-align: center;">验证人一</th>
+			<th style="text-align: center;">验证人二</th>
+			<th style="text-align: center;">验证人三</th>
 			<th style="text-align: center;">操作</th>
 		</tr>
 	</thead>
@@ -32,10 +35,19 @@
 			<td><?php echo date('Y-m-d',$period['monday_time']).'  ~  '.date('Y-m-d',$period['sunday_time']); ?></td>
 			<td><?php echo getFreeAmount($value['id'],$period['monday_time'],$period['sunday_time']);?></td>
 			<td><?php echo getFreeMemberCount($value['id'],$period['monday_time'],$period['sunday_time']);?></td>
+			<td><?php echo $value['sign_username1'];?></td>
+			<td><?php echo $value['sign_username2'];?></td>
+			<td><?php echo $value['sign_username3'];?></td>
 			<td>
-				<?php if(date('N')==1 && empty($arrFreeConfig)){?>
-				<a class="btn btn-xs btn-info" href="javascript:void(0);" onclick="formSubmit('<?php echo $value['id'];?>')"><i class="icon-edit"></i>&nbsp;免&nbsp;单&nbsp;</a>
-				<?php }?>
+				<?php 
+				if(date('N')==1 && empty($arrFreeConfig)){
+					//已经签名三个时
+					if(!empty($value['sign_username1']) && !empty($value['sign_username2']) && !empty($value['sign_username3'])){
+					?>
+					<a class="btn btn-xs btn-info" href="javascript:void(0);" onclick="formSubmit('<?php echo $value['id'];?>')"><i class="icon-edit"></i>&nbsp;免&nbsp;单&nbsp;</a>
+					<?php }else{?>
+					<a class="btn btn-xs btn-info" href="<?php echo web_url('free_order',array('op' =>'sign','category_id'=>$value['id']))?>"><i class="icon-edit"></i>&nbsp;签&nbsp;名&nbsp;</a>
+				<?php } }?>
 			</td>
 		</tr>
         <?php  } } ?>

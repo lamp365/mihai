@@ -561,11 +561,14 @@ function point(){
 					<div class="pro-info">
 					    <dt class="PTags">
 					    	<!--商品详情页里面的商品品牌信息-->
-					    	<span style="float: left;">
+					    	<span style="float: left;line-height: 24px;">
 					    		<img  src="<!--@php echo $brand['icon']; @-->">
 								<span style="margin-left: 5px;float: left;"><!--@php echo $brand['name']; @--></span>
 								<span class="split" style="float: left;margin: 0 5px;">|</span>
 								<a class="brand" target="_blank" href="<!--@php  echo mobile_url('goodlist', array('bid'=>$goods['brand']))@-->" style="float: left;"><!--@php echo $brand['brand']; @--></a>
+								<!--分类-->
+								<img src="__RESOURCE__/recouse/images/classify.png" style="margin:0 5px 0 10px"/>
+								<!--@php  echo getGoodsCategory($goods['p1']);@-->
 					    	</span>					    	
 							<i class="crosstag tag" style="float: right;">跨境</i>
                         </dt>

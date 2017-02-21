@@ -13,6 +13,12 @@ switch($operation){
 		$category_id= intval ( $_GP ['category_id'] );
 		$period 	= getLastWeekPeriod();					//上周一到周天的时间戳
 		
+		$signSql = "SELECT free_sign_id,sign_username1,sign_username2,sign_username3 FROM " . table ( 'free_sign' );
+		$signSql.= " where category_id = {$category_id} and free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' ";
+		$signSql.= " and sign_username1 IS NOT NULL and sign_username2 IS NOT NULL and sign_username3 IS NOT NULL";
+		
+		$free_sign = mysqld_select ($signSql);
+		
 		//不是周一时
 		if(date('N')!=1){
 			
@@ -21,7 +27,12 @@ switch($operation){
 		//免单分类为空
 		elseif(empty($category_id))
 		{
-			message ( '请选择免单分类！', web_url ( 'free_order',array('op' =>'new')), 'error' );
+			message ( '请选择免单分类！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
+		}
+		//无签名记录时
+		elseif(empty($free_sign))
+		{
+			message ( '亲，尚未通过签名认证，无法进行免单配置哦！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
 		}
 
 		$data = array('category_id' 		=> $category_id,
@@ -33,6 +44,8 @@ switch($operation){
 		);
 		
 		if (mysqld_insert ( 'free_config', $data )) {
+			
+			mysqld_query('TRUNCATE TABLE '.table ( 'free_sign' ));		//清空免单签名表
 				
 			message ( '新增免单配置成功！', web_url ( 'free_order'), 'success' );
 		}
@@ -41,12 +54,72 @@ switch($operation){
 		}
 
 		break;
+		
+	case 'sign':				//签名
+		
+		$period 	= getLastWeekPeriod();		//上周一到周天的时间戳
+		$category_id= intval ( $_GP ['category_id'] );
+		
+		//免单分类为空
+		if(empty($category_id))
+		{
+			message ( '请选择免单分类！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
+		}
+		
+		$free_sign = mysqld_select ( "SELECT free_sign_id,sign_username1,sign_username2,sign_username3 FROM " . table ( 'free_sign' ) ." where category_id = {$category_id} and free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' " );
+		
+		//有签名信息时
+		if($free_sign)
+		{
+			if ($free_sign['sign_username1'] == $_SESSION['account']['username'] || $free_sign['sign_username2'] == $_SESSION['account']['username'] || $free_sign['sign_username3'] == $_SESSION['account']['username']) {
+			
+				message ( '您不能重复签名！', web_url ( 'free_order',array('op' =>'new_list')), 'success' );
+			}
+			else{
+				
+				if(empty($free_sign['sign_username2']))
+					$data['sign_username2'] = $_SESSION['account']['username'];
+				elseif(empty($free_sign['sign_username3'])) 
+				 	$data['sign_username3'] = $_SESSION['account']['username'];
+				
+				//更新
+				if(mysqld_update('free_sign',$data,array('free_sign_id'=>$free_sign['free_sign_id']))){
+					
+					message ( '签名成功！', web_url ( 'free_order',array('op' =>'new_list')), 'success' );
+				}
+				else{
+					
+					message ( '签名失败！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
+				}
+			}
+		}
+		else{
+			
+			$data = array('category_id' 		=> $category_id,
+							'free_starttime'	=> $period['monday_time'],
+							'free_endtime'		=> $period['sunday_time'],
+							'sign_username1'	=> $_SESSION['account']['username'],
+							'createtime'		=> time()
+			);
+			
+			//新增
+			if (mysqld_insert ( 'free_sign', $data )) {
+			
+				message ( '签名成功！', web_url ( 'free_order',array('op' =>'new_list')), 'success' );
+			}
+			else{
+				message ( '签名失败！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
+			}
+		}
+		
+		break;
 
 	case 'new_list':			//新增页
 		
 		$period 		= getLastWeekPeriod();		//上周一到周天的时间戳
 		$categoryIds  	= array();					//已配置的免单类目ID
 	
+		//本期的免单配置
 		$arrFreeConfig= mysqld_selectall('SELECT free_id,category_id FROM ' . table('free_config') . " where free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' ");
 		
 		if(!empty($arrFreeConfig))
@@ -57,13 +130,14 @@ switch($operation){
 			}
 		}
 		
-		$sql ='SELECT id,name FROM ' . table('shop_category') . ' where deleted=0 and enabled=1 and parentid=0 ';
+		$sql ='SELECT c.id,c.name,s.sign_username1,s.sign_username2,s.sign_username3 FROM ' . table('shop_category') . ' c left join '.table('free_sign')." s on c.id=s.category_id and s.free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' ";
+		$sql.= ' where c.deleted=0 and c.enabled=1 and c.parentid=0 ';
 		
 		if(!empty($categoryIds))
 		{
-			$sql.= ' and id not in('.implode(",", $categoryIds).')';
+			$sql.= ' and c.id not in('.implode(",", $categoryIds).')';
 		}
-		
+	
 		$arrCategory= mysqld_selectall($sql);
 
 		include page ( 'free_order_new' );

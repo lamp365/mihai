@@ -73,7 +73,9 @@
 <div class="myoder">
 	<div class="myoder-hd">
 		<span class="pull-left">订单编号：<!--@php  echo $item['ordersn'];@--></span>
-		<span class="pull-right"><!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></span>
+		<span class="pull-right">
+			<!--@php if($item['status'] == 2){ echo "<span>[确认收货 立即参与免单]</span>"; }else{ echo date('Y-m-d H:i', $item['createtime']);} @-->
+		</span>
 	</div>
                   <!--@php  if(count($item['goods'])==1) { @-->
 	<!--@php  if(is_array($item['goods'])) { foreach($item['goods'] as $goods) { @-->
@@ -83,6 +85,9 @@
 			<div class="name"><a href="<!--@php  echo mobile_url('detail', array('id' => $goods['aid']))@-->"><!--@php  echo $goods['title'];@--></a></div>
 			<div class="price">
 				<span>¥<!--@php  echo $goods['marketprice'];@--> * <!--@php  echo $goods['total'];@--></span>
+				<!--分类-->
+				<span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;"><!--@php  echo getGoodsCategory($goods['pcate']);@--></span>
+				&nbsp;
 				<span class="btn btn-xs btn-success"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($item['ordertype']); }@--></span>
 			</div>
 		</div>

@@ -352,6 +352,10 @@
 					<span><!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></span>
 				</p>
 				<p>
+					确认收货时间：
+					<span>000000</span>
+				</p>
+				<p>
 					订单状态：
 					<span style="color:red"><!--@php echo $status_ln[$item['status']]; @--></span>
 				</p>
@@ -391,7 +395,8 @@
 			<div class="myoder-hd">
 				<ul>
 					<li class="img">商品图片</li>
-					<li class="tit" style="text-align: center;">商品标题</li>
+					<li class="tit" style="text-align: center;width: 270px;">商品标题</li>
+					<li class="ps">所属分类</li>
 					<li class="ps">商品价格</li>
 					<li class="num">商品数量</li>
 					<li class="ot">评论</li>
@@ -405,12 +410,15 @@
                  <li class="img">
 					 <a href="<!--@php  echo mobile_url('detail', array('id' => $g['aid']))@-->"  target="_blank" ><img src="<!--@php  echo $g['thumb'];@-->" width="160"></a>
 				</li>
-					 <li class="tit">
+					 <li class="tit" style="width: 270px;">
 					 	<a  target="_blank" href="<!--@php  echo mobile_url('detail', array('id' => $g['aid']))@-->" style="text-align: center;">
 							<!--@php  echo $g['title'];@-->
 						</a>
-						 <br/><span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($g['shop_type']); }@--></span>
+						 <br/>						 
+						 &nbsp;
+						 <span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($g['shop_type']); }@--></span>
 					 </li>
+					 <li class="ps"><!--@php  echo getGoodsCategory($g['pcate']);@--></li>
 					 <li class="ps"><span>
 							<!--@php   echo $g['marketprice'];@--> 元<!--@php  if($g['unit']) { @-->
 							/ <!--@php  echo $g['unit'];@-->

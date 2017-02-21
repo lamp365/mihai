@@ -3,7 +3,20 @@
 <link rel="stylesheet" type="text/css" href="<?php echo RESOURCE_ROOT;?>/addons/common/webuploader/style.css" />
 
 <script src="<?php echo RESOURCE_ROOT;?>/addons/common/webuploader/webuploader.js" type="text/javascript" charset="utf-8"></script>
-
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/clipboard.min.js"></script>
+<style>
+	#uploader .placeholder .webuploader-pick{
+		line-height: 120px;
+	}
+	#uploader .placeholder{
+		padding-bottom: 20px;
+	}
+	#filePicker2 .webuploader-pick{
+		width: 96px;
+		height: 43px;
+		line-height: 43px;
+	}
+</style>
 <div style="margin: 15px;">
     文件目录：
     <select name="dir" id="" class="dir" onchange="set_dir(this)">

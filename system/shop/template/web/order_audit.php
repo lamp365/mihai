@@ -66,6 +66,7 @@
 								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>" class="tab_title"><?php echo $goods['title']; ?></a></div>
 									  <div>
 										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
+										  &nbsp;&nbsp;&nbsp;<span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;"><?php  echo getGoodsCategory($goods['p1']);?></span>
 								  		  <?php if($item['isdraw'] == 1) { ?>
 										   &nbsp;&nbsp; <span class="label label-success">抽奖团</span>
 										  <?php }else{  ?>

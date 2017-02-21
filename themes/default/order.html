@@ -110,7 +110,10 @@
 				<div class="myoder" style="margin-bottom: 20px;">
 					<div class="myoder-hd">
 						<span class="pull-left">订单编号：<!--@php  echo $item['ordersn'];@--></span>&nbsp;&nbsp; <span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($item['ordertype']); }@--></span>
-						<span class="pull-right"><!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></span>
+						<span class="pull-right">
+							<!--@php if($item['status'] == 2){ echo "<span>[确认收货 立即参与免单]  </span>"; } @-->
+							<!--@php  echo date('Y-m-d H:i', $item['createtime'])@-->
+						</span>
 					</div>
 					<ul class="listview">
 		                <li class="h-text h-goods">
@@ -123,18 +126,23 @@
 							<div class="name" style="text-align: left;">
 								<a href="<!--@php  echo mobile_url('detail', array('id' => $goods['aid']))@-->"  target="_blank">
 									<p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><!--@php  echo $goods['title'];@--></p>									
-								</a>								
-								<p style=" border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;margin-top: 5px;display: none;"><!--@php  echo $goods['name'];@--></p>
+								</a>		
+								<p style="font-size: 12px;">所属分类：<!--@php  echo getGoodsCategory($goods['pcate']);@--></p>
 								<p style="font-size: 12px;margin-top: 5px;display: none;">规格：<span>这里是规格内容</span></p>
 							</div>
 							<!--@php  } } @-->
 							<!--@php  } else { @-->
 							 <!--@php  if(is_array($item['goods'])) { foreach($item['goods'] as $goods) { @-->
-							 <div class="img">
-								 <a href="<!--@php  echo mobile_url('detail', array('id' => $goods['aid']))@-->" target="_blank">
+							 <div class="img" style="width: 180px;">
+								 <a href="<!--@php  echo mobile_url('detail', array('id' => $goods['aid']))@-->" target="_blank" style="float: left;width: 100px;">
 								 	<img src="<!--@php  echo $goods['thumb'];@-->" width="80" height="80" style="+width: 60px;+height: 60px;">
 								 </a>
+								 <!--分类-->
+								 <div style="float:left;width: 80px;height:80px;font-size: 12px;line-height: 80px;">								 	
+								 	<p><!--@php  echo getGoodsCategory($goods['pcate']);@--></p>
+								 </div>
 							 </div>
+							 
 				                <!--@php  } } @-->
 								 <!--@php  }  @-->
 						</li>

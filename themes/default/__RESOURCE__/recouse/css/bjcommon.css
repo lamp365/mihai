@@ -4981,3 +4981,21 @@ del {
 		margin: 0 10% !important;
 		box-sizing: border-box;
 	}
+	/*商品列表，国家，分类等样式*/
+	.country{
+		float: right;
+		color: #999;
+	}
+	.country img{
+		border-radius: 50%;
+		width: 28px;
+		height:28px;
+		float: left;
+	}
+	.country2 img{
+		width: 25px;
+		height:25px;
+	}
+	.country2 span{
+		line-height: 25px;
+	}

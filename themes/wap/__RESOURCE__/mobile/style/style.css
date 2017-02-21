@@ -119,7 +119,7 @@ body{background:#f2f2f2; padding-top:40px; padding-bottom:45px;}
 .myoder .myoder-hd{height:35px; line-height:35px; overflow:hidden; background:#fff; border-bottom:1px dashed #f3f3f4; padding:0 10px;}
 .myoder .myoder-hd > span{font-size:14px; color:#504040;}
 .myoder .myoder-hd > span.pull-right{font-size:12px; color:#999;}
-.myoder .myoder-detail{height:73px; border-bottom:1px dashed #f3f3f4; padding:10px; overflow:hidden; position:relative;}
+.myoder .myoder-detail{min-height:73px; border-bottom:1px dashed #f3f3f4; padding:10px; overflow:hidden; position:relative;}
 .myoder .myoder-detail .status{
    position: absolute;
    right:10px;
@@ -127,7 +127,7 @@ body{background:#f2f2f2; padding-top:40px; padding-bottom:45px;}
    font-size:12px;
    color:#E4393C;
 }
-.myoder .myoder-detail a{display: inline-block;margin-bottom: 12px;float: left;}
+.myoder .myoder-detail a{display: inline-block;float: left;}
 .myoder .myoder-detail img{width:50px; margin-right:10px; float:left;}
 .myoder .myoder-detail .name a{color:#4d4f5d; display:inline-block; width:230px;  text-decoration:underline; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;}
 .myoder .myoder-detail .price{font-size:14px;}

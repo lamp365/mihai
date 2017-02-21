@@ -128,7 +128,7 @@ if ($operation == 'display') {
 	$pager = pagination($total, $pindex, $psize);
 	foreach ( $list as $id => $item) {
 		$sql  = "select o.total,o.aid,o.optionname, o.id as order_id,o.optionid,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type,o.expresssn,o.express,o.expresscom ";
-		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid from ".table('shop_order_goods')." as o ";
+		$sql .= " ,h.marketprice as dishprice,h.pcate,h.title,h.thumb,h.gid,h.p1 from ".table('shop_order_goods')." as o ";
 		$sql .= " left join ".table('shop_dish')." as h ";
 		$sql .= " on o.goodsid=h.id ";
 		$sql .= " where o.orderid={$item['id']}";

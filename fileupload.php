@@ -31,7 +31,7 @@ if(!$savelocal){
     if(isset($_GET['save_oldname']) && $_GET['save_oldname'] !=0){
         $fileObj -> save_oldname = 1;
     }
-    $result  = $fileObj->upload($_FILES['file'],true,350, 350);
+   $result  = $fileObj->upload($_FILES['file'],true,350, 350);
     if(array_key_exists('success',$result)){
         die("{'jsonrpc' : '2.0', 'result' : null, 'id' : 'id', 'name':'{$result['path']}'}");
     }else{

@@ -259,6 +259,8 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 				<div class="top-wrap">
 					<div>现金支付：<!--@php  echo $item['price'];@--></div>
 					<div>余额抵扣：<!--@php  echo $item['balance_sprice']+$item['freeorder_price'];@--></div>
+					<div>下单时间：<!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></div>
+					<div>确认收货时间：0000</div>
 				</div>
 			</div>
 		</div>
@@ -395,13 +397,20 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 		</div>
 		<!--@php  } @-->
 		<div class="myoder-total" style='margin-bottom: 30px;'>
-			<span>共计：<span class="false"> <!--@php  if($item['dispatchprice']<=0) { @-->
+			<p>所属分类：<!--@php  echo getGoodsCategory($g['pcate']);@--></p>
+			<span>
+				共计：
+				<span class="false"> <!--@php  if($item['dispatchprice']<=0) { @-->
 					<!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@--> 元 <!--@php  } else { @--> <!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@-->元 
 					 <span style="font-size: 12px;">(含运费<!--@php echo $item['dispatchprice'];@-->/税费: <!--@php  echo $item['taxprice'];@-->) </span>
 					 <!--@php  } @-->
-			</span> <!--@php  if($item['hasbonus']>0) { @--> <span style="color: green">
-					( 已优惠：<!--@php  echo $item['bonusprice'];@--> 元)
-			</span> <!--@php  }  @--></span>
+				</span>
+				<!--@php  if($item['hasbonus']>0) { @--> 
+				<span style="color: green">
+						( 已优惠：<!--@php  echo $item['bonusprice'];@--> 元)
+				</span> 					
+				<!--@php  }  @-->
+			</span>
 
 			<!--@php  if($item['status'] == 2 && $isShowGetGoogBtn) { @-->
 			<div class="pull-right">

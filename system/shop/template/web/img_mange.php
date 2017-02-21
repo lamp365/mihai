@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
-
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/clipboard.min.js"></script>
 <style type="text/css">
 	.piclist{
 		cursor: pointer;
@@ -217,7 +217,7 @@
 			</td>
 			<td style="text-align:center;">
 				<?php $purl2 = aliyunOSS::aliurl."/".$pic_one; echo "<a href='{$purl2}' target='_blank'>{$purl2}</a>"; ?>&nbsp;&nbsp;
-				<span class="btn btn-primary btn-xs" data-url="<?php echo $purl2;?>" onclick="copy_url(this)">复制链接</span>
+				<span class="btn btn-primary btn-xs copyurl" data-clipboard-text="<?php echo $purl2;?>" aria-label="复制成功！">复制链接</span>
 			</td>
 			<td style="text-align:center;">
 				<span <?php echo "data-pic='{$purl}'";?> onclick="setPic(this)" style="cursor: pointer" class="btn btn-info btn-sm">设置大小</span>
@@ -345,11 +345,13 @@
 			$("#fufai_pic_modal .old_pic_url").attr('src',picurl);
 			$("#fufai_pic_modal").modal('show');
 		}
-		//copy
-		function copy_url(obj){
-			var url = $(obj).data('url');
-			alert(url);
-		}
+		//点击复制链接
+		var clipboard = new Clipboard('.copyurl');
+		clipboard.on('success', function(e) {
+			var msg = e.trigger.getAttribute('aria-label');
+			alert(msg);		    		
+		    e.clearSelection();
+		});
 	</script>
 <?php } ?>
 
