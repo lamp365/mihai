@@ -8,21 +8,15 @@
  */
 class WeixinTool
 {
-    public  function pop_text()
+    public  function pop_text($toUser = '')
     {
-        $unicode = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
-        $toUser  = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
-//        $weixin  = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where unionid='{$unicode}'");
-
-//        $toUser   = $weixin['weixin_openid'];
-
         $weixin_access_token = get_weixin_token();
         $url         = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$weixin_access_token}";
         $template_id = 'mJnqWMTB7HlkRA8QpQ7etz1IDqBdkYvHvebVE3J9l7Q';
         $data = array(
             'touser'      => $toUser,
             "template_id" => $template_id,
-            "url"         => "",
+            "url"         => "",  //可给也可以不给
             'data'        => array(
                         'first'=>array(
                             'value'=>'你，对了就是你',
@@ -36,7 +30,7 @@ class WeixinTool
         );
         $post_data = json_encode($data);
         $res       = http_post($url,$post_data);
-        $res       = json_decode($res);
+        $res       = json_decode($res,true);
         if($res['errcode'] != 0){
             $msg  = "模板id({$template_id})发送失败：".$res['errmsg'];
             logRecord($msg,"weixin_pop_txt");

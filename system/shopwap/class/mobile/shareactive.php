@@ -263,6 +263,9 @@
         }else{
             die(showAjaxMess(200,$res['thumb']));
         }
+    }else if($op == 'pop_msg'){
+        //推送信息
+        logRecord('pop_msg','pop_msg');
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');
         $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
