@@ -19,11 +19,11 @@ class WeixinTool
             "url"         => "",  //可给也可以不给
             'data'        => array(
                         'first'=>array(
-                            'value'=>'你，对了就是你',
+                            'value'=>urlencode('你，对了就是你'),
                             'coloe'=>'#abcdef',
                         ),
                         'name'=>array(
-                            'value'=>'http://7xiuw8.com1.z0.glb.clouddn.com/20150712103927_2015-07-12%2010:31:14%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png',
+                            'value'=>urlencode('http://7xiuw8.com1.z0.glb.clouddn.com/20150712103927_2015-07-12%2010:31:14%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png'),
                             'color'=>'red',
                         ),
             ),
@@ -74,4 +74,68 @@ class WeixinTool
         return $erweima;
     }
 
+    /**
+     * 主动向用户推送客服消息 可以文本，图本，图片，视频等可扩展
+     * @param $toUser
+     * @param $data
+     * @param $type
+     * @return string
+     */
+    public function pop_custom_msg($toUser,$data,$type){
+        $pop_data['touser']  = $toUser;
+        $pop_data['msgtype'] = $type;
+        switch($type){
+            case 'text'://文本
+                //$data是字符串信息
+                $pop_data['text']['content'] = $data;
+                break;
+            case 'image'://图片
+                //$data是一个媒体id
+                $pop_data['image']['media_id'] = $data;
+                break;
+            case 'news'://图文
+                //￥data是一个二维数组信息
+                $article = array();
+                foreach($data as $key =>$item){
+                    $article['title']       = $item['title'];
+                    $article['description'] = $item['description'];
+                    $article['url']         = $item['url'];
+                    $article['picurl']      = $item['picurl'];
+                    $pop_data['news']['articles'][] = $article;
+                }
+                break;
+            case 'video'://视频
+                //$data是一个数组信息
+                $pop_data['video']['media_id']       = $data['media_id'];
+                $pop_data['video']['thumb_media_id'] = $data['thumb_media_id'];
+                $pop_data['video']['title']          = $data['title'];
+                $pop_data['video']['description']    = $data['description'];
+                break;
+            default:
+                return '';
+
+        }
+
+        $access_token = get_weixin_token();
+        $url   = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={$access_token}";
+        $post  = json_encode_ex($pop_data);
+        $res   = http_post($url, $post);
+        $res   = json_decode($res,true);
+        if($res['errcode'] != 0){
+            logRecord('weixin_tool中推送客服信息失败，当前类型是：'.$type,'pop_custom_msg');
+        }
+    }
+
+    public function uploadMedia($file,$type){
+        $access_token = get_weixin_token();
+        $url       = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={$access_token}&type={$type}";
+        $url       = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=".$access_token;
+//        $post_url = "curl -F media=@{$file} '{$url}'";
+//        $res =  exec($post_url);
+//        ppd($res);
+
+        $data = array("media" => "@{$file}");
+        $res  = http_post($url,$data);
+        ppd($res);
+    }
 }
