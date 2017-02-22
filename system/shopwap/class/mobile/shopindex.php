@@ -1,7 +1,7 @@
  <?php
 
- $one = new OpentaobaoOrder();
- $res = $one->getSessionKey();
+// $one = new OpentaobaoOrder();
+// $res = $one->getSessionKey();
 
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');

@@ -323,8 +323,9 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
         }
 
         $weixin_openid = get_weixin_openid();       
-        if (! empty($weixin_openid)) {
-            member_login_weixin($weixin_openid);          
+        if (! empty($weixin_openid) && empty($_SESSION[MOBILE_ACCOUNT] )) {
+            //如果已经登陆过，不用再次查询登陆
+            member_login_weixin($weixin_openid);
         }      
     }
 }
