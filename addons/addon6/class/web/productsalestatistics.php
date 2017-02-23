@@ -12,8 +12,11 @@ require_once WEB_ROOT.'/includes/readcsv.class.php';
 require_once WEB_ROOT.'/includes/lib/arrayiconv.class.php';
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 $admin = $_CMS['account']['username'];
-$tmall_id = mysqld_select("SELECT a.id FROM ".table('tmall')." as a left join ".table('tmall_staff')." as b on a.id=b.department WHERE b.admin='".$admin."'");
-$tmall_staff = mysqld_select("SELECT * FROM ".table('tmall_staff')." WHERE admin='".$admin."'");
+$tmall_id = mysqld_select("SELECT a.id as tma_id,b.id as sta_id FROM ".table('tmall')." as a left join ".table('tmall_staff')." as b on a.id=b.department WHERE b.admin='".$admin."'");
+if (empty($tmall_id)) {
+  message('抱歉，非店铺人员无法查看！',refresh(),'error');
+}
+
 $category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');
 if (! empty($category)) {
   $childrens = '';
@@ -77,8 +80,8 @@ if ($operation == 'into') {
 									   $address = !empty($dv[39])?$dv[39]:$dv[13];
 									   list($address_province, $address_city, $address_area, $address_address) = explode(" ",$address);
 									   $xdata = array(
-										'tmallid' => $dv[1],
-										'memberid' => $dv[0],
+										// 'tmallid' => $dv[1],
+										// 'memberid' => $dv[0],
 										'ordersn' => $dv[0],
 										'price' => $dv[8],
 										'identity_id' => $dv[4],  // 身份证ID 需要跟客服沟通是用哪个备注信息
@@ -94,7 +97,8 @@ if ($operation == 'into') {
 										'address_mobile' => $dv[2],
 										'bonusprice' => 0 ,  // 优惠卷使用金额
 										'deleted' => 0,   //订单是否已导出 0 否 1 是
-                    'tmallid' => $tmall_id['id'],
+                    'tmallid' => $tmall_id['tma_id'],
+                    'memberid' => $tmall_id['sta_id'],
 										);
 							   }else{
                     $xdata = array(
@@ -127,6 +131,11 @@ if ($operation == 'into') {
   $dishsn = $_GP['sg_dishsn'];
   $orderby = '';
   $oname = $oorigin = $oweight = $ounit = $olists = $otype = $op1 = $op2 = $oprice = 'asc';
+  // 只可以看到自己店铺的商品
+  if ($admin!='root') {
+    $where.=" AND tmallid=".$tmall_id['tma_id'];
+  }
+  
   if ( isset($_GP['ordername']) ){
     if ( $_GP['ordername'] == 'asc' ){
       $oname = 'desc';
@@ -211,7 +220,6 @@ if ($operation == 'into') {
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
   $total = $data_total['total'];
-
   $pager = pagination($total, $pindex, $psize);
 
   // 订单页
@@ -220,8 +228,9 @@ if ($operation == 'into') {
   $order_tag = intval($_GP['order_tag']);
   $begintime = $_GP['begintime'];
   $endtime = $_GP['endtime'];
+  // 只可以看到自己店铺的订单
   if ($admin!='root') {
-    $where2.=" AND tmallid=".$tmall_id['id'];
+    $where2.=" AND tmallid=".$tmall_id['tma_id'];
   }
   if (!empty($order_number)) {
     $where2.=" AND ordersn='".$order_number."'";
@@ -257,6 +266,7 @@ if ($operation == 'into') {
   $order_goods = mysqld_selectall("SELECT * FROM ".table('tmall_order_goods'));
   if (!empty($order_goods)) {
     foreach ($order_goods as $ogv) {
+      $order = mysqld_select("SELECT tmallid,memberid FROM ".table('tmall_order')." WHERE id=".$ogv['orderid']);
       if (!empty($ogv['sn'])) {
         $dish = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE dishsn='".$ogv['sn']."'");
         if (empty($dish)) {
@@ -267,7 +277,9 @@ if ($operation == 'into') {
               'title'=>$goods['title'],
               'brand'=>$goods['brand'],
               'dishsn'=>$goods['goodssn'],
-              'createtime'=>time()
+              'createtime'=>time(),
+              'tmallid'=>$order['tmallid'],
+              'memberid'=>$order['memberid'],
               );
             mysqld_insert('tmall_dish',$data);
           }
@@ -277,7 +289,9 @@ if ($operation == 'into') {
         if (empty($dish)) {
           $data = array(
             'title'=>$ogv['tit'],
-            'createtime'=>time()
+            'createtime'=>time(),
+            'tmallid'=>$order['tmallid'],
+            'memberid'=>$order['memberid'],
             );
           mysqld_insert('tmall_dish',$data);
         }
@@ -379,10 +393,10 @@ if ($operation == 'into') {
     }
     $data['createtime'] = time();
     if (!empty($tmall_id)) {
-      $data['tmallid'] = $tmall_id['id'];
+      $data['tmallid'] = $tmall_id['tma_id'];
     }
     if (!empty($tmall_staff)) {
-      $data['memberid'] = $tmall_staff['id'];
+      $data['memberid'] = $tmall_id['sta_id'];
     }
 
     mysqld_insert('tmall_dish', $data);
@@ -415,7 +429,7 @@ function get_brand($id=null) {
 }
 
 // 获取订单商品
-function get_order_goods($order_id) {
-  $ogs = mysqld_selectall("SELECT * FROM ".table('tmall_order_goods')." WHERE orderid=".$order_id);
+function get_order_goods($order_sn) {
+  $ogs = mysqld_selectall("SELECT a.*, b.productprice FROM ".table('tmall_order_goods')." as a left join ".table('tmall_dish')." as b on a.sn=b.dishsn WHERE a.orderid='".$order_sn."'");
   return $ogs;
 }

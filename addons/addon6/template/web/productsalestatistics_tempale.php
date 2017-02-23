@@ -17,6 +17,7 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 .mark{
 	cursor: pointer;
 	width: 30px;
+	background: none;
 }
 .radio-inline img{
 	margin-left: 5px;
@@ -61,6 +62,25 @@ td{
 #c_goods{
 	width: 300px;
 }
+.refresh-a{
+	color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    height: 29px;
+    display: inline-block;
+    width: 48px;
+    text-align: center;
+    line-height: 29px;
+    border-radius: 3px;
+    font-size: 12px;
+    text-decoration: none;
+}
+.refresh-a:hover{
+	color: #fff;
+	background-color: #286090;
+    border-color: #204d74;
+    text-decoration: none;
+}
 </style>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/css/select2.min.css" />
@@ -97,7 +117,7 @@ td{
 								<input type="button" value="添 加" onclick="addProduct()" class="btn btn-primary btn-sm">
 							</li>
 							<li>
-								<a href="<?php  echo web_url('productsalestatistics', array('op' => 'refresh_goods'));?>" onclick="return confirm('确认刷新商品数据？');return false;">刷新</a>
+								<a class="refresh-a" href="<?php  echo web_url('productsalestatistics', array('op' => 'refresh_goods'));?>" onclick="return confirm('确认刷新商品数据？');return false;">刷 新</a>
 							</li>
 						</ul>
 						
@@ -331,7 +351,8 @@ td{
 				            <table class="table table-striped table-bordered">
 					            <thead >
 					                <tr>
-					                    <th>宝贝</th>
+					                    <th style="width:370px">宝贝</th>
+					                    <th style="width:80px">单价</th>
 					                    <th style="width:50px">数量</th>
 					                    <th>省份</th>
 					                    <th>城市</th>
@@ -348,14 +369,15 @@ td{
 	 								foreach($order as $aork => $aorv) { 
 	 									?>
 						       		<tr>
-						       			<td colspan="12" class="order-number" ><span style="display:inline-block;min-width:150px"><?php  echo $aorv['ordersn'];?></span><img class="mark mark_<?php  echo $aorv['id'];?>" onclick="mark(<?php  echo $aorv['id'];?>)" src="images/btag<?php  echo $aorv['tag']-1;?>.png" /></td>
+						       			<td colspan="12" class="order-number" ><span style="display:inline-block;min-width:150px"><?php  echo $aorv['ordersn'];?></span><img class="mark mark_<?php  echo $aorv['id'];?>" onclick="mark(<?php  echo $aorv['id'];?>)" src="images/btag<?php  echo intval($aorv['tag'])-1;?>.png" /></td>
 						       		</tr>
 						       		<tr class="order_info">
-							       		<td class="text-center" colspan="2">
-							       		<?php $use_goods = get_order_goods($aorv['id']); foreach($use_goods as $rorv) {   ?>
-						                	<div>
-						                    	<?php  echo $rorv['tit'];?>
-						                    	<div style="float: right;width:50px"><?php  echo $rorv['total'];?></div>
+							       		<td class="text-center" colspan="3" width="500px">
+							       		<?php $use_goods = get_order_goods($aorv['ordersn']); foreach($use_goods as $rorv) {   ?>
+						                	<div style="overflow:hidden;margin-bottom: 10px;">
+						                    	<div style="float: left;width: 360px;text-align: left;"><?php  echo $rorv['tit'];?></div>
+						                    	<div style="float: left;width:80px"><?php  echo $rorv['productprice'];?></div>
+						                    	<div style="float: right;width:40px"><?php  echo $rorv['total'];?></div>
 						                  	</div>  
 						                <?php } ?>
 						                </td>
@@ -526,6 +548,7 @@ $(function(){
 function mark(product_id){
 	$(".product_id").val(product_id);
 	$(".mark-modal-dialog").modal();
+	$("#tag"+product_id).prop("checked","true");
 }
 //保存订单标记
 function markSave(){

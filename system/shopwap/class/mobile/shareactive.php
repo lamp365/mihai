@@ -3,9 +3,9 @@
     $openid       = checkIsLogin();
     //获取微信分享的一些参数
     $weixin_share = get_share_js_parame();
-
     if($op == 'display'){
         $accesskey = $_GP['accesskey'];
+        $config    = mysqld_select("SELECT * FROM " . table('addon7_config') );
 
         //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
         $share_info  = checkIsAddShareActive($openid);
@@ -53,7 +53,15 @@
         $wish_total_num = 0;
         if($openid)
            $wish_total_num  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid}");
-        include themePage('shareactive');
+
+        if($config['active_type'] == 1){
+            //心愿许愿  模板
+            include themePage('shareactive');
+        }else{
+            //积分许愿  模板
+            include themePage('jifen_shareactive');
+        }
+
 
     }else if($op == 'canyu_recorder'){  //参与记录
 
@@ -265,7 +273,6 @@
         }
     }else if($op == 'pop_msg'){
         //推送信息
-        include themePage('integral');
         logRecord('pop_msg','pop_msg');
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');

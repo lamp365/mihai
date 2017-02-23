@@ -13,10 +13,13 @@ function http_get($url) {
     return $result;
 }
 
-function http_post($url, $post_data)
+function http_post($url, $post_data,$header='')
 {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
+    if(!empty($header)){
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    }
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

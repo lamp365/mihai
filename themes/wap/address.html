@@ -114,7 +114,7 @@
                 </div>
 	<!--@php  } } @-->
 	</div>
-	<div><button type="button" class="btn btn-danger" onclick="addAddress()"><i class="icon-plus"></i> 添加修改地址</button></div>
+	<div><button type="button" class="btn btn-danger addAddress-btn" onclick="addAddress()"><i class="icon-plus"></i> 添加修改地址</button></div>
 	<div class="add-address img-rounded" id="addAddressPanel" <!--@php  if(!empty($address)) { @--> style="display:none;"<!--@php  } @-->>
 		<div class="add-address-hd">请仔细填写收货地址：</div>
 		<div class="add-address-main">
@@ -162,7 +162,7 @@
 			<div class="form-group">
 				<div class="col-sm-12">
 					<button type="button" class="btn btn-danger" onclick="saveAddress()">保存</button>
-					<button type="button" class="btn" onclick="addAddress();$('#addAddressPanel').hide();$('#addressid').val('');">取消</button>
+					<button type="button" class="btn close-btn" onclick="addAddress();$('#addAddressPanel').hide();$('#addressid').val('');">取消</button>
 				</div>
 			</div>
 		</div>
@@ -263,7 +263,7 @@ function saveAddress() {
 
 		    var html='<div id="address_'+ s.message +'" class="each_address shopcart-main img-rounded" style="margin:0;padding:7px;margin-bottom:10px;cursor:pointer" data-id="' + s.message +'">';
 		    var html1 = '<div class="tit">'+
-							'<div style="float: left;" onclick="editAddress(event' + s.message +')"><img src="__RESOURCE__/recouse/images/edit.png" >编辑</div>'+
+							'<div style="float: left;" onclick="editAddress(event,' + s.message +')"><img src="__RESOURCE__/recouse/images/edit.png" >编辑</div>'+
 							'<div style="float: right;" onclick="removeAddress(event,' + s.message +')"><img src="__RESOURCE__/recouse/images/delete.png" >删除</div>'+
 						'</div>'+
 						'<p><stong>'+realname+'</stong> &nbsp;&nbsp;' +province+city+ '<span style="float: right">'+mobile+'</span></p>';

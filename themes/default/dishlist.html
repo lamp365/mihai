@@ -324,8 +324,9 @@
 	                                      
 	                                      <!--国家-->
 										  <span class="country country2">
-	                                       		<img  src="<!--@php echo $item['brand_icon'];@-->">
-	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $item['brand_name'];@--></span>
+										  		<!--@php $brand_arr = getGoodsFromCountry($item['brand']); @-->
+	                                       		<img  src="<!--@php echo $brand_arr['icon'];@-->">
+	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $brand_arr['name'];@--></span>
 	                                       </span>
 	                                  </div>
 	                                  <div class="txt">
@@ -370,9 +371,10 @@
 	                                      <span class="text"><strong><em style="color:#b12704;font-size:18px;font-weight:normal;"> ¥<!--@php echo $item['marketprice'];@--> </em></strong>
 	                                      </span>
 										   <!--国家-->
-										  <span class="country country2">
-	                                       		<img  src="<!--@php echo $item['brand_icon'];@-->">
-	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $item['brand_name'];@--></span>
+										   <span class="country country2">
+										  		<!--@php $brand_arr = getGoodsFromCountry($item['brand']); @-->
+	                                       		<img  src="<!--@php echo $brand_arr['icon'];@-->">
+	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $brand_arr['name'];@--></span>
 	                                       </span>
 	                                  </div>
 	                                  <div class="txt">

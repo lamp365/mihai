@@ -698,3 +698,16 @@ function getGoodsCategory($pcate){
 	$catecory = mysqld_select("select name from ".table('shop_category')." where id={$pcate}");
 	return $catecory['name'];
 }
+
+/**
+ * 根据 brand_id获取来自哪个国家
+ * @param $brand_id
+ * @return array|bool|mixed
+ */
+function getGoodsFromCountry($brand_id){
+	if(empty($brand_id)){
+		return array();
+	}
+	$brand = mysqld_select("SELECT a.brand,b.name,b.icon FROM ".table("shop_brand")." as a LEFT JOIN ".table("shop_country"). " as b on a.country_id = b.id WHERE a.id = ".$brand_id);
+	return $brand;
+}

@@ -308,7 +308,7 @@ $(function(){
 			var check_department = $(".check-department").val();
 			var back_account = $(".back-account").val();
 			var idt = $(".check-idt").val();
-			var url = "<?php  echo web_url('tmall',array('op'=>'add_staff'));?>";
+			var url = "<?php  echo web_url('tmall_control',array('op'=>'add_staff'));?>";
 			if( user_name == "" ){
 				alert("请输入人员姓名","",function () {
 		          //回调函数
@@ -346,7 +346,7 @@ $(function(){
 		var check_department = $(".edit-check-department").val();
 		var back_account = $(".edit-back-account").val();
 		var idt = $(".edit-check-idt").val();
-		var url = "<?php  echo web_url('tmall',array('op'=>'add_staff'));?>";
+		var url = "<?php  echo web_url('tmall_control',array('op'=>'add_staff'));?>";
 		if( user_name == "" ){
 			alert("请输入人员姓名","",function () {
 	          //回调函数
@@ -381,7 +381,7 @@ $(function(){
 		$(".add-user-department").modal();
 		$(".add-user-department .sure-btn").on("click",function(){
 			var department_name = $(".department-name").val();
-			var url = "<?php  echo web_url('tmall',array('op'=>'add_department'));?>";
+			var url = "<?php  echo web_url('tmall_control',array('op'=>'add_department'));?>";
 			if( department_name == "" ){
 				alert("请输入店铺名称");
 			}else{
@@ -410,7 +410,7 @@ $(function(){
 		$(".set-department .setup-btn").on("click",function(){
 			var depart_name = $(".setting-department").val();
 			var manager = $(".department-manager").val();
-			var url = "<?php  echo web_url('tmall',array('op'=>'set_department'));?>";
+			var url = "<?php  echo web_url('tmall_control',array('op'=>'set_department'));?>";
 			if( depart_name == "0" ){
 				alert("请选择店铺");
 			}else if(manager == "0"){
@@ -430,7 +430,7 @@ $(function(){
 })
 
 function modify(id){
-	var url = "<?php  echo web_url('tmall',array('op'=>'get_staff'));?>";
+	var url = "<?php  echo web_url('tmall_control',array('op'=>'get_staff'));?>";
 	$(".edit_id").val(id);
 	$.post(url,{id:id},function(data){
 		$(".edit-user-modal").modal();

@@ -19,15 +19,16 @@
 							 ?>
 						</select>
 						<select name="isrecommand"  onchange="sel_by_recommand(this)" style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
-							<option value="-1">全部</option>
+							<option value="-1">全部商品</option>
 							<option value="1" <?php if($_GP['isrecommand'] == 1){ echo "selected";} ?>>已推荐</option>
-							<option value="0" <?php if($_GP['isrecommand'] == 0){ echo "selected";} ?>>未推荐</option>
+							<option value="0" <?php if(isset($_GP['isrecommand']) && $_GP['isrecommand'] == 0){ echo "selected";} ?>>未推荐</option>
 						</select>
-
+						<?php if($config['open_gift_change'] == 1){ ?>
 						<select name="add_jifen_change" onchange="sel_by_addjifen(this)"  style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
 							<option value="-1">全部商品</option>
-							<option value="1">积分兑换商品</option>
+							<option value="1" <?php if($_GP['add_jifen_change'] == 1){ echo "selected";} ?> >积分兑换商品</option>
 						</select>
+						<?php } ?>
 				   </li>
 					<li style="line-height: 50px;">总价值：<?php echo getShareTotalPrice();?>元</li>
 					<script>
@@ -74,7 +75,10 @@
 				<?php  if(is_array($awardlist)) { foreach($awardlist as $item) { ?>
 				<tr>
 				    <td style="text-align:center;"><img src="<?php echo $item['imgs'];?>" width="50" height="50" /></td>
-					<td style="text-align:center;white-space: normal;word-break: break-all;max-width: 230px;"><?php  echo $item['title'];?></td>
+					<td style="text-align:center;white-space: normal;word-break: break-all;max-width: 230px;">
+						<?php if($item['add_jifen_change'] == 1 && $config['open_gift_change'] == 1){ echo "<font color='red'>[兑换]</font>"; }?>
+						<?php  echo $item['title'];?>
+					</td>
 					<td style="text-align:center;"><?php  echo $item['amount'].' / '.$item['dicount'];?></td>
 					<td style="text-align:center;"><?php  echo $item['price'];?> 元</td>
 					<td style="text-align:center;"><?php  echo $item['credit_cost'];?> </td>

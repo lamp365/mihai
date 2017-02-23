@@ -59,9 +59,7 @@ function get_weixin_token($refresh = false)
         "weixin_appSecret"
     ));
     $weixin_access_token = unserialize($configs['weixin_access_token']);
-    if (is_array($weixin_access_token) && ! empty($weixin_access_token['token']) && ! empty($weixin_access_token['expire']) && $weixin_access_token['expire'] > TIMESTAMP) {
-        return $weixin_access_token['token'];
-    } else {
+
         $appid = $configs['weixin_appId'];
         $secret = $configs['weixin_appSecret'];
         
@@ -89,7 +87,7 @@ function get_weixin_token($refresh = false)
         $seriaze_access_token = serialize($record);
         save_weixin_access_token($seriaze_access_token);
         return $record['token'];
-    }
+
 }
 
 function weixin_send_custom_message($from_user, $msg)

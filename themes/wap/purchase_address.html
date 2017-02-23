@@ -263,7 +263,7 @@ function saveAddress() {
 
 		    var html='<div id="address_'+ s.message +'" class="each_address shopcart-main img-rounded" style="margin:0;padding:7px;margin-bottom:10px;cursor:pointer" data-id="' + s.message +'">';
 		    var html1 = '<div class="tit">'+
-							'<div style="float: left;" onclick="editAddress(event' + s.message +')"><img src="__RESOURCE__/recouse/images/edit.png" >编辑</div>'+
+							'<div style="float: left;" onclick="editAddress(event,' + s.message +')"><img src="__RESOURCE__/recouse/images/edit.png" >编辑</div>'+
 							'<div style="float: right;" onclick="removeAddress(event,' + s.message +')"><img src="__RESOURCE__/recouse/images/delete.png" >删除</div>'+
 						'</div>'+
 						'<p><stong>'+realname+'</stong> &nbsp;&nbsp;' +province+city+ '<span style="float: right">'+mobile+'</span></p>';

@@ -1,4 +1,5 @@
 <?php
+$config = mysqld_select("SELECT * FROM " . table('addon7_config') );
 $pindex = max(1, intval($_GP['page']));
 $psize = 24;
 $condition= '';
@@ -24,7 +25,7 @@ if ( !empty($_GP['op']) && ($_GP['op'] == 'pay' )){
       $condition .= " AND title LIKE '%{$_GP['keyword']}%'";
 }    
 $state = array(
-   '-1'=>'全部',
+   '-1'=>'全部商品',
    '0'=>'进行中',
    '1'=>'待锁定',
    '2'=>'可开奖',

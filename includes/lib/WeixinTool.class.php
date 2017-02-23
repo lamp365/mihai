@@ -126,5 +126,28 @@ class WeixinTool
         }
     }
 
+    public function uploadMedia($file,$type){
+        $info = getimagesize($file);
+        $mime = $info['mime'];
+        $name = basename($file);
+        $size = filesize($file);
 
+        $access_token = get_weixin_token();
+
+        $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={$access_token}&type={$type}";
+        $data['media'] = "@{$file};type=image;filename={$name};filelength={$size};content-type={$mime}";
+        $data['media'] = "@{$file};type={$mime}";
+       /* $data['form-data'] = array(
+            'filename' => $name,
+            'filelength' => $size,
+            'content-type' => $mime,
+        );*/
+        $header = array(
+            'Content-type: application/octet-stream',
+            "Content-Disposition: form-data; name='{$name}'; filename='{$file}'",
+            'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0'
+        );
+        $res = http_post($url,$data,$header);
+        ppd($res);
+    }
 }

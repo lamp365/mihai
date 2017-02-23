@@ -1,4 +1,6 @@
  <?php
+ $one = new WeixinTool();
+ $one->uploadMedia("D:/AppServ/www/webroot/WEB2/xiaowu/images/weixin1.jpg",'image');
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
 $article_headline = getIndexArticle('headline');

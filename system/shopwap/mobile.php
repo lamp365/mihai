@@ -300,6 +300,10 @@ class shopwapAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
+    public function do_integral()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
     public function getCartTotal($goodid='')
     {
 		if (!empty($goodid) ){
