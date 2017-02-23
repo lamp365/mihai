@@ -20,14 +20,28 @@ function http_post($url, $post_data,$header='')
     if(!empty($header)){
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
     }
+    //用于文件上传
+    if (class_exists('\CURLFile')) {
+        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+    } else {
+        if (defined('CURLOPT_SAFE_UPLOAD')) {
+            curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+        }
+    }
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     $data = curl_exec($ch);
+    $err  = curl_error($ch);
     curl_close($ch);
-    return $data;
+    if ($err) {
+        die("cURL Error #:" . $err);
+    } else {
+        return $data;
+    }
+
 }
 
 function getAreaByIp($ip){

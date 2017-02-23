@@ -65,9 +65,17 @@ class weixinAddons extends BjSystemModule
                 $reply = mysqld_select('SELECT * FROM ' . table('weixin_rule') . "   WHERE  keywords = :keywords", array(
                     ':keywords' => subscribe_key
                 ));
+
+                //关注推送媒体文章消息
+                $weixin_tool = new WeixinTool();
+                //获取最新媒体文章
+                $mediaNews   = $weixin_tool->medialist('news');
+                $weixin_tool->pop_custom_msg($message['FromUserName'],$mediaNews,'news');
+
                 if(!empty($reply)){
                     return $this->respText($reply['description'],$message);
                 }
+
             }
             if ($message["type"] == "SCAN") {
 				if ( ! empty($message['eventkey']) ){

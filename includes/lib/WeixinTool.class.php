@@ -16,14 +16,14 @@ class WeixinTool
         $data = array(
             'touser'      => $toUser,
             "template_id" => $template_id,
-            "url"         => "",  //可给也可以不给
+            "url"         => "http://www.baidu.com",  //可给也可以不给
             'data'        => array(
                         'first'=>array(
-                            'value'=>urlencode('你，对了就是你'),
+                            'value'=>'你，对了就是你',
                             'coloe'=>'#abcdef',
                         ),
                         'name'=>array(
-                            'value'=>urlencode('http://7xiuw8.com1.z0.glb.clouddn.com/20150712103927_2015-07-12%2010:31:14%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png'),
+                            'value'=> "<a href='http://www.baidu.com'>快来领取呀</a>",
                             'color'=>'red',
                         ),
             ),
@@ -126,28 +126,75 @@ class WeixinTool
         }
     }
 
-    public function uploadMedia($file,$type){
-        $info = getimagesize($file);
-        $mime = $info['mime'];
-        $name = basename($file);
-        $size = filesize($file);
-
+    /**
+     * 上传文件到媒体中
+     * @param $file 文件绝对路径
+     * @param $type
+     */
+    public function uploadMedia($file,$type='image'){
         $access_token = get_weixin_token();
-
         $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={$access_token}&type={$type}";
-        $data['media'] = "@{$file};type=image;filename={$name};filelength={$size};content-type={$mime}";
-        $data['media'] = "@{$file};type={$mime}";
-       /* $data['form-data'] = array(
-            'filename' => $name,
-            'filelength' => $size,
-            'content-type' => $mime,
-        );*/
-        $header = array(
-            'Content-type: application/octet-stream',
-            "Content-Disposition: form-data; name='{$name}'; filename='{$file}'",
-            'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0'
+        if (class_exists('\CURLFile')) {
+            $data = array(
+                'media'=> new \CURLFile($file)
+            );
+        } else {
+            $data = array(
+                'media'=> "@{$file};type=image/jpeg"
+            );
+        }
+        $res = http_post($url,$data);
+        $res = json_decode($res,true);
+    }
+
+    /**
+     * 获取媒体最新的一条
+     * @param $type image  news  video
+     */
+    public function medialist($type,$count=1){
+        $access_token = get_weixin_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token={$access_token}";
+        $post_data = array(
+            'type'   => $type,
+            'offset' => '0',
+            'count'  => $count,
         );
-        $res = http_post($url,$data,$header);
-        ppd($res);
+        $post_data = json_encode($post_data);
+        $res = http_post($url,$post_data);
+        $res = json_decode($res,true);
+        if(!empty($res['item'])){
+            //解析内容，组装成pop_custom_msg中的信息格式 用于推送客服消息
+            return $this->getMediaContentToPopMsg($res['item'],$type);
+        }else{
+            return '';
+        }
+    }
+
+    /**
+     * 根据或得到的媒体，进行组装数据 成要推送的数据  数据格式参照pop_custom_msg
+     * @param $item
+     * @param $type  image  news  video
+     * @return array|string
+     */
+    public function getMediaContentToPopMsg($item,$type){
+        $data  = '';
+        switch($type){
+            case 'news':
+                $item = $item[0]['content']['news_item'];
+                foreach($item as $one){
+                    $article['title']       = $one['title'];
+                    $article['description'] = '';
+                    $article['url']         = $one['url'];
+                    $article['picurl']      = $one['thumb_url'];
+                    $data[] = $article;
+                }
+                break;
+
+            case 'image':
+
+                break;
+        }
+
+        return $data;
     }
 }

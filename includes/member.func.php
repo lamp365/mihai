@@ -223,14 +223,14 @@ function member_logout()
     if (! empty($_SESSION[MOBILE_ACCOUNT])) {
         $openid = $_SESSION[MOBILE_ACCOUNT]['openid'];
         $weixinopenid = $_SESSION[MOBILE_SESSION_ACCOUNT]['openid'];
-        if (! empty($openid) && ! empty($weixinopenid)) {
+        /*if (! empty($openid) && ! empty($weixinopenid)) {
             mysqld_update('weixin_wxfans', array(
                 'openid' => ''
             ), array(
                 'openid' => $openid,
                 'weixin_openid' => $weixinopenid
             ));
-        }
+        }*/
         if (! empty($openid) && ! empty($weixinopenid)) {
             mysqld_update('alipay_alifans', array(
                 'openid' => ''
