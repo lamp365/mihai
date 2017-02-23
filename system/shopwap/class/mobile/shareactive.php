@@ -265,6 +265,7 @@
         }
     }else if($op == 'pop_msg'){
         //推送信息
+        include themePage('integral');
         logRecord('pop_msg','pop_msg');
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');

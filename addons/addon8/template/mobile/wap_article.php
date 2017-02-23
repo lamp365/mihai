@@ -109,29 +109,29 @@
         $("#poptip_content").fadeOut(500);
     }
 
-
-
-
     function isLogin(msg){
-        if(is_app){
-            //处理app登录
-            var ua = browserFun();
-            //is_login  0未登录 1已登录
-
-            if( ua == "ios" ){
-                if(msg == null || msg == ''){
-                    window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
-                }else{
-                    if( msg.openid !=""){
-                        open_id = msg.openid;
-                    }else{
-                        return;
-                    }
-                }
-            }else if( ua=="android" ){
-                window.JsInterface.login("get_ajax_android");
+        var ua = browserFun();
+        if( ua == "ios" ){
+            if( msg.openid !=""){
+                openid_val = msg.openid;
+            }else{
+                return;
             }
+        }
+    }
 
+    function AppLogin(){
+        var app = browserFun();
+        if( app == "ios" ){
+            window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
+        }else if( app=="android" ){
+           window.JsInterface.login("get_ajax_android");
+        }
+    }
+
+    function callLogin(){
+        if(is_app){
+            AppLogin();
         }else{
             tip('请先登录！');
             setTimeout(function(){
@@ -140,6 +140,7 @@
             },2000)
         }
     }
+    
     function get_ajax_android(msg){
         if( msg.openid !=""){
             open_id = msg.openid;

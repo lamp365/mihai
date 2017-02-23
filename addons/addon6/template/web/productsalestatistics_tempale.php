@@ -23,6 +23,7 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 }		
 .product-table table tr th,.text-center{
 	text-align: center;
+	vertical-align: middle!important;
 }
 .order-number{
 	border: 1px solid #ddd!important;
@@ -30,6 +31,7 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 }
 .order_info td{
 	border-bottom: none!important;
+	vertical-align: middle!important;
 }
 td{
 	position: relative;
@@ -43,6 +45,8 @@ td{
 }
 .modify-span{
 	cursor: pointer;
+	width: 100%;
+    display: block;
 }
 .add-product-modal .modal-body .modal-span{
 	width: 100px;
@@ -65,24 +69,24 @@ td{
 	<div class="panel with-nav-tabs panel-default">	
 	    <div class="panel-heading">
 	            <ul class="nav nav-tabs">
-	                <li class="active"><a href="#tab1primary" data-toggle="tab">商品数据</a></li>
-					<li><a href="#tab2primary" data-toggle="tab">订单数据</a></li>
+	                <li <?php if ($now_page==1) {echo 'class="active"';}?>><a href="#tab1primary" data-toggle="tab">商品数据</a></li>
+					<li <?php if ($now_page==2) {echo 'class="active"';}?>><a href="#tab2primary" data-toggle="tab">订单数据</a></li>
 	                <li><a href="#tab3primary" data-toggle="tab">数据导入</a></li>
 					<li><a href="#tab4primary" data-toggle="tab">制单导出</a></li>
 	            </ul>
 	    </div>
 	    <div class="panel-body third-party">
 	        <div class="tab-content">
-	            <div class="tab-pane fade in active" id="tab1primary">
-		            <form action="<?php  echo web_url('productsalestatistics', array('op' => 'refresh_goods'));?>" method="post">
+	            <div class="tab-pane fade <?php if ($now_page==1) {echo 'in active';}?>" id="tab1primary">
+		            <form action="<?php  echo web_url('productsalestatistics', array('op' => 'display', 'nowpage' => '1'));?>" method="post">
 						<ul class="search-ul">
 							<li >
 								<span class="left-span">产品名称</span>
-								<input type="text" name="title" class="input-height" placeholder="产品名称" value="">
+								<input type="text" name="sg_title" class="input-height" placeholder="产品名称" value="<?php echo $title; ?>">
 							</li>
 							<li >
 								<span class="left-span">货号</span>
-								<input type="text" name="dishsn" class="input-height" placeholder="货号" value="">
+								<input type="text" name="sg_dishsn" class="input-height" placeholder="货号" value="<?php echo $dishsn; ?>">
 							</li>
 							<li>
 								<div class="btn-group">
@@ -102,17 +106,17 @@ td{
 					            <thead >
 					                <tr>
 					                	<th>产品名称</th>
-					                    <th>品名</th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','ordername' => $oname)); ?>">品名</a></th>
 					                    <th>品牌</th>
 					                    <th>货号</th>
-					                    <th>规格</th>
-					                    <th>重量</th>
-					                    <th>单位</th>
-					                    <th>组合</th>
-					                    <th>类型</th>
-					                    <th>一级分类</th>
-					                    <th>二级分类</th>
-					                    <th>价格</th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderorigin' => $oorigin)); ?>">规格</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderweight' => $oweight)); ?>">重量</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderunit' => $ounit)); ?>">单位</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderlists' => $olists)); ?>">组合</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','ordertype' => $otype)); ?>">类型</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderp1' => $op1)); ?>">一级分类</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderp2' => $op2)); ?>">二级分类</a></th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderprice' => $oprice)); ?>">价格</a></th>
 					                </tr>
 					            </thead>
 						        <tbody>
@@ -122,11 +126,19 @@ td{
 					                <tr>
 					                	<td class="text-center">
 					                		<input type="text" name="title" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['title'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['title'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['title'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
-					                		<input type="text" name="name" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['name'];?></span>
+					                		<input type="text" name="good_name" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
+					                		<span class="modify-span"><?php if (empty($almv['name'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['name'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
 					                		<?php  echo get_brand($almv['brand']);?>
@@ -136,48 +148,79 @@ td{
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="origin" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['origin'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['origin'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['origin'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="weight" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['weight'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['weight'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['weight'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="unit" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['unit'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['unit'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['unit'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="lists" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['lists'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['lists'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['lists'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
-					                		<select class="type-select" onchange="selectChange(1,'type')">
-					                			<option value="1" <?php if ($almv['type'] == '0') {
+					                		<select class="type-select" onchange="selectChange(<?php  echo $almv['id'];?>,'type')">
+					                			<option value="0" <?php if ($almv['type'] == '0') {
 					                				echo 'selected';
 					                			} ?>>一般商品</option>
-					                			<option value="2" <?php if ($almv['type'] == '1') {
+					                			<option value="1" <?php if ($almv['type'] == '1') {
 					                				echo 'selected';
 					                			} ?>>组合商品</option>
 					                		</select>
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="p1" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['p1'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['p1'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['p1'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="p2" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['p2'];?></span>
+					                		<span class="modify-span"><?php if (empty($almv['p2'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['p2'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
-					                		<input type="text" name="price" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
-					                		<span class="modify-span"><?php  echo $almv['productprice'];?></span>
+					                		<input type="text" name="productprice" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
+					                		<span class="modify-span"><?php if (empty($almv['productprice'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['productprice'];
+					                		}?></span>
 					                	</td>
 					                </tr>
 					                <?php  } } ?>
 					            </tbody>
 				            </table>
 				        </div>
-				        <!--添加商品数据模态框-->
+				        
+					</form>
+					<!--添加商品数据模态框-->
+				        <form action="<?php  echo web_url('productsalestatistics', array('op' => 'add_good'));?>" method="post">
 			        	<div class='modal fade add-product-modal' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
 							<div class='modal-dialog'>
 								<div class='modal-content'>
@@ -191,37 +234,27 @@ td{
 									<div class='modal-body'>
 										<div class="form-group" style="overflow: auto;">
 											<div class="col-sm-12">
-												<select  style="height: 26px" id="pcates" name="pcates" class="pcates" onchange="fetchChildCategory(this,this.options[this.selectedIndex].value)"  autocomplete="off">
-										            <option value="0">请选择一级分类</option>
-										            <?php  if(is_array($category)) { foreach($category as $row) { ?>
-										            <?php  if($row['parentid'] == 0) { ?>
-										            <option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['p1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
-										            <?php  } ?>
-										            <?php  } } ?>
-										        </select>
-										        <select  style="height: 26px" id="cates_2" name="ccates" class="cates_2" onchange="fetchChildCategory2(this,this.options[this.selectedIndex].value)" autocomplete="off">
-										            <option value="0">请选择二级分类</option>
-										            <?php  if(!empty($item['p2']) && !empty($childrens[$item['p1']])) { ?>
-										            <?php  if(is_array($childrens[$item['p1']])) { foreach($childrens[$item['p1']] as $row) { ?>
-										            <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['p2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-										            <?php  } } ?>
-										            <?php  } ?>
-										        </select>
-												<select style="height: 26px" id="cate_3" name="ccate2" class="cate_3" autocomplete="off">
-										            <option value="0">请选择三级分类</option>
-										            <?php 
-													    if(!empty($item['p3']) && !empty($childrens[$item['p3']])) { 
-													       if(is_array($childrens[$item['p3']])) { 
-															   foreach($childrens[$item['p3']] as $row) { 
-													?>
-										                     <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['p3']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-										            <?php  } } } ?>
-										        </select>
+												<select  name="p1" class="fetchChildCategory" onchange="fetchChildCategory(this.options[this.selectedIndex].value)">
+													<option value="0">请选择一级分类</option>
+													<?php  if(is_array($category)) { foreach($category as $row) { ?>
+													<?php  if($row['parentid'] == 0) { ?>
+													<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $_GP['p1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
+													<?php  } ?>
+													<?php  } } ?>
+												</select>
+										        <select onchange="fetchChildCategory2(this.options[this.selectedIndex].value)"  id="p2" name="p2">
+													<option value="0">请选择二级分类</option>
+													<?php  if(!empty($_GP['p1']) && !empty($childrens[$_GP['p1']])) { ?>
+													<?php  if(is_array($childrens[$_GP['p1']])) { foreach($childrens[$_GP['p1']] as $row) { ?>
+													<option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $_GP['p2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
+													<?php  } } ?>
+													<?php  } ?>
+												</select>
 										        <a href="javascript:void(0)" onclick="findgoods()" class="btn btn-primary btn-sm span2" name="submit" ><i class="icon-edit"></i>查找产品</a>    
 											</div>
 										</div>
 										<label><span class="modal-span">产品名称</span>
-											<select name="c_goods" class="js-example-responsive" id="c_goods" >
+											<select name="c_goods" class="js-example-responsive" id="c_goods" onchange="c_goods_fun()">
 										       <?php if (!empty($item['gname'])){ ?>
 							                   <option value='<?php echo $item['gid']; ?>'><?php echo $item['gname']; ?></option>
 											   <?php }else{ ?>
@@ -229,74 +262,69 @@ td{
 											   <?php } ?>
 											</select>
 										</label>
-										<label><span class="modal-span">品名</span><input type="" name=""></label>
-										<label><span class="modal-span">品牌</span><input type="" name=""></label>
-										<label><span class="modal-span">货号</span><input type="" name=""></label>
-										<label><span class="modal-span">规格</span><input type="" name=""></label>
-										<label><span class="modal-span">重量</span><input type="" name=""></label>
-										<label><span class="modal-span">单位</span><input type="" name=""></label>
-										<label><span class="modal-span">组合</span><input type="" name=""></label>
+										<label><span class="modal-span">品名</span><input type="" name="ad_name"></label>
+										<input type="hidden" class="add_brand_hidden" name="add_brand_hidden">
+										<label><span class="modal-span">品牌</span><input type="" class="add_brand" name="ad_brand"></label>
+										<label><span class="modal-span">货号</span><input type="" class="add_dishsn" name="ad_sn"></label>
+										<label><span class="modal-span">规格</span><input type="" name="ad_origin"></label>
+										<label><span class="modal-span">重量</span><input type="" name="ad_weight"></label>
+										<label><span class="modal-span">单位</span><input type="" name="ad_unit"></label>
+										<label><span class="modal-span">组合</span><input type="" name="ad_lists"></label>
 										<label>
 											<span class="modal-span">类型</span>
-											<input type="" name="">
+											<select name="ad_type">
+												<option value="0">一般商品</option>
+												<option value="1">组合商品</option>
+											</select>
 										</label>
-										<label><span class="modal-span">一级分类</span><input type="" name=""></label>
-										<label><span class="modal-span">二级分类</span><input type="" name=""></label>
-										<label><span class="modal-span">价格</span><input type="" name=""></label>
+										<input type="hidden" class="type-p1-hidden" name="type-p1">
+										<input type="hidden" class="type-p2-hidden" name="type-p2">
+										<label><span class="modal-span">一级分类</span><input class="type-p1" type="" name=""></label>
+										<label><span class="modal-span">二级分类</span><input class="type-p2" type="" name=""></label>
+										<label><span class="modal-span">价格</span><input type="" name="ad_price"></label>
 									</div>
 									<div class="modal-footer">
-										<button class="btn btn-primary" type="button">保存</button>
+										<input type="submit" name="submit" value="保存"  class="btn btn-primary btn-sm">
 									    <button class="btn btn-default" type="button" data-dismiss="modal">关闭</button>
 									</div>
 								</div>
 							</div>
 						</div>
-
-					</form>
+						</form>
 					<?php  echo $pager;?>
 	            </div>
-				<div class="tab-pane fade" id="tab2primary">
-				    <form action="<?php  echo web_url('memberinto',array('op'=>'display'));?>" method="post">
+				<div class="tab-pane fade <?php if ($now_page==2) {echo 'in active';}?>" id="tab2primary">
+				    <form action="<?php  echo web_url('productsalestatistics', array('op' => 'display', 'nowpage' => '2'));?>" method="post">
 						<ul class="search-ul">
 							<li>
 								<span class="left-span">订单号</span>
-								<input type="text" name="order-number" class="input-height" placeholder="订单号">
-							</li>
-							<li>
-								<span class="left-span">买家</span>
-								<input type="text" name="buyers" class="input-height" placeholder="买家">
-							</li>
-							<li>
-								<span class="left-span">状态</span>
-								<input type="text" name="buyers" class="input-height" placeholder="状态">
+								<input type="text" name="order_number" class="input-height" placeholder="订单号" value="<?php  echo $order_number;?>">
 							</li>
 							<li>
 								<span class="left-span">物流</span>
-								<input type="text" name="buyers" class="input-height" placeholder="物流">
+								<select name="order_tag" class="input-height">
+									<option value="0">请选择物流</option>
+	 								<option value="1" <?php if ($order_tag == 1) {echo "selected";} ?>>平潭</option>
+                                    <option value="2" <?php if ($order_tag == 2) {echo "selected";} ?>>彩虹</option>
+									<option value="3" <?php if ($order_tag == 3) {echo "selected";} ?>>贝海</option>
+								</select>
+							</li>
+							<li >
+								<span class="left-span">起始日期</span>
+									<input class="input-height" name="begintime" id="begintime" type="text" value="<?php  echo $begintime;?>" readonly="readonly"  placeholder="起始日期"/>
+							</li>	
+							<li>
+								<span class="left-span">终止日期</span>
+								<input class="input-height" id="endtime" name="endtime" type="text" value="<?php  echo $endtime;?>" readonly="readonly" placeholder="终止日期" />
 							</li>
 							
 							<li>
 								
 								<div class="btn-group">
 								  <input type="submit" name="submit" value=" 查 询 "  class="btn btn-primary btn-sm">
-								  <button type="button" class="btn btn-primary btn-sm dropdown-toggle add-more-btn" data-toggle="dropdown">
-								    <span class="caret"></span>
-								    <span class="sr-only">Toggle Dropdown</span>
-								  </button>
 								</div>
 							</li>
 			
-							<ul class="hide-tr" style="width: 100%;overflow: hidden;padding: 0">
-								<li >
-									<span class="left-span">起始日期</span>
-										<input class="input-height" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  placeholder="起始日期"/>
-								</li>	
-								<li> - </li>
-								<li>
-									<span class="left-span">终止日期</span>
-									<input class="input-height" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly" placeholder="终止日期" />
-								</li>
-							</ul>
 						</ul>
 						
 						<div class="panel panel-default product-table">
@@ -304,8 +332,7 @@ td{
 					            <thead >
 					                <tr>
 					                    <th>宝贝</th>
-					                    <th>单价</th>
-					                    <th>数量</th>
+					                    <th style="width:50px">数量</th>
 					                    <th>省份</th>
 					                    <th>城市</th>
 					                    <th>地区</th>
@@ -313,51 +340,38 @@ td{
 					                    <th>手机号码</th>
 					                    <th>身份证</th><!-- 可编辑 -->
 					                    <th>下单时间</th>
-					                    <th>订单状态</th>
 					                    <th>实收款</th>
-					                    <th>标记</th>
 					                </tr>
 					            </thead>
 						        <tbody>
+						        	<?php  if(is_array($order)) { 
+	 								foreach($order as $aork => $aorv) { 
+	 									?>
 						       		<tr>
-						       			<td colspan="13" class="order-number">SN20170110827789</td>
+						       			<td colspan="12" class="order-number" ><span style="display:inline-block;min-width:150px"><?php  echo $aorv['ordersn'];?></span><img class="mark mark_<?php  echo $aorv['id'];?>" onclick="mark(<?php  echo $aorv['id'];?>)" src="images/btag<?php  echo $aorv['tag']-1;?>.png" /></td>
 						       		</tr>
-					                <tr class="order_info">
-					                    <td class="text-center">美国进口新章男士多种维生素矿物质成人男性综合复合维生素*72片</td>
-					                    <td class="text-center">258.00</td>
-					                    <td class="text-center">2</td>
-					                    <td class="text-center">福建省</td>
-					                    <td class="text-center">福州市</td>
-					                    <td class="text-center">仓山区</td>
-					                   	<td class="text-center">刘建凡</td>
-					                   	<td class="text-center">18850737047</td>
+						       		<tr class="order_info">
+							       		<td class="text-center" colspan="2">
+							       		<?php $use_goods = get_order_goods($aorv['id']); foreach($use_goods as $rorv) {   ?>
+						                	<div>
+						                    	<?php  echo $rorv['tit'];?>
+						                    	<div style="float: right;width:50px"><?php  echo $rorv['total'];?></div>
+						                  	</div>  
+						                <?php } ?>
+						                </td>
+					                	<td class="text-center"><?php  echo $aorv['address_province'];?></td>
+					                    <td class="text-center"><?php  echo $aorv['address_city'];?></td>
+					                    <td class="text-center"><?php  echo $aorv['address_area'];?></td>
+					                   	<td class="text-center"><?php  echo $aorv['address_realname'];?></td>
+					                   	<td class="text-center"><?php  echo $aorv['address_mobile'];?></td>
 					                   	<td class="text-center">
-					                   		<input type="text" name="identity_id" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $item['id'];?>">
-					                		<span class="modify-span">35042601235646499555</span>
+					                   		<input type="text" name="identity_id" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $aorv['id'];?>">
+					                		<span class="modify-span"><?php  echo $aorv['identity_id'];?></span>
 					                   	</td>
-					                   	<td class="text-center">2017-01-10 10:55:12</td>
-					                    <td class="text-center"><span class="label label-success">已导出</span></td>
-					                    <td class="text-center">832.39 元</td>
-					                   	<td class="text-center"><img class="mark" onclick="mark(3)" src="images/btag0.png" /></td>
+					                   	<td class="text-center"><?php  echo date('Y-m-d H:i:s',$aorv['createtime']);?></td>
+					                    <td class="text-center"><?php  echo $aorv['price'];?></td>	
 					                </tr>
-					                <tr>
-					                    <td class="text-center">美国进口新章男士多种维生素矿物质成人男性综合复合维生素*72片</td>
-					                    <td class="text-center">258.00</td>
-					                    <td class="text-center">2</td>
-					                    <td class="text-center">福建省</td>
-					                    <td class="text-center">福州市</td>
-					                    <td class="text-center">仓山区</td>
-					                   	<td class="text-center">刘建凡</td>
-					                   	<td class="text-center">18850737047</td>
-					                   	<td class="text-center">
-					                   		<input type="text" name="identity_id" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $item['id'];?>">
-					                		<span class="modify-span">35042601235646499555</span>
-					                   	</td>
-					                   	<td class="text-center">2017-01-10 10:55:12</td>
-					                    <td class="text-center"><span class="label label-success">已导出</span></td>
-					                    <td class="text-center">832.39 元</td>
-					                   	<td class="text-center"><img class="mark" onclick="mark(3)" src="images/btag0.png" /></td>
-					                </tr>
+					            <?php  } } ?>
 					            </tbody>
 				            </table>
 				        </div>
@@ -375,13 +389,13 @@ td{
 									</div>
 									<div class='modal-body'>										
 				    			       	<label class="radio-inline">
-					                     	<input type="radio" name="tag" id="tag0" value="0">平潭<img src="images/tag0.png">
+					                     	<input type="radio" name="tag" id="tag0" value="1">平潭<img src="images/tag0.png">
 					                   	</label> 
 									 	<label class="radio-inline">
-					                     	<input type="radio" name="tag" id="tag1" value="1">彩虹<img src="images/tag1.png">
+					                     	<input type="radio" name="tag" id="tag1" value="2">彩虹<img src="images/tag1.png">
 					                   	</label> 
 									 	<label class="radio-inline">
-					                     	<input type="radio" name="tag" id="tag2" value="2">贝海<img src="images/tag2.png">
+					                     	<input type="radio" name="tag" id="tag2" value="3">贝海<img src="images/tag2.png">
 					                   	</label> 
 									</div>
 									<div class="modal-footer">
@@ -458,7 +472,7 @@ $(function(){
 			$(".order_form").submit();
 		}
 	});
-	
+	var old_value='';
 	$(".add-more-btn").click(function(){
 		$(".hide-tr").toggle();
 	});
@@ -483,6 +497,7 @@ $(function(){
 	//编辑
 	$(".modify-span").on("click",function(){
 		var this_val = $(this).text();
+		old_value = this_val;
 		$(this).siblings(".modify-input").show().val(this_val).focus();
 	});
 	$(".modify-input").on("blur",function(){
@@ -490,15 +505,21 @@ $(function(){
 		var this_id = thisObj.attr("ajax-title-id");
 		var this_val = thisObj.val();
 		var this_name = thisObj.attr("name");
-		var url = "";
-		$.post(url,{'op':'ajax_product','ajax_id':this_id,'ajax_value':this_val,'field_name':this_name},function(data){
-			if( data.message == 1 ){
-				this_title.siblings(".modify-span").text(data.value);
-			}else{
-				alert(data.message);
-			}
-		},"json");
-		$(this).hide();
+		if( old_value == this_val){
+			thisObj.hide();
+		}else{
+			var url = "<?php  echo web_url('productsalestatistics',array('op'=>'edit_data'));?>";
+			$.post(url,{'ajax_id':this_id,'ajax_value':this_val,'field_name':this_name},function(data){
+				if( data.message == 1 ){
+					console.log(data.value);
+					thisObj.siblings(".modify-span").text(data.value);
+					thisObj.hide();
+				}else{
+					alert(data.message);
+					thisObj.hide();
+				}
+			},"json");
+		}
 	})
 });
 //订单标记
@@ -510,7 +531,14 @@ function mark(product_id){
 function markSave(){
 	var mark_value = $(".radio-inline input[name='tag']:checked").val();
 	var product_id = $(".product_id").val();
-	$.post("",{id:product_id,value:mark_value},function(data){
+	var new_img = parseInt(mark_value)-1;
+	var url = "<?php  echo web_url('productsalestatistics',array('op'=>'mark'));?>";
+	$.post(url,{mark_id:product_id,mark_val:mark_value},function(data){
+		if(data.message==1){
+			$(".mark_"+product_id+"").attr("src","images/btag"+new_img+".png");
+		}else{
+			alert(data.message);
+		}
 		$(".mark-modal-dialog").modal('hide');
 	},"json");
 }
@@ -521,10 +549,9 @@ function refresh(){
 //类型编辑
 function selectChange(ajax_id,field_name){
 	var this_val = $(".type-select").val();
-	var url = "";
-	$.post(url,{'op':'ajax_product','ajax_id':ajax_id,'ajax_value':this_val,'field_name':field_name},function(data){
+	var url = "<?php  echo web_url('productsalestatistics',array('op'=>'edit_data'));?>";
+	$.post(url,{'ajax_id':ajax_id,'ajax_value':this_val,'field_name':field_name},function(data){
 		if( data.message == 1 ){
-			alert(data.message);
 		}else{
 			alert(data.message);
 		}
@@ -541,37 +568,57 @@ function findgoods(){
     var pcate = $('#pcates').val();
 	var ccate = $('#cates_2').val();
 	var ccate2 = $('#cate_3').val();
+	var p2_text = $("#p2 option:selected").text();
+	var p2_val = $("#p2").val();
+	var fetchChildCategory = $(".fetchChildCategory option:selected").text();
+	var fetchChildCategory_val = $(".fetchChildCategory").val();
+	$(".type-p1").val(fetchChildCategory);
+	$(".type-p1-hidden").val(fetchChildCategory_val);
+	$(".type-p2").val(p2_text);
+	$(".type-p2-hidden").val(p2_val);
     $.post('<?php  echo create_url('site',array('name' => 'shop','do' => 'dish','op' => 'query'))?>',{pcate:pcate,ccate:ccate,ccate2:ccate2},function(m){
 	    $('#c_goods').html(m);
 	},"html");	
 }
-function fetchChildCategory(o_obj,cid) {
+//产品名称change事件
+function c_goods_fun(){
+	var url = "<?php  echo web_url('productsalestatistics', array('op' => 'get_good_val'));?>";
+	var goods_val = $("#c_goods").val();
+	$.post(url,{good_id:goods_val},function(data){
+		if(data.message == 1){
+			$(".add_brand").val(data.brand);
+			$(".add_dishsn").val(data.dishsn);
+			$(".add_brand_hidden").val(data.brandid);
+		}else{
+			alert(data.message);
+		}
+	},"json");
+}
+var category = <?php  echo json_encode($childrens)?>;	
+function fetchChildCategory(cid) {
 	var html = '<option value="0">请选择二级分类</option>';
-
-	var obj = $(o_obj).parent().find('.cates_2').get(0);
 	if (!category || !category[cid]) {
-		$(o_obj).parent().find('.cates_2').html(html);
-
-			fetchChildCategory2(o_obj,obj.options[obj.selectedIndex].value);
+		$('#p2').html(html);
+		fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
 		return false;
 	}
 	for (i in category[cid]) {
 		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
 	}
-	$(o_obj).parent().find('.cates_2').html(html);
-    	fetchChildCategory2(o_obj,obj.options[obj.selectedIndex].value);
+	$('#p2').html(html);
+	fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
 
- }
-   function fetchChildCategory2(o_obj,cid) {
+}
+   function fetchChildCategory2(cid) {
 	var html = '<option value="0">请选择三级分类</option>';
 	if (!category || !category[cid]) {
-		$(o_obj).parent().find('.cate_3').html(html);
+		$('#p3').html(html);
 		return false;
 	}
 	for (i in category[cid]) {
 		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
 	}
-	  $(o_obj).parent().find('.cate_3').html(html);
+	$('#p3').html(html);
  }
 </script>
 <?php  include page('footer');?>

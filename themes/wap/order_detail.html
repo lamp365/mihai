@@ -260,7 +260,14 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 					<div>现金支付：<!--@php  echo $item['price'];@--></div>
 					<div>余额抵扣：<!--@php  echo $item['balance_sprice']+$item['freeorder_price'];@--></div>
 					<div>下单时间：<!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></div>
-					<div>确认收货时间：0000</div>
+					<div>
+						确认收货时间：
+					<!--@php if($item['status'] == 3) {  @-->
+						<span><!--@php  echo date('Y-m-d H:i', $item['completetime'])@--></span>
+					<!--@php }else{ @-->
+						<span style="color: red;">您还未确认收货，确认收货可参与免单</span>
+					<!--@php } @-->
+					</div>
 				</div>
 			</div>
 		</div>
@@ -290,6 +297,9 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 							<span>
 								¥<!--@php   echo $g['marketprice'];@--> * <!--@php  echo $g['order_total'];@-->
 							</span>
+							<!--分类-->
+							<span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;"><!--@php  echo getGoodsCategory($g['pcate']);@--></span>
+							&nbsp;
 							<span class="btn btn-xs btn-success"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($g['shop_type']); }@--></span>
 							<!--@php  if(empty($g['iscomment']) && ($item['status'] == 3)) { @-->
 								<!--@php if($g['order_type'] == 3 && in_array($g['order_status'],array(-2,-1))){ @-->
@@ -396,8 +406,7 @@ a#show_wuliu,a#show_wuliu:visited{color: #589DDE;text-decoration: none;}
 			<!--@php  echo $item['remark'];@-->
 		</div>
 		<!--@php  } @-->
-		<div class="myoder-total" style='margin-bottom: 30px;'>
-			<p>所属分类：<!--@php  echo getGoodsCategory($g['pcate']);@--></p>
+		<div class="myoder-total" style='margin-bottom: 30px;'>			
 			<span>
 				共计：
 				<span class="false"> <!--@php  if($item['dispatchprice']<=0) { @-->

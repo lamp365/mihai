@@ -1,4 +1,5 @@
 <?php
+  $config = mysqld_select("SELECT * FROM " . table('addon7_config') );
   if (checksubmit("submit")) {
   	 $insert=array(
   	 	'names' => $_GP['names'],
@@ -26,9 +27,14 @@
                 {
                 	$insert['logo']=$logo;
                 }
-                
-		   mysqld_insert('addon7_award', $insert);
-			        message('保存成功', web_url('awardlist'), 'success');
+
+	  //是否开启了积分兑换
+	  if($config['open_gift_change'] == 1){
+		  $insert['add_jifen_change'] = $_GP['add_jifen_change'];
+		  $insert['jifen_change']     = intval($_GP['jifen_change']);
+	  }
+	   mysqld_insert('addon7_award', $insert);
+	   message('保存成功', web_url('awardlist'), 'success');
 	}
 
  include addons_page('award');

@@ -31,19 +31,16 @@ $state = array(
    '3'=>'已开奖',
    '4'=>'已兑奖'
 );
-if ($_GP['state'] != '-1' && isset($_GP['state'])){
+if (isset($_GP['state']) && $_GP['state'] != '-1'){
     $condition .= " AND state = '{$_GP['state']}'";
 }
 if(isset($_GP['isrecommand']) && $_GP['isrecommand']!=-1){
 	$condition .= " AND isrecommand = '{$_GP['isrecommand']}'";
 }
-if (!empty($_GP['cate_2'])) {
-	$cid = intval($_GP['cate_2']);
-	$condition .= " AND ccate = '{$cid}'";
-} elseif (!empty($_GP['cate_1'])) {
-	$cid = intval($_GP['cate_1']);
-	$condition .= " AND pcate = '{$cid}'";
+if(isset($_GP['add_jifen_change']) && $_GP['add_jifen_change'] != -1){
+	$condition .= " AND add_jifen_change={$_GP['add_jifen_change']}";
 }
+
 $awardlist = mysqld_selectall("SELECT * FROM " . table('addon7_award') . " WHERE  deleted=0 $condition ORDER BY endtime DESC, id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 foreach($awardlist as $key=>$val){
 	   if ( empty($val['logo'])){

@@ -1,5 +1,6 @@
 body{
    background:url(../images/login_bg.png) no-repeat scroll center center;
+   min-width: 320px; max-width: 640px; margin: 0 auto;
 }
 .form-horizontal .form-control{
   box-shadow:none;
@@ -14,5 +15,69 @@ body{
    background:#B89F7A;
    border:none;
    font-size:14px;
-   padding:15px 0;
+   margin-top: 5px;
 }
+.form-horizontal {
+    border-radius: 6px;
+    background-color: #fafafa;
+    margin: 5px;
+    overflow: hidden;
+}
+.register-input-div{
+    position: relative;
+    margin-top: 5px;
+    width: 94%;
+    margin: 0 auto;
+    background-color: #fff;
+}
+.register-input-div input{
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #f3f4f4;
+    padding-left: 35px;
+    box-sizing: border-box;
+    font-family: "Helvetica Neue",Arial,"Microsoft Yahei",Helvetica,sans-serif,Lato;
+    outline: none;
+}
+.verify-code{
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+.register-input-div .verify-code-input{
+    background-color: #fff;
+    color: #b89f7a;
+    font-size: 12px;
+    padding: 0 5px;
+    height: 24px;
+    line-height: 24px;
+    border: 1px solid #b89f7a;
+}
+.register-input-div .small-icon{
+    position: absolute;
+    top: 8px;
+    color: #b9b9b9;
+    text-align: center;
+    left: 8px;
+}
+.register-input-div .small-icon img{
+  width: 20px;
+}
+::-webkit-input-placeholder {
+  color: #d0d0d0; 
+  font-size: 13px;
+} 
+:-moz-placeholder {
+  color: #d0d0d0; 
+  font-size: 13px;
+} 
+::-moz-placeholder {
+  color: #d0d0d0; font-size: 13px;
+} 
+:-ms-input-placeholder {
+  color: #d0d0d0; font-size: 13px;
+} 

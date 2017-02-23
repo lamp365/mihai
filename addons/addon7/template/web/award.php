@@ -4,9 +4,9 @@
 <h3 class="header smaller lighter blue">
 		<?php 
 		if ($_GET['do'] == 'editaward'){ 
-			echo '编辑云购商品';
+			echo '编辑礼品';
 		}else{
-			echo '添加云购商品';
+			echo '添加礼品';
 		}
 		?>
 </h3>
@@ -48,16 +48,32 @@
 			                    </div>
 										</div>
 									</div>
-									
-									     <div class="form-group" style="display:none;">
-										<label class="col-sm-2 control-label no-padding-left" > 兑换类型</label>
+						<?php if($config['open_gift_change'] == 1){ ?>
+						 <div class="form-group">
+							 <label class="col-sm-2 control-label no-padding-left" > 加入积分兑换：</label>
+							 <div class="col-sm-9">
+								 <input type="radio" name="add_jifen_change" value="0"  <?php  if($award['add_jifen_change'] == 0) { ?> checked <?php  } ?> /> 移除积分兑换
+								 <input type="radio" name="add_jifen_change" value="1"  <?php  if($award['add_jifen_change'] == 1) { ?> checked <?php  } ?> /> 加入积分兑换
+							 </div>
+						 </div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label no-padding-left" > 积分兑换值 </label>
 
-										<div class="col-sm-9">
-										<input type="radio" name="awardtype" value="0" <?php  if($award['awardtype'] == 0) { ?>checked="true"<?php  } ?> /> 人民币  &nbsp;&nbsp;
-             
-                <input type="radio" name="awardtype" value="1"  <?php  if($award['awardtype'] == 1) { ?>checked="true"<?php  } ?> /> 积分 <input type="hidden" name="gold"  value="<?php  echo $award['gold'];?>" />
-										</div>
-									</div>
+							<div class="col-sm-9">
+								<input type="text" name="jifen_change"  value="<?php  echo $award['jifen_change'];?>" class="col-xs-10 col-sm-2" />
+							</div>
+						</div>
+						<?php } ?>
+
+						 <div class="form-group" style="display:none;">
+							 <label class="col-sm-2 control-label no-padding-left" > 兑换类型</label>
+
+							 <div class="col-sm-9">
+								 <input type="radio" name="awardtype" value="0" <?php  if($award['awardtype'] == 0) { ?>checked="true"<?php  } ?> /> 人民币  &nbsp;&nbsp;
+
+								 <input type="radio" name="awardtype" value="1"  <?php  if($award['awardtype'] == 1) { ?>checked="true"<?php  } ?> /> 积分 <input type="hidden" name="gold"  value="<?php  echo $award['gold'];?>" />
+							 </div>
+						 </div>
 									
 									
 									
@@ -97,8 +113,11 @@
 									</div>
 									
 									    <div class="form-group">
+										<?php if($config['active_type'] == 1){  ?>
 										<label class="col-sm-2 control-label no-padding-left" > 心愿数目 </label>
-
+										<?php }else{ ?>
+										<label class="col-sm-2 control-label no-padding-left" > 积分许愿值 </label>
+										<?php } ?>
 										<div class="col-sm-9">
 											 <input type="text" name="credit_cost"  value="<?php  echo $award['credit_cost']==0?1:$award['credit_cost'];?>" class="col-xs-10 col-sm-2" />
 										</div>

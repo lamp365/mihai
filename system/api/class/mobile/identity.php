@@ -87,11 +87,14 @@
 				//信息验证
 				$message = validateIdentity($_GP['identity_number'],$_GP['identity_name']);
 				
+				$identity_number= trim($_GP['identity_number']);
+				$identity_name 	= trim($_GP['identity_name']);
+				
 				if(empty($message))
 				{
 					$data = array('openid' 			=> $openid,
-								'identity_number' 	=> $_GP['identity_number'],
-								'identity_name' 	=> $_GP['identity_name'],
+								'identity_number' 	=> $identity_number,
+								'identity_name' 	=> $identity_name,
 								'isdefault'			=> 1,
 								'createtime' 		=> date('Y-m-d H:i:s'),
 								'modifiedtime' 		=> date('Y-m-d H:i:s')
@@ -128,6 +131,9 @@
 					//无错误信息时
 					if(empty($message))
 					{
+						//删除旧数据
+						mysqld_delete('member_identity',array('openid' => $openid,'identity_number' => $identity_number,'status'=>1));
+						
 						if(mysqld_insert('member_identity', $data))
 						{
 							$identity_id = mysqld_insertid();
@@ -181,13 +187,25 @@
 					
 				$identity_id = (int)$_GP['identity_id'];
 				
-				$data = array('status' 		=> 1,
-							'modifiedtime' 	=> date('Y-m-d H:i:s'));
-				
-				mysqld_update('member_identity', $data,array('openid' =>$openid,'identity_id'=>$identity_id));
-				
-				$result['message'] 	= '身份证删除成功';
-				$result['code'] 	= 1;
+				if(empty($identity_id))
+				{
+					$result['message'] 	= '身份证ID不能为空';
+					$result['code'] 	= 0;
+				}
+				else{
+					$data = array('status' 		=> 1,
+					'modifiedtime' 	=> date('Y-m-d H:i:s'));
+					
+					if(mysqld_update('member_identity', $data,array('openid' =>$openid,'identity_id'=>$identity_id)))
+					{
+						$result['message'] 	= '身份证删除成功';
+						$result['code'] 	= 1;
+					}
+					else{
+						$result['message'] 	= '身份证删除失败';
+						$result['code'] 	= 0;
+					}
+				}
 				
 				break;
 				
@@ -198,10 +216,15 @@
 				$data = array('isdefault' 	=> 1,
 							'modifiedtime' 	=> date('Y-m-d H:i:s'));
 						
-				mysqld_update('member_identity', $data,array('openid' =>$openid,'status'=>0,'identity_id'=>intval($_GP['identity_id'])));
-						
-				$result['message'] = '默认身份证设置成功';
-				$result['code'] 	= 1;
+				if(mysqld_update('member_identity', $data,array('openid' =>$openid,'status'=>0,'identity_id'=>intval($_GP['identity_id']))))
+				{
+					$result['message'] = '默认身份证设置成功';
+					$result['code'] 	= 1;
+				}
+				else{
+					$result['message'] = '默认身份证设置失败';
+					$result['code'] 	= 0;
+				}
 						
 				break;
 				

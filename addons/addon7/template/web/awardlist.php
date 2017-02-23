@@ -23,6 +23,11 @@
 							<option value="1" <?php if($_GP['isrecommand'] == 1){ echo "selected";} ?>>已推荐</option>
 							<option value="0" <?php if($_GP['isrecommand'] == 0){ echo "selected";} ?>>未推荐</option>
 						</select>
+
+						<select name="add_jifen_change" onchange="sel_by_addjifen(this)"  style="margin-right:10px;margin-top:10px;width: 100px; height:34px; line-height:28px; padding:2px 0">
+							<option value="-1">全部商品</option>
+							<option value="1">积分兑换商品</option>
+						</select>
 				   </li>
 					<li style="line-height: 50px;">总价值：<?php echo getShareTotalPrice();?>元</li>
 					<script>
@@ -36,6 +41,12 @@
 							var isrecommand = $(obj).val();
 							var url = "<?php echo web_url('awardlist',array('name'=>'addon7'));?>";
 							url = url + "&isrecommand="+isrecommand;
+							window.location.href = url;
+						}
+						function sel_by_addjifen(obj){
+							var add_jifen_change = $(obj).val();
+							var url = "<?php echo web_url('awardlist',array('name'=>'addon7'));?>";
+							url = url + "&add_jifen_change="+add_jifen_change;
 							window.location.href = url;
 						}
 					</script>

@@ -18,9 +18,26 @@
 												  <input type="text" name="title" class="col-xs-10 col-sm-2" value="<?php  echo $setting['title'];?>" />
 										</div>
 									</div>
-									
-										
-													
+
+
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-left" > 许愿方式：</label>
+
+									<div class="col-sm-9">
+										<input type="radio" name="active_type"  value="1" <?php if($setting['active_type'] == 1){ echo "checked"; }?>/> 心愿许愿
+										<input type="radio" name="active_type"  value="2"  <?php if($setting['active_type'] == 2){ echo "checked"; }?>/> 积分许愿
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-left" > 开启积分兑换：</label>
+
+									<div class="col-sm-9">
+										<input type="radio" name="open_gift_change"  value="0" <?php if($setting['open_gift_change'] == 0){ echo "checked"; }?>/> 关闭
+										<input type="radio" name="open_gift_change"  value="1"  <?php if($setting['open_gift_change'] == 1){ echo "checked"; }?>/> 开启
+									</div>
+								</div>
 											  <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> </label>
 

@@ -126,16 +126,5 @@ class WeixinTool
         }
     }
 
-    public function uploadMedia($file,$type){
-        $access_token = get_weixin_token();
-        $url       = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={$access_token}&type={$type}";
-        $url       = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=".$access_token;
-//        $post_url = "curl -F media=@{$file} '{$url}'";
-//        $res =  exec($post_url);
-//        ppd($res);
 
-        $data = array("media" => "@{$file}");
-        $res  = http_post($url,$data);
-        ppd($res);
-    }
 }

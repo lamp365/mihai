@@ -1,5 +1,18 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 
+<style type="text/css">
+	.shop-list-tr{
+		background-color: #fff!important;
+	}
+	.shop-list-tr li{
+		float:left;list-style-type:none;
+	}
+	.shop-list-tr select{
+		margin-right:10px;height:30px; line-height:28px; padding:2px 0;
+	}
+	
+</style>
+
 <div style="padding: 0 15px 15px 15px;overflow: hidden">
     <h3 class="header smaller lighter blue">免单详情</h3>
    
@@ -27,6 +40,31 @@
     </div>
 
     <h3>免单申请记录</h3>
+    
+    <form action="<?php echo web_url('free_order',array('op' =>'free_detail','free_id'=>(int)$_GP['free_id']))?>" class="form-horizontal" method="post">
+	<table class="table table-striped table-bordered table-hover">
+		<tbody>
+				<tr class="shop-list-tr">
+					<td>
+						<li>
+						   <select name="free_status">
+							   <option value="">请选择免单状态</option>
+							   <option value="0" <?php if($_GP['free_status']==='0'){?>selected="selected"<?php  } ?>>未申请</option>
+                               <option value="1" <?php if($_GP['free_status']==1){?>selected="selected"<?php  } ?>>申请中</option>
+                               <option value="2" <?php if($_GP['free_status']==2){?>selected="selected"<?php  } ?>>审核通过</option>
+                               <option value="-1" <?php if($_GP['free_status']==-1){?>selected="selected"<?php  } ?>>驳回</option>
+						   </select>
+						</li>
+						
+						<li>
+							<button class="btn btn-primary btn-sm"><i class="icon-search icon-large"></i> 搜索</button>
+						</li>
+					</td>
+				</tr>
+		</tbody>
+	</table>
+	</form>
+    
     <div style="margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
 	    <table class="table table-striped table-bordered table-hover">
 			<thead>
@@ -54,6 +92,8 @@
 							echo '申请中';
                         elseif($value['free_status'] == 2)
                         	echo '审核通过';
+                        else 
+                        	echo '未申请';
 						?>
 					</td>
 					<td><?php echo $value['free_explanation'];?></td>

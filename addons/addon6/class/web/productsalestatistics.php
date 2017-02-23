@@ -11,6 +11,21 @@ defined('SYSTEM_IN') or exit('Access Denied');
 require_once WEB_ROOT.'/includes/readcsv.class.php';
 require_once WEB_ROOT.'/includes/lib/arrayiconv.class.php';
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
+$admin = $_CMS['account']['username'];
+$tmall_id = mysqld_select("SELECT a.id FROM ".table('tmall')." as a left join ".table('tmall_staff')." as b on a.id=b.department WHERE b.admin='".$admin."'");
+$tmall_staff = mysqld_select("SELECT * FROM ".table('tmall_staff')." WHERE admin='".$admin."'");
+$category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');
+if (! empty($category)) {
+  $childrens = '';
+  foreach ($category as $cid => $cate) {
+    if (! empty($cate['parentid'])) {
+      $childrens[$cate['parentid']][$cate['id']] = array(
+        $cate['id'],
+        $cate['name']
+      );
+    }
+  }
+}
 
 $result = array();
 if ($operation == 'into') {
@@ -79,6 +94,7 @@ if ($operation == 'into') {
 										'address_mobile' => $dv[2],
 										'bonusprice' => 0 ,  // 优惠卷使用金额
 										'deleted' => 0,   //订单是否已导出 0 否 1 是
+                    'tmallid' => $tmall_id['id'],
 										);
 							   }else{
                     $xdata = array(
@@ -98,25 +114,143 @@ if ($operation == 'into') {
   }
  
 }elseif ($operation == 'display') {
+  if ($_GP['nowpage'] == '2') {
+    $now_page = 2;
+  }else{
+    $now_page = 1;
+  }
   // 商品页
   $pindex = max(1, intval($_GP['page']));
   $psize = 30;
   $where = "";
-  $title = $_GP['title'];
-  $dishsn = $_GP['dishsn'];
+  $title = $_GP['sg_title'];
+  $dishsn = $_GP['sg_dishsn'];
+  $orderby = '';
+  $oname = $oorigin = $oweight = $ounit = $olists = $otype = $op1 = $op2 = $oprice = 'asc';
+  if ( isset($_GP['ordername']) ){
+    if ( $_GP['ordername'] == 'asc' ){
+      $oname = 'desc';
+    }else{
+      $oname = 'asc';
+    }
+    $orderby = " ORDER BY name ".$_GP['ordername'];
+  }
+  if ( isset($_GP['orderorigin']) ){
+    if ( $_GP['orderorigin'] == 'asc' ){
+      $oorigin = 'desc';
+    }else{
+      $oorigin = 'asc';
+    }
+    $orderby = " ORDER BY origin ".$_GP['orderorigin'];
+  }
+  if ( isset($_GP['orderweight']) ){
+    if ( $_GP['orderweight'] == 'asc' ){
+      $oweight = 'desc';
+    }else{
+      $oweight = 'asc';
+    }
+    $orderby = " ORDER BY weight ".$_GP['orderweight'];
+  }
+  if ( isset($_GP['orderunit']) ){
+    if ( $_GP['orderunit'] == 'asc' ){
+      $ounit = 'desc';
+    }else{
+      $ounit = 'asc';
+    }
+    $orderby = " ORDER BY unit ".$_GP['orderunit'];
+  }
+  if ( isset($_GP['orderlists']) ){
+    if ( $_GP['orderlists'] == 'asc' ){
+      $olists = 'desc';
+    }else{
+      $olists = 'asc';
+    }
+    $orderby = " ORDER BY lists ".$_GP['orderlists'];
+  }
+  if ( isset($_GP['ordertype']) ){
+    if ( $_GP['ordertype'] == 'asc' ){
+      $otype = 'desc';
+    }else{
+      $otype = 'asc';
+    }
+    $orderby = " ORDER BY type ".$_GP['ordertype'];
+  }
+  if ( isset($_GP['orderp1']) ){
+    if ( $_GP['orderp1'] == 'asc' ){
+      $op1 = 'desc';
+    }else{
+      $op1 = 'asc';
+    }
+    $orderby = " ORDER BY p1 ".$_GP['orderp1'];
+  }
+  if ( isset($_GP['orderp2']) ){
+    if ( $_GP['orderp2'] == 'asc' ){
+      $op2 = 'desc';
+    }else{
+      $op2 = 'asc';
+    }
+    $orderby = " ORDER BY p2 ".$_GP['orderp2'];
+  }
+  if ( isset($_GP['orderprice']) ){
+    if ( $_GP['orderprice'] == 'asc' ){
+      $oprice = 'desc';
+    }else{
+      $oprice = 'asc';
+    }
+    $orderby = " ORDER BY productprice ".$_GP['orderprice'];
+  }
+
   if (!empty($title)) {
-    $where.=" AND title='".$title."'";
+    $where.=" AND title LIKE '%".$title."%'";
   }
   if (!empty($dishsn)) {
     $where.=" AND dishsn='".$dishsn."'";
   }
-  $dish = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('tmall_dish')." WHERE deleted<>1".$where." ORDER BY createtime DESC"." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+  
+  $dish = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('tmall_dish')." WHERE deleted<>1".$where.$orderby." LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
   // 总记录数
   $data_total = mysqld_select("SELECT FOUND_ROWS() as total;");
   $total = $data_total['total'];
 
   $pager = pagination($total, $pindex, $psize);
-  dump(web_url('productsalestatistics', array('op' => 'display')));
+
+  // 订单页
+  $where2 = "";
+  $order_number = $_GP['order_number'];
+  $order_tag = intval($_GP['order_tag']);
+  $begintime = $_GP['begintime'];
+  $endtime = $_GP['endtime'];
+  if ($admin!='root') {
+    $where2.=" AND tmallid=".$tmall_id['id'];
+  }
+  if (!empty($order_number)) {
+    $where2.=" AND ordersn='".$order_number."'";
+  }
+  if (!empty($order_tag)) {
+    $where2.=" AND tag='".$order_tag."'";
+  }
+  if (!empty($begintime)) {
+    $where2.=" AND createtime>".strtotime($begintime);
+  }
+  if (!empty($endtime)) {
+    $where2.=" AND createtime<".strtotime($endtime);
+  }
+
+  $order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('tmall_order')." WHERE deleted<>1".$where2." ORDER BY createtime DESC");
+  // $ordersn_ary = array();
+  // foreach ($order as $ov) {
+  //   $ordersn_ary[] = $ov['ordersn'];
+  // }
+  // $ordersn_ary = array_unique($ordersn_ary);
+  // $al_order = array();
+  // foreach ($ordersn_ary as $osnv) {
+  //   foreach ($order as $ooov) {
+  //     if ($ooov['ordersn'] == $osnv) {
+  //       $al_order[$osnv][] = $ooov;
+  //     }
+  //   }
+  // }
+
   include addons_page('productsalestatistics_tempale');
 }elseif ($operation == 'refresh_goods') {
   // 更新商品
@@ -153,6 +287,121 @@ if ($operation == 'into') {
   }else{
     message('当前无符合条件的订单商品！',refresh(),'error');
   }
+}elseif ($operation == 'edit_data') {
+  // 编辑数据
+  $data_id = $_GP['ajax_id'];
+  $data_name = $_GP['field_name'];
+  $data_value = $_GP['ajax_value'];
+
+  $table = 'tmall_dish';
+  if ($data_name == 'good_name') {
+    $data_name = 'name';
+  }
+  if ($data_name == 'identity_id') {
+    $table = 'tmall_order';
+  }
+
+  $re = mysqld_update($table, array($data_name=>$data_value), array('id'=>$data_id));
+  if ($re) {
+    $result['message'] = 1;
+    $result['value'] = $data_value;
+  }else{
+    $result['message'] = '更新失败，可能内容没有改动！';
+  }
+
+  echo json_encode($result);
+}elseif ($operation == 'get_good_val') {
+  // 获取产品属性
+  $good_id = intval($_GP['good_id']);
+
+  $good = mysqld_select("SELECT * FROM ".table('shop_goods')." WHERE id=".$good_id);
+  if (!empty($good)) {
+    $result['brand'] = get_brand($good['brand']);
+    $result['dishsn'] = $good['goodssn'];
+    $result['brandid'] = $good['brand'];
+    $result['message'] = 1;
+  }else{
+    $result['message'] = '产品获取失败！';
+  }
+
+  echo json_encode($result);
+}elseif ($operation == 'add_good') {
+  // 添加商品
+  $c_goods = intval($_GP['c_goods']);
+  $ad_name = $_GP['ad_name'];
+  $ad_brand = $_GP['add_brand_hidden'];
+  $ad_sn = $_GP['ad_sn'];
+  $ad_origin = $_GP['ad_origin'];
+  $ad_weight = $_GP['ad_weight'];
+  $ad_unit = $_GP['ad_unit'];
+  $ad_lists = $_GP['ad_lists'];
+  $ad_type = $_GP['ad_type'];
+  $type_p1 = $_GP['type-p1'];
+  $type_p2 = $_GP['type-p2'];
+  $ad_price = $_GP['ad_price'];
+
+  if (!empty($c_goods)) {
+    $data = array();
+    $good = mysqld_select("SELECT * FROM ".table('shop_goods')." WHERE id=".$c_goods);
+    $data['title'] = $good['title'];
+    $data['gid'] = $good['id'];
+    if (!empty($ad_name)) {
+      $data['name'] = $ad_name;
+    }
+    if (!empty($ad_brand)) {
+       $data['brand'] = $ad_brand;
+    }
+    if (!empty($ad_sn)) {
+      $data['dishsn'] = $ad_sn;
+    }
+    if (!empty($ad_origin)) {
+      $data['origin'] = $ad_origin;
+    }
+    if (!empty($ad_weight)) {
+      $data['weight'] = $ad_weight;
+    }
+    if (!empty($ad_unit)) {
+      $data['unit'] = $ad_unit;
+    }
+    if (!empty($ad_lists)) {
+      $data['lists'] = $ad_lists;
+    }
+    $data['type'] = $ad_type;
+    if (!empty($type_p1)) {
+      $data['p1'] = $type_p1;
+    }
+    if (!empty($type_p2)) {
+      $data['p2'] = $type_p2;
+    }
+    if (!empty($ad_price)) {
+      $data['marketprice'] = $ad_price;
+      $data['productprice'] = $ad_price;
+    }
+    $data['createtime'] = time();
+    if (!empty($tmall_id)) {
+      $data['tmallid'] = $tmall_id['id'];
+    }
+    if (!empty($tmall_staff)) {
+      $data['memberid'] = $tmall_staff['id'];
+    }
+
+    mysqld_insert('tmall_dish', $data);
+    message('添加完成！',refresh(),'success');
+  }else{
+    message('商品不能为空！',refresh(),'error');
+  }
+}elseif ($operation == 'mark') {
+  // 保存标记
+  $id = $_GP['mark_id'];
+  $mark = $_GP['mark_val'];
+
+  if (!empty($id) AND !empty($mark)) {
+    mysqld_update('tmall_order', array('tag'=>$mark),array('id'=>$id));
+    $result['message'] = 1;
+  }else{
+    $result['message'] = '标记不能为空！';
+  }
+  echo json_encode($result);
 }
 
 // 获取品牌名
@@ -163,4 +412,10 @@ function get_brand($id=null) {
       return $brand['brand'];
     }
   }
+}
+
+// 获取订单商品
+function get_order_goods($order_id) {
+  $ogs = mysqld_selectall("SELECT * FROM ".table('tmall_order_goods')." WHERE orderid=".$order_id);
+  return $ogs;
 }

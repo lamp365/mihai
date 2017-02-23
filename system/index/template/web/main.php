@@ -963,6 +963,44 @@
                         </ul>
                     </li>
                 <?php }?>
+                 <?php if (checkAdmin() ||in_array("member-info",$menurule)) { ?>
+                    <li class="xiaoshou">
+                        <!-- 导航第一级 -->
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-group"></i>
+                            <span class="menu-text"> 天猫店铺管理</span>
+
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
+                                <li>
+                                    <a onclick="navtoggle('店铺管理 - > 店铺管理 ')"  href="<?php  echo create_url('site', array('name' => 'tmall','do' => 'tmall_control'))?>" target="main" >
+                                        <i class="icon-double-angle-right"></i>
+                                        店铺管理
+                                    </a>
+                                </li>
+                            <?php }else{
+                                foreach($parentMenuList[MenuEnum::T_MEMBER_MANGE] as $row){
+                                    $zi = "天猫店铺管理 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                                }
+
+                            }?>
+
+                        </ul>
+                    </li>
+                <?php }?>
 
 
                 <?php if (checkAdmin() ||in_array("bonus-bonus",$menurule)) { ?>

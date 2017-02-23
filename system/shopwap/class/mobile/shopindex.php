@@ -1,9 +1,4 @@
  <?php
- $one = new WeixinTool();
- $res = $one->uploadMedia('/var/www/22.jpg','image');
- ppd('--sss');
- weixin_send_custom_message('ovUtJuPCR9B4jCCBDYbYugHgp3B8','你好呀');
- ppd(7777);
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
 $article_headline = getIndexArticle('headline');

@@ -353,7 +353,11 @@
 				</p>
 				<p>
 					确认收货时间：
-					<span>000000</span>
+					<!--@php if($item['status'] == 3) {  @-->
+						<span><!--@php  echo date('Y-m-d H:i', $item['completetime'])@--></span>
+					<!--@php }else{ @-->
+						<span style="color: red;">您还未确认收货，确认收货可参与免单</span>
+					<!--@php } @-->
 				</p>
 				<p>
 					订单状态：

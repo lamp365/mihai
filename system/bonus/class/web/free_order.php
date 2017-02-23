@@ -155,8 +155,22 @@ switch($operation){
 		
 		if($free_config)
 		{
-			$listSql = "SELECT SQL_CALC_FOUND_ROWS o.ordersn,o.address_realname,o.address_mobile,og.*,d.title FROM " . table ( 'shop_order_goods' ).' og,'.table ( 'shop_order' ).' o,' .table('shop_dish'). " d where og.orderid=o.id and og.goodsid=d.id and free_id = $free_id ";
-			$listSql.= " limit ".($pindex - 1) * $psize . ',' . $psize;
+			$listSql ='SELECT SQL_CALC_FOUND_ROWS o.ordersn,o.address_realname,o.address_mobile,og.*,d.title FROM ' . table('shop_order') . ' o,'. table('shop_order_goods').' og,'.table('shop_dish').' d ';
+			$listSql.=' where o.id=og.orderid and og.goodsid=d.id ';
+			$listSql.=' and o.status=3 ';
+			$listSql.=' and o.ordertype!=-2 ';		//批发订单除外
+			$listSql.=' and og.status in (-2,-1,0) ';
+			$listSql.=' and o.completetime>= '.$free_config['free_starttime'];
+			$listSql.=' and o.completetime<= '.$free_config['free_endtime'];
+			$listSql.=' and d.p1= '.$free_config['category_id'];
+			
+			if($_GP['free_status']!='')
+			{
+				$listSql.= " and og.free_status=".$_GP['free_status'];
+			}
+			
+			$listSql.= " order by og.free_id asc,o.openid asc limit ".($pindex - 1) * $psize . ',' . $psize;
+			
 			
 			$list = mysqld_selectall ($listSql);
 			

@@ -1,4 +1,5 @@
 <?php
+    $config = mysqld_select("SELECT * FROM " . table('addon7_config') );
      $award = mysqld_select("SELECT * FROM " . table('addon7_award') . "  WHERE id = :id", array(':id' => intval($_GP['id'])));
      if (checksubmit("submit")) {
 		 if($_GP['amount'] != $award['amount']){
@@ -41,7 +42,11 @@
 		{
 			$update['logo']=$logo;
 		}
-  	 
+		 //是否开启了积分兑换
+		 if($config['open_gift_change'] == 1){
+			 $update['add_jifen_change'] = $_GP['add_jifen_change'];
+			 $update['jifen_change']     = intval($_GP['jifen_change']);
+		 }
 		mysqld_update('addon7_award', $update,array("id"=>intval($_GP['id'])));
 		message('保存成功', 'refresh', 'success');
 	}

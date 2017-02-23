@@ -276,8 +276,8 @@
 	                                       
 	                                       <!--国家-->
 	                                       <span class="country">
-	                                       		<img  src="__RESOURCE__/912865945439541.jpg">
-	                                      	    <span style="margin-left: 5px;float: left;">美国</span>
+	                                       		<img  src="<!--@php echo $item['brand_icon'];@-->">
+	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $item['brand_name'];@--></span>
 	                                       </span>
 	                                  </div>
 	                                  <div class="txt">
@@ -324,8 +324,8 @@
 	                                      
 	                                      <!--国家-->
 										  <span class="country country2">
-	                                       		<img  src="__RESOURCE__/912865945439541.jpg">
-	                                      	    <span style="margin-left: 5px;float: left;">美国</span>
+	                                       		<img  src="<!--@php echo $item['brand_icon'];@-->">
+	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $item['brand_name'];@--></span>
 	                                       </span>
 	                                  </div>
 	                                  <div class="txt">
@@ -338,7 +338,7 @@
 									   <!--分类-->
 									 <div class="txt" style="font-size: 12px;line-height: 18px;">
 									 	<img src="__RESOURCE__/recouse/images/classify.png" style="width: 16px;height: 16px;"/>
-									 	女性营养									 	
+									 	<!--@php  echo getGoodsCategory($item['p1']);@-->								 	
 									 </div>	
 	                            </div>
 	                         </li>
@@ -369,16 +369,23 @@
 									  <div class="buy">
 	                                      <span class="text"><strong><em style="color:#b12704;font-size:18px;font-weight:normal;"> ¥<!--@php echo $item['marketprice'];@--> </em></strong>
 	                                      </span>
-										  <span>
-	                                           <i class="huanqiugou"></i>
-										  </span>
+										   <!--国家-->
+										  <span class="country country2">
+	                                       		<img  src="<!--@php echo $item['brand_icon'];@-->">
+	                                      	    <span style="margin-left: 5px;float: left;"><!--@php echo $item['brand_name'];@--></span>
+	                                       </span>
 	                                  </div>
 	                                  <div class="txt">
 	                                  		<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" >
 		                                  		<!--@php echo $item['title']@-->
 		                                    </a>
 	                                  </div> 
-									   <div class="txt1"><!--@php echo $item['desc']@--></div>        
+									   <div class="txt1"><!--@php echo $item['desc']@--></div>    
+									    <!--分类-->
+									 <div class="txt" style="font-size: 12px;line-height: 18px;">
+									 	<img src="__RESOURCE__/recouse/images/classify.png" style="width: 16px;height: 16px;"/>
+									 	<!--@php  echo getGoodsCategory($item['p1']);@-->								 	
+									 </div>	
 	                            </div>
 	                         </li>
 	             <!--@php  } } @-->
