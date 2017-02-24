@@ -85,7 +85,11 @@ class weixinAddons extends BjSystemModule
                     $eventkey = '';
                 }
             }
-            
+            //取消关注
+            if($message["type"] == "unsubscribe"){
+
+            }
+
             if (empty($reply['id'])) {
                 $reply = mysqld_select('SELECT * FROM ' . table('weixin_rule') . "   WHERE  keywords = :keywords", array(
                     ':keywords' => default_key
