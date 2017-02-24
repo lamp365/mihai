@@ -99,23 +99,23 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 				'data'     => array(
 					'first'=>array(
 						'value'=>'现在许愿可以赶上这次抽奖呦！',
-						'color'=>'#56bdff',
+						'color'=>'#4169e1',
 					),
 					'shop' => array(
 						'value'=>'美的（Midea）电水壶WH517E2b 304不锈钢电热水壶 1.7L容量',
-						'color'=>'#000000',
+						'color'=>'#080808',
 					),
 					'price' => array(
 						'value'=>'198.00￥',
-						'color'=>'#FF0000',
+						'color'=>'#fb4b0e',
 					),
 					'num' => array(
 						'value'=>'265人',
-						'color'=>'#FF0000',
+						'color'=>'#fb4b0e',
 					),
 					'tips'=>array(
 						'value'=> "祝您心愿之旅愉快!",
-						'color'=>'#000000',
+						'color'=>'#080808',
 					),
 				),
 			);
@@ -130,19 +130,19 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 				'data'     => array(
 					'first'=>array(
 						'value'=>'总有人会中的，为什么不会是你呢？',
-						'color'=>'#56bdff',
+						'color'=>'#4169e1',
 					),
 					'num1' => array(
 						'value'=>$data_arr['today_num'],
-						'color'=>'#FF0000',
+						'color'=>'#fb4b0e',
 					),
 					'num2' => array(
 						'value'=>$data_arr['tommor_num'],
-						'color'=>'#FF0000',
+						'color'=>'#fb4b0e',
 					),
 					'tips'=>array(
 						'value'=> "邀请好友共同许愿每天可获更多心愿数",
-						'color'=>'#FF0000',
+						'color'=>'#fb4b0e',
 					),
 				),
 			);

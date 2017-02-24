@@ -149,12 +149,12 @@
 
 				<label for="" class="col-sm-3 control-label">身份证姓名：</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" id="idname">
+					<input type="text" class="form-control" id="idname" value="<?php if (is_array($idetail)){ echo $idetail['identity_name']; } ?>">
 				</div>
 
 				<label for="" class="col-sm-3 control-label">身份证号码：</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" id="idnumber">
+					<input type="text" class="form-control" id="idnumber" value="<?php if (is_array($idetail)){ echo $idetail['identity_number']; } ?>">
 				</div>
 
 			</div>
@@ -361,8 +361,9 @@ function editAddress(e,id) {
 			$('#realname').val(s.message.realname);
 			$('#mobile').val(s.message.mobile);
 			$('#address').val(s.message.address);
-			$('#idname').val(s.message.idname);
-			$('#idnumber').val(s.message.idnumber);
+			//修改跟PC一样
+//			$('#idname').val(s.message.idname);
+//			$('#idnumber').val(s.message.idnumber);
 			cascdeInit('__RESOURCE__/recouse/js',s.message.province,s.message.city,s.message.area);
 			$('#addressid').val(s.message.id);
 		}

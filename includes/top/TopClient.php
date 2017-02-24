@@ -4,10 +4,8 @@ class TopClient
 	public $appkey;
 
 	public $secretKey;
-//线上正式环境
-//	public $gatewayUrl = "http://gw.api.taobao.com/router/rest";
-//沙箱测试环境
-	public $gatewayUrl = "http://gw.api.tbsandbox.com/router/rest";
+
+	public $gatewayUrl = "http://gw.api.taobao.com/router/rest";
 
 	public $format = "xml";
 

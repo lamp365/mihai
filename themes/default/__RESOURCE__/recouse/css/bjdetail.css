@@ -1431,10 +1431,11 @@ detail-group option:before, detail-group option:after {
 	*display: inline;
 }
 .pro-info .PTags span img{
-	width: 24px;
-	height: 24px;
+	width: 18px;
+	height: 18px;
 	vertical-align: middle;
 	float: left;
+	margin-top: 3px;
 }
 .pro-info .PTags span .brand{
 	color: #999;

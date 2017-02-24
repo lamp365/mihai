@@ -10,6 +10,7 @@
     <link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css">
 	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
 	<title>积分兑换</title>
 	<style type="text/css">
 		.integral{
@@ -19,26 +20,21 @@
 		}
 		.integral-tab-ul{
 			overflow: hidden;
-    		background: #fff;
-    		border-bottom: 1px solid #f1f1f1;
+    		background: #52bfe6;
 		}
 		.integral-tab-ul li{
-			float: left;
-			width: 50%;
-			text-align: center;
+		    float: left;
+		    width: 25%;
+		    text-align: center;
 		    height: 40px;
 		    line-height: 40px;
+		    color: #fff;
 		}
 		.integral .tab-div{
 			display: none;
 		}
-		.integral-tab-ul li span{
-			border-bottom: 2px solid #fff;
-			padding-bottom: 10px;
-		}
-		.integral-tab-ul li.li-active span{
-			color: #FF2D4B;
-   			border-bottom: 2px solid #FF2D4B;
+		.integral-tab-ul li.li-active{
+    		background-color: #19a6db;
 		}
 		.tab-div .input-div{
 			width: 85%;
@@ -72,15 +68,18 @@
 		    color: #ff5f5f;
 		}
 		.integral-shop .integral-number{
-			line-height: 2em;
-		    width: 90%;
+		    line-height: 2em;
+		    width: 96%;
 		    margin: 0 auto;
+		    background-color: #fff;
+		    margin-bottom: 2%;
+		    margin-top: 2%;
+		    border-radius: 3px;
+		    padding-left: 15px;
+		    box-sizing: border-box;
 		}
 		.integral-shop .integral-number span{
 			color:#FF2D4B;
-		}
-		.integral-shop{
-
 		}
 		.integral-activation{
 			background-color: #fff;
@@ -93,7 +92,7 @@
 		    padding: 10px;
 		    box-sizing: border-box;
 		    margin-bottom: 2%;
-		    box-shadow: 1px 1px 1px #d0d0d0;
+		    border-radius: 3px;
 		}
 		.integral-shop-list li:nth-child(odd){
 			margin-left: 2%;
@@ -115,6 +114,8 @@
 		    display: -webkit-box;
 		    -webkit-line-clamp: 2;
 		    -webkit-box-orient: vertical;
+		    height: 42px;
+		    margin-top: 5px;
 		}
 		.active{
 			margin:0;
@@ -129,9 +130,9 @@
 		}
 		.progress{
 			width: 100%;
-			margin-top: 10px;
+			margin-top: 5px;
 		}
-		.integral-shop-price{margin-top: 10px;}
+		.integral-shop-price{margin-top: 5px;}
 		.integral-shop-price span{
 			color:#FF2D4B;
 		}
@@ -144,11 +145,127 @@
 		    border-radius: 5px;
 		}
 		#express{
-			width: 100%;
-		    height: auto;
+			width: 85%;
+		    height: 600px;
 		    border: none;
 		    margin-top: 1rem;
+		    margin-left: 7.5%;
 		    display: none;
+		}
+		.address{
+			width: 100%;
+			border:none;
+		}
+		.add-address{
+			background-color: #d9534f;
+		    border-color: #d43f3a;
+		    color: #fff;
+		    margin-left: 3%;
+		    margin-top: 2%;
+		    width: 150px;
+		    text-align: center;
+		    line-height: 35px;
+		    border-radius: 4px;
+		}
+		.integral-shop .infobox {
+		    border-radius: 3px;
+		    overflow: hidden;
+		    background: #fff;
+		    width: 96%;
+		    margin: 2% auto;
+		}
+		.integral-shop .infobox h2 {
+			line-height: 30px;
+		    padding: 0 15px;
+		    border-radius: 5px 5px 0px 0px;
+		    border-bottom: 1px solid #f5f5f5;
+		}
+		.integral-shop .infobox p{
+		    border-bottom: 1px solid #f3f3f3;
+		    padding: 10px 15px;
+		    line-height: 18px;
+		    font-size: 14px;
+		    background-size: 14px;
+		}
+		.infobox-phone{
+			float: right;
+		}
+		.btn{
+			display: inline-block;
+		    padding: 6px 12px;
+		    margin-bottom: 0;
+		    font-size: 14px;
+		    font-weight: normal;
+		    line-height: 1.428571429;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		    cursor: pointer;
+		    background-image: none;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		    -webkit-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    -o-user-select: none;
+		    user-select: none;
+		}
+		.record-list{
+			margin-top: 8px;
+		}
+		.record-list li{
+		    width: 96%;
+		    margin: 0 auto;
+		    background-color: #fff;
+		    margin-bottom: 8px;
+		    border-radius: 3px;
+		    padding: 0 10px 10px 10px;
+		    box-sizing: border-box;
+		}
+		.record-list .record-img{
+			float: left;
+			width: 20%;
+		}
+		.record-list .record-title{
+		    float: left;
+		    width: 60%;
+		    padding-left: 10px;
+		    box-sizing: border-box;
+		    max-height: 65px;
+		    overflow: hidden;
+		}
+		.record-list .record-state{
+			float: left;
+			width:20%;
+			text-align: right;
+		}
+		.record-list .record-img img{
+			width: 100%;
+			box-sizing: border-box;
+			display: block;
+			max-width: 100%;
+		}
+		.record-time{
+		    border-bottom: 1px dashed #e0e0e0;
+		    box-sizing: border-box;
+		    margin-bottom: 10px;
+		    height: 30px;
+		    line-height: 30px;
+		}
+		.consume-number{
+			float: right;
+		}
+		.record-time-span{
+			color: #999;
+		}
+		.state-success{
+			color: #5cb85c;
+		}
+		.state-fail{
+			color: #d9534f;
+		}
+		.state-info{
+			color: #5bc0de;
 		}
 	</style>
 </head>
@@ -158,6 +275,7 @@
 			<ul class="integral-tab-ul">
 				<li class="li-active"><span>激活积分</span></li>
 				<li><span>积分商城</span></li>
+				<li><span>兑换记录</span></li>
 			</ul>
 		</div>
 		<div class="tab-div integral-activation" style="display: block;">
@@ -168,82 +286,106 @@
 				<div class="activation" onclick="activation()">激 活</div>
 				<div class="prompt-msg">你成功兑换了1000积分</div>
 			<!-- 物流查询 -->
-				<input type="text" name="logistics" class="logistics" placeholder="请输入订单编号">
+				<input type="text" name="logistics" class="logistics" placeholder="请输入您的快递单号">
 				<select class="logistics-select">
 					<option value="0">请选择快递</option>
 					<option value="1" data-url="http://wap.xlobo.com/">贝海快递</option>
-					<option value="2" data-url="http://m.kuaidi100.com/result.jsp?com=tiantian&nu=">天天快递</option>
-					<option value="3" data-url="http://m.kuaidi100.com/result.jsp?com=ems&nu=">EMS查询</option>
+					<option value="2" class="tiantian" data-url="http://m.kuaidi100.com/result.jsp?com=tiantian&nu=">天天快递</option>
+					<option value="3" class="tiantian" data-url="http://m.kuaidi100.com/result.jsp?com=ems&nu=">EMS查询</option>
 					<option value="4" data-url="http://www.hjusaexpress.com/result.aspx">豪杰速递</option>
-					<option value="5" data-url="http://mobile.yundasys.com:2137/mobileweb/pages/index.html">韵达速递</option>
+					<option value="5" data-url="http://www.yundaex.com/cn/index.php">韵达速递</option>
 				</select>
 				<div class="activation" onclick="search()">查 询</div>
-				<iframe id="express" src=""></iframe>
 			</div>
+			<iframe id="express" src=""></iframe>
 		</div>
 <!-- 		积分商城 -->
 		<div class="tab-div integral-shop">
-			<div class="integral-number">您的积分：<span>10086</span></div>
+		<!--@php $returnurl = mobile_url('integral',array('mark'=>'address')); @-->
+			<!--@php if($openid){  @-->
+			<div class="integral-number">您的积分：<span><!--@php echo $member['credit'] @--></span></div>
+			<!--@php }else{ @-->
+			<div class="integral-number">您的积分：<span><a href="<!--@php echo mobile_url('login');@-->">未登录</a></span></div>
+			<!--@php } @-->
+			<div class="infobox">
+				<h2>收货信息</h2>
+				<!--@php if(!empty($defaultAddress)){ @-->
+				<p class="address_item address_xinxi">
+					<span><!--@php echo $defaultAddress['realname'];@--></span><span class="infobox-phone"><!--@php echo $defaultAddress['mobile'];@--></span>
+					<br>
+					<!--@php echo $defaultAddress['province'];@-->&nbsp;
+					<!--@php echo $defaultAddress['city'];@-->&nbsp;
+					<!--@php echo $defaultAddress['area'];@-->&nbsp;
+					<!--@php echo $defaultAddress['address'];@-->
+				</p>
+				<!--@php } @-->
+				<p style="border-bottom: none;">
+					<button type="button" class="btn btn-danger" onclick="location.href='<!--@php  echo mobile_url('address',array('from'=>'integral','returnurl'=>urlencode($returnurl)))@-->'">管理收货地址</button>
+				</p>
+			</div>
+			
 			<ul class="integral-shop-list clearfix">
+			<!--@php if(!empty($goods_list)){ foreach($goods_list as $items){ @-->
 				<li>
-					<img src="http://odozak4lg.bkt.clouddn.com/201610291422581440193d3b0.jpg?imageView/2/w/400/h/400">
-					<div class="title">MP蔓越莓精华胶囊FitmissTyte曼越梅高含量浓度妇科炎症美国进口</div>
+					<img class="lazy" data-original="<!--@php echo download_pic($items['logo'],350,350,2);@-->" src="images/loading.gif">
+					<div class="title"><!--@php echo $items['title'];@--></div>
 					<div class="integral-shop-price">
-						价值：<span>￥100</span>
+						价值：<span>￥<!--@php echo $items['price'];@--></span>
 					</div>
 					<div class="progress" style="height: 15px;position:relative;">
-		                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="" style="width:100%;"></div>
-		                 <div class="progress-detail">10086/200</div>
+						<!--@php $jindutiao = round($credit*100/$items['jifen_change'],2); @-->
+		                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="" style="width:<!--@php echo $jindutiao;@-->%;"></div>
+		                 <div class="progress-detail"><!--@php echo $credit;@-->/<!--@php echo $items['jifen_change'];@--></div>
 		            </div>
-		            <div class="exchange" onclick="exchange(13)">立即兑换</div>
+		            <div class="exchange" onclick="exchange(<!--@php echo $items['id'];@-->)">立即兑换</div>
 				</li>
-				<li>
-					<img src="http://odozak4lg.bkt.clouddn.com/201610291422581440193d3b0.jpg?imageView/2/w/400/h/400">
-					<div class="title">MP蔓越莓精华胶囊FitmissTyte曼越梅高含量浓度妇科炎症美国进口</div>
-					<div class="integral-shop-price">
-						价值：<span>￥100</span>
+			<!--@php }} @-->
+			</ul>
+		</div>
+		<div class="tab-div">
+			<ul class="record-list">
+				<li class="clearfix">
+					<div class="record-time">
+						<span class="record-time-span">2017-02-24 10:00:00</span>
+						<span class="consume-number">100积分</span>
 					</div>
-					<div class="progress" style="height: 15px;position:relative;">
-		                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="" style="width:50%;"></div>
-		                 <div class="progress-detail">50%</div>
-		            </div>
-		            <div class="exchange" onclick="exchange(13)">立即兑换</div>
+					<div class="record-img">
+						<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170220173958aab955bca75.jpg?x-oss-process=image/resize,m_fixed,h_350,w_350">
+					</div>
+					<div class="record-title">你兑换了一个冰冰</div>
+					<div class="record-state state-success">审核成功</div>
 				</li>
-				<li>
-					<img src="http://odozak4lg.bkt.clouddn.com/201610291422581440193d3b0.jpg?imageView/2/w/400/h/400">
-					<div class="title">MP蔓越莓精华胶囊FitmissTyte曼越梅高含量浓度妇科炎症美国进口</div>
-					<div class="integral-shop-price">
-						价值：<span>￥100</span>
+				<li class="clearfix">
+					<div class="record-time">
+						<span class="record-time-span">2017-02-24 10:00:00</span>
+						<span class="consume-number">100积分</span>
 					</div>
-					<div class="progress" style="height: 15px;position:relative;">
-		                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="" style="width:50%;"></div>
-		                 <div class="progress-detail">50%</div>
-		            </div>
-		            <div class="exchange" onclick="exchange(13)">立即兑换</div>
+					<div class="record-img">
+						<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170220173958aab955bca75.jpg?x-oss-process=image/resize,m_fixed,h_350,w_350">
+					</div>
+					<div class="record-title">你兑换了一个冰冰</div>
+					<div class="record-state state-fail">审核失败</div>
 				</li>
-				<li>
-					<img src="http://odozak4lg.bkt.clouddn.com/201610291422581440193d3b0.jpg?imageView/2/w/400/h/400">
-					<div class="title">MP蔓越莓精华胶囊FitmissTyte曼越梅高含量浓度妇科炎症美国进口</div>
-					<div class="integral-shop-price">
-						价值：<span>￥100</span>
+				<li class="clearfix">
+					<div class="record-time">
+						<span class="record-time-span">2017-02-24 10:00:00</span>
+						<span class="consume-number">100积分</span>
 					</div>
-					<div class="progress" style="height: 15px;position:relative;">
-		                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="" style="width:50%;"></div>
-		                 <div class="progress-detail">50%</div>
-		            </div>
-		            <div class="exchange" onclick="exchange(13)">立即兑换</div>
+					<div class="record-img">
+						<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170220173958aab955bca75.jpg?x-oss-process=image/resize,m_fixed,h_350,w_350">
+					</div>
+					<div class="record-title">你兑换了一个冰冰</div>
+					<div class="record-state state-info">审核中</div>
 				</li>
 			</ul>
 		</div>
 	</div>
-	<form action="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=yZCXqzcJgRCdd_B3RvcG0qedaYZJAsumXRZicThjP0DQJjd2-2hdENmccLPz4m78NHPWAawiLjjxL8csDET9Shnd_loQhobK993O7ZGUBciNrREavDPs1VGmApj4jf7TYAQjABAMOE&type=image" method="post" enctype="multipart/form-data" >
-		<input type="file" name="media">
-		<input type="submit" value="quedin">
-	</form>
 	<script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
 	<script type="text/javascript">
+		var openid_val = "<!--@php echo $openid; @-->";
 		$(function(){
 			var tab_index = 0;
 			$(".integral-tab-ul li").on("click",function(){
@@ -251,6 +393,11 @@
 				$(".integral-tab-ul li").removeClass("li-active");
 				$(this).addClass("li-active");
 				$(".integral .tab-div").eq(tab_index).show().siblings(".tab-div").hide();
+			});
+			$("img.lazy").lazyload({
+				placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+				threshold : 0, //控制灵敏度
+				effect : "fadeIn"
 			});
 		});
 		//激 活
@@ -277,27 +424,50 @@
 		function search(){
 			var logistics_val = $(".logistics").val();
 			var logistics_select = $(".logistics-select").val();
-			var express_src = $(".logistics-select option:checked").attr("data-url")+logistics_val;
+			var express_src = $(".logistics-select option:checked").attr("data-url");
 			if(!logistics_val){
-				alert('请输入您的订单编号！');
+				alert('请输入您的快递单号！');
 				return false;
 			}
-			
+			if($(".logistics-select option:checked").attr("class")=="tiantian"){
+				$(".logistics-select option:checked").attr("data-url")+logistics_val;
+			}
 			$("#express").attr("src",express_src).show();
-			var iframeHeight = $("#express").contents().find("html").height();
-			$("#express").height(iframeHeight);
-
-/*			$.ajaxLoad(express_src,{},function(){
-		        $('#alterModal').modal('show');
-		     });*/
 		}
 		//立即兑换商品
 		function exchange(productid){
-			$.post("",{id:productid},function(data){
+			var hasAddress = $(".address_xinxi").length;
+			if( !openid_val){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}
+			if( hasAddress==0 ){
+				alert('请添加收货地址');
+			}else{
+				confirm('确认兑换该商品？','',function(isconfirm){
+					if(isconfirm){
+						var url ="<!--@php echo mobile_url('integral',array('op'=>'change'));@-->";
+						$.post(url,{id:productid},function(data){
 
-			},"json");
+						},"json");
+					}
+				},{confirmButtonText: '确认兑换', cancelButtonText: '稍后兑换', width: 330});
+			}
 		}
+		
 	</script>
+	<!--@php if($_GP['mark'] == 'address'){ @-->
+		<script>
+			$(".integral-tab-ul li").removeClass("li-active");
+			$(".integral-tab-ul li").eq(1).addClass("li-active");
+			$(".integral .tab-div").eq(1).show().siblings(".tab-div").hide();
+		</script>
+	<!--@php } @-->	
 	<!--@php include themePage('footer');@-->
 </body>
 </html>

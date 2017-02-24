@@ -5000,3 +5000,24 @@ del {
 	.country2 span{
 		line-height: 25px;
 	}
+	
+/*首页面单模块样式*/
+#frees{
+	position: relative;
+}
+#frees .free_info{	
+	overflow: hidden;
+    margin-top: 20px;
+    position: absolute;
+    background: #fff;
+    top: -12px;
+    left: 370px;
+    width: 60%;
+}
+#frees .free_info ul li{
+	width: 33%;
+    float: left;
+    text-align: left;
+    font-size: 18px;
+    color: #333;
+}
