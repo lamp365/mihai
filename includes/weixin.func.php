@@ -102,7 +102,7 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 						'color'=>'#56bdff',
 					),
 					'shop' => array(
-						'value'=>'飞利浦（PHILIPS）电动剃须刀 RQ311 双刀头刮胡刀！',
+						'value'=>'美的（Midea）电水壶WH517E2b 304不锈钢电热水壶 1.7L容量',
 						'color'=>'#000000',
 					),
 					'price' => array(

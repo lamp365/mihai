@@ -1,5 +1,5 @@
  <?php
-$one = new WeixinTool();
+/*$one = new WeixinTool();
  $one->pop_text('ovUtJuB9DE86mDJ33_-ZFTTqPC7Y','MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU','');
  $one->pop_text('ovUtJuPCR9B4jCCBDYbYugHgp3B8','MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU','');
  $one->pop_text('ovUtJuA1p84SHEp6YJNraK7Vm2Z8','MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU','');
@@ -7,7 +7,7 @@ $one = new WeixinTool();
  $one->pop_text('ovUtJuB9DE86mDJ33_-ZFTTqPC7Y','691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk','');
  $one->pop_text('ovUtJuPCR9B4jCCBDYbYugHgp3B8','691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk','');
  $one->pop_text('ovUtJuA1p84SHEp6YJNraK7Vm2Z8','691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk','');
- ppd('ssss');
+ ppd('ssss');*/
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
 $article_headline = getIndexArticle('headline');

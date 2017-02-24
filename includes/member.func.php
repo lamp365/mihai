@@ -260,6 +260,7 @@ function member_logout()
     
     unset($_SESSION[MOBILE_QQ_OPENID]);
     unset($_SESSION[MOBILE_ACCOUNT]);
+    unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
     header("location:" . create_url('mobile', array(
         'name' => 'shopwap',
         'do' => 'index'
