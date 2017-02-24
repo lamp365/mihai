@@ -9,21 +9,24 @@
 class WeixinTool
 {
     /**
-     * 礼品满人的时候推送该信息
-     * @param string $toUser
-     * @param string $template_id   微信消息模板id
-     * @param string $share   该心愿商品
+     * 主动推送模板消息
+     * @param $data_arr  $data_arr 所需要的数据
+     * @return string
      */
-    public  function pop_text($toUser ,$template_id,$share)
+    public  function pop_text($toUser,$template_id,$data_arr)
     {
+        //组装要推送的数据格式
+        $data = getWeixinPopMsg($toUser,$template_id,$data_arr);
+        if(empty($data)){
+            return '';
+        }
         $weixin_access_token = get_weixin_token();
         $url       = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$weixin_access_token}";
-        $data      = getWeixinPopMsg($toUser,$template_id,$share);
         $post_data = json_encode($data);
         $res       = http_post($url,$post_data);
         $res       = json_decode($res,true);
         if($res['errcode'] != 0){
-            $msg  = "模板id({$template_id})发送失败：".$res['errmsg'];
+            $msg  = "模板id({$data['template_id']})发送失败：".$res['errmsg'];
             logRecord($msg,"weixin_pop_txt");
         }
     }

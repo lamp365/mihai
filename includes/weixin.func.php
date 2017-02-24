@@ -84,10 +84,10 @@ function is_show_follow(){
  * 根据消息模板，组装对应的信息格式 用于微信推送消息模板
  * @param $toUser
  * @param $template_id
- * @param $share
+ * @param $data_arr  需要的数据
  * @return array|string
  */
-function getWeixinPopMsg($toUser,$template_id,$share){
+function getWeixinPopMsg($toUser,$template_id,$data_arr){
 	$data = '';
 	switch($template_id){
 		//许愿词满了
@@ -133,11 +133,11 @@ function getWeixinPopMsg($toUser,$template_id,$share){
 						'color'=>'#56bdff',
 					),
 					'num1' => array(
-						'value'=>'5',
+						'value'=>$data_arr['today_num'],
 						'color'=>'#FF0000',
 					),
 					'num2' => array(
-						'value'=>'7',
+						'value'=>$data_arr['tommor_num'],
 						'color'=>'#FF0000',
 					),
 					'tips'=>array(

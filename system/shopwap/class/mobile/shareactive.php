@@ -272,30 +272,55 @@
             die(showAjaxMess(200,$res['thumb']));
         }
     }else if($op == 'pop_msg'){
-        //推送信息
+        //推送信息 每天八点到八点半点推送就可以了，推送一次
+        $zero_time  = strtotime(date("Y-m-d",time()));
+        $start_time = $zero_time + 20*3600;
+        $end_time   = $start_time+ 1800;
+        $now_time   = time();
+        $now_time   = '1487938200';
+        if(class_exists('Memcached')){
+            $memcache = new Mcache();
+            $m_res    = $memcache->get('shareActive_popMsg');
+            if($m_res){
+                //如果缓存还在，说明之前推送过了
+                return '';
+            }
+        }
+        if($now_time >= $start_time && $now_time<=$end_time){
+            //查找所有活动用户
+            $share_member = mysqld_selectall("select openid,total_num,share_total_num from ".table('share_active'));
+            if(empty($share_member)) {
+                return '';
+            }
+            foreach($share_member as $one_member){
+                $today_num = $one_member['total_num'] + $one_member['share_total_num'];
+                if($today_num == 0){
+                    //如果今天次数都用完了，不用提示推送
+                    continue;
+                }
+                //找到微信用户
+                $weixin_member = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where openid='{$one_member['openid']}'");
+                if(empty($weixin_member)){
+                    continue;
+                }
+                $member     = mysqld_select("SELECT credit FROM " . table('member') . " where openid={$one_member['openid']} ");
+                $rank       = mysqld_select("SELECT rank_level FROM " . table('rank_model')." where experience<='".$member['credit']."' order by rank_level desc limit 1 " );
+                $rank_level = empty($rank['rank_level']) ? 1 : $rank['rank_level'];
+                $tommor_num = $rank_level*2+1;
+                $data       = array('today_num'=>$today_num, 'tommor_num'=>$tommor_num);
+                $weixin_tool = new WeixinTool();
+                $weixin_tool -> pop_text($weixin_member['weixin_openid'],'691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk',$data);
+            }
+            //记入缓存以免再次发生推送
+            if(class_exists('Memcached')){
+                $memcache = new Mcache();
+                $memcache->set('shareActive_popMsg','200',time()+3600*20);
+            }
+        }
+    }else if($op == 'upload_media'){
+        //用于以后测试线上的 媒体上传
         $weixin_tool = new WeixinTool();
         $res = $weixin_tool->uploadTempMedia("./images/weixin.jpg");
-        echo $res;
-        logRecord('pop_msg','pop_msg');
-    }else if($op == 'yaoqingma'){
-        header('Access-Control-Allow-Origin:*');
-        $unicode       = $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
-        $weixin_openid = $_SESSION[MOBILE_SESSION_ACCOUNT]['weixin_openid'];
-        //if(empty($unicode)){
-            message('邀请码暂时不开放！','index.php','success');
-        //}
-        $unicode = 'olMgBwFlMMm46w90gzTT0ao3BHCY';
-        $weixin  = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$unicode}'");
-        if(empty($weixin['openid'])){
-            //记住当前地址
-            tosaveloginfrom();
-            $url = mobile_url('regedit');
-            message("请您先注册，才能获取二维码",$url,'error');
-        }
-        //确认是否已经在活动主表中添加过记录 并跟新当天的参与活动数值
-        $info         = checkIsAddShareActive($weixin['openid']);
-        $erweimaUrl   = empty($info) ? '' : saveWeixinImgToLocal($weixin['weixin_openid'],$info['erweima']);
-        $touxiangUrl  = empty($weixin['avatar']) ? '' : saveWeixinImgToLocal($weixin['weixin_openid'],$weixin['avatar'],false);
-        include themePage('shareactive_yqm');
+        ppd($res,'-----');
     }
 
