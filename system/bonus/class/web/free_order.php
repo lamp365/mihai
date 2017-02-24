@@ -7,6 +7,51 @@
 $operation = ! empty ( $_GP ['op'] ) ? $_GP ['op'] : '';
 
 switch($operation){
+	
+	case 'order_finish':		//交易完成的订单
+		
+		$pindex= max(1, intval($_GP['page']));
+		$psize = 10;
+		
+		//如果是周一时
+		if(date('N')==1)
+		{
+			$starttime = strtotime(date('Y-m-d').' 00:00:00');
+		}
+		else{
+			$starttime = strtotime('last Monday');
+		}
+		
+		$orderSql = "SELECT SQL_CALC_FOUND_ROWS id,ordersn,address_realname,address_mobile,createtime,completetime,price,has_balance,balance_sprice,freeorder_price,hasbonus,bonusprice,dispatchprice,taxprice FROM " . table('shop_order');
+		$orderSql.="  WHERE  status = 3 and ordertype!=-2 ";
+		$orderSql.=' and completetime>= '.$starttime;
+		$orderSql.=' and completetime<= '.time();
+		$orderSql.=' ORDER BY openid asc,createtime DESC ';
+		$orderSql.=" LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
+		
+		$list  = mysqld_selectall($orderSql);
+		$total = mysqld_select("SELECT FOUND_ROWS() as total;");
+		$pager = pagination($total['total'], $pindex, $psize);
+		
+		foreach ( $list as $id => $item) {
+			
+			$sql  = "select og.total,og.aid, og.price,og.shopgoodsid, ";
+			$sql .= " h.pcate,h.title,h.thumb,h.p1,c.name as category_name from ".table('shop_order_goods')." as og ";
+			$sql .= " left join ".table('shop_dish')." as h ";
+			$sql .= " on og.goodsid=h.id ";
+			$sql .= " left join ".table('shop_category')." as c ";
+			$sql .= " on h.p1=c.id ";
+			$sql .= " where og.orderid={$item['id']}";
+			$sql .= " and og.status in (-2,-1,0) ";		//非退款的订单商品
+			
+			$dishs = mysqld_selectall($sql);
+			
+			$list[$id]['dishs'] = $dishs;
+		}
+		
+		include page ( 'free_order_finish' );
+		
+		break;
 
 	case 'insert':				//新增免单配置
 
@@ -234,7 +279,7 @@ switch($operation){
 		
 		break;
 
-	default:					//列表页
+	default:					//已配置免单列表页
 		
 		$pindex = max(1, intval($_GP['page']));
 		$psize 	= 10;

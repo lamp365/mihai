@@ -191,7 +191,48 @@
 				</div>
 				</div>
 			</div>
-			
+			<div class="recommend_list_two">
+				<div class="recommend_list_two_head" style="background: url(__RESOURCE__/recouse/images/miandan_list_head00.jpg);"></div>
+				<div class="viewport-area-list">
+					<ul class="indiana_list">
+						<!--@php if(!empty($toBeDraw)){   foreach($toBeDraw as $item){  @-->
+						<li class="per_indiana"> 
+							<!--商品图片-->
+							<div class="imgWrap" data-id="<!--@php echo $item['id'];@-->">
+								<a>
+									<img src="<!--@php echo download_pic($item['logo'],350,350,2);@-->" />
+								</a>
+							</div>
+							<!--标题-->
+							<p class="name" ><!--@php echo $item['title'];@--></p>
+							<!--人数-->
+
+							<!--进度条-->
+							<div class="progress">
+								<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $item['jindutiao'];@-->"></div>
+							</div>
+							<div class="list-num">
+								<span class="list-num-before"><!--@php echo $item['dicount'];@--></span>/<span class="list-num-after"><!--@php echo $item['amount'];@--></span>
+								<span class="need-love-num" style="float: right;"><span style="font-size: 12px;">所需心愿数:</span>
+									<!--@php for( $i =0; $i < intval($item['credit_cost']); $i++){ @-->
+									<img src="__RESOURCE__/recouse/images/love-yes.png"/>
+									<!--@php } @-->
+								</span>
+							</div>
+							<div class="last">
+								<!--立即参与按钮-->
+								<a href="javascript:void(0);" class="tojoin" data-fenshu="<!--@php echo intval($item['credit_cost']);@-->" onclick="make_wish(this,<!--@php echo $item['id'];@-->)">新年许愿</a>
+								<!--爱心-->
+								<img src="__RESOURCE__/recouse/images/love-yes.png" class="love"/>
+								<span class="love-num" data-id="<!--@php echo $item['id'];@-->" ><!--@php echo $item['wish_num'];@--></span>
+							</div>
+						</li>
+						<!--@php }}  @-->
+					</ul>
+				</div>
+				<div class="recommend_list_two_footer"></div>
+			</div>
+
 			<!--推荐商品-->			
 			<div class=" recommend_list" style="height: 698px;background: url(__RESOURCE__/recouse/images/miandan_page02.jpg) no-repeat center center;">
 				<div class="viewport-area" style="height: 698px;">

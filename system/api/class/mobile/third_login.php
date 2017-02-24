@@ -11,6 +11,15 @@ $result = array();
 $login_type = trim($_GP['login_type']);
 $device_code= trim($_REQUEST['device_code']);
 
+if(empty($device_code))
+{
+	$result['message'] 	= "设备码不能空。";
+	$result['code'] 	= 0;
+	
+	echo apiReturn($result);
+	exit;
+}
+
 switch ($login_type) {
 		
 	case 'weixin' : 	//微信登录
@@ -187,7 +196,7 @@ switch ($login_type) {
 					}
 				}
 				//第三方登录成功时
-				elseif(thirdLoginProcess($qqfans['openid'])){
+				elseif(thirdLoginProcess($qqfans['openid'],$device_code)){
 							
 						//原先是解绑的，重新绑定回去
 						if($qqfans['deleted']==1)

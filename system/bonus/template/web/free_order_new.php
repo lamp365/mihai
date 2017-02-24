@@ -11,6 +11,7 @@
 <ul class="nav nav-tabs">
 	<li style="width:7%" class="active"><a href="<?php echo web_url('free_order',array('op' =>'new_list'))?>">待配置免单</a></li>
 	<li style="width:7%"><a href="<?php echo web_url('free_order')?>">已配置免单</a></li>
+	<li><a href="<?php echo web_url('free_order',array('op' =>'order_finish'))?>">本周交易成功订单</a></li>
 </ul>
 
 <table class="table table-striped table-bordered table-hover">

@@ -97,7 +97,8 @@
 								'identity_name' 	=> $identity_name,
 								'isdefault'			=> 1,
 								'createtime' 		=> date('Y-m-d H:i:s'),
-								'modifiedtime' 		=> date('Y-m-d H:i:s')
+								'modifiedtime' 		=> date('Y-m-d H:i:s'),
+								'status'			=> 0
 						);
 						
 					//身份证正面
@@ -131,21 +132,42 @@
 					//无错误信息时
 					if(empty($message))
 					{
-						//删除旧数据
-						mysqld_delete('member_identity',array('openid' => $openid,'identity_number' => $identity_number,'status'=>1));
+						//旧数据
+						$identity = mysqld_select("SELECT identity_id,identity_number,identity_name,identity_front_image,identity_back_image,isdefault FROM " . table('member_identity') . " WHERE openid = :openid and identity_number=:identity_number and status=1", array(':openid' => $openid,':identity_number'=>$identity_number));
 						
-						if(mysqld_insert('member_identity', $data))
+						//有旧记录时,更新
+						if($identity)
 						{
-							$identity_id = mysqld_insertid();
-						
-							mysqld_query ( "update " . table ( 'member_identity' ) . "  SET isdefault=0 WHERE openid = '{$openid}' and identity_id!= " .$identity_id );
-						
-							$result['message'] 	= "身份证新增成功。";
-							$result['code'] 	= 1;
+							if(mysqld_update('member_identity', $data,array('openid' =>$openid,'identity_id'=>$identity['identity_id'])))
+							{
+								//取消旧的默认身份证
+								mysqld_query ( "update " . table ( 'member_identity' ) . "  SET isdefault=0 WHERE openid = '{$openid}' and identity_id!= " .$identity['identity_id'] );
+								
+								$result['message'] 	= "身份证新增成功。";
+								$result['code'] 	= 1;
+							}
+							else{
+								$result['message'] 	= "身份证新增失败。";
+								$result['code'] 	= 0;
+							}
 						}
+						//没有旧记录时,新增
 						else{
-							$result['message'] 	= "身份证新增失败。";
-							$result['code'] 	= 0;
+							
+							if(mysqld_insert('member_identity', $data))
+							{
+								$identity_id = mysqld_insertid();
+							
+								//取消旧的默认身份证
+								mysqld_query ( "update " . table ( 'member_identity' ) . "  SET isdefault=0 WHERE openid = '{$openid}' and identity_id!= " .$identity_id );
+							
+								$result['message'] 	= "身份证新增成功。";
+								$result['code'] 	= 1;
+							}
+							else{
+								$result['message'] 	= "身份证新增失败。";
+								$result['code'] 	= 0;
+							}
 						}
 					}
 					else{
@@ -194,9 +216,10 @@
 				}
 				else{
 					$data = array('status' 		=> 1,
-					'modifiedtime' 	=> date('Y-m-d H:i:s'));
+								'modifiedtime' 	=> date('Y-m-d H:i:s'));
 					
-					if(mysqld_update('member_identity', $data,array('openid' =>$openid,'identity_id'=>$identity_id)))
+					//只能删除非默认身份证
+					if(mysqld_update('member_identity', $data,array('isdefault' => 0,'openid' =>$openid,'identity_id'=>$identity_id)))
 					{
 						$result['message'] 	= '身份证删除成功';
 						$result['code'] 	= 1;
