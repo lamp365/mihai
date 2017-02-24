@@ -91,7 +91,7 @@ function getWeixinPopMsg($toUser,$template_id,$share){
 	$data = '';
 	switch($template_id){
 		//许愿词满了
-		case "5CN-L4fSQ41HOr7vq7V26qcGwxBGOJphzHOSGAGo0dA":
+		case "MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU":
 			$data = array(
 				'touser'      => $toUser,
 				"template_id" => $template_id,
@@ -99,30 +99,30 @@ function getWeixinPopMsg($toUser,$template_id,$share){
 				'data'     => array(
 					'first'=>array(
 						'value'=>'现在许愿可以赶上这次抽奖呦！',
-						'coloe'=>'#abcdef',
+						'color'=>'#56bdff',
 					),
 					'shop' => array(
 						'value'=>'飞利浦（PHILIPS）电动剃须刀 RQ311 双刀头刮胡刀！',
-						'coloe'=>'#abcdef',
+						'color'=>'#000000',
 					),
 					'price' => array(
 						'value'=>'198.00￥',
-						'coloe'=>'#abcdef',
+						'color'=>'#FF0000',
 					),
 					'num' => array(
 						'value'=>'265人',
-						'coloe'=>'#abcdef',
+						'color'=>'#FF0000',
 					),
-					'remark'=>array(
+					'tips'=>array(
 						'value'=> "祝您心愿之旅愉快!",
-						'color'=>'red',
+						'color'=>'#000000',
 					),
 				),
 			);
 			break;
 
 		//许愿块过期了
-		case "0kRjNg1P8AVdIKTRTjeGtzRLOx3Q39wVtKKGwr-FCwY":
+		case "691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk":
 			$data = array(
 				'touser'      => $toUser,
 				"template_id" => $template_id,
@@ -130,19 +130,19 @@ function getWeixinPopMsg($toUser,$template_id,$share){
 				'data'     => array(
 					'first'=>array(
 						'value'=>'总有人会中的，为什么不会是你呢？',
-						'coloe'=>'#abcdef',
+						'color'=>'#56bdff',
 					),
 					'num1' => array(
 						'value'=>'5',
-						'coloe'=>'#abcdef',
+						'color'=>'#FF0000',
 					),
 					'num2' => array(
 						'value'=>'7',
-						'coloe'=>'#abcdef',
+						'color'=>'#FF0000',
 					),
-					'remark'=>array(
-						'value'=> "提示：邀请好友共同许愿每天可以获得更多心愿数",
-						'color'=>'red',
+					'tips'=>array(
+						'value'=> "邀请好友共同许愿每天可获更多心愿数",
+						'color'=>'#FF0000',
 					),
 				),
 			);

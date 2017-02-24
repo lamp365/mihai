@@ -1,7 +1,12 @@
  <?php
 $one = new WeixinTool();
- $one->pop_text('ovUtJuB9DE86mDJ33_-ZFTTqPC7Y','5CN-L4fSQ41HOr7vq7V26qcGwxBGOJphzHOSGAGo0dA','');
- $one->pop_text('ovUtJuB9DE86mDJ33_-ZFTTqPC7Y','0kRjNg1P8AVdIKTRTjeGtzRLOx3Q39wVtKKGwr-FCwY','');
+ $one->pop_text('ovUtJuB9DE86mDJ33_-ZFTTqPC7Y','MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU','');
+ $one->pop_text('ovUtJuPCR9B4jCCBDYbYugHgp3B8','MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU','');
+ $one->pop_text('ovUtJuA1p84SHEp6YJNraK7Vm2Z8','MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU','');
+
+ $one->pop_text('ovUtJuB9DE86mDJ33_-ZFTTqPC7Y','691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk','');
+ $one->pop_text('ovUtJuPCR9B4jCCBDYbYugHgp3B8','691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk','');
+ $one->pop_text('ovUtJuA1p84SHEp6YJNraK7Vm2Z8','691Sa2pdIhfX45uEQYSbp_Q-ksN5ad3hfr8Vfh135Bk','');
  ppd('ssss');
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
