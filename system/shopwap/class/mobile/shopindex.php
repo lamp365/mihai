@@ -1,5 +1,6 @@
  <?php
  $one = new WeixinTool();
+ $one->uploadMedia("D:/AppServ/www/webroot/WEB2/xiaowu/images/weixin.jpg");
  $msg = "你好呀，<a href='http://www.baidu.com'>百度</a>不错的";
 // $one->pop_custom_msg('ovUtJuPCR9B4jCCBDYbYugHgp3B8',$msg,'text');
  $one->pop_text('ovUtJuPCR9B4jCCBDYbYugHgp3B8');

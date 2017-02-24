@@ -84,6 +84,10 @@ class WeixinTool
     public function pop_custom_msg($toUser,$data,$type){
         $pop_data['touser']  = $toUser;
         $pop_data['msgtype'] = $type;
+        if(empty($data)){
+            logRecord('推送客服消息为空','weixin_pop_msg');
+            return '';
+        }
         switch($type){
             case 'text'://文本
                 //$data是字符串信息
@@ -127,24 +131,30 @@ class WeixinTool
     }
 
     /**
-     * 上传文件到媒体中
+     * 上传文件到媒体中 临时媒体存三天
      * @param $file 文件绝对路径
-     * @param $type
+     * @param $type image  voice  video thumb
      */
-    public function uploadMedia($file,$type='image'){
+    public function uploadTempMedia($file,$type='image'){
         $access_token = get_weixin_token();
         $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={$access_token}&type={$type}";
+
         if (class_exists('\CURLFile')) {
             $data = array(
                 'media'=> new \CURLFile($file)
             );
         } else {
             $data = array(
-                'media'=> "@{$file};type=image/jpeg"
+                'media'=> "@{$file}"
             );
         }
         $res = http_post($url,$data);
         $res = json_decode($res,true);
+        if(isset($res['media_id'])){
+            return $res['media_id'];
+        }else{
+            return '';
+        }
     }
 
     /**
