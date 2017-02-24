@@ -54,6 +54,7 @@ class weixinAddons extends BjSystemModule
                     ));
                 }
             }
+
             //已经关注过扫码是 scan   未关注的是 subscribe
             if ($message['type'] == 'subscribe') {
                 //$eventkey  带场景值  用于活动中绑定用户关系  此次活动中 eventkey 就是share_active中的id
@@ -70,7 +71,7 @@ class weixinAddons extends BjSystemModule
                 $weixin_tool = new WeixinTool();
                 //获取最新媒体文章
                 $mediaNews   = $weixin_tool->medialist('news');
-                $weixin_tool->pop_custom_msg($message['FromUserName'],$mediaNews,'news');
+                $weixin_tool->pop_custom_msg($message['fromusername'],$mediaNews,'news');
 
                 if(!empty($reply)){
                     return $this->respText($reply['description'],$message);
@@ -87,7 +88,8 @@ class weixinAddons extends BjSystemModule
             }
             //取消关注
             if($message["type"] == "unsubscribe"){
-
+                //更新掉订阅为0
+                mysqld_update('weixin_wxfans',array('follow'=>0),array('weixin_openid'=>$message['fromusername']));
             }
 
             if (empty($reply['id'])) {
