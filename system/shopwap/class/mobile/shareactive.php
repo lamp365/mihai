@@ -273,6 +273,9 @@
         }
     }else if($op == 'pop_msg'){
         //推送信息
+        $weixin_tool = new WeixinTool();
+        $res = $weixin_tool->uploadTempMedia("./images/weixin.jpg");
+        echo $res;
         logRecord('pop_msg','pop_msg');
     }else if($op == 'yaoqingma'){
         header('Access-Control-Allow-Origin:*');

@@ -79,3 +79,76 @@ function is_show_follow(){
 		return '';
 	}
 }
+
+/**
+ * 根据消息模板，组装对应的信息格式 用于微信推送消息模板
+ * @param $toUser
+ * @param $template_id
+ * @param $share
+ * @return array|string
+ */
+function getWeixinPopMsg($toUser,$template_id,$share){
+	$data = '';
+	switch($template_id){
+		//许愿词满了
+		case "5CN-L4fSQ41HOr7vq7V26qcGwxBGOJphzHOSGAGo0dA":
+			$data = array(
+				'touser'      => $toUser,
+				"template_id" => $template_id,
+				"url"         => WEBSITE_ROOT.mobile_url("shareactive"),  //跳转到活动地址
+				'data'     => array(
+					'first'=>array(
+						'value'=>'现在许愿可以赶上这次抽奖呦！',
+						'coloe'=>'#abcdef',
+					),
+					'shop' => array(
+						'value'=>'飞利浦（PHILIPS）电动剃须刀 RQ311 双刀头刮胡刀！',
+						'coloe'=>'#abcdef',
+					),
+					'price' => array(
+						'value'=>'198.00￥',
+						'coloe'=>'#abcdef',
+					),
+					'num' => array(
+						'value'=>'265人',
+						'coloe'=>'#abcdef',
+					),
+					'remark'=>array(
+						'value'=> "祝您心愿之旅愉快!",
+						'color'=>'red',
+					),
+				),
+			);
+			break;
+
+		//许愿块过期了
+		case "0kRjNg1P8AVdIKTRTjeGtzRLOx3Q39wVtKKGwr-FCwY":
+			$data = array(
+				'touser'      => $toUser,
+				"template_id" => $template_id,
+				"url"         => WEBSITE_ROOT.mobile_url("shareactive"),  //跳转到活动地址
+				'data'     => array(
+					'first'=>array(
+						'value'=>'总有人会中的，为什么不会是你呢？',
+						'coloe'=>'#abcdef',
+					),
+					'num1' => array(
+						'value'=>'5',
+						'coloe'=>'#abcdef',
+					),
+					'num2' => array(
+						'value'=>'7',
+						'coloe'=>'#abcdef',
+					),
+					'remark'=>array(
+						'value'=> "提示：邀请好友共同许愿每天可以获得更多心愿数",
+						'color'=>'red',
+					),
+				),
+			);
+			break;
+	}
+
+	return $data;
+
+}

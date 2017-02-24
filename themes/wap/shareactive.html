@@ -26,16 +26,8 @@
 		<!--@php }else{ @-->
 		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result','is_app'=>1))@-->" class="result-search"></a>
 		<!--@php } @-->
-		<div style="text-align: center;background-color: #e42604;color: #fff;margin-top: -30px;padding-bottom: 15px;font-size: 16px;font-weight: bold;
-    letter-spacing: 1px;">每天更新次数 记得来点点</div>
-    <div style="    text-align: center;
-    background-color: #e42604;
-    color: #fff;
-    margin-top: -10px;
-    padding-bottom: 15px;
-    font-size: 16px;
-    letter-spacing: 1px;
-    font-weight: bold;">【觅海心愿 百分百好礼】</div>
+		<div class="head-title-1">每天更新次数 记得来点点</div>
+    <div class="head-title-2" >【觅海心愿 百分百有礼】</div>
 		<!--@php if($lock && $drawTime){ @-->
 		<div id="result-time"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
 		<script>
@@ -54,7 +46,7 @@
 					<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
 					<!--@php } @-->
 					<div class="recommand-left">
-						<img class="lazy" onclick="personalRecord(this,<!--@php echo $items['id'];@-->)" data-original="<!--@php echo download_pic($items['logo'],80,80,2);@-->" src="images/loading.gif">
+						<img class="lazy" onclick="personalRecord(this,<!--@php echo $items['id'];@-->)" data-original="<!--@php echo download_pic($items['logo'],350,350,2);@-->" src="images/loading.gif">
 					</div>
 					<div class="recommand-right">
 						<div class="small-title"><!--@php echo $items['title'];@--></div>
@@ -313,7 +305,7 @@
 	<!--@php } @-->
 
 		<!--@php if(!empty($toBeShow)){  @-->
-		<div class="not-start"><div class="coupon_title">即将进入心愿专区</div><img src="__RESOURCE__/recouse/images/coupon_title_bg.jpg"></div>
+		<div class="not-start"><div class="coupon_title">即将进入心愿专区</div></div>
 		<ul class="last-wrap-list clearfix" id="act_list">	
 			<!--@php  foreach($toBeShow as $item){  @-->
 			<li class="per_indiana" style="position: relative;"> 

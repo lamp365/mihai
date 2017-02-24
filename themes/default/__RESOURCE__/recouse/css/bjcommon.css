@@ -4988,9 +4988,10 @@ del {
 	}
 	.country img{
 		border-radius: 50%;
-		width: 28px;
-		height:28px;
+		width: 20px;
+		height:20px;
 		float: left;
+		margin-top: 5px;
 	}
 	.country2 img{
 		width: 25px;

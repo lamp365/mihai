@@ -8,26 +8,17 @@
  */
 class WeixinTool
 {
-    public  function pop_text($toUser = '')
+    /**
+     * 礼品满人的时候推送该信息
+     * @param string $toUser
+     * @param string $template_id   微信消息模板id
+     * @param string $share   该心愿商品
+     */
+    public  function pop_text($toUser ,$template_id,$share)
     {
         $weixin_access_token = get_weixin_token();
-        $url         = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$weixin_access_token}";
-        $template_id = 'mJnqWMTB7HlkRA8QpQ7etz1IDqBdkYvHvebVE3J9l7Q';
-        $data = array(
-            'touser'      => $toUser,
-            "template_id" => $template_id,
-            "url"         => "http://www.baidu.com",  //可给也可以不给
-            'data'        => array(
-                        'first'=>array(
-                            'value'=>'你，对了就是你',
-                            'coloe'=>'#abcdef',
-                        ),
-                        'name'=>array(
-                            'value'=> "<a href='http://www.baidu.com'>快来领取呀</a>",
-                            'color'=>'red',
-                        ),
-            ),
-        );
+        $url       = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$weixin_access_token}";
+        $data      = getWeixinPopMsg($toUser,$template_id,$share);
         $post_data = json_encode($data);
         $res       = http_post($url,$post_data);
         $res       = json_decode($res,true);
@@ -136,6 +127,7 @@ class WeixinTool
      * @param $type image  voice  video thumb
      */
     public function uploadTempMedia($file,$type='image'){
+        $file = realpath($file);
         $access_token = get_weixin_token();
         $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={$access_token}&type={$type}";
 
