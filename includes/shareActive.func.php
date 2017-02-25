@@ -313,13 +313,13 @@ function get_active_total_people(){
         $memcache = new Mcache();
         $total    = $memcache->get('shareActiveTotalPeople');
         if(!$total){
-            $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+            $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where request_type=1");
             $memcache->set('shareActiveTotalPeople',$total,time()+3600*2); //存两个小时
         }else{
 //            logRecord("已经从缓存中得到总数：{$total}",'shareactive');
         }
     }else{
-        $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+        $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request')."  where request_type=1");
     }
     return $total+43584;
 }
@@ -495,7 +495,7 @@ function cut_title($title){
  */
 function getRecorderCount($openid,$award_id){
     if($openid){
-        $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id = $award_id and openid='{$openid}'");
+        $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}' and request_type=1");
     }else{
         $total = 0;
     }

@@ -52,7 +52,7 @@
         //许愿总数
         $wish_total_num = 0;
         if($openid)
-           $wish_total_num  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid}");
+           $wish_total_num  = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where openid={$openid} and request_type=1");
 
         if($config['active_type'] == 1){
             //心愿许愿  模板
@@ -69,7 +69,7 @@
             die(showAjaxMess(1000,'您还没登录！'));
         }
         $award_id = $_GP['award_id'];
-        $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}' order by id desc");
+        $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$openid}' and request_type=1 order by id desc");
         if(empty($recorder)){
             die(showAjaxMess(1002,'您暂无参与记录'));
         }else{
@@ -84,7 +84,7 @@
             //获取中奖人
             $drawer = mysqld_select("select openid from ".table('addon7_request')." where award_id = {$award_id} and status=1");
             if($drawer){
-                $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$drawer['openid']}' order by id desc");
+                $recorder = mysqld_selectall("select createtime,star_num,star_num_order from ".table('addon7_request')." where award_id = {$award_id} and openid='{$drawer['openid']}' and request_type=1 order by id desc");
                 die(showAjaxMess(200,$recorder));
             }else{
                 die(showAjaxMess(1002,'参数有误'));
@@ -158,13 +158,14 @@
             if($award['amount'] == $dicount){
                 //新添加一个商品为满人，统计是否有6个商品为满人的
                 $is_full = checkAwardGoodsIsFull();
+
             }
             //把参与总数计入缓存
             if(class_exists('Memcached')){
                 $memcache = new Mcache();
                 $total    = $memcache->get('shareActiveTotalPeople');
                 if(!$total){
-                    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request'));
+                    $total = mysqld_selectcolumn("select count(id) from ".table('addon7_request')." where request_type=1");
                 }
                 $total = $total+1;
                 $memcache->set('shareActiveTotalPeople',$total,time()+3600*2);
@@ -172,7 +173,30 @@
 
             if($is_full){
                 //刷新页面 的标识
-                die(showAjaxMess(202,"恭喜您许愿成功!"));
+                if(class_exists('Memcached')) {
+                    //缓存一个key 5分钟，以免被人刷 多次群发  群发后删除该key
+                    $memcache2 = new Mcache();
+                    $memcache2->set('to_pop_weixin_full_msg','yes',time()+300);
+                }
+                die(showAjaxMess(202,array(
+                    'tit'=>"获得心愿数字:{$star_num_arr['star_num_order']}",
+                    'des'=>'已成功点亮心愿啦！',
+                    'id' => $award['id']
+                )));
+            }
+            if($award['amount'] == $dicount){
+                //当有一个满的时候，群发微信推送 以203作为标记告诉前端
+                if(class_exists('Memcached')) {
+                    //缓存一个key 5分钟，以免被人刷 多次群发  群发后删除该key
+                    $memcache2 = new Mcache();
+                    $memcache2->set('to_pop_weixin_full_msg','yes',time()+300);
+                }
+                die(showAjaxMess(203,array(
+                    'tit'=>"获得心愿数字:{$star_num_arr['star_num_order']}",
+                    "des"=>"许愿越多，实现几率越大哟~~",
+                    'id' =>$award['id']
+                )));
+
             }
             if($star_num_arr['star_num_order'] == 1){
                 $des = "您是第一个许愿者哦，棒棒的！";
@@ -277,13 +301,13 @@
         $start_time = $zero_time + 20*3600;
         $end_time   = $start_time+ 1800;
         $now_time   = time();
-        $now_time   = '1487938200';
+//        $now_time   = $start_time +2; //用于调试
         if(class_exists('Memcached')){
             $memcache = new Mcache();
             $m_res    = $memcache->get('shareActive_popMsg');
             if($m_res){
                 //如果缓存还在，说明之前推送过了
-                return '';
+                //return '';
             }
         }
         if($now_time >= $start_time && $now_time<=$end_time){
@@ -317,6 +341,36 @@
                 $memcache->set('shareActive_popMsg','200',time()+3600*20);
             }
         }
+
+    }else if($op == 'pop_full_msg'){
+        //当一个满人的时候推送信息
+        if(empty($_GP['id'])){
+            return '';
+        }
+        $res = '';
+        if(class_exists('Memcached')) {
+            $memcache = new Mcache();
+            $res = $memcache->get('to_pop_weixin_full_msg');
+        }
+        if(empty($res)){
+            //return '';
+        }
+        //查找所有微信用户
+        $weixin_member = mysqld_selectall("select openid,weixin_openid from ".table('weixin_wxfans'));
+        if(empty($weixin_member)) {
+            return '';
+        }
+        $data = mysqld_select("select * from ".table('addon7_award')." where id={$_GP['id']}");
+        foreach($weixin_member as $one_member){
+            //找到微信用户
+            $weixin_member = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where openid='{$one_member['openid']}'");
+            if(empty($weixin_member)){
+                continue;
+            }
+            $weixin_tool = new WeixinTool();
+            $weixin_tool -> pop_text($weixin_member['weixin_openid'],'MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU',$data);
+        }
+
     }else if($op == 'upload_media'){
         //用于以后测试线上的 媒体上传
         $weixin_tool = new WeixinTool();
