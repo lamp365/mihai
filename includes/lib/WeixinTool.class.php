@@ -167,12 +167,20 @@ class WeixinTool
         $post_data = json_encode($post_data);
         $res = http_post($url,$post_data);
         $res = json_decode($res,true);
-        if(!empty($res['item'])){
-            //解析内容，组装成pop_custom_msg中的信息格式 用于推送客服消息
-            return $this->getMediaContentToPopMsg($res['item'],$type);
-        }else{
-            return '';
+        switch($type){
+            case 'image':
+                //有需要的时候载补充
+                break;
+            case 'news':
+                if(!empty($res['item'])){
+                    //解析内容，组装成pop_custom_msg中的信息格式 用于推送客服消息
+                    return $this->getMediaContentToPopMsg($res['item'],$type);
+                }else{
+                    return '';
+                }
+                break;
         }
+
     }
 
     /**
