@@ -307,7 +307,7 @@
             $m_res    = $memcache->get('shareActive_popMsg');
             if($m_res){
                 //如果缓存还在，说明之前推送过了
-                //return '';
+                return '';
             }
         }
         if($now_time >= $start_time && $now_time<=$end_time){
@@ -353,7 +353,7 @@
             $res = $memcache->get('to_pop_weixin_full_msg');
         }
         if(empty($res)){
-            //return '';
+            return '';
         }
         //查找所有微信用户
         $weixin_member = mysqld_selectall("select openid,weixin_openid from ".table('weixin_wxfans'));
