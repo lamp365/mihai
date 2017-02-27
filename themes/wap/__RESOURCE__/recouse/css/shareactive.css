@@ -63,7 +63,8 @@ body,html{
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
-        padding: 0 2.5%;
+    padding: 0 2.5%;
+    color: #ccc;
 }
 .last-wrap-list li:nth-child(odd){
 	margin-left: 2%;

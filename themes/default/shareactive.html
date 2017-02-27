@@ -191,11 +191,12 @@
 				</div>
 				</div>
 			</div>
+			<!--@php if(!empty($toBeDraw)){    @-->
 			<div class="recommend_list_two">
 				<div class="recommend_list_two_head" style="background: url(__RESOURCE__/recouse/images/miandan_list_head00.jpg);"></div>
 				<div class="viewport-area-list">
 					<ul class="indiana_list">
-						<!--@php if(!empty($toBeDraw)){   foreach($toBeDraw as $item){  @-->
+						<!--@php foreach($toBeDraw as $item){  @-->
 						<li class="per_indiana"> 
 							<!--商品图片-->
 							<div class="imgWrap" data-id="<!--@php echo $item['id'];@-->">
@@ -227,12 +228,12 @@
 								<span class="love-num" data-id="<!--@php echo $item['id'];@-->" ><!--@php echo $item['wish_num'];@--></span>
 							</div>
 						</li>
-						<!--@php }}  @-->
+						<!--@php }  @-->
 					</ul>
 				</div>
 				<div class="recommend_list_two_footer"></div>
 			</div>
-
+<!--@php } @-->
 			<!--推荐商品-->			
 			<div class=" recommend_list" style="height: 698px;background: url(__RESOURCE__/recouse/images/miandan_page02.jpg) no-repeat center center;">
 				<div class="viewport-area" style="height: 698px;">
