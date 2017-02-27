@@ -732,9 +732,18 @@
 				}
 				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
 				$.post(url,{'award_id':award_id},function(data){
-					if(data.errno == 202){
-						alert(data.message);
+					if(data.errno == 202){  //6个全满
+						var msg = data.message;
+						//推送信息
+						pop_weixin_msg(msg.id);
+						alert(msg.tit,msg.des,'',{type:'success'});
 						window.location.reload();
+					}
+					if(data.errno == 203){  //满1个
+						var msg = data.message;
+						//推送信息
+						pop_weixin_msg(msg.id);
+						alert(msg.tit,msg.des,'',{type:'success'});
 					}
 					if( data.errno == 200 ){
 						var msg = data.message;
@@ -786,6 +795,15 @@
 					}
 				},'json')
 			})
+
+			function pop_weixin_msg(id){
+				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'pop_full_msg'));@-->";
+				url = url + "&id="+id;
+				$.getJSON(url,function(data){
+
+				})
+			}
+
 			//将后台返回的时间戳格式化为时间格式
 			function Stringtotime(time){
 				time = time*1000;

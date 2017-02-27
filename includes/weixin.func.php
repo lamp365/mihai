@@ -92,6 +92,7 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 	switch($template_id){
 		//许愿词满了
 		case "MKqE5TWNvq1WWV3bry4jHgsGzGILblr59a3mcuHHTaU":
+			$price = round($data_arr['price'],2);
 			$data = array(
 				'touser'      => $toUser,
 				"template_id" => $template_id,
@@ -102,15 +103,15 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 						'color'=>'#4169e1',
 					),
 					'shop' => array(
-						'value'=>'美的（Midea）电水壶WH517E2b 304不锈钢电热水壶 1.7L容量',
+						'value'=>$data_arr['title'],
 						'color'=>'#080808',
 					),
 					'price' => array(
-						'value'=>'198.00￥',
+						'value'=>"{$price}￥",
 						'color'=>'#fb4b0e',
 					),
 					'num' => array(
-						'value'=>'265人',
+						'value'=>"{$data_arr['amount']}人",
 						'color'=>'#fb4b0e',
 					),
 					'tips'=>array(
