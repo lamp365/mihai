@@ -123,16 +123,18 @@ if ( $goods['type'] == 1 && $timeout == 0 ){
              // 获取团购的评论信息
 			 if(!empty($comments)){
 				//获取评论对应的图片
-				foreach($comments as $k=> $row){
+				foreach($comments as $k=> &$row){
+					$user_info = getUserFaceAndName($row['openid'],$row['username'],$row['face']);
+					$row['username'] = $user_info['username'];
+					$row['face']     = $user_info['face'];
 					$comments[$k]['piclist'] = mysqld_selectall("select img from ". table('shop_comment_img') ." where comment_id={$row['id']}");
 			   }
 			   if(!empty($_POST['page'])) {  //wap端手机页面上会滚动加载评论数据
 				   $html = '';
 				   foreach($comments as $key=>$rows){
-					   $username = getUserFaceAndNameHtml($rows['openid'],$rows['username']);
-					   $system   =  getSystemType($rows['system']);
+					   $system    =  getSystemType($rows['system']);
 					   $html .= "<li>
-									<div class='user-name'>用户名：{$username}</div> <span class='date-time'>来自 {$system} 版</span>
+									<div class='user-name'>用户名：{$rows['username']}</div> <span class='date-time'>来自 {$system} 版</span>
 									<h4 class='detail-content'>{$rows['comment']}</h4>";
 					   if(!empty($rows['piclist'])){
 						   $html .= "<ul class='img-list' data-clicked='0' data-key='{$key}'>";

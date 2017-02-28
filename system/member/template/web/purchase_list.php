@@ -68,6 +68,9 @@
 					<th style="text-align:center;">手机号码</th>
 					<th style="text-align:center;">用户名</th>
 					<th style="text-align:center;">email</th>
+                    <th style="text-align:center;">QQ</th>
+					<th style="text-align:center;">旺旺</th>
+                    <th style="text-align:center;">微信</th>
 					<th style="text-align:center;">分配业务员</th>
 					<th style="text-align:center;">平台名称</th>
 					<th style="text-align:center;">平台链接</th>
@@ -91,6 +94,15 @@
 									</td>
 									<td class="text-center email">
 											<?php  echo isSelfAgent($v['email'],$v['relation_uid']);?>
+									</td>
+                                    <td class="text-center email">
+											<?php  echo isSelfAgent($v['QQ'],$v['relation_uid']);?>
+									</td>
+									<td class="text-center email">
+											<?php  echo isSelfAgent($v['wanwan'],$v['relation_uid']);?>
+									</td>
+									<td class="text-center email">
+											<?php  echo isSelfAgent($v['weixin'],$v['relation_uid']);?>
 									</td>
 									<td class="text-center email">
 										<?php  echo getAdminName($v['relation_uid']);?>

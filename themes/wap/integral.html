@@ -267,6 +267,17 @@
 		.state-info{
 			color: #5bc0de;
 		}
+		.no-record{
+			display: block;
+			width: 100%;
+			max-width: 100%;
+		}
+		.no-record-detail{
+			text-align: center;
+			margin-top: 15px;
+			color: #6d6d6d;
+    		font-size: 18px;
+		}
 	</style>
 </head>
 <body>
@@ -307,7 +318,12 @@
 			<!--@php }else{ @-->
 			<div class="integral-number">您的积分：<span><a href="<!--@php echo mobile_url('login');@-->">未登录</a></span></div>
 			<!--@php } @-->
-			<div class="infobox">
+
+	      <!--@php if($config['open_gift_change'] == 0){   @-->
+	      		<img class="no-record" src="__RESOURCE__/recouse/images/no_record_bg.png">
+				<div class="no-record-detail">暂无可兑换商品</div>
+	      <!--@php }else{   @-->
+	       	<div class="infobox">
 				<h2>收货信息</h2>
 				<!--@php if(!empty($defaultAddress)){ @-->
 				<p class="address_item address_xinxi">
@@ -320,10 +336,14 @@
 				</p>
 				<!--@php } @-->
 				<p style="border-bottom: none;">
-					<button type="button" class="btn btn-danger" onclick="location.href='<!--@php  echo mobile_url('address',array('from'=>'integral','returnurl'=>urlencode($returnurl)))@-->'">管理收货地址</button>
+					<button type="button" class="btn btn-danger" onclick="location.href='<!--@php  echo mobile_url('address',array('no_identy'=>1,'from'=>'integral','returnurl'=>urlencode($returnurl)))@-->'">管理收货地址</button>
 				</p>
 			</div>
-			
+	      <!--@php }   @-->
+
+		     
+	
+	
 			<ul class="integral-shop-list clearfix">
 			<!--@php if(!empty($goods_list)){ foreach($goods_list as $items){ @-->
 				<li>
@@ -335,48 +355,40 @@
 					<div class="progress" style="height: 15px;position:relative;">
 						<!--@php $jindutiao = round($credit*100/$items['jifen_change'],2); @-->
 		                <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="" style="width:<!--@php echo $jindutiao;@-->%;"></div>
-		                 <div class="progress-detail"><!--@php echo $credit;@-->/<!--@php echo $items['jifen_change'];@--></div>
+		                 <div class="progress-detail"><span><!--@php echo $credit;@--></span>/<!--@php echo $items['jifen_change'];@--></div>
 		            </div>
-		            <div class="exchange" onclick="exchange(<!--@php echo $items['id'];@-->)">立即兑换</div>
+		            <div class="exchange" onclick="exchange(<!--@php echo $items['id'];@-->,<!--@php echo $items['jifen_change'];@-->)">立即兑换</div>
 				</li>
 			<!--@php }} @-->
 			</ul>
 		</div>
 		<div class="tab-div">
 			<ul class="record-list">
+				<!--@php if(empty($changeRecorder)){  @-->
+					<img class="no-record" src="__RESOURCE__/recouse/images/no_record_bg.png">
+					<div class="no-record-detail">暂无兑换记录</div>
+				<!--@php }else{  @-->
+				<!--@php foreach($changeRecorder as $one_corder){   @-->
 				<li class="clearfix">
 					<div class="record-time">
-						<span class="record-time-span">2017-02-24 10:00:00</span>
-						<span class="consume-number">100积分</span>
+						<span class="record-time-span"><!--@php echo date("Y-m-d H:i:s",$one_corder['createtime']);@--></span>
+						<span class="consume-number"><!--@php echo $one_corder['jifen_change'];@-->积分</span>
 					</div>
 					<div class="record-img">
-						<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170220173958aab955bca75.jpg?x-oss-process=image/resize,m_fixed,h_350,w_350">
+						<img src="<!--@php echo download_pic($one_corder['logo'],100,100,2);@-->">
 					</div>
-					<div class="record-title">你兑换了一个冰冰</div>
-					<div class="record-state state-success">审核成功</div>
-				</li>
-				<li class="clearfix">
-					<div class="record-time">
-						<span class="record-time-span">2017-02-24 10:00:00</span>
-						<span class="consume-number">100积分</span>
-					</div>
-					<div class="record-img">
-						<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170220173958aab955bca75.jpg?x-oss-process=image/resize,m_fixed,h_350,w_350">
-					</div>
-					<div class="record-title">你兑换了一个冰冰</div>
-					<div class="record-state state-fail">审核失败</div>
-				</li>
-				<li class="clearfix">
-					<div class="record-time">
-						<span class="record-time-span">2017-02-24 10:00:00</span>
-						<span class="consume-number">100积分</span>
-					</div>
-					<div class="record-img">
-						<img src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201702/20170220173958aab955bca75.jpg?x-oss-process=image/resize,m_fixed,h_350,w_350">
-					</div>
-					<div class="record-title">你兑换了一个冰冰</div>
+					<div class="record-title"><!--@php echo $one_corder['title'];@--></div>
+					<!--@php if($one_corder['jifen_status'] == 1){ @-->
 					<div class="record-state state-info">审核中</div>
+					<!--@php }else if($one_corder['jifen_status'] == 2){ @-->
+					<div class="record-state state-success">审核成功</div>
+					<!--@php }else{ @-->
+					<div class="record-state state-fail">审核失败</div>
+					<!--@php } @-->
 				</li>
+				<!--@php } @-->
+				<!--@php }  @-->
+
 			</ul>
 		</div>
 	</div>
@@ -393,10 +405,13 @@
 				$(".integral-tab-ul li").removeClass("li-active");
 				$(this).addClass("li-active");
 				$(".integral .tab-div").eq(tab_index).show().siblings(".tab-div").hide();
+				if( tab_index==1 ){
+					$("img.lazy").lazyload();//因为一开始图片被display:none设置了无法触发懒加载，所以主动触发
+				}
 			});
 			$("img.lazy").lazyload({
 				placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
-				threshold : 0, //控制灵敏度
+				threshold : 200, //控制灵敏度
 				effect : "fadeIn"
 			});
 		});
@@ -435,7 +450,7 @@
 			$("#express").attr("src",express_src).show();
 		}
 		//立即兑换商品
-		function exchange(productid){
+		function exchange(productid,need_jifen){
 			var hasAddress = $(".address_xinxi").length;
 			if( !openid_val){
 				confirm('您还没登录！','',function(isconfirm){
@@ -449,11 +464,24 @@
 			if( hasAddress==0 ){
 				alert('请添加收货地址');
 			}else{
+				var jifen = $(".integral-number span").html();
+				jifen = parseInt(jifen);
+				if(jifen < need_jifen){
+					alert("您的积分不足以兑换","当前此礼品所需积分为"+need_jifen);
+					return '';
+				}
 				confirm('确认兑换该商品？','',function(isconfirm){
 					if(isconfirm){
 						var url ="<!--@php echo mobile_url('integral',array('op'=>'change'));@-->";
 						$.post(url,{id:productid},function(data){
-
+							if( data.errno == 200 ) {
+								var msg = data.message;
+								alert(msg.tit, msg.des, '', {type: 'success'});
+								$(".integral-number span").html(jifen-need_jifen);
+								$(".progress-detail span").html(jifen-need_jifen);
+							}else{
+								alert(data.message);
+							}
 						},"json");
 					}
 				},{confirmButtonText: '确认兑换', cancelButtonText: '稍后兑换', width: 330});

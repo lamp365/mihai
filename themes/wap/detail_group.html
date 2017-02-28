@@ -613,7 +613,7 @@
                         <ul class="show_comment">
                             <!--@php  if(is_array($comments)) { foreach($comments as $key => $row) { @-->
                             <li>
-                                <div class="user-name">用户名：<!--@php echo getUserFaceAndNameHtml($row['openid'],$row['username']); @--></div>
+                                <div class="user-name">用户名：<!--@php echo $row['username']; @--></div>
                                 <span class="date-time">来自 <!--@php echo getSystemType($row['system']);@--> 版</span>
                                 <h4 class="detail-content">
                                     <!--@php  echo $row['comment']; @-->

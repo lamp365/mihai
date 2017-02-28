@@ -93,7 +93,16 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            line-height: 40px;
+            color: #999;
         }
+        .user-name img{
+        	width:40px !important;
+        	height: 40px !important;
+        	border-radius: 50%;
+        	display: inline-block !important;
+        	margin-right: 5px;
+        }       
         .date-time{
             float: left;
             width: 50%;
@@ -101,11 +110,13 @@
             margin-bottom: .5em;
             color: #CCCCCC;
             font-size:12px;
+            line-height: 40px;
         }
         .img-list{
             overflow: hidden;
             width: 100%;
             margin-bottom: .5em;
+            margin-left: 50px;
         }
         .img-list li{
             float: left;
@@ -125,6 +136,7 @@
             margin-bottom: .5em;
             line-height: 1.5;
             clear: both;
+            padding-left: 50px;
         }
         .tempWrap{
             position:relative;
@@ -181,8 +193,7 @@
             padding: 0!important;
         }
         /*评论回复样式*/
-		.comment_return{
-			width: 100%;
+		.comment_return{			
 			overflow: hidden;
 			background: #F8F8F8;
 			border-radius: 5px;
@@ -190,6 +201,8 @@
 			padding: 10px;
 			box-sizing: border-box;
 			color:#CC7E00;
+			margin-left:50px;
+			box-sizing: border-box;
 		}
 		/*加载更多评论*/
 		#show_more{
@@ -479,7 +492,10 @@
                         <ul class="show_comment">
                             <!--@php  if(is_array($comments)) { foreach($comments as $key => $row) { @-->
                             <li>
-                                <div class="user-name">用户名：<!--@php echo getUserFaceAndNameHtml($row['openid'],$row['username']); @--></div>
+                                <div class="user-name">
+                                	<img src="<!--@php echo $row['face'];@-->"/>
+                                	<!--@php echo $row['username']; @-->
+                                </div>
                                 <span class="date-time">来自 <!--@php echo getSystemType($row['system']);@--> 版</span>
                                 <h4 class="detail-content">
                                     <!--@php  echo $row['comment']; @-->
@@ -932,7 +948,8 @@
 		var picurl = "";
 		var reply = data.reply; //评论回复
 		var li = '<li>'+
-                    '<div class="user-name">用户名：'+data.username+'</div>'+
+                    '<div class="user-name">'+
+                    	'<img src="'+data.face+'"/>'+data.username+'</div>'+
                     '<span class="date-time">来自 '+equip(data.system)+'版</span>'+
                     '<h4 class="detail-content">'+data.comment+'</h4>'
 		 if(pic.length != 0){

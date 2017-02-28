@@ -583,29 +583,29 @@ function member_goldinfo($openid, $fee, $type, $remark, $act_filed='gold',$updat
  * @return string
  * @content 有的评论来自后台录入的，有假的用户名和头像。
  */
-function getUserFaceAndNameHtml($openid,$name,$isface = ''){
-    $user= mysqld_select("select realname,avatar,mobile from ". table('member') ." where openid='{$openid}'");
+function getUserFaceAndName($openid,$name,$face){
     if(empty($name)){
+        //名字是空的 头像也一定是空，说明该用户是真实用户评论
+        $user = mysqld_select("select realname,avatar,mobile from ". table('member') ." where openid='{$openid}'");
         if(!empty($user['realname'])){
             $name = substr_cut($user['realname']);
         }else{
             $name = substr_cut($user['mobile']);
         }
-    }else{
-        $name = substr_cut($name);
-    }
-
-    if(empty($isface)){   //直接返回用户名
-        return $name;
-    }else{
         if(empty($user['avatar'])){  //返回头像和用户名
-            $face = 'http://' . $_SERVER['HTTP_HOST']. "/themes/default/__RESOURCE__/recouse/images/userface.png";
+            $face = WEBSITE_ROOT. "themes/default/__RESOURCE__/recouse/images/userface.png";
         }else{
             $face = download_pic($user['avatar'],'40',40,1);
         }
-        return "<img src='{$face}'/><p>{$name}</p>";
+    }else{
+        $name = substr_cut($name);
+        if(empty($face)){
+            $face = WEBSITE_ROOT. "themes/default/__RESOURCE__/recouse/images/userface.png";
+        }else{
+            $face = download_pic($face,'40',40,2);
+        }
     }
-
+    return array('face'=>$face,'username'=>$name);
 }
 //将用户名或者手机号进行处理，中间用星号表示
 function substr_cut($str){

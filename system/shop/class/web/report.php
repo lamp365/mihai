@@ -147,7 +147,7 @@ if($report=='orderreport')
 				$objPHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(10); 
 				$objPHPExcel->getActiveSheet()->setTitle('订单统计');
 				break;
-			default:
+			case 2:
 				//彩虹快递发货订单
 				$objPHPExcel->setActiveSheetIndex(0)
 							->setCellValue('A1', '商家订单号')
@@ -179,7 +179,6 @@ if($report=='orderreport')
 				   $goods_nums = 0;
 					// 根据订单里的产品进行行设置，如果$itemdline =0 ; 则代表是第一行
 					foreach($item['goods'] as $itemgoods){
-						
 						$num = $itemgoods['total'];
 						// 开始考虑组合产品
 						if (!empty($itemgoods['Supplier'])){
@@ -197,9 +196,9 @@ if($report=='orderreport')
                                             continue;
 									   }
 									    $nums = $num * $goods_num;
-									    $goods_title = mysqld_select('SELECT * FROM '.table('shop_goods').' WHERE id = '.$goods_id);
+									    //$goods_title = mysqld_select('SELECT * FROM '.table('shop_goods').' WHERE id = '.$goods_id);
 										// 开始获取品牌
-										$brand =  mysqld_select('SELECT brand FROM '.table('shop_brand').' WHERE id = '.$goods_title['brand']);
+										//$brand =  mysqld_select('SELECT brand FROM '.table('shop_brand').' WHERE id = '.$goods_title['brand']);
 									    $objPHPExcel->setActiveSheetIndex(0)	
 													->setCellValue('A'.$i, $item['ordersn'])
 													->setCellValue('B'.$i, $item['address_realname'])
@@ -232,7 +231,7 @@ if($report=='orderreport')
 						  }else{
 								$itemdline=$itemdline+1;
 						  }
-						$brand =  mysqld_select('SELECT brand FROM '.table('shop_brand').' WHERE id = '.$itemgoods['brand']);
+						//$brand =  mysqld_select('SELECT brand FROM '.table('shop_brand').' WHERE id = '.$itemgoods['brand']);
 						$objPHPExcel->setActiveSheetIndex(0)	
 								->setCellValue('A'.$i, $item['ordersn'])
 								->setCellValue('B'.$i, $item['address_realname'])
@@ -313,6 +312,182 @@ if($report=='orderreport')
 				$objPHPExcel->getActiveSheet()->getColumnDimension('S')->setWidth(8); 
 				$objPHPExcel->getActiveSheet()->getColumnDimension('T')->setWidth(8); 
 				$objPHPExcel->getActiveSheet()->getColumnDimension('U')->setWidth(8); 
+				$objPHPExcel->getActiveSheet()->setTitle('订单统计');
+				break;
+		default:
+                  $objPHPExcel->setActiveSheetIndex(0)
+							->setCellValue('A1', '业务员')
+							->setCellValue('B1', '订单编号')
+							->setCellValue('C1', '收货人名称')
+							->setCellValue('D1', '收货人电话')
+			                ->setCellValue('E1', '商品名称或类别-中文')
+							->setCellValue('F1', '商品货号')
+							->setCellValue('G1', '成交单价')	
+							->setCellValue('H1', '购买数量')
+			                ->setCellValue('I1', '运费')
+							->setCellValue('J1', '成交总价')
+			                ->setCellValue('K1', '下单时间')
+							->setCellValue('L1', '付款时间')
+							->setCellValue('M1', '订单状态');				
+				$i=2;
+				$sn = 0;
+				$index=0;
+				$countmoney=0;
+				foreach($list as $item){
+					$ii = $i;
+					$itemdline=0;
+					$sn++;
+					//status -7 后台付款审核 -6已退款 -5已退货 -4退货中， -3换货中， -2退款中，-1取消状态，0普通状态，1为已付款，2为已发货，3为成功
+					$states = array(
+                         '-7'=>'后台付款审核',
+						 '-6'=>'已退款',
+						 '-5'=>'已退货',
+						 '-4'=>'退货中',
+						 '-3'=>'换货中',
+						 '-2'=>'退款中',
+						 '-1'=>'取消状态',
+						 '0'=>'普通状态',
+						 '1'=>'已付款',
+						 '2'=>'已发货',
+						 '3'=>'确认收货'
+					);
+					// 根据订单里的产品进行行设置，如果$itemdline =0 ; 则代表是第一行
+					foreach($item['goods'] as $itemgoods){
+						   if($itemdline!=0){
+							$item['ordersn']=$item['address_realname']=$item['address_mobile']='';
+											$itemdline=$itemdline+1;
+									  }else{
+											$itemdline=$itemdline+1;
+									  }
+						    // 开始找出货号
+							$goodsn =  mysqld_select("SELECT goodssn FROM ".table('shop_goods')." WHERE id = ".$itemgoods['shopgoodsid']);
+							$itemdatas['title'] = $itemgoods['title'];
+							$itemdatas['goodsn'] = $goodsn['goodssn'];
+							$itemdatas['Supplier']=$itemdatas['Supplier'].$sline.$itemgoods['Supplier'];
+							$itemdatas['price']=$itemgoods['orderprice'];
+							$itemdatas['total']=$itemgoods['total'];
+							$itemdline=$itemdline+1;
+							$index++;
+							 $num = $itemgoods['total'];
+							 // 组合商品
+							if (!empty($itemgoods['Supplier'])){
+							   $itemgoods['Supplier'] = str_replace('，',',',$itemgoods['Supplier']);
+							   $goods = explode(',',$itemgoods['Supplier']);
+							   foreach ( $goods as $goods_value ){
+								       list($goods_id,$goods_num) = explode('*', $goods_value );
+									   if ( !is_numeric($goods_id ) &&  !is_numeric($goods_num ) ){
+                                            continue;
+									   }
+									   $nums = $num * $goods_num;
+									   $goods_title = mysqld_select('SELECT subtitle FROM '.table('shop_goods').' WHERE id = '.$goods_id);
+									   $objPHPExcel->setActiveSheetIndex(0)		
+											->setCellValue('A'.$i, getAdminName($item['relation_uid']))
+											->setCellValue('B'.$i, $item['ordersn'])
+											->setCellValue('C'.$i, $item['address_realname'])
+											->setCellValue('D'.$i, $item['address_mobile'])
+											->setCellValue('E'.$i, '')
+											->setCellValue('F'.$i, '')
+											->setCellValue('G'.$i, $nums)
+											->setCellValue('H'.$i, '')
+											->setCellValue('I'.$i, $k)
+											->setCellValue('J'.$i, '')
+											->setCellValue('K'.$i, '')
+											->setCellValue('L'.$i, $goods_title['subtitle'])
+											->setCellValue('M'.$i, $states[$item['status']]);
+										 $i++;
+							   }
+						  }else{
+							/*
+														->setCellValue('A1', '业务员')
+							->setCellValue('B1', '订单编号')
+							->setCellValue('C1', '收货人名称')
+							->setCellValue('D1', '收货人电话')
+			                ->setCellValue('E1', '商品名称或类别-中文')
+							->setCellValue('F1', '商品货号')
+							->setCellValue('G1', '成交单价')	
+							->setCellValue('H1', '购买数量')
+			                ->setCellValue('I1', '运费')
+							->setCellValue('J1', '成交总价')
+			                ->setCellValue('K1', '下单时间')
+							->setCellValue('L1', '付款时间')
+							->setCellValue('M1', '订单状态');	*/	
+					     	$objPHPExcel->setActiveSheetIndex(0)		
+								->setCellValue('A'.$i, getAdminName($item['relation_uid']))
+								->setCellValue('B'.$i, $item['ordersn'])
+								->setCellValue('C'.$i, $item['address_realname'])
+								->setCellValue('D'.$i, $item['address_mobile'])
+								->setCellValue('E'.$i, $itemdatas['title'])
+								->setCellValue('F'.$i, ' '.$itemdatas['goodsn'])
+								->setCellValue('G'.$i, $itemdatas['price'])
+								->setCellValue('H'.$i,  $num);
+								//$objPHPExcel->getActiveSheet()->getStyle('A'.$i.':P'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);  
+								//$objPHPExcel->getActiveSheet()->getStyle( 'J'.$i.':P'.$i)->getAlignment()->setWrapText(true);  
+								//$objBorderA5 = $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':Q'.$i)->getBorders();
+								//$objBorderA5->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+								//$objBorderA5->getTop()->getColor()->setARGB('FFFF0000'); 
+								//$objBorderA5->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+								//$objBorderA5->getBottom()->getColor()->setARGB('FFFF0000');
+								//$objPHPExcel->getActiveSheet()->getStyle('A'.$i.':P'.$i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT)
+						     $i++;	
+						}
+						
+                      
+				}
+				  // 进行备注的操作
+				        if (( $i-1 ) > $ii){
+							     $objPHPExcel->setActiveSheetIndex(0)	
+								->setCellValue('I'.$ii, $item['dispatchprice'])
+								->setCellValue('J'.$ii, $item['price'])
+								->setCellValue('K'.$ii, date('Y-m-d H:i:s', $item['createtime']))
+								->setCellValue('L'.$ii, empty($item['paytime'])?'':date('Y-m-d H:i:s', $item['paytime']))
+								->setCellValue('M'.$ii, $states[$item['status']]);
+								 $objPHPExcel->getActiveSheet()->mergeCells('I'.$ii.':I'.($i-1));
+								  $objPHPExcel->getActiveSheet()->mergeCells('J'.$ii.':J'.($i-1));
+								  $objPHPExcel->getActiveSheet()->mergeCells('K'.$ii.':K'.($i-1));
+								  $objPHPExcel->getActiveSheet()->mergeCells('L'.$ii.':L'.($i-1));
+								  $objPHPExcel->getActiveSheet()->mergeCells('M'.$ii.':M'.($i-1));
+
+								  for ( $icolor = $ii; $icolor < $i; $icolor ++ ){
+									   $objPHPExcel->getActiveSheet()->getStyle('A'.$icolor.':M'.$icolor)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+									   $objPHPExcel->getActiveSheet()->getStyle('A'.$icolor.':M'.$icolor)->getFill()->getStartColor()->setARGB('FFFF00');
+									   $styleArray = array(  
+											  'borders' => array(  
+													'allborders' => array(  
+													   //'style' => PHPExcel_Style_Border::BORDER_THICK,//边框是粗的  
+														'style' => PHPExcel_Style_Border::BORDER_THIN,//细边框  
+													   //'color' => array('argb' => 'FFFF0000'),  
+													)
+												 )
+										);  
+										 $objPHPExcel->getActiveSheet()->getStyle('A'.$icolor.':M'.$icolor)->applyFromArray($styleArray);
+								  }
+				        }else{
+						$objPHPExcel->setActiveSheetIndex(0)	
+								->setCellValue('I'.($i-1), $item['dispatchprice'])
+								->setCellValue('J'.($i-1), $item['price'])
+								->setCellValue('K'.($i-1), date('Y-m-d H:i:s', $item['createtime']))
+								->setCellValue('L'.($i-1), empty($item['paytime'])?'':date('Y-m-d H:i:s', $item['paytime']))
+								->setCellValue('M'.($i-1), $states[$item['status']]);
+						}
+				
+				
+				
+				}
+				$objPHPExcel->getActiveSheet()->getStyle('F')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+				$objPHPExcel->getActiveSheet()->getStyle('A1:P1')->getFont()->setBold(true);
+				$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(10); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(60); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(15); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(10); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(10); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(10); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(15); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(20); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(20); 
+				$objPHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(15); 
 				$objPHPExcel->getActiveSheet()->setTitle('订单统计');
 				break;
 		}

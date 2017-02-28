@@ -445,10 +445,11 @@ function get_active_shaidan(){
 /**
  * 许愿一个就获得一个幸运号码
  * @param $award_id
+ * @param $request_type  1表示心愿许愿 2表示积分许愿
  * @return array
  */
-function get_star_num($award_id){
-    $info = mysqld_select("select star_num_order from ".table('addon7_request')." where award_id={$award_id} order by star_num_order desc limit 1");
+function get_star_num($award_id,$request_type=1){
+    $info = mysqld_select("select star_num_order from ".table('addon7_request')." where award_id={$award_id} and request_type={$request_type} order by star_num_order desc limit 1");
     if(empty($info)){
         $next     = 1;
         $star_num = "p".$award_id."00000".$next;

@@ -51,6 +51,15 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 			<span class="left-span">终止日期</span>
 			<input name="end_time" id="end_time" class="li-height" type="text" value="<?php  echo empty($end_time)?date('Y-m-d',time()):date('Y-m-d',$end_time);?>" readonly="readonly"  /> 
 		</div>
+		<div class="sub-title-div">
+		<span class="left-span">品牌</span>
+		<select name="brand">
+		     <option value="-1">未选择</option>
+             <?php if ( is_array($brand) ) { foreach($brand as $brand_value){?>
+                    <option <?php if ($_GP['brand'] == $brand_value['id']) echo "selected" ?> value="<?php echo $brand_value['id']; ?>"><?php echo $brand_value['brand'] ?></option>
+			 <?php }} ?>
+		</select>
+		</div>
 		<input type="submit" name="" value=" 查  询 " class="btn btn-primary btn-sm" >&nbsp;
 		<button type="submit" name="productsalerankingEXP01" value="productsalerankingEXP01" class="btn btn-warning btn-primary btn-sm">导出excel</button>
 	</h4>
@@ -72,8 +81,8 @@ defined('SYSTEM_IN') or exit('Access Denied');?>
 						<img  src="<?php  echo WEBSITE_ROOT;?>addons/addon6/images/000<?php  echo $index;?>.gif" style="border-width:0px;">
 						<?php  } ?><?php  $index++?></td>
 					<td><?php  echo $item['title'];?></td>
-					<td><?php echo $item['salescount']==0?0:$item['salescount']?></td>
-					<td><?php echo $item['salesmoney']==0?0:$item['salesmoney']?></td>
+					<td><?php echo $item['totals']==0?0:$item['totals']?></td>
+					<td><?php echo $item['totprice']==0?0:$item['totprice']?></td>
 				</tr>
 				<?php  } } ?>
 

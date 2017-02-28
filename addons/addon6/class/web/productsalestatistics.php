@@ -14,7 +14,7 @@ $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 $admin = $_CMS['account']['username'];
 $tmall_id = mysqld_select("SELECT a.id as tma_id,b.id as sta_id FROM ".table('tmall')." as a left join ".table('tmall_staff')." as b on a.id=b.department WHERE b.admin='".$admin."'");
 if (empty($tmall_id)) {
-  message('抱歉，非店铺人员无法查看！',refresh(),'error');
+  message('抱歉，非店铺人员无法查看！');
 }
 
 $category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " where deleted=0 ORDER BY parentid ASC, displayorder DESC", array(), 'id');

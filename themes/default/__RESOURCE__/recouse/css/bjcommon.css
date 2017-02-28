@@ -5017,7 +5017,7 @@ del {
 #frees .free_info ul li{
 	width: 33%;
     float: left;
-    text-align: left;
+    text-align: center;
     font-size: 18px;
     color: #333;
 }

@@ -52,7 +52,7 @@
 		}
 	}elseif ($op == 'shopping_cart') {
 		// 购物车的猜你喜欢返回最新上架20个商品
-		$dish = mysqld_selectall("SELECT id FROM ".table('shop_dish')." ORDER BY createtime DESC LIMIT 20");
+		$dish = mysqld_selectall("SELECT id FROM ".table('shop_dish')." WHERE status=1 ORDER BY createtime DESC LIMIT 20");
 		$guess_ary = array();
 		foreach ($dish as $dv) {
 			$good = get_good(array(

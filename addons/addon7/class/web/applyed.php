@@ -21,48 +21,67 @@
            message("兑换成功",refresh(),'success');
        }
   }
-  //中奖记录
-  $win           = mysqld_select("SELECT * FROM ".table('addon7_award')." where id = {$_GP['id']}");
- $win['name']    = '';
- $win['mobile']  = '';
- $win['address'] = '';
-  if($win['state']>2){
-      // 中奖者
-      $winer          = mysqld_select("SELECT * FROM ".table('addon7_request')." WHERE status = 1 and award_id = ".$_GP['id']);
-
-      $win['name']    = $winer['realname'];
-      $win['mobile']  = $winer['mobile'];
-      $win['address'] = $winer['address'];
-  }
-
-  $pindex = max(1, intval($_GP['page']));
-  $psize = 50;
-  // 购买记录
-  $awardlist = mysqld_selectall("select * FROM " . table('addon7_request')." where award_id=".$_GP['id']." order by id asc limit ".($pindex-1).','.$psize);
-  $total = $pager = '';
-  if(!empty($awardlist)){
-     foreach($awardlist as &$draw){
-         //获取用户名字和微信信息
-         $member = mysqld_select("select realname,mobile from ".table('member')." where openid='{$draw['openid']}'");
-         $weixin = mysqld_select("select nickname from ".table('weixin_wxfans')." where openid='{$draw['openid']}'");
-         $draw['pc_name'] = $member['realname'];
-         $draw['mobile']  = $member['mobile'];
-         $draw['wx_name']  = empty($weixin)? '' : $weixin['nickname'];
-     }
-      $total     = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('addon7_request') . " WHERE  award_id=".$_GP['id']);
-      $pager      = pagination($total, $pindex, $psize);
-  }
 
 
- //获取物流信息
-$dispatchlist = mysqld_selectall("SELECT * FROM " . table('dispatch')." where sendtype=0 order by sort desc" );
+$op = empty($_GP['op']) ? 'list' : $_GP['op'];
 
-  /*foreach ( $awardlist as &$c ){
-      //没有购买数量 暂时注释
-	  if ($c['count'] > 1){
-				$c['sn'] = ($c['star_num'] + '1000000') . '-' .($c['star_num']+$c['count']-1+ '1000000');
-		}else{
-			   $c['sn'] = $c['star_num'] + '1000000' ;
-	  }
-  }*/
- include addons_page('applyed');
+if($op == 'list'){
+    $request_type = empty($_GP['request_type']) ? 1 : $_GP['request_type'];
+    $condition = " award_id = {$_GP['id']} and request_type={$request_type}";
+    if(!empty($_GP['jifen_status'])){
+        $condition .= " and jifen_status={$_GP['jifen_status']}";
+    }
+
+    //中奖记录
+    $win           = mysqld_select("SELECT * FROM ".table('addon7_award')." where id = {$_GP['id']}");
+    if($win['state']>2 && $request_type==1){
+        // 中奖者
+        $winer          = mysqld_select("SELECT * FROM ".table('addon7_request')." WHERE status = 1 and award_id = ".$_GP['id']);
+        $win['name']    = $winer['realname'];
+        $win['mobile']  = $winer['mobile'];
+        $win['address'] = $winer['address'];
+    }
+
+    $pindex = max(1, intval($_GP['page']));
+    $psize = 50;
+    // 购买记录
+    $awardlist = mysqld_selectall("select * FROM " . table('addon7_request')." where  {$condition} order by id asc limit ".($pindex-1).','.$psize);
+    $total = $pager = '';
+    if(!empty($awardlist)){
+        foreach($awardlist as &$draw){
+            //获取用户名字和微信信息
+            if($draw['realname'] == '' || $draw['mobile'] ==''){
+                $member          = mysqld_select("select realname,mobile from ".table('member')." where openid='{$draw['openid']}'");
+                $draw['pc_name'] = $member['realname'];
+                $draw['mobile']  = $member['mobile'];
+            }else{
+                $draw['pc_name'] = $draw['realname'];
+            }
+            $weixin           = mysqld_select("select nickname from ".table('weixin_wxfans')." where openid='{$draw['openid']}'");
+            $draw['wx_name']  = empty($weixin)? '' : $weixin['nickname'];
+        }
+        $total     = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('addon7_request') . " WHERE  {$condition}");
+        $pager      = pagination($total, $pindex, $psize);
+    }
+
+
+    //获取物流信息
+    if($request_type==1){
+        $dispatchlist = mysqld_selectall("SELECT * FROM " . table('dispatch')." where sendtype=0 order by sort desc" );
+    }
+
+    include addons_page('applyed');
+
+}else if($op == 'checked'){
+    if(empty($_GP['id']) || empty($_GP['status'])){
+        message("参数有误！",refresh(),'error');
+    }
+    if(is_array($_GP['id'])){
+        foreach($_GP['id'] as $id){
+            mysqld_update("addon7_request",array('jifen_status'=>$_GP['status']),array('id'=>$id));
+        }
+    }else{
+        mysqld_update("addon7_request",array('jifen_status'=>$_GP['status']),array('id'=>$_GP['id']));
+    }
+    die(showAjaxMess(200,"操作成功！"));
+}

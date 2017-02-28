@@ -38,7 +38,7 @@
                              mysqld_update('addon7_award',$date,array('id'=>$value['id']));
 							 // 根据中奖号码，对云购号码进行设置
 //							 $ob = mysqld_select("SELECT id,(star_num + count -1), star_num FROM ".table('addon7_request'). " WHERE star_num <= ".$r_s." and (star_num + count -1) >= ".$r_s." and award_id = ".$value['id']);
-							$ob  = mysqld_select("select id from ".table('addon7_request')." where award_id={$value['id']} and star_num_order={$r_s}");
+							$ob  = mysqld_select("select id from ".table('addon7_request')." where award_id={$value['id']} and request_type=1 and  star_num_order={$r_s}");
 							if ( $ob ){
 								 mysqld_update('addon7_request',array("status"=>1),array('id'=>$ob['id']));
 							 }

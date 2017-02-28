@@ -232,14 +232,14 @@ function cs_goods($categoryid,$p=0, $tip=0, $num=0, $is_guess=false){
 			break;
 	 }
 	 if ($is_guess) {
-	 	$where .= ' AND a.type = 0';
+	 	$where .= ' AND a.type = 0 AND a.status = 1';
 	 }
 	 
 	 $c_goods = get_goods(array(
 		 'table'  =>   'shop_dish',
 		 'where' =>  $where,
 		 'limit'   =>  $num,
-		 'order'  =>  'a.displayorder '
+		 'order'  =>  'a.displayorder desc'
      ));
 	 return $c_goods;
 }

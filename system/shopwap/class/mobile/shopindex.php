@@ -2,6 +2,13 @@
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
 $article_headline = getIndexArticle('headline');
+$free_result = array();
+$period = getLastWeekPeriod();					//上周一到周天的时间戳
+$free_list = mysqld_select ( "SELECT f.*,c.name FROM " . table ( 'free_config' ) .' f,'.table('shop_category'). " c where c.id = f.category_id and free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' ORDER BY f.createtime DESC " );
+
+//加入虚假数据
+$free_list['free_member_count'] = $free_list['free_member_count']+intval($free_list['free_starttime'] / 2896753);
+$free_list['free_amount'] 		= $free_list['free_amount']+intval($free_list['free_endtime'] / 16453);
 
 if (is_mobile_request()|| $_GET['wap'] == 1){
 $title = $cfg['shop_title'];

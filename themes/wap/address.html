@@ -149,7 +149,7 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="address">
 				</div>
-
+				<!--@php if(!isset($_GP['no_identy'])){ @-->
 				<label for="" class="col-sm-3 control-label">身份证姓名：</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="idname" value="<?php if (is_array($idetail)){ echo $idetail['identity_name']; } ?>">
@@ -159,12 +159,16 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="idnumber" value="<?php if (is_array($idetail)){ echo $idetail['identity_number']; } ?>">
 				</div>
-
+				<!--@php } @-->
 			</div>
 			<input type="hidden" id="addressid" value="" />
 			<div class="form-group">
 				<div class="col-sm-12">
-					<button type="button" class="btn btn-danger" onclick="saveAddress()">保存</button>
+					<!--@php if(empty($_GP['no_identy'])){ @-->
+					<button type="button" class="btn btn-danger remote_url check_identy" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address')@-->">保存</button>
+					<!--@php }else{  @-->
+					<button type="button" class="btn btn-danger remote_url" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address',array('no_identy'=>1))@-->">保存</button>
+					<!--@php } @-->
 					<button type="button" class="btn close-btn" onclick="addAddress();$('#addAddressPanel').hide();$('#addressid').val('');">取消</button>
 				</div>
 			</div>
@@ -197,8 +201,15 @@ function saveAddress() {
 	var province = $('#sel-provance').val();
 	var city = $('#sel-city').val();
 	var area = $('#sel-area').val();
-	var idname = $("#idname").val();
-	var idnumber = $("#idnumber").val();
+	var check_identy = $(".remote_url");
+	if($(check_identy).hasClass('check_identy')){
+		var idname = $("#idname").val();
+		var idnumber = $("#idnumber").val();
+	}else{
+		var idname ='xxxx';
+		var idnumber = '35032119860618323X';
+	}
+
 	var address = $('#address').val();
 	if(area==null)
 	{
@@ -242,7 +253,8 @@ function saveAddress() {
 		return;
 	}
 	tip("正在处理数据...");
-	$.post("<!--@php  echo mobile_url('address')@-->", {
+	var url = $(".remote_url").data('url');
+	$.post(url, {
 		'op' : 'post',
 		'realname' : realname,
 		'mobile' : mobile,

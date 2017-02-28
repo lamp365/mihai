@@ -930,7 +930,7 @@ function point(){
 						<li id="evalue" class="both_border"><a href="javascript:void(0)">商品评价(<!--@php echo $total;@-->)</a></li>
 					</ul>
 				</div>
-				<div class="bd" id="tabBox1-bd" style="padding:0px 32px;width: 790px;margin-left: 23px;">
+				<div class="bd" id="tabBox1-bd" style="padding:0px 32px 0 20px;">
 					  <!-- 添加id，js用到 -->
 					<div class="con" id="goodsDetail">
 						 <!-- 高度自适应需添加外层 -->
@@ -943,10 +943,15 @@ function point(){
 					</div>
 					<div class="con" id="goodsEvaluate" style="display: none;">
 						
-					 <!-- 高度自适应需添加外层 -->
+					  <!-- 高度自适应需添加外层 -->
 						<ul  class="show_comment">
 						    <!--@php  if(is_array($comments)) { foreach($comments as $key=> $row) { @-->
 							<li  class="comment_list">
+								<!--评论用户的头像-->
+								<div class="pull-left" style="width: 90px;text-align: center;">
+									<img src="<!--@php echo $row['face'];@-->" style="width:40px;height: 40px;border-radius: 50%;" />
+									<p style="color: #999;margin-top: 5px;"><!--@php echo $row['username'];@--></p>
+								</div>
 								<div  class="pull-left comment_left">
 								<!--@php  echo $row['comment']; @-->
 								<!--@php if(!empty($row['piclist'])){ @-->
@@ -966,8 +971,8 @@ function point(){
 										</div>
 									<!--@php } @-->								
 								</div>
-								<div class="pull-right comment_right" style="<!--@php if(!empty($row['piclist'])){ echo 'margin-top:30px;' ;}@-->">
-									<p><!--@php echo getUserFaceAndNameHtml($row['openid'],$row['username']);@--></p>
+								<div class="pull-right comment_right">
+									
 									<p style="font-size: 12px;color: #CCCCCC;">来自 <!--@php echo getSystemType($row['system']);@--> 版</p>
 								</div>
 						   </li>

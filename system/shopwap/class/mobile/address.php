@@ -48,18 +48,26 @@
                 'address' => $_GP['address'],
                 'province' => $_GP['province'],
             );
-			$objValidator = new Validator();
+            $objValidator = new Validator();
             if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['address']) || empty($_GP['idname']) || empty($_GP['idnumber'])) {
                 die(showAjaxMess('1002','请输完善您的资料！'));
             }
-			if (!$objValidator->identityNumberValidator($_GP['idnumber']))
-		    {
-                die(showAjaxMess('1002','身份证格式不正确！'));
-		    }
+
+            if(!isset($_GP['no_identy'])){
+                //如果没有设置这个参数就进行，验证
+                if (!$objValidator->identityNumberValidator($_GP['idnumber']))
+                {
+                    die(showAjaxMess('1002','身份证格式不正确！'));
+                }
+            }
+
+
             if (!empty($id)) {
                 unset($data['openid']);
                 mysqld_update('shop_address', $data, array('id' => $id));
-                add_identityy_info($openid,$_GP['idname'],$_GP['idnumber']);
+                if(!isset($_GP['no_identy'])){
+                    add_identityy_info($openid,$_GP['idname'],$_GP['idnumber']);
+                }
                 die(showAjaxMess('200',$id));
             } else {
                 //修改其他地址为非默认，设置刚创建的为默认
@@ -67,7 +75,9 @@
                 $data['isdefault'] = 1;
                 mysqld_insert('shop_address', $data);
                 $id = mysqld_insertid();
-                add_identityy_info($openid,$_GP['idname'],$_GP['idnumber']);
+                if(!isset($_GP['no_identy'])){
+                    add_identityy_info($openid,$_GP['idname'],$_GP['idnumber']);
+                }
 				if ( isset($_GP['ajax']) ){
                     die(showAjaxMess('200',$id));
 				}else{

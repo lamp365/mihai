@@ -134,11 +134,11 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 						'color'=>'#4169e1',
 					),
 					'num1' => array(
-						'value'=>$data_arr['today_num'],
+						'value'=>$data_arr['today_num'].'个',
 						'color'=>'#fb4b0e',
 					),
 					'num2' => array(
-						'value'=>$data_arr['tommor_num'],
+						'value'=>$data_arr['tommor_num'].'个',
 						'color'=>'#fb4b0e',
 					),
 					'tips'=>array(

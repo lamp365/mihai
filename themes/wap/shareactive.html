@@ -448,14 +448,12 @@
 				pop_weixin_msg(msg.id);
 				alert(msg.tit,msg.des,'',{type:'success'});
 				window.location.reload();
-			}
-			if(data.errno == 203){  //满1个
+			}else if(data.errno == 203){  //满1个
 				var msg = data.message;
 				//推送信息
 				pop_weixin_msg(msg.id);
 				alert(msg.tit,msg.des,'',{type:'success'});
-			}
-			if( data.errno == 200 ){
+			}else if( data.errno == 200 ){
 				var msg = data.message;
 				alert(msg.tit,msg.des,'',{type:'success'});
 				//较少显示的次数，并爱心加1
