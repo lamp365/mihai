@@ -130,7 +130,7 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 				"url"         => WEBSITE_ROOT.mobile_url("shareactive"),  //跳转到活动地址
 				'data'     => array(
 					'first'=>array(
-						'value'=>'总有人会中的，为什么不会是你呢？',
+						'value'=>'总有人会中的为什么不会是你呢',
 						'color'=>'#4169e1',
 					),
 					'num1' => array(
