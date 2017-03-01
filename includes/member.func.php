@@ -361,221 +361,234 @@ function member_get($openid)
     return $member;
 }
 
+/**
+ * 更新 credit和experience字段  只对积分操作
+ * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
+ * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
+ * @param $openid
+ * @param $fee
+ * @param $type  addcredit    usecredit
+ * @param $remark
+ * @return bool
+ */
 function member_credit($openid, $fee, $type, $remark)
 {
+    $add_arr = array('addcredit');
+    $use_arr = array('usecredit');
     $member = member_get($openid);
     if (! empty($member['openid'])) {
         if (! is_numeric($fee) || $fee < 0) {
             message("输入数字非法，请重新输入");
         }
-        if ($type == 'addcredit') {
-            $data = array(
-                'remark' => $remark,
-                'type' => $type,
-                'fee' => intval($fee),
-                'account_fee' => $member['credit'] + intval($fee),
-                'createtime' => TIMESTAMP,
-                'openid' => $openid
-            );
-            $bill = array(
-                'order_id' => $member['id'],
-                'type' => 5,
-                'openid' => $openid,
-                'money' => intval($fee),
-                'createtime' => time(),
-                'remark' => $remark
-            );
-            mysqld_insert('member_paylog', $data);
-            mysqld_insert('bill', $bill);
-            mysqld_update('member', array(
-                'credit' => $member['credit'] + intval($fee),
-                'experience' => $member['experience'] + intval($fee)
-            ), array(
-                'openid' => $openid
-            ));
-            return true;
+        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
+            message("参数有误！",refresh(),'error');
+        }else if(in_array($type,$use_arr)){
+            //积分为负
+            $fee = -1*floor($fee);
         }
-        if ($type == 'usecredit') {
-            if ($member['credit'] >= $fee) {
-                $data = array(
-                    'remark' => $remark,
-                    'type' => $type,
-                    'fee' => intval($fee),
-                    'account_fee' => $member['credit'] - intval($fee),
-                    'createtime' => TIMESTAMP,
-                    'openid' => $openid
-                );
-                $bill = array(
-                    'order_id' => $member['id'],
-                    'type' => -5,
-                    'openid' => $openid,
-                    'money' => -intval($fee),
-                    'createtime' => time(),
-                    'remark' => $remark
-                );
-                mysqld_insert('member_paylog', $data);
-                mysqld_insert('bill', $bill);
-                mysqld_update('member', array(
-                    'credit' => $member['credit'] - intval($fee)
-                ), array(
-                    'openid' => $openid
-                ));
-                return true;
-            }
-        }
-    }
-    return false;
-}
-//该方法注意使用，因为资金不是退到用户上同时购买是，也不是扣该用户上的钱，都是通过微信或者支付宝第三方产生流动
-function member_freegold($openid, $fee, $type, $remark)
-{
-    $member = member_get($openid);
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee < 0) {
-            message("输入数字非法，请重新输入");
-        }
-        if ($type == 'addgold') {
-            $data = array(
-                'remark' => $remark,
-                'type' => $type,
-                'fee' => $fee,
-                'account_fee' => $member['freeorder_gold'] + $fee,
-                'createtime' => TIMESTAMP,
-                'openid' => $openid
-            );
-            mysqld_insert('member_paylog', $data);
-            mysqld_update('member', array(
-                'gold' => $member['freeorder_gold'] + $fee
-            ), array(
-                'openid' => $openid
-            ));
-            return true;
-        }
-        if ($type == 'usegold') {
-            if ($member['gold'] >= $fee) {
-                $data = array(
-                    'remark' => $remark,
-                    'type' => $type,
-                    'fee' => $fee,
-                    'account_fee' => $member['freeorder_gold'] - $fee,
-                    'createtime' => TIMESTAMP,
-                    'openid' => $openid
-                );
-                mysqld_insert('member_paylog', $data);
-                mysqld_update('member', array(
-                    'gold' => $member['freeorder_gold'] - $fee
-                ), array(
-                    'openid' => $openid
-                ));
-                return true;
-            }
-        }
-    }
-    return false;
-}
-//该方法注意使用，因为资金不是退到用户上同时购买是，也不是扣该用户上的钱，都是通过微信或者支付宝第三方产生流动
-function member_gold($openid, $fee, $type, $remark)
-{
-    $member = member_get($openid);
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee < 0) {
-            message("输入数字非法，请重新输入");
-        }
-        if ($type == 'addgold') {
-            $data = array(
-                'remark' => $remark,
-                'type' => $type,
-                'fee' => $fee,
-                'account_fee' => $member['gold'] + $fee,
-                'createtime' => TIMESTAMP,
-                'openid' => $openid
-            );
-            mysqld_insert('member_paylog', $data);
-            mysqld_update('member', array(
-                'gold' => $member['gold'] + $fee
-            ), array(
-                'openid' => $openid
-            ));
-            return true;
-        }
-        if ($type == 'usegold') {
-            if ($member['gold'] >= $fee) {
-                $data = array(
-                    'remark' => $remark,
-                    'type' => $type,
-                    'fee' => $fee,
-                    'account_fee' => $member['gold'] - $fee,
-                    'createtime' => TIMESTAMP,
-                    'openid' => $openid
-                );
-                mysqld_insert('member_paylog', $data);
-                mysqld_update('member', array(
-                    'gold' => $member['gold'] - $fee
-                ), array(
-                    'openid' => $openid
-                ));
-                return true;
-            }
-        }
+        $data = array(
+            'remark' => $remark,
+            'type' => $type,
+            'fee' => intval($fee),
+            'account_fee' => $member['credit'] + $fee,
+            'createtime' => TIMESTAMP,
+            'openid' => $openid
+        );
+        mysqld_insert('member_paylog', $data);
+        $credit     = max(0,$member['credit']+$fee);
+        $experience = max(0,$member['experience']+$fee);
+        mysqld_update('member', array(
+            'credit' => $credit,
+            'experience' => $experience
+        ), array(
+            'openid' => $openid
+        ));
+        return true;
     }
     return false;
 }
 
 /**
+ * 更新免单返现的字段  freeorder_gold
+ * 只对 免单金额操作，  注意免单金额的使用，有一个免额过期时间，那么时间的判断是否可以使用免额，要在外部判断，正常是下单后判断免额没过期，订单总额扣除免额，再产生免额log
+ * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
+ * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
  * @param $openid
  * @param $fee
- * @param $type
+ * @param $type  addgold or usegold
  * @param $remark
- * @param string $act_filed
- * @param string $updateGold
  * @return bool
- * @content 可能会操作冻结资金 freeze_gold  或者操作资金
  */
-function member_goldinfo($openid, $fee, $type, $remark, $act_filed='gold',$updateGold = '')
+function member_freegold($openid, $fee, $type, $remark)
 {
+    $add_arr = array('addgold');
+    $use_arr = array('usegold');
     $member = member_get($openid);
     if (! empty($member['openid'])) {
         if (! is_numeric($fee) || $fee < 0) {
             message("输入数字非法，请重新输入");
         }
-        if ($type == 'addgold') {
-            $data = array(
-                'remark' => $remark,
-                'type' => $type,
-                'fee' => $fee,
-                'account_fee' => 0.00,  //该字段没用
-                'createtime' => TIMESTAMP,
+        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
+            message("参数有误！",refresh(),'error');
+        }else if(in_array($type,$use_arr)){
+            //金额为负
+            $fee = -1*$fee;
+        }
+        $data = array(
+            'remark' => $remark,
+            'type' => $type,
+            'fee' => $fee,
+            'account_fee' => $member['freeorder_gold'] + $fee,
+            'createtime' => TIMESTAMP,
+            'openid' => $openid
+        );
+        //以免扣掉时为负数
+        $gold  = max(0,$member['freeorder_gold'] + $fee);
+        mysqld_insert('member_paylog', $data);
+        mysqld_update('member', array('freeorder_gold' => $gold ), array(
+            'openid' => $openid
+        ));
+        return true;
+    }
+    return false;
+}
+/**
+ * 更新gold字段   只对金额操作
+ * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
+ * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
+ * @param $openid
+ * @param $fee
+ * @param $type     addgold  usegold
+ * @param $remark
+ * @param $update 有些地方不一定要更新gold，只需要有记录。如下单后，钱是第三方的，但是会记录一个paylog,这时候不是扣除余额，不能进行更新
+ * @return bool
+ */
+function member_gold($openid, $fee, $type, $remark,$update=true)
+{
+    $add_arr = array('addgold');
+    $use_arr = array('usegold');
+    $member = member_get($openid);
+    if (! empty($member['openid'])) {
+        if (! is_numeric($fee) || $fee < 0) {
+            message("输入数字非法，请重新输入");
+        }
+        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
+            message("参数有误！",refresh(),'error');
+        }else if(in_array($type,$use_arr)){
+            //金额为负
+            $fee = -1*$fee;
+        }
+        $data = array(
+            'remark' => $remark,
+            'type' => $type,
+            'fee' => $fee,
+            'account_fee' => $member['gold'] + $fee,
+            'createtime' => TIMESTAMP,
+            'openid' => $openid
+        );
+        $gold  = max(0,$member['gold'] + $fee);
+        mysqld_insert('member_paylog', $data);
+        if($update){
+            mysqld_update('member', array( 'gold' => $gold), array(
                 'openid' => $openid
-            );
-            mysqld_insert('member_paylog', $data);
-            if($updateGold){
-                mysqld_update('member', array($act_filed => $member[$act_filed] + $fee), array('openid' => $openid));
-            }
-
-            return true;
+            ));
         }
-        if ($type == 'usegold') {
-//            if ($member[$act_filed] >= $fee) {
-                $data = array(
-                    'remark' => $remark,
-                    'type' => $type,
-                    'fee' => $fee,
-                    'account_fee' => 0.00, //该字段没用
-                    'createtime' => TIMESTAMP,
-                    'openid' => $openid
-                );
-                mysqld_insert('member_paylog', $data);
-                if($updateGold){
-                    mysqld_update('member', array($act_filed => $member[$act_filed] - $fee ), array('openid' => $openid));
-                }
-
-                return true;
-//            }
-        }
+        return true;
     }
     return false;
 }
 
+/**
+ * 更新冻结字段freeze_gold   只对佣金操作
+ * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
+ * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
+ * @param $openid          卖家openid
+ * @param $friend_openid   买家openid
+ * @param $fee
+ * @param $type  addgold_byoder or usegold_byoder
+ * @param $remark
+ * @return bool
+ */
+function member_commisiongold($openid, $friend_openid,$fee, $type, $remark)
+{
+    $add_arr = array('addgold_byoder');
+    $use_arr = array('usegold_byoder');
+    $member = member_get($openid);
+    if (! empty($member['openid'])) {
+        if (! is_numeric($fee) || $fee < 0) {
+            message("输入数字非法，请重新输入");
+        }
+        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
+            message("参数有误！",refresh(),'error');
+        }else if(in_array($type,$use_arr)){
+            //金额为负
+            $fee = -1*$fee;
+        }
+        $data = array(
+            'remark' => $remark,
+            'type' => $type,
+            'fee' => $fee,
+            'account_fee'   => $member['freeze_gold'] + $fee,
+            'createtime'    => TIMESTAMP,
+            'openid'        => $openid,
+            'friend_openid' => $friend_openid
+        );
+        //以免扣掉时为负数
+        $freeze_gold  = max(0,$member['freeze_gold'] + $fee);
+        mysqld_insert('member_paylog', $data);
+        mysqld_update('member', array( 'freeze_gold' => $freeze_gold), array(
+            'openid' => $openid
+        ));
+        return true;
+    }
+    return false;
+}
+
+/**
+ * 更新gold字段  只对邀请好友时操作
+ * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
+ * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
+ * @param $openid          邀请人openid
+ * @param $friend_openid   当前被邀请openid
+ * @param $fee
+ * @param $type  addgold_byinvite  usegold_byinvite
+ * @param $remark
+ * @return bool
+ */
+function member_invitegold($openid,$friend_openid, $fee, $type, $remark)
+{
+    $add_arr = array('addgold_byinvite');
+    $use_arr = array('usegold_byinvite');
+    $member  = member_get($openid);
+    if (! empty($member['openid'])) {
+        if (! is_numeric($fee) || $fee < 0) {
+            message("输入数字非法，请重新输入",refresh(),'error');
+        }
+        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
+            message("参数有误！",refresh(),'error');
+        }else if(in_array($type,$use_arr)){
+            //金额为负
+            $fee = -1*$fee;
+        }
+        $data = array(
+            'remark' => $remark,
+            'type' => $type,
+            'fee' => $fee,
+            'account_fee'   => $member['gold'] + $fee,
+            'createtime'    => TIMESTAMP,
+            'openid'        => $openid,
+            'friend_openid' => $friend_openid,
+        );
+        //以免扣掉时为负数
+        $gold  = max(0,$member['gold'] + $fee);
+        mysqld_insert('member_paylog', $data);
+        mysqld_update('member', array( 'gold' => $gold), array(
+            'openid' => $openid
+        ));
+        return true;
+    }
+    return false;
+}
 /**
  * @param $openid
  * @param $name
@@ -802,5 +815,16 @@ function getMemberBalance($gold,$free_gold,$free_time){
     }else{
         $total = $gold+$free_gold;
         return $total;
+    }
+}
+
+/**
+ * 当有人注册的时候，分享者的觅友统计数要累加
+ * @param $recommend_openid
+ */
+function recommend_frend_count($recommend_openid){
+    if($recommend_openid){
+        $sql = "update ".table('member')." set `friend_count`=friend_count+1 where openid={$recommend_openid}";
+        mysqld_query($sql);
     }
 }

@@ -43,7 +43,7 @@ if (!empty($member) AND $member != 3) {
 			
 			if(isUnbind($memberInfo)){
 			
-				if(mysqld_update("qq_qqfans",array('deleted'=>1), array('openid' => $openid,'qq_openid'=>trim($_GP['qq_openid']))))
+				if(mysqld_update("qq_qqfans",array('deleted'=>1), array('openid' => $openid,'unionid'=>trim($_GP['unionid']))))
 				{
 					$result['message'] 	= "QQ账号解绑成功。";
 					$result['code'] 	= 1;

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	    <meta name="apple-mobile-web-app-capable" content="yes">
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	    <meta name="format-detection" content="telephone=no">
+	    <title>觅友圈</title>
+	    <link rel="shortcut icon" href="favicon.ico"/>
+	    <link href="__RESOURCE__/recouse/css/miyou.css" rel="stylesheet" type="text/css" />
+	    <link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+	    <script type="text/javascript"src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	</head>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+	<body>	
+		<!--顶部返回栏-->
+		<div class="cart_title" style="border-bottom: none;line-height: 45px;">
+		   <span class="return" style="line-height: 45px;">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+		   </span> 
+		    我的觅友
+		</div>
+		
+	<!--如果是由别人推荐进来的，就显示我的推荐人-->
+		<span class="_title">我的推荐人</span>			  
+		  <ul class="miyou_list">
+		  	<li>
+		  		<!--头像-->
+		  		<div class="user_img">
+		  			<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
+		  		</div>
+		  		<!--头像右边的一大块-->
+		  		<div class="detail">
+		  			<!--上部-->
+		  			<div class="info">
+		  				<span class="name">北城少女南城情</span>		  				
+		  				<span class="miyou_num _span">
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />
+		  					<span>
+		  						2
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />
+		  				</span>
+		  				<span class="rank_img _span">
+		  					<img src="__RESOURCE__/recouse/images/rank_img1.png" />
+		  					<span>
+		  						普通会员
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/rank_img3.png" />
+		  				</span>
+		  			</div>
+		  			<!--下部-->
+		  			<div class="money">
+		  				<span class="yj">
+		  					TA的佣金:
+		  					<span>15.00</span>
+		  				</span>
+		  				<span>
+		  					<img src="__RESOURCE__/recouse/images/money_img.png" />
+		  					120
+		  				</span>
+		  			</div>
+		  		</div>
+		  	</li>		  	
+		  </ul>
+		  
+		 <!--我邀请的好友列表-->
+		  <span class="_title">我的觅友</span>
+		   <!--觅友列表-->
+		  <ul class="miyou_list">
+		  	<li>
+		  		<!--头像-->
+		  		<div class="user_img">
+		  			<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
+		  		</div>
+		  		<!--头像右边的一大块-->
+		  		<div class="detail">
+		  			<!--上部-->
+		  			<div class="info">
+		  				<span class="name">小觅</span>		  				
+		  				<span class="miyou_num _span">
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />
+		  					<span>
+		  						2000
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />
+		  				</span>
+		  				<span class="rank_img _span">
+		  					<img src="__RESOURCE__/recouse/images/rank_img1.png" />
+		  					<span>
+		  						皇室至尊vip
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/rank_img3.png" />
+		  				</span>
+		  			</div>
+		  			<!--下部-->
+		  			<div class="money">
+		  				<span class="yj">
+		  					WO的佣金:
+		  					<span>15.00</span>
+		  				</span>
+		  				<span>
+		  					<img src="__RESOURCE__/recouse/images/money_img.png" />
+		  					+5
+		  				</span>
+		  			</div>
+		  		</div>
+		  	</li>			  	
+		  </ul>
+	
+		  <!--不是由别人邀请的，又没有觅友-->
+		  <div class="_default" style="display: none;">
+		  	 <img src="__RESOURCE__/recouse/images/_default.png" />
+		  </div>
+		  
+		  <!--@php  include themePage('footer');@-->	
+	<script>
+		$(".return").click(function(){
+			    window.history.back(-1);
+			})
+		$(function(){			
+			var body_width = $("body").width();
+			var _width = body_width - 70;
+			//控制头像右边一整块的宽度
+			$(".miyou_list li .detail").width(_width);
+			//如果是小屏幕
+			if(_width <= 250){
+				$(".miyou_list li .detail .info .name").css("max-width",90);
+				$(".miyou_list li .user_img img").width(45);
+				$(".miyou_list li .user_img img").height(45);
+			}
+			
+		})
+	</script>

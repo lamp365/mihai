@@ -144,7 +144,7 @@ function update_order_status($id, $status,$dishinfo='') {
     		// 如果已付款 订单有卖家openid，则扣除冻结佣金
     		if ($order['status'] == 1 && !empty($ogv['seller_openid'])) {
 				$remark = "订单:{$order['ordersn']}已经取消了";
-				member_goldinfo($ogv['seller_openid'],$ogv['commision'],'usegold',$remark,'freeze_gold',true);
+				member_commisiongold($ogv['seller_openid'],$order['openid'],$ogv['commision'],'usegold_byoder',$remark);
 			}
     	}
     	// 如果有使用余额抵扣，退还余额
@@ -180,8 +180,8 @@ function update_order_status($id, $status,$dishinfo='') {
     		if (!empty($ogv['seller_openid']) AND ($ogv['status'] == 0 OR $ogv['status'] == -1)) {
     			// 将卖家冻结资金移入余额
 				$remark = "订单:{$order['ordersn']}已经确认收货";
-				member_goldinfo($ogv['seller_openid'],$ogv['commision'],'addgold',$remark,'gold',true);
-				member_goldinfo($ogv['seller_openid'],$ogv['commision'],'usegold',$remark,'freeze_gold',true);
+				member_gold($ogv['seller_openid'],$ogv['commision'],'addgold',$remark);
+				member_commisiongold($ogv['seller_openid'],$order['openid'],$ogv['commision'],'usegold_byoder',$remark);
 	    		// 累计卖家积分
 	    		$seller_ary[$ogv['seller_openid']]['num'] += 1;
 	    	}
@@ -344,7 +344,7 @@ function paySuccessProcess($orderInfo)
 	}
 
 	// 增加积分
-	member_credit($orderInfo['openid'], $orderInfo['price'], 'addcredit', '订单:'.$order['ordersn'].'新增积分');
+	member_credit($orderInfo['openid'], $orderInfo['price'], 'addcredit', '订单:'.$orderInfo['ordersn'].'新增积分');
 }
 
 

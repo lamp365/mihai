@@ -158,7 +158,8 @@ $system_module = array(
     'alipay',
     'promotion',
     'api',
-    'job'
+    'job',
+    'tmall'
 );
 
 if (in_array($modulename, $system_module)) {

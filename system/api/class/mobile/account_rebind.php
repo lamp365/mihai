@@ -118,14 +118,13 @@ if (!empty($member) AND $member != 3) {
 		case 'qq':		//QQ
 			
 			$access_token 	= trim($_GP['access_token']);
-			$qq_openid		= trim($_GP['qq_openid']);
-			$old_qq_openid	= trim($_GP['old_qq_openid']);		//旧QQ的ID
+			$old_unionid	= trim($_GP['old_unionid']);		//旧QQ的unionid
 			
-			$result = requestQQInfo($access_token,$qq_openid);
+			$result = requestQQInfo($access_token);
 			
-			if(empty($old_qq_openid))
+			if(empty($old_unionid))
 			{
-				$result['message'] 	= "旧QQ的ID不能空。";
+				$result['message'] 	= "旧QQ的unionid不能空。";
 				$result['code'] 	= 0;
 			}
 			elseif($result['code']==1)
@@ -134,7 +133,7 @@ if (!empty($member) AND $member != 3) {
 				
 				unset($result['data']);
 				
-				$qqInfo = mysqld_select ("SELECT qq_openid,deleted FROM " . table ( 'qq_qqfans' ) . " where qq_openid='".$qq_openid."'" );
+				$qqInfo = mysqld_select ("SELECT qq_openid,deleted,unionid FROM " . table ( 'qq_qqfans' ) . " where unionid='".$requestQQInfo['unionid']."'" );
 				
 				//无QQ记录时
 				if(empty($qqInfo))
@@ -142,7 +141,8 @@ if (!empty($member) AND $member != 3) {
 					$qq_data =array('createtime'	=> time (),
 									'modifiedtime'	=> time(),
 									'openid' 		=> $openid,
-									'qq_openid'		=> $qq_openid,
+									'qq_openid'		=> $requestQQInfo['qq_openid'],
+									'unionid'		=> $requestQQInfo['unionid'],
 									'nickname'		=> $requestQQInfo['nickname'],
 									'avatar'		=> $requestQQInfo['figureurl_qq_2'],
 									'gender'		=> ($requestQQInfo['gender']=='男') ? 1: 2);
@@ -152,13 +152,13 @@ if (!empty($member) AND $member != 3) {
 					{
 						$result['message'] 			= "更改QQ账号绑定成功。";
 						$result['data']['nickname'] = $requestQQInfo['nickname'];
-						$result['data']['qq_openid']= $qq_openid;
+						$result['data']['unionid']	= $requestQQInfo['unionid'];
 						$result['code'] 			= 1;
 						
-						if($old_qq_openid!=$qq_openid)
+						if($old_unionid!=$requestQQInfo['unionid'])
 						{
 							//旧QQ账号删除
-							mysqld_delete ('qq_qqfans',array('qq_openid'=>$old_qq_openid));
+							mysqld_delete ('qq_qqfans',array('unionid'=>$old_unionid));
 						}
 					}
 					else{
@@ -171,28 +171,28 @@ if (!empty($member) AND $member != 3) {
 				{
 					$qq_data =array('modifiedtime'	=> time(),
 									'openid' 		=> $openid,
-									'qq_openid'		=> $qq_openid,
+									'qq_openid'		=> $requestQQInfo['qq_openid'],
 									'nickname'		=> $requestQQInfo['nickname'],
 									'avatar'		=> $requestQQInfo['figureurl_qq_2'],
 									'gender'		=> ($requestQQInfo['gender']=='男') ? 1: 2,
 									'deleted'		=> 0);
 						
-					if(mysqld_update('qq_qqfans', $qq_data,array('qq_openid'=>$qq_openid)))
+					if(mysqld_update('qq_qqfans', $qq_data,array('unionid'=>$requestQQInfo['unionid'])))
 					{
 						$result['message'] 			= "更改QQ账号绑定成功。";
 						$result['data']['nickname'] = $requestQQInfo['nickname'];
-						$result['data']['qq_openid']= $qq_openid;
+						$result['data']['unionid']	= $requestQQInfo['unionid'];
 						$result['code'] 			= 1;
 						
-						if($old_qq_openid!=$qq_openid)
+						if($old_unionid!=$requestQQInfo['unionid'])
 						{
 							//旧QQ账号删除
-							mysqld_delete ('qq_qqfans',array('qq_openid'=>$old_qq_openid));
+							mysqld_delete ('qq_qqfans',array('unionid'=>$old_unionid));
 						}
 					}
 					else{
-						$result['message'] 			= "更改QQ账号绑定失败。";
-						$result['code'] 			= 0;
+						$result['message'] 	= "更改QQ账号绑定失败。";
+						$result['code'] 	= 0;
 					}
 				}
 				else{

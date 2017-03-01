@@ -98,6 +98,8 @@
                     'recommend_openid' => empty($recommend_openid)? '' : $recommend_openid,
 			);
 				mysqld_insert('member', $data);
+			    //她的觅友加1
+			    recommend_frend_count($recommend_openid);
 				if(!empty($shop_regcredit))
 				{
 				    member_credit($openid,$shop_regcredit,"addcredit","注册系统赠送积分");

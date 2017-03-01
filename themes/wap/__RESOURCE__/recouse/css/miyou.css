@@ -1,0 +1,336 @@
+@charset "utf-8";
+
+.WX_search_frm1{
+	height: 40px;
+}
+.WX_search_txt{
+	border:none;
+	padding: 0 30px 0 8px;
+}
+.WX_search_txt, .hd_search_txt{
+	background-image:none!important;
+}
+.WX_search_btn_blue{
+	background:url(../images/icon_ss.png);
+    width: 20px;
+    padding: 0;
+    background-size: cover;
+    height: 20px;
+    margin-top: 12px;
+}
+.search_bottom{
+	border: 1px solid #E3E3E3;
+    margin: 0 .2rem;
+    height: .3rem;
+    border-top: 0;
+    width: 95%;
+    margin: 0 auto;
+}
+input::-webkit-input-placeholder{
+	color: #d0d0d0!important;
+}
+body,html{
+	height: 100%;
+	
+}
+.miyou_list{
+	overflow: hidden;
+	background: #fff;
+}
+._title{
+	display: block;	
+	font-size: 14px;
+	color: #999;
+	height: 30px;
+	line-height: 30px;
+	margin-top: 5px;
+	padding-left: 10px;
+}
+
+.miyou_list li{
+	height: 60px;
+	line-height: 60px;
+	padding:8px 5px;
+	border-bottom: solid 1px #eee;
+}
+.miyou_list li .user_img{
+	float: left;
+	width: 50px;
+	height: 100%;
+	text-align: center;
+}
+.miyou_list li .user_img img{
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	vertical-align: middle;
+}
+.miyou_list li .detail{
+	width: 83%;
+	float: right;
+	line-height: 25px;
+}
+.miyou_list li .detail .info{
+	height: 25px;
+	padding: 5px 0;
+}
+.miyou_list li .detail .info .name{
+	color: #333;	
+	max-width: 120px;
+	height: 25px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	float: left;
+}
+.miyou_list li .detail .info ._span{
+	float: right;
+	font-size: 12px;
+	text-align: center;
+	margin-top: 2px;
+}
+.miyou_list li .detail .info .rank_img{	
+	color: #FF5C00;
+	margin-right: 10px;
+}
+ .rank_img span{
+	background:url(../images/rank_img2.png) repeat;
+	float: left;
+	height: 20px;
+	line-height: 20px;
+	padding-left:5px;
+}
+ .rank_img img{
+ 	height: 20px;
+ 	width: auto;
+ 	float: left;
+ }
+.miyou_list li .detail .info .miyou_num{
+	color: #0081A7;
+	height: 21px;
+}
+.miyou_num span{
+	background:url(../images/miyou_num_02.png) repeat;
+	float: left;
+	height: 20px;
+	line-height: 20px;
+	padding-left:5px;
+}
+.miyou_num img{
+ 	height: 20px;
+ 	width: auto;
+ 	float: left;
+ }
+.miyou_list li .detail .money .yj{
+	color: #666;
+	font-size: 14px;
+	float: left;
+}
+.miyou_list li .detail .money .yj span{
+	color: #e4393c;
+}
+.miyou_list li .detail .money span:nth-child(2){
+	float: right;
+	color: #666;
+	font-size: 14px;
+}
+.miyou_list li .detail .money span:nth-child(2) img{
+	vertical-align: middle;
+	width: 17px;
+}
+/*默认列表*/
+._default{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -97px;
+	margin-top: -41px;
+}
+/*邀请好友页面*/
+
+.wx_code_area{	
+	background-color: #fff;
+    text-align: center;
+}
+.wx_code_area .bac{
+	width: 100%;
+}
+.wx_code_area .info{
+	overflow: hidden;
+	line-height: 40px;
+	padding: 0 0 0 5px;
+	position: absolute;
+	top: 50px;
+	left: 0;	
+}
+.wx_code_area .info img{
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	float: left;
+}
+.wx_code_area .info span{
+	float: left;
+	margin-left: 10px;
+}
+#wx_code{
+	width: 120px;
+	position: absolute;
+	top:22%;
+	left: 50%;
+	margin-left: -60px;
+}
+.wx_code_area_1{
+	font-size: 14px;color: #333;
+}
+.wx_code_area_2{
+	font-size: 14px;color:#666;
+}
+.shade-close{
+    top: -25px;
+    right: -25px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    line-height: 35px;
+    text-align: center;
+    background-color: #2f2f2f;
+    border-radius: 40px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+}
+.share_btn{
+	position: fixed;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	background: #fff;
+	padding: 10px 0;
+	border-top: solid 1px #eee;
+}
+.share_btn p{
+	margin: 0 auto;
+	width: 60%;
+	text-align: center;
+	background: #fd4964;
+	border-radius: 3px;
+	padding: 5px 0;
+	color: #fff;
+}
+/**/
+.you_friends{
+	margin: 10px 0;
+	background: #fff;
+	padding: 10px 0;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+}
+.you_friends p:nth-child(2){
+	color: #8d8d8d;
+	margin: 5px 0 0 0;
+}
+.you_friends p:nth-child(2) span{
+	color: #ff4967;
+	font-size: 30px;
+}
+.you_friends p:nth-child(1){
+	margin: 0;
+}
+.you_friends .invite_record{
+	color: #909090;
+	position: absolute;
+	right: 10px;
+	top: 12.5px;
+	font-size: 12px;
+}
+/**/
+.first_three{
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.first_three li{
+	border: solid 1px #faebee;
+	width: 30%;
+	margin-left: 2.5%;
+	list-style: none;
+	float: left;
+	box-sizing: border-box;
+}
+.first_three li div{
+	padding:10% 2%;
+	text-align: center;
+	box-sizing: border-box;
+}
+.first_three li .info{
+	width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    padding: 0;
+}
+.first_three li .info .portrait{
+	width: 50%;
+	border-radius: 50%;
+	display: block;
+	margin: 0 auto;
+}
+.first_three li .info .rank{
+	width: 70%;	
+	display: block;
+	margin: 0 auto;
+	margin-top: -10px;
+}
+.first_three li  p.name{
+	margin: 5px auto 0 auto;color:#8c8c8c;
+	width: 80%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.other_winner{
+	padding: 0;
+}
+.other_winner li{
+	height: 40px;
+	line-height: 40px;
+	list-style: none;
+	padding: 10px 0;	
+	margin: 0 5%;
+	border-bottom: solid 1px #eee;
+	overflow: hidden;
+	text-align: left;
+}
+.other_winner li .number{
+	background: #8c8c8c;
+	color: #fff;
+	border-radius: 50%;
+	padding:0 6px;
+	line-height: normal;
+	margin-top: 10px;
+	text-align: center;
+}
+.other_winner li img{
+	width: 10%;
+	border-radius: 50%;
+	margin: 0 10px;
+	vertical-align: middle;
+}
+.other_winner li .name{
+	width: 40%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+}
+.other_winner li .money{
+	float: right;
+	color: #8c8c8c;
+}
+.other_winner li span:last-child{
+	float: right;
+	color: #ff4967;
+}

@@ -90,18 +90,16 @@
 					<table>
 						<tr style="background:#F8F8F8;">
 							<td style="width: 20%;">日期</td>
-							<td style="width: 10%;">收入</td>
-							<td style="width: 10%;">支出</td>
-							<td width="10%">买家</td>
+							<td style="width: 10%;">账单出入</td>
+							<td width="10%">觅友</td>
 							<td>详细信息</td>
 						</tr>
-						<!--@php foreach ( $list as $listvalue ){  $list_arr = explode('@',$listvalue['remark']); @-->
+						<!--@php foreach ( $list as $listvalue ){  $list_member = member_get($listvalue['friend_openid']); @-->
 						<tr>
 							<td style="width: 20%;"><!--@php echo $listvalue['createtime']; @--></td>
-							<td style="width: 10%;"><!--@php if ($listvalue['type'] == 'add'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td style="width: 10%;"><!--@php if ($listvalue['type'] == 'use'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td><!--@php if(count($list_arr) == 2){ $buyer = member_get($list_arr[0]); echo $buyer['mobile']; }@--></td>
-							<td><!--@php if(count($list_arr) == 2){ echo $list_arr[1];}else{ echo  $list_arr[0]; } @--></td>
+							<td style="width: 10%;"><!--@php  echo $listvalue['fee']; @--></td>
+							<td><!--@php echo empty($list_member['realname']) ?  substr_cut($list_member['mobile']) : $list_member['realname']; @--></td>
+							<td><!--@php echo $listvalue['remark'];  @--></td>
 						</tr>
 						<!--@php } @-->
 					</table>										
@@ -113,17 +111,15 @@
 						<tr style="background:#F8F8F8;">
 							<td style="width: 20%;">日期</td>
 							<td style="width: 10%;">收入</td>
-							<td style="width: 10%;">支出</td>
-							<td width="10%">买家</td>
+							<td width="10%">觅友</td>
 							<td>详细信息</td>
 						</tr>
-						<!--@php foreach ( $list as $listvalue ){$list_arr = explode('@',$listvalue['remark']);  if ($listvalue['type'] == 'add'.$keys){ @-->
+						<!--@php foreach ( $list as $listvalue ){$list_member = member_get($listvalue['friend_openid']);  if ($listvalue['fee'] >0 ){ @-->
 						<tr>
 							<td style="width: 20%;"><!--@php echo $listvalue['createtime']; @--></td>
-							<td style="width: 10%;"><!--@php if ($listvalue['type'] == 'add'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td style="width: 10%;"><!--@php if ($listvalue['type'] == 'use'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td><!--@php if(count($list_arr) == 2){ $buyer = member_get($list_arr[0]); echo $buyer['mobile']; }@--></td>
-							<td><!--@php if(count($list_arr) == 2){ echo $list_arr[1];}else{ echo  $list_arr[0]; } @--></td>
+							<td style="width: 10%;"><!--@php  echo $listvalue['fee']; @--></td>
+							<td><!--@php echo empty($list_member['realname']) ?  substr_cut($list_member['mobile']) : $list_member['realname']; @--></td>
+							<td><!--@php echo $listvalue['remark'];  @--></td>
 						</tr>
 						<!--@php }} @-->
 					</table>
@@ -134,18 +130,16 @@
 					<table>
 						<tr style="background:#F8F8F8;">
 							<td style="width: 20%;">日期</td>
-							<td style="width: 10%;">收入</td>
 							<td style="width: 10%;">支出</td>
-							<td width="10%">买家</td>
+							<td width="10%">觅友</td>
 							<td>详细信息</td>
 						</tr>
-						<!--@php foreach ( $list as $listvalue ){ $list_arr = explode('@',$listvalue['remark']); if ($listvalue['type'] == 'use'.$keys){@-->
+						<!--@php foreach ( $list as $listvalue ){$list_member = member_get($listvalue['friend_openid']);  if ($listvalue['fee'] <0 ){ @-->
 						<tr>
 							<td style="width: 20%;"><!--@php echo $listvalue['createtime']; @--></td>
-							<td style="width: 10%;"><!--@php if ($listvalue['type'] == 'add'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td style="width: 10%;"><!--@php if ($listvalue['type'] == 'use'.$keys){ echo $listvalue['fee']; } else { echo '-'; } @--></td>
-							<td><!--@php if(count($list_arr) == 2){ $buyer = member_get($list_arr[0]); echo $buyer['mobile']; }@--></td>
-							<td><!--@php if(count($list_arr) == 2){ echo $list_arr[1];}else{ echo  $list_arr[0]; } @--></td>
+							<td style="width: 10%;"><!--@php  echo $listvalue['fee']; @--></td>
+							<td><!--@php echo empty($list_member['realname']) ?  substr_cut($list_member['mobile']) : $list_member['realname']; @--></td>
+							<td><!--@php echo $listvalue['remark'];  @--></td>
 						</tr>
 						<!--@php }} @-->
 					</table>

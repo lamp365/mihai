@@ -149,11 +149,10 @@
 			$article_headline = mysqld_select($sql);
 			if(empty($article_headline))
 				message('对不起，该文章已不存在！',refresh(),'error');
-			$article_member = member_get($article_headline['openid']);
+			$article_member = mysqld_select("select * from ".table('user')." where id={$article_headline['uid']}");
 			//收藏数
 			$collect_num = mysqld_selectcolumn("select count(collection_id) from ".table('headline_collection')." where headline_id={$_GP['id']}");
-			//获取三条评论
-			$article_comment = mysqld_selectall("select * from ".table('headline_comment')." where headline_id={$_GP['id']} order by createtime desc limit 3");
+
 			if (is_mobile_request()){
 				include addons_page('wap_headline');
 			}else{

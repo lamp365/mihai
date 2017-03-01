@@ -74,7 +74,7 @@ function requestWeixinInfo($code)
  * @return array
  *
  */
-function requestQQInfo($access_token,$qq_openid)
+function requestQQInfo($access_token)
 {
 	$result = array();
 	
@@ -85,34 +85,47 @@ function requestQQInfo($access_token,$qq_openid)
 		$result['message'] 	= "access_token码不能空。";
 		$result['code'] 	= 0;
 	}
-	//QQ的openid为空
-	elseif(empty($qq_openid))
-	{
-		$result['message'] 	= "QQ的openid不能空。";
-		$result['code'] 	= 0;
-	}
 	elseif(empty($qqConfig))
 	{
 		$result['message'] 	= "请在后台配置QQ登录信息。";
 		$result['code'] 	= 0;
 	}
 	else{
-		$configInfo = unserialize($qqConfig['configs']);
-		$appid = $configInfo['thirdlogin_qq_appid'];
-	
-		$request_url="https://graph.qq.com/user/get_user_info?oauth_consumer_key={$appid}&access_token={$access_token}&openid={$qq_openid}";
-	
-		$request_content = http_get($request_url);
-		$qqInfo = json_decode($request_content, true);
-	
-		if(empty($qqInfo) || $qqInfo['ret']!=0)
-		{
-			$result['message'] 	= "获取QQ用户信息失败";
+		$unioid_url="https://graph.qq.com/oauth2.0/me?access_token={$access_token}&unionid=1";
+		
+		$unioid_content = http_get($unioid_url);
+		
+		
+		$subStr = substr($unioid_content, strpos($unioid_content, "{"));
+		$subStr = strstr($subStr, "}", true) . "}";
+		$unioidInfo = json_decode($subStr, true);
+		
+		if(!isset($unioidInfo['openid']) || !isset($unioidInfo['unionid'])) {
+			
+			$result['message'] 	= "获取QQ用户唯一标识失败";
 			$result['code'] 	= 0;
 		}
 		else{
-			$result['data']['qqInfo'] 	= $qqInfo;
-			$result['code'] 			= 1;
+			$configInfo = unserialize($qqConfig['configs']);
+			$appid = $configInfo['thirdlogin_qq_appid'];
+			
+			$request_url="https://graph.qq.com/user/get_user_info?oauth_consumer_key={$appid}&access_token={$access_token}&openid={$unioidInfo['openid']}";
+			
+			$request_content = http_get($request_url);
+			$qqInfo = json_decode($request_content, true);
+			
+			if(empty($qqInfo) || $qqInfo['ret']!=0)
+			{
+				$result['message'] 	= "获取QQ用户信息失败";
+				$result['code'] 	= 0;
+			}
+			else{
+				$qqInfo['unionid'] 	= $unioidInfo['unionid'];
+				$qqInfo['qq_openid']= $unioidInfo['openid'];
+				
+				$result['data']['qqInfo'] 	= $qqInfo;
+				$result['code'] 			= 1;
+			}
 		}
 	}
 	

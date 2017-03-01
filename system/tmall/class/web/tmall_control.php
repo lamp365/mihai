@@ -68,7 +68,7 @@ if ($operation == 'index') {
 	}else{
 		$have_man = mysqld_select("SELECT * FROM ".table('tmall')." WHERE manager=".$id);
 		if (!empty($have_man['id']) AND $idt == '2') {
-			// 部门经理降为员工
+			// 店铺经理降为员工
 			$other_man = mysqld_select("SELECT id FROM ".table('tmall_staff')." WHERE department=".$have_man['id']." AND identity=1");
 			if (!empty($other_man['id'])) {
 				mysqld_update('tmall', array('manager'=>$other_man['id']),array('id'=>$have_man['id']));
@@ -93,17 +93,19 @@ if ($operation == 'index') {
 	$result['idt'] = $this_staff['identity'];
 	echo json_encode($result);
 }elseif ($operation == 'add_department') {
-	// 添加部门
+	// 添加店铺
 	$department_name = $_GP['department_name'];
+	$department_code = $_GP['department_code'];
+
 	if (!empty($department_name)) {
-		$re = mysqld_insert("tmall", array('department'=>$department_name, 'createtime'=>time()));
+		$re = mysqld_insert("tmall", array('department'=>$department_name, 'code'=>$department_code, 'createtime'=>time()));
 		$result['message'] = 1;
 	}else{
 		$result['message'] = 0;
 	}
 	echo json_encode($result);
 }elseif ($operation == 'set_department') {
-	// 设置部门
+	// 设置店铺
 	$depart_name = $_GP['depart_name'];
 	$manager = $_GP['manager'];
 

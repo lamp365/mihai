@@ -8,7 +8,7 @@ $operation = ! empty ( $_GP ['op'] ) ? $_GP ['op'] : '';
 
 switch($operation){
 	
-	case 'order_finish':		//交易完成的订单
+	case 'order_finish':		//本周交易完成的订单
 		
 		$pindex= max(1, intval($_GP['page']));
 		$psize = 10;
@@ -23,7 +23,8 @@ switch($operation){
 		}
 		
 		$orderSql = "SELECT SQL_CALC_FOUND_ROWS id,ordersn,address_realname,address_mobile,createtime,completetime,price,has_balance,balance_sprice,freeorder_price,hasbonus,bonusprice,dispatchprice,taxprice FROM " . table('shop_order');
-		$orderSql.="  WHERE  status = 3 and ordertype!=-2 ";
+		$orderSql.=" WHERE status = 3 and ordertype!=-2 ";
+		$orderSql.=" and relation_uid = 0 ";		//一键代发订单除外
 		$orderSql.=' and completetime>= '.$starttime;
 		$orderSql.=' and completetime<= '.time();
 		$orderSql.=' ORDER BY openid asc,createtime DESC ';
@@ -62,7 +63,12 @@ switch($operation){
 		$signSql.= " where category_id = {$category_id} and free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' ";
 		$signSql.= " and sign_username1 IS NOT NULL and sign_username2 IS NOT NULL and sign_username3 IS NOT NULL";
 		
+		//签名信息
 		$free_sign = mysqld_select ($signSql);
+		
+		//本期的免单配置
+		$arrFreeConfig= mysqld_selectall('SELECT free_id,category_id FROM ' . table('free_config') . " where free_starttime='".$period['monday_time']."' and free_endtime='".$period['sunday_time']."' ");
+		
 		
 		//不是周一时
 		if(date('N')!=1){
@@ -78,6 +84,11 @@ switch($operation){
 		elseif(empty($free_sign))
 		{
 			message ( '亲，尚未通过签名认证，无法进行免单配置哦！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
+		}
+		//本期的免单已配置时
+		elseif(!empty($arrFreeConfig))
+		{
+			message ( '亲，每期只能设置一个免单分类！', web_url ( 'free_order',array('op' =>'new_list')), 'error' );
 		}
 
 		$data = array('category_id' 		=> $category_id,
@@ -158,6 +169,24 @@ switch($operation){
 		}
 		
 		break;
+		
+	case 'new_detail':			//待配置免单详情
+		
+		$period 	= getLastWeekPeriod();				//上周一到周天的时间戳
+		$category_id= intval ( $_GP ['category_id'] );
+		$pindex 	= max(1, intval($_GP['page']));		//页码
+		$psize 		= 10;								//每页显示记录数
+		
+		$categoryInfo = mysqld_select ( "SELECT name FROM ".table('shop_category'). " where id=$category_id" );
+		
+		$list = getFreeDishListByPeriod($period['monday_time'],$period['sunday_time'],$category_id,($pindex - 1) * $psize . ',' . $psize);
+
+		$total = mysqld_select("SELECT FOUND_ROWS() as total;");
+		$pager = pagination($total['total'], $pindex, $psize);
+		
+		include page ( 'free_order_new_detail' );
+		
+		break;
 
 	case 'new_list':			//新增页
 		
@@ -200,24 +229,14 @@ switch($operation){
 		
 		if($free_config)
 		{
-			$listSql ='SELECT SQL_CALC_FOUND_ROWS o.ordersn,o.address_realname,o.address_mobile,og.*,d.title FROM ' . table('shop_order') . ' o,'. table('shop_order_goods').' og,'.table('shop_dish').' d ';
-			$listSql.=' where o.id=og.orderid and og.goodsid=d.id ';
-			$listSql.=' and o.status=3 ';
-			$listSql.=' and o.ordertype!=-2 ';		//批发订单除外
-			$listSql.=' and og.status in (-2,-1,0) ';
-			$listSql.=' and o.completetime>= '.$free_config['free_starttime'];
-			$listSql.=' and o.completetime<= '.$free_config['free_endtime'];
-			$listSql.=' and d.p1= '.$free_config['category_id'];
+			$whereSql = '';
 			
 			if($_GP['free_status']!='')
 			{
-				$listSql.= " and og.free_status=".$_GP['free_status'];
+				$whereSql= " og.free_status=".$_GP['free_status'];
 			}
 			
-			$listSql.= " order by og.free_id asc,o.openid asc limit ".($pindex - 1) * $psize . ',' . $psize;
-			
-			
-			$list = mysqld_selectall ($listSql);
+			$list = getFreeDishListByPeriod($free_config['free_starttime'],$free_config['free_endtime'],$free_config['category_id'],($pindex - 1) * $psize . ',' . $psize,$whereSql);
 			
 			$total = mysqld_select("SELECT FOUND_ROWS() as total;");
 			$pager = pagination($total['total'], $pindex, $psize);
@@ -313,6 +332,7 @@ function getFreeAmount($category_id,$starttime,$endtime)
 	$sql.=' where o.id=og.orderid and og.goodsid=d.id ';
 	$sql.=' and o.status=3 ';
 	$sql.=' and o.ordertype!=-2 ';			//批发订单除外
+	$sql.=' and o.relation_uid=0 ';			//一键代发订单除外
 	$sql.=' and og.status in (-2,-1,0) ';
 	$sql.=' and o.completetime>= '.$starttime;
 	$sql.=' and o.completetime<= '.$endtime;
@@ -329,6 +349,8 @@ function getFreeAmount($category_id,$starttime,$endtime)
  *
  * 计算免单人数
  * @param $category_id:int 分类ID
+ * @param $starttime:int 开始时间戳
+ * @param $endtime:int 结束时间戳
  *
  * @return $freeMemeberCount:免单人数
  */
@@ -340,6 +362,7 @@ function getFreeMemberCount($category_id,$starttime,$endtime)
 	$sql.=' where o.id=og.orderid and og.goodsid=d.id ';
 	$sql.=' and o.status=3 ';
 	$sql.=' and o.ordertype!=-2 ';			//批发订单除外
+	$sql.=' and o.relation_uid=0 ';			//一键代发订单除外
 	$sql.=' and og.status in (-2,-1,0) ';
 	$sql.=' and o.completetime>= '.$starttime;
 	$sql.=' and o.completetime<= '.$endtime;

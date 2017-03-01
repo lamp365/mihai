@@ -23,7 +23,7 @@ if (!empty($_GP['brand']) && ($_GP['brand'] != -1)){
 }
 $condition .= " and shoporder.status >= 1 ";
 // 找出销售的产品进行统计
-$sql = " SELECT ordergoods.goodsid, ordergoods.price, shopdish.title, sum(ordergoods.total) as totals, sum(ordergoods.total * ordergoods.price) totprice FROM ".table('shop_order_goods')." as ordergoods left join ".table('shop_dish')." as shopdish on ordergoods.goodsid = shopdish.id left join ".table('shop_goods')." as shopgoods on shopdish.gid = shopgoods.id left join ".table('shop_order')." as shoporder on ordergoods.orderid = shoporder.id where $condition group by ordergoods.goodsid order by totprice desc , totals desc";
+$sql = " SELECT ordergoods.goodsid, ordergoods.price, shopdish.title, sum(ordergoods.total) as totals, sum(ordergoods.total * ordergoods.price) totprice FROM ".table('shop_order_goods')." as ordergoods left join ".table('shop_dish')." as shopdish on ordergoods.goodsid = shopdish.id left join ".table('shop_goods')." as shopgoods on shopdish.gid = shopgoods.id left join ".table('shop_order')." as shoporder on ordergoods.orderid = shoporder.id where $condition group by ordergoods.goodsid order by totals desc, totprice desc ";
 $list = mysqld_selectall($sql);
 if(!empty($_GP['productsalerankingEXP01']))
 {

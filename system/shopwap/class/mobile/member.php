@@ -14,7 +14,7 @@ if ( $op == 'list' ){
 		 }else{
 			 $title = '余额清单';
 			 $keys = 'gold';
-             $paytype = ' and (type = "addgold" or type = "usegold") ';
+             $paytype = ' and (type != "addcredit" and type != "usecredit") ';
 		 }
 		 $list = mysqld_selectall('SELECT * FROM '.table('member_paylog').' WHERE openid = '.$openid.' '.$paytype.' order by createtime desc');
 		 foreach ( $list as &$paylist ){

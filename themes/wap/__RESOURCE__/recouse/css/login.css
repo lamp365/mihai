@@ -15,7 +15,7 @@ body{
    background:#B89F7A;
    border:none;
    font-size:14px;
-   margin-top: 5px;
+   height: 50px;
 }
 .form-horizontal {
     border-radius: 6px;
@@ -31,8 +31,8 @@ body{
     background-color: #fff;
 }
 .register-input-div input{
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
+    line-height: normal;
     width: 100%;
     margin: 0 auto;
     display: block;
@@ -45,7 +45,7 @@ body{
 }
 .verify-code{
     position: absolute;
-    top: 7px;
+    top: 13px;
     right: 7px;
 }
 .register-input-div .verify-code-input{
@@ -59,7 +59,7 @@ body{
 }
 .register-input-div .small-icon{
     position: absolute;
-    top: 8px;
+    top: 14px;
     color: #b9b9b9;
     text-align: center;
     left: 8px;

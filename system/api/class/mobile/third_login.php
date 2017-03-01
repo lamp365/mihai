@@ -140,7 +140,6 @@ switch ($login_type) {
 	case 'qq':		//QQ登录
 		
 		$access_token 	= trim($_GP['access_token']);
-		$qq_openid		= trim($_GP['qq_openid']);
 		
 		$qqConfig = mysqld_select("SELECT configs FROM " . table('thirdlogin') . " WHERE code = :code and enabled=1 ", array(':code' => 'qq'));
 		
@@ -150,14 +149,14 @@ switch ($login_type) {
 			$result['code'] 	= 0;
 		}
 		else{
-			$result = requestQQInfo($access_token,$qq_openid);
+			$result = requestQQInfo($access_token);
 				
 			if($result['code']==1)
 			{
-				$qqfans = mysqld_select("SELECT openid,deleted,qq_openid FROM " . table('qq_qqfans') . " WHERE qq_openid = :qq_openid ", array(':qq_openid' => $qq_openid));
 				$qqInfo = $result['data']['qqInfo'];
-				
 				unset($result['data']);
+				
+				$qqfans = mysqld_select("SELECT openid,deleted,qq_openid,unionid FROM " . table('qq_qqfans') . " WHERE unionid = :unionid ", array(':unionid' => $qqInfo['unionid']));
 				
 				//无qq账号信息时
 				if(empty($qqfans))
@@ -178,7 +177,8 @@ switch ($login_type) {
 						$qq_data =array('createtime'	=> time (),
 										'modifiedtime'	=> time(),
 										'openid' 		=> $openid,
-										'qq_openid'		=> $qq_openid,
+										'qq_openid'		=> $qqInfo['qq_openid'],
+										'unionid'		=> $qqInfo['unionid'],
 										'nickname'		=> $qqInfo['nickname'],
 										'avatar'		=> $qqInfo['figureurl_qq_2'],
 										'gender'		=> ($qqInfo['gender']=='男') ? 1: 2);
@@ -202,7 +202,7 @@ switch ($login_type) {
 						if($qqfans['deleted']==1)
 						{
 							//更新记录
-							mysqld_update('qq_qqfans', array('deleted'=>0),array('qq_openid'=>$qqfans['qq_openid']));
+							mysqld_update('qq_qqfans', array('deleted'=>0),array('unionid'=>$qqfans['unionid']));
 						}
 					
 						$result['message'] 			= "用户登录成功。";

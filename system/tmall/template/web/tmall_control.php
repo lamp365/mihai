@@ -235,7 +235,11 @@
 							<table>
 								<tr>
 									<td class="left-title">店铺名称:</td>
-									<td><input type="text" name="" class="department-name"></td>
+									<td><input type="text" name="department-name" class="department-name"></td>
+								</tr>
+								<tr>
+									<td class="left-title">店铺代号:</td>
+									<td><input type="text" name="department-code" class="department-code"></td>
 								</tr>
 							</table>
 						</div>
@@ -381,11 +385,12 @@ $(function(){
 		$(".add-user-department").modal();
 		$(".add-user-department .sure-btn").on("click",function(){
 			var department_name = $(".department-name").val();
+			var department_code = $(".department-code").val();
 			var url = "<?php  echo web_url('tmall_control',array('op'=>'add_department'));?>";
 			if( department_name == "" ){
 				alert("请输入店铺名称");
 			}else{
-				$.post(url,{department_name:department_name},function(data){
+				$.post(url,{department_name:department_name,department_code:department_code},function(data){
 					if( data.message == 1){
 						alert("添加成功","",function () {
 				          $(".add-user-department").modal('hide');

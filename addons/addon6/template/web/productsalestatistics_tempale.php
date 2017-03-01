@@ -81,6 +81,35 @@ td{
     border-color: #204d74;
     text-decoration: none;
 }
+.mark-area{
+	position: absolute;
+	top: -50px;
+	left: 50%;
+	display: none;
+	z-index: 2;
+	background-color: #fff;
+    width: 400px;
+    height: 100px;
+    border-radius: 5px;
+    padding-top: 34px;
+    padding-left: 30px;
+    margin-left: -200px;
+}
+.mark-save{
+	margin-left: 20px;
+}
+.mark-area-bg{
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: #000;
+	filter:Alpha(opacity=50); 
+	opacity: 0.5;
+	z-index: 1;
+}
 </style>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/css/select2.min.css" />
@@ -127,7 +156,7 @@ td{
 					                <tr>
 					                	<th>产品名称</th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','ordername' => $oname)); ?>">品名</a></th>
-					                    <th>品牌</th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderbrand' => $obrand)); ?>">品牌</a></th>
 					                    <th>货号</th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderorigin' => $oorigin)); ?>">规格</a></th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderweight' => $oweight)); ?>">重量</a></th>
@@ -161,7 +190,17 @@ td{
 					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
-					                		<?php  echo get_brand($almv['brand']);?>
+					                		<select class="brandChange" onchange="brandChange(this.options[this.selectedIndex].value,<?php  echo $almv['id'];?>,'brand')">
+					                			<option value="0">无</option>
+					                			<?php foreach ($all_brand as $abv) { ?>
+					                			<?php if ($almv['brand'] == $abv['id']) {
+					                				$isselect = 'selected';
+					                			}else{
+					                				$isselect = '';
+					                			} ?>
+					                			<option value="<?php  echo $abv['id'];?>" <?php  echo $isselect;?>><?php  echo $abv['brand'];?></option>
+					                			<?php } ?>
+					                		</select>
 					                	</td>
 					                	<td class="text-center">
 					                		<?php  echo $almv['dishsn'];?>
@@ -199,7 +238,7 @@ td{
 					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
-					                		<select class="type-select" onchange="selectChange(<?php  echo $almv['id'];?>,'type')">
+					                		<select class="type-select" onchange="selectChange(this,<?php  echo $almv['id'];?>,'type')">
 					                			<option value="0" <?php if ($almv['type'] == '0') {
 					                				echo 'selected';
 					                			} ?>>一般商品</option>
@@ -368,8 +407,21 @@ td{
 						        	<?php  if(is_array($order)) { 
 	 								foreach($order as $aork => $aorv) { 
 	 									?>
-						       		<tr>
-						       			<td colspan="12" class="order-number" ><span style="display:inline-block;min-width:150px"><?php  echo $aorv['ordersn'];?></span><img class="mark mark_<?php  echo $aorv['id'];?>" onclick="mark(<?php  echo $aorv['id'];?>)" src="images/btag<?php  echo intval($aorv['tag'])-1;?>.png" /></td>
+						       		<tr >
+						       			<td style="position: relative;" colspan="12" class="order-number" ><span style="display:inline-block;min-width:150px"><?php  echo $aorv['ordersn'];?></span><img class="mark mark_<?php  echo $aorv['id'];?>" onclick="mark(this,<?php  echo $aorv['id'];?>)" data-aorv="<?php  echo intval($aorv['tag']);?>" src="images/btag<?php  echo intval($aorv['tag']);?>.png" />
+							       			<div class='mark-area'>										
+						    			       	<label class="radio-inline">
+							                     	<input type="radio" name="tag" class="tag1" value="1">平潭<img src="images/tag1.png">
+							                   	</label> 
+											 	<label class="radio-inline">
+							                     	<input type="radio" name="tag" class="tag2" value="2">彩虹<img src="images/tag2.png">
+							                   	</label> 
+											 	<label class="radio-inline">
+							                     	<input type="radio" name="tag" class="tag3" value="3">贝海<img src="images/tag3.png">
+							                   	</label> 
+							                   	<button class="btn btn-primary mark-save" onclick="markSave(this)" type="button" >保存</button>
+											</div>
+						       			</td>
 						       		</tr>
 						       		<tr class="order_info">
 							       		<td class="text-center" colspan="3" width="500px">
@@ -397,37 +449,9 @@ td{
 					            </tbody>
 				            </table>
 				        </div>
-				        <!-- 订单标记模态框开始 -->
+
 				        <input type="hidden" name="product_id" class="product_id">
-			        	<div class='modal fade mark-modal-dialog' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
-							<div class='modal-dialog'>
-								<div class='modal-content'>
-									<div class='modal-header'> 
-										<button type='button' class='close' data-dismiss='modal'>
-											<span aria-hidden='true'>&times;</span>
-											<span class='sr-only'>Close</span>
-										</button>
-										<h4 class='modal-title' class='myModalLabel'>订单标记</h4>
-									</div>
-									<div class='modal-body'>										
-				    			       	<label class="radio-inline">
-					                     	<input type="radio" name="tag" id="tag0" value="1">平潭<img src="images/tag0.png">
-					                   	</label> 
-									 	<label class="radio-inline">
-					                     	<input type="radio" name="tag" id="tag1" value="2">彩虹<img src="images/tag1.png">
-					                   	</label> 
-									 	<label class="radio-inline">
-					                     	<input type="radio" name="tag" id="tag2" value="3">贝海<img src="images/tag2.png">
-					                   	</label> 
-									</div>
-									<div class="modal-footer">
-										<button class="btn btn-primary mark-save" onclick="markSave()" type="button" >保存</button>
-									    <button class="btn btn-default" type="button" data-dismiss="modal">关闭</button>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- 订单标记模态框结束 -->
+			        	
 					</form>
 					<?php  echo $pager;?>
 				</div>
@@ -456,14 +480,28 @@ td{
 											<button type="button" class="order_input btn btn-md btn-warning btn-sm">开始导入</button>
 										</li>
 									</td>
-								</tr>	
+								</tr>
+								<tr><td><div class="alert alert-info" style="margin:10px 0; width:auto;">
+			<i class="icon-lightbulb"></i> 提示: 以下为商品数据导入
+		</div></td></tr>	
+								<tr>
+									<td>
+										<li style="line-height: 26px;">商品表单：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+										<li >
+											<input style="line-height: 26px;" name="myxls" type="file"   value="" />
+										</li>
+										<li >
+											<button type="button" class="goods_input btn btn-md btn-warning btn-sm">导入商品</button>
+										</li>
+									</td>
+								</tr>
 							</tbody>		
 						</table>
 					</form>
 	            </div>
 				<!-- 订单导出表单 -->
 				 <div class="tab-pane fade" id="tab4primary">
-		            <form action="" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
+		            <form action="<?php  echo web_url('productsalestatistics', array('op' => 'output'));?>" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
 					    <ul class="search-ul">
 							<li>
 								<span class="left-span">物流</span>
@@ -484,12 +522,20 @@ td{
 	    </div>
 	</div>
 </div>
-
+<div class="mark-area-bg"></div>
 <script>
 $(function(){
+	$(".brandChange").select2();
 	$(".order_input").click(function(){
 		if(confirm('确定开始导入')){
 			var url = "<?php  echo web_url('productsalestatistics',array('op'=>'into'));?>";
+			$(".order_form").attr('action',url);
+			$(".order_form").submit();
+		}
+	});
+	$(".goods_input").click(function(){
+		if(confirm('确定开始导入')){
+			var url = "<?php  echo web_url('productsalestatistics',array('op'=>'input_goods'));?>";
 			$(".order_form").attr('action',url);
 			$(".order_form").submit();
 		}
@@ -543,26 +589,50 @@ $(function(){
 			},"json");
 		}
 	})
+	//关闭订单标记
+	$(".mark-area-bg").on("click",function(){
+		$(".mark-area-bg").hide();
+		$(".mark-area").hide();
+	})
 });
 //订单标记
-function mark(product_id){
+function mark(thisobj,product_id){
+	var data_aorv = parseInt($(thisobj).attr("data-aorv"));
 	$(".product_id").val(product_id);
-	$(".mark-modal-dialog").modal();
-	$("#tag"+product_id).prop("checked","true");
+	$(thisobj).siblings(".mark-area").show();
+	$(".mark-area-bg").show();
+	$(thisobj).siblings(".mark-area");
+	$(thisobj).siblings(".mark-area").find(".tag"+(data_aorv)).prop("checked","true");
+}
+//品牌
+function brandChange(value,id,brand){
+	var brand_val = value;
+	var brand_id = id;
+	var brand_type = brand;
+	var url = "<?php  echo web_url('productsalestatistics',array('op'=>'edit_data'));?>";
+	$.post(url,{'ajax_id':brand_id,'ajax_value':brand_val,'field_name':brand_type},function(data){
+		if( data.message ==1 ){
+
+		}else{
+			alert(data.message);
+		}
+	},"json");
 }
 //保存订单标记
-function markSave(){
-	var mark_value = $(".radio-inline input[name='tag']:checked").val();
+function markSave(thisobj){
+	var mark_value = $(thisobj).siblings(".radio-inline").find("input[name='tag']:checked").val();
 	var product_id = $(".product_id").val();
-	var new_img = parseInt(mark_value)-1;
+	var new_img = parseInt(mark_value);
 	var url = "<?php  echo web_url('productsalestatistics',array('op'=>'mark'));?>";
 	$.post(url,{mark_id:product_id,mark_val:mark_value},function(data){
 		if(data.message==1){
 			$(".mark_"+product_id+"").attr("src","images/btag"+new_img+".png");
+			$(".mark_"+product_id+"").attr("data-aorv",new_img);
 		}else{
 			alert(data.message);
 		}
-		$(".mark-modal-dialog").modal('hide');
+		$(".mark-area").hide();
+		$(".mark-area-bg").hide();
 	},"json");
 }
 //刷新
@@ -570,8 +640,8 @@ function refresh(){
 	window.location.reload();
 }
 //类型编辑
-function selectChange(ajax_id,field_name){
-	var this_val = $(".type-select").val();
+function selectChange(thisobj,ajax_id,field_name){
+	var this_val = $(thisobj).val();
 	var url = "<?php  echo web_url('productsalestatistics',array('op'=>'edit_data'));?>";
 	$.post(url,{'ajax_id':ajax_id,'ajax_value':this_val,'field_name':field_name},function(data){
 		if( data.message == 1 ){
@@ -581,6 +651,7 @@ function selectChange(ajax_id,field_name){
 	},"json");
 }
 //添加商品数据
+
 function addProduct(){
 	$(".add-product-modal").modal();
 	$(".add-product-modal").on("shown.bs.modal", function(){

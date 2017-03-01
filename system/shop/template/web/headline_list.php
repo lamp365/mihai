@@ -9,6 +9,9 @@
 		<tr>
 			<th style="text-align: center; width: 30px">ID</th>
 			<th style="text-align: center;">标题</th>
+			<th style="text-align: center;">类型</th>
+			<th style="text-align: center;">图片</th>
+			<th style="text-align: center;">内容预览</th>
 			<th style="text-align: center;">是否推荐</th>
 			<th style="text-align: center;">审核通过</th>
 			<th style="text-align: center;">创建时间</th>
@@ -20,6 +23,20 @@
         <tr style="text-align: center;">
 			<td><?php echo $value['headline_id'];?></td>
 			<td><?php echo $value['title'];?></td>
+			<td><?php if (empty($value['video'])) {
+				echo "图文";
+			}else{
+				echo "视频";
+			}?></td>
+			<td><?php if (empty($value['video'])) {
+				$pic_ary = explode(';', $value['pic']);
+				if (!empty($pic_ary)) {
+					echo "<img src='".download_pic($pic_ary[0],90,70,2)."' />";
+				}
+			}else{
+				echo "<img src='".download_pic($value["video_img"],90,90,2)."'></>";
+			}?></td>
+			<td><?php echo $value['preview'];?></td>
 			<td><?php echo empty($value['isrecommand'])?'否':'是'; ?></td>
 			<td><?php echo empty($value['ischeck'])?'否':'已审核'; ?></td>
 			<td><?php echo date('Y-m-d H:i:s',$value['createtime']);?></td>

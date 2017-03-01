@@ -141,16 +141,16 @@ if (!empty($member) AND $member != 3) {
 		case 'qq':		//QQ
 			
 			$access_token 	= trim($_GP['access_token']);
-			$qq_openid		= trim($_GP['qq_openid']);
 			
-			$result = requestQQInfo($access_token,$qq_openid);
+			$result = requestQQInfo($access_token);
 				
 			if($result['code']==1)
 			{
-				$qqFans = mysqld_select("SELECT qq_openid,openid,deleted FROM " . table('qq_qqfans') . " WHERE qq_openid = :qq_openid ", array(':qq_openid' => $qq_openid));
 				$qqInfo = $result['data']['qqInfo'];
 				
 				unset($result['data']);
+
+				$qqFans = mysqld_select("SELECT qq_openid,openid,unionid,deleted FROM " . table('qq_qqfans') . " WHERE unionid = :unionid ", array(':unionid' => $qqInfo['unionid']));
 				
 				//无QQ账号信息时
 				if(empty($qqFans))
@@ -158,7 +158,8 @@ if (!empty($member) AND $member != 3) {
 					$qq_data =array('createtime'	=> time (),
 									'modifiedtime'	=> time(),
 									'openid' 		=> $openid,
-									'qq_openid'		=> $qq_openid,
+									'qq_openid'		=> $qqInfo['qq_openid'],
+									'unionid'		=> $qqInfo['unionid'],
 									'nickname'		=> $qqInfo['nickname'],
 									'avatar'		=> $qqInfo['figureurl_qq_2'],
 									'gender'		=> ($qqInfo['gender']=='男') ? 1: 2);
@@ -168,7 +169,7 @@ if (!empty($member) AND $member != 3) {
 					{
 						$result['message'] 			= "QQ账号绑定成功";
 						$result['data']['nickname'] = $qqInfo['nickname'];
-						$result['data']['qq_openid']= $qq_openid;
+						$result['data']['unionid']	= $qqInfo['unionid'];
 						$result['code'] 			= 1;
 					}
 					else{
@@ -179,11 +180,11 @@ if (!empty($member) AND $member != 3) {
 				elseif($qqFans['deleted']==1)
 				{
 					//重新开启
-					mysqld_update('qq_qqfans', array('deleted'=>0,'modifiedtime'=>time(),'openid'=> $openid),array('qq_openid'=>$qq_openid));
+					mysqld_update('qq_qqfans', array('deleted'=>0,'modifiedtime'=>time(),'openid'=> $openid),array('unionid'=>$qqInfo['unionid']));
 						
 					$result['message'] 			= "QQ账号绑定成功";
 					$result['data']['nickname'] = $qqInfo['nickname'];
-					$result['data']['qq_openid']= $qq_openid;
+					$result['data']['unionid']	= $qqInfo['unionid'];
 					$result['code'] 			= 1;
 				}
 				else{
@@ -268,7 +269,7 @@ if (!empty($member) AND $member != 3) {
 			
 			$wxfans 	= mysqld_select("SELECT nickname,unionid FROM " . table('weixin_wxfans') . " WHERE openid = :openid and deleted=0 order by modifiedtime desc", array(':openid' => $openid));
 			$weiboFans 	= mysqld_select("SELECT nickname,uid FROM " . table('weibo_fans') . " WHERE openid = :openid and deleted=0 order by modifiedtime desc", array(':openid' => $openid));
-			$qqFans 	= mysqld_select("SELECT nickname,qq_openid FROM " . table('qq_qqfans') . " WHERE openid = :openid and deleted=0 order by modifiedtime desc", array(':openid' => $openid));
+			$qqFans 	= mysqld_select("SELECT nickname,unionid FROM " . table('qq_qqfans') . " WHERE openid = :openid and deleted=0 order by modifiedtime desc", array(':openid' => $openid));
 			$memberInfo = mysqld_select("SELECT mobile FROM " . table('member') . " where openid=:openid ", array(':openid' => $openid));
 			
 			

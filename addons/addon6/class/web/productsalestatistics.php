@@ -10,8 +10,11 @@
 defined('SYSTEM_IN') or exit('Access Denied');
 require_once WEB_ROOT.'/includes/readcsv.class.php';
 require_once WEB_ROOT.'/includes/lib/arrayiconv.class.php';
+require_once WEB_ROOT.'/includes/lib/phpexcel/PHPExcel/IOFactory.php';
+
 $operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 $admin = $_CMS['account']['username'];
+// $admin = 'yanfa';
 $tmall_id = mysqld_select("SELECT a.id as tma_id,b.id as sta_id FROM ".table('tmall')." as a left join ".table('tmall_staff')." as b on a.id=b.department WHERE b.admin='".$admin."'");
 if (empty($tmall_id)) {
   message('抱歉，非店铺人员无法查看！');
@@ -59,8 +62,10 @@ if ($operation == 'into') {
 				      if ($i == 0){
 					      array_shift($arr);
 				      }
-				      foreach ($arr as $dv) {
-						    if ( count($dv < 30 )){
+				      foreach ($arr as &$dv) {
+                $dv[0] = str_replace('"','',$dv[0]);
+                $dv[0] = str_replace('=','',$dv[0]);
+						    if ( count($dv) < 30){
 								//商品数据
 								  $table = 'tmall_order_goods';
 								  $where = "orderid = '".$dv[0]."' and sn= '".$dv[9]."'";
@@ -70,10 +75,10 @@ if ($operation == 'into') {
 								  $where = "ordersn = '".$dv[0]."'";
                                   $type = 2;
 							}
-					        $have_cus = mysqld_select("SELECT * FROM ".table($table)." WHERE ".$where);
-					        if (!empty($have_cus)) {
-					               continue;
-					        }
+			        $have_cus = mysqld_select("SELECT * FROM ".table($table)." WHERE ".$where);
+			        if (!empty($have_cus)) {
+			               continue;
+			        }
 							if (!empty($dv) AND !empty($dv[0])) {
 							   if ( $type == 2){
 								       // 开始处理地址信息，地址信息可能有修正，所以要判断修正是否为空
@@ -94,7 +99,7 @@ if ($operation == 'into') {
 										'address_city' => $address_city,
 										'address_province' => $address_province,
 										'address_realname' => $dv[12],
-										'address_mobile' => $dv[2],
+										'address_mobile' => str_replace("'",'',$dv[16]),
 										'bonusprice' => 0 ,  // 优惠卷使用金额
 										'deleted' => 0,   //订单是否已导出 0 否 1 是
                     'tmallid' => $tmall_id['tma_id'],
@@ -130,11 +135,11 @@ if ($operation == 'into') {
   $title = $_GP['sg_title'];
   $dishsn = $_GP['sg_dishsn'];
   $orderby = '';
-  $oname = $oorigin = $oweight = $ounit = $olists = $otype = $op1 = $op2 = $oprice = 'asc';
+  $oname = $oorigin = $oweight = $ounit = $olists = $otype = $op1 = $op2 = $oprice = $obrand = 'asc';
   // 只可以看到自己店铺的商品
-  if ($admin!='root') {
-    $where.=" AND tmallid=".$tmall_id['tma_id'];
-  }
+  // if ($admin!='root') {
+  $where.=" AND tmallid=".$tmall_id['tma_id'];
+  // }
   
   if ( isset($_GP['ordername']) ){
     if ( $_GP['ordername'] == 'asc' ){
@@ -208,9 +213,17 @@ if ($operation == 'into') {
     }
     $orderby = " ORDER BY productprice ".$_GP['orderprice'];
   }
+  if ( isset($_GP['orderbrand']) ){
+    if ( $_GP['orderbrand'] == 'asc' ){
+      $obrand = 'desc';
+    }else{
+      $obrand = 'asc';
+    }
+    $orderby = " ORDER BY brand ".$_GP['orderbrand'];
+  }
 
   if (!empty($title)) {
-    $where.=" AND title LIKE '%".$title."%'";
+    $where.=" AND title LIKE '%".addslashes($title)."%'";
   }
   if (!empty($dishsn)) {
     $where.=" AND dishsn='".$dishsn."'";
@@ -229,9 +242,9 @@ if ($operation == 'into') {
   $begintime = $_GP['begintime'];
   $endtime = $_GP['endtime'];
   // 只可以看到自己店铺的订单
-  if ($admin!='root') {
+  // if ($admin!='root') {
     $where2.=" AND tmallid=".$tmall_id['tma_id'];
-  }
+  // }
   if (!empty($order_number)) {
     $where2.=" AND ordersn='".$order_number."'";
   }
@@ -259,6 +272,8 @@ if ($operation == 'into') {
   //     }
   //   }
   // }
+  // 品牌库
+  $all_brand = mysqld_selectall("SELECT * FROM ".table('shop_brand'));
 
   include addons_page('productsalestatistics_tempale');
 }elseif ($operation == 'refresh_goods') {
@@ -267,33 +282,44 @@ if ($operation == 'into') {
   if (!empty($order_goods)) {
     foreach ($order_goods as $ogv) {
       $order = mysqld_select("SELECT tmallid,memberid FROM ".table('tmall_order')." WHERE id=".$ogv['orderid']);
-      if (!empty($ogv['sn'])) {
-        $dish = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE dishsn='".$ogv['sn']."'");
-        if (empty($dish)) {
-          $goods = mysqld_select("SELECT * FROM ".table('shop_goods')." WHERE goodssn='".$ogv['sn']."'");
-          if (!empty($goods)) {
+      if ($order['tmallid'] == $tmall_id['tma_id']) {
+        if (!empty($ogv['sn'])) {
+          $dish = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE dishsn='".$ogv['sn']."' AND tmallid=".$tmall_id['tma_id']);
+          if (empty($dish)) {
+            $goods = mysqld_select("SELECT * FROM ".table('shop_goods')." WHERE goodssn='".$ogv['sn']."'");
+            if (!empty($goods)) {
+              $data = array(
+                'gid'=>$goods['id'],
+                'title'=>$ogv['title'],
+                'brand'=>$goods['brand'],
+                'dishsn'=>$goods['goodssn'],
+                'createtime'=>time(),
+                'tmallid'=>$order['tmallid'],
+                'memberid'=>$order['memberid'],
+                );
+              mysqld_insert('tmall_dish',$data);
+            }else{
+              $data = array(
+                'title'=>$ogv['tit'],
+                'dishsn'=>$ogv['sn'],
+                'createtime'=>time(),
+                'tmallid'=>$order['tmallid'],
+                'memberid'=>$order['memberid'],
+                );
+              mysqld_insert('tmall_dish',$data);
+            }
+          }
+        }elseif (!empty($ogv['tit'])) {
+          $dish = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE title='".addslashes($ogv['tit'])."' AND tmallid=".$tmall_id['tma_id']);
+          if (empty($dish)) {
             $data = array(
-              'gid'=>$goods['id'],
-              'title'=>$goods['title'],
-              'brand'=>$goods['brand'],
-              'dishsn'=>$goods['goodssn'],
+              'title'=>$ogv['tit'],
               'createtime'=>time(),
               'tmallid'=>$order['tmallid'],
               'memberid'=>$order['memberid'],
               );
             mysqld_insert('tmall_dish',$data);
           }
-        }
-      }elseif (!empty($ogv['tit'])) {
-        $dish = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE title='".$ogv['tit']."'");
-        if (empty($dish)) {
-          $data = array(
-            'title'=>$ogv['tit'],
-            'createtime'=>time(),
-            'tmallid'=>$order['tmallid'],
-            'memberid'=>$order['memberid'],
-            );
-          mysqld_insert('tmall_dish',$data);
         }
       }
     }
@@ -416,6 +442,163 @@ if ($operation == 'into') {
     $result['message'] = '标记不能为空！';
   }
   echo json_encode($result);
+}elseif ($operation == 'output') {
+  // 制单导出
+  $type = intval($_GP['wuliu']);
+  $where = 'deleted<>1 AND tmallid='.$tmall_id['tma_id'];
+  if ($type == 0) {
+    message('请选择物流！',refresh(),'error');
+  }elseif ($type == 1) {
+    $_GP['template'] = 1;
+  }elseif ($type == 2) {
+    $_GP['template'] = 3;
+  }elseif ($type == 3) {
+    $_GP['template'] = 2;
+  }
+  $where.=" AND tag=".$type;
+
+  $list = mysqld_selectall("SELECT * FROM ".table('tmall_order')." WHERE ".$where." ORDER BY createtime DESC");
+  foreach ($list as &$lv) {
+    $order_goods = mysqld_selectall("SELECT tit, sn, total FROM ".table('tmall_order_goods')." WHERE orderid='".$lv['ordersn']."'");
+    foreach ($order_goods as &$ogooov) {
+      if (!empty($ogooov['sn'])) {
+        $ogd = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE dishsn='".$ogooov['sn']."'");
+        if (!empty($ogd)) {
+          foreach ($ogd as $ogdk => $ogdv) {
+            $ogooov[$ogdk] = $ogdv;
+          }
+        }
+      }else{
+        $ogd = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE title='".$ogooov['tit']."'");
+        if (!empty($ogd)) {
+          foreach ($ogd as $ogdk => $ogdv) {
+            $ogooov[$ogdk] = $ogdv;
+          }
+        }
+	  }
+    }
+    unset($ogooov);
+    $lv['goods'] = $order_goods;
+  }
+  unset($lv);
+  // dump($list);
+  // return;
+  $report='orderreport';
+  require_once 'report_tmall.php';
+  exit;
+}elseif ($operation == 'input_goods') {
+  // 直接导入商品
+  $myxls = '';
+  if ($_FILES['myxls']['error'] != 4) {
+    $upload = file_upload($_FILES['myxls'], false, NULL, NULL,$type='other');
+    if (is_error($upload)) {
+        message($upload['message'], '', 'error');
+    }
+    $myxls = $upload['path'];
+
+    if (!file_exists($myxls)) {
+      message('文件上传失败，请重试!',refresh(),'error');
+    }
+
+    //根据不同类型分别操作
+    if($upload['extention'] == 'xlsx' || $upload['extention'] == 'xls') {
+      $reader = PHPExcel_IOFactory::createReader('Excel5'); //设置以Excel5格式(Excel97-2003工作簿)
+    }elseif($upload['extention'] == 'csv') {
+      $reader = PHPExcel_IOFactory::createReader('CSV')
+        ->setDelimiter(',')
+        ->setInputEncoding('GBK') //不设置将导致中文列内容返回boolean(false)或乱码
+        ->setEnclosure('"')
+        ->setLineEnding("\r\n")
+        ->setSheetIndex(0);
+    }else{
+      message('文件格式不正确!',refresh(),'error');
+    }
+
+    $PHPExcel = $reader->load($myxls); // 载入excel文件
+    $sheet = $PHPExcel->getSheet(0); // 读取第一個工作表
+    $highestRowNum = $sheet->getHighestRow(); // 取得总行数
+    $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+    $highestColumnNum = PHPExcel_Cell::columnIndexFromString($highestColumn);
+
+    //取得字段，这里测试表格中的第一行为数据的字段，因此先取出用来作后面数组的键名
+    $filed = array();
+    for($i=0; $i<$highestColumnNum;$i++){
+      $cellName = PHPExcel_Cell::stringFromColumnIndex($i);
+      // $cellVal = $sheet->getCell($cellName)->getValue();//取得列内容
+      $filed []= $cellName;
+    }
+
+    // 循环读取每个单元格的数据
+    $data = array();
+    for($i=2;$i<=$highestRowNum;$i++){//ignore row 1
+      $row = array();
+      for($j=0; $j<$highestColumnNum;$j++){
+        $cellName = PHPExcel_Cell::stringFromColumnIndex($j).$i;
+        $cellVal = $sheet->getCell($cellName)->getValue();
+        $row[ $filed[$j] ] = $cellVal;
+      }
+      $data []= $row;
+    }
+    // dump($data);
+
+    $last_tit = '';
+    $last_sprice = 0;
+    $last_weight = 0;
+    // 开始循环保存数据库
+    foreach ($data as $dav) {
+      $g_ary = array('tmallid' => $tmall_id['tma_id'],'memberid' => $tmall_id['sta_id']);
+      // 货号
+      if (!empty($dav['I'])) {
+        $g_ary['dishsn'] = $dav['I'];
+      }elseif (!empty($dav['C'])) {
+        $g_ary['dishsn'] = $dav['C'];
+      }
+      // 标题
+      if (empty($dav['B'])) {
+        $g_ary['title'] = $last_tit;
+      }else{
+        $g_ary['title'] = $dav['B'];
+        $last_tit = $dav['B'];
+      }
+      $g_ary['title'] = addslashes($g_ary['title']);
+      // 售价
+      if (empty($dav['D'])) {
+        $g_ary['productprice'] = $last_sprice;
+      }else{
+        $g_ary['productprice'] = $dav['D'];
+        $last_sprice = $dav['D'];
+      }
+      // 重量
+      if (empty($dav['F'])) {
+        $g_ary['weight'] = $last_weight;
+      }else{
+        $g_ary['weight'] = $dav['F'];
+        $last_weight = $dav['F'];
+      }
+      // 规格
+      if (!empty($dav['H'])) {
+        $g_ary['origin'] = addslashes($dav['H']);
+      }
+      if (!empty($g_ary['dishsn'])) {
+        $brand = mysqld_select("SELECT b.id FROM ".table('shop_goods')." as a left join ".table('shop_brand')." as b on a.brand=b.id WHERE a.goodssn='".$g_ary['dishsn']."'");
+        $have_g = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE dishsn='".$g_ary['dishsn']."' AND tmallid=".$tmall_id['tma_id']);
+        $g_ary['brand'] = $brand['id'];
+      }else{
+        if (!empty($g_ary['origin'])) {
+          $have_g = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE title='".$g_ary['title']."' AND tmallid=".$tmall_id['tma_id']." AND origin='".$g_ary['origin']."'");
+        }else{
+          $have_g = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE title='".$g_ary['title']."' AND tmallid=".$tmall_id['tma_id']);
+        }
+      }
+
+      if (empty($have_g)) {
+        mysqld_insert('tmall_dish',$g_ary);
+      }
+    }
+    message('导入完成!',refresh(),'success');
+  }else{
+    message('请上传表单!',refresh(),'error');
+  }
 }
 
 // 获取品牌名
@@ -430,6 +613,12 @@ function get_brand($id=null) {
 
 // 获取订单商品
 function get_order_goods($order_sn) {
-  $ogs = mysqld_selectall("SELECT a.*, b.productprice FROM ".table('tmall_order_goods')." as a left join ".table('tmall_dish')." as b on a.sn=b.dishsn WHERE a.orderid='".$order_sn."'");
+  $ogs = mysqld_selectall("SELECT * FROM ".table('tmall_order_goods')." WHERE orderid='".$order_sn."'");
+  foreach ($ogs as &$ogvv) {
+    $td = mysqld_select("SELECT productprice FROM ".table('tmall_dish')." WHERE dishsn='".$ogvv['sn']."'");
+    $ogvv['productprice'] = $td['productprice'];
+  }
+  unset($ogvv);
+  
   return $ogs;
 }

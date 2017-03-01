@@ -49,6 +49,8 @@
 					<?php }else{?>
 					<a class="btn btn-xs btn-info" href="<?php echo web_url('free_order',array('op' =>'sign','category_id'=>$value['id']))?>"><i class="icon-edit"></i>&nbsp;签&nbsp;名&nbsp;</a>
 				<?php } }?>
+				
+				<a href="<?php echo web_url('free_order',array('op' =>'new_detail','category_id'=>$value['id']))?>"><i class="icon-edit"></i>查看详情</a>
 			</td>
 		</tr>
         <?php  } } ?>

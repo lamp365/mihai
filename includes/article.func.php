@@ -88,11 +88,9 @@ function getArticleUrl($id,$type,$openid = '',$is_quote=''){
             break;
         case 'note':
             $parame['op']  = $type;
-            $parame['do']  = 'article_list';
             break;
         case 'headline':
             $parame['op']  = $type;
-            $parame['do']  = 'article_list';
             break;
     }
     $url = create_url('mobile', $parame);
