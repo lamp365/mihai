@@ -142,8 +142,8 @@ function getWeixinPopMsg($toUser,$template_id,$data_arr){
 						'color'=>'#fb4b0e',
 					),
 					'tips'=>array(
-						'value'=> "邀请好友共同许愿每天可获更多心愿数",
-						'color'=>'#fb4b0e',
+						'value'=> "邀好友共同许愿每天可获更多心愿",
+						'color'=>'#080808',
 					),
 				),
 			);
