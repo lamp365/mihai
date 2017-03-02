@@ -25,7 +25,7 @@ $objPHPExcel->getProperties()->setCreator("觅海环球购")
 if($report=='orderreport')
 {
 		switch ( $_GP['template'] ){
-			//平潭保税区发货单
+			//平潭保税区发货单, 出入较大，暂时不做修正
 			case 1:
 			   $objPHPExcel->setActiveSheetIndex(0)
 							->setCellValue('A1', '店铺编号')
@@ -161,6 +161,7 @@ if($report=='orderreport')
 				$objPHPExcel->getActiveSheet()->setTitle('订单统计');
 				break;
 			case 2:
+				// 贝海
 				$objPHPExcel->setActiveSheetIndex(0)
 							->setCellValue('A1', '包裹号')
 							->setCellValue('B1', '*包裹重量(LB/KG)')
@@ -197,117 +198,117 @@ if($report=='orderreport')
 				$sn = 0;
 				$index=0;
 				$countmoney=0;
+				//开始合并订单数据,找出订单中地址一致的
+				foreach($list as $list_old => $list_old_value ){
+					foreach($list as $list_new=>$list_new_value){
+                          if ( $list_old_value['address_address'] == $list_new_value['address_address'] && $list_old_value['ordersn'] != $list_new_value['ordersn'] ){
+							     $list[$list_old]['merge'][] = $list_new_value;
+                                 unset($list[$list_new]);
+						  }
+					}
+				}
+				// 开始订单数据处理
 				foreach($list as $item){
 					$itemdline=0;
 					$sn++;
+					$item['sn'] = $sn;
+					preg_match_all("/(?:\()(.*)(?:\))/i",$item['address_address'], $yb);
+					$item['yb'] = $yb[1][0];
 					// 根据订单里的产品进行行设置，如果$itemdline =0 ; 则代表是第一行
-					foreach($item['goods'] as $itemgoods){
-						    $itemdatas['title'] = $itemgoods['title'];
-							$k = $item['address_province'].'#'.$item['address_city'].'#'.$item['address_area'];
-							$itemdatas['categoryname']=$itemdatas['categoryname'].$sline.$itemgoods['categoryname'];
-							$itemdatas['Supplier']=$itemdatas['Supplier'].$sline.$itemgoods['Supplier'];
-							$itemdatas['optionname']=$itemdatas['optionname'].$sline.$itemgoods['optionname'];
-							$itemdatas['price']=$itemdatas['price'].$sline.$itemgoods['price'];
-							$itemdatas['total']=$itemdatas['total'].$sline.$itemgoods['total'];
-							$itemdatas['goodstotal']=$itemdatas['goodstotal'].$sline.round(($itemgoods['total']*$itemgoods['price']),2);
+				    foreach($item['goods'] as $itemgoods){
 							$itemdline=$itemdline+1;
-							$countmoney=$countmoney+$item['price'];
-							$priceother='';
 							$index++;
-							if(!empty($item['dispatchprice'])&&$item['dispatchprice']>0)
-							{
-									$priceother=$item['dispatchprice'];
-							}else{
-								$priceother="0";
-							}
-							 $num = $itemgoods['total'];
 							if (!empty($itemgoods['brand'])) {
 							 	$brand =  mysqld_select('SELECT brand FROM '.table('shop_brand').' WHERE id = '.$itemgoods['brand']);
+								$itemgoods['brand'] = $brand['brand'];
+							}else{
+                                $itemgoods['brand'] = '';
 							}
-							preg_match_all("/(?:\()(.*)(?:\))/i",$item['address_address'], $yb);
-							if (!empty($itemgoods['Supplier']) or empty($item['ordersn'])){
+							// 进入组合模式
+							if ($itemgoods['type']==1 or !empty($item['lists'])){
 							   // 如果组合中没有数据则忽视
-							   if ( empty($itemgoods['Supplier']) ){
-                                     message('组合商品:'.$itemdatas['title'].'，有未标记单品的产品，订单导出失败！',refresh(),'error');
+							   if ( empty($itemgoods['lists']) ){
+                                     message('组合商品:'.$itemgoods['title'].'，有未标记单品的产品，订单导出失败！',refresh(),'error');
 							   }
-							   $itemgoods['Supplier'] = str_replace('，',',',$itemgoods['Supplier']);
-							   $goods = explode(',',$itemgoods['Supplier']);
+							   $itemgoods['lists'] = str_replace('，',',',$itemgoods['lists']);
+							   $goods = explode(',',$itemgoods['lists']);
 							   foreach ( $goods as $goods_value ){
 								       list($goods_id,$goods_num) = explode('*', $goods_value );
-									   if ( !is_numeric($goods_id ) &&  !is_numeric($goods_num ) ){
+									   if ( empty($goods_id ) or !is_numeric($goods_num ) ){
                                             continue;
 									   }
 									   $nums = $num * $goods_num;
-									   $goods_title = mysqld_select('SELECT subtitle FROM '.table('shop_goods').' WHERE id = '.$goods_id);
-									   $objPHPExcel->setActiveSheetIndex(0)		
-											->setCellValue('A'.$i, '')
-											->setCellValue('B'.$i, '')
-											->setCellValue('C'.$i, '')
-											->setCellValue('D'.$i, '')
-											->setCellValue('E'.$i, '')
-											->setCellValue('F'.$i, '')
-											->setCellValue('G'.$i, $item['address_realname'])
-											->setCellValue('H'.$i, $item['address_province'].' '.$item['address_city'].' '.$item['address_area'].' '.$item['address_address'])
-											->setCellValue('I'.$i, $item['address_province'])
-											->setCellValue('J'.$i, $item['address_city'])
-											->setCellValue('K'.$i, $item['address_area'])
-											->setCellValue('L'.$i, '')
-											->setCellValue('M'.$i, $yb[1][0])
-											->setCellValue('N'.$i, $item['address_mobile'])
-											->setCellValue('O'.$i, $item['identity_id'])
-											->setCellValue('P'.$i, '')
-											->setCellValue('Q'.$i, '')
-											->setCellValue('R'.$i, '')
-											->setCellValue('S'.$i, '')
-											->setCellValue('T'.$i, '')
-											->setCellValue('U'.$i, '')
-											->setCellValue('V'.$i, '')
-											->setCellValue('W'.$i, $itemgoods['p1'])
-											->setCellValue('X'.$i, $itemgoods['p2'])
-											->setCellValue('Y'.$i, $itemgoods['name'])
-											->setCellValue('Z'.$i, $brand['brand'])
-											->setCellValue('AA'.$i, $itemgoods['origin'])
-											->setCellValue('AB'.$i, '')
-											->setCellValue('AC'.$i, '')
-											->setCellValue('AD'.$i, intval($itemgoods['total']))
-											->setCellValue('AE'.$i, $item['price']);
-										 $i++;
+									   // $itemgoods 在组合里还没取值
+									   $itemgoods['num'] = $nums;
+											$objPHPExcel->setActiveSheetIndex(0)		
+												->setCellValue('A'.$i, $item['sn'])
+												->setCellValue('B'.$i, $itemgoods['weight'])
+												->setCellValue('C'.$i, '')
+												->setCellValue('D'.$i, $item['ordersn'])
+												->setCellValue('E'.$i, '')
+												->setCellValue('F'.$i, '')
+												->setCellValue('G'.$i, $item['address_realname'])
+												->setCellValue('H'.$i, $item['address_province'].' '.$item['address_city'].' '.$item['address_area'].' '.$item['address_address'])
+												->setCellValue('I'.$i,  $item['address_province'])
+												->setCellValue('J'.$i,  $item['address_city'])
+												->setCellValue('K'.$i,  $item['address_area'])
+												->setCellValue('L'.$i, '')
+												->setCellValue('M'.$i, $item['yb'])
+												->setCellValue('N'.$i, $item['address_mobile'])
+												->setCellValue('O'.$i, $item['identity_id'])
+												->setCellValue('P'.$i, '')
+												->setCellValue('Q'.$i, '')
+												->setCellValue('R'.$i, '')
+												->setCellValue('S'.$i, '')
+												->setCellValue('T'.$i, '')
+												->setCellValue('U'.$i, '')
+												->setCellValue('V'.$i, '')
+												->setCellValue('W'.$i,  $itemgoods['p1'])
+												->setCellValue('X'.$i,  $itemgoods['p2'])
+												->setCellValue('Y'.$i,  $itemgoods['name'])
+												->setCellValue('Z'.$i,  $itemgoods['brand'])
+												->setCellValue('AA'.$i, $itemgoods['origin'])
+												->setCellValue('AB'.$i, '')
+												->setCellValue('AC'.$i, '')
+												->setCellValue('AD'.$i, intval($itemgoods['total']))
+												->setCellValue('AE'.$i, $item['price']);
+									   $i++;
 							   }
-						}else{
-					     	$objPHPExcel->setActiveSheetIndex(0)		
-											->setCellValue('A'.$i, '')
-											->setCellValue('B'.$i, $itemgoods['weight'])
-											->setCellValue('C'.$i, '')
-											->setCellValue('D'.$i, $item['ordersn'])
-											->setCellValue('E'.$i, '')
-											->setCellValue('F'.$i, '')
-											->setCellValue('G'.$i, $item['address_realname'])
-											->setCellValue('H'.$i, $item['address_province'].' '.$item['address_city'].' '.$item['address_area'].' '.$item['address_address'])
-											->setCellValue('I'.$i, $item['address_province'])
-											->setCellValue('J'.$i, $item['address_city'])
-											->setCellValue('K'.$i, $item['address_area'])
-											->setCellValue('L'.$i, '')
-											->setCellValue('M'.$i, $yb[1][0])
-											->setCellValue('N'.$i, $item['address_mobile'])
-											->setCellValue('O'.$i, $item['identity_id'])
-											->setCellValue('P'.$i, '')
-											->setCellValue('Q'.$i, '')
-											->setCellValue('R'.$i, '')
-											->setCellValue('S'.$i, '')
-											->setCellValue('T'.$i, '')
-											->setCellValue('U'.$i, '')
-											->setCellValue('V'.$i, '')
-											->setCellValue('W'.$i, $itemgoods['p1'])
-											->setCellValue('X'.$i, $itemgoods['p2'])
-											->setCellValue('Y'.$i, $itemgoods['name'])
-											->setCellValue('Z'.$i, $brand['brand'])
-											->setCellValue('AA'.$i, $itemgoods['origin'])
-											->setCellValue('AB'.$i, '')
-											->setCellValue('AC'.$i, '')
-											->setCellValue('AD'.$i, intval($itemgoods['total']))
-											->setCellValue('AE'.$i, $item['price']);
-						$i++;	
-						}
+						       }else{
+							  		        $objPHPExcel->setActiveSheetIndex(0)		
+												->setCellValue('A'.$i, $item['sn'])
+												->setCellValue('B'.$i, $itemgoods['weight'])
+												->setCellValue('C'.$i, '')
+												->setCellValue('D'.$i, $item['ordersn'])
+												->setCellValue('E'.$i, '')
+												->setCellValue('F'.$i, '')
+												->setCellValue('G'.$i, $item['address_realname'])
+												->setCellValue('H'.$i, $item['address_province'].' '.$item['address_city'].' '.$item['address_area'].' '.$item['address_address'])
+												->setCellValue('I'.$i,  $item['address_province'])
+												->setCellValue('J'.$i,  $item['address_city'])
+												->setCellValue('K'.$i,  $item['address_area'])
+												->setCellValue('L'.$i, '')
+												->setCellValue('M'.$i, $item['yb'])
+												->setCellValue('N'.$i, $item['address_mobile'])
+												->setCellValue('O'.$i, $item['identity_id'])
+												->setCellValue('P'.$i, '')
+												->setCellValue('Q'.$i, '')
+												->setCellValue('R'.$i, '')
+												->setCellValue('S'.$i, '')
+												->setCellValue('T'.$i, '')
+												->setCellValue('U'.$i, '')
+												->setCellValue('V'.$i, '')
+												->setCellValue('W'.$i, $itemgoods['p1'])
+												->setCellValue('X'.$i, $itemgoods['p2'])
+												->setCellValue('Y'.$i, $itemgoods['name'])
+												->setCellValue('Z'.$i, $itemgoods['brand'])
+												->setCellValue('AA'.$i, $itemgoods['origin'])
+												->setCellValue('AB'.$i, '')
+												->setCellValue('AC'.$i, '')
+												->setCellValue('AD'.$i, intval($itemgoods['total']))
+												->setCellValue('AE'.$i, $item['price']);
+						       $i++;	
+						   }
 				}}	
 				$objPHPExcel->getActiveSheet()->getStyle('D')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 				$objPHPExcel->getActiveSheet()->getStyle('A1:P1')->getFont()->setBold(true);
@@ -545,7 +546,12 @@ if($report=='dishreport')
 }
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 $objPHPExcel->setActiveSheetIndex(0);
+function excel_beihai($item=array(),$itemgoods,$obj){
 
+}
+function excel_caihong($goods=array()){
+
+}
 ob_end_clean();
 // Redirect output to a client’s web browser (Excel2007)
 header('Content-Type: application/vnd.ms-excel');

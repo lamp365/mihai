@@ -782,6 +782,13 @@ function ifApp($openid=''){
 }
 
 /**
+ * 该方法少用，尽量使用以下
+ * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
+ * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
+ *
+ * 如果使用，请小心type类型，type的值，参照以上五个方法，并且金额fee支出(use)  要记为负数
+ * 同时还要注意有friend_openid这个字段，如佣金 与邀请的 就必须存值，故该方法要小心使用
+ *
  * 记录用户账单的收支情况
  * @param $openid :用户ID
  * @param $fee:收支费用

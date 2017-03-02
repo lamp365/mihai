@@ -797,9 +797,10 @@
 			function pop_weixin_msg(id){
 				var url = "<!--@php echo mobile_url('shareactive',array('op'=>'pop_full_msg'));@-->";
 				url = url + "&id="+id;
-				$.getJSON(url,function(data){
+				//满人时不群发推送微信，因为微信消息模板 涉嫌广告，审核不过
+				/*$.getJSON(url,function(data){
 
-				})
+				 })*/
 			}
 
 			//将后台返回的时间戳格式化为时间格式

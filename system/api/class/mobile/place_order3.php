@@ -264,7 +264,8 @@ if (!empty($member) AND $member != 3) {
 						$order_data['freeorder_price'] = $freeorder_gold;
 						
 						//记录用户账单的免单金额收支情况
-						insertMemberPaylog($member['openid'], $freeorder_gold,$use_member['freeorder_gold'] - $freeorder_gold, 'usegold', '订单编号：'.$order_data['ordersn'].';免单余额抵扣'.$freeorder_gold.'元');
+						$price = -1 * $freeorder_gold;
+						insertMemberPaylog($member['openid'], $price,$use_member['freeorder_gold'] - $freeorder_gold, 'usegold', '订单编号：'.$order_data['ordersn'].';免单余额抵扣'.$freeorder_gold.'元');
 					}
 					############## 免单余额抵扣 end ##############
 					

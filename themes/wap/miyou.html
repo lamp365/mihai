@@ -28,29 +28,36 @@
 		</div>
 		
 	<!--如果是由别人推荐进来的，就显示我的推荐人-->
+		<!--@php if(!empty($recommendInfo)){  @-->
 		<span class="_title">我的推荐人</span>			  
 		  <ul class="miyou_list">
 		  	<li>
 		  		<!--头像-->
 		  		<div class="user_img">
-		  			<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
+					<!--@php if(empty($recommendInfo['avatar'])){ @-->
+		  			<img src="__RESOURCE__/recouse/images/userface.png" />
+					<!--@php }else{ @-->
+					<img src="<!--@php download_pic($recommendInfo['avatar'],70,70,2);@-->" />
+					<!--@php } @-->
 		  		</div>
 		  		<!--头像右边的一大块-->
 		  		<div class="detail">
 		  			<!--上部-->
 		  			<div class="info">
-		  				<span class="name">北城少女南城情</span>		  				
+		  				<span class="name">
+							<!--@php echo $recommendInfo['name']; @-->
+						</span>
 		  				<span class="miyou_num _span">
 		  					<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />
 		  					<span>
-		  						2
+		  						<!--@php echo $recommendInfo['friend_count']; @-->
 		  					</span>
 		  					<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />
 		  				</span>
 		  				<span class="rank_img _span">
 		  					<img src="__RESOURCE__/recouse/images/rank_img1.png" />
 		  					<span>
-		  						普通会员
+		  						<!--@php echo $recommendInfo['rank_name']; @-->
 		  					</span>
 		  					<img src="__RESOURCE__/recouse/images/rank_img3.png" />
 		  				</span>
@@ -59,42 +66,50 @@
 		  			<div class="money">
 		  				<span class="yj">
 		  					TA的佣金:
-		  					<span>15.00</span>
+		  					<span><!--@php echo $recommendInfo['gold'];@--></span>
 		  				</span>
 		  				<span>
 		  					<img src="__RESOURCE__/recouse/images/money_img.png" />
-		  					120
+		  					+<!--@php echo $recommendInfo['invite_fee'];@-->
 		  				</span>
 		  			</div>
 		  		</div>
 		  	</li>		  	
 		  </ul>
-		  
+		  <!--@php } @-->
+
 		 <!--我邀请的好友列表-->
-		  <span class="_title">我的觅友</span>
+		<!--@php if(!empty($friend_member)){  @-->
+		<span class="_title">我的觅友</span>
+		<!--@php foreach($friend_member as $f_member){  @-->
+
 		   <!--觅友列表-->
 		  <ul class="miyou_list">
 		  	<li>
 		  		<!--头像-->
 		  		<div class="user_img">
-		  			<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
+					<!--@php if(empty($f_member['avatar'])){ @-->
+					<img src="__RESOURCE__/recouse/images/userface.png" />
+					<!--@php }else{ @-->
+					<img src="<!--@php download_pic($f_member['avatar'],70,70,2);@-->" />
+					<!--@php } @-->
 		  		</div>
 		  		<!--头像右边的一大块-->
 		  		<div class="detail">
 		  			<!--上部-->
 		  			<div class="info">
-		  				<span class="name">小觅</span>		  				
+		  				<span class="name"><!--@php echo $f_member['name'];@--></span>
 		  				<span class="miyou_num _span">
 		  					<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />
 		  					<span>
-		  						2000
+		  						<!--@php echo $f_member['friend_count'];@-->
 		  					</span>
 		  					<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />
 		  				</span>
 		  				<span class="rank_img _span">
 		  					<img src="__RESOURCE__/recouse/images/rank_img1.png" />
 		  					<span>
-		  						皇室至尊vip
+		  						<!--@php echo $f_member['rank_name'];@-->
 		  					</span>
 		  					<img src="__RESOURCE__/recouse/images/rank_img3.png" />
 		  				</span>
@@ -103,22 +118,24 @@
 		  			<div class="money">
 		  				<span class="yj">
 		  					WO的佣金:
-		  					<span>15.00</span>
+		  					<span><!--@php echo $f_member['commision_fee'];@--></span>
 		  				</span>
 		  				<span>
 		  					<img src="__RESOURCE__/recouse/images/money_img.png" />
-		  					+5
+		  					+<!--@php echo $f_member['invite_fee'];@-->
 		  				</span>
 		  			</div>
 		  		</div>
 		  	</li>			  	
 		  </ul>
-	
+		<!--@php }  @-->
+		<!--@php }else{  @-->
 		  <!--不是由别人邀请的，又没有觅友-->
-		  <div class="_default" style="display: none;">
+		  <div class="_default">
 		  	 <img src="__RESOURCE__/recouse/images/_default.png" />
 		  </div>
-		  
+		<!--@php }  @-->
+
 		  <!--@php  include themePage('footer');@-->	
 	<script>
 		$(".return").click(function(){

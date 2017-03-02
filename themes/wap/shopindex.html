@@ -245,8 +245,239 @@
 			}			
 			.dowebok a { color: #333; text-decoration: none;}
 			.dowebok a:hover { text-decoration: underline;}
+			.freepay-area{
+			    padding: 0 3%;
+			    text-align: center;
+			    background-color: #fff;
+			    padding-top: 10px;
+			    line-height: 1.8;
+			    padding-bottom: 7px;
+			}
+			.freepay-area-1{
+				float: left;
+				width: 33%;
+			}
+			.freepay-area-2{
+				float: left;
+				width: 34%;
+			}
+			.freepay-area-3{
+				float: left;
+				width: 33%;
+			}
+			.freepay-area-title{
+				color: #9a9a9a;
+				font-size: 13px;
+			}
+			.freepay-area-con{
+				color: #333;
+				font-weight: bold;
+				font-size: 16px;
+			}
+			.new-user-free-receive{
+				margin: 10px 0;
+			}
+			.new-user-free-receive-list li{
+				float: left;
+			    width: 49%;
+			    background-color: #fff;
+			    position: relative;
+			}
+			.new-user{
+				margin-right: 2%;
+			}
+			.new-user,.free-receive{
+				padding: 5% 10px;
+				box-sizing: border-box;
+			}
+			.new-user-left,.free-receive-left{
+				float: left;
+				width: 70%;
+				color: #9a9a9a;
+    			font-size: 13px;
+			}
+			.new-user-right,.free-receive-right{
+				width: 25%;
+			    position: absolute;
+			    right: 7%;
+			    top: 20%;
+			}
+			.new-user-right img,.free-receive-right img{
+				width: 100%;
+				max-width: 50px;
+				display: block;
+			}
+			.free-receive-left-div,.new-user-left-div{
+				color: #333;
+				font-size: 16px;
+				font-weight: bold;
+			}
+			.bonue_new_member_box{
+				display: none;
+				position: fixed;
+				width:100%;
+				height: 100%;
+				background:#000;
+				opacity: 0.5;
+				filter:alpha(opacity=0.5);
+				z-index: 990;
+				top: 0px;
+				left: 0px;
+			}
+			.bonus_new_memeber{
+				display: none;
+				position: fixed;
+			    top: 10%;
+			    left: 50%;
+			    width: 80%;
+			    margin-left: -40%;
+			    z-index: 999;
+			}
+			.bonus_new_close{
+				position: absolute;
+			    top: 8%;
+			    right: 7%;
+			    z-index: 995;
+			    cursor: pointer;
+			    width: 15%;
+			    height: 10%;
+			}
+			.bonus_new_area{
+				 position: absolute;    
+				 bottom: -20px;    
+				 width: 86%;    
+				 left: 7%;
+			}
+			.bonus_new_list{
+				position: absolute;
+			    top: 40%;
+				width: 64%;
+			    left: 18%;
+				overflow-y: scroll;
+			    height: 50%;
+			}
+			.bonus_new_list li img{
+				width: 100%;
+				display: block;
+				max-width: 100%;
+			}
+			.bonus_new_list li{
+				position: relative;
+			}
+			.bonus_new_list li:last-child{
+				margin-bottom: 15%;
+			}
+			.bonus_new_detail{
+				position: absolute;
+			    top: 9%;
+			    left: 4%;
+			    width: 57%;
+			}
+			.bonus_new_price{
+				position: absolute;
+			    top: 12%;
+			    right: 0;
+			    width: 37%;
+			    text-align: center;
+			}
+			.bonus_new_price_1{
+				color: #FF2D4B;
+			    display: inline-block;
+			}
+			.bonus_new_price_2{
+				color: #FF2D4B;
+			    font-size: 25px;
+			    display: inline-block;
+			    margin-left: -5px;
+			}
+			.bonus_new_detail_1{
+				color: #666;
+			}
+			.bonus_new_detail_2{
+				color: #999;
+				font-size: 12px;
+			}
+			@media only screen and (min-width: 375px) and (max-width: 400px) {
+				.bonus_new_detail{
+					top:12%;
+				}
+			}
+			@media only screen and (min-width: 401px) and (max-width: 450px) {
+				.bonus_new_detail{
+					top:15%;
+				}
+				.bonus_new_price{
+					top: 16%;
+				}
+			}
+			@media only screen and (min-width: 451px) and (max-width: 500px) {
+				.bonus_new_detail{
+					top:21%;
+				}
+				.bonus_new_price{
+					top: 18%;
+				}
+			}
+			@media only screen and (min-width: 500px){
+				.bonus_new_detail{
+					top:21%;
+				}
+				.bonus_new_detail_1{
+					font-size: 18px;
+				}
+				.bonus_new_detail_2{
+					font-size: 14px;
+				}
+				.bonus_new_price_2{
+					font-size: 30px;
+				}
+				.bonus_new_price{
+					top: 19%;
+				}
+			}
 		</style>
+		
 		<div class="adv_mid"><img src="images/freepay.png" width="100%" /></div>
+		<!--免单类型、金额、人数-->
+		<div class="freepay-area clearfix">
+			<div class="freepay-area-1">
+				<div class="freepay-area-title">本期免单分类</div>
+				<div class="freepay-area-con">功能类型</div>
+			</div>
+			<div class="freepay-area-2">
+				<div class="freepay-area-title">本期免单金额</div>
+				<div class="freepay-area-con">￥90447</div>
+			</div>
+			<div class="freepay-area-3">
+				<div class="freepay-area-title">本期免单人数</div>
+				<div class="freepay-area-con">513/人</div>
+			</div>
+		</div>
+		<!--新手礼、领券中心-->
+		<div class="new-user-free-receive">
+			<ul class="new-user-free-receive-list clearfix">
+				<li class="new-user">
+					<div class="new-user-left">
+						<div class="new-user-left-div">新手礼</div>
+						<div>新注册用户专享</div>
+					</div>
+					<div class="new-user-right">
+						<img src="__RESOURCE__/recouse/images/new_user_img.png">
+					</div>
+				</li>
+				<li class="free-receive">
+					<a href="<!--@php echo mobile_url('coupons'); @-->">
+						<div class="free-receive-left">
+							<div class="free-receive-left-div">领券中心</div>
+							<div>优惠券免费领</div>
+						</div>
+						<div class="free-receive-right">
+							<img src="__RESOURCE__/recouse/images/free_receive.png">
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
         <div class="adv_mid">
 		      <ul>
                    <!--@php if (!empty($advs_mid)) { $advs_mid_num =0; foreach ($advs_mid as $advs_mid_value ){ $advs_mid_num++; if ($advs_mid_num <=2 ){@-->
@@ -430,7 +661,65 @@
 				</div>
 		</div>
 	</div>
-		<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
+	<!--新手礼-->
+
+	<div class="bonue_new_member_box"></div>
+	<div class="bonus_new_memeber">
+		<div style="position: relative;max-width: 640px;margin:0 auto;">
+			<img src="__RESOURCE__/recouse/images/bonus_new_memeber_1.png" class="carousel-inner img-responsive img-rounded">
+			<p class="bonus_new_close"></p>
+			<ul class="bonus_new_list">
+				<li>
+					<img src="__RESOURCE__/recouse/images/bonus_new_memeber_bg.png">
+					<div class="bonus_new_detail">
+						<div class="bonus_new_detail_1">新用户专享</div>
+						<div class="bonus_new_detail_2">满300元使用</div>
+					</div>
+					<div class="bonus_new_price">
+						<span class="bonus_new_price_1">￥</span>
+						<span class="bonus_new_price_2">10</span>
+					</div>
+				</li>
+				<li>
+					<img src="__RESOURCE__/recouse/images/bonus_new_memeber_bg.png">
+					<div class="bonus_new_detail">
+						<div class="bonus_new_detail_1">新用户专享</div>
+						<div class="bonus_new_detail_2">满300元使用</div>
+					</div>
+					<div class="bonus_new_price">
+						<span class="bonus_new_price_1">￥</span>
+						<span class="bonus_new_price_2">10</span>
+					</div>
+				</li>
+				<li>
+					<img src="__RESOURCE__/recouse/images/bonus_new_memeber_bg.png">
+					<div class="bonus_new_detail">
+						<div class="bonus_new_detail_1">新用户专享</div>
+						<div class="bonus_new_detail_2">满300元使用</div>
+					</div>
+					<div class="bonus_new_price">
+						<span class="bonus_new_price_1">￥</span>
+						<span class="bonus_new_price_2">10</span>
+					</div>
+				</li>
+				<li>
+					<img src="__RESOURCE__/recouse/images/bonus_new_memeber_bg.png">
+					<div class="bonus_new_detail">
+						<div class="bonus_new_detail_1">新用户专享</div>
+						<div class="bonus_new_detail_2">满300元使用</div>
+					</div>
+					<div class="bonus_new_price">
+						<span class="bonus_new_price_1">￥</span>
+						<span class="bonus_new_price_2">10</span>
+					</div>
+				</li>
+			</ul>
+			<div class="bonus_new_area"><a href="<!--@php echo mobile_url('bonus',array('op'=>'new_member')); @-->"><img src="__RESOURCE__/recouse/images/bonus_new_memeber_2.png" class="carousel-inner img-responsive img-rounded"></a></div>
+		</div>
+		
+	</div>
+
+	<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		Zepto(function($) {
 			var $nav = $('.global-nav'), $btnLogo = $('.global-nav__operate-wrap');
@@ -517,6 +806,47 @@
 					index = 1;  //加载完后重新打开开关
 				}
 			}, 'json');
+		});
+
+		var openid_val = "<!--@php echo checkIsLogin(); @-->";
+		//免单
+		$(".freepay-area").on("click",function(){
+			if( !openid_val){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}else{
+				var free_url = "<!--@php echo mobile_url('free'); @-->";
+				window.location.href = free_url;
+			}
+		})
+		//新手礼
+		$(".new-user").on("click",function(){
+			if( !openid_val){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}else{
+				<!--@php if ($isNewUserBonus && showNewMemberBonus()){ @-->
+					$(".bonue_new_member_box").show();
+					$(".bonus_new_memeber").show();
+				<!--@php }else{ @-->
+					alert("非新手会员，无法领取新手礼");
+				<!--@php } @-->
+			}
+		});
+
+		$(".bonus_new_close").click(function(){
+			$(".bonue_new_member_box").fadeOut(300);
+			$(".bonus_new_memeber").hide();
 		})
 		function LoadHtml(art_data){
 			var face = '';
@@ -552,52 +882,4 @@
 		}
 	</script>
 
-
-	<!--@php if ($isNewUserBonus && showNewMemberBonus()){ @-->
-	<!--新手礼-->
-	<style>
-		.bonue_new_member_box{
-			position: fixed;
-			width:100%;
-			height: 100%;
-			display: block;
-			background:#000;
-			opacity: 0.3;
-			filter:alpha(opacity=0.3);
-			z-index: 990;
-			top: 0px;
-			left: 0px;
-		}
-		.bonus_new_memeber{
-			position: fixed;
-			top:27%;
-			left:50%;
-			width: 80%;
-			margin-left: -40%;
-			z-index: 999;
-		}
-		.bonus_new_close{
-			position: absolute;
-			top:-8px;
-			right: -7px;
-			z-index: 995;
-			cursor: pointer;
-		}
-	</style>
-	<div class="bonue_new_member_box"></div>
-	<div class="bonus_new_memeber">
-		<div style="position: relative">
-			<img src="__RESOURCE__/recouse/images/new_member_bouse.png" class="carousel-inner img-responsive img-rounded">
-			<p class="bonus_new_close"><img src="images/close.png" alt=""></p>
-		</div>
-		<div><a href="<!--@php echo mobile_url('bonus',array('op'=>'new_member')); @-->"><img src="__RESOURCE__/recouse/images/new_member_sure.png" class="carousel-inner img-responsive img-rounded"></a></div>
-
-	</div>
-	<script>
-		$(".bonus_new_close").click(function(){
-			$(".bonue_new_member_box").fadeOut(300);
-			$(".bonus_new_memeber").hide();
-		})
-	</script>
-	<!--@php } @-->　
 	<!--@php include themePage('footer');@-->

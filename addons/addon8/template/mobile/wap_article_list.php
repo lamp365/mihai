@@ -230,12 +230,13 @@
 		text-align:center;
 		margin-left:3%;
 		padding: 0;
-		border-radius: 4px;
+		
 	}
 	.hot-video ul li img{
 		width: 100%;  
 		height:auto;
 	   	vertical-align: middle;
+	   	border-radius: 4px;
 	}
 	.hot-video ul li video{
 		width: 100%;  
@@ -393,7 +394,7 @@
 					<?php foreach($video_article as $video){ ?>
 					<li class="swiper-slide">	
 						<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$video['headline_id']));?>">
-							<img src="<?php echo download_pic($video['video_img'],150,120,2);?>" />
+							<img src="<?php echo download_pic($video['video_img'],250,190,2);?>" />
 							<img class="paly-icon" src="<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>/recouse/images/video-play.png">
 							<div class="video-title"><?php echo $video['title'];?></div>
 						</a>		
@@ -415,7 +416,7 @@
 					<li class="good-content">
 						<a href="<?php echo mobile_url('article',array('op'=>'headline','id'=>$row['headline_id']));?>">
 							<div class="list-left">
-								<img src="<?php echo download_pic($picarr[0],150,130,2);?>">
+								<img src="<?php echo download_pic($picarr[0],250,190,2);?>">
 							</div>
 							<div class="list-right">
 								<div class="article-title"><?php echo $row['title'] ;?></div>

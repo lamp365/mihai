@@ -1,6 +1,9 @@
 <?php
 defined('SYSTEM_IN') or exit('Access Denied');
-
+/**
+ * @param $experience  目前该参数用的是会员中的积分 注意使用  不要用会员中的经验值来获取等级
+ * @return array|bool|mixed
+ */
 function member_rank_model($experience)
 {
 		$rank = mysqld_select("SELECT * FROM " . table('rank_model')." where experience<='".intval($experience)."' order by rank_level desc limit 1 " );

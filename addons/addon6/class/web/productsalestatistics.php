@@ -81,7 +81,7 @@ if ($operation == 'into') {
 			        }
 							if (!empty($dv) AND !empty($dv[0])) {
 							   if ( $type == 2){
-								       // 开始处理地址信息，地址信息可能有修正，所以要判断修正是否为空
+								      // 开始处理地址信息，地址信息可能有修正，所以要判断修正是否为空
 									   $address = !empty($dv[39])?$dv[39]:$dv[13];
 									   list($address_province, $address_city, $address_area, $address_address) = explode(" ",$address);
 									   $xdata = array(
@@ -93,7 +93,7 @@ if ($operation == 'into') {
 										'tag' => 0,      // 物流信息
 										'goodsprice' => $dv[3],
 										'dispatchprice' => $dv[4],
-										'createtime' => $dv[18],
+										'createtime' => strtotime($dv[18]),
 										'address_address' => $address_address,
 										'address_area' => $address_area,
 										'address_city' => $address_city,
@@ -118,6 +118,7 @@ if ($operation == 'into') {
 							
 				      }
 				}
+        message('导入完成！',refresh(),'success');
 		   }
 	  }
   }
@@ -134,8 +135,8 @@ if ($operation == 'into') {
   $where = "";
   $title = $_GP['sg_title'];
   $dishsn = $_GP['sg_dishsn'];
-  $orderby = '';
-  $oname = $oorigin = $oweight = $ounit = $olists = $otype = $op1 = $op2 = $oprice = $obrand = 'asc';
+  $orderby = " ORDER BY createtime DESC";
+  $oname = $oorigin = $oweight = $ounit = $olists = $otype = $op1 = $op2 = $oprice = $obrand = $o_sn = $dishname = 'asc';
   // 只可以看到自己店铺的商品
   // if ($admin!='root') {
   $where.=" AND tmallid=".$tmall_id['tma_id'];
@@ -221,6 +222,22 @@ if ($operation == 'into') {
     }
     $orderby = " ORDER BY brand ".$_GP['orderbrand'];
   }
+  if ( isset($_GP['orderdishsn']) ){
+    if ( $_GP['orderdishsn'] == 'asc' ){
+      $o_sn = 'desc';
+    }else{
+      $o_sn = 'asc';
+    }
+    $orderby = " ORDER BY dishsn ".$_GP['orderdishsn'];
+  }
+  if ( isset($_GP['orderdishname']) ){
+    if ( $_GP['orderdishname'] == 'asc' ){
+      $dishname = 'desc';
+    }else{
+      $dishname = 'asc';
+    }
+    $orderby = " ORDER BY title ".$_GP['orderdishname'];
+  }
 
   if (!empty($title)) {
     $where.=" AND title LIKE '%".addslashes($title)."%'";
@@ -259,19 +276,6 @@ if ($operation == 'into') {
   }
 
   $order = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS * FROM ".table('tmall_order')." WHERE deleted<>1".$where2." ORDER BY createtime DESC");
-  // $ordersn_ary = array();
-  // foreach ($order as $ov) {
-  //   $ordersn_ary[] = $ov['ordersn'];
-  // }
-  // $ordersn_ary = array_unique($ordersn_ary);
-  // $al_order = array();
-  // foreach ($ordersn_ary as $osnv) {
-  //   foreach ($order as $ooov) {
-  //     if ($ooov['ordersn'] == $osnv) {
-  //       $al_order[$osnv][] = $ooov;
-  //     }
-  //   }
-  // }
   // 品牌库
   $all_brand = mysqld_selectall("SELECT * FROM ".table('shop_brand'));
 
@@ -546,7 +550,7 @@ if ($operation == 'into') {
     $last_weight = 0;
     // 开始循环保存数据库
     foreach ($data as $dav) {
-      $g_ary = array('tmallid' => $tmall_id['tma_id'],'memberid' => $tmall_id['sta_id']);
+      $g_ary = array('tmallid' => $tmall_id['tma_id'],'memberid' => $tmall_id['sta_id'],'createtime'=>time());
       // 货号
       if (!empty($dav['I'])) {
         $g_ary['dishsn'] = $dav['I'];

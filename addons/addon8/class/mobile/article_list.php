@@ -47,9 +47,17 @@ if($_GP['id'] && $op !== 'healty' && is_mobile_request()){
 	   $psize  =  12;
 	   $pindex = max(1, intval($_GP["page"]));
 	   $limit  = ' limit '.($pindex-1)*$psize.','.$psize;
-	   $sql    = "SELECT * FROM ".table('headline')."  where ischeck=1 and video!='' order by isrecommand desc,headline_id desc {$limit}";
-	   $sqlnum = "SELECT count(headline_id) FROM".table('headline');
+	   $sql    = "SELECT * FROM ".table('headline')."  where ischeck=1 and deleted=0 and video!='' order by isrecommand desc,headline_id desc {$limit}";
 	   $video_list = mysqld_selectall($sql);
+	   if(!empty($video_list)){
+		   foreach($video_list as &$video){
+			   $video['collent_num'] = mysqld_selectcolumn("select count(collection_id) from ".table('headline_collection')." where headline_id={$video['headline_id']}");
+			   $article_member       = mysqld_select("select * from ".table('user')." where id={$video['uid']}");
+			   $video['avatar']      = $article_member['avatar'];
+			   $video['nickname']    = $article_member['nickname'];
+		   }
+	   }
+
 	   //当手机端滑动的时候加载下一页
 	   if ($_GP['nextpage'] == 'ajax' && $_GP['page'] > 1 ){
 		   if ( empty($video_list) ){

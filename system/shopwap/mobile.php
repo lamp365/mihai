@@ -304,6 +304,10 @@ class shopwapAddons extends BjSystemModule
     {
         $this->__mobile(__FUNCTION__);
     }
+    public function do_coupons()
+    {
+        $this->__mobile(__FUNCTION__);
+    }
     public function do_miyou(){
         $this->__mobile(__FUNCTION__);
     }

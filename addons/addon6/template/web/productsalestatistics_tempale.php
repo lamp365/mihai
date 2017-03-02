@@ -154,10 +154,10 @@ td{
 				            <table class="table table-striped table-bordered">
 					            <thead >
 					                <tr>
-					                	<th>产品名称</th>
+					                	<th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderdishname' => $dishname)); ?>">产品名称</a></th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','ordername' => $oname)); ?>">品名</a></th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderbrand' => $obrand)); ?>">品牌</a></th>
-					                    <th>货号</th>
+					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderdishsn' => $o_sn)); ?>">货号</a></th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderorigin' => $oorigin)); ?>">规格</a></th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderweight' => $oweight)); ?>">重量</a></th>
 					                    <th><a href="<?php echo web_url('productsalestatistics', array('op' => 'display','orderunit' => $ounit)); ?>">单位</a></th>
@@ -203,7 +203,12 @@ td{
 					                		</select>
 					                	</td>
 					                	<td class="text-center">
-					                		<?php  echo $almv['dishsn'];?>
+					                		<input type="text" name="dishsn" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
+					                		<span class="modify-span"><?php if (empty($almv['dishsn'])) {
+					                			echo '&nbsp';
+					                		}else{
+					                			echo $almv['dishsn'];
+					                		}?></span>
 					                	</td>
 					                	<td class="text-center">
 					                		<input type="text" name="origin" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $almv['id'];?>">
