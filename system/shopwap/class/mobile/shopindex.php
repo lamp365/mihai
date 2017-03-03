@@ -1,7 +1,4 @@
  <?php
- $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
- $configs = unserialize($payment['configs']);
- ppd($configs);
 $article_healty   = getIndexArticle('healty');
 $article_note     = getIndexArticle('note');
 $article_headline = getIndexArticle('headline');

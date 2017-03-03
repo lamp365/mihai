@@ -76,6 +76,7 @@ if ($operation == 'into') {
                                   $type = 2;
 							}
 			        $have_cus = mysqld_select("SELECT * FROM ".table($table)." WHERE ".$where);
+              // dump($have_cus);
 			        if (!empty($have_cus)) {
 			               continue;
 			        }
@@ -118,11 +119,10 @@ if ($operation == 'into') {
 							
 				      }
 				}
-        message('导入完成！',refresh(),'success');
 		   }
 	  }
   }
- 
+ message('导入完成！',refresh(),'success');
 }elseif ($operation == 'display') {
   if ($_GP['nowpage'] == '2') {
     $now_page = 2;
@@ -285,7 +285,7 @@ if ($operation == 'into') {
   $order_goods = mysqld_selectall("SELECT * FROM ".table('tmall_order_goods'));
   if (!empty($order_goods)) {
     foreach ($order_goods as $ogv) {
-      $order = mysqld_select("SELECT tmallid,memberid FROM ".table('tmall_order')." WHERE id=".$ogv['orderid']);
+      $order = mysqld_select("SELECT tmallid,memberid FROM ".table('tmall_order')." WHERE ordersn=".$ogv['orderid']);
       if ($order['tmallid'] == $tmall_id['tma_id']) {
         if (!empty($ogv['sn'])) {
           $dish = mysqld_select("SELECT * FROM ".table('tmall_dish')." WHERE dishsn='".$ogv['sn']."' AND tmallid=".$tmall_id['tma_id']);

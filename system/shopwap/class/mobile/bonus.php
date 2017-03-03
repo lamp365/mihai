@@ -40,15 +40,19 @@ if ( $op == 'get' ){
 		   die(showAjaxMess(1002,'该优惠券已被抢光'));
 	   }
    }
+
+	//用于判断当前是否是最后一张，是的话，前端ajax请求后，需要刷亲页面
+	$limit_bonus = 1;
    if ( $bonus['send_max'] > 0 ){
         $user_had = mysqld_selectcolumn("SELECT count(*) FROM " .table('bonus_user'). " WHERE openid = :openid and bonus_type_id = :bonus_type_id ", array(":bonus_type_id"=>$id, ":openid"=> $openid));
 		if ( $user_had >= $bonus['send_max']){
 			if(empty($_GP['showajax'])) {
-				message('您已领取过该优惠券了，快去选购喜欢的宝贝吧！');
+				message("该优惠券每人可领{$user_had}张，快去选购喜欢的宝贝吧！");
 			}else{
-				die(showAjaxMess(1002,'您已领取过该优惠券了'));
+				die(showAjaxMess(1002,"该优惠券每人可领{$user_had}张"));
 			}
 		}
+	   $limit_bonus = $bonus['send_max'] - $user_had -1; //如果是最后一次是0
    }
    	if(!empty($openid) && $bonus['send_type'] != 4 ){
 			$bonus_sn=date("Ymd",time()).$id.rand(1000000,9999999);
@@ -68,7 +72,11 @@ if ( $op == 'get' ){
 			if(empty($_GP['showajax'])) {
 				message("恭喜，领取成功","refresh","success");
 			}else{
-				die(showAjaxMess(200,'恭喜，领取成功'));
+				if($limit_bonus == 0){
+					die(showAjaxMess(202,'恭喜，领取成功'));
+				}else{
+					die(showAjaxMess(200,'恭喜，领取成功'));
+				}
 			}
    }else{
        // 活动用优惠卷处理

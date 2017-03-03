@@ -1,4 +1,20 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<style type="text/css">
+	.order-times{
+		width: 100%;
+		overflow: hidden;
+	}
+	.order-times li{
+		float: left;
+		width: 25%;
+		padding-left: 7px;
+	    box-sizing: border-box;
+	}
+	.order-times ul{
+		margin:0;
+		padding:0;
+	}
+</style>
 <h3 class="header smaller lighter blue">订单基本信息&nbsp;&nbsp; <span class="btn btn-xs btn-info return">返回列表</span></h3>
 <form action="" target="_blank">
 	<input type="hidden" name="name" value="addon16" />
@@ -92,6 +108,14 @@
 
 
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >
+<div class="order-times">
+	<ul>
+		<li><label>下单时间:</label> <?php  echo date('Y-m-d H:i:s', $order['createtime'])?></li>
+		<li><label>支付时间:</label> <?php if(!empty($order['paytime'])) { echo date('Y-m-d H:i:s', $order['paytime']); } ?></li>
+		<li><label>发货时间:</label> <?php if(!empty($order['sendtime'])) { echo date('Y-m-d H:i:s', $order['sendtime']); }?></li>
+		<li><label>收货时间:</label> <?php  if(!empty($order['completetime'])) { echo date('Y-m-d H:i:s', $order['completetime']); }?></li>
+	</ul>
+</div>
 <input type="hidden" name="id" value="<?php  echo $order['id'];?>">
 		<table class="table">
 			<tr>
@@ -130,7 +154,7 @@
 				</td>
 				<th ><label for="">总金额:</label></th>
 				<td >
-					<?php  echo $order['price']+$order['balance_sprice']+$order['freeorder_price']?>
+					<font style="font-weight: bolder"><?php  echo $order['price']+$order['balance_sprice']+$order['freeorder_price']?></font>
 					<span>现金支付：<?php  echo $order['price']?></span>
 					<span>余额抵扣：<?php  echo $order['balance_sprice']+$order['freeorder_price']?></span>
 				</td>

@@ -88,12 +88,12 @@ td{
 	display: none;
 	z-index: 2;
 	background-color: #fff;
-    width: 400px;
+    width: 450px;
     height: 100px;
     border-radius: 5px;
     padding-top: 34px;
     padding-left: 30px;
-    margin-left: -200px;
+    margin-left: -225px;
 }
 .mark-save{
 	margin-left: 20px;
@@ -423,6 +423,9 @@ td{
 							                   	</label> 
 											 	<label class="radio-inline">
 							                     	<input type="radio" name="tag" class="tag3" value="3">贝海<img src="images/tag3.png">
+							                   	</label> 
+							                   	<label class="radio-inline">
+							                     	<input type="radio" name="tag" class="tag4" value="4">菜鸟<img src="images/tag4.png">
 							                   	</label> 
 							                   	<button class="btn btn-primary mark-save" onclick="markSave(this)" type="button" >保存</button>
 											</div>

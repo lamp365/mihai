@@ -37,7 +37,7 @@
 					{
 						foreach($arrBonusUser as $uk=>$uv)
 						{
-							if($uv['bonus_type_id'] = $bv['type_id'] &&  $uv['cnt']>=$bv['send_max'])
+							if($uv['bonus_type_id'] == $bv['type_id'] &&  $uv['cnt']>=$bv['send_max'])
 							{
 								unset($bonus[$bk]);
 								

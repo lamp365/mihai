@@ -5,6 +5,12 @@
  * Date: 2017/3/2
  * Time: 17:18
  */
+/**
+ * @param $openid
+ * @param $miyou_openid
+ * @param $miyouInfo   用户的member表中的基本信息
+ * @return mixed
+ */
 function getMiyouInfo($openid,$miyou_openid,$miyouInfo){
 
     if(!empty($miyouInfo))
@@ -39,4 +45,25 @@ function getMiyouInfo($openid,$miyou_openid,$miyouInfo){
         $miyouInfo = array();
     }
     return $miyouInfo;
+}
+
+/**
+ * 从所有的订单中移除掉正在的分享的，并返回分享的订单
+ * @param $data  所有的订单
+ * @return array
+ */
+function getShareOrder(&$data){
+    if(empty($data)){
+        return array();
+    }else{
+        $result = array();
+        foreach($data as $key => $one){
+            if($one['share_status'] == 1){
+                $result = $one;
+                unset($data[$key]);
+                break;
+            }
+        }
+        return $result;
+    }
 }
