@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>觅海专属大礼包</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/swiper-3.3.1.min.css"/>
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/exclusive_code.css?v=1.03"/>
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+		<script type="text/javascript"src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+		<script type="text/javascript" src="__RESOURCE__/recouse/js/swiper.js"></script>
+	</head>
+	<body>
+		<!--固定的头部-->
+		<div class="exclusive_code_top">
+			<img src="__RESOURCE__/recouse/images/exclusive_code_01.jpg" />
+		</div>
+		
+		<!--中间变化的内容-->
+		<div class="exclusive_code_center" id="content">
+			<img src="__RESOURCE__/recouse/images/exclusive_code_02.jpg" />
+			<div class="box">
+				<p>
+					觅海送您					
+					<span>￥</span><span><!--@php echo $total_price; @--></span>
+					大礼包
+				</p>
+				<p>关注微信公众号海量商品0元换购</p>
+				<!--输入框-->
+				<div>
+					<input type="number" placeholder="请输入积分领取码" id="code" name="code" value="<!--@php echo $_GP['code'];@-->"/>
+					<input type="button" value="立即领取" id="btn"/>
+				</div>
+			</div>
+		</div>
+		<!--@php if(!empty($goods_list)){ @-->
+		<div style="position:relative;background:url('__RESOURCE__/recouse/images/exclusive_code_03.jpg') repeat center;background-size: contain;padding-bottom: 2%;">
+			<img class="exclusive_left" src="__RESOURCE__/recouse/images/exclusive_left.png">
+			<img class="exclusive_right" src="__RESOURCE__/recouse/images/exclusive_right.png">	
+			<div class="enterbrand swiper-container" >		
+				<!--品牌列表-->
+				<ul class="swiper-wrapper">				
+					<!--@php foreach($goods_list as $good){ @-->
+					<li class="swiper-slide">					
+						<img src="<!--@php echo download_pic($good['logo'],150,150,2);@-->" />
+						<div class="swiper-slide-title"><!--@php echo $good['title'];@--></div>
+						<img class="exclusive_code_small_icon" src="__RESOURCE__/recouse/images/exclusive_code_small_icon.png">
+					</li>
+					<!--@php } @-->
+				</ul>
+			</div>
+		</div>
+		<!--@php } @-->
+		
+		<!--活动规则-->
+		<div class="rule" >
+			<img src="__RESOURCE__/recouse/images/exclusive_code_04.jpg" />
+			<!--标题-->
+			<div class="content">
+				<p>1.天猫订单付款成功后 → 短信获取验证码 → 输入验证码点击“立即领取” → 注册成功 → 关注微信公众号 → 进行积分好礼兑换。</p>
+				<p>2.登录账号：【您的手机号】。</p>
+				<p>3.登录密码：【短信验证码】。</p>
+			</div>
+		</div>		
+		
+		<!--弹出框-->
+		<div class="share-free-modal share-wrap">
+			<div>
+				<img src="__RESOURCE__/recouse/images/exclusive_code_share_01.png">
+			</div>
+			<div style="position:relative">
+				<img src="__RESOURCE__/recouse/images/exclusive_code_share_02.png">
+				<div class="share-free-modal-wx">觅海环球购</div>
+			</div>
+			
+		</div>
+
+		
+		<script type="text/javascript">
+		$(function(){
+			var swiper = new Swiper('.swiper-container', {
+		        //pagination: '.swiper-pagination',
+		        slidesPerView: 'auto',
+		        paginationClickable: true,
+		        spaceBetween: 0,
+		        freeMode: true
+		    });
+		})
+		
+		//点击立即领取，弹出框
+			$("#btn").on("click",function(){
+				var code = $("#code").val();
+				if(code.length <= 1){
+					alert("对不起，请输入专属码");
+					return '';
+				}
+				var url = "<!--@php echo mobile_url('miyou',array('op'=>'exclusive','type'=>'regiet'));@-->";
+				url = url + "&code="+code;
+				$(this).prop("disabled",true);
+				$(this).prop('value','正领取中');
+				var obj = this;
+				$.post(url,{},function(data){
+					if(data.errno == 200){ 
+						$(".share-free-modal").show();
+					}else{
+						alert(data.message);
+					}
+					$(obj).prop("disabled",false);
+					$(obj).prop('value','立即领取');
+				},'json');
+			})
+
+			$(".share-free-sure").on("click",function(){
+				$(".share-free-modal").fadeOut();				
+				url = "<!--@php  echo mobile_url('iclub',array('from'=>'fansindex','op'=>'list'))@-->";
+				window.location.href = url;
+			})
+		</script>
+	</body>
+</html>

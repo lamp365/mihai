@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>查看历史</title>
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/add_order.css"/>
+	    <script type="text/javascript"src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	</head>
+	<body style="background: #ededed;">
+		<!--顶部返回栏-->
+		<div class="cart_title">
+		   <span class="return" style="line-height: 45px;">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+		   </span> 
+		   	<div class="title_center">
+		    	查看历史
+		    </div>
+		</div>
+		<!--@php if(empty($list)){ @-->
+		<!--没有历史记录-->
+		<div class="no_histroy">
+			<img src="__RESOURCE__/recouse/images/no_histroy.png" />
+		</div>
+		<!--@php }else{  @-->
+		<!--有历史记录-->
+		<div class="has_histroy has_order">
+			<ul>
+				<!--@php foreach($list as $one){ @-->
+				<li>
+					<!--上-->
+					<div class="order_top">
+						<!--上左-->
+						<div class="info">
+							<p><!--@php echo $one['price'];@--></p>
+							<p><!--@php echo date("Y年m月d日",$one['createtime']);@--></p>
+							<p>订单编号：<!--@php echo $one['ordersn'];@--></p>
+						</div>
+						<!--上右-->
+						<div class="from_where">
+							<p>
+								来自<!--@php echo $platform[$one['from_platform']];@-->平台
+							</p>
+							<!--@php if($one['share_status'] == 2){ @-->
+							<p class="state applying">减免申请中</p>
+							<!--@php }else if($one['share_status'] == -1){  @-->
+							<p class="state applyfail">申请失败</p>
+							<!--@php }else{ @-->
+							<p class="state applysucc">申请成功</p>
+							<!--@php } @-->
+						</div>
+					</div>
+					<!--下-->
+					<div class="order_bottom">
+						<span>
+							助力人数：
+							<b><!--@php echo intval($one['friend_cnt']);@-->人</b>
+						</span>
+						<span>
+							获得减免金额：
+							<b><!--@php echo floatval($one['order_fee']);@-->元</b>
+						</span>
+					</div>
+				</li>
+				<!--@php } @-->
+			</ul>
+		</div>
+		<!--@php } @-->
+		<script>		
+			$(".return").click(function(){
+			    window.history.back(-1);
+			})						
+		</script>
+	<!--@php  include themePage('footer');@-->

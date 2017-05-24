@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html class="" lang="zh-CN" >
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="cleartype" content="on">
+    <title>我的收藏</title>   
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/collect.css"/>
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+	<script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	<style>
+		ul.pagination{
+			display: inline-block;
+			margin-bottom:20px;
+		}
+	</style>
+</head>
+<body>  
+ 	<!--@php  include page('vip_header');@-->
+ <div class="new-fansindex-wrap">
+	<div class="viewport new-fansindex">
+		
+	    <div class="r-member" style="background:#fff;border: 1px solid #e4e4e4;">  
+			<div class="personalTitle pT">
+					我的收藏
+			</div>
+			
+			<div class="content ">
+		        <!--没有收藏-->
+				<!--@php if(empty($good_data)){ @-->
+			    <div class="no_collect" >
+			    	<img src="__RESOURCE__/recouse/images/no_collect.png" />
+			    </div>
+				<!--@php }else{ @-->
+			    <!--有收藏-->
+			    <div class="have_collect">
+			    	<ul>
+						<!--@php foreach($good_data as $data){ @-->
+			    		<li class="one_row">
+			    			<!--遮罩层-->
+			    			<div class="cover">			    				
+			    				<p class="msg">从我的收藏中删除？</p>
+			    				<p class="btns">
+			                        <a href="javascript:void(0)" onclick="del_collect(this,<!--@php echo $data['id'];@-->)" class="abtn ok">确定</a>
+			                        <a href="javascript:void(0)"  class="abtn cc">取消</a>
+			                    </p>
+			    			</div>
+			    			<!--删除按钮-->
+			    			<span class="del_icon">
+			    				<i class="icon-trash"></i>
+			    			</span>
+			    			<a href="<!--@php echo mobile_url('detail',array('op'=>'dish','id'=>$data['id']));@-->">
+				    			<div class="Img">
+				    				<img src="<!--@php echo download_pic($data['thumb'],200,200,2);@-->" />
+				    			</div>
+			    			</a>
+			    			<a href="">
+				    			<div class="info">
+				    				<p><!--@php echo $data['title'];@--></p>
+				    				<p>￥<!--@php echo $data['marketprice'];@--></p>
+				    			</div>
+		    				</a>
+			    		</li>
+						<!--@php } @-->
+			    	</ul>
+			    </div>
+				<!--@php } @-->
+				<div style="padding: 0 20px;">
+					<!--@php echo $pager;@-->
+				</div>
+
+		    </div>            
+		</div>  
+	
+		<div class="l-member"> 
+				 <!--@php include themePage('leftmenu');@-->
+		</div>
+    </div>
+ </div>
+<!--@php include themePage('footer');@-->
+ 
+
+<script>
+	$(".fix_gundon").hide();
+	
+	//点击删除,出现遮罩层
+	$(".have_collect .del_icon").on("click",function(){
+		$(this).siblings(".cover").fadeIn();
+		$(this).css("background","#fff");//删除按钮隐藏
+	})
+	//点击取消
+	$(".have_collect .cc").on("click",function(){
+		$(this).parent().parent().fadeOut();//遮罩层消失	
+		$(this).parent().parent().siblings(".del_icon").css("background","#7F7F7F");//删除按钮出现
+	})
+	//点击确定，删除商品
+	function del_collect(obj,id){
+		var url ="<!--@php echo mobile_url('member',array('op'=>'delcollect'));@-->";
+		url = url + "&id="+id;
+		$.getJSON(url,function(data){
+			alert(data.message);
+			if(data.errno == 200){
+				$(obj).closest('.one_row').remove();
+			}
+		},'json')
+	}	
+</script>

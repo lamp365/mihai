@@ -1,0 +1,85 @@
+<style>
+    .show_bonus_box li{
+        float: left;
+        width: 47%;
+        border: 1px solid #e6e6e6;
+        margin-bottom: 2%;
+        box-sizing: border-box;
+        padding: 5px;
+        border-radius: 3px;
+    }
+    .show_bonus_box li:nth-child(odd){
+        margin-right: 1%;
+        margin-left: 2%;
+    }
+    .show_bonus_box li:nth-child(even){
+        margin-left: 1%;
+        margin-right: 2%;
+    }
+    .show_bonus_box li img{
+        widows: 100%;
+        max-width: 100%;
+        display: block;
+    }
+    .show_bonus_box li .title{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow:ellipsis;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    .show_bonus_box li .bonusprice{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow:ellipsis;
+        font-size: 14px;
+        color: #e4393c;
+        padding-top: 5px;
+    }
+    .undownline{
+        text-decoration: line-through;
+        color: #ccc;
+    }
+    .modal-body{
+        padding: 15px 6px;
+    }
+    .empty_goods img{
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    .empty_goods{
+        text-align: center;
+    }
+</style>
+<div class="alertModal-dialog-bg" style="width: 95%">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="myModalLabel">该优惠券只限以下商品&nbsp;&nbsp;
+        </h4>
+    </div>
+    <div class="modal-body" id="">
+     
+        <!--@php if(empty($bonus_goods)){  @-->
+            <!-- 错误信息 -->
+            <div class="empty_goods">
+                <img src="__RESOURCE__/recouse/images/no_record_bg.png">
+            <!--@php echo $error_info; @-->
+            </div>
+        <!--@php }else{ @-->
+            <ul class="show_bonus_box clearfix">
+                <!--@php foreach($bonus_goods as $bonus_val){ @-->
+                <li>
+                    <a href="<!--@php echo mobile_url('detail',array('id'=>$bonus_val['id'])); @-->">
+                        <img src="<!--@php echo $bonus_val['thumb']; @-->">
+                        <div class="title"><!--@php echo $bonus_val['title']; @--></div>
+                        <div class="bonusprice">
+                            <!--@php echo $bonus_val['marketprice']; @-->
+                            <span class="undownline"><!--@php echo $bonus_val['productprice']; @--></span>
+                        </div>
+                    </a>
+                </li>
+                <!--@php } @-->
+            </ul>
+        <!--@php } @-->
+    </div>
+</div>

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<title>限时团购<!--@php echo $good['title'] @--></title>
+	<meta charset="utf-8">
+ <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.min.css">
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/bootstrap.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/common.mobile.css">
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/fontawesome3/css/font-awesome.min.css" />
+	
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/fontawesome3/css/font-awesome.min.css" />
+<link rel='stylesheet' type='text/css'href='__RESOURCE__/recouse/css/bjdetail.css' />
+<link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet"type="text/css" />
+<link href="__RESOURCE__/recouse/jqzoom/css/jqzoombase.css" rel="stylesheet" type="text/css" />
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"type="text/css" />
+<link href="__RESOURCE__/recouse/css/lrtk.css" rel="stylesheet"type="text/css" />
+<link href="__RESOURCE__/recouse/css/magiczoomplus.css" rel="stylesheet"type="text/css" />
+	<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/jquery.touchwipe.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/swipe.js"></script>
+</head>
+<style>
+    .shopcart-footer{margin-bottom:49px;}
+    .topTabbox{display:none}
+    #mallHead{display:none}
+    .nav{background:none}
+    .btn{display: inline-block;}
+    .btn{*display: inline;}
+    .form-control{display: inline-block;+margin:0 -5px ;}
+    .form-control{*display: inline;}
+    /*.spec-preview{width: 340px;height: 340px;border: none;}
+    .jqzoom img{width: 340px;height: 340px;}*/
+	.weixins{
+       display:none;
+	}
+    .tuanzhang{
+    	display: inline-block;
+    	width: 54px;
+    	height: 24px;
+    	line-height: 24px;
+    	text-align: center;
+    	border-radius: 6px;
+    	background: #E84362;
+    	border: solid 1px #fff;
+    	color: #fff;
+    	position: absolute;
+    	bottom: -12px;
+    	left: 18px;
+    }
+    /*倒计时*/
+    .offered{   	   	 
+    	 border-radius: 4px;
+    	 background: #404040;
+    	 color: #fff;
+    	 padding: 3px;  	
+    }
+    /*参团人的头像列表*/
+   .offered-member{
+   		width:100%;margin-bottom: 20px;clear: both;overflow:hidden;
+   }
+   .offered-member p{
+   	   margin-bottom: 10px;font-size: 14px;
+   }
+   .offered-member ul{
+   	 border-top: dotted 1px gainsboro;border-bottom: dotted 1px gainsboro;padding: 20px 0 0 0;width: 100%;overflow: hidden;
+   }
+   .offered-member ul li{
+   	  margin-left: 30px;float: left;position: relative;margin-bottom: 20px;
+   }
+    .offered-member ul li img{
+    	border-radius: 6px;height: 90px;width: 90px;
+    }
+    /*我要参团按钮*/
+   .btn_wrap{
+   	 margin-left:10px;margin:0 auto;overflow: hidden;padding-left: 10px;margin-top: 15px;
+   }
+   .btn_wrap .btn_col{
+   	 padding-top: 5px;width: 438px;height: 48px;
+   }
+   .btn_wrap .btn_col a{
+   	  color:#FFFFFF;background:#127bab;font-size: 18px;width: 438px;height: 48px;margin-right: 0;
+   }
+   /*团购说明*/
+  .offered-explain{
+  	 margin-top: 10px;padding: 0 10px;
+  }
+  .offered-explain .title{
+  	 color: #333333;font-size: 14px;font-weight: bold; display: inline-block;
+  }
+  
+  /*几人团*/
+ .offered-num{
+ 	margin-left: 10px;
+ 	height: 30px;
+ 	line-height: 30px;
+ 	position: absolute;
+ 	top:-5px;
+ 	text-align: center;
+ 	width: 102px;
+ 	background:#ffaa00;
+ 	display: inline-block;
+ 	font-size: 14px;
+ 	color: #fff;
+ 	margin-top: -10px;
+ 	position: relative;
+ }
+ .offered-num .hollow{
+ 	display: inline-block;
+ 	border-right:15px solid white;
+ 	border-top:15px solid #ffaa00;
+ 	border-bottom:15px solid #ffaa00;
+ 	position: absolute;right: 0;top: 0;
+ }
+ /*隐藏觅海logo*/
+.nav{display: none;}
+ /*幻灯片*/
+/*.spec-scroll .items {
+	width: 310px;
+}*/
+/*蓝色背景*/
+.blue-bg{	
+	height: 470px;
+	width: 100%;
+	background:#127bab;	
+}
+.viewport{
+	margin-top:-300px;			
+}
+.viewport .detailtop{	
+	height: auto;
+	border: none;
+	width: 1022px;
+	margin: 0 auto;		
+	background: url(__RESOURCE__/recouse/images/index_shadow.png) no-repeat;
+}
+/*菜单栏*/
+.join-tab{
+	width: 955px;
+	height: 50px;
+	line-height: 50px;
+	border-bottom: solid 1px gainsboro;
+	margin-top: 20px;
+	margin-left: 25px;
+	position: relative;
+}
+.join-tab ul{
+	display: inline-block;
+	position: absolute;
+	right: 3px;
+    top: 2px;
+
+}
+.join-tab ul li{
+	position: relative;
+	float: left;
+	width: 45px;
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+}
+.join-tab ul li a img{
+	width: 30px;height:30px;
+}
+.join-tab ul li a div{
+	width: 130px;
+	height: 180px;
+	position: absolute;
+	top: 40px;
+	right: 0px;
+	border: solid 1px gainsboro;
+	border-radius: 0 5px 5px 5px;
+	display: block;
+	z-index: 100;
+}
+.afterclick{
+	border: solid 1px gainsboro;
+	border-bottom:solid 1px #fff;	
+}
+.code-box{
+	top: 48px;
+	left: 0;
+	height: 132px!important;
+}
+.share-box{
+	top: 48px;
+	right: -2px;
+	height: 144px!important;
+}
+.share-box img{
+	width: 120px;
+	margin: 0 auto;
+	height:auto;
+    padding-top: 10px;
+}
+.box{
+	display: none;
+	position: absolute;
+	width: 130px;
+	height: 180px;
+	border: solid 1px gainsboro;
+	border-radius: 0 0 5px 5px;
+	background: #fff;
+	z-index: 1;
+}
+.join-tab .share_bg{
+	display: inline-block;
+	width: 25px;
+	height: 22px;
+	background: url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: 0 0;
+}
+.join-tab .share_bg:hover{
+	background: url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -26px 0 ;
+}
+.join-tab .share_wx{
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	background: url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: 0 -24px;
+}
+.join-tab .share_wx:hover{
+	background: url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: 0 -49px;
+}
+.join-tab .share_sc{
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	background: url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -277px -27px;
+}
+.join-tab .share_sc:hover{
+	background: url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -277px -51px;
+}
+.share_bg_text{
+	display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 45px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 48px;
+    color: #333;
+    font-weight: 400;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    z-index: 2;
+}
+.share-list{
+	margin-left: 6px;
+	padding: 5px 0;
+}
+.join-tab .share-list li{
+	width: 58px;
+	height: 58px;
+	line-height: 58px;
+	text-align: center;
+	color: #fff;
+	border-radius: 4px;
+	border: 1px solid #f4f4f4;
+	font-size: 12px;
+}
+.weixin_li{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -211px -24px;
+	border-top:none!important;
+	border-left: none!important;
+}
+.weixin_li:hover{
+	background: #61cd67;
+}
+.weibo{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -29px -24px;
+	border-top:none!important;
+	border-left: none!important;	
+	border-right: none!important;
+}
+.weibo:hover{
+	background: #ff9c25;
+}
+.qq{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -87px -24px;
+	border-top:none!important;
+	border-left: none!important;
+	border-bottom: none!important;
+}
+.qq:hover{
+	background: #0096e9;
+}
+.qqzone{
+	background:url(__RESOURCE__/recouse/images/share_icons.png) no-repeat center;
+	background-position: -147px -23px;
+	border-top:none!important;
+	border-left: none!important;	
+	border-right: none!important;
+	border-bottom: none!important;
+}
+.qqzone:hover{
+	background: #f6b433;
+}
+.shade{
+	background-color: #000;
+	opacity: .5;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: 99;
+	top: 0;
+	left: 0;
+	display: none;
+	filter:Alpha(opacity=50);
+}
+.wx_code_area{
+	width: 280px;
+	height: 380px;
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin: -190px 0 0 -140px;
+	z-index: 100;
+	background-color: #fff;
+    border-radius: 5px;
+    text-align: center;
+}
+#wx_code{
+	margin: 0 auto; width: 200px; margin-top: 15px;
+}
+.wx_code_area_1{
+	font-size: 18px;color: #333;padding-top: 30px;
+}
+.wx_code_area_2{
+	font-size: 14px;color:#666;padding-top: 20px;
+}
+.shade-close{
+    top: -25px;
+    right: -25px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    line-height: 35px;
+    text-align: center;
+    background-color: #2f2f2f;
+    border-radius: 40px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+}
+</style>
+<body style="padding-top:0px;">
+ <!--@php  include page('header');@-->
+
+		<div class="blue-bg"></div>
+		<div id="viewport" class="viewport">					
+            <div class="detailtop">
+                <!--参团的人上部的一整块-->	
+              <div style="overflow: hidden;background: #fff;width: 1000px;margin: -10px auto;">                	
+                <div class="join-tab">
+                	<!--上方的一条菜单栏-->
+                	<p style="display: inline-block;width: 740px;overflow: hidden">
+						<a href="index.php">
+							<strong>觅海环球购</strong>
+						</a>
+						<em>&gt;</em>
+						<a href="<!--@php echo mobile_url('groupbuy', array('name' => 'shopwap','id'=>$goods['id'],'op'=>'detail_group')); @-->">
+							<!--@php  echo $goods['title'];@-->
+						</a>
+                	</p>
+                	<!--右侧的分享，收藏，二维码-->
+                	<ul>                		
+                		<li>
+                			<a class="share_a" href="javascript:;">
+                				<b class="share_bg_text">分享</b>
+                				<i class="share_bg"></i>
+                			</a>
+                			<div class="code-box box">
+                				<ul class="share-list">
+                					<a href="javascript:;"><li class="weixin_li" textval="微信"></li></a>
+                					<a href="javascript:;" target="_blank"><li class="weibo" textval="新浪微博"></li></a>
+                					<a href="javascript:;" target="_blank"><li class="qq" textval="QQ"></li></a>
+                					<a href="javascript:;" target="_blank"><li class="qqzone" textval="QQ空间"></li></a>
+                				</ul>
+                			</div>							
+                		</li>
+                		<li>
+                			<a class="sc_a" href="javascript:void(0)">
+                                <!--<b class="share_bg_text">收藏</b>-->
+                				<i class="share_sc"></i>
+                			</a>
+                		</li>
+                		<li >
+                			<a class="wx_a" href="javascript:void(0)" style="display:none;">
+                				<b class="share_bg_text">二维码</b>
+                				<i class="share_wx"></i>
+                			</a>
+                			<div class="share-box box">
+                				<img src="/images/weixin.jpg">
+                			</div>
+                		</li>
+                	</ul>
+                </div>
+                	<!--左边的商品-->
+                	<div style="float: left;">
+
+	                  <div style="overflow: hidden;min-height: 500px;margin-left: 35px;">
+	                	<!--商品的大图-->
+
+						<div class="slider card card-nomb" style="float:left;width:400px;margin-top: 15px;margin-left: 15px;">
+							<script type="text/javascript" src="__RESOURCE__/recouse/jqzoom/js/jquery.jqzoom.js"></script>
+								<script type="text/javascript" src="__RESOURCE__/recouse/jqzoom/js/jqzoombase.js"></script>
+							<div  class="spec-preview"> 
+								<span class="jqzoom">
+								    <img jqimg="<!--@php  echo download_pic($goods['thumb'],800,800);@-->" src="<!--@php  echo $goods['small'];@-->" />
+								</span>
+							</div>
+							<!--缩图开始-->
+							<div class="spec-scroll">
+								<a class="prev">&lt;</a> 
+								<a class="next" style="margin-left: -20px;">&gt;</a>
+								<div class="items">
+									<ul>
+										<!--@php  if(is_array($piclist)) { foreach($piclist as $row) { @-->
+										<li><img alt="<!--@php  echo $goods['title'];@-->" bimg="<!--@php  echo download_pic($row['attachment'],800,800);@-->" src="<!--@php  echo $row['small'];@-->" onmousemove="preview(this);"></li>
+										<!--@php  } } @-->
+									</ul>
+								</div>
+							</div>
+							<!--缩图结束-->
+						</div>
+						<!--大图右侧的商品信息-->
+						<div class="pro-info" style="margin-left: 10px;">
+						    <dt class="PTags">
+						    	<!--商品详情页里面的商品品牌信息-->
+						    	<span style="float: left;">
+						    		<img  src="<!--@php echo $brand['icon']; @-->" style="border-radius: 50%;">
+									<span style="margin-left: 5px;float: left;"><!--@php echo $brand['name']; @--></span>
+									<span class="split" style="float: left;margin: 0 5px;">|</span>
+									<a class="brand" target="_blank" href="<!--@php  echo mobile_url('goodlist', array('bid'=>$goods['brand']))@-->" style="float: left;"><!--@php echo $brand['brand']; @--></a>
+						    	</span>					    	
+								<i class="crosstag tag" style="float: right;margin-right: 30px;">跨境</i>
+	                        </dt>
+							<p class="pro-name">
+								<span id="itemNameZy" class="zy">自营</span><strong>
+								<a href="<!--@php echo mobile_url('groupbuy',array('op'=>'detail_group','id'=>$_GP['id'])); @-->"><!--@php  echo $goods['title'];@--></a>
+								</strong>
+							</p>						
+							<p style="margin-top: 10px;font-size: 16px;color: #666666;padding: 0 10px;">
+								正常价：
+								<span style="color: #999999;">
+									￥<!--@php  echo $goods['marketprice'];@-->
+								</span>
+							</p>
+							
+							<div style="margin: 10px 0;">
+								<p style="font-size: 26px;color:#E84362;font-weight: bold;padding: 0 6px;display: inline-block;">
+									￥<!--@php echo $goods['timeprice'];@-->  							
+								</p>
+								<!--几人团-->
+								<span style="display: inline-block;position: relative;">
+									<span class="offered-num">
+										<img src="__RESOURCE__/recouse/images/offered-num.png" style="margin-top: 2px;margin-left: -15px;"/>
+										<span><!--@php echo $goods['team_buy_count']; @--></span>
+										人团
+										<!--右边的凹陷-->
+										<span class="hollow"></span>
+									</span>	
+								</span>
+							</div>
+							
+							<!--团购说明-->
+							<div class="offered-explain">
+								<img src="__RESOURCE__/recouse/images/offered-detail.png" style="margin-top: 2px;">
+								<p class="title">团购说明：</p>
+							<!--@php if($goods['draw'] == 1) { @-->
+								<p style="width: 438px;border-top: dotted 1px gainsboro;margin-top: 10px;font-size: 14px;color: #717171;padding: 5px 0;">拼团时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">拼团活动结束后从拼团成功的用户中随机抽取<!--@php echo $goods['draw_num']; @-->位中奖名额</p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">付款后30分钟内拼团未成功，以及最终抽奖未中奖的订单系统将于1-2个工作日内自动退款到你的付款账户</p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;">可参与抽奖的资格必须为拼团成功的用户</p>
+							<!--@php }else{ @-->
+								<p style="width: 438px;border-top: dotted 1px gainsboro;margin-top: 10px;font-size: 14px;color: #717171;padding: 5px 0;">拼团时间为<!--@php echo date("Y-m-d H:i",$goods['timestart']);@--> 到 <!--@php echo date("Y-m-d H:i",$goods['timeend']);@--></p>
+								<p style="width: 438px;border-top: dotted 1px gainsboro;border-bottom: dotted 1px gainsboro;font-size: 14px;color: #717171;padding: 5px 0;margin-bottom: 25px">付款后30分钟内拼团未成功，系统将于1-2个工作日自动退款到您的付款账户</p>
+							<!--@php } @-->
+							</div>
+							
+							<!--我要参团的按钮,点击跳转到comfirm页面-->
+							<div class="btn_wrap">
+								<input type="hidden" id="favoriteId" value="" />						
+								<div class="btn_col">							
+									<a class="btn btn-primary" href="javascript:;" onclick="buy(<!--@php echo $group['group_id'];@-->);">我要参团</a>
+								</div>		
+							</div>	
+							
+							<!--剩余时间-->
+						<div style="margin-top: 30px;width:438px;margin-bottom: 20px;">
+							<!--左侧的线条-->
+							<span style="height: 2px;width: 100px;background:rgb(238,238,238);display: inline-block;margin-left: 20px;"></span>					
+							<span  style="width: 180px;background:rgb(238,238,238);display: inline-block;border-radius: 5px;color:#666666;line-height: 40px;padding: 5px 10px;">
+								剩余&nbsp;&nbsp;					
+								<span class="offered_h offered">
+									00		
+								</span>
+								&nbsp;:						
+								<span class="offered_m offered">
+									00
+								</span>
+								&nbsp;:
+								<span class="offered_s offered">
+									00
+								</span>
+								&nbsp;
+								结束
+							</span>
+							<!--右侧的线条-->
+							<span style="height: 2px;width:100px;background:rgb(238,238,238);display: inline-block;"></span>
+							
+						</div>
+					   </div>			   
+					   
+					</div>				
+						
+					<!--还差几人参团-->
+						<div style="margin-top: 10px;width: 1022px;text-align: center;">
+							<p style="color: #333333;font-size: 22px;font-weight: bold;margin: 0 auto;">
+								还差
+								<span style="color: #E84362;font-size: 30px;font-weight: bold;"><!--@php echo $goods['residue_num']; @--></span>
+								人成团，盼你如星星盼月亮
+							</p>
+						</div>
+						
+						
+					</div>
+					
+					<!--右边的更多团购-->
+					<div style="width: 270px;height: 500px;float: left;padding-top: 20px;display: none;">
+						<div style="position: relative;line-height: 40px;">
+							<img src="__RESOURCE__/recouse/images/more-offered.png" />
+							<span style="font-size: 16px;color: #fff;position: absolute;top: 0;left: 103px;display: inline-block;">
+								更多团购
+							</span>
+						</div>
+						<!--团购商品列表,显示三个商品-->
+						<ul style="overflow: hidden;">
+							<li style="height: 100px;padding: 20px 0px;border-bottom:dotted 1px gainsboro;">
+								<div style="float: left;display: inline-block;">
+								     <img src="__RESOURCE__/912865945439541.jpg" style="height: 100px;width: 100px;"/>
+								</div>
+								<div style="float: left;display: inline-block;width: 160px;margin-left: 10px;">
+									<p style="display: inline-block;height: 30px;line-height: 15px;color: #666666;overflow: hidden;">
+										New Chapter孕妇复合维生素完美孕宝含叶酸钙益生菌270片美国进口
+									</p>
+									<p style="height: 26px;border:solid 1px #E84362;margin-top: 37px;">
+										<span style="width: 90px;background:#E84362;height: 26px;line-height: 26px;text-align: center;display: inline-block;color: #fff;font-size: 14px;">
+											￥<span>166.00</span>
+										</span>
+										<!--点击立即参与，跳转到商品详情-->
+										<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" style="font-size: 12px;line-height: 26px;display: inline-block;height: 26px;color: #E84362;width: 60px;text-align: center;">
+											立即参与
+										</a>
+									</p>
+								</div>								
+							</li>							
+						</ul>
+					</div>
+				</div>
+				<input type="hidden" class="hide_dish" value="<!--@php echo $_GP['id'];@-->">
+				<!--参团的用户-->
+				<div  class="offered-member">
+					<p style="margin-left: 30px;">参团的人</p>
+					<ul>
+					    <!--@php if ( is_array($group_member) ){ $num = 0; foreach ( $group_member as $group_member_value ){ $num ++; @-->
+						<!--第一个li为团长-->
+						<li>
+							<img src="<!--@php if(empty($group_member_value['avatar'])){ echo '__RESOURCE__/recouse/images/userface.png'; }else{ echo $group_member_value['avatar'];} @-->"/>
+							<!--@php if ( $num == 1 ){ @-->
+							<span class="tuanzhang">
+								团长
+							</span>
+							<!--@php } @-->
+						</li>
+						<!--@php }} @-->
+					</ul>
+				</div>				
+											
+			   </div>
+			</div>	
+			<!--@php  include themePage('footer');@-->	
+			<!-- JiaThis Button BEGIN -->
+<div class="shade"></div>
+<div class="wx_code_area">
+	<p class="shade-close">&times</p>
+	<p class="wx_code_area_1" >分享到微信朋友圈</p>
+	<div id="wx_code"></div>
+	<p class="wx_code_area_2">扫描上方二维码 分享到微信</p>
+</div>
+
+</body>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/jquery.qrcode.min.js"></script>
+<script>
+
+	//点击我要参团执行的方法
+	function buy(type){
+     var url  = "<!--@php  echo mobile_url('mycart',array('id'=>$goods['id'],'op'=>'token'),true);@-->"+'&type='+type;  
+	 $.getJSON(url, function(s){
+	      if (s.result == 0)
+	      {
+		      var success = "<!--@php echo mobile_url('confirm')@-->";
+			  window.location.href = success;
+	      }else if(s.result == 1002){
+			  alert(s.message);
+		  }
+	 });   
+    }
+	
+	$(function(){
+		//调用倒计时方法
+
+       EndTime= new Date("<!--@php echo $group['end_time']; @-->")
+      countDown(EndTime);			  
+	})
+	
+	//倒计时
+	 function countDown(time){
+	 	console.log(time);
+	 	console.log(new Date());
+		var sys_second = (time-new Date())/1000;
+		console.log(sys_second);
+		if(sys_second < 1){
+			$(".offered_h").html("00"); 
+		    $(".offered_m").html("00");
+			$(".offered_s").html("00");
+		}
+//		getTime(sys_second);
+		var timer = setInterval(function(){
+			if (sys_second > 1) {
+				sys_second -= 1;
+				getTime(sys_second);	
+			} else {
+				clearInterval(timer);
+			}
+		}, 1000);
+	}
+	 //计算时间
+	function getTime(sys_second){
+			var hour = Math.floor((sys_second / 3600) % 24);
+			var minute = Math.floor((sys_second / 60) % 60);
+			var second = Math.floor(sys_second % 60);
+			$(".offered_h").html( hour<10 ? "0"+hour : hour); 
+			$(".offered_m").html( minute<10 ? "0"+minute : minute);
+			$(".offered_s").html( second<10 ? "0"+second : second);
+	}
+	
+	$(".join-tab ul>li").click(function(e){
+		$(".join-tab .share_bg_text").hide();
+		$(this).siblings("li").find(".box").hide();
+		$(this).siblings("li").children("a").removeClass("active");
+		if($(this).find("a").hasClass("active")){
+			$(this).children("a").removeClass("active");
+			$(this).find(".share_bg_text").hide();
+			$(this).find(".share_bg_text").hide();
+			$(this).find(".box").hide();
+		}else{
+			$(this).children("a").addClass("active");
+			$(this).find(".share_bg_text").show();
+			$(this).find(".share_bg_text").show();
+			$(this).find(".box").show();
+		}
+		if($(this).find(".sc_a").hasClass("active")){
+			$(this).find(".sc_a").removeClass("active")
+		}
+		e.stopPropagation();
+	});
+
+	//收藏
+    $(".sc_a").click(function(){
+        var dishid = $(".hide_dish").val();
+        var url = "<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_action','act'=>'collectgood'));@-->";
+        url = url + "&dishid="+dishid;
+        $.getJSON(url,function(data){
+            alert(data.message);
+            if(data.errno != 200){
+                setTimeout(function(){
+                    window.location.href="<!--@php echo mobile_url('login'); @-->"
+                },2000)
+            }
+
+        },'json');
+    });
+
+	$(".share-list a").hover(function(){
+		var hover_val = $(this).find("li").attr("textval");
+		$(this).find("li").text(hover_val);
+	},function(){
+		$(this).find("li").text('');
+	});
+	
+	function shareFun(url,title,picurl){
+		$(".share-list .qqzone").on("click",function(){
+			var qqzone_share_url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?summary='+title+'&url='+location_href+'&pics='+picurl;
+			$(this).parent("a").attr("href",qqzone_share_url);
+		});
+		$(".share-list .weibo").on("click",function(){
+			var weibo_share_url = 'http://v.t.sina.com.cn/share/share.php?title='+title+'&url='+location_href+'&content=utf-8&sourceUrl='+location_href+'&pic='+picurl;
+			$(this).parent("a").attr("href",weibo_share_url);
+		});
+		$(".share-list .qq").on("click",function(){
+			var qq_share_url = 'http://connect.qq.com/widget/shareqq/index.html?summary='+title+'&url='+location_href+'&pics='+picurl;
+			$(this).parent("a").attr("href",qq_share_url);
+		});
+		$(".share-list .weixin_li").on("click",function(){
+			$(".wx_code_area,.shade").show();
+			$("#wx_code").qrcode({ 
+			    render: "table", //table方式 
+			    width: 200, //宽度 
+			    height:200, //高度 
+			    text: url //二维码的链接 
+			}); 
+		});
+		$(".wx_code_area .shade-close").on("click",function(){
+			$(".wx_code_area,.shade").hide();
+			$("#wx_code").empty();
+		});
+	}
+	var location_href = encodeURIComponent(location.href);//分享的链接
+	var title = "分享的内容";//需要分享的内容
+	var picurl = $(".jqzoom img").attr('src');//需要分享的图片地址
+	shareFun(location_href,title,picurl);
+</script>
+</html>

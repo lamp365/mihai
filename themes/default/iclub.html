@@ -1,0 +1,618 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>会员俱乐部</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/iclub.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+    <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
+</head>
+
+<body>
+    <!--@php  include page('vip_header');@-->
+    <div class="iclub-wrap">
+        <div class="iclub-viewport">
+            <div class="iclub-1 clearfix">
+            <!-- 左侧 -->
+                <div class="iclub-1-left">
+                    <div class="iclub-userinfo">
+                        <!-- 未登录 -->
+                        <!--@php  if(!$openid){ @-->
+                        <div class="no-login" >
+                            <img src="__RESOURCE__/recouse/images/userface.png">
+                            <p>登录后可查看会员信息详情</p>
+                            <a href="<?php  echo mobile_url('login',array('name'=>'shopwap')); ?>" class="login-btn">立即登录</a>
+                        </div>
+                        <!--@php }else{ @-->
+                        <!-- 登录后 -->
+                        <div class="has-login">
+                            <div class="clearfix">
+                                <div class="has-login-left">
+                                    <!--@php if(empty($merInfo['avatar'])){  @-->
+                                    <img src="__RESOURCE__/recouse/images/userface.png">
+                                    <!--@php }else{ @-->
+                                    <img src="<!--@php echo $merInfo['avatar']; @-->">
+                                    <!--@php } @-->
+                                </div>
+                                <div class="has-login-right">
+                                    <div class="has-login-username">您好！<!--@php echo $merInfo['name'];@--></div>
+                                    <div class="clearfix">
+                                        <div class="vip-grade"><img src="<!--@php echo $priviel['icon'];@-->"></div>
+                                        <div class="vip-userinfo">
+                                            <div><!--@php echo $priviel['rank_name'];@--></div>
+                                            <div><span class="mihaibi first-mihaibi"><!--@php echo $merInfo['credit'];@--></span>个积分</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo  empty($merInfo['experience'])? 0 : round($merInfo['experience']/$priviel['rank_next']['experience']*100,2);@-->%">
+                                    <span class="sr-only">60% Complete</span>
+                                </div>
+                                <div class="next-vip-grade"><img src="<!--@php echo $priviel['rank_next']['icon']; @-->"></div>
+                            </div>
+                            <div class="progress-title">还差<span><!--@php echo $priviel['rank_next']['experience'] - $merInfo['experience'] ;@-->V</span>值升级为<!--@php echo $priviel['rank_next']['rank_name'];@--></div>
+                            <div class="siginin-area">
+                                <div class="siginin-area-hover">    
+                                    <a href="javascript:;" onclick="sign()" class="no-sign signined">
+                                        <!--@php $signtime = date('y-m-d',$merArr['createtime']); if($signtime == date('y-m-d',time())){ echo "已签到"; }else{ echo "签到";} @-->
+                                    </a>
+                                </div>
+                                <div class="siginin-detail">再连续签到<span class="sign-detail-day"><!--@php echo count_contiune_day($merArr);@--></span>天即可获得<span><!--@php echo $sign_seting['continue_7day_jifen']; @-->V值和积分</span> <a class="question-icon" href="javascript:;">规则》</a></div>
+                            </div>
+                            
+                        </div>
+                        <!--@php } @-->
+
+                        <!-- 我的特权 -->
+                        <div class="privilege clearfix">
+                            <!-- <div class="privilege-1">
+                                <div class="privilege-top">我的<br>特权</div>
+                                <div class="privilege-bottom">MY<br>PRIVILEGE</div>
+                            </div>
+                            <ul class="privilege-2">
+                                @php if(!empty($priviel['privile'])){ foreach($priviel['privile'] as $one){ @
+                                <li title="@php echo $one['name'];@" class="privilege-2-1">
+                                    <img src="@php echo download_pic($one['icon'],80,80,2);@" width="38" style="border-radius: 8px;">
+                                </li>
+                                @php }} @
+                            </ul> -->
+                            <img style="margin-top: -7px;margin-left: 31px;" src="__RESOURCE__/recouse/images/privilege_placeholder.png">
+                        </div>
+
+                    </div>
+                </div>
+                <!-- 右侧 -->
+                <div class="iclub-1-right">
+                    <div class="iclub-1-banner">
+
+                            <div id="focus" class="focus">
+                                <div class="hd">
+                                    <ul>
+                                    </ul>
+                                </div>
+                                <div class="bd">
+                                    <ul>
+                                        <!--@php if(empty($master_adv)){ @-->
+                                        <li>
+                                            <a href="#">
+                                                <img src="http://odozak4lg.bkt.clouddn.com/20161108161758218a19364db.jpg"/>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <img src="http://odozak4lg.bkt.clouddn.com/20161108161758218a19364db.jpg"/>
+                                            </a>
+                                        </li>
+                                        <!--@php }else{ @-->
+                                        <!--@php foreach($master_adv as $one_adv){  if($one_adv['position'] !=1 ){  continue; } @-->
+                                        <li>
+                                            <a href="<!--@php echo $one_adv['link']; @-->">
+                                                <img src="<!--@php echo download_pic($one_adv['thumb'],800,'',1); @-->"/>
+                                            </a>
+                                        </li>
+                                        <!--@php } @-->
+                                        <!--@php } @-->
+                                    </ul>
+                                </div>
+                            </div>
+
+                    </div>
+                    <ul class="iclub-1-list">
+                        <!--@php if(empty($master_adv)){ @-->
+                        <li>
+                            <a href="#">
+                                <img src="http://odozak4lg.bkt.clouddn.com/20161108161758218a19364db.jpg"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <img src="http://odozak4lg.bkt.clouddn.com/20161108161758218a19364db.jpg"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <img src="http://odozak4lg.bkt.clouddn.com/20161108161758218a19364db.jpg"/>
+                            </a>
+                        </li>
+                        <!--@php }else{ @-->
+                        <!--@php foreach($master_adv as $one_adv){  if($one_adv['position'] ==1 ){  continue; } @-->
+                        <li>
+                            <a href="<!--@php echo $one_adv['link']; @-->">
+                                <img src="<!--@php echo download_pic($one_adv['thumb'],225,130,2); @-->"/>
+                            </a>
+                        </li>
+                        <!--@php } @-->
+                        <!--@php } @-->
+                    </ul>
+                </div>
+            </div>
+            <!-- 积分兑换 -->
+            <!--@php if(!empty($goods_list)){ @-->
+            <div class="iclub-2">
+                <div class="iclub-2-title clearfix">
+                    <div class="iclub-2-title-left">积分超值兑</div>
+                    <div class="iclub-2-title-left-2">缤纷好礼，超值换购 →</div>
+                    <a class="iclub-2-more-a" href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'list')); ?>">查看更多》</a>
+                    <a class="iclub-2-more-a iclub-2-recorder" href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'recorder')); ?>">兑换记录&nbsp;&nbsp;|</a>
+                </div>
+                <div>
+                    <ul class="iclub-2-list clearfix">
+                        <!--@php foreach($goods_list as $one_list){ @-->
+                        <li>
+                            <img src="<!--@php echo download_pic($one_list['logo'],300,300,2); @-->">
+                            <div class="iclub-2-list-info">
+                                <div class="title"><!--@php echo $one_list['title']; @--></div>
+                                <div class="detail"><!--@php echo $one_list['names']; @--></div>
+                                <div class="iclub-2-list-info-left">
+                                    <div class="mihaibi"><!--@php echo $one_list['jifen_change']; @-->个积分</div>
+                                    <div class="cost-price">￥<!--@php echo number_format($one_list['price'],2); @--></div>
+                                </div>
+                                <!--@php if($one_list['endtime'] <= time()){ @-->
+                                <div class="iclub-2-list-info-right">
+                                    <div><a href="javascript:;" data-type="<!--@php echo $one_list['award_type']; @-->" onclick="exchangeFun(this,<!--@php  echo $one_list['id'];@-->,<!--@php echo $one_list['jifen_change']; @-->)" data-id="<!--@php  echo $one_list['id'];@-->">立即兑换</a></div>                                                                                          
+                                </div>
+                                <!--@php }else{ @-->
+                                <div style="background:#d7d7d7" class="iclub-2-list-info-right">
+                                    <div><a href="javascript:;" style="cursor:context-menu"  data-type="<!--@php echo $one_list['award_type']; @-->" >立即兑换</a></div>
+                                </div>
+                                <!--@php } @-->
+                            </div>
+                        </li>
+                        <!--@php } @-->
+                    </ul>
+                </div>
+            </div>
+            <!--@php } @-->
+
+        </div>
+    </div>
+
+    <input type="hidden" class="productid-hidden" value="">
+    <input type="hidden" class="mihaibi-hidden" value="">
+    <!-- 签到 -->
+    <div class="sign-bg"></div>
+    <div class="sign-div">
+        <div class="sign-success">签到成功！</div>
+        <div class="sign-detail">连续签到7天即可获得<!--@php echo $sign_seting['continue_7day_jifen']; @-->V值和积分</div>
+        <div class="sign-day-div">
+        <!-- 选中的状态加上sign-day-checked -->
+            <!--@php for($j=1; $j<=7; $j++){ $sign_zero  = strtotime(date("Y-m-d",$merArr['createtime']));  $today_zero = strtotime( date('Y-m-d',time()));   @-->
+            <div class="sign-day <!--@php if($j<=$merArr['num'] && $today_zero - $sign_zero <= 60*60*24 ){ echo 'sign-day-checked'; } if($j==7){ echo ' day7';}@-->">
+                <div class="sign-v">+<!--@php if($j==7){ echo $sign_seting['continue_7day_jifen'];}else if($j==4){ echo $sign_seting['continue_4day_jifen']; }else{ echo $sign_seting['every_day_jifen']; } @-->V值</div>
+                <div>第<!--@php echo $j; @-->天</div>
+
+                <!--@php if($j<=$merArr['num'] && time() - $time <= 60*60*24){  @-->
+                <i class="sign-day-icon icon-ok-sign"></i><!-- 选中的状态加上这标签 -->
+                <!--@php } @-->
+            </div>
+            <!--@php } @-->
+        </div>
+        <div class="sign-sure">确定</div>
+    </div>
+    <!-- 签到规则 -->
+    <div class="modal fade question-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">签到规则</h4>
+          </div>
+          <div class="modal-body">
+            <p>签到重要说明：</p>
+            <ul>
+                <li>1、会员俱乐部签到与首页签到活动为同一个活动</li>
+                <li>2、移动端用户可在“个人中心-会员中心”完成每日签到，PC端用户可在“首页登录-会员俱乐部”完成每日签到</li>
+            </ul>
+            <p>签到规则：</p>
+            <ul>
+                <li>1、签到奖励如下：签到每天送<!--@php echo $sign_seting['every_day_jifen']; @-->V值和积分；其中连续签到第4天送<!--@php echo $sign_seting['continue_4day_jifen']; @-->V值和积分；连续签到7天送<!--@php echo $sign_seting['continue_7day_jifen']; @-->V值和积分</li>
+                <li>2、如果连续签到中断，则从第1天开始重新累计签到天数，以往获得的奖励不会减少。</li>
+                <li>3、每位会员每天仅限签到1次。</li>
+                <li>4、对不正当手段（如作弊、扰乱系统、实施网络攻击等）参与活动的用户、觅海有权禁止其参与活动，并取消其获奖资格（如奖励已发放，有权追回）。</li>
+                <li>5、本活动仅在觅海官网参与，与Apple lnc无关。</li>
+                <li>-觅海环球购可在法律法规允许范围内对本次活动规则进行解释-</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade choose-address-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">选择地址</h4>
+          </div>
+          <div class="modal-body">
+            <ul class="choose-address-modal-list">
+                <!--@php if(empty($userAddress)){  @-->
+                <div class="no-address">
+                您暂无地址，请先添加地址
+                </div>
+                <!--@php }else{ @-->
+                <!--@php foreach($userAddress as $address){ @-->
+                <li>
+                    <div id="<!--@php echo $address['id'];@-->" class="choose-address-div" onclick="chooseAddress(this)"><img src="__RESOURCE__/recouse/images/have_check.png"></div>
+                    <div class="clearfix">
+                        <div class="address-name"><!--@php echo $address['realname'];@--></div>
+                        <div class="address-phone-num"><!--@php echo $address['mobile'];@--></div>
+                    </div>
+                    <div class="address-detail">
+                        <!--@php echo $address['province'].$address['city'].$address['area'].$address['address']; @-->
+                    </div>
+                </li>
+                <!--@php } @-->
+                <!--@php } @-->
+            </ul>
+            <div class="add-address img-rounded" id="addAddressPanel"  style="display:none;" >
+                <div class="add-address-hd">请仔细填写收货地址：</div>
+                <div class="add-address-main clearfix">
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">收货人：</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" id="realname">
+                        </div>
+
+                        <label for="" class="col-sm-3 control-label">联系电话：</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" id="mobile">
+                        </div>
+
+                        <label for="" class="col-sm-3 control-label">地区：</label>
+                        <div class="col-sm-11">
+                            <select id="sel-provance" onChange="selectCity();" class="pull-left form-control" style="width:30%; margin-right:5%;padding-left: 5px;">
+                                <option value="" selected="true">省/直辖市</option>
+                            </select>
+                            <select id="sel-city" onChange="selectcounty()" class="pull-left form-control" style="width:30%; margin-right:5%;padding-left: 5px;">
+                                <option value="" selected="true">请选择</option>
+                            </select>
+                            <select id="sel-area" class="pull-left form-control" style="width:30%;">
+                                <option value="" selected="true">请选择</option>
+                            </select>
+                        </div>
+
+                        <label for="" class="col-sm-3 control-label">详细地址：</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" id="address">
+                        </div>
+                    </div>
+                    <input type="hidden" id="addressid" value="" />
+                    
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+             <div class="new-btns form-group clearfix">
+                <div class="col-sm-11">
+                    <button type="button" class="btn btn-danger remote_url" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address',array('no_identy'=>1))@-->">保存</button>
+                    <button type="button" class="btn close-btn" onclick="closeAddAddress()" >取消</button>
+                </div>
+            </div>
+            <div class="add-btns clearfix">
+                <div class="btn btn-danger" onclick="newAddAddress()">新增地址</div>
+                <!--@php  if(empty($userAddress)){ @-->
+                <div class="btn btn-primary disabled-sure" disabled>确认兑换</div>
+                <!--@php }else{ @-->
+                <div class="btn btn-primary sure">确认兑换</div>
+                <!--@php } @-->
+            </div>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+<div class="weixin_gzh"></div>
+<div class="weixin_gzh_img">
+    <img src="__RESOURCE__/recouse/images/weixin_gzh.png">
+</div>
+    <!--@php include themePage('footer');@-->
+</body>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/cascade.js?x=14"></script>
+<script>
+$(function(){
+    //签到规则
+    $(".question-icon").on("click",function(){
+        $(".question-modal").modal();
+    });
+    $(".sign-sure").on("click",function(){
+        $(".sign-bg").hide();
+        $(".sign-div").hide();
+    });
+    //轮播初始化
+    TouchSlide({
+        slideCell : "#focus",
+        titCell : ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+        mainCell : ".bd ul",
+        delayTime : 600,
+        interTime : 4000,
+        effect : "leftLoop",
+        autoPlay : true,//自动播放
+        autoPage : true, //自动分页
+        switchLoad : "_src" //切换加载，真实图片路径为"_src" 
+    });
+    $(".weixin_gzh,.weixin_gzh_img").on("click",function(){
+        $(".weixin_gzh,.weixin_gzh_img").hide();
+    });
+    //确认兑换
+    $(".sure").on("click",function(){
+    var address_id = "";
+        if( $(".isChoose").length==0 ){
+            alert("请选择地址");
+            return false;
+        }else{
+            address_id = $(".isChoose").attr("id");
+        }
+        var ajax_url ="<!--@php echo mobile_url('iclub',array('op'=>'change'));@-->";
+        $.post(ajax_url,{id:$(".productid-hidden").val(),address_id:address_id},function(data){
+            if( data.errno == 200 ){
+                var first_mihaibi = parseInt($(".first-mihaibi").text())-parseInt($(".mihaibi-hidden").val());
+                $(".first-mihaibi").text(first_mihaibi);
+                $(".mihaibi-number").text(first_mihaibi);
+                $(".choose-address-modal").modal('hide');
+                alert(data.message.tit, data.message.des, '', {type: 'success'});
+            }else{
+                $(".choose-address-modal").modal('hide');
+                alert(data.message);
+            }
+        },"json");
+    });
+})
+var openid = "<?php echo checkIsLogin();?>";
+function sign(){
+    if( openid ){
+        var url = "<!--@php echo mobile_url('iclub',array('op'=>'sign'));@-->";
+        $.post(url,{},function(data){
+            if(data.errno == 200){
+                var info = data.message;
+                var day = parseInt(info.day)-1;
+                var day2 = parseInt(info.day);
+                if( day >= 0 && day <= 6 ){
+                    $(".sign-day").eq(day).addClass("sign-day-checked").append('<i class="sign-day-icon icon-ok-sign"></i>');
+                }
+                if( day2 == 7 ){
+                    $(".sign-detail-day").text(day2);
+                }else{
+                    $(".sign-detail-day").text(7-day2);
+                }
+                $(".sign-bg").show();
+                $(".sign-div").show();
+            }else{
+                alert(data.message);
+            }
+        },'json');
+
+    }else{
+        confirm('请先登录','',function(isconfirm){
+            if(isconfirm){
+                var url = "<!--@php echo mobile_url('login');@-->";
+                window.location.href = url;
+            }
+        },{confirmButtonText: '确认', cancelButtonText: '取消', width: 330});
+    }
+}
+
+function exchangeFun(thisObj,productid,mihaibi){
+    if(!check_is_weixin()){
+        //如果不是微信
+        return false;
+    }
+    if(openid){
+        var data_type = $(thisObj).attr("data-type");
+        var ajax_url ="<!--@php echo mobile_url('iclub',array('op'=>'change'));@-->";
+        if ( data_type == "2" ){
+            confirm('确认兑换优惠券？','',function(isconfirm){
+                if( isconfirm ){
+                    $.post(ajax_url,{id:productid,address_id:''},function(data){
+                        if( data.errno == 200 ){
+                            alert(data.message.tit);
+                        }else{
+                            alert(data.message);
+                        }
+                    },'json');
+                }
+            },{confirmButtonText: '确认', cancelButtonText: '取消', width: 330});
+        }else{
+            $(".choose-address-modal-list").show();
+            $(".add-btns").show();
+            $('.new-btns').hide();
+            $(".choose-address-modal").modal();
+            $(".productid-hidden").val(productid);
+            $(".mihaibi-hidden").val(mihaibi);  
+        }
+    }else{
+        confirm('请先登录','',function(isconfirm){
+            if(isconfirm){
+                var url = "<!--@php echo mobile_url('login');@-->";
+                window.location.href = url;
+            }
+        },{confirmButtonText: '确认', cancelButtonText: '取消', width: 330});
+    }
+}
+
+function check_is_weixin(){
+    var is_weixin = "<!--@php echo $is_weixin; @-->";
+    if(is_weixin == 0){
+        $(".weixin_gzh,.weixin_gzh_img").show();
+        return false;
+    }else{
+        return true;
+    }
+}
+function addAddress() {
+    $('#addAddressPanel').show();
+    $('#realname').val('');
+    $('#mobile').val('');
+    $('#address').val('');
+    $('#idname').val('');
+    $('#idnumber').val('');
+    cascdeInit('__RESOURCE__/recouse/js','','','');
+    $('#addressid').val('');
+
+}
+function newAddAddress(){
+    $(".choose-address-modal-list").hide();
+    $("#addAddressPanel").show();
+    $(".add-btns").hide();
+    $(".new-btns").show();
+}
+function chooseAddress(thisObj){
+    $(thisObj).parent("li").siblings().find(".choose-address-div").removeClass("isChoose");
+    $(thisObj).parent("li").siblings().find("img").hide();
+    if( $(thisObj).hasClass("isChoose") ){
+        $(thisObj).removeClass("isChoose");
+        $(thisObj).find("img").hide();
+    }else{
+        $(thisObj).addClass("isChoose");
+        $(thisObj).find("img").show();
+    }
+}
+function closeAddAddress(){
+    addAddress();
+    $('#addAddressPanel').hide();
+    $('#addressid').val('');
+    $(".choose-address-modal-list").show();
+    $(".new-btns").hide();
+    $(".add-btns").show();
+}
+cascdeInit('__RESOURCE__/recouse/js', '', '', '');
+
+function saveAddress() {
+    var realname = $('#realname').val();
+    var mobile = $('#mobile').val();
+    var province = $('#sel-provance').val();
+    var city = $('#sel-city').val();
+/*    var idname = $('#idname').val();
+    var idnumber = $('#idnumber').val();*/
+    var area = $('#sel-area').val();
+    var idname ='xxxx';
+    var idnumber = '35032119860618323X';
+    if(area == null) {
+        area = '';
+    }
+    if(city == null) {
+        city = '';
+    }
+    if(province == null) {
+        province = '';
+    }
+    var address = $('#address').val();
+    if(!idname) {
+        alert('请输入您的身份证姓名！');
+        return false;
+    }
+    if(!idnumber) {
+        alert('请输入您的身份证号码！');
+        return false;
+    }
+    if(!realname) {
+        alert('请输入您的真实姓名！');
+        return false;
+    }
+    if(!mobile) {
+        alert('请输入您的手机号码！');
+        return false;
+    }
+    if(mobile.search(/^([0-9]{11})?$/) == -1) {
+        alert('请输入正确的手机号码！');
+        return false;
+    }
+    if(!address) {
+        alert('请输入您的详细地址！');
+        return false;
+    }
+    $.post("<!--@php  echo mobile_url('address',array('no_identy'=>1))@-->", {
+            'op': 'post',
+            'realname': realname,
+            'mobile': mobile,
+            'province': province,
+            'city': city,
+            'idnumber': idnumber,
+            'idname': idname,
+            'area': area,
+            'address': address,
+            'id': $('#addressid').val()
+        },
+        function(s) {
+            if(s.errno == 200) {
+                var html = "<li>"+
+                                "<div id ="+s.message+" class='choose-address-div' onclick='chooseAddress(this)'>"+
+                                "<img src='__RESOURCE__/recouse/images/have_check.png'></div>"+
+                                "<div class='clearfix'>"+
+                                    "<div class='address-name'>"+realname+"</div>"+
+                                    "<div class='address-phone-num'>"+mobile+"</div>"+
+                                "</div>"+
+                                "<div class='address-detail'>"+
+                                    ""+province+"  "+city+" "+area+" "+address+" "+
+                                "</div>"+
+                        "</li>";
+                $(".no-address").hide();
+                $(".disabled-sure").removeAttr("disabled");
+                $(".disabled-sure").on("click",function(){
+                    var address_id = "";
+                    if( $(".isChoose").length==0 ){
+                        alert("请选择地址");
+                        return false;
+                    }else{
+                        address_id = $(".isChoose").attr("id");
+                    }
+                    var ajax_url ="<!--@php echo mobile_url('iclub',array('op'=>'change'));@-->";
+                    $.post(ajax_url,{id:$(".productid-hidden").val(),address_id:address_id},function(data){
+                        if( data.errno == 200 ){
+                            var first_mihaibi = parseInt($(".first-mihaibi").text())-parseInt($(".mihaibi-hidden").val());
+                            $(".first-mihaibi").text(first_mihaibi);
+                            $(".mihaibi-number").text(first_mihaibi);
+                            $(".choose-address-modal").modal('hide');
+                            alert(data.message.tit, data.message.des, '', {type: 'success'});
+                        }
+                    },"json");
+                });
+                $(".choose-address-modal-list").append(html).show();
+                $(".new-btns").hide();
+                $(".add-btns").show();
+                $('#addAddressPanel').hide();
+                $('#addressid').val('')
+                cascdeInit('__RESOURCE__/recouse/js','','','');
+            } else {
+                alert(s.message);
+            }
+
+        }, 'json');
+
+}
+</script>
+</html>

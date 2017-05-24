@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>记录查询</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+	<link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet"	type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/shareactive.css"/>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+</head>
+<body>
+	<div class="result-wrap">
+		<div class="title-bg">
+			<img src="__RESOURCE__/recouse/images/shareactive_result_bg.jpg">
+		</div>
+		<!--@php if(!empty($drawRecorder)){  foreach($drawRecorder as $drawtime => $draw_arr){  @-->
+		<div class="one_result">
+			<!--@php if(time() > $drawtime){ @-->
+				<!--@php if($draw_arr[0]['state'] == 2){  @-->
+					<div class="result-phase tobedraw">小觅正在努力实现愿望</div>
+				<!--@php }else{ @-->
+					<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--></div>
+				<!--@php } @-->
+
+			<!--@php }else{ @-->
+				<!--@php if($draw_arr[0]['state'] == 3){  @-->
+				<div class="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--></div>
+				<!--@php }else{ @-->
+				<div class="result-phase tobedraw" id="result-phase"><!--@php echo date("Y-m-d H:i",$drawtime);@--><span class="result-djs"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></span></div>
+				<script>
+					$(function(){
+						countDown(<!--@php echo $drawtime;@-->,"#result-phase");
+					})
+				</script>
+				<!--@php } @-->
+			<!--@php } @-->
+
+
+			<!--@php foreach($draw_arr as $draw){  @-->
+			<ul>
+				<li class="clearfix">
+					<div class="result-list-left">
+						<img data-chushu="<!--@php echo $draw['stext'];@-->" data-beichushu="<!--@php echo $draw['dicount'];@-->" onclick="resultShow(this,<!--@php echo $draw['id'];@-->)" src="<!--@php echo download_pic($draw['logo'],350,350,2);@-->">
+						<input type="hidden" value="<!--@php echo $draw['lock_time'];@-->" />
+					</div>
+					<div class="result-list-right">
+						<div class="detail"><!--@php echo $draw['title'];@--></div>
+						<div class="user-detail">
+							<!--@php if($draw['state'] ==2 ){ @-->
+								<div><span class="list-num-before"><!--@php echo $draw['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $draw['amount'];@--></span></div>
+								<span class="question"  class="xinyuannum">???</span>
+								<span class="user-detail-right" ><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+							<!--@php }elseif($draw['state'] > 2){ @-->
+                                <div><span class="list-num-before"><!--@php echo $draw['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $draw['amount'];@--></span></div >
+								<span>幸运数字:<span style="color: #f60" class="xinyuannum wish-number"><!--@php echo $draw['sn'];@--></span></span>
+								<span class="user-detail-right-2"><img onclick="youResultShow(this,<!--@php echo $draw['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">×<!--@php echo getRecorderCount($openid,$draw['id']); @--></span>
+							<!--@php } @-->
+						</div>
+					</div>
+				</li>
+
+			</ul>
+			<!--@php } @-->
+		</div>
+		<!--@php }} @-->
+
+	</div>
+
+	<input type="hidden" value="2" id="page"/>
+	<div class="ajax_next_page">
+		<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+		正在加载
+	</div>
+
+	<div class="modal fade result-modal" tabindex="-1" role="dialog">
+	  	<div class="modal-dialog" role="document">
+	    	<div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">开奖公式</h4>
+		      	</div>
+		      	<div class="modal-body">
+		      	</div>		      	
+		    </div>
+	  	</div>
+	</div>
+	<div class="modal fade you-result-modal" tabindex="-1" role="dialog">
+	  	<div class="modal-dialog" role="document">
+	    	<div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">您的心愿数字</h4>
+		      	</div>
+		      	<div class="modal-body"></div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+	<!--@php if(empty($_GP['is_app'])){ @-->
+	<!--@php include themePage('footer');@-->
+	<!--@php } @-->
+<script type="text/javascript">
+	function resultShow(thisObj,award_id){
+		var result_obj = $(thisObj).closest('.one_result').find('.result-phase');
+		if($(result_obj).hasClass("tobedraw")){
+			//如果是待开奖的  点击无反应
+			alert("请等待开奖处理完毕！");
+			return '';
+		}
+
+		$(".result-modal .modal-body").html("");
+
+		var xinyuannum = $(thisObj).parent(".result-list-left").siblings(".result-list-right").find(".xinyuannum").text();
+		var chusu    = $(thisObj).data('chushu');
+		var beichusu = $(thisObj).data('beichushu');
+		var yushu = chusu%beichusu+1;
+		var html = '';
+		var lock_time = $(thisObj).next().val();
+		var url ="<!--@php echo mobile_url('shareactive',array('op'=>'getStandData'));@-->";
+		url = url +"&lock_time="+lock_time;
+		$.post(url,{},function(data){
+			if(data.errno != 200){
+				alert("网络异常，稍后再试");
+				return '';
+			}
+			var gupiao_url = data.message;
+			html = 
+      		"<div>"+
+      		"<div class='gupiao'>"+
+      			"<img src='"+gupiao_url+"' />"+
+      			"<p>标准数据为:"+      			
+      				chusu+
+      			"</p>"+
+      		"</div>"+
+      		"<div class='user-detail-span'><span class='xinyuannum' style='margin-bottom: 10px;display: block;'>幸运数 &nbsp;= "+xinyuannum+"</span></div>"+
+      			"<ul class='result-rule'>"+
+      				"<li style='line-height: 40px;'>计算公式 = </li>"+
+      				"<li>(</li>"+
+      				"<li>"+
+      					"<p>"+chusu+"</p>"+
+      					"<span>标准数据</span>"+
+      				"</li>"+
+      				"<li>"+
+      					"<p>%</p>"+
+      					"<span>求余</span>"+
+      				"</li>"+
+      				"<li><p>"+beichusu+"</p><span>参与人次</span></li>"+
+      				"<li>)</li>"+
+      				"<li>+</li>"+
+      				"<li>"+
+      					"<p>1</p>"+
+      					"<span>固定值</span>"+
+      				"</li>"+  
+      				
+      			"</ul>"+
+      		"</div>";
+			$(".result-modal").modal();
+			$(".result-modal .modal-body").html(html);
+		},'json');
+
+	}
+	function youResultShow(thisObj,award_id){
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			if( data.errno == 1000 ){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						if(is_app){
+							AppLogin();
+						}else{
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}else if( data.errno == 1002 ){
+				$(".you-result-modal .modal-body").html("<p>"+data.message+"<p>");
+			}else{
+				var html = "<div class='result-num'>";
+				var recorder = data.message;
+				for(var i = 0;i < recorder.length;i++){
+					var item    = recorder[i];
+					html = html + "<span>"+item.star_num_order + "</span>";
+				}
+				html = html + "</div>";
+				$(".you-result-modal .modal-body").html(html);
+			}
+			$(".you-result-modal").modal();
+		},"json");
+	}
+	//预告的倒计时
+	function countDown(time,id){
+        var end_time = time * 1000,//月份是实际月份-1
+        sys_second = (end_time-new Date().getTime())/1000;
+        getTime(sys_second,id);
+        var timer = setInterval(function(){
+            if (sys_second > 1) {
+                sys_second -= 1;
+                getTime(sys_second,id);
+            } else {
+                clearInterval(timer);	                   
+            }
+        }, 1000);
+        
+    }
+    function getTime(sys_second,id){
+        var day = Math.floor((sys_second / 3600) / 24);
+        var hour = Math.floor((sys_second / 3600) % 24);
+        var minute = Math.floor((sys_second / 60) % 60);
+        var second = Math.floor(sys_second % 60);
+        if($(id+' .limit_d')){
+            if( day <=0 ){
+        		$(id+' .limit_d').hide();
+        		$(id+' .limit_d_span').hide();
+        	}else{
+        		$(id+' .limit_d').text(day<10?"0"+day:day);
+        	}
+        }
+        if( day<=0 && hour<=0 && second <=0 && minute<=0 ){
+            $(id).html("小觅正在努力实现愿望");
+            //window.location.reload();
+        }
+
+        $(id+' .limit_h').text(hour<10?"0"+hour:hour);    //计算小时
+        $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
+        $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
+    }
+
+	var index = 1; //默认开关状态是打开
+	$(function(){
+		//滚动条到底部时就加载剩下数据
+		$(window).scroll(function(){
+			if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+				if( index == 1){
+					$(".ajax_next_page").show();
+					var url = "<!--@php echo mobile_url('shareactive',array('op'=>'result'));@-->";
+					index = 0; //关闭开关
+					var page = $("#page").val(); //第一次传的是2
+					$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
+						if(s.errno != 200){
+							//如果没有数据
+							$(".ajax_next_page").hide();
+						}else{
+							$("#page").val(++page);
+							var art_data = s.message;
+							for(var i in art_data){
+								//循环拼接 html下一页数据
+								LoadHtml(art_data[i],i);
+							}
+							index = 1;  //加载完后重新打开开关
+							$(".ajax_next_page").hide();
+						}
+					}, 'json');
+
+				}
+			}
+		})
+	})
+	function LoadHtml(draw,time){
+		time = Stringtotime(time);
+		var html = '<div class="one_result"><div class="result-phase">'+ time +'</div><ul>';
+		for(var j =0 ; j<draw.length;j++){
+			var item = draw[j];
+			//获取参与记录的总次数
+			var url = "<!--@php echo mobile_url('shareactive',array('op'=>'recorderCount'));@-->";
+			$.ajax({
+				url:url,
+				type: "POST",
+				async: false,
+				data : {award_id:item.id},
+				dataType:'json',
+				success:function(response,xml){
+					var total = response.message;
+					html = html + '<li class="clearfix">'+
+									'<div class="result-list-left">'+
+										'<img data-chushu="'+ item.stext +'" data-beichushu="'+ item.dicount +'" onclick="resultShow(this,'+ item.id +')" src="'+ item.logo +'">'+
+									'</div>'+
+									'<div class="result-list-right">'+
+										'<div class="detail">'+ item.title +'</div>'+
+										'<div class="user-detail">'+
+											'<div><span class="list-num-before">'+ item.dicount +'</span> / <span class="list-num-after">'+ item.amount +'</span></div>'+
+											'<span>幸运数字:<span style="color: #f60" class="xinyuannum wish-number">'+ item.sn +'</span></span>'+
+											'<span class="user-detail-right-2"><img onclick="youResultShow(this,'+ item.id +')" src="__RESOURCE__/recouse/images/love-yes.png">×'+ total +'</span>'+
+										'</div>'+
+									'</div>'+
+							     '</li>';
+
+				}
+			});
+		}
+		html = html + "</ul></div>";
+		$(".result-wrap").append(html);
+	}
+
+
+	//将后台返回的时间戳格式化为时间格式
+	function Stringtotime(time){
+		time = time*1000;
+		var datetime = new Date();
+		datetime.setTime(time);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+		var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+		var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+		var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
+		return year + "-" + month + "-" + date + " &nbsp " + hour + ":" + minute + "";
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title><!--@php echo $title @--></title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
+<style type='text/css'>
+    #poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;
+        -webkit-border-radius:5px;
+        -moz-border-radius:5px;}
+#poptip_content { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px; height: 27px; color:#fff;text-align:center;font-size:14px;z-index: 9909}
+</style>
+<style>
+.mesWindow{border:#666 1px solid;background:#fff;}
+.mesWindowTop{border-bottom:#eee 1px solid;margin-left:4px;padding:3px;font-weight:bold;text-align:left;font-size:12px;}
+.mesWindowContent{margin:4px;font-size:12px;}
+.mesWindow .close{height:15px;width:28px;border:none;cursor:pointer;text-decoration:underline;background:#fff}
+</style>
+<script type="text/javascript">
+// 对浏览器的UserAgent进行正则匹配，不含有微信独有标识的则为其他浏览器
+var useragent = navigator.userAgent;
+/*if (useragent.match(/MicroMessenger/i) != 'MicroMessenger') {
+    // 这里警告框会阻塞当前页面继续加载
+    alert('已禁止本次访问：您必须用微信打开本页面！');
+    // 以下代码是用javascript强行关闭当前页面
+    var opened = window.open('about:blank', '_self');
+    opened.opener = null;
+    opened.close();
+}
+*/
+jQuery(document).ready(function($) {
+		$(".os_box_list img").lazyload({
+			placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+			threshold : 200, //控制灵敏度
+			effect : "fadeIn"
+		});
+		$("#submit").click(function() {
+			if ($("#search_word").val()) {
+				$("#searchForm").submit();
+			} else {
+				alert("请输入关键词！");
+				return false;
+			}
+		});
+	});
+</script>
+</head>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>商品列表</title>
+	 <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+		<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+
+	<link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css" />
+	<link href="__RESOURCE__/recouse/css/search_new.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/xmapp.css"/>
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<link href="__RESOURCE__/recouse/css/bjlist.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<style type="text/css">
+.WX_search_frm1{
+	height: 40px;
+}
+.WX_search_txt{
+	border:none;
+	padding: 0 30px 0 8px;
+}
+.WX_search_txt, .hd_search_txt{
+	background-image:none!important;
+}
+.WX_search_btn_blue{
+	background: url(__RESOURCE__/recouse/images/icon_ss.png);
+    width: 20px;
+    padding: 0;
+    background-size: cover;
+    height: 20px;
+    margin-top: 12px;
+}
+.search_bottom{
+	border: 1px solid #E3E3E3;
+    margin: 0 .2rem;
+    height: .3rem;
+    border-top: 0;
+    width: 95%;
+    margin: 0 auto;
+}
+input::-webkit-input-placeholder{
+	color: #d0d0d0!important;
+}
+	</style>
+</head>
+<script>
+	jQuery(document).ready(function($) {
+		$("img.lazy").lazyload({
+			placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+			threshold : 200, //控制灵敏度
+			effect : "fadeIn"
+		});
+		$("#submit").click(function() {
+			if ($("#search_word").val()) {
+				$("#searchForm").submit();
+			} else {
+				alert("请输入关键词！");
+				return false;
+			}
+		});
+	});
+</script>
+
+<body style="margin:0 auto; padding:0 auto">
+
+<div class="tab">
+	<div style="height: 44px;"></div>
+	<div class="paixu">
+		<div class="tab">
+			<a <!--@php  if($sort==1) { @-->  class="price on"<!--@php  } else { @-->class="price"<!--@php  } @--> onclick="location.href='<!--@php  echo $sorturl;@-->&sort=1&sortb1=<!--@php  echo $sortb11;@-->'">销量</a>
+			<a <!--@php  if($sort==0) { @-->  class="time on"<!--@php  } else { @-->class="time"
+						                <!--@php  } @-->
+						                onclick="location.href='<!--@php  echo $sorturl;@-->&sort=0&sortb0=<!--@php  echo $sortb00;@-->
+						                '">时间</a>
+			<a <!--@php  if($sort==2) { @-->  class="renqi on"<!--@php  } else { @-->class="renqi"<!--@php  } @--> onclick="location.href='<!--@php  echo $sorturl;@-->&sort=2&sortb2=<!--@php  echo $sortb22;@-->'">人气</a>
+			<a <!--@php  if($sort==3) { @-->  class="price on"<!--@php  } else { @-->class="price"<!--@php  } @--> onclick="location.href='<!--@php  echo $sorturl;@-->&sort=3&sortb3=<!--@php  echo $sortb33;@-->'">价格</a>
+			<a href="javascript:void(0);"  class="click screen">筛选</a>	
+		</div>
+	</div>
+<div class="filter">
+      <div class="filter-header">
+            <a href="#" class="filter-header-left">返回</a>
+            <h3>分类</h3>
+      </div>
+	  <div class="bodys">
+           <ul>
+               <!--@php if (is_array($categorys)){ foreach ( $categorys as $key=>$value ){ @-->
+			        <!--@php if ( $_GP['p2'] == $value['id'] ){ $check = 'on'; }else{ $check ='';}@-->
+                     <li class="p2 <!--@php echo $check; @-->">
+					      <a href="<!--@php  echo mobile_url('goodlist',array('p2'=>$value['id']),true);@-->"><img src="<!--@php  echo $value['thumb']; @-->" height="29" />
+					    <!--@php echo $value['name']; @--><i class="icon-ok"></i></a>
+					 </li>
+			   <!--@php }} @-->
+		   </ul>
+      </div>
+</div>
+<script>
+    $(".click").click(function(){
+         $(".filter").addClass("move"); 
+		  changeDivHeight("html",0); 
+		  changeDivHeight("body",0); 
+		  $("body").css("overflow","hidden");
+	});
+	$(".filter-header-left").click(function(){
+       $(".filter.move").removeClass("move");
+       $("body").css("height","auto");
+	   $("html").css("height","auto");
+	});
+	window.onload=function(){  
+            changeDivHeight(".bodys",44);  
+    }  
+     //当浏览器窗口大小改变时，设置显示内容的高度  
+    window.onresize=function(){  
+         changeDivHeight(".bodys",44);  
+		 if ($(".filter").hasClass('move'))
+		 {
+		     changeDivHeight("html",0); 
+		     changeDivHeight("body",0); 
+		     $("body").css("overflow","hidden");
+		 }
+    }  
+    function changeDivHeight(obj, h){  
+	      if (window.innerHeight)
+             winHeight = window.innerHeight;
+          else if ((document.body) && (document.body.clientHeight))
+             winHeight = document.body.clientHeight;
+       // 通过深入 Document 内部对 body 进行检测，获取窗口大小
+          if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
+               winHeight = document.documentElement.clientHeight;
+          }
+          $(obj).css("height",winHeight-h+"px");  
+     }
+</script>
+	<div class="WX_search1" id="mallHead" style="margin-bottom:10px;z-index:1;padding-bottom: 5px;">
+		<form class="WX_search_frm1" action="index.php" id="searchForm"
+			name="searchForm">
+			<input type="hidden" name="mod" value="mobile" /> <input
+				type="hidden" name="do" value="goodlist" /> <input type="hidden"
+				name="name" value="shopwap" /> <input name="keyword"
+				id="search_word" class="WX_search_txt hd_search_txt_null"
+				placeholder="请输入商品名进行搜索！" ptag="37080.5.2" type="search"
+				AUTOCOMPLETE="off" />
+			<div class="WX_me">
+				<a href="javascript:;" id="submit" class="WX_search_btn_blue"></a>
+
+			</div>
+		</form>
+		<div class="search_bottom"></div>
+</div>
+			<div class="os_panel">
+                    <ul class="os_box_list" id="m2Con">
+              <!--@php  if(is_array($list)) { foreach($list as $item) { @-->	
+
+                      <li>
+							<div class="item" style="position:relative;">
+								<div class="img">
+									<a href="<!--@php echo mobile_url('detail', array('id' => $item['id']))@-->">
+										<img data-original="<!--@php echo $item['small']; @-->"	width="100%" class="lazy" src="images/loading.gif" ></a>
+								</div>
+								<div class="txt">
+									<!--@php echo $item['title'];@-->
+								</div>
+								<div class="price">
+									  <em><i>¥</i><!--@php echo $item['marketprice']; @--></em>
+									  <em class="del"><i>¥</i><!--@php echo $item['productprice']; @--></em>
+								</div> 
+								<div class="txt" style="font-size: 12px;">
+								 	<!--分类-->
+								 	<img src="__RESOURCE__/recouse/images/classify.png" style="width: 16px;height: 16px;"/>
+								 	<!--@php  echo getGoodsCategory($item['p1']);@-->
+								 	<img src="__RESOURCE__/recouse/images/comment.png" style="margin-left: 10px;width: 16px;height: 16px;"/>
+								 	<!--@php echo $item['count']?$item['count']:0;@-->
+								 </div>		
+							</div>
+						</li>		
+             <!--@php  } } @-->
+                   </ul>
+                  <!--@php echo $pager;@-->
+            </div>
+</div>
+</div>
+<!--@php include themePage('footer');@-->
+<script type="text/javascript">
+		function selectcity(cityid){
+            var url = '<!--@php  echo mobile_url('goodlist',array('op'=>'es'),true);@-->' +"&cityid=" + cityid;
+		    $.get(url, function(s){
+			   if ($('.city').text() != s)
+			   {
+			        location.replace(location);
+			   }
+		  	});
+		}
+	</script>
+</body>
+</html>

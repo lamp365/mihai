@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/bjdetail.css">
+    <link href="__RESOURCE__/recouse/css/reset.css" rel="stylesheet" type="text/css">
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+	<title>积分兑换记录</title>
+	<style type="text/css">
+		.integral{
+			max-width: 720px;
+			margin:0 auto;
+			margin-bottom: 20px;
+		}
+		.integral-tab-ul{
+			overflow: hidden;
+    		background: #52bfe6;
+		}
+		.integral-tab-ul li{
+		    float: left;
+		    width: 25%;
+		    text-align: center;
+		    height: 40px;
+		    line-height: 40px;
+		    color: #fff;
+		}
+
+		.integral-tab-ul li.li-active{
+    		background-color: #19a6db;
+		}
+		.tab-div .input-div{
+			width: 85%;
+			margin: 0 auto;
+		}
+		.tab-div .input-div input,select{
+		    border: 1px solid #efefef;
+		    width: 100%;
+		    height: 3em;
+		    line-height: 3em;
+		    margin-top: 1rem;
+		    border-radius: 4px;
+		    padding-left: 1rem;
+    		box-sizing: border-box;
+    		-webkit-tap-highlight-color: rgba(0,0,0,0);
+		}
+		.tab-div .activation{
+
+		    background-color: red;
+		    color: #fff;
+		    text-align: center;
+		    border-radius: 4px;
+		    line-height: 2;
+		    font-size: 1.5rem;
+		    margin-top: 1rem;
+		}
+		.prompt-msg{
+			margin-top: 1rem;
+			text-align: center;
+		    font-size: 1em;
+		    color: #ff5f5f;
+		}
+		.integral-shop .integral-number{
+		    line-height: 2em;
+		    width: 96%;
+		    margin: 0 auto;
+		    background-color: #fff;
+		    margin-bottom: 2%;
+		    margin-top: 2%;
+		    border-radius: 3px;
+		    padding-left: 15px;
+		    box-sizing: border-box;
+		}
+		.integral-shop .integral-number span{
+			color:#FF2D4B;
+		}
+		.integral-activation{
+			background-color: #fff;
+			padding-bottom: 20px;
+		}
+		.integral-shop-list li{
+		    float: left;
+		    width: 47%;
+		    background-color: #fff;
+		    padding: 10px;
+		    box-sizing: border-box;
+		    margin-bottom: 2%;
+		    border-radius: 3px;
+		}
+		.integral-shop-list li:nth-child(odd){
+			margin-left: 2%;
+			margin-right: 1%;
+		}
+		.integral-shop-list li:nth-child(even){
+			margin-left: 1%;
+			margin-right: 2%;
+		}
+		.integral-shop-list li img{
+			width: 80%;
+			display: block;
+			max-width: 80%;
+			margin:0 auto;
+		}
+		.integral-shop-list li .title{
+			overflow: hidden;
+		    text-overflow: ellipsis;
+		    display: -webkit-box;
+		    -webkit-line-clamp: 2;
+		    -webkit-box-orient: vertical;
+		    height: 42px;
+		    margin-top: 5px;
+		}
+		.active{
+			margin:0;
+		}
+		.progress-detail{
+			position: absolute;
+			font-size: 12px;
+			color: #333;
+			text-align: center;
+			width: 100%;
+			top: -1px;
+		}
+		.progress{
+			width: 100%;
+			margin-top: 5px;
+		}
+		.integral-shop-price{margin-top: 5px;}
+		.integral-shop-price span{
+			color:#FF2D4B;
+		}
+		.exchange{
+			background: #ec3333;
+		    color: #fff;
+		    text-align: center;
+		    line-height: 2;
+		    margin-top: 10px;
+		    border-radius: 5px;
+		}
+		#express{
+			width: 85%;
+		    height: 600px;
+		    border: none;
+		    margin-top: 1rem;
+		    margin-left: 7.5%;
+		    display: none;
+		}
+		.address{
+			width: 100%;
+			border:none;
+		}
+		.add-address{
+			background-color: #d9534f;
+		    border-color: #d43f3a;
+		    color: #fff;
+		    margin-left: 3%;
+		    margin-top: 2%;
+		    width: 150px;
+		    text-align: center;
+		    line-height: 35px;
+		    border-radius: 4px;
+		}
+		.integral-shop .infobox {
+		    border-radius: 3px;
+		    overflow: hidden;
+		    background: #fff;
+		    width: 96%;
+		    margin: 2% auto;
+		}
+		.integral-shop .infobox h2 {
+			line-height: 30px;
+		    padding: 0 15px;
+		    border-radius: 5px 5px 0px 0px;
+		    border-bottom: 1px solid #f5f5f5;
+		}
+		.integral-shop .infobox p{
+		    border-bottom: 1px solid #f3f3f3;
+		    padding: 10px 15px;
+		    line-height: 18px;
+		    font-size: 14px;
+		    background-size: 14px;
+		}
+		.infobox-phone{
+			float: right;
+		}
+		.btn{
+			display: inline-block;
+		    padding: 6px 12px;
+		    margin-bottom: 0;
+		    font-size: 14px;
+		    font-weight: normal;
+		    line-height: 1.428571429;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		    cursor: pointer;
+		    background-image: none;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		    -webkit-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    -o-user-select: none;
+		    user-select: none;
+		}
+		.record-list{
+			margin-top: 8px;
+		}
+		.record-list li{
+		    width: 96%;
+		    margin: 0 auto;
+		    background-color: #fff;
+		    margin-bottom: 8px;
+		    border-radius: 3px;
+		    padding: 0 10px 10px 10px;
+		    box-sizing: border-box;
+		}
+		.record-list .record-img{
+			float: left;
+			width: 20%;
+		}
+		.record-list .record-title{
+		    float: left;
+		    width: 60%;
+		    padding-left: 10px;
+		    box-sizing: border-box;
+		    max-height: 65px;
+		    overflow: hidden;
+		}
+		.record-list .record-state{
+			float: left;
+			width:20%;
+			text-align: right;
+		}
+		.record-list .record-img img{
+			width: 100%;
+			box-sizing: border-box;
+			display: block;
+			max-width: 100%;
+		}
+		.record-time{
+		    border-bottom: 1px dashed #e0e0e0;
+		    box-sizing: border-box;
+		    margin-bottom: 10px;
+		    height: 30px;
+		    line-height: 30px;
+		}
+		.consume-number{
+			float: right;
+		}
+		.record-time-span{
+			color: #999;
+		}
+		.state-success{
+			color: #5cb85c;
+		}
+		.state-fail{
+			color: #d9534f;
+		}
+		.state-info{
+			color: #5bc0de;
+		}
+		.no-record{
+			display: block;
+			width: 100%;
+			max-width: 100%;
+		}
+		.no-record-detail{
+			text-align: center;
+			margin-top: 15px;
+			color: #6d6d6d;
+    		font-size: 18px;
+		}
+		.input-div-title{
+			text-align: center;color: #333;font-size: 20px;padding-top: 13px;position: relative;
+		}
+		.input-div-title-div{
+			position: relative;    background-color: #fff;    width: 144px;    margin: 0 auto;    z-index: 3;
+		}
+		.input-div-title-line{
+			position: absolute;    top: 28px;    width: 100%;    border-bottom: 1px #efefef solid;    z-index: 1;
+		}
+		.top_header{
+			background: #fff;
+		}
+	</style>
+</head>
+<body>
+<!--@php if(empty($_GP['is_app'])){ @-->
+    <div class="top_header">
+        <div class="header_left">
+            <a href="javascript:;" class="return" style="margin-top: 4px;"><img src="__RESOURCE__/openshop/images/return.png"  height="18px"></a>
+        </div>
+        <div class="header_title">
+            积分兑换
+        </div>
+    </div>
+<!--@php } @-->
+	<div class="integral">
+
+		<div class="tab-div">
+			<ul class="record-list">
+				<!--@php if(empty($changeRecorder)){  @-->
+					<img class="no-record" src="__RESOURCE__/recouse/images/no_record_bg.png">
+					<div class="no-record-detail">暂无兑换记录</div>
+				<!--@php }else{  @-->
+				<!--@php foreach($changeRecorder as $one_corder){   @-->
+				<li class="clearfix">
+					<div class="record-time">
+						<span class="record-time-span"><!--@php echo date("Y-m-d H:i:s",$one_corder['createtime']);@--></span>
+						<span class="consume-number"><!--@php echo $one_corder['jifen_change'];@-->积分</span>
+					</div>
+					<div class="record-img">
+						<img src="<!--@php echo download_pic($one_corder['logo'],100,100,2);@-->">
+					</div>
+					<div class="record-title"><!--@php echo $one_corder['title'];@--></div>
+					<!--@php if($one_corder['status'] == 1){ @-->
+					<!--@php if(empty($one_corder['adress_id'])){  @-->
+					<div class="record-state state-info">兑换成功</div>
+					<!--@php }else{ @-->
+					<div class="record-state state-info">待审核中</div>
+					<!--@php } @-->
+
+					<!--@php }else if($one_corder['status'] == 2){ @-->
+					<div class="record-state state-success">审核成功</div>
+					<!--@php }else{ @-->
+					<div class="record-state state-fail">审核失败</div>
+					<!--@php } @-->
+				</li>
+				<!--@php } @-->
+				<!--@php }  @-->
+
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript" src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+	<script type="text/javascript">
+
+		$(function(){
+		//后退按钮
+		    $(".return").click(function(){
+		        var refer = document.referrer;//没有来源url
+		        if(refer.length == 0){
+		            var url = "index.php";
+		        }else{
+		            var url ="<!--@php echo  mobile_url('iclub',array('op'=>'list')); @-->"
+		        }
+		        window.location.href = url;
+		    });
+			$("img.lazy").lazyload({
+				placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+				threshold : 200, //控制灵敏度
+				effect : "fadeIn"
+			});
+		});
+
+	</script>
+
+	<!--@php if(empty($_GP['is_app'])){ @-->
+	<!--@php include themePage('footer');@-->
+	<!--@php } @-->
+</body>
+</html>

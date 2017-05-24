@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title><!--@php echo $title; @--></title>	
+		<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	</head>
+	
+	<style>
+	*{
+		margin: 0;
+		padding: 0;
+	}
+		.Tab,.norecord{
+			width: 100%;
+			overflow: hidden;
+		}
+		.norecord{text-align: center;margin-top: 100px;}
+		.Tab ul{
+			width: 100%;
+			overflow: hidden;		
+			border-bottom: solid 2px #333333;
+		}
+		.Tab ul li{
+			width: 160px;
+			height: 36px;
+			float: left;
+			text-align: center;
+			line-height: 36px;
+			font-size: 16px;
+			color: #333333;			
+			border: solid 1px gainsboro;
+			border-bottom: none;
+			border-right: none;
+			cursor: pointer;
+		}
+		.Tabclick{
+			background: #333333;
+			color:#fff !important;
+			border: none;
+		}
+		.records{
+			margin-top: 20px;
+			width: 100%;
+			overflow: hidden;
+			border-right: solid 1px gainsboro\9;
+			border-top: solid 1px gainsboro\9;
+			+border-right:none;
+			+border-top: none;
+		}
+		.records table{width: 100%;overflow: hidden;}
+		.records table tr{
+			width: 100%;
+			overflow: hidden;
+		}
+		.records table tr td{
+			height: 35px;
+			line-height: 35px;
+			padding-left:15px;
+			border-bottom: solid 1px gainsboro;
+		}
+		.records table tr td img{
+			vertical-align: middle;
+			width: 20px;
+			height: 20px;
+		}
+		table tr td a{
+			color: #E83729;
+		}
+		.income,.outcome{display: none;}
+	</style>
+	<body>
+		<!--@php  include page('vip_header');@-->	
+		<div class="new-fansindex-wrap">
+		<div class="viewport new-fansindex">
+			<div class="r-member">
+				<div class="crumbs">
+			         <span>当前位置：</span>
+			         <a style="color:#000;" href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a>
+			         <i style="margin-left: 5px;" class="icon-angle-right"></i>
+			         <i><!--@php echo $title; @--></i>
+			    </div>
+			    <div style="background:#fff;border:1px solid #e4e4e4;padding: 10px;">
+				<div class="personalTitle pT" style="width:825px;">
+					<!--@php echo $title; @-->
+					<div style="float: right">
+						<select class="sel_bill" onchange="select_bill(this)">
+							<option <!--@php if(empty($_GP['status'])){ echo "selected";} @--> value="0">全部账单</option>
+							<option <!--@php if($_GP['status']==1){  echo "selected"; } @--> value="1">进账单</option>
+							<option <!--@php if($_GP['status']==2){  echo "selected"; } @--> value="2">出账单</option>
+						</select>
+					</div>
+
+				</div>
+
+				<!--<div class="Tab" style="margin-top: 20px;">
+					<ul>
+						<li class="Tabclick" id="myproperty">&lt;!&ndash;@php echo $title; @&ndash;&gt;</li>
+						<li id="income">收入</li>
+						<li id="outcome" style="border-right:solid 1px gainsboro;">支出</li>
+					</ul>
+				</div>-->
+				
+				<!--点击我的余额出现-->
+				<div class="records myproperty">
+					<table>
+						<tr style="background:#F8F8F8;">
+							<td style="min-width: 180px;">详细事项</td>
+							<td style="min-width: 100px;">出入</td>
+							<td style="min-width: 150px;">时间</td>
+							<td>&nbsp;</td>
+						</tr>
+						<!--@php foreach ( $pay_list as $list ){   @-->
+						<tr>
+							<td><img src="<!--@php echo $list['pic']; @-->" /> <!--@php echo $list['remark']; @--></td>
+							<td><!--@php  echo $list['fee']; @--></td>
+							<td><!--@php echo date("Y-m-d H:i",$list['createtime']); @--></td>
+							<td>&nbsp;</td>
+						</tr>
+						<!--@php } @-->
+					</table>										
+				</div>
+
+				<!--@php echo $pager; @-->
+			</div>	
+</div>	
+			 <div class="l-member"> 
+				 <!--@php include themePage('leftmenu');@-->
+		    </div>
+		</div>	
+		</div>
+		<!--@php include themePage('footer');@-->
+	</body>
+	
+	<script>
+		$(".Tab ul li").click(function(){
+			$(this).addClass("Tabclick");
+			$(this).siblings().removeClass("Tabclick");
+		})
+
+		function select_bill(obj){
+			var status = $(obj).val();
+			var url = "<!--@php echo mobile_url('member',array('op'=>'list','type'=>$_GP['type']));@-->";
+			if(status){
+				url = url + "&status="+status;
+			}
+			window.location.href = url;
+		}
+		/*  上面的快去掉后，这里也没用了
+		$("#myproperty").click(function(){
+			$(".myproperty").show();
+			$(".income").hide();
+			$(".outcome").hide();
+		})
+		
+		$("#income").click(function(){
+			$(".income").show();
+			$(".myproperty").hide();
+			$(".outcome").hide();
+		})
+		
+		$("#outcome").click(function(){
+			$(".outcome").show();
+			$(".myproperty").hide();
+			$(".income").hide();
+		})*/
+	</script>
+</html>

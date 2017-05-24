@@ -1,0 +1,700 @@
+@charset "utf-8";
+body{
+	max-width: 640px;
+	margin: 0 auto;	
+	overflow: hidden;	
+}
+html,body{
+	height: 100%;
+	width: 100%;
+}
+.no_order{
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	position: absolute;
+	top: 45px;
+	left: 0;
+	
+}
+*{
+	margin: 0;
+	padding: 0;
+}
+.cart_title{
+	color: #333;
+	line-height: 45px;
+}
+.add_order{
+	text-align: center;
+	padding: 20px 0;
+	margin: 0 auto;
+	margin-top: 20px;
+	width: 90%;
+}
+.add_order img{
+	width: 70px;
+	height: 70px;
+}
+.add_order p{
+	margin: 15px 0;
+	color: #666;
+	font-size: 14px;
+}
+.add_order a{
+	display: inline-block;
+	border: 1px solid #FF2D4B;
+	border-radius: 20px;
+	padding: 5px 20px;
+	color: #FF2D4B;
+	text-decoration: none;
+	font-size: 14px;
+}
+.add_order a:visited{
+	color: #FF2D4B;
+}
+@media screen and (max-width:320px){
+	.add_order{
+		margin-top: 0;
+	}
+	.add_order p{		
+		font-size: 12px;
+	}
+	.add_order a{		
+		font-size: 12px;
+	}
+	.add_order img{
+		width: 60px;
+		height: 60px;
+	}
+}
+
+/*有订单*/
+.tm_logo_s{
+	width: 40px;
+	position: fixed;
+	top: 8px;right:10px;
+	z-index: 9001;
+}
+.has_order ul{
+	margin-top: 5px;
+	padding: 10px;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+.has_order ul li{
+	background: #fff;
+	border-radius: 5px;
+	overflow: hidden;
+	list-style: none;
+	margin-bottom: 10px;
+}
+.order_top{
+	margin: 15px 10px 0 10px;
+	padding-bottom: 15px;
+	box-sizing: border-box;
+	border-bottom: solid 1px #e2e2e2;
+	overflow: hidden;
+}
+.order_top .info{
+	float: left;
+	line-height: 20px;
+}
+.order_top .info p:first-child{
+	color: #666;
+	font-size:1em;
+}
+.order_top .info p:nth-child(2){
+	color: #999;
+	font-size: 0.875em;
+}
+.order_top .info p:nth-child(3){
+	color: #999;
+	font-size: 0.875em;
+}
+.order_top .from_where{
+	float: right;
+	color: #e2e2e2;
+	line-height: 30px;
+	font-size:1em;
+}
+.order_top .state{
+	font-size: 0.8em;
+	text-align: right;
+}
+.order_top .applying{color: #F6A623;}
+.order_top .applyfail{color: #FF2D4B;}
+.order_top .applysucc{color: #999;}
+.order_bottom{
+	padding: 10px;
+	box-sizing: border-box;
+	overflow: hidden;
+	color: #999;
+	font-size: 0.875em;
+	line-height: 25px;
+}
+.order_bottom span{
+	float: right;
+	border: 1px solid #999;
+	border-radius: 5px;
+	color: #999;
+	padding: 2px 5px;
+	height: 25px;
+	box-sizing: border-box;
+	line-height: 19px;
+}
+/*历史记录*/
+.no_histroy{
+	position: fixed;
+	left: 50%;
+	top: 30%;
+	margin-left: -100px;
+	text-align: center;
+}
+.no_histroy img{
+	width: 200px;	
+}
+@media screen and (max-width:320px){
+	.no_histroy{
+	position: fixed;
+	left: 50%;
+	top: 30%;
+	margin-left: -80px;
+	text-align: center;
+  }	
+	.no_histroy img{
+		width: 160px;	
+  }
+}
+
+.has_histroy .order_bottom span{
+	float: left;	
+	color: #999;	
+	border:none;
+	padding: 0;
+	margin-right: 20px;
+}
+.has_histroy .order_bottom span b{
+	color:#2A2A2A;
+	font-weight: normal;
+}
+/*添加天猫订单*/
+.add_tm_order{
+	padding: 20px 10px;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	box-sizing: border-box;
+	position: relative;
+}
+.add_tm_order p{
+	color: #F6A623;
+	font-size: 12px;
+}
+.add_tm_order input{
+	border: 1px solid #CCCCCC;
+	border-radius: 20px;
+	text-align: center;
+	width: 100%;
+	padding: 10px 0;
+	margin-top: 10px;
+	font-size: 14px;
+	outline: none;
+	-webkit-appearance: none; 
+}
+.add_tm_order #add_order{
+	background: #FF2D4B;
+	color:#fff;
+	border: none;
+	margin-top: 20px;
+}
+.add_tm_order span{
+	position: absolute;
+	top:104px;
+	right: 23px;
+	color: #007AFF;
+	font-size: 12px;
+}
+@media screen and (max-width:580px){body{font-size:20px;}}
+@media screen and (max-width:420px){body{font-size:18px;}}
+@media screen and (max-width:380px){body{font-size:16px;}}
+@media screen and (max-width:320px){body{font-size:14px;}}
+
+/*分享赚钱未添加订单*/
+.top_header{
+	position: relative;
+	background: none;
+	border:none;
+	color: #fff;
+}
+.top_header .head_bg{
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.share-wrap{
+	position: relative;
+	width: 100%;
+}
+.share-wrap img{
+	width: 100%;
+	max-width: 100%;
+	display: block;
+}
+
+.add-order-url{
+    width: 24%;
+    position: absolute;
+    right: 4%;
+    height: 50%;
+    top: 12%;
+}
+.share-now{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+.share-wrap .return{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15%;
+    height: 100%;
+    margin: 0;
+}
+@media screen and (max-width: 376px){
+	.share-area-last{
+		height: 86px;
+	}
+}
+@media screen and (min-width: 376px) and (max-width: 450px){
+	.share-area-last{
+		height: 100px;
+	}
+}
+@media screen and (min-width: 451px) and (max-width: 520px){
+	.share-area-last{
+		height: 120px;
+	}
+}
+@media screen and (min-width: 521px) and (max-width: 600px){
+	.share-area-last{
+		height: 130px;
+	}
+}
+@media screen and (min-width: 601px) and (max-width: 720px){
+	.share-area-last{
+		height: 150px;
+	}
+}
+@media screen and (min-width: 721px){
+	.share-area-last{
+		height: 180px;
+	}
+}
+.look-detail{
+	position: absolute;
+    top: 0;
+    right: 3%;
+    width: 17%;
+    height: 78%;
+}
+.my-profit,.my-ranking,.other-ranking,.my-freepay{
+	background: url(../images/share_make_money_list_bg.jpg)repeat;
+	width: 100%;
+	background-size: contain;
+}
+.my-profit ul,.my-ranking ul,.my-freepay ul{
+	width: 90%;
+    margin: 0 auto;
+}
+.other-ranking ul{
+	width: 86%;
+    margin: 0 auto;
+}
+.my-profit ul li,.my-ranking ul li,.my-freepay ul li{
+	float: left;
+	width: 33%;
+	text-align: center;
+}
+.my-profit .price,.my-ranking .price{
+	color: #f35833;
+	font-size: 20px;
+}
+.other-ranking .price{
+	color: #f35833;
+}
+.other-ranking .price span{
+	color: #535354;
+}
+.my-profit li div:first-child{
+	font-size: 14px;
+	color: #535354;
+}
+.my-ranking li div:last-child{
+	font-size: 14px;
+	color: #535354;
+	overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.my-profit .price span:last-child,.my-ranking .price span:last-child{
+	color: #848587;
+	font-size: 12px;
+}
+.other-ranking .number{
+    float: left;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    background-color: #f9dc96;
+    color: #fff;
+    text-align: center;
+    line-height: 25px;
+    margin-top: 18px;
+}
+.other-ranking .userface{
+	float: left;
+    width: 45px;
+    height: 45px;
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+.other-ranking .username{
+	float: left;
+	max-width: 48%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 16px;
+}
+.other-ranking .price{
+	float: right;
+	margin:0;
+	padding:0;
+}
+.other-ranking .userface img{
+	width: 100%;
+	border-radius: 100px;
+}
+.other-ranking{
+	padding-top: 20px;
+}
+.other-ranking li{
+	height: 60px;
+	line-height: 60px;
+	border-bottom: 1px solid #e5e5e4;
+}
+.other-ranking li:first-child{
+	border-top: 1px solid #e5e5e4;
+}
+.other-ranking li:last-child{
+	border-bottom: none;
+	border-radius: 0 0 4px 4px;
+}
+.order-number .order-number-1{
+    float: left;
+    background: #f7daa0;
+    color: #fff;
+    border-radius: 100px;
+    padding: 2% 4%;
+    font-size: 12px;
+}
+.order-number .order-number-2{
+    float: left;
+    color: #b87500;
+    padding: 2% 0;
+    text-align: center;
+    width: 66%;
+}
+.order-number{
+    overflow: hidden;
+    text-align: center;
+    width: 73%;
+    margin: 0 auto;
+    font-size: 12px;
+    border: 1px solid #f2eccb;
+    border-radius: 100px;
+}
+.people-number{
+	color: #9680F3;
+	background: url(../images/share_circle_1.jpg) no-repeat center;
+	background-size: cover;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    margin: 15px auto;
+    font-size: 16px;
+}
+.freepay-price{
+	color: #FF8352;
+	background: url(../images/share_circle_2.jpg) no-repeat center;
+	background-size: cover;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    margin: 10px auto;
+    font-size: 18px;
+}
+.order-price{
+	color: #37B5BF;
+	background: url(../images/share_circle_3.jpg) no-repeat center;
+	background-size: cover;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    margin: 15px auto;
+    font-size: 14px;
+}
+.my-freepay{
+	padding-bottom: 20px;
+}
+.look-history{
+	position: absolute;
+	top: 14%;
+    right: 0;
+    width: 21%;
+    height: 82%;
+}
+.add-share-btn{
+    position: absolute;
+    width: 60%;
+    height: 43%;
+    top: -4%;
+    left: 20%;
+}
+.wx-shade-div{
+	display: none;
+	background-color: rgba(0,0,0,0.5);
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 9;
+	top: 0;
+	left: 0;
+}
+.wap-shade-div,.share-rule-div,.share-free-modal{
+	display: none;
+	background-color: rgba(0,0,0,0.5);
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 9;
+	top: 0;
+	left: 0;
+}
+.shareBox-area{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    top: 35%;
+    color: #fff;
+}
+.share-title li{
+    float: left;
+    width: 88px;
+    text-align: center;
+    color: #55f;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.share-title{
+	overflow: hidden;
+}
+.share-profit-div{
+	width: 85%;
+    margin: 0 auto;
+    padding: 3% 0;
+}
+.share-profit-left{
+	float: left;
+    width: 20%;
+    color: #F35833;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 5px;
+}
+.share-profit-right{
+	float: left;
+    width: 80%;
+    color: #333;
+    font-size: 12px;
+}
+.share-profit-div{
+	border-bottom:1px solid #F2ECCC;
+}
+.share-profit-div:last-child{
+	border:none;
+}
+.share-wrap .before-look-history{
+	position: absolute;
+    right: 6%;
+    top: -13%;
+    font-size: 14px;
+    color: #6099d8;
+}
+.share-wrap .active-rule{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    margin-top: -15px;
+    font-size: 14px;
+}
+.share-rule-div .rule-div,.share-free-modal .rule-div{
+    position: absolute;
+    color: #999;
+    width: 300px;
+    height: 354px;
+    font-size: 14px;
+    background-color: #fff;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    margin: -177px 0 0 -150px;
+}
+.share-rule-div .rule-div ul,.share-free-modal .rule-div ul{
+	padding: 20px;
+}
+.share-rule-div .rule-div .rule-div-img,.share-free-modal .rule-div .rule-div-img{
+	position: absolute;
+    top: -25px;
+    width: 50px;
+    left: 125px;
+}
+.share-rule-div .rule-div-div,.share-free-modal .rule-div-div{
+	text-align: center;
+    margin-top: 39px;
+    position: relative;
+}
+.share-rule-div .rule-line,.share-free-modal .rule-line{
+    position: absolute;
+    top: 10px;
+    width: 200px;
+    height: 1px;
+    background-color: #f2f2f2;
+    left: 50px;
+}
+.rule-div-title{
+	position: relative;
+	width: 100px;
+	margin:0 auto;
+	background: #fff;
+    z-index: 3;
+}
+.share-rule-div .rule-colse{
+	position: absolute;
+	bottom: -65px;
+	width: 30px;
+	left: 135px;
+}
+
+.share-free-modal .rule-div{
+	width: 250px;
+	margin: -177px 0 0 -125px;
+}
+.share-free-modal .rule-div .rule-div-img{
+	left: 100px;
+}
+.share-free-modal .rule-div-title{
+	width: 130px;
+}
+.share-free-modal .rule-line{
+	left: 25px;
+}
+.share-free-modal-price{
+	padding: 15px;
+	position: relative;
+}
+.share-free-price{
+	position: absolute;
+    top: 53px;
+    left: 87px;
+    width: 76px;
+    text-align: center;
+}
+.share-free-price-1 .free-price{
+	color: #fff;
+	font-size: 20px;
+}
+.share-free-price-1 span{
+	color: #fff;
+	font-size: 12px;
+}
+.share-free-price-2{
+	color: #ED8825;
+	font-size: 12px;
+}
+.share-free-sure img{
+	width: 170px;
+	margin:0 auto;
+}
+.share-free-sure{
+	position: relative;
+}
+.free-sure-btn{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 35px;
+}
+.add-order-area-detail{
+	position: absolute;    bottom: 3%;    font-size: 12px;    color: #C79320;    width: 90%;    left: 5%;
+}
+@media screen and (max-width: 374px) {
+	.add-order-area-detail{
+		width: 94%;    
+		left: 2%;
+	}
+}
+.my-freepay-2-div{
+	font-size:14px; 
+}
+.make_money_04_div{
+color: #fe8c16;
+    position: absolute;
+    bottom: 30%;
+    text-align: center;
+    width: 100%;
+    left: 0;
+    font-size: 12px;
+}
+.make_money_051{
+position: absolute;
+    top: 17%;
+    width: 87%;
+    left:7.5%;
+}
+.make_money_051 a{
+    color: #f35833;
+    border: 1px solid #f35833;
+    padding: 1% 4%;
+    border-radius: 50px;
+    margin-left: 1%;
+    font-size: 12px;
+}
+.make_money_052{
+    position: absolute;
+    bottom: 16%;
+    width: 87%;
+    left: 8%;
+    color: #666;
+    font-size: 12px;
+}
+@media screen and (max-width: 374px) {
+	.make_money_052{
+	    bottom: 3%;
+	    width: 75%;
+	}
+}

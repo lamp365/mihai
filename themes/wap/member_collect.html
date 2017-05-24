@@ -1,0 +1,339 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>我的购物习惯</title>
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/member_collect.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+    <link type="text/css" rel="stylesheet" href="<!--@php echo RESOURCE_ROOT;@-->addons/common/fontawesome3/css/font-awesome.min.css" />
+    <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+</head>
+
+<body class="shopping_habits">
+    <div class="top_header">
+        <div class="header_left">
+            <a href="javascript:;" class="return" style="margin-top: 4px;"><img src="__RESOURCE__/openshop/images/return.png"  height="18px"></a>
+        </div>
+        <div class="header_title">
+            我的购物习惯
+        </div>
+    </div>
+    <!-- 第一步 性别 年代 -->
+    <div class="shopping-viewport step-1">
+        <img src="__RESOURCE__/recouse/images/shopping_habits_01.jpg">
+        <!-- 性别 -->
+        <div class="sex-title">您的性别?</div>
+        <div class="sex-img clearfix">
+            <div class="sex-left <!--@php if($hobby['sex'] == 1){  echo 'sex-checked'; } @-->" onclick="sexFun(this)" sex="1">
+                <img src="__RESOURCE__/recouse/images/shopping_habits_02.jpg">
+            </div>
+            <div class="sex-right <!--@php if($hobby['sex'] == 2){  echo 'sex-checked'; } @-->" onclick="sexFun(this)" sex="2">
+                <img src="__RESOURCE__/recouse/images/shopping_habits_03.jpg">
+            </div>
+            <input type="hidden" name="sex" class="sex-hidden" value="<!--@php echo $hobby['sex']; @-->">
+            <input type="hidden" name="age" class="age-hidden" value="<!--@php echo $hobby['age']; @-->">
+        </div>
+        <!-- 年代 -->
+        <div class="age-title">您的出生年代？</div>
+        <div class="age-img">
+            <div class="age-1 clearfix">
+                <div class="choose_age img-check-div age-90" age="90">
+                    <img onclick="ageFun(this)" checksrc="__RESOURCE__/recouse/images/shopping_habits_90_checked.png" nochecksrc="__RESOURCE__/recouse/images/shopping_habits_90.png" src="__RESOURCE__/recouse/images/shopping_habits_90.png">
+                </div>
+                <div class="choose_age age-80" age="80">
+                    <img onclick="ageFun(this)" checksrc="__RESOURCE__/recouse/images/shopping_habits_80_checked.png" nochecksrc="__RESOURCE__/recouse/images/shopping_habits_80.png" src="__RESOURCE__/recouse/images/shopping_habits_80.png">
+                </div>
+                <div class="choose_age age-85" age="85">
+                    <img onclick="ageFun(this)" checksrc="__RESOURCE__/recouse/images/shopping_habits_85_checked.png" nochecksrc="__RESOURCE__/recouse/images/shopping_habits_85.png" src="__RESOURCE__/recouse/images/shopping_habits_85.png">
+                </div>
+            </div>
+            <div class="age-2 clearfix">
+                <div class="choose_age age-75" age="75">
+                    <img onclick="ageFun(this)" checksrc="__RESOURCE__/recouse/images/shopping_habits_75_checked.png" nochecksrc="__RESOURCE__/recouse/images/shopping_habits_75.png" src="__RESOURCE__/recouse/images/shopping_habits_75.png">
+                </div>
+                <div class="choose_age age-none" age="none">
+                    <img onclick="ageFun(this)" checksrc="__RESOURCE__/recouse/images/shopping_habits_none_checked.png" nochecksrc="__RESOURCE__/recouse/images/shopping_habits_none.png" src="__RESOURCE__/recouse/images/shopping_habits_none.png">
+                </div>
+                <div class="choose_age age-70" age="70">
+                    <img onclick="ageFun(this)" checksrc="__RESOURCE__/recouse/images/shopping_habits_70_checked.png" nochecksrc="__RESOURCE__/recouse/images/shopping_habits_70.png" src="__RESOURCE__/recouse/images/shopping_habits_70.png">
+                </div>
+            </div>
+        </div>
+        <div class="next-step next-step-1">
+            <div class="next-step-btn next-step-disabled" onclick="nextStep1()">下一步</div>
+        </div>
+    </div>
+    <!-- 第3步  给谁买-->
+    <div class="shopping-viewport step-2">
+    <!--@php $to_buy = array(); if(!empty($hobby['tobuy'])){ $to_buy = explode(',',$hobby['tobuy']); } @-->
+    <input type="hidden" name="tobuy" class="toBuy-hidden" value="<!--@php echo $hobby['tobuy']; @-->">
+        <div class="sex-title">
+            <p>您会帮哪些人买？</p>
+            <p class="sex-title-1">(可多选)</p>
+        </div>
+        <div class="buy-to-who">
+            <div onclick="whoFun(this)" data-value="me" class="who-div who-div-1 <!--@php if(in_array('me',$to_buy)){ echo 'who-div-check'; } @-->">自己</div>
+            <div class="clearfix">
+                <div onclick="whoFun(this)" data-value="partner" class="who-div who-div-2 <!--@php if(in_array('partner',$to_buy)){ echo 'who-div-check'; } @-->">伴侣</div>
+                <div onclick="whoFun(this)" data-value="friend" class="who-div who-div-3 <!--@php if(in_array('friend',$to_buy)){ echo 'who-div-check'; } @-->">朋友</div>
+            </div>
+            <div onclick="whoFun(this)" data-value="elder" class="who-div who-div-4 <!--@php if(in_array('elder',$to_buy)){ echo 'who-div-check'; } @-->">长辈</div>
+        </div>
+        <div class="next-step next-step-2">
+            <div class="next-step-btn next-step-disabled" onclick="nextStep2()">下一步</div>
+        </div>
+    </div>
+    <!-- 第4步  重视的内容-->
+    <div class="shopping-viewport step-3">
+    <!--@php $to_fun = array(); if(!empty($hobby['fun'])){ $to_fun = explode(',',$hobby['fun']); } @-->
+    <input type="hidden" name="fun" class="importance-hidden" value="<!--@php echo $hobby['fun']; @-->">
+        <div class="sex-title">
+            <p>你购买保健品最重视？</p>
+            <p class="sex-title-1">(可多选)</p>
+        </div>
+        <div class="step-3-div">
+            <div onclick="whoFun(this)" data-value="price" class="importance <!--@php if(in_array('price',$to_fun)){ echo 'who-div-check'; } @-->">价格</div>
+            <div onclick="whoFun(this)" data-value="effect" class="importance <!--@php if(in_array('effect',$to_fun)){ echo 'who-div-check'; } @-->">功能</div>
+            <div onclick="whoFun(this)" data-value="brand" class="importance <!--@php if(in_array('brand',$to_fun)){ echo 'who-div-check'; } @-->">品牌</div>
+            <div onclick="whoFun(this)" data-value="publicity" class="importance <!--@php if(in_array('publicity',$to_fun)){ echo 'who-div-check'; } @-->">知名度</div>
+        </div>
+        <div class="next-step next-step-3">
+            <div class="next-step-btn next-step-disabled" onclick="nextStep3()">下一步</div>
+        </div>
+    </div>
+    <!-- 第5步  感兴趣的商品 -->
+    <div class="shopping-viewport step-4">
+<input type="hidden" name="category" class="product-1" value="<!--@php echo $hobby['category']; @-->">
+        <div class="sex-title">
+            <p>您对哪些商品感兴趣？</p>
+            <p class="sex-title-1">(可多选)</p>
+        </div>
+        <div class="step-4-div">
+            <ul class="clearfix">
+                <!--@php foreach($cat_data as $cat){ $category = array(); if(!empty($hobby['category'])){ $category = explode(',',$hobby['category']); } @-->
+                <!--@php $checked = ''; if(in_array($cat['id'],$category)){ $checked = ' who-div-check'; }  @-->
+                <li onclick="whoFun(this)" data-value="<!--@php echo $cat['id']; @-->" class="<!--@php echo $checked;@-->">
+                    <img src="<!--@php echo $cat['thumb']; @-->">
+                    <div class="produc-title"><!--@php echo $cat['name']; @--></div>
+                </li>
+                <!--@php } @-->
+            </ul>
+        </div>
+        <div class="next-step next-step-4">
+            <div class="next-step-btn next-step-disabled" onclick="nextStep4()">完成</div>
+        </div>
+    </div>
+
+    <div style="height:60px;"><!-- 这个div占位用 --></div>
+</body>
+
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/jQueryRotate.2.2.js"></script>
+<script>
+var p_url = "<!--@php echo mobile_url('member',array('op'=>'hobby')); @-->";
+function age_is_choose(age){
+    if(age){
+        $(".age-img .choose_age").each(function(){
+            if($(this).attr('age') == age){
+                $(this).addClass('img-check');
+                var checksrc = $(this).find("img").attr('checksrc');
+                $(this).find("img").attr('src',checksrc);
+            }
+        })
+    }
+}
+$(function(){
+    //后退按钮
+    $(".return").click(function(){
+        var refer = document.referrer;//没有来源url
+        if(refer.length == 0){
+            var url = "index.php";
+            window.location.href = url;
+        }else{
+            window.history.back(-1);
+        }
+    });
+
+    age_is_choose(<!--@php  echo $hobby['age'];@-->);
+
+    nextStepState();
+
+    function whoDivHeight(){
+        var height = parseInt($(window).height());
+        var divHeight = parseFloat(height*0.12).toFixed(2)+'px';
+        $(".buy-to-who .who-div").css({'height':divHeight,'line-height':divHeight});
+        $(".step-3-div .importance").css({'height':divHeight,'line-height':divHeight});
+    }
+    $(window).resize(function(){
+        whoDivHeight();
+    });
+    whoDivHeight();
+})
+
+//选择性别
+function sexFun(thisObj){
+    $(thisObj).siblings("div").removeClass("sex-checked");
+    $(thisObj).addClass("sex-checked");
+    $(".sex-hidden").val($(thisObj).attr("sex"));
+    nextStepState();
+}
+//出生年代的选择
+function ageFun(thisObj){
+    var this_img = $(thisObj);
+    var check_src = this_img.attr("checksrc");
+    var no_check_src = this_img.attr("nochecksrc");
+    var other_img_src = "";
+    $(".age-img img").each(function(index,ele){
+        if( $(ele).parent("div").hasClass("img-check") ){
+            $(ele).parent("div").removeClass("img-check");
+            other_img_src = $(ele).attr("nochecksrc");
+            $(ele).attr("src",other_img_src);
+        }
+    })
+    if( this_img.parent("div").hasClass("img-check") ){
+        this_img.parent("div").removeClass("img-check");
+        this_img.attr("src",no_check_src);
+    }else{
+        this_img.parent("div").addClass("img-check");
+        this_img.attr("src",check_src);
+    }
+    $(".age-hidden").val(this_img.parent("div").attr("age"));
+    nextStepState();
+}
+//下一步按钮的状态
+function nextStepState(){
+    if( $(".sex-checked").length > 0 && $(".img-check").length > 0 ){
+        $(".next-step-1 .next-step-btn").removeClass("next-step-disabled");
+    }
+    if( $(".buy-to-who .who-div-check").length > 0 ){
+        $(".next-step-2 .next-step-btn").removeClass("next-step-disabled");
+    }else{
+        $(".next-step-2 .next-step-btn").addClass("next-step-disabled");
+    }
+    if( $(".step-3-div .who-div-check").length > 0 ){
+        $(".next-step-3 .next-step-btn").removeClass("next-step-disabled");
+    }else{
+        $(".next-step-3 .next-step-btn").addClass("next-step-disabled");
+    }
+    if( $(".step-4-div .who-div-check").length > 0 ){
+        $(".next-step-4 .next-step-btn").removeClass("next-step-disabled");
+    }else{
+        $(".next-step-4 .next-step-btn").addClass("next-step-disabled");
+    }
+}
+
+//买给谁
+function whoFun(thisObj){
+    var this_Obj = $(thisObj);
+    if ( this_Obj.hasClass("who-div-check") ){
+        this_Obj.removeClass("who-div-check");
+    }else{
+        this_Obj.addClass("who-div-check");
+    }
+    nextStepState();
+}
+checkVal(".buy-to-who .who-div",".toBuy-hidden");
+checkVal(".step-3-div .importance",".importance-hidden");
+checkVal(".step-4-div li",".product-1");
+
+function checkVal(checkClass,hiddenClass){
+    $(checkClass).on("click",function(){
+        var hidden_array = [];
+        if( $(hiddenClass).val() != "" ){
+            hidden_array = $(hiddenClass).val().split(",");
+        }
+        var tobuy_val = $(this).attr("data-value");
+        var arrar_index = 0;
+        if( $(this).hasClass("who-div-check") ){
+            arrar_index = $.inArray(tobuy_val,hidden_array);
+            if( arrar_index==-1 ){
+                hidden_array.push(tobuy_val);
+                $(hiddenClass).val(hidden_array);
+            }
+        }else{
+            arrar_index = $.inArray(tobuy_val,hidden_array);
+            hidden_array.splice(arrar_index,1);
+            $(hiddenClass).val(hidden_array);
+        }
+    });
+}
+//第1步
+function nextStep1(){
+
+    if ( $(".next-step-1 .next-step-btn").hasClass("next-step-disabled") ){
+        return;
+    }else{
+        //habits_object 是个对象 包含年龄和性别
+        var age = $(".age-hidden").val();
+        var sex = $(".sex-hidden").val();
+        $.post(p_url,{index:1,age:age,'sex':sex},function(data){
+
+        },'json');
+        $(".step-1").hide();
+        $(".step-2").show();
+    }
+}
+//第2步
+function nextStep2(){
+    //tobuy   index代表第几步 , 初始化服务端传过来的index代表的步骤要减一
+
+    var who_array = [];
+    if ( $(".next-step-2 .next-step-btn").hasClass("next-step-disabled") ){
+        return;
+    }else{
+        who_array = $(".toBuy-hidden").val();
+
+        $.post(p_url,{index:2,tobuy:who_array},function(data){
+
+        },'json');
+        $(".step-1").hide();
+        $(".step-2").hide();
+        $(".step-3").show();
+    }
+}
+
+//第3步
+function nextStep3(){
+
+    var importance_array = [];
+    if ( $(".next-step-3 .next-step-btn").hasClass("next-step-disabled") ){
+        return;
+    }else{
+        importance_array = $(".importance-hidden").val();
+
+        $.post(p_url,{index:3,fun:importance_array},function(data){
+
+        },'json');
+        $(".step-1").hide();
+        $(".step-2").hide();
+        $(".step-3").hide();
+        $(".step-4").show();
+    }
+}
+
+//第4步
+function nextStep4(){
+
+    var product_array = [];
+    if ( $(".next-step-4 .next-step-btn").hasClass("next-step-disabled") ){
+        return;
+    }else{
+        product_array = $(".product-1").val();
+
+        $.post(p_url,{index:4,category:product_array},function(data){
+                alert(data.message,'','',{type: 'success'});
+                setTimeout(function(){
+                    window.location.href = "<!--@php  echo mobile_url('fansindex',array('name'=>'shopwap'))@-->";
+                },2000);
+        },'json');
+
+    }
+}
+</script>
+</html>

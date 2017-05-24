@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>我的特权</title>
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/iclub.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+    <link type="text/css" rel="stylesheet" href="<!--@php echo RESOURCE_ROOT;@-->addons/common/fontawesome3/css/font-awesome.min.css" />
+    <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+</head>
+
+<body class="task-list-wrap " style="min-width: 320px;max-width: 640px;margin:0 auto;">
+    <div class="top_header">
+        <div class="header_left">
+            <a href="javascript:;" class="return" style="margin-top: 4px;"><img src="__RESOURCE__/openshop/images/return.png"  height="18px"></a>
+        </div>
+        <div class="header_title">
+            我的特权
+        </div>
+    </div>
+    <!-- 已经拥有的特权 -->
+    <div class="has-privilege">
+        <p class="title">亲爱的<span>渣渣会员</span>，您目前享有以下特权</p>
+        <ul class="has-privilege-list">
+            <li class="clearfix good-content">
+                <img class="has-privilege-img" src="__RESOURCE__/recouse/images/privilege01.jpg">
+                <div class="has-privilege-detail">
+                    <div class="has-title">购物送积分</div>
+                    <div class="has-detail has-detail-overflow">会员购物可获得相应的积分，积分可在购物结算时直接抵现。</div>
+                </div>
+                <div class="has-privilege-icon">
+                    <i class="icon-angle-down"></i>
+                </div>
+            </li>
+            <li class="clearfix good-content">
+                <img class="has-privilege-img" src="__RESOURCE__/recouse/images/privilege02.jpg">
+                <div class="has-privilege-detail">
+                    <div class="has-title">购物送积分</div>
+                    <div class="has-detail has-detail-overflow">会员购物可获得相应的积分，积分可在购物结算时直接抵现。</div>
+                </div>
+                <div class="has-privilege-icon">
+                    <i class="icon-angle-down"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- 即将获得的特权 -->
+    <div class="has-privilege no-privilege">
+        <p class="title">即将获得的特权</p>
+        <ul class="has-privilege-list">
+            <li class="clearfix good-content">
+            <!-- 未获得的特权图标用灰色的，目前暂时先用已获得的图标 -->
+                <img class="has-privilege-img" src="__RESOURCE__/recouse/images/privilege01.jpg">
+                <div class="has-privilege-detail">
+                    <div class="has-title">购物送积分</div>
+                    <div class="has-detail has-detail-overflow">会员购物可获得相应的积分，积分可在购物结算时直接抵现。</div>
+                </div>
+                <div class="has-privilege-icon">
+                    <i class="icon-angle-down"></i>
+                </div>
+            </li>
+            <li class="clearfix good-content">
+                <img class="has-privilege-img" src="__RESOURCE__/recouse/images/privilege02.jpg">
+                <div class="has-privilege-detail">
+                    <div class="has-title">购物送积分</div>
+                    <div class="has-detail has-detail-overflow">会员购物可获得相应的积分，积分可在购物结算时直接抵现。</div>
+                </div>
+                <div class="has-privilege-icon">
+                    <i class="icon-angle-down"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--@php include themePage('footer');@-->
+</body>
+
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+<script>
+$(function(){
+    //后退按钮
+    $(".return").click(function(){
+        var refer = document.referrer;//没有来源url
+        if(refer.length == 0){
+            var url = "index.php";
+            window.location.href = url;
+        }else{
+            window.history.back(-1);
+        }
+    });
+    $(".has-privilege-icon").on("click",function(){
+        if( $(this).find("i").hasClass("icon-angle-down") ){
+            $(this).find("i").addClass("icon-angle-up").removeClass("icon-angle-down");
+            $(this).siblings(".has-privilege-detail").find(".has-detail").removeClass("has-detail-overflow");
+        }else{
+            $(this).find("i").removeClass("icon-angle-up").addClass("icon-angle-down");
+            $(this).siblings(".has-privilege-detail").find(".has-detail").addClass("has-detail-overflow");
+        }
+    })
+})
+</script>
+</html>

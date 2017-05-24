@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>觅海掌门人下载</title>
+<meta name='apple-itunes-app' content='app-id=1166873925'>
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+</head>
+<style type="text/css">
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .viewport{
+        position: relative;
+        max-width: 1080px;
+        margin: 0 auto;
+    }
+    .viewport img{
+        width: 100%;
+        display: block;
+    }
+    .Ios-load{
+        position: absolute;
+        top: 84%;
+        width: 48%;
+        height: 10%;
+        left: 26%;
+    }
+
+    #focus{
+        position: absolute;
+        top: 26%;
+        left: 12%;
+        width: 76%;
+        height: 51%;
+    }
+    .focus .bd li img{
+        background:none;
+    }
+</style>
+<body>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/appload01.jpg">
+        <div id="focus" class="focus">
+            <div class="hd">
+                <ul>
+                </ul>
+            </div>
+            <div class="bd">
+                <ul>
+                    <li>
+                        <img src="__RESOURCE__/recouse/images/appcont1.png">
+                    </li>
+                    <li>
+                        <img src="__RESOURCE__/recouse/images/appcont2.png">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <a href="javascript:;" class="Ios-load" id="openIosApp"></a>
+
+    </div>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/appload02.jpg">
+    </div>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/appload03.jpg">
+    </div>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/appload04.jpg">
+    </div>
+    <div class="viewport">
+        <img src="__RESOURCE__/recouse/images/appload05.jpg">
+        <a href="javascript:;" class="Ios-load" id="openIosApp" style="top: 32%;height: 28%;"></a>
+    </div>
+</body>
+</html>
+<script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
+<script src="__RESOURCE__/recouse/js/appwakeup.js"></script>
+<script type="text/javascript">
+$(function(){
+    $(".Ios-load").on("click",function(){
+        appDownLoad("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>");
+    });
+    TouchSlide({
+        slideCell : "#focus",
+        titCell : ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+        mainCell : ".bd ul",
+        delayTime : 600,
+        interTime : 4000,
+        effect : "leftLoop",
+        autoPlay : true,//自动播放
+        autoPage : true, //自动分页
+        switchLoad : "_src" //切换加载，真实图片路径为"_src" 
+    });
+})
+</script>

@@ -1,0 +1,1199 @@
+<!--@php  include themePage('purchase_header');@-->
+<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+<div class="wrap">
+    <div class="crumbs">
+		<span>当前位置：</span>
+		<a href="<?php  echo mobile_url('purchase_order',array('name'=>'shopwap')); ?>">商品中心</a>	
+	</div>
+    <!--@php if ( is_array($news) && !empty($news) ){ @-->
+	 <!--@php foreach($news as $news_value){ @-->
+	<div class="notice-message" style="margin-top:10px;">
+		<span><img style="width: 20px;" src="__RESOURCE__/recouse/images/notice.png"></span>
+		<span><!--@php echo $news_value; @--></span>	
+	</div>
+	<!--@php } @-->
+	<!--@php } @-->
+	<!--@php if ( is_array($best_purchase) && !empty($best_purchase) ){ @-->
+	<h4 class="historyLabal" style="margin-top: 20px;">
+		     	<b>全网最热门的商品推荐</b>
+    </h4>
+	<div class="browseHistory" style="margin-top:15px;">
+        <ul id="m2Con" class="os_box_list" style="border-top:1px solid #ededed;border-bottom:1px solid #ededed;">
+              <!--@php  foreach ( $best_purchase as $best_purchase_value ){ @-->
+                      <li class="purchase_list" style="width:390px;height:270px;overflow:hidden;border:none;">			  
+							 <div class="item" style="width:50%;float:left;">
+	                                 <div class="img">
+	                                  		<a class="product-name" product_id="<!--@php echo $best_purchase_value['id']; @-->">
+		                                  <img data-original="<!--@php echo $best_purchase_value['thumb']; @-->" class="lazy" src="images/loading.gif" style="display: inline;">
+		                                   </a>
+										   <div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+												<div class='modal-dialog modal-lg'>
+													<div class='modal-content'>
+														<div class='modal-header'> 
+															<button type='button' class='close' data-dismiss='modal'>
+																<span aria-hidden='true'>&times;</span>
+																<span class='sr-only'>Close</span>
+															</button>
+															<h4 class='modal-title' id='myModalLabel'><!--@php echo $best_purchase_value['title']; @--></h4>
+														</div>
+														<div class='modal-body'>
+															<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+														</div>
+													</div>
+												</div>
+											</div>
+	                                  </div>	
+									  <div class="buy" style="position:relative;">
+	                                      <span class='price'><span class="currency-span">$</span><!--@php echo $best_purchase_value['price']; @--></span>
+									<!--@php if ( $best_purchase_value['selected'] == 0 ){ @-->
+									<div class="conl-action" style="position:absolute; right:10px; bottom:0;"><span class='col-check' productid="<!--@php echo $best_purchase_value['id']; @-->">加入购物车</span></div>
+									 <!--@php  }else{ @-->
+									<div class="conl-action" style="position:absolute; right:10px; bottom:0;"><span class='col-check added' productid="<!--@php echo $best_purchase_value['id']; @-->">已添加</span></div>
+									<!--@php } @-->
+	                                  </div>
+	                          </div>
+							  <div style="float:right;width:50%;text-align:left;">
+					              <div style="margin-top:20px;padding: 0 5px;">
+                                    <span class="label label-success">产品</span><br/><!--@php echo $best_purchase_value['purchase_name']; @-->
+								  </div>
+							      <div style="padding:5px;">
+                                    <span class="label label-success">说明</span><br/><!--@php echo $best_purchase_value['purchase_desc']; @-->
+								  </div>
+							  </div>
+					  </li>
+			  <!--@php } @-->
+		</ul>
+	</div>
+	<!--@php } @-->
+	<div class="l-member">
+		<!--@php  include themePage('purchase_leftmenu');@-->
+	</div>
+	<div class="main">
+		<div class="personalTitle pT">
+				商品中心
+		</div>
+		<div class="brand-list" style="display:none;">
+			<ul>
+				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
+				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
+				<li><span class="brand-list-name">nutrex hawaii &times 10</li>
+				<li><span class="brand-list-name">GNC/健安喜 &times 10</li>
+				<li><span class="brand-list-name">nutrex hawaii &times 10</li>
+			</ul>
+		</div>
+		<div class="tab">
+			<p class="select on">加入购物车</p>
+			<p class="selected">已选商品(<span><!--@php echo $max_purchase; @--></span>)</p>
+		</div>
+		<div class="tab-div">
+			<div class="tab-div-select">
+				<form method="post" name="" class="" id="myform" >
+					<input type="hidden" name="brandbid" value="<!--@php echo $_GP['brandbid']; @-->" class="brandbid">
+					<!--@php if ( !empty($brand) ){ @-->
+					<div style="margin-top: 20px;">
+						<span class="brand-name-checked"  bid="<!--@php echo $brand['id']; @-->" ><!--@php echo $brand['brand']; @--><span class="close-checked">&times</span></span>
+					</div>
+					<!--@php } @-->
+					<div class="brand">
+					    <!--@php if ( is_array($brand_list) && !empty($brand_list) ){ @-->
+						<div class="name">
+							品牌 :
+						</div>
+						<div class="brandlistBox">
+							<div class="brandlist">
+								<ul>
+								   <!--@php foreach( $brand_list as $brand_list_value ){ @-->
+									<li>
+										<a href="javascript:;" bid="<!--@php echo $brand_list_value['id']; @-->"><!--@php echo $brand_list_value['brand']; @--></a>
+									</li>
+									<!--@php } @-->
+								</ul>
+							</div>
+						</div>
+						<!--@php } @-->
+						<div class="name" style="border-top:solid 1px gainsboro">
+							查询 :
+						</div>
+						<div class="brandlistBox" style="border-top:solid 1px gainsboro">
+							<div class="brandlist">
+								<label>
+									<select style="width: 80px;padding: 0" name="key_type">
+										<option value="title" <?php if($_GP['key_type']=='title'){?>selected="selected"<?php  } ?> >产品名称</option>
+										<option value="id" <?php if($_GP['key_type']=='id'){?>selected="selected"<?php  } ?>>条形码</option>
+									</select>
+								</label>
+								<label><input style="margin-bottom: 0" type="text" name="keyword" value="<?php  echo $_GP['keyword'];?>" class="product-number"></label>
+								<button class="btn btn-primary search btn-sm">
+									<i class="search-img"></i>
+									搜索
+								</button>
+								
+							</div>
+						</div>
+						<div class="more" onclick="more()">展开</div>
+					</div>
+					<label style="display:none;">
+						<select name="cate_1" class="fetch-select fetchChildarea" onchange="fetchChildarea(this.options[this.selectedIndex].value)">
+							<option value="0">请选择保税仓</option>
+							<?php  if(is_array($area)) { foreach($area as $row) { ?>
+							<?php  if($row['parentid'] == 0) { ?>
+							<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $_GP['cate_1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
+							<?php  } ?>
+							<?php  } } ?>
+						</select>
+					</label>
+					<label style="display:none;">
+						<select name="p1" class="fetch-select" onchange="fetchChildCategory(this.options[this.selectedIndex].value)" >
+							<option value="0">请选择一级分类</option>
+							<?php  if(is_array($category)) { foreach($category as $row) { ?>
+							<?php  if($row['parentid'] == 0) { ?>
+							<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $_GP['p1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
+							<?php  } ?>
+							<?php  } } ?>
+						</select>
+					</label>
+					<label style="display:none;">
+						<select id="p2" class="fetch-select" name="p2" onchange="fetchChildCategory2(this.options[this.selectedIndex].value)" >
+							<option value="0">请选择二级分类</option>
+							<?php  if(!empty($_GP['p1']) && !empty($childrens[$_GP['p1']])) { ?>
+							<?php  if(is_array($childrens[$_GP['p1']])) { foreach($childrens[$_GP['p1']] as $row) { ?>
+							<option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $_GP['p2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
+							<?php  } } ?>
+							<?php  } ?>
+						</select>
+					</label>
+					
+<!-- 					<label class="pagenum" style="top: 50px;"><span>每页显示数量:</span>
+						<select>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+						</select>
+					</label> -->
+				</form>
+				<table class="product-list" id="product-list" cellspacing="0" cellpadding="0" border="0">
+					<tr>
+						<th width="40px" class="th-check col-label"><img src="__RESOURCE__/recouse/images/cart_circle.png"></th>
+						<th width="100px">商品图片</th>
+						<th width="400px">商品信息</th>
+						<th width="110px">价格</th>
+						<th width="160px">数量</th>
+						<th width="110px">商品操作</th>
+					</tr>
+					<!--美元或人民币的隐藏域 -->
+					<input type="hidden" name="currency" class="currency" value="<?php echo $currency; ?>">
+					<!--@php if ( is_array($dish_list) && !empty($dish_list) ){ foreach ( $dish_list as $dish_list_value ){ @-->
+					<tr>
+						<td class='td-check col-label'>
+							<img class="lazy" src='__RESOURCE__/recouse/images/cart_circle.png'>
+						</td>
+
+						<td class='col-img'>
+							<img class="lazy product-img" product_id="<!--@php echo $dish_list_value['id']; @-->" data-original="<!--@php echo $dish_list_value['thumb']; @-->" src="images/loading.gif" >
+						</td>
+						<td class='col-name'>
+							<a class="product-name" product_id="<!--@php echo $dish_list_value['id']; @-->"><!--@php echo $dish_list_value['title']; @--></a>
+							<div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+								<div class='modal-dialog modal-lg'>
+									<div class='modal-content'>
+										<div class='modal-header'> 
+											<button type='button' class='close' data-dismiss='modal'>
+												<span aria-hidden='true'>&times;</span>
+												<span class='sr-only'>Close</span>
+											</button>
+											<h4 class='modal-title' id='myModalLabel'><!--@php echo $dish_list_value['title']; @--></h4>
+										</div>
+										<div class='modal-body'>
+											<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td class='col-price'>
+							<span class='price'><span class="currency-span">$</span><!--@php echo $dish_list_value['price']; @--></span>
+						</td>
+						<td class='col-num' cartid="<!--@php echo $dish_list_value['id']; @-->">
+							<div class='input-group'>
+								<span class='input-group-btn'>
+									<button class='btn btn-default btn-sm' type='button' onclick='reduceNum(<!--@php echo $dish_list_value['id']; @-->)'>-</button>
+								</span>
+								<input type='tel' value="1" class='form-control input-sm pricetotal goodsnum ' cartid="<!--@php echo $dish_list_value['id']; @-->" id='goodsnum_<!--@php echo $dish_list_value['id']; @-->' price="<!--@php echo $dish_list_value['price']; @-->"  maxbuy="<!--@php echo $dish_list_value['total']; @-->">
+								<span class='input-group-btn'>
+									<button class='btn btn-default btn-sm' type='button' onclick='addNum(<!--@php echo $dish_list_value['id']; @-->,<!--@php echo $dish_list_value['total']; @-->)'>+</button>
+								</span>
+							</div>
+						</td>
+						<!--@php if ( $dish_list_value['selected'] == 0 ){ @-->
+						<td class="conl-action"><span class='col-check' id="<!--@php echo $dish_list_value['id']; @-->">加入购物车</span></td>
+                         <!--@php  }else{ @-->
+						<td class="conl-action"><span class='col-check added' id="<!--@php echo $dish_list_value['id']; @-->">已添加</span></td>
+						<!--@php } @-->
+					</tr>
+					<!--@php }} @-->
+					<tr>
+						<td width="40px" class="th-check col-label"><img src="__RESOURCE__/recouse/images/cart_circle.png"></td>
+						<td colspan="5"><span class="batch-check" style="margin:10px 0;">批量加入购物车</span></td>
+					</tr>
+				</table>
+				<!--@php echo $pager; @-->
+			</div>
+			<div class="tab-div-select" style="display: none;">
+				
+				<div class="add-list-area">
+					<p class="select-p">已选商品详情</p>
+					<table class="product-list add-list" cellspacing="0" cellpadding="0" border="0">
+						<tr class="product-list-tr">
+							<th width="110">图片</th>
+							<th width="400">商品名称</th>
+							<th width="110">单价</th>
+							<th width="106">数量</th>
+							<th width="70">运费</th>
+							<th width="106">合计</th>
+							<th width="106">操作</th>
+						</tr>
+					</table>
+					<!--@php if ( $user_a['type'] == 2 ){ @-->
+					<div class="exchangeRate-area">
+						<h3>订单要求</h3>
+						<!--汇率隐藏域-->
+						<p>单个订单总额必须高于2000人民币系统才会审核通过，否则无法下单</p>
+					</div>
+					<div class="exchangeRate-area">
+						<h3>货币汇率</h3>
+						<!--汇率隐藏域-->
+						<p><!--@php echo $exchange_rate_value; @--></p>
+						<input type="hidden" name="exchangeRate" class="exchange_rate" value="<!--@php echo $exchange_rate_value; @-->">
+					</div>
+					<div class="freight-area">
+						<h3>配送方式</h3>
+						<label><input type="radio" name="freight" value="0" checked>觅海供应链配送</label>
+						<label><input type="radio" name="freight" value="1">买家承运</label>
+					</div>
+                    <!--@php }else{ @-->
+					    <!--@php if ( is_array($promotion) && !empty($promotion) ){ @-->
+                        <div class="exchangeRate-area">
+						<h3>免运费条件</h3>
+						     <!--@php foreach ( $promotion as $promotion_value ){ @-->
+							 
+					     	<p><!--@php if($promotion_value['promoteType']==0){ @-->商品件数满<span style="color:#FF0000"><!--@php echo $promotion_value['condition'];@--></span>件免运费<!--@php  }else{ @-->商品金额满<span style="color:#FF0000"><!--@php echo  $promotion_value['condition'];@--></span>元免运费 <!--@php  } @--></p>
+						    <!--@php } @-->
+						<!--@php } @-->
+					</div> 
+					<!--@php } @-->
+						<!--@php  if(!empty($addresslist)) {  @-->
+						<div id="addresslist">
+						    <!--@php if ( is_array($addresslist) ){ foreach( $addresslist as $defaultAddress ){ @-->
+							<div class="address_item <!--@php if (($defaultAddress['isdefault'] == 1 && count($addresslist) > 1 ) || ( count($addresslist) == 1 )) { echo 'this_address'; } @--> address_<!--@php  echo $defaultAddress['id']; @-->" onclick="setaddress(<!--@php echo $defaultAddress['id']; @-->)" address_id = '<!--@php echo $defaultAddress['id']; @-->'>
+							    <div class="addr-bd">				
+								   <strong style="float: left;"><!--@php  echo $defaultAddress['realname'];@--> 收</strong>
+								   <span class="set" onclick="setdefault(<!--@php echo $defaultAddress['id']; @-->)"><!--@php if ($defaultAddress['isdefault'] ==1 ) { echo '默认地址'; }else{ echo '设为默认'; } @--></span>
+								</div>
+								<div class="addr-hd">				
+								<!--@php  echo $defaultAddress['province'];@--> <!--@php  echo $defaultAddress['city'];@--> <!--@php  echo $defaultAddress['area'];@--><!--@php  echo $defaultAddress['address'];@--> 
+								<!--@php  echo $defaultAddress['mobile'];@-->
+								</div>
+								<div  class="dosg">
+									<span class="edit" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax','id'=>$defaultAddress['id']))@-->')">修改</span>
+									<span class="del"  onclick="addressDel(<!--@php  echo $defaultAddress['id']; @-->)">删除</span>
+								</div>
+								<div class="choose">
+								</div>
+							</div>	
+							<!--@php }} @-->
+						</div>					
+						<!--@php  }else{  @-->
+		                <div id="addresslist"></div>
+						<!--@php } @-->
+						<div style="width: 100%;overflow: hidden;">
+							<div class="address_add">
+								<button type="button" class="btn btn-danger" onclick="openDialog('<!--@php  echo mobile_url('purchase_address',array('op'=>'ajax'))@-->')"> + 添加收货地址</button>
+							</div>
+						</div>
+					<div class="">
+					      <h3 style="border-bottom: 1px dotted #ccc; padding-bottom: 10px;">备注信息</h3>
+					      <ul class="member-browse-ul" style="padding:15px;">
+								<li><textarea name="remark" class="remark" style="width:100%;border:none;" type="text" value="" placeholder="亲，还有什么要交待的话，告诉我们吧！"></textarea></li>
+							</ul>
+					</div>
+
+					<div class="tiaokuan" style="border-bottom:1px dotted #ccc;">
+					      <h3>条款与条件</h3>
+					</div>
+					<div class="total-area terms">
+					    
+						<label>
+							<input type="checkbox" name="" class="terms-accept"  style="position: absolute;top: 23px;left: 5px;width: 14px;">
+							<div class="terms-content">
+								<p>通过单击 “下单”，我同意接受觅海供应链在线商店条款和条件。</p>
+								<p>请注意以下内容：</p>
+								<p>发货和送达日期为觅海供应链做出的最佳估算时间。就少数订单，由于无法预料的产品短缺或超出我们控制以外的因素，实际时间可能会更长。如有延迟，我们将联系您。
+								我们网站上的产品和定价信息在公布前已经过核实。但是，在极少数情形下可能有误。如果我们发现定价错误，我们将通知您，取消您的订单，并对订单金额全额退款。
+								您应仔细阅读条款和条件中有关争议解决的条款，您确认本订单即视为您理解争议将通过仲裁方式解决，仲裁机构及仲裁地点详见条款和条件。</p>
+							</div>
+						</label>
+					</div>
+					<div class="total-area" style="border:none;overflow: hidden;color: #333;font-size: 14px;">
+						<p>商品应付总计：<span class="total-price"></span></p>
+						<p class="dispatchprice">运费：<span></span></p>
+						<p class="pay-total-price">应付金额：<span></span></p>
+						<button class="submit next-step" type="button" >生成订单</button>
+					</div>
+				</div>
+				<div class="add-list-area-tip">
+					<img class="lazy" src="__RESOURCE__/recouse/images/icon_network_error_retry.png">
+					<p style="margin-top: 40px;color: #cccccc;font-size: 18px;">你还没有加入购物车，请加入购物车</p>
+				</div>
+
+
+				<div class='modal fade confirm-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+					<div class='modal-dialog modal-lg'>
+						<div class='modal-content'>
+							<div class='modal-header'>
+								<button type='button' class='close' data-dismiss='modal'>
+									<span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span>
+								</button>
+								<h4 class='modal-title' id='myModalLabel'>订单详情</h4>
+							</div>
+							<div class='modal-body ajax-loader loading-img'>
+								<img class="loading-img" src="__RESOURCE__/recouse/images/ajax-loader.gif">
+							</div>
+							<div class='modal-body confirm-body'>
+								<div class="orderDetail-area">
+									<div class="order_title">	
+										订单号：<span class="confirm-order-num"></span>&nbsp;&nbsp;&nbsp;&nbsp;支付金额：<span class="confirm-order-price false"></span> 	
+										<div class="pull-right" style="margin-right: 0">
+									    	<select id="pays" class="form-control" style="float:left;width:100px!important;height:30px!important;padding-left:5px!important;border: 1px solid #ccc!important;line-height:15px;font-size:12px;background: url('__RESOURCE__/recouse/images/arrow.png') no-repeat scroll right center transparent;  background:#fff\0;  padding-right: 14px;text-align: left;">
+												<option value="alipay" selected=""> 支付宝</option>
+											</select>
+											<a href="javascript:;" onclick="topay();" class="btn btn-danger btn-sm" style="float:left;width:100px;margin-left:10px;">立即支付</a>
+										</div>
+									</div>
+									<div class="orderdetail">
+										<p class="Address">
+											<img src="__RESOURCE__/recouse/images/icon_diary_location.png" style="width: 17px;margin-top: -2px;"><span class="confirm-order-address"></span>
+										</p>
+									</div>
+								</div>
+								<table class="confirm-table" cellspacing="0" cellpadding="0" border="0">
+									<tr class="confirm-table-tr">
+										<th width="110px">图片</th>
+										<th width="400px">商品名称</th>
+										<th width="90px">单价</th>
+										<th width="90px">数量</th>
+										<th width="90px">合计</th>
+									</tr>
+								</table>
+								<div class="confirm-area">
+									<div class="confirm-modal-remark">
+									</div>
+									<div class="confirm-modal-price">
+										<p>商品应付总计：<span class="total-price"></span></p>
+										<p class="dispatchprice">运费：<span></span></p>
+										<p class="pay-total-price">应付金额：<span></span></p>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+							    <button class="btn btn-success" type="button" data-dismiss="modal">关闭</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<iframe src="" class="address"></iframe>
+<div class="iDialogLayout"></div>
+<!--@php include themePage('purchase_footer');@-->
+<script type="text/javascript">
+var order_id = "";
+   var area = <?php  echo json_encode($children)?>;
+   function fetchChildarea(cid) {
+	var html = '<option value="0">请选择二级分类</option>';
+	if (!area || !area[cid]) {
+		$('#cate_2').html(html);
+		return false;
+	}
+	for (i in area[cid]) {
+		html += '<option value="'+area[cid][i][0]+'">'+area[cid][i][1]+'</option>';
+	}
+	$('#cate_2').html(html);
+    }
+    
+  var category = <?php  echo json_encode($childrens)?>;	
+   function fetchChildCategory(cid) {
+	var html = '<option value="0">请选择二级分类</option>';
+	if (!category || !category[cid]) {
+		$('#p2').html(html);
+		fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
+		return false;
+	}
+	for (i in category[cid]) {
+		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
+	}
+	$('#p2').html(html);
+	fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
+
+}
+
+
+  function fetchChildCategory2(cid) {
+	var html = '<option value="0">请选择三级分类</option>';
+	if (!category || !category[cid]) {
+		$('#p3').html(html);
+		return false;
+	}
+	for (i in category[cid]) {
+		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
+	}
+	$('#p3').html(html);
+ }
+$(function(){
+ 	$("img.lazy").lazyload({
+		 threshold : 50,
+		 failure_limit : 10,
+		 effect : "fadeIn"
+	});
+
+	currency();
+	//品牌超过2行显示展开按钮
+	if($(".brandlist ul li").length > 16){
+		$(".more").show();
+	}
+	//点击品牌进行提交
+	$(".brandlistBox .brandlist a").on("click",function(){
+	    $(".brandbid").val($(this).attr('bid'));
+		$("#myform").submit();
+	})
+	$("#addresslist .set").each(function(){
+		if($(this).text()=="默认地址"){
+			$("#addresslist .set").hide();
+			$(this).show();
+		}
+	});
+	//删除已选品牌
+	$(".brand-name-checked .close-checked").on("click",function(){
+		$(".brandbid").val("");
+	    $("#myform").submit();
+	})
+	//点击商品名称显示产品详情
+	$(".product-name").on("click",function(){
+		var content_this = $(this);
+		var content_id = content_this.attr("product_id");
+		var siblings_detail = 	content_this.siblings(".product-detail");
+		var content_len = siblings_detail.find(".modal-body").children().length;
+			siblings_detail.modal();
+		//如何已有详情直接返回
+		if( content_len > 1){
+			return false;
+		}else{
+			$.post("",{type:'get_content',id:content_id},function(data){
+				if(data.errno == 200){
+					$(".ajax-load").hide();
+					siblings_detail.find(".modal-body").append("<div class='modal-body-content'>"+data.message.content+"</div>");
+				}else{
+					$(".ajax-load").hide();
+					alert(data.message);
+				}
+			},'json')
+		};
+	})
+	//点击商品图片显示产品详情
+	$(".product-img").on("click",function(){
+		var content_this = $(this);
+		var content_id = content_this.attr("product_id");
+		var content_len = content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").children().length;
+			content_this.parent(".col-img").siblings(".col-name").find(".product-detail").modal();
+		//如何已有详情直接返回
+		if( content_len > 1){
+			return false;
+		}else{
+			$.post("",{type:'get_content',id:content_id},function(data){
+				if(data.errno == 200){
+					$(".ajax-load").hide();
+					content_this.parent(".col-img").siblings(".col-name").find(".product-detail").find(".modal-body").append("<div class='modal-body-content'>"+data.message.content+"</div>");
+				}else{
+					$(".ajax-load").hide();
+					alert(data.message);
+				}
+			},'json')
+		};
+	})
+	var index = 0;
+	$(".tab p").on("click",function(){
+		index = $(this).index();
+		$(this).siblings("p").removeClass("on");
+		$(this).addClass("on");
+		$(".tab-div .tab-div-select").hide().eq(index).show();
+	});
+
+	$(".product-list .th-check").on("click",function(){
+		var _this = $(this);
+		//全部取消选中
+		if( _this){}
+		if( _this.hasClass("checked") ){
+			_this.removeClass("checked");
+			$(".col-label").removeClass("checked");
+			$(".col-label img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+			$(".hide_checkbox").attr("checked",false);
+		}else{
+			$(".col-check").each(function(index,ele){
+				if($(ele).hasClass("added")){
+					$(ele).parent().siblings(".col-label").removeClass("checked").find("img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+				}else{
+					_this.addClass("checked");
+					_this.find("img").attr("src","__RESOURCE__/recouse/images/cart_check.png");
+					$(ele).parent().siblings(".col-label").addClass("checked").find("img").attr("src","__RESOURCE__/recouse/images/cart_check.png");
+					$(".hide_checkbox").attr("checked",true);
+				}
+			});
+		}
+	})
+	//勾选单个商品
+	$("body").on("click",".product-list .td-check",function(){
+		var _this = $(this);
+		var check_num = 0;
+		var col_total_price = 0 ;
+		var chenk_cart_num = 0;//单选框选中的对应的数量的值
+
+		if( _this.hasClass("checked") || _this.siblings(".conl-action").find(".col-check").hasClass("added")){
+			_this.removeClass("checked");
+			_this.find("img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+			_this.find("img").next().attr('checked',false);
+		}else{
+			_this.addClass("checked");
+			_this.find("img").next().attr('checked',true);
+			$(".th-check").addClass("checked");
+			$(".th-check").find("img").attr("src","__RESOURCE__/recouse/images/cart_check.png");
+			_this.find("img").attr("src","__RESOURCE__/recouse/images/cart_check.png");
+		};
+
+		$(".td-check").each(function(index,ele){
+			if($(ele).hasClass("checked")){
+				check_num++;
+				chenk_cart_num +=  parseInt($(ele).siblings(".col-num").find(".goodsnum").val());
+				col_total_price += parseFloat($(ele).siblings(".col-total").find(".singletotalprice").text());
+			}
+		});
+		if( check_num == 0){
+			$(".th-check").removeClass("checked");
+			$(".th-check img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+		}
+	});
+	//单个加入购物车
+	$("body").on("click",".col-check",function(){
+			var psize = $(".pagenum select").val();
+			var add_good_html = "";
+			var add_id = $(this).attr("id");
+			if ( add_id == "" || add_id == "null" || add_id ==undefined)
+			{
+			    add_id = $(this).attr("productid"); 
+			}
+			var this_check = $(this);
+			var add_num = parseInt($(this).parent(".conl-action").siblings(".col-num").find(".goodsnum").val());
+			if ( isNaN(add_num) )
+			{
+			    add_num = 1;
+			}
+			var addObj = {};
+			if( this_check.hasClass("added")){
+				return false;
+			}else{
+				addObj[add_id] = add_num;
+				$.post("",{type:"add_goods",goods:addObj},function(data){
+					//0添加成功
+					if(data.result==0){
+						$(".tab .selected span").text(data.max_purchase);
+					    $('.product-list .conl-action span[id='+add_id+']').addClass("added").text("已添加");
+						if($('.purchase_list span[productid='+add_id+']').length!=0){
+							$('.purchase_list span[productid='+add_id+']').addClass("added").text("已添加");
+						}
+						getGoods();
+					}else if(data.result==1){
+						alert(data.info);
+					}
+				},"json");
+			}
+	});
+	//批量加入购物车
+	$("body").on("click",".batch-check",function(){
+		var allCheckObj = {};
+		var idArr = [];
+		var psize = $(".pagenum select").val();
+		
+		if($(".td-check.checked").length==0){
+			alert("请勾选商品");
+			return false;
+		}
+		$(".td-check").each(function(n,value){
+			var _this = $(value);
+			if( _this.siblings(".conl-action").find("span").hasClass("added")){
+				return; 
+			}else{
+				if(_this.hasClass("checked")){
+					var add_id = _this.siblings(".conl-action").find(".col-check").attr("id");
+					var add_num = parseInt(_this.siblings(".col-num").find(".goodsnum").val());
+					allCheckObj[add_id] = add_num;
+					idArr.push(add_id);
+				}
+			}
+		});
+		$.post("",{type:"add_goods",goods:allCheckObj},function(data){
+			//0添加成功
+			if(data.result==0){
+				$(".tab .selected span").text(data.max_purchase);
+				for(var i = 0; i < idArr.length; i++){
+					$(".col-check[id="+idArr[i]+"]").text("已添加");
+					$(".col-check[id="+idArr[i]+"]").addClass("added");
+				}
+			}else if(data.result==1){
+				alert(data.info);
+			}
+		},"json");
+
+		$(".th-check").removeClass("checked").find("img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+		$(".td-check").removeClass("checked").find("img").attr("src","__RESOURCE__/recouse/images/cart_circle.png");
+	});
+
+	$("body").on("click",".add-list .remove",function(){
+		var remove_this = $(this);
+		var removeId = $(this).attr("id");
+		$.post("",{type:"del_good",id:parseInt(removeId)},function(data){
+			if(data.result==0){
+				if($('.product-list .conl-action span[id='+removeId+']').length!=0){
+					$('.product-list .conl-action span[id='+removeId+']').removeClass("added").text("加入购物车");
+				}
+				if($('.purchase_list span[productid='+removeId+']').length!=0){
+					$('.purchase_list span[productid='+removeId+']').removeClass("added").text("加入购物车");
+				}
+				getGoods();
+			}else{
+				alert(data.info);
+			}
+		},"json");
+		
+	});
+	//生成订单
+	
+	$(".next-step").on("click",function(e){
+		var checkedVal = $(".terms-accept").prop("checked");
+		var address_id = $(".this_address").attr("address_id");
+		var remark = $(".remark").val();
+		var confirm_address_html;
+		var confirm_html = "";
+		var dataObj = "";
+		var freight = $(".freight-area input[type='radio']:checked").val();
+		if($(".this_address").length==0){
+			alert("请选择收货地址!");
+			return false;
+		}
+		if(checkedVal){
+			e.stopPropagation();
+			$(".confirm-table").html($(".confirm-table-tr"));
+			$(".ajax-loader").show();
+			$(".confirm-order-address").html("");
+			$.post('<!--@php  echo mobile_url('purchase_confirm')@-->',{api: 'get_order',remark:remark,address_id:address_id,freight:freight},function(data){
+				if( data.errno == 200){
+					$(".confirm-modal").modal({backdrop: 'static', keyboard: false});
+					order_id = data.message.order_id;
+					dataObj = data.message;
+					$(".confirm-order-num").text(dataObj.order_sn);
+					$(".confirm-order-price").text('￥'+(parseFloat(dataObj.order_total_price)).toFixed(2));
+					$(".confirm-modal-price .pay-total-price span").text('￥'+(parseFloat(dataObj.order_total_price)).toFixed(2));
+					$(".confirm-modal-price .total-price").text('￥'+(parseFloat(dataObj.order_price)).toFixed(2));
+					$(".confirm-modal-price .dispatchprice span").text('￥'+parseFloat((dataObj.freight)).toFixed(2));
+					$(".confirm-modal-remark").text(dataObj.remark);
+					confirm_address_html = '<span>'+data.message.address_province+'</span><span>'+data.message.address_city+'</span><span>'+data.message.address_area+'</span><span>'+data.message.address_address+'</span><span style="margin-left:15px">'+data.message.address_realname+'</span><span>'+data.message.address_mobile+'</span>'
+					$(".confirm-order-address").append(confirm_address_html);
+					$.each(data.message.order_goods,function(n,value){
+						confirm_html += "<tr><td class='col-img'><img src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+
+						    "<td class='col-price'><span class='price'>￥"+parseFloat(value.price).toFixed(2)+"</span></td><td class='col-num'>"+value.num+"</td><td class='confirm-total-price'>￥"+parseFloat(value.price*value.num).toFixed(2)+"</td></tr>";
+					});
+					$(".confirm-table").append(confirm_html);
+					$(".ajax-loader").hide();
+					$(".confirm-body").show();
+				}else{
+					alert(data.message);
+					return false;
+				}
+			},"json");
+		}else{
+			alert("请同意并选择勾选");
+		}
+		$(".terms-accept").prop("checked",false);
+	});
+	$(".selected").on("click",function(){
+		getGoods();
+	});
+	$("body").on("blur","#product-list .goodsnum",function(){
+        var id = $(this).attr("cartid");
+        var goodsnum_this = $(this);
+        var reg = new RegExp("^[0-9]*$");
+        if(reg.test($(this).val())){
+            var num = parseInt( $(this).val() );
+            var maxbuy = parseInt( $(this).attr("maxbuy") );
+            var mb = maxbuy;
+            /*if(num>mb && mb>0){
+                alert("最多只能购买 " + mb + " 件!",true);
+                $(this).val(mb);
+                num = mb;
+                var price = parseFloat( $("#singleprice_"+id).html() ) * num;
+                $(this).html(price.toFixed(2));
+
+                return;
+            }*/
+            if (num <=0 || isNaN(num)){
+                $(this).val(1); 
+                num = 1;
+            }
+        }else{
+            $(this).val("1");
+        }
+    });
+
+    $("body").on("blur",".add-list .goodsnum",function(){
+        var id = $(this).attr("cartid");
+        var goodsnum_this = $(this);
+        var reg = new RegExp("^[0-9]*$");
+        var blurObj = {};
+        var price = 0;
+        var freight = $(goodsnum_this).parents(".col-num").siblings(".shippingPrice").find("span").text();
+        if(reg.test($(this).val())){
+            var num = parseInt( $(this).val() );
+            var maxbuy = parseInt( $(this).attr("maxbuy") );
+            var mb = maxbuy;
+
+            /*if(num>mb && mb>0){
+                alert("最多只能购买 " + mb + " 件!",true);
+                $(this).val(mb);
+                num = mb;
+                var price = parseFloat( $("#singleprice_"+id).html() ) * num;
+                $(this).html(price.toFixed(2));
+
+                return;
+            }*/
+            if (num <=0 || isNaN(num)){
+                $(this).val(1); 
+                num = 1;
+            }
+			blurObj[id] = num;
+			$.post("",{type:"add_goods",goods:blurObj},function(data){
+				//0添加成功
+				if( data.result == 0 ){
+					$.post("",{type:'get_goods',id:id},function(shipsdata){
+						if(shipsdata.result == 0){
+							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
+							//已选商品金额合计
+							var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+							$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+							if( freight_check == 0 ){
+								$(".total-area .dispatchprice span").removeClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+							}else if(freight_check == 1){
+								$(".total-area .dispatchprice span").addClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+							}
+							//运费合计
+							$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);				
+							$(".goodsnum_" + id).val(num);
+							goodsnum_this.parents(".col-num").siblings(".col-total").find("span").text(parseFloat(goodsnum_this.attr("price")*num).toFixed(2));
+						}
+					},'json');
+				}else if(data.result == 1){
+					alert(data.info);
+				}else if(data.result == 2){
+					$.post("",{type:'get_goods',id:id},function(shipsdata){
+						if(shipsdata.result == 0){
+							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
+							//已选商品金额合计
+							var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+							$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+							if( freight_check == 0 ){
+								$(".total-area .dispatchprice span").removeClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+							}else if(freight_check == 1){
+								$(".total-area .dispatchprice span").addClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+							}
+							//运费合计
+							$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);		
+							$(".goodsnum_" + id).val(num);
+							goodsnum_this.parents(".col-num").siblings(".col-total").find("span").text(parseFloat(goodsnum_this.attr("price")*num).toFixed(2));
+						}
+					},'json');
+				}
+				
+			},"json");
+        }else{
+            $(this).val("1");
+            var price = parseFloat( $("#singleprice_"+id).html() ) * 1;
+            $("#goodsprice_" + id).html(parseFloat(price).toFixed(2));
+            $(this).parents(".col-num").siblings(".col-total").find("span").text(parseFloat($(this).attr("price"))*1);
+
+			blurObj[id] = 1;
+			$.post("",{type:"add_goods",goods:blurObj},function(data){
+				//0添加成功
+				if( data.result == 0 ){
+					$.post("",{type:'get_goods',id:id},function(shipsdata){
+						if(shipsdata.result == 0){
+							goodsnum_this.parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
+							//已选商品金额合计
+							var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+							$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+							if( freight_check == 0 ){
+								$(".total-area .dispatchprice span").removeClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+							}else if(freight_check == 1){
+								$(".total-area .dispatchprice span").addClass("userself");
+								$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+							}
+							//运费合计
+							$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);		
+							goodsnum_this.parents(".col-num").siblings(".col-total").find("span").text(parseFloat(goodsnum_this.attr("price")*1).toFixed(2));
+						}
+					},'json');
+				}else if(data.result == 1){
+					alert(data.info);
+				}else if(data.result == 2){
+					
+				}
+				
+			},"json");
+        }
+
+    });
+
+    $(".freight-area label").on("click",function(){
+    	$.post("",{type:"get_goods"},function(data){
+		    		if(data.result == 0){
+		    			//已选商品金额合计
+						var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+						$(".total-area .total-price").text("￥"+data.goods_price);
+						if( freight_check == 0 ){
+							$(".total-area .dispatchprice span").removeClass("userself");
+							$(".total-area .pay-total-price span").text("￥"+data.total_price);
+						}else if(freight_check == 1){
+							$(".total-area .dispatchprice span").addClass("userself");
+							$(".total-area .pay-total-price span").text("￥"+data.goods_price);
+						}
+						//运费合计
+						$(".total-area .dispatchprice span").text("￥"+data.shiprice);
+		    		}else{
+		    			alert(data.info);
+		    		}
+		    		
+		    	},"json")
+    });
+});
+
+function getGoods(){
+	var psize = $(".pagenum select").val();
+	var get_goods_html = "";
+	$(".add-list").html('<div class="loading-area"><img class="loading-img" src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>');
+	$.post("",{type:"get_goods"},function(data){
+		$(".add-list").html('<tr class="product-list-tr"><th width="110px">图片</th><th width="400px">商品名称</th><th width="110px">单价</th><th width="106px">数量</th><th width="70px">运费</th><th width="70px">合计</th><th width="106px">操作</th></tr>');
+		$(".tab .selected span").text(data.max_purchase);
+		//0成功
+		if( data.max_purchase == 0){
+			$(".add-list-area").hide();
+			$(".add-list-area-tip").show();
+		}else{
+			$(".add-list-area").show();
+			$(".add-list-area-tip").hide();
+		}
+		if( data.result == 0){
+			if($(".currency").val()==1){
+				$(".add-list").html('<tr class="product-list-tr"><th width="110px">图片</th><th width="400px">商品名称</th><th width="110px">单价</th><th width="106px">数量</th><th width="70px">合计</th><th width="106px">操作</th></tr>');
+				$.each(data.purchase,function(n,value){
+				get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'><i class='currency-span'>$</i>"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
+					  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
+					  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
+					  "<td class='col-total'><i class='currency-span'>$</i><span>"+parseFloat(value.price*value.num).toFixed(2)+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
+				});
+			}else if($(".currency").val()==2){
+				$.each(data.purchase,function(n,value){
+				get_goods_html += "<tr><td class='col-img'><img  src="+value.img+"></td><td class='col-name'>"+value.title+"</td>"+"<td class='col-price'><span class='price'><i class='currency-span'>$</i>"+value.price+"</span></td><td class='col-num' cartid="+value.id+"><div class='input-group'><span class='input-group-btn'>"+
+					  "<button class='btn btn-default btn-sm' type='button' onclick='reduceNewNum("+value.id+",this)'>-</button></span><input type='tel' value="+value.num+" "+
+					  "class='form-control input-sm pricetotal goodsnum goodsnum_"+value.id+"' cartid="+value.id+" price="+value.price+"  maxbuy="+value.total+"><span class='input-group-btn'><button class='btn btn-default btn-sm' type='button' onclick='addNewNum("+value.id+","+value.total+",this)'>+</button></span></div></td>"+
+					  "<td class='shippingPrice'><i class='currency-span'>$</i><span>"+parseFloat(value.freight).toFixed(3)+"</span></td><td class='col-total'><i class='currency-span'>$</i><span>"+parseFloat(value.price*value.num).toFixed(2)+"</span></td><td class='remove' id="+value.id+"><span class='remove-span'>取消选择</span></td></tr>";  
+				});
+			}
+			
+			$(".add-list tr:last-child").after(get_goods_html);
+			currency();
+			//已选商品金额合计
+			var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+			$(".total-area .total-price").text("￥"+data.goods_price);
+			if( freight_check == 0 ){
+				$(".total-area .dispatchprice span").removeClass("userself");
+				$(".total-area .pay-total-price span").text("￥"+data.total_price);
+			}else if(freight_check == 1){
+				$(".total-area .dispatchprice span").addClass("userself");
+				$(".total-area .pay-total-price span").text("￥"+data.goods_price);
+			}
+			//运费合计
+			$(".total-area .dispatchprice span").text("￥"+data.shiprice);
+		}else{
+			alert(data.info);
+		}
+	},"json");
+}
+//价格符号值的显示。
+function currency(){
+	if($(".currency").val()==1){
+		$(".currency-span").text("￥");
+	}else{
+		$(".currency-span").text("$");
+	};
+}
+$(document).ready(function(){
+     // 设置收货地址
+     $('.iDialogLayout').click(function(){    
+	    $('.address').hide();
+	    $('.iDialogLayout').hide();	
+	 });
+	 $('.edit').click(function(e){
+       stopEvent(e);
+	 });
+	  $('.set').click(function(e){
+       stopEvent(e);
+	 });
+	 $('.del').click(function(e){
+       stopEvent(e);
+	 });
+});
+
+function stopEvent(event){ //阻止冒泡事件
+     //取消事件冒泡
+     var e=arguments.callee.caller.arguments[0]||event; //若省略此句，下面的e改为event，IE运行可以，但是其他浏览器就不兼容
+     if (e && e.stopPropagation) {
+     // this code is for Mozilla and Opera
+     	e.stopPropagation();
+     } else if (window.event) {
+     // this code is for IE
+      	window.event.cancelBubble = true;
+     }
+}
+function reduceNum(id){
+	var num = parseInt( $("#goodsnum_" + id).val() );
+	if(num-1<=0){
+		return;
+	}
+	num--;
+	$("#goodsnum_" + id).val(num);
+}
+
+function reduceNewNum(id,obj){
+	var num = parseInt( $(".goodsnum_" + id).val() );
+	var reduceObj = {};
+	if(num-1<=0){
+		return;
+	}
+	num--;
+	reduceObj[id] = num;
+	$.post("",{type:"add_goods",goods:reduceObj},function(data){
+		//0添加成功
+		if( data.result == 0){
+			$.post("",{type:'get_goods',id:id},function(shipsdata){
+				if(shipsdata.result == 0){
+					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
+					//已选商品金额合计
+					var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+					$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+					if( freight_check == 0 ){
+						$(".total-area .dispatchprice span").removeClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+					}else if(freight_check == 1){
+						$(".total-area .dispatchprice span").addClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+					}
+					//运费合计
+					$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);
+					$(".goodsnum_" + id).val(num);
+					var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
+					$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
+				}
+			},'json');
+		}else if(data.result == 1){
+			alert(data.info);
+		}else if(data.result == 2){
+			
+		}
+		
+	},"json");
+}
+function addNum(id,maxbuy){	
+	var mb = maxbuy;
+	var stock =$("#stock_" + id).html()==''?-1:parseInt($("#stock_" + id).html());
+	if(mb>stock && stock!=-1){
+		mb = stock;
+	}
+	var num = parseInt( $("#goodsnum_" + id).val() ) + 1;
+	/*if(num>mb && mb>0){
+		alert("最多只能购买 " + mb + " 件!",true);
+		return;
+	}*/
+	$("#goodsnum_" + id).val(num);
+}
+function addNewNum(id,maxbuy,obj){	
+	var mb = maxbuy;
+	var addObj = {};
+	var price = $(obj).parents(".input-group-btn").siblings(".goodsnum").attr("price");
+	var num = parseInt( $(".goodsnum_" + id).val() ) + 1;
+	/*if(num>mb && mb>0){
+		num = mb;
+		return;
+	}*/
+	addObj[id] = num;
+	$.post("",{type:"add_goods",goods:addObj},function(data){
+		//0添加成功
+		if( data.result == 0){
+			$.post("",{type:'get_goods',id:id},function(shipsdata){
+				if(shipsdata.result == 0){
+					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
+					//已选商品金额合计
+					var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+					$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+					if( freight_check == 0 ){
+						$(".total-area .dispatchprice span").removeClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+					}else if(freight_check == 1){
+						$(".total-area .dispatchprice span").addClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+					}
+					//运费合计
+					$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);
+					$(".goodsnum_" + id).val(num);
+					$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
+				}
+			},'json');
+		}else if(data.result == 1){
+			alert(data.info);
+		}else if(data.result == 2){
+			$.post("",{type:'get_goods',id:id},function(shipsdata){
+				if(shipsdata.result == 0){
+					$(obj).parents(".col-num").siblings(".shippingPrice").find("span").text(parseFloat(shipsdata.purchase[id].freight).toFixed(3));
+					//已选商品金额合计
+					var freight_check = $(".freight-area input[type='radio']:checked").val()||0;
+					$(".total-area .total-price").text("￥"+shipsdata.goods_price);
+					if( freight_check == 0 ){
+						$(".total-area .dispatchprice span").removeClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.total_price);
+					}else if(freight_check == 1){
+						$(".total-area .dispatchprice span").addClass("userself");
+						$(".total-area .pay-total-price span").text("￥"+shipsdata.goods_price);
+					}
+					//运费合计
+					$(".total-area .dispatchprice span").text("￥"+shipsdata.shiprice);
+					$(".goodsnum_" + id).val(num);
+					$(obj).parents(".col-num").siblings(".col-total").find("span").text(parseFloat(price*num).toFixed(2));
+				}
+			},'json');
+		}
+		
+	},"json");
+}
+
+function setaddress(ids){
+     $(".this_address").removeClass("this_address");
+	 $(".address_"+ids).addClass("this_address");
+     $("#addressval").val(ids);
+     $("#addresslist .set").each(function(){
+		if($(this).text()=="默认地址"){
+			$("#addresslist .set").hide();
+			$(this).show();
+		}
+	});
+}
+function setdefault(ids){			
+     $.post('<!--@php  echo mobile_url("purchase_address")@-->', {'id' : ids,'op':'default_ajax'}, function(s) {		
+		   if (s.result == 1){		
+		        $(".default_address").removeClass("default_address");
+				$(".address_"+s.id+" .set").addClass("default_address");
+				$(".set").text('设为默认');
+				$(".default_address").text('默认地址');
+		   }
+     }, 'json');          
+}
+//删除
+function addressDel(addsid){		
+	if(confirm('确认要删除此收货地址吗?')){		
+		$.post("<!--@php  echo mobile_url('purchase_address', array('op' =>'remove'))@-->", {'id' : addsid,'del':'del'}, function(s) {
+			if (s.result == 1){					
+		        $(".address_"+addsid).remove();
+				if (parseInt(s.maxid) > 0){
+				     $(".default_address").removeClass("default_address");
+				     $(".address_"+s.maxid+" .set").addClass("default_address");
+					 if (parseInt($("#addressval").val()) == parseInt(addsid)){				      
+					      $(".address_"+s.maxid).addClass("this_address");
+				          $("#addressval").val(s.maxid);
+				     }
+				}else{
+                     $("#addressval").val('');
+				}
+	       }
+			//不管成功还是失败，都提示消息
+		   alert(s.message);
+
+		},'json');
+    }
+}
+function topay() {
+	var paycode = $("#pays").val();
+	window.open("<!--@php  echo mobile_url('purchase_pay')@-->&paymentcode="+paycode+"&orderid="+order_id);
+}							
+function openDialog(url){
+    $('.address').attr("src",url);
+    $('.address').show();
+	$('.iDialogLayout').show();
+}
+//
+ var area = <?php  echo json_encode($children)?>;
+   function fetchChildarea(cid) {
+	var html = '<option value="0">请选择二级分类</option>';
+	if (!area || !area[cid]) {
+		$('#cate_2').html(html);
+		return false;
+	}
+	for (i in area[cid]) {
+		html += '<option value="'+area[cid][i][0]+'">'+area[cid][i][1]+'</option>';
+	}
+	$('#cate_2').html(html);
+    }
+    
+  	var category = <?php  echo json_encode($childrens)?>;	
+
+   	function fetchChildCategory(cid) {
+		var html = '<option value="0">请选择二级分类</option>';
+		if (!category || !category[cid]) {
+			$('#p2').html(html);
+			fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
+			return false;
+		}
+		for (i in category[cid]) {
+			html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
+		}
+		$('#p2').html(html);
+		fetchChildCategory2(document.getElementById("p2").options[document.getElementById("p2").selectedIndex].value);
+	}
+
+
+var state = 0; //没有展开是0
+function more(){
+	if(state == 0){
+		$(".more").html("收起");		
+		$(".brandlistBox").css("max-height","150px");
+		$(".brandlistBox").css("overflow-y","auto");
+		state = 1;
+	}else if(state == 1){
+		$(".more").html("展开");
+		$(".brandlistBox").css("max-height","80px");
+		$(".brandlistBox").css("overflow-y","hidden");
+		state = 0;
+	}
+}
+</script>
+<!--@php  include themePage('purchase_footer');@

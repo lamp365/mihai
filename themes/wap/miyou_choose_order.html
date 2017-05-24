@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>添加订单</title>
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/add_order.css"/>
+	    <script type="text/javascript"src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	</head>
+	<body>
+		<!--顶部返回栏-->
+		<div class="cart_title">
+		   <span class="return" style="line-height: 45px;">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+		   </span> 
+		   <div class="title_center">
+		    	添加我的订单
+		    </div>
+		</div>
+
+		<!--@php if(empty($list)){ @-->
+		<!--如果没有订单，显示-->
+		<div class="no_order">
+			<div class="add_order">
+				<img src="__RESOURCE__/recouse/images/mh_logo.png" />
+				<p>没有查找到你的订单</p>
+				<a href="<?php echo WEBSITE_ROOT;?>">去下单，参与免单活动</a>
+			</div>
+			<div class="add_order">
+				<img src="__RESOURCE__/recouse/images/tm_logo.png" />
+				<p style="margin-bottom: 0;">如果你在我们的天猫平台下单购买了我们的产品</p>
+				<p style="margin-top: 0;">请输入你购买时收货人的手机号码。</p>
+				<a href="<!--@php echo mobile_url('miyou',array('op'=>'add_tm_order'));@-->">添加我的天猫订单</a>
+			</div>
+		</div>
+		<!--@php }else{  @-->
+		<!--如果有订单-->
+		<a href="<!--@php echo mobile_url('miyou',array('op'=>'add_tm_order'));@-->">
+			<img src="__RESOURCE__/recouse/images/tm_logo_s.png" class="tm_logo_s"/>
+		</a>
+		<div class="has_order">
+			<ul>
+				<!--@php foreach($list as $one){  @-->
+				<li>
+					<!--上-->
+					<div class="order_top">
+						<!--上左-->
+						<div class="info">
+							<p><!--@php echo $one['price'];@-->元</p>
+							<p><!--@php echo date("Y年m月d日",$one['createtime']);@--></p>
+						</div>
+						<!--上右-->
+						<p class="from_where">
+							来自<!--@php echo $platform[$one['from_platform']];@-->平台
+						</p>
+					</div>
+					<!--下-->
+					<div class="order_bottom">
+						订单编号：<!--@php echo $one['ordersn'];@-->
+						<span class="sure_add_order" data-url="<!--@php echo mobile_url('miyou',array('op'=>'add_order','orderid'=>$one['oid'],'platform'=>$one['from_platform'])); @-->">助力免单</span>
+					</div>
+				</li>
+				<!--@php } @-->
+			</ul>
+		</div>
+		<!--@php } @-->
+		<script>
+		
+			$(".return").click(function(){
+			    window.history.back(-1);
+			})
+			$(".sure_add_order").click(function(){
+				var url = $(this).data('url');
+				$.post(url,{},function(data){
+					if(data.errno == 200){
+						alert(data.message,"正在返回中~");
+						var gourl = "<!--@php echo mobile_url('miyou',array('op'=>'invite')); @-->";
+						setTimeout(function(){
+							window.location.href = gourl;
+						},'2000');
+					}else{
+						alert(data.message);
+					}
+				},'json');
+			})
+		</script>
+	<!--@php  include themePage('footer');@-->

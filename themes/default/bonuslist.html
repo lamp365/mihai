@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="" lang="zh-CN" >
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="cleartype" content="on">
+    <title>我的优惠券</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+<style>
+.content-body {
+  background-color: #fff;
+  border:1px solid #e4e4e4;
+padding: 19px 0 10px 10px;
+}
+.content-body {
+  position: relative;
+  z-index: 10;
+}
+.bjprcali {
+  margin: 0 20px 0 10px;
+  padding-left:0px;
+}
+ol, ul {
+  list-style: none;
+}
+/*ul, menu, dir {
+  display: block;
+  list-style-type: disc;
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 40px;
+}*/
+.bjprcali .bjprit {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-left: 0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  height: 92px;
+  width: 949px\9;
+  position: relative;
+  overflow: hidden;
+}
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+ol, ul {
+  list-style: none;
+}
+.clearfix {
+  zoom: 1;
+}
+.bjprcali .bjprit a {
+  display: block;
+}
+a {
+  color: #333;
+  background: transparent;
+  text-decoration: none;
+}
+
+
+.bjprcali .bjprlpar {
+  float: left;
+  width: 60%;
+  width: 569px\9;
+  height: 92px;
+  color: #fff;
+}
+.bjprcali .bjprlpar .inner {
+  padding: 10px;
+}
+.bjf14 {
+  font-size: 14px !important;
+}
+.bjprcali .bjprlpar .bjprcava {
+  font-size: 35px;
+  line-height: 60px;
+}
+.bjprcali .bjprlpar .bjprcava span {
+  font-size: 18px;
+}
+.bjf12 {
+  font-size: 12px !important;
+}
+.bjprcali .bjprripa {
+  float: right;
+  width: 40%;
+  height: 92px;
+  color: #666;
+  line-height: 1.5;
+}
+.center, .text-center {
+  text-align: center;
+}
+.bjprcali .bjprripa .inner {
+  padding: 6px 10px;
+}
+.bjf16 {
+  font-size: 16px !important;
+}
+.bjprcali .left-dot-line {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 5px;
+  height: 88px;
+  background: url("__RESOURCE__/vertical_dot.png") repeat-y left top;
+  background-size: 4px;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.bjprlpar{
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=red,endcolorstr=blue,gradientType=0);*/
+}
+</style>
+
+
+
+	</head>
+<body>
+
+  
+ <!--@php  include page('vip_header');@-->
+ <div class="new-fansindex-wrap">
+<div class="viewport new-fansindex">
+	
+    <div class="r-member">  
+		<div class="crumbs">
+         <span>当前位置：</span>
+         <a style="color:#000;" href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a>
+         <i style="margin-left: 5px;" class="icon-angle-right"></i>
+         <i>我的优惠券</i>
+    </div>
+    
+	<div class="content ">
+        <div class="content-body">
+    <!-- 无优惠券情况下展示 -->
+        <div class="bjprclbx">
+            <ul class="bjprcali">
+			 <!--@php  if(count($bonuslist)<=0) { @-->	  
+                <img style="max-width: 100%;height: auto;width: auto\9;" src="__RESOURCE__/recouse/images/zwuyhq.png"/>
+                   <!--@php  } @-->	 
+			        
+              <!--@php  foreach($bonuslist as $bonus) { @-->	
+                    <li class="bjprit coupon-style-0">
+                        <a class="clearfix" href="#">
+                            <div class="bjprlpar" style="background:<!--@php if($bonus['isuse']==0){  if($bonus['use_end_date']<=time()){  @--> #BABABA<!--@php }else{ @--> #fe324e <!--@php }@--> <!--@php }else{ @--> #03FCB0 <!--@php }@-->;">
+                                <div class="inner">
+                                    <h4 class="bjprshna bjf14"> <!--@php echo $bonus['type_name']; @--></h4>
+                                    <div class="bjprcava">
+                                        <span>￥</span><i><!--@php echo $bonus['type_money']; @--></i>
+                                    </div>
+                                    <div class="bjprcon bjf12">
+                                                                           </div>
+                                </div>
+                            </div>
+                            <div class="bjprripa center bjf12">
+                                <div class="inner">
+                                    <div>
+                                        <p>使用期限</p>
+                                        <p><!--@php echo date('Y-m-d', $bonus['use_start_date']); @--></p>
+                                        <p><!--@php echo date('Y-m-d', $bonus['use_end_date']); @--></p>
+                                    </div>
+                                    <div class="bjprusst bjf16">
+                                          <!--@php if($bonus['isuse']==0){  @-->  <!--@php if($bonus['use_end_date']<=time()){  @--> 已过期<!--@php }else{ @--> 未使用 <!--@php }@--> <!--@php }else{ @-->     已使用   <!--@php }@-->                             </div>
+                                </div>
+                            </div>
+                            <i class="expired-icon"></i>
+                            <i class="left-dot-line"></i>
+                        </a>
+                    </li>
+  <!--@php  } @-->	
+                  </ul>
+        </div>
+
+    </div>              
+
+	</div>  
+</div>
+ <div class="l-member"> 
+		 <!--@php include themePage('leftmenu');@-->
+ </div>
+ </div>
+</div>
+
+<!--@php include themePage('footer');@-->
+ 
+</body>
+
+</html>

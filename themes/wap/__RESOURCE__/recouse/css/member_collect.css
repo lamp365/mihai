@@ -1,0 +1,193 @@
+html,body,.header_title{
+	background-color: #fff;
+}
+.shopping_habits{
+	min-width: 320px;max-width: 640px;margin:0 auto;
+}
+.shopping-viewport{
+	display: none;
+	position: relative;
+}
+.shopping-viewport img{
+	width: 100%;max-width: 100%;display: block;
+}
+.sex-title{
+	color: #333;
+	text-align: center;
+	font-size: 15px;
+	margin:6.3% 0;
+}
+.age-title{
+	color: #333;
+	text-align: center;
+	font-size: 15px;
+	margin:7.5% 0;
+}
+.sex-img{
+	width: 56%;
+	margin:0 auto;
+}
+.sex-img img{
+	border-radius: 50%;
+}
+.sex-left{
+	position: relative;
+	float: left;
+	width: 38%;
+	box-sizing: border-box;
+	border-radius: 50%;
+	border:1px solid #fff;
+}
+.sex-right{
+	position: relative;
+	float: right;
+	width: 38%;
+	box-sizing: border-box;
+	border-radius: 50%;
+	border:1px solid #fff;
+}
+.sex-checked{
+	border:1px solid #ff2d4b;
+}
+.next-step{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 60px;
+	background-color: #fff;
+	border-top: 1px solid #E2E2E2;
+}
+.next-step-btn{
+	width: 92%;
+	margin:1.5% auto;
+	text-align: center;
+	background: #FF2D4B;
+	box-shadow: 0 3px 5px 0 #FF2D4B;
+	border-radius: 4px;
+	color:#FF99A8;
+	line-height: 44px;
+	font-size: 20px;
+}
+.next-step-disabled{
+	background-color: #e0e0e1;
+	box-shadow: 0 3px 5px 0 #e0e0e1;
+	color: #bfbfbf;
+}
+.age-90{
+	margin-left: 13.3%;
+}
+.age-80{
+	margin-left: 4.7%;
+	margin-top: 7.3%;
+	margin-right: 4.7%;
+}
+.age-75{
+	margin-top: -3%;
+	margin-left: 13.3%;
+}
+.age-70{
+	margin-top: -3%;
+	margin-left: 6.5%;
+}
+.age-none{
+	margin-left: 9.3%;
+	margin-top: 4.4%;
+}
+.age-img .age-1 div,.age-img .age-2 div{
+    width: 21.3%;
+    height: 12%;
+    display: block;
+    float: left;
+}
+.img-check{
+	position: relative;
+}
+.img-check:after,.sex-checked:after,.who-div-check:after{
+	content: "";
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	background:url(../images/shopping_habits_ok.png) no-repeat center;
+	background-size: 100%;
+	width: 22px;
+	height: 22px; 
+}
+.sex-title-1{
+	color: #999;
+}
+.buy-to-who .who-div,.step-3-div .importance{
+	position: relative;
+	width: 21.3%;
+	text-align: center;
+	color:#666;
+	font-size: 22px;
+	border: 1px dashed #999999;
+    border-radius: 50%;
+}
+.who-div-1,.who-div-4{
+	margin:0 auto;
+}
+.who-div-2{
+	float: left;
+	margin-left: 14.5%;
+}
+.who-div-3{
+	float: right;
+	margin-right: 14.5%;
+}
+.buy-to-who .who-div-check{
+	border:1px solid #FF2D4B;
+	color: #FF2D4B ;
+}
+.step-3-div .who-div-check{
+	border:1px solid #FF2D4B;
+	color: #FF2D4B ;
+}
+.step-4-div .who-div-check img{
+	border:1px solid #FF2D4B;
+	border-radius: 50%;
+}
+.step-1{
+	display: block;
+}
+.step-3-div .importance{
+	float: left;
+}
+.step-3-div .importance:nth-child(3),.step-3-div .importance:nth-child(4){
+	margin-top: 7.3%;
+}
+.step-3-div .importance:nth-child(odd){
+	margin-left: 21.6%;
+	margin-right: 13.5%;
+}
+.step-4-div ul li{
+	position: relative;
+	float: left;
+	width: 21.3%;
+	margin-right: 9.3%;
+	margin-bottom: 4%;
+}
+
+.step-4-div ul li img{
+	width: 100%;
+	display: block;
+	max-width: 100%;
+	border: 1px solid #fff;
+    box-sizing: border-box;
+}
+.step-4-div ul li:nth-child(3n){
+	margin-right:0;
+}
+.step-4-div ul li:nth-child(3n+1){
+	margin-left:8.7%;
+}
+.step-4-div .produc-title{
+	color: #666;
+	font-size: 14px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow:ellipsis;
+	margin-top: 5%;
+}

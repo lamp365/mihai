@@ -1,0 +1,102 @@
+@charset "utf-8";
+.no_collect{height: 400px;position: relative;}
+.no_collect img{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -60px;
+	margin-left: -60px;
+}
+.have_collect ul{overflow: hidden;}
+.have_collect ul li{
+	float: left;
+	width: 200px;
+	height: 280px;
+	border: solid 1px #eee;
+	margin:0 0 10px 10px;
+	box-sizing: border-box;
+	position: relative;
+}
+.have_collect .Img{
+	width: 80%;
+	height: 70%;
+	line-height: 210px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.have_collect .Img img{
+	width: 100%;
+	vertical-align: middle;
+}
+.have_collect .info{
+	padding: 0 10px;
+	height: 30%;
+	position:relative;
+}
+.have_collect .info p:first-child{
+	height: 41px;
+	overflow: hidden;
+}
+.have_collect .info p:first-child:hover{
+	text-decoration: underline;
+}
+.have_collect .info p:last-child{
+	color: #ff2d4b;
+	font-weight: bold;
+	font-size: 16px;
+	position: absolute;
+	bottom: 10px;
+
+}
+.have_collect .del_icon{
+	position: absolute;
+	right: 8px;
+	top: 8px;
+	width: 32px;
+	height: 32px;
+	background: #7F7F7F;
+	text-align: center;
+	display: none;
+	cursor: pointer;
+}
+.have_collect .del_icon i{
+	color: #fff;
+	font-size: 22px;
+	line-height: 32px;
+}
+.have_collect ul li:hover .del_icon{display: block;}
+.have_collect .del_icon:hover{background: #ff2d4b;}
+/*遮罩*/
+.have_collect ul li .cover{
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.6);
+	background: #000\9\0;filter: alpha(opacity=60);
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	text-align: center;
+	display: none;
+}
+.have_collect ul li .cover .msg{color: #fff;margin-top: 100px;line-height: 56px;}
+.have_collect ul li .cover .btns .abtn{
+	display: inline-block;
+    width: 54px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: top;
+	border-radius: 4px;
+}
+.have_collect ul li .cover .btns .ok{
+	background-color: #E31436;
+    color: #fff;
+}
+.have_collect ul li .cover .btns .cc{
+	margin-left: 10px;
+    background-color: #fff;
+    color: #333;
+}
+    

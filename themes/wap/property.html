@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta property="qc:admins" content="2145337462112113536375" />
+		<meta content="telephone=no, address=no" name="format-detection">
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" /> 
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title> <!--@php echo $title;@--></title>
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+		<link rel="shortcut icon" href="favicon.ico"/>		
+		<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>		
+	</head>
+	
+	<style>
+		*{margin:0;padding:0}
+		body{max-width: 640px;margin: 0 auto;}
+		.cart_title .all_bill{display: inline-block;float: right;position: relative;font-size: 12px;margin-right: 20px;z-index: 2;}
+		.all_bill span{font-size: 14px;}
+		.all_bill:after{
+			content: '';
+			position: absolute;
+			right: -12px;
+			top:20px;		
+			border: solid 4px #000;
+			border-left-color: #fff;
+			border-right-color: #fff;
+			border-bottom-color: #fff;
+		}
+		.sub_menu{
+			position:absolute;
+			right: 0;
+			top: 38px;		
+			display: none;
+			width: 100px;
+			background:rgba(0,0,0,0.8);
+			color: #fff;
+			border-radius: 5px;
+		}
+		 .sub_menu li{
+			clear: both;
+			width: 100%;
+			display: block;
+			list-style: none;
+			line-height: 35px;
+			border-bottom: solid 1px #fff;
+			text-align: left;
+			padding: 0 15px;
+			
+		}
+		.sub_menu li img{
+			height: 15px;
+			margin-right: 10px;
+			vertical-align: middle;
+		}
+		.sub_menu li:first-child:before{
+			content: '';
+			position: absolute;
+			right: 7px;
+			top:-12px;		
+			border: solid 6px rgba(0,0,0,0.8);
+			border-left-color: #fff;
+			border-right-color: #fff;
+			border-top-color: #fff;
+		}
+		.cover{
+			width: 100%;height: 100%;position: fixed;top: 0;left: 0;display: none;
+		}
+		.bill_check li{border-bottom: solid 1px #eee;overflow: hidden;padding: 15px;box-sizing:border-box;list-style: none;}
+		.bill_check .info{overflow: hidden;}
+		.bill_check .info .detail{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;font-size: 1em;}
+		.bill_check .Img{width:45px;overflow: hidden;margin-right:10px;}
+		.bill_check .Img img{border-radius:50%;width:45px;height:45px;vertical-align: middle;}
+		.bill_check .info {height: 45px;}
+		.bill_check .info p{line-height: 22px;}
+		.bill_check .info .content{overflow: hidden;}
+		.bill_check .info .content span{
+			font-size:1em;color: #333;
+			display: inline-block;overflow: hidden;			
+		}
+		.f1{float: left;}
+		.r1{float: right;font-size: 14px;}
+		.f12{font-size:0.9em !important;color: #9e9e9e !important;}
+		/*加载按钮*/
+		.ajax_next_page{
+			text-align: center;
+			font-size: 12px;
+			margin-bottom: 10px;
+		}
+		.ajax_next_page img{
+			width: 25px;
+			display: block;
+			margin: 10px auto;
+		}
+
+		@media only screen and (max-width:414px) {
+			body{font-size: 16px;}
+		}
+		@media only screen and (max-width:375px) {
+			body{font-size: 14px;}
+		}
+		
+		/*没有账单*/
+		.no_bill{
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			margin-left: -97px;
+			margin-top: -39px;
+		}
+	</style>
+	<body style="background:#fff;">
+		<!--顶部返回栏-->
+		<div class="cart_title">
+		   <span class="return" style="line-height: 45px;">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+		   </span> 
+		   	<div class="title_center">
+		    	<!--@php echo $title;@-->
+		    </div>
+		    <!--下拉框-->
+		    <div class="all_bill">
+			    <span class="show_sub_menu">
+					<!--@php if($_GP['status'] ==1){ echo '进账单';}else if($_GP['status'] == 2){ echo '出账单';}else{ echo '全部账单';} @-->
+				</span>
+			    <ul class="sub_menu">
+					<li data-status="0"><img src="__RESOURCE__/recouse/images/bill.png" />全部账单</li>
+					<li data-status="1"><img src="__RESOURCE__/recouse/images/outcharge.png" />进账单</li>
+					<li data-status="2"><img src="__RESOURCE__/recouse/images/incharge.png" />出账单</li>
+				</ul>
+			</div>
+			<!--遮罩层-->
+			<div class="cover"> </div>
+		</div>
+		
+		<!--账单列表-->
+		<ul class="bill_check">
+			<!--@php if(empty($pay_list)){ @-->
+			<img src="__RESOURCE__/recouse/images/no_bill.png" class="no_bill"/>
+			<!--@php }else{ @-->
+			<!--@php foreach($pay_list as $list){ @-->
+			<li>
+				<!--左边-->				
+				<!--头像-->
+				<div class="Img f1">
+					<img src="<!--@php echo $list['pic']; @-->"/>
+				</div>
+				
+				<!--右边-->
+				<div class="info">
+					<!--详情-->
+					<p class="detail"><!--@php echo $list['remark']; @--></p>
+					<p class="content">						
+						<span class="f12 f1"><!--@php echo date("Y-m-d H:i",$list['createtime']); @--></span>
+						<span class="r1"><!--@php echo $list['fee']; @--></span>
+					</p>					
+				</div>
+			</li>
+			<!--@php } @-->
+			<!--@php } @-->
+		</ul>
+		
+			<!--用来存当前page-->
+			<input type="hidden" value="2" id="page"/>
+			<div class="ajax_next_page" style="display: none;">
+				<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+				正在加载
+			</div>
+			
+		  <!--@php  include themePage('footer');@-->	
+	<script>
+		$(function(){
+			$(".cart_title .return").on("click",function(){				
+				window.history.back(-1);
+			})
+			//点击全部账单，出现下拉框
+			$(".show_sub_menu").on("click",function(){
+				$(".sub_menu").toggle();
+				$(".cover").show();
+			})
+			//点击任意空白，下拉框收起
+			$(".cover").on("click",function(){
+				$(".sub_menu").fadeOut();
+				$(this).hide();
+			})
+
+			$(".sub_menu li").click(function(){
+				var status = $(this).data('status');
+				var url = "<!--@php echo mobile_url('member',array('op'=>'list','type'=>$_GP['type']));@-->";
+				if(status){
+					url = url + "&status="+status;
+				}
+				window.location.href = url;
+			});
+
+
+
+			//加载更多
+			$(window).scroll(function(){
+				if( $(document).scrollTop() >= $(document).height() - $(window).height() ){
+					Refresh();
+				}
+			})
+			
+			var index = 1;
+			function Refresh(){				
+				if( index == 1 ){					
+					$(".ajax_next_page").show();
+					index = 0;
+					var page = $("#page").val();
+					var url = "<!--@php echo mobile_url('member',array('op'=>'list','type'=>$_GP['type']));@-->";
+					$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
+						if(s.errno != 200){
+							//如果没有数据							
+							$(".ajax_next_page").hide();
+						}else{
+							$("#page").val(++page);
+							var art_data = s.message;
+							for(var i = 0;i < art_data.length;i++){								
+								Load(art_data[i]);
+							}
+							index = 1;
+							$(".ajax_next_page").hide();
+						}
+					}, 'json');
+				}
+			}
+			
+			//加载数据
+			function Load(data){
+				var pic    = "<!--@php echo $list['pic']; @-->";
+				var remark = "<!--@php echo $list['remark']; @-->";
+				var time   = "<!--@php echo date('Y-m-d H:i',$list['createtime']); @-->";
+				var fee    = "<!--@php echo $list['fee']; @-->";
+				var li =  '<li>'+							
+							'<div class="Img f1">'+
+								'<img src="'+ pic +'"/>'+
+							'</div>'+							
+							'<div class="info">'+								
+								'<p class="detail">'+ remark +'</p>'+
+								'<p class="content">	'+					
+									'<span class="f12 f1">'+  time +'</span>'+
+									'<span class="r1">'+ fee +'</span>'+
+								'</p>'+					
+							'</div>'+
+						'</li>';
+				$(".bill_check").append(li);
+			}
+		})
+		
+	</script>
+

@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>会员俱乐部</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/iclub.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+    <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <!--@php  include page('vip_header');@-->
+    <div class="vip-level-wrap">
+        <div class="vip-level-banner"></div>
+        <div class="vip-level">
+            <div class="vip-level-1">会员等级</div>
+            <div class="vip-level-2">会员积分体系包括<!--@php echo count($list); @-->个等级，分别为
+                <!--@php $str = '';  foreach($list as $t_one){ $str.="{$t_one['rank_name']}、"; }  echo rtrim($str,'、'); @-->
+                。会员等级与积分值对照表：</div>
+            <div class="vip-level-table" id="vip-level-table">
+                <table>
+                    <tr>
+                        <th style="width: 100px;">会员等级</th>
+                        <!--@php foreach($list as $one){ @-->
+                        <th style="width: 95px;"><div class="vip_grade">
+                            <img src="<!--@php echo $one['icon']; @-->" width="22">
+                        </div></th>
+                        <!--@php } @-->
+                    </tr>
+                    <tr>
+                        <td>等级名称</td>
+                        <!--@php foreach($list as $l_one){ @-->
+                        <td><!--@php echo $l_one['rank_name']; @--></td>
+                        <!--@php } @-->
+                    </tr>
+                    <tr>
+                        <td>积分</td>
+                        <!--@php foreach($list as $s_one){ @-->
+                        <td><!--@php echo $s_one['experience']; @--></td>
+                        <!--@php } @-->
+                    </tr>
+                </table>
+            </div>
+            <div class="vip-level-1">积分值是什么？</div>
+            <div class="vip-level-2">积分值，是衡量积分等级的数值。</div>
+            <div class="vip-level-1">会员如何升级？</div>
+            <div class="vip-level-2">当年积分值统计周期：每年1月1日-12月31日，当会员的“当年积分值”达到或超过更高等级的积分值差额时，则自动升级到对应的等级；</div>
+            <div class="vip-level-1">会员等级核算</div>
+            <div class="vip-level-2">每年1月1日将对获得最新等级身份超过1年的会员进行等级核算。新的等级身份根据会员在上年度的累计积分值到达的等级档位确定，积分值将调整为新等级的初始积分值。具体请查阅<a href="#vip-level-table" class="vip-level-table-a">《会员等级与积分值对照表》</a></div>
+            <!--<div class="vip-level-1">如何获得积分值？</div>
+            <div class="vip-level-2">完成下表中指定的任务，即可获得相应数量的积分值（移动端暂不支持获取行为值）：</div>
+            <table class="vip-level-table vip-level-table-2">
+                <tbody>
+                  <tr>
+                    <td width="150" align="center" valign="middle" bgcolor="#feeeeb" style="height:32px;"><p>积分值类型</p></td>
+                    <td width="180" align="center" bgcolor="#feeeeb" style="height:32px;"><p>行为内容</p></td>
+                    <td width="145" align="center" bgcolor="#feeeeb" style="height:32px;"><p>奖励积分值</p></td>
+                    <td width="140" align="center" bgcolor="#feeeeb" style="height:32px;"><p>奖励封顶</p></td>
+                    <td width="215" align="center" bgcolor="#feeeeb" style="height:32px;"><p>获得途径</p></td>
+                    <td width="120" align="center" bgcolor="#feeeeb" style="height:32px;"><p>备注</p></td>
+                  </tr>
+                  <tr>
+                    <td align="center" valign="middle" bgcolor="#fffefb">消费值</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb"><a class="a_u_red" href="//www.vip.com" target="_blank">成功购物</a></td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">当次合格购物金额*5</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">无限制</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">成功购物</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">订单状态显示“已完成”获得相应积分值奖励，退货、拒收商品不获得相应积分值奖励</td>
+                  </tr>
+                  <tr>
+                    <td align="center" valign="middle" bgcolor="#fffefb">消费值</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb"><a class="a_u_red" href="//act.vip.com/14547.html" target="_blank">使用快捷支付成功购物</a></td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">30</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">无限制</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">使用快捷支付成功购物</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">订单状态显示“已完成”获得相应V值奖励，退货、拒收商品不获得相应积分值奖励</td>
+                  </tr>
+                </tbody>
+            </table>-->
+        </div>
+    </div>
+    <!--@php include themePage('footer');@-->
+</body>
+<script>
+$(function(){
+
+})
+</script>
+</html>

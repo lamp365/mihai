@@ -1,0 +1,248 @@
+
+	<!--@php  include themePage('purchase_header');@-->
+	<title>我的订单</title>	
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  	
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">
+	
+	<link href="__RESOURCE__/recouse/css/purchase_bjcommon.css" rel="stylesheet" type="text/css" />	  
+	<style type='text/css'>
+		.main .my_nav ul{display:box;display:-ms-box;display:-webkit-box;display:flex;display:-ms-flexbox;display:-webkit-flex}
+		.main .my_nav li{display:block;flex:1;-ms-flex:1;-webkit-flex:1;box-flex:1;-ms-box-flex:1;-webkit-box-flex:1;
+					width: 140px\9;float: left;
+		}
+		.my_nav a:before{content:'\20';display:block}.layer .action a,.order_head .oh_btn.bg_1{background:#F3F3F3;color:#fff;border:1px solid transparent}
+		.main .my_nav{width:100%;margin-bottom: 20px;}
+		.my_nav ul{overflow:hidden}
+		.my_nav a{position:relative;display:block;height:40px;line-height:42px;text-align:center;color:#666;padding-bottom:2px;font-size:14px;}
+		.my_nav li.cur a{padding-bottom:0;border-bottom:2px solid #e4393c;color:#e4393c;font-weight:bold;}
+		.btn:empty {
+			display: none;
+		}
+		.myoder .myoder-hd .btn{color:#ffffff;}
+		.modal-body p a img{
+			width: 100%;
+		}
+		.modal-dialog{
+			width: 820px;
+		}
+		.shouhuo_sub{
+			height: 30px;
+			line-height: 30px;
+		}
+	</style>
+	
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+
+
+
+<div class="viewport">
+    <div class="crumbs">
+         <span>当前位置：</span>
+        
+         <strong>我的订单</strong>
+   </div>
+	<div class="r-member">
+		<div class="personalTitle pT">
+				我的订单
+		</div>
+		<div class="main" style="width: 100%;">
+			<div class="my_nav">
+			        <ul id="nav">
+			            <li <!--@php  if($status==99) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>99))@-->">全部</a></li>
+			            <li <!--@php  if($status==0) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>0))@-->">待付款</a></li>
+			            <li <!--@php  if($status==1) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>1))@-->">已付款</span></a></li>
+			            <li <!--@php  if($status==2) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>2))@-->">已发货</span></a></li>
+			            <li  <!--@php  if($status==3) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>3))@-->">已完成</a></li>
+			            <li  <!--@php  if($status==34) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>34))@-->">已退款</a></li>
+			            <li  <!--@php  if($status==14) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('purchase_myorder',array('status'=>14))@-->">已退货</a></li>
+			        </ul>
+			 </div>
+			 <!--搜索订单,订单状态，下单时间-->
+			 <!--<div class="searchOrder">			 
+			 		<input type="text"class="inputSearch" placeholder="输入商品名称或订单号搜索"/>
+			 		<input type="button" name="" class="searchBtn" value="搜索"/>
+			 	<div class="OrderTime">
+				 	下单时间：
+				 	<select>
+				 		<option>近三个月</option>
+				 		<option>近六个月</option>
+				 		<option>2016年</option>
+				 	</select>
+			 	</div>
+			 	<div class="orderState">
+			 		订单状态：
+			 		<select>
+			 			<option>全部</option>
+			 			<option>等待买家付款</option>
+			 			<option >代发货</option>
+			 			<option>已发货</option>
+			 			<option>交易完成</option>
+			 			<option>交易失败</option>
+			 			<option>订单关闭</option>
+			 		</select>
+			 	</div>
+			 </div>-->
+		    <!--@php  if(count($listorder)<=0){ @-->
+			<div class="myoder" style='text-align:center;color:#aaa;padding:30px;border: none;'>
+				您当前没有任何订单！
+			</div>	
+		    <!--@php } @-->
+			<div style='margin-bottom:40px;'>
+			  
+				<!--@php  if(is_array($listorder) && !empty($listorder)) {  @-->
+				  <ul class="persViewTit clearfix">
+		                <li class="h-text h-goods">&nbsp;&nbsp;&nbsp;商品</li>
+	                    <li class="h-text h-total">总计(元)</li>
+	                    <li class="h-text h-status">订单状态</li>
+	                    <li class="h-text h-operate">商品操作</li>
+	             </ul>
+				 <!--@php foreach($listorder as $item) {  @-->
+				<div class="myoder" style="margin-bottom: 20px;">
+					<div class="myoder-hd">
+						<span class="pull-left">订单编号：<!--@php  echo $item['ordersn'];@--></span>&nbsp;&nbsp; <span class="btn btn-xs btn-info"><!--@php echo getGoodsType($item['ordertype']);@--></span>
+						<span class="pull-right"><!--@php  echo date('Y-m-d H:i', $item['createtime'])@--></span>
+					</div>
+					<ul class="listview">
+		                <li class="h-text h-goods">
+		                	
+		                	<!--弹出的商品详情框-->
+							 <div class='modal fade product-detail' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
+								<div class='modal-dialog modal-lg'>
+									<div class='modal-content'>
+										<div class='modal-header'> 
+											<button type='button' class='close' data-dismiss='modal' style="margin-top: -10px;">
+												<span aria-hidden='true'>&times;</span>
+												<span class='sr-only'>Close</span>
+											</button>
+											<h4 class='modal-title' id='myModalLabel'></h4>
+										</div>
+										<div class='modal-body'>
+											<div class="ajax-load"><img src="__RESOURCE__/recouse/images/ajax-loader.gif"></div>
+										</div>
+									</div>
+								</div>
+							</div>	
+							
+						    <!--@php  if(count($item['goods'])==1) { @-->  <!--@php  if(is_array($item['goods'])) { foreach($item['goods'] as $goods) { @--> 
+							<div class="img">
+	                            <a href="javascript:;" class="product-img" product_id="<!--@php echo $goods['aid']; @-->" >
+	                            	<img src="<!--@php  echo $goods['thumb'];@-->" width="80" height="80" style="+width: 60px;+height: 60px;">
+	                            </a>
+							</div>
+							<div class="name" style="text-align: left;">
+								<a href="javascript:;" class="product-name" product_id="<!--@php echo $goods['aid']; @-->" >
+									<p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><!--@php  echo $goods['title'];@--></p>									
+								</a>								
+								<p style=" border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;margin-top: 5px;display: none;"><!--@php  echo $goods['name'];@--></p>
+								<p style="font-size: 12px;margin-top: 5px;display: none;">规格：<span>这里是规格内容</span></p>
+							</div>
+													
+							<!--@php  } } @-->
+							<!--@php  } else { @-->
+							<!--@php  if(is_array($item['goods'])) { foreach($item['goods'] as $goods) { @-->
+							
+							<div class="img">
+								<a href="javascript:;" class="product-img" product_id="<!--@php echo $goods['aid']; @-->" >
+								  <img src="<!--@php  echo $goods['thumb'];@-->" width="80" height="80" style="+width: 60px;+height: 60px;">
+								</a>
+							</div>							
+							
+				                <!--@php  } } @-->
+								 <!--@php  }  @-->
+						</li>
+                        <li class="h-text h-total"style="line-height: 80px;">
+							<div class="prices" style="margin-top: 0;">
+								<span class="false"> 
+			                        <!--@php  echo $item['price'];@--> 元 
+			                        <!--@php  if($item['hasbonus']>0) { @-->
+				                    <span style="color:green"> 
+				                    	( 已优惠：<!--@php  echo $item['bonusprice'];@--> 元)
+				                    </span> 			                    	
+				                    <!--@php  } @--> 				                    
+							    </span>    						
+							</div>
+                        </li>
+	                    <li class="h-text h-status"><!--@php if($_GP['status']==34){ echo "退款成功"; }else if($_GP['status']==14){ echo "退货成功"; }else{ echo $status_ln[$item['status']];} @--></li>
+	                    <li class="h-text h-operate operate" style="vertical-align: middle;">
+						    <a href="<!--@php  echo mobile_url('purchase_myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status))@-->" class="bts" style="margin-top:10px;">订单详情</a> 
+							
+							<!--@php if ($item['status'] == 0 && $item['ordertype'] != 1){ @-->
+                            <a href="<!--@php  echo mobile_url('purchase_myorder', array('orderid' => $item['id'], 'op' => 'cancelsend','fromstatus'=>$status))@-->" class="bts">取消订单</a>
+							<!--@php } @-->
+						</li>
+					 </ul>					 					 
+				</div>
+				<!--@php  } } @-->
+			    <!--@php  echo  $pager; @-->
+			</div> 				
+	<!--后两个页面到这里结束-->		
+	 </div>	
+  </div><!--r-member到这结束-->
+
+  <div class="l-member"> 
+	 <!--@php include themePage('purchase_leftmenu');@-->
+  </div>
+</div>
+<script>
+	$(function(){
+		$(".operate").each(function(){
+			var len = $(this).find("a").length;
+			if(len == 2){
+				$(".operate a").css("height","30px");
+				$(".operate a").css("line-height","30px");
+			}else if(len == 1){
+				$(".operate a").css("height","60px");
+				$(".operate a").css("line-height","60px");
+			}
+		});
+		//点击商品图片显示产品详情
+		$(".product-img").on("click",function(){	
+			$(this).parent(".img").siblings(".product-detail").modal();		
+			var content_id = $(this).attr("product_id");			
+			var content = $(this).parent(".img").siblings(".product-detail").find(".modal-body");	
+			var title = $(this).parent(".img").siblings(".product-detail").find(".modal-title"); //放title的地方
+			var content_len = content.children().length;		
+			//如何已有详情直接返回
+			if( content_len > 1){
+				return false;
+			}else{				
+				$.post("<!--@php  echo mobile_url('purchase_order')@-->",{type:'get_content',id:content_id},function(data){
+					console.log(data);
+					if(data.errno == 200){
+						content.html(data.message.content);
+						title.html(data.message.title);
+					}else{
+						alert(data.message);
+					}
+				},'json')
+			};
+		})
+		//点击商品名称显示产品详情
+		$(".product-name").on("click",function(){	
+			$(this).parent(".name").siblings(".product-detail").modal();		
+			var content_id = $(this).attr("product_id");	
+			var content = $(this).parent(".name").siblings(".product-detail").find(".modal-body");//放详情的地方
+			var title = $(this).parent(".name").siblings(".product-detail").find(".modal-title"); //放title的地方
+			var content_len =content.children().length;				
+			//如何已有详情直接返回
+			if( content_len > 1){
+				return false;
+			}else{
+				$.post("<!--@php  echo mobile_url('purchase_order')@-->",{type:'get_content',id:content_id},function(data){					
+					if(data.errno == 200){
+						content.html(data.message.content);	
+						title.html(data.message.title);
+					}else{
+						alert(data.message);
+					}
+				},'json')
+			};
+		})
+	})
+</script>
+<script>
+
+</script>
+<!--@php include themePage('purchase_footer');@-->
+
+

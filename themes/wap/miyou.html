@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	    <meta name="apple-mobile-web-app-capable" content="yes">
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	    <meta name="format-detection" content="telephone=no">
+	    <title>觅友圈</title>
+	    <link rel="shortcut icon" href="favicon.ico"/>
+	    <link href="__RESOURCE__/recouse/css/miyou.css" rel="stylesheet" type="text/css" />
+	    <link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+	    <script type="text/javascript"src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	</head>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+	<body>	
+		<!--顶部返回栏-->
+		<div class="cart_title" style="border-bottom: none;line-height: 45px;">
+		   <span class="return" style="line-height: 45px;">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+		   </span> 
+		   	<div class="title_center">
+		   		 我的觅友
+		    </div>
+		</div>
+		
+	<!--如果是由别人推荐进来的，就显示我的推荐人-->
+		<!--@php if(!empty($recommendInfo)){  @-->
+		<span class="_title">我的推荐人</span>			  
+		  <ul class="miyou_list">
+		  	<li>
+		  		<!--头像-->
+		  		<div class="user_img">
+					<!--@php if(empty($recommendInfo['avatar'])){ @-->
+		  			<img src="__RESOURCE__/recouse/images/userface.png" />
+					<!--@php }else{ @-->
+					<img src="<!--@php echo download_pic($recommendInfo['avatar'],70,70,2);@-->" />
+					<!--@php } @-->
+		  		</div>
+		  		<!--头像右边的一大块-->
+		  		<div class="detail">
+		  			<!--上部-->
+		  			<div class="info">
+		  				<span class="name">
+							<!--@php echo $recommendInfo['name']; @-->
+						</span>
+		  				<span class="miyou_num _span">
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />
+		  					<span>
+		  						<!--@php echo intval($recommendInfo['friend_count']); @-->
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />
+		  				</span>
+		  				<span class="rank_img _span">
+		  					<img src="__RESOURCE__/recouse/images/rank_img1.png" />
+		  					<span>
+		  						<!--@php echo $recommendInfo['rank_name']; @-->
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/rank_img3.png" />
+		  				</span>
+		  			</div>
+		  			<!--下部-->
+		  			<div class="money">
+		  				<span class="yj">
+		  					TA的佣金:
+		  					<span><!--@php echo floatval($recommendInfo['commision_fee']);@--></span>
+		  				</span>
+		  				<!--<span>
+		  					<img src="__RESOURCE__/recouse/images/money_img.png" />
+		  					+<!--@php echo floatval($recommendInfo['invite_fee']);@-->
+		  				<!--</span>-->
+		  			</div>
+		  		</div>
+		  	</li>		  	
+		  </ul>
+		  <!--@php } @-->
+
+		 <!--我邀请的好友列表-->
+		<!--@php if(!empty($friend_member)){  @-->
+		<span class="_title">我的觅友</span>
+		<!--@php foreach($friend_member as $f_member){  @-->
+
+		   <!--觅友列表-->
+		  <ul class="miyou_list">
+		  	<li>
+		  		<!--头像-->
+		  		<div class="user_img">
+					<!--@php if(empty($f_member['avatar'])){ @-->
+					<img src="__RESOURCE__/recouse/images/userface.png" />
+					<!--@php }else{  @-->
+					<img src="<!--@php echo download_pic($f_member['avatar'],70,70,2);@-->" />
+					<!--@php } @-->
+		  		</div>
+		  		<!--头像右边的一大块-->
+		  		<div class="detail">
+		  			<!--上部-->
+		  			<div class="info">
+		  				<span class="name"><!--@php echo $f_member['name'];@--></span>
+		  				<span class="miyou_num _span">
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />
+		  					<span>
+		  						<!--@php echo intval($f_member['friend_count']);@-->
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />
+		  				</span>
+		  				<span class="rank_img _span">
+		  					<img src="__RESOURCE__/recouse/images/rank_img1.png" />
+		  					<span>
+		  						<!--@php echo $f_member['rank_name'];@-->
+		  					</span>
+		  					<img src="__RESOURCE__/recouse/images/rank_img3.png" />
+		  				</span>
+		  			</div>
+		  			<!--下部-->
+		  			<div class="money">
+		  				<span class="yj">
+		  					WO的佣金:
+		  					<span><!--@php echo floatval($f_member['commision_fee']);@--></span>
+		  				</span>
+		  				<!--<span>
+		  					<img src="__RESOURCE__/recouse/images/money_img.png" />
+		  					+<!--@php echo floatval($f_member['invite_fee']);@-->
+		  				<!--</span>-->
+		  			</div>
+		  		</div>
+		  	</li>			  	
+		  </ul>
+		<!--@php }  @-->
+		<!--@php }else{  @-->
+		  <!--不是由别人邀请的，又没有觅友-->
+		  <div class="_default">
+		  	 <img src="__RESOURCE__/recouse/images/_default.png" data-url="<!--@php echo mobile_url('miyou',array('op'=>'invite'));@-->" onclick="to_invite()"/>
+		  	 <span style="height: 1px;width: 30px;background: #959595;position: absolute;bottom: 0;right:14px;"></span>
+		  </div>
+		<!--@php }  @-->
+		
+		<!--用来存当前page-->
+		<input type="hidden" value="2" id="page"/>
+		<div class="ajax_next_page" style="display: none;">
+			<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+			正在加载
+		</div>
+		
+		  <!--@php  include themePage('footer');@-->	
+	<script>
+		$(".return").click(function(){
+			    window.history.back(-1);
+		})
+		function to_invite(){
+			window.location.href = "<!--@php echo mobile_url('miyou',array('op'=>'invite'));@-->";
+		}
+		$(function(){			
+
+			//分页			
+			$(window).scroll(function(){
+				if( $(document).scrollTop() >= $(document).height() - $(window).height() ){
+					Refresh();
+				}
+			})
+			
+			var index = 1; //默认开关状态是打开
+			function Refresh(){
+				if( index == 1 ){
+					$(".ajax_next_page").show();
+					index = 0; //关闭开关
+					var page = $("#page").val(); //第一次传的是2					
+					var url ="<!--@php echo mobile_url('miyou') ;@-->";			
+					$.post('', {'page' : page,'nextpage' : 'ajax'}, function(s){					
+						if(s.errno != 200){
+							//如果没有数据							
+							$(".ajax_next_page").hide();
+						}else{
+							$("#page").val(++page);
+							var art_data = s.message;
+							for(var i = 0;i < art_data.length;i++){
+								//循环拼接 html下一页数据
+								Load(art_data[i]);
+							}
+							index = 1;  //加载完后重新打开开关
+							$(".ajax_next_page").hide();
+						}
+					}, 'json');
+				}
+			}
+			//加载数据
+			function Load(data){				
+				//我的佣金，为null时设为0
+				var commision_fee = data.commision_fee;
+				if(commision_fee == null){
+					commision_fee = 0
+				}
+				var li = '<li>'+	  		
+			  		  '<div class="user_img">';		  	
+				if(data.avatar.length == 0){							
+					li += '<img src="__RESOURCE__/recouse/images/userface.png" />';
+				}else{
+					li += '<img src="'+data.avatar+'" />';
+				}				
+			  	 li += '</div>'+			  		
+			  		'<div class="detail">'+			  			
+			  			'<div class="info">'+
+			  				'<span class="name">'+data.name+'</span>'+
+			  				'<span class="miyou_num _span">'+
+			  					'<img src="__RESOURCE__/recouse/images/miyou_num_01.png" />'+
+			  					'<span>'+data.friend_count+'</span>'+
+			  					'<img src="__RESOURCE__/recouse/images/miyou_num_03.png" />'+
+			  				'</span>'+
+			  				'<span class="rank_img _span">'+
+			  					'<img src="__RESOURCE__/recouse/images/rank_img1.png" />'+
+			  					'<span>'+data.rank_name+'</span>'+
+			  					'<img src="__RESOURCE__/recouse/images/rank_img3.png" />'+
+			  				'</span>'+
+			  			'</div>'+			  			
+			  			'<div class="money">'+
+			  				'<span class="yj">'+
+			  					'WO的佣金:'+
+			  					'<span>'+commision_fee+'</span>'+
+			  				'</span>'+			  				
+			  			'</div>'+
+			  		'</div>'+
+		  		'</li>';		  		
+				$(".miyou_list").append(li);
+			}
+			
+			
+		})
+	</script>

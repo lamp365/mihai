@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>成长特权</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/iclub.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/animate.min.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+    <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <!--@php  include page('vip_header');@-->
+    <div class="vip-level-wrap">
+        <div class="vip-privilege-banner"></div>
+        <div class="vip-privilege-userinfo">
+            <div class="privilege-userinfo">
+                <!--@php if($openid){ @-->
+                <div class="privilege-userinfo-1 clearfix">
+                    <!--@php if(empty($merInfo['avatar'])){  @-->
+                    <img   class="privilege-userinfo-img"  src="__RESOURCE__/recouse/images/userface.png">
+                    <!--@php }else{ @-->
+                    <img  class="privilege-userinfo-img"  src="<!--@php echo $merInfo['avatar']; @-->">
+                    <!--@php } @-->
+                    <div class="privilege-username">hi,<!--@php echo $merInfo['name'];@--></div>
+                    <div class="privilege-grade">等级:<img src="__RESOURCE__/recouse/images/vip_grade_1.png"><!--@php echo $priviel['rank_name'];@--></div>
+                    <div class="privilege-v">
+                        <span class="privilege-v-1">我的V值(成长值)：</span>
+                        <span class="privilege-v-2"><!--@php echo $merInfo['experience'];@--></span>
+                        <span class="privilege-v-3">再加<span><!--@php echo $priviel['rank_next']['experience']-$merInfo['experience'];@--></span>V值就能享受<span><!--@php echo $priviel['rank_next']['rank_name'];@--></span>特权了哦</span>
+                    </div>
+                </div>
+                <!--@php }else{ @-->
+                <div class="privilege-userinfo-1 clearfix">
+                    <img class="privilege-userinfo-img" src="__RESOURCE__/recouse/images/userface.png">
+                    <div class="privilege-username">登录后可查看成长记录</div>
+                    <div class="privilege-grade"></div>
+                    <div class="privilege-v">
+                        <span class="privilege-v-1"><a href="<!--@php echo mobile_url('login'); @-->">立即登录</a></span>
+                    </div>
+                </div>
+                <!--@php } @-->
+
+
+                <ul class="grade-list clearfix">
+                <!-- grade-tips-2 的2代表当前在第二个等级的位置  --> 
+                    <div class="grade-tips" style="display: none">
+                        我的位置
+                    </div>
+                    <!--@php foreach($rank_list as $r_list){ @-->
+                    <li class="">
+                        <!--@php if($merInfo['experience'] >= $r_list['experience'] ) { $cl = 'small-icons-checked'; }else{ $cl = ''; } @-->
+                        <div class="small-icons <!--@php echo $cl; @-->">
+                            <img src="<!--@php echo $r_list['icon']; @-->" width="25" style="cursor:pointer" title="<!--@php echo $r_list['rank_name']; @-->">
+                        </div>
+                        <div><!--@php echo $r_list['rank_list'];@--></div>
+                    </li>
+                    <!--@php } @-->
+                    <div class="ul-progress">
+                     <!-- ul-progress-1的1代表当前在第二个等级的位置也就是只有一条红色进度条  --> 
+                        <div class=""></div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <div class="rank-privilege">
+            <div class="rank-privilege-title clearfix">
+                <i></i>
+                <span class="rank-privilege-span-1">等级与特权</span>
+                <span class="rank-privilege-span-2">Rank and privilege</span>
+            </div>
+            <table class="rank-privilege-table vip-level-table">
+                <tbody>
+                    <tr>
+                        <th class="rank-privilege-table-th">
+                            <span class="rank-privilege-table-th-1">会员特权</span>
+                            <span class="rank-privilege-table-th-2"></span> 
+                            <span class="rank-privilege-table-th-3">会员等级</span>
+                        </th>
+                        <!--@php foreach($rank_list as $r_one){ @-->
+                        <th style="width: 95px;"><div class="vip_grade"><img src="<!--@php  echo $r_one['icon'];@-->" width="22"></div></th>
+                        <!--@php } @-->
+                    </tr>
+                    <!--@php foreach($priviel_list as $p_one){ @-->
+                    <tr>
+                        <td><!--@php echo $p_one['name'];@--></td>
+
+                        <!--@php foreach($rank_list as $r_one){  $ids_arr=explode(',',$r_one['privile']); @-->
+                        <td>
+                            <!--@php if(in_array($p_one['id'],$ids_arr)){ @-->
+                            <i class="icon-ok"></i>
+                            <!--@php }else{ @-->
+                            &nbsp;
+                            <!--@php } @-->
+                        </td>
+                        <!--@php } @-->
+
+                    </tr>
+                    <!--@php } @-->
+                </tbody>
+            </table>
+            <div class="rank-privilege-title clearfix">
+                <i class="icon-list-ul" style="background: none;font-size: 20px;color: #f30181;margin-top: 8px;"></i>
+                <span class="rank-privilege-span-1">会员特权介绍</span>
+                <span class="rank-privilege-span-2">privileges introduces</span>
+            </div>
+        </div>
+        <div style="width: 1025px;margin: 0 auto;padding-left: 20px;">
+            <div class="privileges-1">
+                <i class="i-mihaivip"></i>
+                <p class="privileges-title">购物送积分</p>
+                <div class="u-doubei-content">
+                    <p class="content1">
+                        会员购物可获相应数量的积分，积分可在购物结算时直接抵现，还可兑换超值好礼！<a href="//help.vip.com/themelist.php?type=detail&amp;id=424" target="_blank">了解更多&gt;&gt;</a></p>
+                    <i class="i-content-right"></i>
+                    <ul class="content2">
+                        <li>皇冠会员购物获得普通会员的<span class="point">2倍</span>积分</li>
+                        <li>钻石会员购物获得普通会员的<span class="point">1.5倍</span>积分</li>
+                        <li>金牌会员购物获得普通会员的<span class="point">1.2倍</span>积分</li>
+                        <li>银牌会员购物获得普通会员的<span class="point">1.2倍</span>积分</li>
+                    </ul>
+                </div>
+                <div class="privileges-1-table">
+                    <p>举例：若zhangsan购物实付金额为1000元，各等级会员可获得积分数量如下图</p>
+                    <table class="privileges-table ">
+                        <tbody>
+                            <tr>
+                                <th width="165">等级</th>
+                                <th width="220">购物实付金额(元)</th>
+                                <th width="220">获得积分比例</th>
+                                <th width="220">获得积分个数</th>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_9"></div>皇家至尊VIP</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_8"></div>永恒钻石VIP</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><div class="vip_grade_7"></div>普通会员</td>
+                                <td>100</td>
+                                <td>100%</td>
+                                <td>100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="privileges-area">
+                <i class="i-mihaivip"></i>
+                <div class="privileges-area-content">
+                    <p class="privileges-title">积分超值兑</p>
+                    <p class="privileges-content">唯品币超值兑是唯品会为会员提供的增值服务，会员可使用账户中的唯品币兑换合作商家的商品或服务的电子券码，凭电子券码到合作商家消费或享受服务。</p>
+                    <br><br>
+                </div>
+            </div>
+            <div class="privileges-area">
+                <i class="i-mihaivip"></i>
+                <div class="privileges-area-content">
+                    <p class="privileges-title">积分超值兑</p>
+                    <p class="privileges-content">唯品币超值兑是唯品会为会员提供的增值服务，会员可使用账户中的唯品币兑换合作商家的商品或服务的电子券码，凭电子券码到合作商家消费或享受服务。</p>
+                    <br><br>
+                </div>
+            </div>
+            <div class="privileges-area">
+                <i class="i-mihaivip"></i>
+                <div class="privileges-area-content">
+                    <p class="privileges-title">积分超值兑</p>
+                    <p class="privileges-content">唯品币超值兑是唯品会为会员提供的增值服务，会员可使用账户中的唯品币兑换合作商家的商品或服务的电子券码，凭电子券码到合作商家消费或享受服务。</p>
+                    <br><br>
+                </div>
+            </div>
+            <div class="privileges-area">
+                <i class="i-mihaivip"></i>
+                <div class="privileges-area-content">
+                    <p class="privileges-title">积分超值兑</p>
+                    <p class="privileges-content">唯品币超值兑是唯品会为会员提供的增值服务，会员可使用账户中的唯品币兑换合作商家的商品或服务的电子券码，凭电子券码到合作商家消费或享受服务。</p>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--@php include themePage('footer');@-->
+</body>
+<script>
+$(function(){
+    function level_pos(){
+        var level  = $(".grade-list li .small-icons-checked");
+        var length = parseInt(level.length);
+        var prog_length = length - 1;
+
+        var _class = "ul-progress-"+prog_length;
+        $(".ul-progress div").addClass(_class);
+
+        var _class2 = "grade-tips-"+length;
+        if(length >=0) {
+            $(".grade-tips").show();
+        }
+        $(".grade-tips").addClass(_class2);
+    }
+    level_pos();
+
+})
+</script>
+</html>

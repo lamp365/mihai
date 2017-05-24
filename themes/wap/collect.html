@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>我的收藏</title>
+		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+		<link rel="shortcut icon" href="favicon.ico"/>
+		<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/collect.css"/>
+	</head>
+	<body>
+		<!--顶部返回栏-->
+		<div class="cart_title">
+		   <span class="return" style="line-height: 45px;">
+		   		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+		   </span> 
+		   	<div class="title_center">
+		    	我的收藏
+		    </div>
+		    <!--有收藏商品时才出现这个删除按钮-->
+		    <span class="del_icon">
+		    	<img src="__RESOURCE__/recouse/images/del_icon.png"
+		    </span>
+		</div> 
+		
+	    <!--没有收藏-->
+	    <div class="no_collect" style="display: none;">
+	    	<img src="__RESOURCE__/recouse/images/no_collect.png" />
+	    </div>
+		    
+	    <!--有收藏-->	    
+	    <div class="have_collect">
+	    	<ul>
+	    		<li>
+	    			<span class="choose">
+			    		<img src="__RESOURCE__/recouse/images/un_checked.png" />
+			    	</span>
+	    			<div class="Img">
+	    				<img src="http://odozak4lg.bkt.clouddn.com/20161125101958379fa583a27.jpg?imageView/2/w/400/h/400" />
+	    			</div>
+	    			<div class="info">
+	    				<p>Neocell修复型水解胶原蛋白粉小分子蛋白肽女性美白滋养润泽防皱抗皱正品</p>
+	    				<p>￥78.00</p>
+	    			</div>
+	    		</li>
+	    		<li>
+	    			<span class="choose">
+			    		<img src="__RESOURCE__/recouse/images/un_checked.png" />
+			    	</span>
+	    			<div class="Img">
+	    				<img src="http://odozak4lg.bkt.clouddn.com/201611171757582d7ef9033cd.jpg?imageView/2/w/400/h/400" />
+	    			</div>
+	    			<div class="info">
+	    				<p>Neocell修复型水解胶原蛋白粉小分子蛋白肽女性美白滋养润泽防皱抗皱正品</p>
+	    				<p>￥78.00</p>
+	    			</div>
+	    		</li>
+	    		<li>
+	    			<span class="choose">
+			    		<img src="__RESOURCE__/recouse/images/un_checked.png" />
+			    	</span>
+	    			<div class="Img">
+	    				<img src="http://odozak4lg.bkt.clouddn.com/20161125102058379ff0478f8.jpg?imageView/2/w/400/h/400" />
+	    			</div>
+	    			<div class="info">
+	    				<p>Neocell修复型水解胶原蛋白粉小分子蛋白肽女性美白滋养润泽防皱抗皱正品</p>
+	    				<p>￥78.00</p>
+	    			</div>
+	    		</li>
+	    	</ul>
+	    </div>		    
+	   
+	    <!--底部的删除栏-->
+	    <div class="del_content">	    	
+	    	<span class="choose_all">
+	    		<img src="__RESOURCE__/recouse/images/un_checked.png" />
+	    	</span>
+	    	<span class="fr del">删除</span>
+	    	<span class="fr cancel">取消</span>
+	    </div>
+	    
+	    <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	    
+	    <script>
+	    	//点击删除按钮，出现删除栏
+	    	$(".del_icon").on("click",function(){
+	    		$(".del_content").animate({bottom:"0px"});
+	    		$(".have_collect li .choose").fadeIn();
+	    		$(".have_collect .info").addClass("info_del");
+	    	})
+	    	//点击取消
+	    	$(".del_content .cancel").on("click",function(){	    		
+	    		$(".del_content").animate({bottom:"-45px"});
+	    		$(".have_collect li .choose").hide();
+	    		$(".have_collect .info").removeClass("info_del");	    		
+	    	})
+	    	
+	    	var size = $(".have_collect li").length;//获得列表商品个数
+	    	function check(){
+	    		//如果单个全部被勾选，全选按钮就勾选	    		
+	    		if( $(".have_collect li .choose").not(".checked").size() <= 0 ){
+	    			$(".del_content .choose_all").addClass("checked");
+	    			$(".del_content .choose_all").find("img").attr("src","__RESOURCE__/recouse/images/have_check.png");
+	    		}else{
+	    			$(".del_content .choose_all").removeClass("checked");
+	    			$(".del_content .choose_all").find("img").attr("src","__RESOURCE__/recouse/images/un_checked.png");
+	    		}
+	    	}
+	    	//勾选单个
+	    	$(".have_collect li .choose").on("click",function(){
+	    		//如果已经选中，就去掉选中
+	    		if( $(this).hasClass("checked") ){
+	    			$(this).removeClass("checked");
+	    			$(this).find("img").attr("src","__RESOURCE__/recouse/images/un_checked.png");
+	    		}else{
+	    			$(this).addClass("checked");
+	    			$(this).find("img").attr("src","__RESOURCE__/recouse/images/have_check.png");
+	    		}	  
+	    		check();
+	    	})
+	    	//全选
+	    	$(".del_content .choose_all").on("click",function(){
+	    		//如果已经选中，就去掉选中
+	    		if( $(this).hasClass("checked") ){
+	    			$(this).removeClass("checked");
+	    			$(".have_collect li .choose").removeClass("checked");
+	    			$(this).find("img").attr("src","__RESOURCE__/recouse/images/un_checked.png");
+	    			$(".have_collect li .choose").find("img").attr("src","__RESOURCE__/recouse/images/un_checked.png");
+	    		}else{
+	    			$(this).addClass("checked");
+	    			$(".have_collect li .choose").addClass("checked");
+	    			$(this).find("img").attr("src","__RESOURCE__/recouse/images/have_check.png");
+	    			$(".have_collect li .choose").find("img").attr("src","__RESOURCE__/recouse/images/have_check.png");
+	    		}	 
+	    	})	    	
+	    	
+	    	//点击底部栏的，删除按钮
+	    	$(".del_content .del").on("click",function(){
+	    		alert()
+	    	})
+	    </script>
+	</body>
+</html>

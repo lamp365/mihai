@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>觅海喊您来实现心愿啦</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
+	<link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet"	type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/shareactive.css"/>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
+	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+	<script type="text/JavaScript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+	<div class="banner">
+		<img src="__RESOURCE__/recouse/images/miandan_wap01.jpg">
+		<!--@php if(empty($_GP['is_app'])){  @-->
+		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result'))@-->" class="result-search"></a>
+		<!--@php }else{ @-->
+		<a href="<!--@php  echo mobile_url('shareactive',array('op'=>'result','is_app'=>1))@-->" class="result-search"></a>
+		<!--@php } @-->
+		<div class="head-title-1">每天更新次数 记得来点点</div>
+    <div class="head-title-2" >【觅海心愿 百分百有礼】</div>
+		<!--@php if($lock && $drawTime){ @-->
+		<div id="result-time"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></div>
+		<script>
+			$(function(){
+				countDown("<!--@php echo $drawTime;@-->","#result-time");
+			})
+		</script>
+		<!--@php } @-->
+
+		<!--即将开奖区域-->
+		<div class="first-future">
+			<ul class="last-wrap-list clearfix">
+			<!--@php if(!empty($toBeDraw)){ foreach($toBeDraw as $items){ @-->
+				<li>
+					<!--@php if($lock){ @-->
+					<img class="lock" src="__RESOURCE__/recouse/images/lock.png"><!-- 锁的图片 -->
+					<!--@php } @-->
+					<div class="recommand-left">
+						<img class="lazy" onclick="personalRecord(this,<!--@php echo $items['id'];@-->)" data-original="<!--@php echo download_pic($items['logo'],350,350,2);@-->" src="images/loading.gif">
+					</div>
+					<div class="recommand-right">
+						<div class="small-title"><!--@php echo $items['title'];@--></div>
+						<div class="first-future-detail"><!--@php echo $items['names'];@--></div>
+						<div class="progress">
+						  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $items['jindutiao'];@-->">
+						  	</div>
+						</div>
+						<div class="list-num">
+							<span class="list-num-before"><!--@php echo $items['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $items['amount'];@--></span>
+							<span style="float: right;font-size: 12px;"><!-- <span>需心愿数:</span> -->
+								<!--@php for( $i =0; $i < intval($items['credit_cost']); $i++){ @-->
+								<img style="display:inline-block;width: 14px;padding: 0;margin-top: 3px;" src="__RESOURCE__/recouse/images/love-yes.png"/>
+								<!--@php } @-->
+							</span>
+						</div>
+						<div class="play-btn-div">
+							<div class="play-now" style="width: 65%" onclick="playNow(this,<!--@php echo $items['id'];@-->)" data-fenshu="<!--@php echo intval($items['credit_cost']);@-->">新年许愿</div>
+							<div class="love" style="width: 35%">
+								<img onclick="personalRecord(this,<!--@php echo $items['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
+								<span><!--@php echo $items['wish_num'];@--></span>
+							</div>
+						</div>
+					</div>
+				</li>
+			<!--@php }} @-->
+			</ul>
+		</div>
+	</div>
+
+	<video controls="controls" poster="__RESOURCE__/recouse/images/video_poster.jpg" style="display: block;" src="http://hinrc.oss-cn-shanghai.aliyuncs.com/201701/20170217184258a6d392575d8.mp4" width="100%"></video>
+	<div class="video-title">纽约旗舰店客户恭祝中国区用户愿望实现</div>
+	<div class="total-number-div">
+				<div class="total_num">
+					<ul class="num_list">
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+						<li class="per_num">
+							<ul>
+								<li>0</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+		</div>
+	<div class="banner">
+		<img src="__RESOURCE__/recouse/images/miandan_tuijian_bg.jpg">
+		<div class="banner-title">在一起过福年</div>
+	</div>
+	<div class="active-fixed-btn"><img src="__RESOURCE__/recouse/images/explain.png">活动规则</div>
+	<!--@php if($openid){ @-->
+		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/love-yes.png">剩余<span><!--@php if(!empty($share_info)){ echo $share_info['total_num'];}else{ echo 0; }@--></span>次</div>
+	<!--@php }else{ @-->
+		<div class="active-num-btn"><img src="__RESOURCE__/recouse/images/user_ico.png"><a href="<?php  echo mobile_url('login',array('name'=>'shopwap')); ?>">您未登陆</a></div>
+	<!--@php } @-->
+
+	<!-- 推荐专区 -->
+	<div class="last-wrap recommand">
+		<ul class="last-wrap-list clearfix">
+			<li>
+				<div class="recommand-left">
+					<img class="lazy" onclick="personalRecord(this,<!--@php echo $recommand['id'];@-->)" data-original="<!--@php echo download_pic($recommand['logo'],350,350,2);@-->" src="images/loading.gif">
+				</div>
+				<div class="recommand-right">
+					<div class="small-title"><!--@php echo $recommand['title'];@--></div>
+					<div class="progress">
+					  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $recommand['jindutiao'];@-->">
+					  	</div>
+					</div>
+					<div class="list-num">
+						<span class="list-num-before"><!--@php echo $recommand['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $recommand['amount'];@--></span>
+						<span style="float: right;font-size: 12px;">需心愿数:<!--@php echo intval($recommand['credit_cost']);@--></span>
+					</div>
+					<div class="play-btn-div">
+						<div class="play-now" style="width: 65%" onclick="playNow(this,<!--@php echo $recommand['id'];@-->)" data-fenshu="<!--@php echo intval($recommand['credit_cost']);@-->">新年许愿</div>
+						<div class="love" style="width: 35%">
+							<img onclick="personalRecord(this,<!--@php echo $recommand['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
+							<span><!--@php echo $recommand['wish_num'];@--></span>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	
+	<div class="not-start">
+		<div class="coupon_title">总有人会实现的为什么不会是你呢</div>
+	</div>
+<!-- 心愿专区 -->
+	<div class="last-wrap " style="padding-top: 0">
+		<ul class="last-wrap-list clearfix">
+			<!--@php if(!empty($activeGoods)){   foreach($activeGoods as $item){  @-->
+			<li>
+
+				<div >
+					<img class="lazy" onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" data-original="<!--@php echo download_pic($item['logo'],350,350,2);@-->" src="images/loading.gif">
+				</div>
+				<div class="small-title"><!--@php echo $item['title'];@--></div>
+				<div class="progress">
+				  	<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: <!--@php echo $item['jindutiao'];@-->">
+				  	</div>
+				</div>
+				<div class="list-num">
+					<span class="list-num-before"><!--@php echo $item['dicount'];@--></span> / <span class="list-num-after"><!--@php echo $item['amount'];@--></span>
+					<span style="float: right;font-size: 12px;">需心愿数:<!--@php echo intval($item['credit_cost']);@--></span>
+				</div>
+				<div class="play-btn-div">
+					<div class="play-now" onclick="playNow(this,<!--@php echo $item['id'];@-->)" data-fenshu="<!--@php echo intval($item['credit_cost']);@-->">新年许愿</div>
+					<div class="love">
+						<img onclick="personalRecord(this,<!--@php echo $item['id'];@-->)" src="__RESOURCE__/recouse/images/love-yes.png">
+						<span><!--@php echo $item['wish_num'];@--></span>
+					</div>
+				</div>
+				
+			</li>
+			<!--@php }}  @-->
+		</ul>
+
+<!--@php if(!empty($allBonus)){   @-->
+	<div class="not-start">
+		<div class="coupon_title">我们为您先备下了这些好礼</div>
+	</div>
+	<ul class="last-wrap-list clearfix">
+		<!--@php foreach($allBonus as $oneBonus){ @-->
+		<li class="per_indiana" style="position: relative;border:none">
+			<img src="__RESOURCE__/recouse/images/coupon.jpg">
+			<span class="coupon-price"><!--@php echo intval($oneBonus['type_money']);@--><span class="yuan">元</span></span>
+			<!--@php if($oneBonus['is_get'] == 1){ @-->
+			<div class="receive-btn" data-id="<!--@php echo $oneBonus['type_id']; @-->">已领</div>
+			<!--@php }else{ @-->
+			<div class="receive-btn to_get_bonus" data-id="<!--@php echo $oneBonus['type_id']; @-->">领取</div>
+			<!--@php } @-->
+		</li>
+		<!--@php } @-->
+	</ul>
+	<!--@php } @-->
+
+		<!--@php if(!empty($toBeShow)){  @-->
+		<div class="not-start"><div class="coupon_title">即将进入心愿专区</div></div>
+		<ul class="last-wrap-list clearfix" id="act_list">	
+			<!--@php  foreach($toBeShow as $item){  @-->
+			<li class="per_indiana" style="position: relative;"> 
+				<!--商品图片-->
+				<div class="share not-start-div" record_id="11">
+					<a>
+						<img src="__RESOURCE__/recouse/images/question_mark.jpg" />
+					</a>
+				</div>
+				<!--标题-->
+				<p class="name" style="font-weight: bold;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;"><!--@php echo cut_title($item['title']);@--></p>
+				<!--立即参与按钮-->
+				<a href="javascript:void(0);" class="tojoin jqqd" id="myid<!--@php echo $item['id'];@-->"><span class="limit_d">00</span><span class="limit_d_span">:</span><span class="limit_h">00</span>:<span class="limit_m">00</span>:<span class="limit_s">00</span></a>
+			</li>
+			<script>
+				$(function(){
+					countDown("<!--@php echo $item['endtime'];@-->","#myid<!--@php echo $item['id'];@-->");
+				})
+			</script>
+			<!--@php }  @-->
+		</ul>
+		<!--@php }  @-->
+
+		<div class="banquan">福建觅海•版权所有</div>
+		<div class="desc-more"><a href="<!--@php echo $use_about; @-->">了解更多》</a></div>
+	<div class="modal fade personal-record-modal" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">您的心愿数字</h4>
+	      </div>
+	      <div class="modal-body">
+
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+<!--@php if(empty($_GP['is_app'])){ @-->
+<!--@php include themePage('footer');@-->
+<!--@php } @-->
+<script type="text/javascript">
+	var openid_val = "<!--@php echo $openid; @-->";
+	var is_app     = "<!--@php echo $_GP['is_app']; @-->";
+	$(function(){
+		$("img.lazy").lazyload({
+			placeholder : "__RESOURCE__/recouse/images/ajax-loader.gif", // 占位图
+			threshold : 200, //控制灵敏度
+			effect : "fadeIn"
+		});
+		//点击活动规则，跳转到规则页面
+		$(".active-fixed-btn").on("click",function(){
+			window.location.href="<!--@php echo mobile_url('shareactive',array('op'=>'rule'));@-->";
+		});
+		var total_num_new_length;
+		var total_num_new = "<!--@php echo $canyu_total; @-->";
+		var total_num_old = "000000000";
+		function getnum(total_num_new){
+			total_num_new_length = total_num_new.length;
+			if(total_num_old == total_num_new){
+				
+			}else{
+				//从最后一位开始遍历
+				var all_num = 10;
+				for(var j = 1; j <= total_num_new_length;j++){							
+					var ge_new = total_num_new.substr(total_num_new_length-j,1);
+					var ge_old = total_num_old.substr(total_num_new_length-j,1);
+
+					//新旧相差多少
+					var dif = ge_new - ge_old;
+					//要滚动的距离
+					var gap = dif * 23 * (-1);
+					var last_num = all_num - j;	
+					//滚动
+					$(".num_list .per_num:nth-child("+last_num+") ul").animate({"margin-top":gap+"px"},500);						
+				}
+			}					
+		}
+
+		var purl = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_total'));@-->";
+		var time = setInterval(function(){
+			//异步获取最新的参与总人数
+			$.post(purl, {}, function(data) {
+				total_num_new = data.message.toString();
+				getnum(total_num_new);
+			},'json');
+		},3000);
+		getnum(total_num_new);
+
+		function totalNumLeft(){
+			var body_width = $("body").width();
+			var my_width = (body_width-171)/2;
+			$(".total-number-div").css("paddingLeft",my_width);
+		}
+		totalNumLeft();
+		$(window).resize(function(){
+			totalNumLeft();
+		})
+	});
+
+	//立即领取,第一个参数是当前元素，第二个参数是商品id
+	function playNow(thisElement,award_id){
+		if(!openid_val){
+			confirm('您还没登录！','',function(isconfirm){
+				if(isconfirm){
+					if(is_app){
+						AppLogin();
+					}else{
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
+				}
+			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+			return '';
+		}
+		confirm('确认许愿？','',function(isconfirm){
+			if(isconfirm){
+				sure_wish(thisElement,award_id);
+			}
+		},{confirmButtonText: '确认', cancelButtonText: '取消', width: 300});
+	}
+
+	function sure_wish(thisElement,award_id){
+		var cishu = parseInt($(".active-num-btn span").html());
+		var fenshu = parseInt($(thisElement).data('fenshu'));
+		if(cishu == 0){
+			alert('许愿数已用完，请明天再来哦~',"邀请好友注册参与，可获得更多许愿数呢！",'',{type:'warning'});return;
+		}
+		if(fenshu > cishu){
+			alert("您的心愿数只剩"+cishu+"个","当前需要"+fenshu+"个");return;
+		}
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'wish'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			if(data.errno == 202){  //6个全满
+				var msg = data.message;
+				//推送信息
+				pop_weixin_msg(msg.id);
+				alert(msg.tit,msg.des,'',{type:'success'});
+				window.location.reload();
+			}else if(data.errno == 203){  //满1个
+				var msg = data.message;
+				//推送信息
+				pop_weixin_msg(msg.id);
+				alert(msg.tit,msg.des,'',{type:'success'});
+			}else if( data.errno == 200 ){
+				var msg = data.message;
+				alert(msg.tit,msg.des,'',{type:'success'});
+				//较少显示的次数，并爱心加1
+				cishu = cishu-fenshu;
+				$(".active-num-btn span").html(cishu);
+				var coupon_total_num = $(".coupon-total-num span").text();
+				$(".coupon-total-num span").text(parseInt(coupon_total_num)+1);
+				var wish_total = $(thisElement).parent().find('.love span').html();
+				wish_total = parseInt(wish_total) + 1;
+				if( wish_total ==1 ){
+					$(thisElement).parent().find('.love img').attr("src","__RESOURCE__/recouse/images/love-yes.png");
+				}
+				$(thisElement).parent().find('.love span').html(wish_total);
+
+				var list_num = msg.tit.split(":");
+				$(thisElement).parent().prev().find('.list-num-before').html(list_num[1]);
+			}else if(data.errno == 1004){
+				var msg = data.message;
+				alert(msg.num,msg.need_num);
+			}else{
+				alert(data.message);
+			}
+		},"json");
+	}
+
+	function pop_weixin_msg(id){
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'pop_full_msg'));@-->";
+		url = url + "&id="+id;
+		//满人时不群发推送微信，因为微信消息模板 涉嫌广告，审核不过
+		/*$.getJSON(url,function(data){
+
+		})*/
+	}
+
+	//个人参与记录,第一个参数是当前元素，第二个参数是商品id
+	function personalRecord(thisElement,award_id){
+		var url = "<!--@php echo mobile_url('shareactive',array('op'=>'canyu_recorder'));@-->";
+		$.post(url,{'award_id':award_id},function(data){
+			if( data.errno == 1000 ){
+				confirm('您还没登录！','',function(isconfirm){
+					if(isconfirm){
+						if(is_app){
+							AppLogin();
+						}else{
+							var url = "<!--@php echo mobile_url('login'); @-->";
+							window.location.href = url;
+						}
+					}
+				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+				return '';
+			}else if( data.errno == 1002 ){
+				$(".personal-record-modal .modal-body").html("<p>"+data.message+"<p>");
+			}else{
+				//<p>您于2017-01-22 10:22参与了<span class="record-number">10人次</span></p>
+				//<p>您的幸运号码为：8888888</p>
+				var html = '';
+				var num_html = '';
+				var recorder = data.message;
+				for(var i = 0;i < recorder.length;i++){
+					var item      = recorder[i];
+					num_html = num_html + "<span>"+item.star_num_order+"</span>";
+				}
+				html = "<p class='younump'>"+num_html+"</p>"
+				$(".personal-record-modal .modal-body").html(html);
+			}
+			$(".personal-record-modal").modal();
+		},"json");
+	}
+
+	$(".to_get_bonus").click(function(){
+		var obj      = this;
+		var url      = "<!--@php echo mobile_url('shareactive',array('op'=>'get_bonuse')); @-->";
+		var bonus_id = $(this).data('id');
+
+		if(!openid_val){
+			confirm('您还没登录！','',function(isconfirm){
+				if(isconfirm){
+					if(is_app){
+						AppLogin();
+					}else{
+						var url = "<!--@php echo mobile_url('login'); @-->";
+						window.location.href = url;
+					}
+				}
+			},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
+			return '';
+		}
+		$.post(url,{'bonus_id':bonus_id},function(data){
+			alert(data.message);
+			if(data.errno == 200){
+				//修改优惠卷的样式
+				$(obj).html('已领');
+				$(obj).removeClass("to_get_bonus");
+			}
+		},'json')
+	})
+
+	//将后台返回的时间戳格式化为时间格式
+	function Stringtotime(time){
+		time = time*1000;
+		var datetime = new Date();
+		datetime.setTime(time);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+		var hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
+		var minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
+		var sec = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() :  datetime.getSeconds();
+		return year + "-" + month + "-" + date + " &nbsp " + hour + ":" + minute + "";
+	}
+	function tip(msg,autoClose){
+		var div = $("#poptip");
+		var content =$("#poptip_content");
+		if(div.length<=0){
+			div = $("<div id='poptip'></div>").appendTo(document.body);
+			content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
+		}
+		else{
+			content.html(msg);
+			content.show(); div.show();
+		}
+		if(autoClose) {
+			setTimeout(function(){
+				content.fadeOut(500);
+				div.fadeOut(500);
+			},1000);
+		}
+	}
+	function tip_close(){
+		$("#poptip").fadeOut(500);
+		$("#poptip_content").fadeOut(500);
+	}
+//预告的倒计时
+	function countDown(time,id){
+        var end_time = time * 1000,//月份是实际月份-1
+        sys_second = (end_time-new Date().getTime())/1000;
+        getTime(sys_second,id);
+        var timer = setInterval(function(){
+            if (sys_second > 1) {
+                sys_second -= 1;
+                getTime(sys_second,id);
+            } else {
+                clearInterval(timer);	                   
+            }
+        }, 1000);
+        
+    }
+    function getTime(sys_second,id){
+        var day = Math.floor((sys_second / 3600) / 24);
+        var hour = Math.floor((sys_second / 3600) % 24);
+        var minute = Math.floor((sys_second / 60) % 60);
+        var second = Math.floor(sys_second % 60);
+        if($(id+' .limit_d')){
+            if( day <=0 ){
+        		$(id+' .limit_d').hide();
+        		$(id+' .limit_d_span').hide();
+        	}else{
+        		$(id+' .limit_d').text(day<10?"0"+day:day);
+        	}
+        }
+        if(day<=0 && hour<=0 && second <=0 && minute<=0 ){
+            $(id).html("结束");
+            //window.location.reload();
+        }
+        $(id+' .limit_h').text(hour<10?"0"+hour:hour);    //计算小时
+        $(id+' .limit_m').text(minute<10?"0"+minute:minute); //计算分钟
+        $(id+' .limit_s').text(second<10?"0"+second:second); //计算秒
+    }
+
+    //判断iOS还是Android系统
+	function browserFun(){
+		var ua = navigator.userAgent.toLowerCase();
+		if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)){
+			return 'ios';
+		}
+		if(navigator.userAgent.match(/android/i)){
+			return 'android';
+		}
+	}
+	function isLogin(msg){
+        var ua = browserFun();
+        if( ua == "ios" ){
+            if( msg.openid !=""){
+                openid_val = msg.openid;
+            }else{
+                return;
+            }
+        }
+    }
+	//app登录
+	function AppLogin(){
+		var app = browserFun();
+		if( app == "ios" ){
+			window.webkit.messageHandlers.mihaiapp.postMessage({login:""});
+		}else if( app=="android" ){
+			window.JsInterface.login("toreload");
+		}
+	}
+	function toreload(){
+		var url = "<!--@php echo mobile_url('shareactive',array('is_app'=>1));@-->";
+		window.location.href=url;
+	}
+
+</script>
+<!--@php if(!empty($weixin_share)){ @-->
+<script>
+
+	wx.config({
+		debug: false,
+		appId: "<?php echo $weixin_share['weixin_appid']?>",
+		timestamp:"<?php echo $weixin_share['timestamp']?>",
+		nonceStr: "<?php echo $weixin_share['nonceStr']?>",
+		signature: "<?php echo $weixin_share['signature']?>",
+		jsApiList: [
+			'checkJsApi',
+			'onMenuShareTimeline',
+			'onMenuShareAppMessage',
+			'onMenuShareQQ',
+			'onMenuShareWeibo',
+			'onMenuShareQZone',
+		  ]
+	});
+
+	wx.ready(function () {
+		var shareData = {
+			title: '快来和我一起参加觅海心愿节',
+			desc: '免费参与，每日都可以许愿，分享更有好礼',
+			link: '',
+			imgUrl: 'http://www.hinrc.com/images/getheadimg.jpg'
+		};
+		wx.onMenuShareAppMessage(shareData);
+		wx.onMenuShareTimeline(shareData);
+		wx.onMenuShareQQ(shareData);
+		wx.onMenuShareWeibo(shareData);
+		wx.onMenuShareQZone(shareData);
+	});
+
+	wx.error(function (res) {
+	  alert(res.errMsg);
+	});
+</script>
+<!--@php } @-->
+</body>
+</html>

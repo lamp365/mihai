@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=0.5,target-densitydpi=high-dpi;user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no">
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<title>签到人数列表</title>
+<link rel="shortcut icon" href="favicon.ico"/>
+<style type="text/css">
+body{
+	background-image:url(__RESOURCE__/recouse/images/sign.png);	
+	}
+.main{
+	width: 640px;
+	margin: 0 auto;
+	background: url(__RESOURCE__/recouse/images/sign_bg.png) 0px 30px;
+	background-repeat: no-repeat;
+	height: 1160px;
+}
+.main-top{ margin:0 auto; width:445px;}
+.item-one{
+	margin-top: 30px;
+	width: 80%;
+	margin: 30px auto 0 auto;
+}
+.item-one img{
+	float: left;
+}
+.item-one div{
+	font-size: 40px;
+	float: left;
+	margin-left: 50px;
+	font-style: italic;
+	margin-top: 10px;
+	line-height: 25px;
+	font-weight: bold;
+	color: #CCCC00;
+}
+
+.item-two{
+	margin-top: 30px;
+	width: 80%;
+	margin: 30px auto 0 auto;
+}
+.item-two img{
+	float: left;
+}
+.item-two div{
+	font-size: 40px;
+	float: left;
+	margin-left: 50px;
+	font-style: italic;
+	margin-top: 10px;
+	line-height: 25px;
+	font-weight: bold;
+	color: #ff8441;
+}
+
+.item-three{
+	margin-top: 30px;
+	width: 80%;
+	margin: 20px auto 0 auto;
+	clear: both;
+}
+.item-three img{
+	float: left;
+}
+.item-three div{
+	font-size: 40px;
+	float: left;
+	margin-left: 50px;
+	font-style: italic;
+	margin-top: 10px;
+	line-height: 25px;
+	font-weight: bold;
+	color: #84dafa;
+}
+.clear{ clear:both;height:20px;}
+.time{
+	background: url(__RESOURCE__/recouse/images/sign-time.png) 0 0px;
+	clear: both;
+	width: 231px;
+	height: 55px;
+	margin: 0 auto;
+	font-size: 30px;
+	padding-top: 20px;
+	padding-left: 70px;
+	background-repeat: no-repeat;
+}
+.num{ color:#000; font-weight:bold; text-decoration:underline}
+</style>
+
+
+</head>
+
+<body>
+<div class="main">
+	<div class="main-top"><img src="__RESOURCE__/recouse/images/sign_top.png" width="445" height="101"  /></div>
+	<div class="time"><!--@php echo date('Y-m-d');   @--></div>
+	
+	<div class="item-one"> <a href="#"><img src="__RESOURCE__/recouse/images/sign_zao.png" width="200" height="200"  /></a> 
+        <div >
+          <p>共<span class="num"><!--@php echo $zao; @--></span>人签到</p>
+          <p><a href="<!--@php  echo mobile_url('siginview', array('section' =>1 ))@-->"><img src="__RESOURCE__/recouse/images/sign_detail.png" width="237" height="55" /></a></p>
+        </div> 
+       
+  </div>
+ <div class="clear"></div>
+	<div class="item-two">
+      <a href="#"><img src="__RESOURCE__/recouse/images/sign_zhong.png" width="200" height="200"  /></a>
+      <div>
+         <p>共<span class="num"><!--@php echo $zhongwu; @--></span>人签到</p>
+         <p><a href="<!--@php  echo mobile_url('siginview', array('section' =>2 ))@-->"><img src="__RESOURCE__/recouse/images/sign_detail2.png" width="237" height="55" /></a></p>
+        </div>
+      <div class="clear"></div>
+  </div>
+     <div class="clear"></div>
+<div class="item-three"> <a href="#"><img src="__RESOURCE__/recouse/images/sign_wang.png" width="199" height="199"  /></a> 
+        <div >
+          <p>共<span class="num"><!--@php echo $wang; @--></span>人签到</p>
+           <p><a href="<!--@php  echo mobile_url('siginview', array('section' =>3 ))@-->"><img src="__RESOURCE__/recouse/images/sign_detail3.png" width="237" height="55" /></a></p>
+        </div> 
+       
+  </div>
+     <div class="clear"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="" lang="zh-CN" >
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>我的优惠券</title>
+    <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+    <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+    <link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" />
+    <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
+<style>
+html,body{
+  background-color: #fff;
+}
+.content {
+  width: 100%;
+  margin: 0 auto;
+}
+.top_header{
+  background-color: #fff;
+}
+body {
+  color: #333;
+  -webkit-backface-visibility: hidden;
+  min-width: 320px;
+  max-width: 640px;
+  margin:0 auto;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+div {
+  display: block;
+}
+html, div, span,  h1, h2, h3, h4, h5, h6, p,  a, i {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+.content-body {
+  background-color: #fff;
+  padding: 10px 0 10px 10px;
+}
+.content-body {
+  position: relative;
+  z-index: 10;
+}
+.bjprcali {
+  margin: 0 20px 0 10px;
+  padding-left:0px;
+}
+ol, ul {
+  list-style: none;
+}
+/* ul, menu, dir {
+  display: block;
+  list-style-type: disc;
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 40px;
+} */
+.bjprcali .bjprit {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-left: 0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  height: 92px;
+  position: relative;
+  overflow: hidden;
+}
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+ol, ul {
+  list-style: none;
+}
+.clearfix {
+  zoom: 1;
+}
+.bjprcali .bjprit a {
+  display: block;
+}
+a {
+  color: #333;
+  background: transparent;
+  text-decoration: none;
+}
+
+
+.bjprcali .bjprlpar {
+  float: left;
+  width: 60%;
+  height: 92px;
+  color: #fff;
+}
+.bjprcali .bjprlpar .inner {
+  padding: 10px;
+}
+.bjf14 {
+  font-size: 14px !important;
+}
+.bjprcali .bjprlpar .bjprcava {
+  font-size: 35px;
+  line-height: 60px;
+}
+.bjprcali .bjprlpar .bjprcava span {
+  font-size: 18px;
+}
+.bjf12 {
+  font-size: 12px !important;
+}
+.bjprcali .bjprripa {
+  float: right;
+  width: 40%;
+  height: 92px;
+  color: #666;
+  line-height: 1.5;
+}
+.center, .text-center {
+  text-align: center;
+}
+.bjprcali .bjprripa .inner {
+  padding: 6px 10px;
+}
+.bjf16 {
+  font-size: 16px !important;
+}
+.bjprcali .left-dot-line {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 5px;
+  height: 88px;
+  background: url("__RESOURCE__/vertical_dot.png") repeat-y left top;
+  background-size: 4px;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+/*新优惠券样式*/
+.bonus-list li{
+  background: url(__RESOURCE__/recouse/images/bonus_list_bg.png) no-repeat center;
+  width: 100%;
+  height: 100%;
+  margin-top: 2.6%;
+  border-radius: 4px;
+  border: 1px solid #f3d4d4;
+}
+.bonus-list{
+  padding: 0 2.6%;
+}
+.bonus-list li .title{
+  position: relative;
+    color: #333;
+    box-sizing: border-box;
+    border-bottom: 1px #f3d4d4 dashed;
+    height: 37px;
+    line-height: 37px;
+    padding-left: 17px;
+    font-size: 14px;
+}
+.bonus-list li .bonus-price{
+  float: left;
+  width: 34%;
+  text-align: center;
+  border-right: 1px #f3d4d4 dashed;
+  box-sizing: border-box;
+  height: 77px;
+}
+.bonus-list li .bonus-price .bonus-price-2{
+  position: relative;
+    font-size: 45px;
+    font-weight: bold;
+    color: #333;
+}
+.bonus-list li .bonus-price .bonus-price-1{
+      position: absolute;
+    font-size: 14px;
+    font-weight: 400;
+    bottom: 7px;
+    left: -12px;
+}
+.bonus-list li .bonus-time{
+  float: left;
+  width: 66%;
+
+  height: 77px;
+  font-size: 14px;
+  color: #333;
+      padding-left: 14px;
+    box-sizing: border-box;
+}
+.bonus-price-div{
+  font-size: 12px;color: #333
+}
+.triangle-left{
+    position: absolute;
+    right: -1px;
+    bottom: -8.5px;
+    height: 16px;
+}
+.triangle-right{
+    position: absolute;
+    left: -1px;
+    bottom: -8.5px;
+    height: 16px;
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.triangle-left img,.triangle-right img{
+  width: 8px;
+}
+.bonus-time .bonus-time-1{
+  height: 38px;
+  line-height: 48px;
+}
+.no-bonus {
+    width: 70%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 50px;
+}
+.no-bonus img {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    margin-bottom: 20px;
+}
+.bonus-time a.bonus-time-a{
+  color: red;
+  position: absolute;
+  right: 10px;
+}
+</style>
+
+
+
+</head>
+<body>
+  <div class="top_header">
+      <div class="header_left">
+          <a href="javascript:;" class="return" style="margin-top: 2px;"><img src="__RESOURCE__/openshop/images/return.png"  height="18px"></a>
+      </div>
+      <div class="header_title">
+          我的优惠券
+      </div>
+  </div>
+  <ul class="bonus-list">
+  <!--@php  if(count($bonuslist)<=0) { @-->
+      <div class="no-bonus">
+          <img src="__RESOURCE__/recouse/images/no_bonus.png">
+          <p>暂无优惠券</p>
+      </div>
+     <!--@php  } @-->  
+     <!--@php  foreach($bonuslist as $bonus) { @-->
+    <li class="clearfix">
+      <div class="title"><!--@php echo $bonus['type_name']; @-->
+        <div style="float: right;margin-right:17px;color: #333"><!--@php if($bonus['isuse']==0){  @-->  <!--@php if($bonus['use_end_date']<=time()){  @--> 已过期<!--@php }else{ @--> 未使用 <!--@php }@--> <!--@php }else{ @-->     已使用   <!--@php }@--></div>
+        <div class="triangle-left"><img src="__RESOURCE__/recouse/images/triangle.png"></div>
+        <div class="triangle-right"><img src="__RESOURCE__/recouse/images/triangle.png"></div>
+      </div>
+      <div class="bonus-price">
+        <div>
+          <span class="bonus-price-2"><span class="bonus-price-1">￥</span><!--@php echo intval($bonus['type_money']); @--></span>
+        </div>
+        <div class="bonus-price-div">满￥<!--@php echo intval($bonus['min_goods_amount']); @-->使用</div>
+      </div>
+      <div class="bonus-time">
+        <div class="bonus-time-1"><span class="begin-time"><!--@php echo date('Y.m.d', intval($bonus['use_start_date'])); @--></span>-<span class="end-time"><!--@php echo date('Y.m.d', $bonus['use_end_date']); @--></span></div>
+        <!--@php if($bonus['send_type'] == 2 || $bonus['send_type'] == 0){  @-->
+        <div style="font-size: 13px;position:relative">全场通用  <a href="<!--@php echo mobile_url('goodlist',array('op'=>'dish','pcate'=>$cate_id)); @-->" class="bonus-time-a">立即使用>></a></div>
+        <!--@php }else if($bonus['send_type'] == 1){ @-->
+        <div style="font-size: 13px;position:relative">全场通用  <a href="javascipt:;" onclick="get_bonus_goods(<!--@php echo $bonus['bonus_id'] @-->)" class="bonus-time-a">立即使用>></a></div>
+        <!--@php } @-->
+       
+      </div>
+    </li>
+    <!--@php  } @-->  
+  </ul>
+	
+<!--@php include themePage('footer');@-->
+<script type="text/javascript">
+$(function(){
+    var index = 0;
+    $(".return").click(function(){
+        var refer = document.referrer;//没有来源url
+        if(refer.length == 0){
+            var url = "index.php";
+            window.location.href = url;
+        }else{
+            window.history.back(-1);
+        }
+    });
+})
+
+    function get_bonus_goods(bonus_id)
+    {
+        var url ="<!--@php echo mobile_url('bonus',array('op'=>'bonus_goods')); @-->";
+        $.ajaxLoad(url,{'bonus_id':bonus_id},function(){
+            $('#alterModal').modal('show');
+        });
+    }
+</script>
+</body>
+</html>
