@@ -2,47 +2,16 @@
 /*
 member操作
 */
-function get_user_identity($mobile=''){
-	 $identity = array();
-     if (! empty($mobile)) {
-        $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
-            ':mobile' => $mobile
-        ));
-		$identity = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['son_roler_id']." and pid = ".$member['parent_roler_id']);
-     }
-	 return $identity;
-}
-function save_vip_member_login($mobile='', $openid ='' ){
-     if (! empty($mobile)) {
-        $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
-            ':mobile' => $mobile
-        ));
-        if (! empty($member['openid'])) {
-            $_SESSION[VIP_MOBILE_ACCOUNT] = $member;
-            return $member['openid'];
-        }
-    }
-    
-    if (! empty($openid)) {
-        $member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid limit 1", array(
-            ':openid' => $openid
-        ));
-        if (! empty($member['openid'])) {
-            $_SESSION[VIP_MOBILE_ACCOUNT] = $member;
-            return $member['openid'];
-        }
-    }
-    return '';
-}
+
 function save_member_login($mobile = '', $openid = '')
 {
+    $member = array();
     if (! empty($mobile)) {
         $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
             ':mobile' => $mobile
         ));
         if (! empty($member['openid'])) {
             $_SESSION[MOBILE_ACCOUNT] = $member;
-            return $member['openid'];
         }
     }
     
@@ -52,10 +21,9 @@ function save_member_login($mobile = '', $openid = '')
         ));
         if (! empty($member['openid'])) {
             $_SESSION[MOBILE_ACCOUNT] = $member;
-            return $member['openid'];
         }
     }
-    return '';
+    return $member;
 }
 
 function member_login_qq($qq_openid)
@@ -116,239 +84,83 @@ function member_login_weixin($weixin_openid)
     }
 }
 
-function vip_member_login($mobile, $pwd)
-{
-	// 少一块VIP角色的用户判断，应该传参
-    $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile  limit 1", array(
-        ':mobile' => $mobile
-    ));
-   // 结合用户注册时间，和最后登录时间来双重判断用户的登录信息
-   $createtime = $member['createtime'];
-   $lastime    = $member['lastime'];
-   $timeend   = 30 * 24  * 60 * 60;
-   if ( ($createtime + $timeend) < time() ){
-           $paytime = mysqld_select("SELECT * FROM ".table('shop_order'). " WHERE  status >= 1 and openid = :openid ORDER BY paytime desc", array(':openid'=>$member['openid']) );
-		   if (( $paytime['paytime'] + $lastime) < time() ){
-                 return -3;
-		   }
-   }
-   // parent_roler_id 身份id 父级	son_roler_id
-    if ( !empty($member['parent_roler_id']) && !empty($member['son_roler_id']) ){
-          $check = mysqld_select("SELECT * FROM ".table('rolers')." WHERE id = ".$member['son_roler_id']." and pid = ".$member['parent_roler_id']." and (type = 2 or type = 3) ");
-		  if ( !$check ){
-             return -1;
-		  }
-	}else{
-          return -2;
-	}
-    if (!empty($member['openid'])) {
-        if ($member['status'] != 1) {
-            return - 1;
-        }
-        if ($member['pwd'] == md5($pwd)) {
-            save_vip_member_login($mobile);
-            return $member['openid'];
-        }
-    }
-    return '';
-}
 function member_login($mobile, $pwd)
 {
     $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
         ':mobile' => $mobile
-    ));  
+    ));
     if (! empty($member['openid'])) {
         if ($member['status'] != 1) {
+            //用户被禁用
             return - 1;
         }
-        if ($member['pwd'] == md5($pwd)) {
-            save_member_login($mobile);
-            return $member['openid'];
+        if ($member['pwd'] == encryptPassword($pwd)) {
+            $memberInfo = save_member_login($mobile);
+            return $memberInfo;
+        }else{
+            //密码有误
+            return - 2;
         }
+    }else{
+        //用户不存在
+        return -3;
     }
-    return '';
 }
-function vip_member_logout(){
-    unset($_SESSION["vip_mobile_login_fromurl"]);
-    if (! empty($_SESSION[VIP_MOBILE_ACCOUNT])) {
-        $openid = $_SESSION[VIP_MOBILE_ACCOUNT]['openid'];
-        $weixinopenid = $_SESSION[VIP_MOBILE_SESSION_ACCOUNT]['openid'];
-        if (! empty($openid) && ! empty($weixinopenid)) {
-            mysqld_update('weixin_wxfans', array(
-                'openid' => ''
-            ), array(
-                'openid' => $openid,
-                'weixin_openid' => $weixinopenid
-            ));
-        }
-        if (! empty($openid) && ! empty($weixinopenid)) {
-            mysqld_update('alipay_alifans', array(
-                'openid' => ''
-            ), array(
-                'openid' => $openid,
-                'alipay_openid' => $weixinopenid
-            ));
-        }
-        
-        $openid = $_SESSION[VIP_MOBILE_ACCOUNT]['openid'];
-        $qqopenid = "";
-        if (! empty($_SESSION[MOBILE_QQ_OPENID])) {
-            $qqopenid = $_SESSION[MOBILE_QQ_OPENID];
-        } else {
-            $qqopenid = $_SESSION[VIP_MOBILE_SESSION_ACCOUNT]['openid'];
-        }
-        
-        if (! empty($openid) && ! empty($qqopenid)) {
-            mysqld_update('qq_qqfans', array(
-                'openid' => ''
-            ), array(
-                'openid' => $openid,
-                'qq_openid' => $qqopenid
-            ));
-        }
-    }
-    
-    unset($_SESSION[MOBILE_QQ_OPENID]);
-    unset($_SESSION[VIP_MOBILE_ACCOUNT]);
-    header("location:" . create_url('site', array(
-        'name' => 'public',
-		'do'=>'purchase'
-    )));
-    exit();
 
-}
 function member_logout()
 {
     unset($_SESSION["mobile_login_fromurl"]);
-    if (! empty($_SESSION[MOBILE_ACCOUNT])) {
-        $openid = $_SESSION[MOBILE_ACCOUNT]['openid'];
-        $weixinopenid = $_SESSION[MOBILE_SESSION_ACCOUNT]['openid'];
-        /*if (! empty($openid) && ! empty($weixinopenid)) {
-            mysqld_update('weixin_wxfans', array(
-                'openid' => ''
-            ), array(
-                'openid' => $openid,
-                'weixin_openid' => $weixinopenid
-            ));
-        }*/
-        if (! empty($openid) && ! empty($weixinopenid)) {
-            mysqld_update('alipay_alifans', array(
-                'openid' => ''
-            ), array(
-                'openid' => $openid,
-                'alipay_openid' => $weixinopenid
-            ));
-        }
-        
-        $openid = $_SESSION[MOBILE_ACCOUNT]['openid'];
-        $qqopenid = "";
-        if (! empty($_SESSION[MOBILE_QQ_OPENID])) {
-            $qqopenid = $_SESSION[MOBILE_QQ_OPENID];
-        } else {
-            $qqopenid = $_SESSION[MOBILE_SESSION_ACCOUNT]['openid'];
-        }
-        
-        if (! empty($openid) && ! empty($qqopenid)) {
-            mysqld_update('qq_qqfans', array(
-                'openid' => ''
-            ), array(
-                'openid' => $openid,
-                'qq_openid' => $qqopenid
-            ));
-        }
-    }
-    
     unset($_SESSION[MOBILE_QQ_OPENID]);
     unset($_SESSION[MOBILE_ACCOUNT]);
-    header("location:" . create_url('mobile', array(
-        'name' => 'shopwap',
-        'do' => 'index'
-    )));
+    header("location:" . WEBSITE_ROOT);
     exit();
 }
-function get_vip_member_account($useAccount = true, $mustlogin = false ){
-    if (empty($_SESSION[VIP_MOBILE_ACCOUNT]) && $mustlogin) { 
-		header("location:".create_url('site', array('name' => 'public','do' => 'purchase')));
-    }
-    if ($mustlogin == true) {
-        return $_SESSION[VIP_MOBILE_ACCOUNT];
-    }
-    if (! empty($_SESSION[VIP_MOBILE_ACCOUNT])) {
-        return $_SESSION[VIP_MOBILE_ACCOUNT];
-    }
-    return get_session_account($useAccount);
-}
-function get_member_account($useAccount = true, $mustlogin = false)
+
+/**
+ * 获取用户信息  最后返回空数组 或者返回用户数据
+ * @param bool $create_weixin_account
+ * @return array|bool|int
+ */
+function get_member_account($create_weixin_account = true)
 {
     if (extension_loaded('Memcached')) {
         $mcache = new Mcache();
     }
-    if (empty($_SESSION[MOBILE_ACCOUNT]) && $mustlogin) {
-        //如果是手机端请求
-        if($_GET['name']=='api')
+    if (empty($_SESSION[MOBILE_ACCOUNT])) {
+        //如果是APP端请求
+        if($_GET['name']=='api' && is_mobile_request())
         {
             if (!extension_loaded('Memcached')) {
-                return false;
+                ajaxReturnData('0','Memcached未启动，请检查！');
             }
             $be_logout = $mcache->be_logout($_REQUEST['device_code']);
             if ($be_logout == 2) {
                 $_SESSION[MOBILE_ACCOUNT] = NULL;
-                return 3;
+                ajaxReturnData('3','您已在其他设备登录！');
             }
             $mAccount = $mcache->get_msession($_REQUEST['device_code']);
             if (!empty($mAccount)) {
                 return $mAccount;
             }else{
-                return false;
+                return array();
             }
+        } else{
+            //非APP应用端请求  最后返回空数组 或者 weixin_openid
+            return get_session_account($create_weixin_account);
         }
-        //非手机端请求，跳转到登陆页
-        else{	
-            header("location:" . create_url('mobile', array(
-                    'name' => 'shopwap',
-                    'do' => 'login'
-            )));
-        }
-        
-       
-        exit();
-    }
-
-    if ($_GET['name']=='api' AND extension_loaded('Memcached')) {
-        $be_logout = $mcache->be_logout($_REQUEST['device_code']);
-        if ($be_logout == 2) {
-            $_SESSION[MOBILE_ACCOUNT] = NULL;
-            return 3;
-        }
-    }
-
-    if ($mustlogin == true) {
+    }else{
         return $_SESSION[MOBILE_ACCOUNT];
     }
-    
-    if (! empty($_SESSION[MOBILE_ACCOUNT])) {
-        return $_SESSION[MOBILE_ACCOUNT];
-    }
-    
-    return get_session_account($useAccount);
 }
 
 function to_member_loginfromurl()
-{   
-	if (!empty($_SESSION["vip_mobile_login_fromurl"])){
-        $fromurl = $_SESSION["vip_mobile_login_fromurl"];
-        unset($_SESSION["vip_mobile_login_fromurl"]);
-        return $fromurl;
-	}
+{
     if (!empty($_SESSION["mobile_login_fromurl"])) {
         $fromurl = $_SESSION["mobile_login_fromurl"];
         unset($_SESSION["mobile_login_fromurl"]);
         return $fromurl;
     } else {
-		return create_url('mobile', array(
-            'name' => 'shopwap',
-            'do' => 'shopindex'
-        ));
+		return WEBSITE_ROOT;
     }
 }
 
@@ -789,23 +601,7 @@ function checkIsLogin(){
     }
 }
 
-/**
- * @return int
- * @return int
- * 验证用户是否APP首次登录，并赠送积分
- * 
- */
-function ifApp($openid=''){
-    if ( !empty($openid) ){
-        $member = mysqld_select("SELECT * FROM " . table('member') . " where ifapp = 0 and openid=:openid limit 1", array(
-            ':openid' => $openid
-        )); 
-		if ($member){
-			mysqld_update('member', array('ifapp'=>1), array('openid'=>$openid));
-            member_credit($openid, 50, 'addcredit', '首次登陆APP积分赠送50');
-		}
-	}
-}
+
 
 /**
  * 该方法少用，尽量使用以下
@@ -876,15 +672,6 @@ function register_credit($mobile,$openid){
     {
         member_credit($openid,$shop_regcredit,"addcredit",PayLogEnum::getLogTip('LOG_REGIST_JIFEN_TIP'));
     }
-    // 老用户积分赠送
-    $regular = mysqld_select("SELECT * FROM ".table('shop_customers')." WHERE mobile='".$mobile."' AND status=0");
-    if (!empty($regular)) {
-        // 老用户积分为消费金额的一半
-        $regular_credit = intval((float)$regular['price']/10);
-        member_credit($openid, $regular_credit, 'addcredit', PayLogEnum::getLogTip('LOG_REGIST_VIPJIFEN_TIP'));
-        // 该老用户更改为已入驻
-        mysqld_update('shop_customers', array('status'=>1), array('mobile'=>$mobile));
-    }
 }
 
 /**
@@ -917,7 +704,7 @@ function get_weixininfo_from_regist(){
             $unionid =  $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
             $weixin  =  mysqld_select("select avatar,nickname,scan_openid from ".table('weixin_wxfans')." where unionid='{$unionid}'");
             if(empty($weixin)){
-                $name =  '掌门人'.random(5);
+                $name =  '会员'.random(5);
                 $face = '';
                 $scan_openid = '';
             }else{
@@ -927,7 +714,7 @@ function get_weixininfo_from_regist(){
             }
         }
     }else{
-        $name =  '掌门人'.random(5);
+        $name =  '会员'.random(5);
         $face = '';
         $scan_openid = '';
     }
@@ -959,4 +746,14 @@ function member_rank_next($rank=array()){
     $rank['rank_level']  = intval($rank['rank_level']);
     $rank['rank_next']  = mysqld_select('SELECT * FROM '.table('rank_model')." where rank_level > {$rank['rank_level']} order by rank_level asc limit 1");
     return $rank;
+}
+
+
+/** 用户加密
+ * @param $length
+ * @return  code
+ */
+function encryptPassword($password) {
+    $result =  hash("sha256",md5($password));
+    return $result;
 }

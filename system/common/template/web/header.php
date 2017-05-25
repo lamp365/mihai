@@ -15,7 +15,8 @@
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/fontawesome3/css/font-awesome.min.css" />
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/common.js"></script>
-<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/bootstrap3/js/bootstrap.min.js"></script> 
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/goodsCommon.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/kindeditor-min.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/themes/default/default.css" />
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>

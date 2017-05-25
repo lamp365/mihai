@@ -43,7 +43,7 @@
 .form-horizontal .control-label{margin-bottom:5px; font-size:14px;}
 .form-group{margin-bottom:0px;}
 </style>
-<form class="form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);">
+<form class="form-horizontal img-rounded" role="form" method="post" action="<!--@php echo mobile_url('login',array('op'=>'do_login')); @-->" onsubmit="return checkInfo(this);">
 	<input type="hidden"  name="third_login" value="<!--@php echo $_GP['third_login'];@-->" />
 <div class="form-group" style="border-bottom:1px solid #ececec;">
 	<div class="col-sm-12">

@@ -9,32 +9,13 @@
 defined('SYSTEM_IN') or exit('Access Denied');
 
 class indexAddons  extends BjSystemModule {
-	public function do_changepwd()
-	{
-		$this->__web(__FUNCTION__);
+	public function do_control($name=''){
+		if ( !empty($name) ){
+			$this->__web($name);
+		}else{
+			exit('控制器不存在');
+		}
 	}
-	public function do_center()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	public function do_Main()
-	{
-		$this->__web(__FUNCTION__);
-	}
-		public function do_keupload()
-	{
-		$this->__web(__FUNCTION__);
-	}
-		
-	public function do_file_ueupload()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	public function do_ueupload()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	
 	public function dateToWeekday($dateindex)
 	{
 		if($dateindex==1)

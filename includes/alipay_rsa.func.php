@@ -46,7 +46,7 @@ function rsaSign($data, $private_key) {
  * @param $sign 要校对的的签名结果
  * return 验证结果
  */
-function rsaVerify($data, $alipay_public_key, $sign)  {
+function  rsaVerify($data, $alipay_public_key, $sign)  {
     //以下为了初始化私钥，保证在您填写私钥时不管是带格式还是不带格式都可以通过验证。
 	$alipay_public_key=str_replace("-----BEGIN PUBLIC KEY-----","",$alipay_public_key);
 	$alipay_public_key=str_replace("-----END PUBLIC KEY-----","",$alipay_public_key);

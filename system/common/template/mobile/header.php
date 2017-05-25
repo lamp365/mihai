@@ -14,15 +14,13 @@
 		$advtop = mysqld_select("select * from " . table('shop_adv') . " where enabled=1 and type = 1 and page = 4 order by displayorder desc");
 		if ( empty($category) ){
 				$category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " WHERE deleted=0 and enabled=1 ORDER BY parentid ASC, displayorder DESC");
-				//这里改掉row名字  会影响到评论的数据
-				foreach ($category as $index => $c_rows) {
-					if (!empty($c_rows['parentid'])) {
-						$children[$c_rows['parentid']][$c_rows['id']] = $c_rows;
+				foreach ($category as $index => $row) {
+					if (!empty($row['parentid'])) {
+						$children[$row['parentid']][$row['id']] = $row;
 						unset($category[$index]);
 					}
 				}
 		}
-
         $category = index_c_goods($category,4);
 
 		if ( !function_exists(getHottpoic) ){
@@ -232,5 +230,4 @@
 	</div>
 	</div>
 </nav>
-
 

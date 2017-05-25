@@ -8,6 +8,7 @@ class Mcache {
   public $host = 'localhost';
   public $post = 11211;
   public $m;  
+  public $key_pre = 'cbd_';    //设置key前缀，以免同一个机器吗，多套应用导致key相同。
 
   function __construct() {
     $this->m = new Memcached();
@@ -37,20 +38,29 @@ class Mcache {
    * @param string $device_code：设备识别码
    * @return bool
    */
-  public function init_msession($device_code) {
-    $account = get_member_account(true, true);
+  public function init_msession($device_code,$account = array()) {
+    if(empty($account)){
+        $account = get_member_account(true);
+    }
     $have_ac = $this->get($account['openid']);
     if (!empty($have_ac)) {
+      //吧之前的设备号 标记登出为2
       $this->set($have_ac['device'].'_belogout', 2);
       $this->delete($have_ac['device']);
       $this->delete($account['openid']);
-      // $this->get($have_ac['device'].'_belogout');
     }
+
+    $rsa     = new Rsa();
+    $app_key = $rsa->pass_key();   //得到一个code
+    $account['app_key'] = $rsa->rsaPriEncrypt($app_key);  //通过code去用rsa加密为openssl格式
+
+    //吧当前的设备号 标记登出为1
     $this->set($device_code.'_belogout', 1);
     $re1 = $this->set($account['openid'], array('account' => $account, 'device' => $device_code));
     $re2 = $this->set($device_code, array('account' => $account, 'device' => $device_code));
+
     if ($re1 AND $re2) {
-      return true;
+      return $account['app_key'];
     }else{
       return false;
     }
@@ -65,9 +75,11 @@ class Mcache {
   public function be_logout($device_code) {
     $be_logout = $this->get($device_code.'_belogout');
     if ($be_logout == 2) {
-      $this->set($device_code.'_belogout', 1);
-      // $this->delete($device_code);
-      // $this->delete($device_code['account']['openid']);
+      //如果已经被人登出了 清空掉缓存信息
+       $cache = $this->get($device_code);
+       $this->set($device_code.'_belogout', 1);
+       $this->delete($device_code);
+       $this->delete($cache['account']['openid']);
     }
 
     return $be_logout;
@@ -83,8 +95,8 @@ class Mcache {
     $dev = $this->get($device_code);
     if (!empty($dev)) {
       $mem = $dev['account'];
-      $new_mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$mem['openid']."'");
-      $_SESSION[MOBILE_ACCOUNT] = $new_mem;
+      //cookie过期 但是memcahe还存在用户的登录有效性，则帮用户再次设置session
+      $new_mem = save_member_login('',$mem['openid']);
       return $new_mem;
     }else{
       return false;
@@ -98,8 +110,9 @@ class Mcache {
    * @return bool
    */
   public function del_msession($device_code) {
-    $account = get_member_account(true, true);
-    $_SESSION[MOBILE_ACCOUNT] = NULL;
+    $account = get_member_account();
+    $_SESSION    = array();
+    session_destroy();
     $this->delete($device_code.'_belogout');
     $this->delete($device_code);
     $this->delete($account['openid']);
@@ -115,6 +128,7 @@ class Mcache {
    * @return boolean
    */
   public function set($key, $value, $expiration=0) {
+    $key = $this->key_pre.$key;
     $re = $this->m->set($key, $value, $expiration);
 
     // log
@@ -142,6 +156,7 @@ class Mcache {
    * @return 
    */
   public function get($key, $cache_cb=NULL) {
+    $key = $this->key_pre.$key;
     $re = $this->m->get($key);
 
     // log
@@ -179,6 +194,7 @@ class Mcache {
    * @return boolean
    */
   public function add($key, $value, $expiration=0) {
+    $key = $this->key_pre.$key;
     $re = $this->m->add($key, $value, $expiration);
     return $re;
   }
@@ -191,6 +207,7 @@ class Mcache {
    * @return boolean
    */
   public function append($key, $value) {
+    $key = $this->key_pre.$key;
     $re = $this->m->append($key, $value);
     return $re;
   }
@@ -203,6 +220,7 @@ class Mcache {
    * @return boolean
    */
   public function increment($key, $offset=NULL) {
+    $key = $this->key_pre.$key;
     $re = $this->m->increment($key, $offset);
     return $re;
   }
@@ -216,6 +234,7 @@ class Mcache {
    * @return boolean
    */
   public function replace($key, $value, $expiration=0) {
+    $key = $this->key_pre.$key;
     $re = $this->m->replace($key, $value, $expiration);
     return $re;
   }
@@ -228,6 +247,7 @@ class Mcache {
    * @return boolean
    */
   public function delete($key, $time=NULL) {
+    $key = $this->key_pre.$key;
     $re = $this->m->delete($key, $time);
 
     // log
@@ -243,6 +263,9 @@ class Mcache {
    * @return boolean
    */
   public function deleteMulti($keys, $time=NULL) {
+    foreach($keys as &$val){
+      $val = $this->key_pre.$val;
+    }
     $re = $this->m->deleteMulti($keys, $time);
     return $re;
   }

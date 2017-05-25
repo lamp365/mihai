@@ -5,6 +5,16 @@
 	</div>
 <!--用于加载远程地址 作为弹框页面  注意更新 -->
 <div id="alterModal" class="alertModalBox"></div>
+<script>
+$(function(){
+	var the_height = document.body.clientHeight;
+	if(the_height < 400){
+		document.body.style.height = '700px';
+	}
+});
+
+
+</script>
 </body>
 </html>
 

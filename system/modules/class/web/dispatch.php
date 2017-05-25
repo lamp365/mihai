@@ -9,7 +9,7 @@
 			{
 		
 				while($file = $addons->read())
-				{ 
+				{
 					if(($file!=".") AND ($file!="..")) 
 					{
 			

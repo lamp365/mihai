@@ -10,37 +10,47 @@
 <table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					  <th class="text-center" >快递代码</th>
-				   <th class="text-center" >快递代码名称</th>
-    <th class="text-center" style="width:500px" >快递代码描述</th>
-    <th class="text-center"  >排序</th>
-    <th class="text-center">操作</th>
+				    <th class="text-center" >快递代码</th>
+				    <th class="text-center" >快递代码名称</th>
+                    <th class="text-center" style="width:500px" >快递代码描述</th>
+                    <th class="text-center"  >排序</th>
+                    <th class="text-center">操作</th>
 				</tr>
 			</thead>
 		<?php  if(is_array($modules)) { foreach($modules as $item) { ?>
 				<tr>
-						<td class="text-center"><?php  echo $item['code']?></td>
+					<td class="text-center"><?php  echo $item['code']?></td>
 					<td class="text-center"><?php  echo $_LANG['dispatch_'.$item['code'].'_name']?></td>
-          <td class="text-center"><?php  echo $_LANG['dispatch_'.$item['code'].'_desc']?></td>
-          <td class="text-center"><input type="text" style="width: 46px;text-align: center" value="<?php  echo $item['sort']?>" name="sorts[]"><input type="hidden" name="ids[]" value="<?php echo $item['id'];?>">  </td>
-         <td class="text-center"><?php if(empty($item['enabled'])||$item['enabled']==0){?>
-         	<a class="btn btn-xs btn-info"  href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch_install','code'=>$item['code']))?>" >
-                                   <i class="icon-edit"></i>启&nbsp;动                               
-                                </a><?php }else{ ?>
-                                	&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-danger" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dispatch','op'=>'display','code'=>$item['code']))?>" >
-                                   <i class="icon-edit"></i>配送区域                          
-                                </a>
-                                 &nbsp;&nbsp;&nbsp;	<a class="btn btn-xs btn-info" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch_uninstall','code'=>$item['code']))?>" >
-                                  <i class="icon-edit"></i>卸&nbsp;载                       
-                                </a>
-                                 <?php }?>  </td>
+                    <td class="text-center"><?php  echo $_LANG['dispatch_'.$item['code'].'_desc']?></td>
+                    <td class="text-center"><input type="text" style="width: 46px;text-align: center" value="<?php  echo $item['sort']?>" name="sorts[]"><input type="hidden" name="ids[]" value="<?php echo $item['id'];?>">  </td>
+                    <td class="text-center">
+                        <?php if(empty($item['enabled'])||$item['enabled']==0){?>
+     	                  <a class="btn btn-xs btn-info"  href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch_install','code'=>$item['code']))?>" >
+                            <i class="icon-edit"></i>启&nbsp;动                               
+                          </a>
+                        <?php $code .= $item['code'].",";}else{ ?>
+                          &nbsp;&nbsp;&nbsp;
+                          <a class="btn btn-xs btn-danger" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dispatch','op'=>'display','code'=>$item['code']))?>" >
+                              <i class="icon-edit"></i>配送区域                          
+                          </a>
+                          &nbsp;&nbsp;&nbsp;	
+                           <a class="btn btn-xs btn-info" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch_uninstall','code'=>$item['code']))?>" >
+                               <i class="icon-edit"></i>卸&nbsp;载                       
+                           </a>
+                         <?php }?>  
+                      </td>
 				</tr>
 				<?php  } } ?>
 		</table>
 		<?php  echo $pager;?>
+    <?php if(empty($item['enabled'])||$item['enabled']==0){?>
+	<a href="<?php  echo create_url('site', array('name'=>'modules','do' => 'dispatch_install','op'=>'all','code'=>$code))?>" class="btn btn-sm btn-info" >全部启动</a>
+	<?php }?>
+	<?php if(is_array($modules) && !empty($modules)){?>
 	<button class="btn btn-sm btn-info" type="submit">
 		确定排序
 	</button>
+	<?php }?>
 </form>
 
 

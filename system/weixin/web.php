@@ -4,38 +4,12 @@ define('subscribe_key', '系统_关注事件');
 define('default_key', '系统_默认回复');
 class weixinAddons  extends BjSystemModule {
 
-		public function do_rule()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	
-	public function do_menumodify() {
-		$this->__web(__FUNCTION__);
-	}
-	
-	public function do_designer()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	
-	public function do_remove()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	
-	public function do_refresh()
-	{
-		message('', 'refresh');
-	}
-	
-	public function do_setting()
-	{
-		$this->__web(__FUNCTION__);
-	}
-	
-	public function do_guanzhu()
-	{
-		$this->__web(__FUNCTION__);
+	public function do_control($name=''){
+		if ( !empty($name) ){
+			$this->__web($name);
+		}else{
+			exit('控制器不存在');
+		}
 	}
 	
 	

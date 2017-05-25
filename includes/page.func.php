@@ -10,17 +10,19 @@ function refresh()
     $_CMS['refresh'] = substr($_CMS['refresh'], - 1) == '?' ? substr($_CMS['refresh'], 0, - 1) : $_CMS['refresh'];
     $_CMS['refresh'] = str_replace('&amp;', '&', $_CMS['refresh']);
     $reurl = parse_url($_CMS['refresh']);
-    
-    if (! empty($reurl['host']) && ! in_array($reurl['host'], array(
-        $_SERVER['HTTP_HOST'],
-        'www.' . $_SERVER['HTTP_HOST']
-    )) && ! in_array($_SERVER['HTTP_HOST'], array(
-        $reurl['host'],
-        'www.' . $reurl['host']
-    ))) {
-        $_CMS['refresh'] = WEBSITE_ROOT;
-    } elseif (empty($reurl['host'])) {
-        $_CMS['refresh'] = WEBSITE_ROOT . './' . $_CMS['referer'];
+    if($_SERVER['SERVER_PORT'] == 80)
+    {
+        if (! empty($reurl['host']) && ! in_array($reurl['host'], array(
+            $_SERVER['HTTP_HOST'],
+            'www.' . $_SERVER['HTTP_HOST']
+        )) && ! in_array($_SERVER['HTTP_HOST'], array(
+            $reurl['host'],
+            'www.' . $reurl['host']
+        ))) {
+            $_CMS['refresh'] = WEBSITE_ROOT;
+        } elseif (empty($reurl['host'])) {
+            $_CMS['refresh'] = WEBSITE_ROOT . './' . $_CMS['referer'];
+        }
     }
     return strip_tags($_CMS['refresh']);
 }
@@ -30,12 +32,10 @@ function page($filename)
     global $_CMS;
     if (SYSTEM_ACT == 'mobile') {
         $source = SYSTEM_ROOT . $_CMS['module'] . "/template/mobile/{$filename}.php";
-        
         if (! is_file($source)) {
             $source = SYSTEM_ROOT . "common/template/mobile/{$filename}.php";
         }
-    } else {
-        
+    } else { 
         $source = SYSTEM_ROOT . $_CMS['module'] . "/template/web/{$filename}.php";
         if (! is_file($source)) {
             $source = SYSTEM_ROOT . "common/template/web/{$filename}.php";
@@ -46,6 +46,12 @@ function page($filename)
 
 function themePage($filename)
 {
+    $cache_filename = $filename;
+    $filenameArr = explode('/',$filename);
+    if(count($filenameArr) == 2){
+        $filename       = $filenameArr[0].'/'.$filenameArr[1];
+        $cache_filename = $filenameArr[0].'_'.$filenameArr[1];  //缓存文件就不分目录 不然会难免遇到创建目录权限失败问题
+    }
     $theme = '';
     $themeconfig = SYSTEM_WEBROOT . "/themes/theme.bjk";
     if (! file_exists($themeconfig)) {
@@ -73,11 +79,11 @@ function themePage($filename)
     if (is_mobile_request()||$_GET['wap']==1){
         $theme = 'wap';
     }
-    $cachefile = WEB_ROOT . '/cache/' . $theme . '/' . $filename . '.php';
+    $cachefile = WEB_ROOT . '/cache/' . $theme . '/' . $cache_filename . '.php';
     $template = SYSTEM_WEBROOT . '/themes/' . $theme . '/' . $filename . '.html';
     if (! file_exists($template)) {
         $template = SYSTEM_WEBROOT . '/themes/default/' . $filename . '.html';
-        $cachefile = WEB_ROOT . '/cache/default/' . $filename . '.php';
+        $cachefile = WEB_ROOT . '/cache/default/' . $cache_filename . '.php';
         $theme = 'default';
     }
 
@@ -89,11 +95,64 @@ function themePage($filename)
         }
         $content = preg_replace('/__RESOURCE__/', WEBSITE_ROOT . 'themes/' . $theme . '/__RESOURCE__', $str);
         $content = preg_replace('/<!--@php\s+(.+?)@-->/', '<?php $1?>', $content);
-        file_put_contents($cachefile, $content);
-        return $cachefile;
     } else {
-        return $cachefile;
+        $content = file_get_contents($cachefile);
     }
+
+    //加入表单令牌
+    list($tokenName,$tokenKey,$tokenValue) = getToken();
+    $input_token = '<input type="hidden" name="'.$tokenName.'" value="'.$tokenKey.'_'.$tokenValue.'" />';
+    if(strpos($content,'{__TOKEN__}')) {
+        // 指定表单令牌隐藏域位置
+        $content = str_replace('{__TOKEN__}',$input_token,$content);
+    }
+    file_put_contents($cachefile, $content);
+    return $cachefile;
+}
+
+/**
+ * 获取表单token  表单令牌 防止重复提交
+ * @return array
+ */
+function getToken(){
+    $tokenName  = "__TOKEN__";
+    if(!isset($_SESSION[$tokenName])) {
+        $_SESSION[$tokenName]  = array();
+    }
+    // 标识当前页面唯一性
+    $tokenKey   =  md5($_SERVER['REQUEST_URI']);
+    if(isset($_SESSION[$tokenName][$tokenKey])) {// 相同页面不重复生成session
+        $tokenValue = $_SESSION[$tokenName][$tokenKey];
+    }else{
+        $tokenValue = md5(microtime(true));
+        $_SESSION[$tokenName][$tokenKey]   =  $tokenValue;
+    }
+    return array($tokenName,$tokenKey,$tokenValue);
+}
+
+/**
+ * 表单验证，防止重复提交
+ * @return bool
+ * @author 刘建凡
+ */
+function formCheckToken(){
+
+    $name   = "__TOKEN__";
+    if(isset($_REQUEST[$name])){
+        if(!isset($_SESSION[$name])){   // 令牌数据无效
+            message("您已重复提交！",refresh(),'error');
+        }
+
+        // 令牌验证
+        list($key,$value)  =  explode('_',$_REQUEST[$name]);
+        if(isset($_SESSION[$name][$key]) && $value && $_SESSION[$name][$key] == $value) { // 防止重复提交
+            unset($_SESSION[$name][$key]); // 验证完成销毁session
+            return true;
+        }else{
+            message("您已重复提交！",refresh(),'error');
+        }
+    }
+    return true;
 }
 
 function pagination($total, $pindex, $psize = 15,$callback='',$style=0)
@@ -112,6 +171,8 @@ function pagination($total, $pindex, $psize = 15,$callback='',$style=0)
     $pindex = $cindex > 1 ? $cindex - 1 : 1;
     $nindex = $cindex < $tpage ? $cindex + 1 : $tpage;
     $_GP['page'] = $findex;
+   
+    /**
     $furl = 'href="' . 'index.php?' . http_build_query($_GP) . '"';
     $_GP['page'] = $pindex;
     $purl = 'href="' . 'index.php?' . http_build_query($_GP) . '"';
@@ -119,6 +180,18 @@ function pagination($total, $pindex, $psize = 15,$callback='',$style=0)
     $nurl = 'href="' . 'index.php?' . http_build_query($_GP) . '"';
     $_GP['page'] = $lindex;
     $lurl = 'href="' . 'index.php?' . http_build_query($_GP) . '"';
+    **/
+    
+    
+    $furl = 'href="' .returnpageurl($_GP) . '"';
+    $_GP['page'] = $pindex;
+    $purl = 'href="' . returnpageurl($_GP) . '"';
+    $_GP['page'] = $nindex;
+    $nurl = 'href="' .returnpageurl($_GP). '"';
+    $_GP['page'] = $lindex;
+    $lurl = 'href="' .returnpageurl($_GP) . '"';
+    
+    
     $beforesize = 5;
     $aftersize = 4;
     if (is_mobile_request()){
@@ -190,7 +263,8 @@ function pagination($total, $pindex, $psize = 15,$callback='',$style=0)
 					}
 					for ($i = $rastart; $i <= $raend; $i ++) {
 						$_GP['page'] = $i;
-						$aurl = 'href="index.php?' . http_build_query($_GP) . '"';
+                                                 
+						$aurl = "href=" . returnpageurl($_GP);
 						$html .= ($i == $cindex ? '<li class="paginate_button active"><a href="javascript:;">' . $i . '</a></li>' : "<li><a {$aurl}>" . $i . '</a></li>');
 				   }
 				   if ($cindex < $tpage) {
@@ -202,4 +276,14 @@ function pagination($total, $pindex, $psize = 15,$callback='',$style=0)
 			}	
     }
     return $html;
+}
+
+function  returnpageurl($_GP)
+{
+     if(SYSTEM_ACT == 'mobile'){
+        $__pageurl = mobile_url($_GP['do'],$_GP);
+    }else{
+         $__pageurl = web_url($_GP['do'],$_GP);
+    }
+    return $__pageurl;
 }

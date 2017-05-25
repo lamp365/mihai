@@ -146,7 +146,7 @@ body{background:#efefef ;}
 	
 <p class="login-title">用户登录</p>
 	
-<form class="form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);" style="padding-top:0 ">
+<form class="form-horizontal img-rounded" role="form" method="post" action="<!--@php echo mobile_url('login',array('op'=>'do_login')); @-->" onsubmit="return checkInfo(this);" style="padding-top:0 ">
 	<input type="hidden"  name="third_login" value="<!--@php echo $_GP['third_login'];@-->" />
 <div class="form-group">
 
@@ -211,7 +211,7 @@ body{background:#efefef ;}
 <script type="text/javascript">
 
 	function checkInfo(form) {
-				var mobile = form['mobile'].value;
+		var mobile = form['mobile'].value;
 		if (!mobile) {
 			alert('请输入您的手机号码！');
 			return false;
@@ -220,7 +220,7 @@ body{background:#efefef ;}
 			alert('请输入正确的手机号码！');
 			return false;
 		}
-				if (!form['pwd'].value) {
+		if (!form['pwd'].value) {
 			alert('请输入登录密码');
 			return false;
 		}

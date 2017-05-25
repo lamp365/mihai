@@ -176,7 +176,7 @@
     <div class="nav2">
     	<ul>
     		<li class="vip-index vip-li-active" ><a href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a></li>
-    		<!-- <li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'level')); ?>">成长体系</a></li> -->
+    		<li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'level')); ?>">成长体系</a></li>
 <!--     		<li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'privilege')); ?>">成长特权</a></li>
 <li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'game')); ?>">免费抽大奖</a></li> -->
     	</ul>
