@@ -142,25 +142,57 @@ class dish extends \common\controller\basecontroller
         }
     }
 
+    /**
+     * 发布产品第一步先选择分类
+     */
     public function post()
     {
         $_GP = $this->request;
-        $taxlist = mysqld_selectall("SELECT * FROM ".table('shop_tax'));
-        $id = intval($_GP['id']);
-        if (!empty($id)) {
-            $item = mysqld_select("SELECT a.*,b.title as gname,b.id as gid,b.thumb as gthumb FROM " . table('shop_dish') . " AS a LEFT JOIN " . table('shop_goods') . " as b on a.gid = b.id WHERE a.id = :id", array(':id' => $id));
+        $parent_category = getCategoryAllparent();
+        include page('dish/choose_type');
+    }
+
+    public function post_dish()
+    {
+        $_GP = $this->request;
+        $id     = intval($_GP['id']);
+        if(empty($id)){
+            //新添加的
+            if(empty($_GP['p1']) || empty($_GP['p2'])){
+                $url = web_url('goods',array('op'=>'post'));
+                message('请选择分类',$url,'error');
+            }
+
+            $piclist = array();
+        }else{
+            //修改的
+            $item = mysqld_select("SELECT * FROM " . table('shop_dish') . " WHERE id = :id", array(':id' => $id));
             if (empty($item)) {
                 message('抱歉，商品不存在或是已经删除！', '', 'error');
             }
-
-
+            if(empty($_GP['p1']) && empty($_GP['p2'])){
+                $_GP['p1'] = $item['pcate'];
+                $_GP['p2'] = $item['ccate'];
+            }
             $piclist = mysqld_selectall("SELECT * FROM " . table('shop_dish_piclist') . " where goodid={$id} ORDER BY id ASC");
 
         }
+        //运费模板
+        $disharea = mysqld_selectall("SELECT * FROM " . table('dish_list') . "  where deleted=0 and enabled =1 ORDER BY displayorder DESC");
+        //获取品牌
+        $brandlist     = getBrandByCategory(0,0,0);
+        $cat_name1     = mysqld_select("select name from ".table('shop_category')." where id={$_GP['p1']}");
+        $cat_name2     = mysqld_select("select name from ".table('shop_category')." where id={$_GP['p2']}");
 
         include page('dish/dish_add');
     }
 
+    public function addbrand()
+    {
+        $_GP = $this->request;
+        $country = mysqld_selectall("select id,name from ".table('shop_country'));
+        include page('dish/addbrand');
+    }
     public function do_post()
     {
         $_GP = $this->request;

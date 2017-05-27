@@ -503,9 +503,9 @@
                                         <i class="icon-double-angle-right"></i>
                                         添加新宝贝
                                     </a>   </li>
-                                <li> <a onclick="navtoggle('产品库管理 - > 仓库管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'disharea','op'=>'display'))?>" target="main">
+                                <li> <a onclick="navtoggle('产品库管理 - > 运费管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'disharea','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
-                                        仓库管理
+                                        运费管理
                                     </a>   </li>
                                 <li> <a onclick="navtoggle('产品库管理 - > 评论管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'comment'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>

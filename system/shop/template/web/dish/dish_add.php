@@ -259,42 +259,8 @@
     background-color: #a94442; /* active bg color */
 }
 </style>
-<form role="form" class="form-horizontal">
- 	<div class="form-group">
-       	<label class="col-sm-2 control-label no-padding-left" > 查询产品：</label>
-		<div class="col-sm-9">
-		<select  style="margin-right:15px;" id="pcates" name="pcates" class="pcates" onchange="fetchChildCategory(this,this.options[this.selectedIndex].value)"  autocomplete="off">
-            <option value="0">请选择一级分类</option>
-            <?php  if(is_array($category)) { foreach($category as $row) { ?>
-            <?php  if($row['parentid'] == 0) { ?>
-            <option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['p1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
-            <?php  } ?>
-            <?php  } } ?>
-        </select>
-        <select  id="cates_2" name="ccates" class="cates_2" onchange="fetchChildCategory2(this,this.options[this.selectedIndex].value)" autocomplete="off">
-            <option value="0">请选择二级分类</option>
-            <?php  if(!empty($item['p2']) && !empty($childrens[$item['p1']])) { ?>
-            <?php  if(is_array($childrens[$item['p1']])) { foreach($childrens[$item['p1']] as $row) { ?>
-            <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['p2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-            <?php  } } ?>
-            <?php  } ?>
-        </select>
-		<select  id="cate_3" name="ccate2" class="cate_3" autocomplete="off">
-            <option value="0">请选择三级分类</option>
-            <?php 
-			    if(!empty($item['p3']) && !empty($childrens[$item['p3']])) { 
-			       if(is_array($childrens[$item['p3']])) { 
-					   foreach($childrens[$item['p3']] as $row) { 
-			?>
-                     <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['p3']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-            <?php  } } } ?>
-        </select>
-        <a href="javascript:void(0)" onclick="findgoods()" class="btn btn-primary span2" name="submit" ><i class="icon-edit"></i>查找产品</a>    
-	</div>
-  </div>
 
-  </form>
-          <form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
+<form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
 <div class="panel with-nav-tabs panel-default">
     <div class="panel-heading">
             <ul class="nav nav-tabs">
@@ -309,479 +275,300 @@
         <div class="tab-content">
 
             <div class="tab-pane fade in active" id="tab1primary">
-  <div class="form-group">
-		<label class="col-sm-2 control-label no-padding-left" > 选择产品：</label>
-		<div class="col-sm-9">
-			  <select name="c_goods" class="js-example-responsive" id="c_goods" style="width: 43%">
-			       <?php if (!empty($item['gname'])){ ?>
-                   <option value='<?php echo $item['gid']; ?>'><?php echo $item['gname']; ?></option>
-				   <?php }else{ ?>
-			       <option value='0'>未选择产品</option>
-				   <?php } ?>
-			  </select>
-		</div>
-</div>
- <div class="form-group">
-	    <label class="col-sm-2 control-label no-padding-left" > 自定义名称（默认为产品库名称）：</label>
-		<div class="col-sm-4">
-			   <input type="text" name="dishname" id="dishname" class="form-control" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
-		</div>
-</div>
- <div class="form-group">
-	    <label class="col-sm-2 control-label no-padding-left" > 批发说明（用于批发产品的说明）：</label>
-		<div class="col-sm-4">
-		           <textarea style="height:100px;"  id="explain" name="explain" cols="70"><?php  echo $item['explain'];?></textarea>  
-		</div>
-</div>
-
- <?php foreach($extend_category as $key => $extend_arr){  if($key==0){ $show_zi = "扩展分类：";}else{ $show_zi=' '; } ?>
-
- <div class="form-group kuozhan_fenlei">
-	 <label class="col-sm-2 control-label no-padding-left" > <?php echo $show_zi; ?></label>
-	 <div class="col-sm-4" style="margin-top: 6px;">
-		 <input type="hidden" name="extendids_kuozhan[]" value="<?php echo $extend_arr['id'];?>" class="extendids_kuozhan">
-		 <select  style="margin-right:15px;"  name="pcates_kuozhan[]" class="pcates" onchange="fetchChildCategory(this,this.options[this.selectedIndex].value)"  autocomplete="off">
-			 <option value="0">请选择一级分类</option>
-			 <?php  if(is_array($category)) { foreach($category as $row) { ?>
-				 <?php  if($row['parentid'] == 0) { ?>
-					 <option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $extend_arr['p1']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
-				 <?php  } ?>
-			 <?php  } } ?>
-		 </select>
-		 <select  name="ccates_kuozhan[]" class="cates_2" onchange="fetchChildCategory2(this,this.options[this.selectedIndex].value)" autocomplete="off">
-			 <option value="-1">请选择二级分类</option>
-			 <?php  if(!empty($item['p2']) && !empty($childrens[$extend_arr['p1']])) { ?>
-				 <?php  if(is_array($childrens[$extend_arr['p1']])) { foreach($childrens[$extend_arr['p1']] as $row) { ?>
-					 <option  value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $extend_arr['p2']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-				 <?php  } } ?>
-			 <?php  } ?>
-		 </select>
-		 <select   name="ccate2_kuozhan[]" class="cate_3" autocomplete="off">
-			 <option value="0">请选择三级分类</option>
-			 <?php
-			 if(!empty($item['p3']) && !empty($childrens[$extend_arr['p3']])) {
-				 if(is_array($childrens[$extend_arr['p3']])) {
-					 foreach($childrens[$extend_arr['p3']] as $row) {
-						 ?>
-						 <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $extend_arr['p3']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-					 <?php  } } } ?>
-		 </select>
-	 </div>
-	 <div class="col-sm-6">
-		 <a href="javascript:void(0);" class="btn btn-danger btn-xs remove_fenlei" style="display: " onclick="remove_kuozhan_fenlei(this)">移除</a>
-	 </div>
-
- </div>
-<?php } ?>
-
- <div class="form-group">
-	 <label class="col-sm-2 control-label no-padding-left"></label>
-	 <div class="col-sm-9">
-		 <a href="javascript:void(0)" onclick="add_kuozhan_fenlei()" class="btn btn-primary span2" name="button"><i class="icon-plus"></i>添加分类</a>
-	 </div>
- </div>
-	 <input type="hidden" class="delete_extend_ids" name="delete_extend_ids" value="">
-
-
- <?php if(isHasPowerOperateField('shop_dish','status')){ ?>
- <div class="form-group" >
-		<label class="col-sm-2 control-label no-padding-left" > 是否销售：</label>
-		<div class="col-sm-9">
-		    <input type="radio" name="status" value="1" id="isshow1" <?php  if($item['status'] ==1 ) { ?>checked="true"<?php  } ?> /> 是  &nbsp;&nbsp;
-			<input type="radio" name="status" value="0" id="isshow2"  <?php  if($item['status'] == 0) { ?>checked="true"<?php  } ?> /> 否
-		</div>
-</div>
-<?php } ?>
-		 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 仓库：</label>
-
-										<div class="col-sm-9">
-												  <select  style="margin-right:15px;" id="pcate" name="pcate" onchange="fetchChildarea(this.options[this.selectedIndex].value)"  autocomplete="off">
-                <option value="0">请选择一级分类</option>
-                <?php  if(is_array($area)) { foreach($area as $row) { ?>
-                <?php  if($row['parentid'] == 0) { ?>
-                <option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['pcate']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name'];?></option>
-                <?php  } ?>
-                <?php  } } ?>
-            </select>
-            <select  id="cate_2" name="ccate" autocomplete="off">
-                <option value="0">请选择二级分类</option>
-                <?php  if(!empty($item['ccate']) && !empty($children[$item['pcate']])) { ?>
-                <?php  if(is_array($children[$item['pcate']])) { foreach($children[$item['pcate']] as $row) { ?>
-                <option value="<?php  echo $row['0'];?>" <?php  if($row['0'] == $item['ccate']) { ?> selected="selected"<?php  } ?>><?php  echo $row['1'];?></option>
-                <?php  } } ?>
-                <?php  } ?>
-            </select>
-										</div>
-		</div>
-
-	 <?php if(isHasPowerOperateField('shop_dish','taxid') || empty($_GP['id'])){ ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 税率设置：</label>
-		    <div class="col-sm-9">	
-			<select  id="taxid" name="taxid" autocomplete="off">
-                   <option value="0">请选择税率</option>
-				     <?php  if(is_array($taxlist)) { foreach($taxlist as $row) { ?>
-                         <option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['taxid']) { ?> selected="selected"<?php  } ?>><?php  echo $row['type'];?></option>
-					<?php  } }?>
-			 </select>
-			</div>
-		</div>
-	 <?php } ?>
-
-	 <?php if(isHasPowerOperateField('shop_dish','marketprice') || empty($_GP['id'])){ ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 促销价格：</label>
-
-			<div class="col-sm-2">
-					  <input type="text" class="form-control" name="marketprice" id="marketprice" value="<?php  echo empty($item['marketprice'])?'0':$item['marketprice'];?>" />
-			</div>
-		</div>
-	 <?php } ?>
-	 
-	 <?php if(isHasPowerOperateField('shop_dish','app_marketprice') || empty($_GP['id'])){ ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > app端价格：</label>
-
-			<div class="col-sm-2">
-				<input type="text" class="form-control" name="app_marketprice" id="app_marketprice" value="<?php echo empty($item['app_marketprice'])?'0':$item['app_marketprice'];?>" />
-			</div>
-		</div>
-	 <?php } ?>
-	 
-	 <?php if(isHasPowerOperateField('shop_dish','productprice') || empty($_GP['id'])){ ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 参考价格：</label>
-
-			<div class="col-sm-2">
-					  <input type="text" class="form-control" name="productprice" id="productprice"  value="<?php  echo empty($item['productprice'])?'0':$item['productprice'];?>" />
-			</div>
-		</div>
-	 <?php } ?>
-		   <input type="hidden" class="vip-number"   value="<?php echo max(1,count($vip_list)); ?>">
-
-	 <?php if(isHasPowerOperateField('shop_dish','vip_price') || empty($_GP['id'])){ ?>
-		   <?php if ( is_array($dish_vip_list) && !empty($dish_vip_list) ){ foreach ( $dish_vip_list as $key=>$dish_vip_list_value ){ ?>
-	 	   <div class="form-group form-inline vip-form">
-	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
-	 	   		<div class="col-sm-5">
-					  <select name="v2[]" class="form-control vip-select" onchange='changeFun(this)'>
-					  		<option value="-1">--请选择--</option>
-					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
-					  		<!-- //currency属性用来控制价格符号，1代表￥，2代表$ -->
-                                   <option currency="1" value='<?php echo $vip_list_value['id'] ?>' <?php echo $dish_vip_list_value['v2'] == $vip_list_value['id']?'selected':'';?> ><?php echo $vip_list_value['name']; ?></option>
-							<?php }} ?>
-					  </select>
-                      <div class="input-group">
-                      <span class="input-group-addon">$</span>
-					  <input type="text" name="vip_price[]" class="form-control vip_price" value="<?php echo $dish_vip_list_value['vip_price']; ?>" placeholder="请输入价格"/>
-					  </div>
-				</div>
-				<div class="col-sm-5">
-					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
-				</div>
-	 	   </div>
-		   <?php }}else{ ?>
-            <div class="form-group form-inline vip-form">
-	 	   		<label class="col-sm-2 control-label no-padding-left" > <?php if ( $key == 0 ){ echo '会员价格：'; }?></label>
-	 	   		<div class="col-sm-5">
-					  <select name="v2[]" class="form-control" onchange='changeFun(this)'>
-					  		<option value="-1">--请选择--</option>
-					  		<?php if ( is_array($vip_list) && !empty($vip_list) ){  foreach ( $vip_list as $vip_list_value ){?>
-                                   <option currency="1" value='<?php echo $vip_list_value['id'] ?>'><?php echo $vip_list_value['name']; ?></option>
-							<?php }} ?>
-					  </select>
-					  <input type="text" name="vip_price[]" class="form-control vip_price" value="" placeholder="请输入价格"/>
-				</div>
-				<div class="col-sm-5">
-					<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
-				</div>
-	 	   </div>
-		   <?php } ?>
-
-		<?php } ?>
-
-	 	   <div class="form-group">
-	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
-	 	   		<div class="col-sm-10">
-					<a href="javascript:void(0)" class="btn btn-primary addvip" name="button"><i class="icon-plus"></i>添加会员</a>
-				</div>
-
-	 	   </div>
-	 	   <div class="form-group">
-	 	   		<label class="col-sm-2 control-label no-padding-left" ></label>
-	 	   		<div class="col-sm-10">
-					
-				</div>
-
-	 	   </div>
-           <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 排序：</label>
-
-										<div class="col-sm-9">
-												<input type="text" name="displayorder" id='displayorder' value="<?php  echo empty($item['displayorder'])?'0':$item['displayorder'];?>" />
-										</div>
-		       </div>
-
-				<div class="form-group" style="display:none">
-										<label class="col-sm-2 control-label no-padding-left" > 表显里程：</label>
-
-										<div class="col-sm-9">
-												<input type="text" name="weight" id='weight' value="<?php  echo empty($item['weight'])?'0':$item['weight'];?>" />
-										</div>
-		       </div>
-		       <div class="form-group" style="display:none">
-										<label class="col-sm-2 control-label no-padding-left" > 车牌属地：</label>
-
-										<div class="col-sm-9">
-												<input type="text" name="dishsn" id='dishsn' value="<?php  echo empty($item['dishsn'])?'':$item['dishsn'];?>" />
-										</div>
-		       </div>
 				<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 库存：</label>
-										<div class="col-sm-9">
-												
-          	 <input type="text" name="total" id="total" value="<?php  echo empty($item['total'])?'0':$item['total'];?>" /> 
-										</div>
-		</div>
-		
-		
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 单笔最大购买数量：</label>
-			<div class="col-sm-9">
-          	 <input type="text" name="max_buy_quantity" value="<?php  echo empty($item['max_buy_quantity'])?'0':$item['max_buy_quantity'];?>" /> 
-          	 <p class="help-block">0为不限制</p>
-			</div>
-		</div>
-		        
+					<!--两个分类-->
+					<input type="hidden" name="pcate" id="pcate" value="<?php echo $_GP['p1'];?>">
+					<input type="hidden" name="ccate" id="ccate" value="<?php echo $_GP['p2'];?>">
+					<label class="col-sm-2 control-label no-padding-left" > 修改分类：</label>
+
+					<div class="col-sm-9 edit_cate">
+						<span>
+							<?php echo $cat_name1['name'];?> > <?php echo $cat_name2['name'];?>
+						</span>
+						<a style="margin-left: 15px;" class="btn btn-xs btn-info" href="<?php echo web_url('dish',array('op'=>'post','id'=>$_GP['id'],'p1'=>$_GP['p1'],'p2'=>$_GP['p2'])); ?>">修改分类</a>
+					</div>
+				</div>
 				<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 减库存方式：</label>
-
-										<div class="col-sm-9">
-												
-          	<input type="radio" name="totalcnf" value="0" id="totalcnf1" <?php  if(empty($item) || $item['totalcnf'] == 0) { ?>checked="true"<?php  } ?> /> 拍下减库存
-            &nbsp;&nbsp;
-          <input type="radio" name="totalcnf" value="1" id="totalcnf2"  <?php  if(!empty($item) && $item['totalcnf'] == 1) { ?>checked="true"<?php  } ?> /> 永不减库存
-       
-										</div>
-		</div>
-		
-		
+					<label class="col-sm-2 control-label no-padding-left" > 宝贝名称</label>
+					<div class="col-sm-4">
+						<input type="text" name="dishname" id="dishname" class="form-control" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
+					</div>
+				</div>
 				<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 属性：</label>
+					<label class="col-sm-2 control-label no-padding-left" > 品牌：</label>
 
-										<div class="col-sm-9">
-				                   <input type="checkbox" name="isrecommand" value="1" id="isrecommand" <?php  if($item['isrecommand'] == 1) { ?>checked="true"<?php  } ?> /> 首页推荐
-				 		                <input type="checkbox" name="isnew" value="1" <?php  if($item['isnew'] == 1) { ?>checked="true"<?php  } ?> /> 新品
-				 		 		       <input type="checkbox" name="isfirst" value="1"  <?php  if($item['isfirst'] == 1) { ?>checked="true"<?php  } ?> /> 广告
-				 		 		 		 <input type="checkbox" name="ishot" value="1"  <?php  if($item['ishot'] == 1) { ?>checked="true"<?php  } ?> /> 热卖
-				 		 		 		  <input type="checkbox" name="isjingping" value="1"<?php  if($item['isjingping'] == 1) { ?>checked="true"<?php  } ?> /> 精品
-										   <input type="checkbox" name="isdiscount" value="1"<?php  if($item['isdiscount'] == 1) { ?>checked="true"<?php  } ?> /> 活动
-										    <input type="checkbox" name="ispurchase" value="1"<?php  if($item['ispurchase'] == 1) { ?>checked="true"<?php  } ?> /> 批发推荐
-                    &nbsp;   
-										</div>
-		</div>
-		
-					<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 免运费：</label>
-
-										<div class="col-sm-9">
-				 <input type="checkbox" name="issendfree" value="1" id="isnew" <?php  if($item['issendfree'] == 1) { ?>checked="true"<?php  } ?> /> 打勾表示此不会产生运费花销，否则按照正常运费计算。
-           &nbsp;   
-										</div>
-		</div>
-	 <?php if(isHasPowerOperateField('shop_dish','type') || empty($_GP['id'])){ ?>
-		<div class="form-group">
-				<label class="col-sm-2 control-label no-padding-left" >促销类型:</label>
-				<div class="col-sm-9">
-					<select id="J_type" name="type">
-                		<option value="0" <?php if($item['type']==0){?>selected="selected"<?php  } ?>>一般商品</option>
-                        <option value="1" <?php if($item['type']==1){?>selected="selected"<?php  } ?> >团购商品</option>
-                        <option value="2" <?php if($item['type']==2){?>selected="selected"<?php  } ?>>秒杀商品</option>
-                        <option value="3" <?php if($item['type']==3){?>selected="selected"<?php  } ?>>今日特价商品</option>
-						<option value="4" <?php if($item['type']==4){?>selected="selected"<?php  } ?>>限时促销</option>
-                    </select>
+					<div class="col-sm-9">
+						<select name="brand" class="js-example-responsive choose_brand" id="brand">
+							<option value="0">请选择品牌</option>
+							<?php foreach ( $brandlist as $brand_value ){ $selected = ($brand_value['id'] == $item['brand'])?"selected":"";?>
+								<option <?php echo $selected; ?> value="<?php echo $brand_value['id']; ?>"><?php echo $brand_value['brand']; ?></option>
+							<?php } ?>
+						</select>
+						<span class="btn btn-info btn-xs add_the_brand">添加品牌</span>
+					</div>
 				</div>
-		</div>
-	 <?php } ?>
-
-	 <?php if(isHasPowerOperateField('shop_dish','istime') || empty($_GP['id'])){ ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 促销时间：</label>
-
-			<div class="col-sm-9">
-			<input type="checkbox" name="istime" id='istime' value="1" id="isnew" <?php  if($item['istime'] == 1) { ?>checked="true"<?php  } ?> /> 开启限时促销
-			<input type="text" id="datepicker_timestart" name="timestart" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timestart']);}?>" readonly="readonly" />
-			<script type="text/javascript">
-				laydate({
-			        elem: '#datepicker_timestart',
-			        istime: true, 
-			        event: 'click',
-			        format: 'YYYY-MM-DD hh:mm:ss',
-			        istoday: true, //是否显示今天
-			        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-			    });
-			    laydate.skin("molv"); 
-			</script> -
-			<input type="text"  id="datepicker_timeend" name="timeend" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timeend']);}?>" readonly="readonly" />
-			<script type="text/javascript">
-				laydate({
-			        elem: '#datepicker_timeend',
-			        istime: true, 
-			        event: 'click',
-			        format: 'YYYY-MM-DD hh:mm:ss',
-			        istoday: true, //是否显示今天
-			        start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-			    });
-			    laydate.skin("molv"); 
-			</script>
-			</div>
-		</div>
-	 <?php } ?>
-
-	 <?php if(isHasPowerOperateField('shop_dish','team_buy_count') || empty($_GP['id'])){ ?>
-		<div id="J_team_buy_count_div" class="form-group" <?php if($item['type']!=1){?>style="display:none;"<?php  } ?> >
-				<label class="col-sm-2 control-label no-padding-left" >成团人数:</label>
-				<div class="col-sm-9">
-					<input type="text" name="team_buy_count" id="J_team_buy_count" value="<?php echo empty($item['team_buy_count'])?'0':$item['team_buy_count'];?>" />
+				 <div class="form-group" >
+						<label class="col-sm-2 control-label no-padding-left" > 是否上架：</label>
+						<div class="col-sm-9">
+							<input type="radio" name="status" value="1" id="isshow1" <?php  if($item['status'] ==1 ) { ?>checked="true"<?php  } ?> /> 是  &nbsp;&nbsp;
+							<input type="radio" name="status" value="0" id="isshow2"  <?php  if($item['status'] == 0) { ?>checked="true"<?php  } ?> /> 否
+						</div>
 				</div>
-		</div>
-	 <?php } ?>
-	 <?php if(isHasPowerOperateField('shop_dish','draw') || empty($_GP['id'])){ ?>
-		<div id="J_team_buy_draw_div" class="form-group" <?php if($item['type']!=1){?>style="display:none;"<?php  } ?> >
-				<label class="col-sm-2 control-label no-padding-left" > 开启抽奖：</label>
-				<div class="col-sm-7">
-				    <input type="radio" name="draw" value="1" id="isdraw1" <?php  if($item['draw'] ==1 ) { ?>checked="true"<?php  } ?> /> 是  &nbsp;&nbsp;
-					<input type="radio" name="draw" value="0" id="isdraw2"  <?php  if($item['draw'] == 0) { ?>checked="true"<?php  } ?> /> 否
-				</div>
-		</div>
-		<div id="J_team_buy_draw_num_div" class="form-group" <?php if($item['draw']!=1){?>style="display:none;"<?php  } ?> >
-				<label class="col-sm-2 control-label no-padding-left" > 抽奖人数：</label>
-				<div class="col-sm-9">
-					<input type="text" name="team_draw_num" id="J_team_draw_num" value="<?php echo empty($item['draw_num'])?'0':$item['draw_num'];?>" />
-				</div>
-		</div>
-	 <?php } ?>
-	 <?php if(isHasPowerOperateField('shop_dish','timeprice')|| empty($_GP['id'])){ ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" >限时促销金额:</label>
-			<div class="col-sm-9">
-				<input type="text" name="timeprice" id="timeprice" value="<?php  echo empty($item['timeprice'])?'0':$item['timeprice'];?>" />
-				<p class="help-block">该金额只有开启限时促销，并在结束时间内设置有效</p>
-			</div>
-		</div>
-	 <?php } ?>
-		<div class="form-group" style="display:none">
-			<label class="col-sm-2 control-label no-padding-left" >奖励积分：</label>
-			<div class="col-sm-9">
-				<input type="text" name="credit" id="credit" value="<?php  echo empty($item['credit'])?'0':$item['credit'];?>" />
-				<p class="help-block">会员购买赠送的积分, 如果不填写，则默认为不奖励积分</p>
-          
-			</div>
-		</div>
-	 <?php if(isHasPowerOperateField('shop_dish','commision') || empty($_GP['id'])){ ?>
-	 <div class="form-group">
-		 <label class="col-sm-2 control-label no-padding-left" > 商品佣金比例：</label>
 
-		 <div class="col-sm-9">
-			 <input type="text"  name="commision" id="commision" value="<?php  echo $item['commision'] == 0 ?'0':$item['commision']*100;?>" /> % &nbsp;&nbsp;<span style="color: #737373" id="show_commision">佣金：<?php echo $item['commision']*$item['timeprice'];?>元</span>
-		 </div>
-	 </div>
-	 <?php } ?>
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 市场价格：</label>
+
+					<div class="col-sm-2">
+						<input type="text" class="form-control" name="productprice" id="productprice"  value="<?php  echo empty($item['productprice'])?'0':$item['productprice'];?>" />
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 促销价格：</label>
+
+					<div class="col-sm-2">
+						<input type="text" class="form-control" name="marketprice" id="marketprice" value="<?php  echo empty($item['marketprice'])?'0':$item['marketprice'];?>" />
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 排序：</label>
+
+					<div class="col-sm-9">
+						<input type="text" name="displayorder" id='displayorder' value="<?php  echo empty($item['displayorder'])?'0':$item['displayorder'];?>" />
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 库存：</label>
+					<div class="col-sm-9">
+
+						<input type="text" name="total" id="total" value="<?php  echo empty($item['total'])?'0':$item['total'];?>" />
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 减库存方式：</label>
+
+					<div class="col-sm-9">
+
+						<input type="radio" name="totalcnf" value="0" id="totalcnf1" <?php  if(empty($item) || $item['totalcnf'] == 0) { ?>checked="true"<?php  } ?> /> 拍下减库存
+						&nbsp;&nbsp;
+						<input type="radio" name="totalcnf" value="1" id="totalcnf2"  <?php  if(!empty($item) && $item['totalcnf'] == 1) { ?>checked="true"<?php  } ?> /> 永不减库存
+
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 属性：</label>
+
+					<div class="col-sm-9">
+						<input type="checkbox" name="isrecommand" value="1" id="isrecommand" <?php  if($item['isrecommand'] == 1) { ?>checked="true"<?php  } ?> /> 首页推荐
+						<input type="checkbox" name="isnew" value="1" <?php  if($item['isnew'] == 1) { ?>checked="true"<?php  } ?> /> 新品
+						<input type="checkbox" name="isfirst" value="1"  <?php  if($item['isfirst'] == 1) { ?>checked="true"<?php  } ?> /> 广告
+						<input type="checkbox" name="ishot" value="1"  <?php  if($item['ishot'] == 1) { ?>checked="true"<?php  } ?> /> 热卖
+						<input type="checkbox" name="isjingping" value="1" <?php  if($item['isjingping'] == 1) { ?>checked="true"<?php  } ?> /> 精品
+						<input type="checkbox" name="isdiscount" value="1" <?php  if($item['isdiscount'] == 1) { ?>checked="true"<?php  } ?> /> 活动
+						&nbsp;
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" >商品类型:</label>
+					<div class="col-sm-9">
+						<select id="J_type" name="type">
+							<option value="0" <?php if($item['type']==0){?>selected="selected"<?php  } ?>>一般商品</option>
+							<option value="1" <?php if($item['type']==1){?>selected="selected"<?php  } ?> >团购商品</option>
+							<option value="2" <?php if($item['type']==2){?>selected="selected"<?php  } ?>>秒杀商品</option>
+							<option value="3" <?php if($item['type']==3){?>selected="selected"<?php  } ?>>今日特价商品</option>
+							<option value="4" <?php if($item['type']==4){?>selected="selected"<?php  } ?>>限时促销</option>
+						</select>
+					</div>
+				</div>
+
+
+
+				<div class="form-group show_time_set" style="display: none">
+					<div class="row">
+						<label class="col-sm-2 control-label no-padding-left" > 活动时间：</label>
+
+						<div class="col-sm-9">
+							<input type="hidden" name="istime" id='istime' value="<?php intval($item['istime']); ?>"   />
+							<input type="text" id="datepicker_timestart" name="timestart" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timestart']);}?>" readonly="readonly" />
+							<script type="text/javascript">
+								laydate({
+									elem: '#datepicker_timestart',
+									istime: true,
+									event: 'click',
+									format: 'YYYY-MM-DD hh:mm:ss',
+									istoday: true, //是否显示今天
+									start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+								});
+								laydate.skin("molv");
+							</script> -
+							<input type="text"  id="datepicker_timeend" name="timeend" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timeend']);}?>" readonly="readonly" />
+							<script type="text/javascript">
+								laydate({
+									elem: '#datepicker_timeend',
+									istime: true,
+									event: 'click',
+									format: 'YYYY-MM-DD hh:mm:ss',
+									istoday: true, //是否显示今天
+									start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
+								});
+								laydate.skin("molv");
+							</script>
+						</div>
+					</div>
+
+					<br/>
+					<div class="row">
+						<label class="col-sm-2 control-label no-padding-left" >活动价格:</label>
+						<div class="col-sm-9">
+							<input type="text" name="timeprice" id="timeprice" value="<?php  echo empty($item['timeprice'])?'0':$item['timeprice'];?>" />
+							<p class="help-block">该金额只有在活动时间内有效，结束时间后恢复促销价</p>
+						</div>
+					</div>
+				</div>
+
+				<div id="J_team_buy_count_div" class="form-group" <?php if($item['type']!=1){?>style="display:none;"<?php  } ?> >
+					<label class="col-sm-2 control-label no-padding-left" >成团人数:</label>
+					<div class="col-sm-9">
+						<input type="text" name="team_buy_count" id="J_team_buy_count" value="<?php echo empty($item['team_buy_count'])?'0':$item['team_buy_count'];?>" />
+					</div>
+				</div>
+
+				<div id="J_team_buy_draw_div" class="form-group" <?php if($item['type']!=1){?>style="display:none;"<?php  } ?> >
+					<label class="col-sm-2 control-label no-padding-left" > 开启抽奖：</label>
+					<div class="col-sm-7">
+						<input type="radio" name="draw" value="1" id="isdraw1" <?php  if($item['draw'] ==1 ) { ?>checked="true"<?php  } ?> /> 是  &nbsp;&nbsp;
+						<input type="radio" name="draw" value="0" id="isdraw2"  <?php  if($item['draw'] == 0) { ?>checked="true"<?php  } ?> /> 否
+					</div>
+				</div>
+				<div id="J_team_buy_draw_num_div" class="form-group" <?php if($item['draw']!=1){?>style="display:none;"<?php  } ?> >
+					<label class="col-sm-2 control-label no-padding-left" > 抽奖人数：</label>
+					<div class="col-sm-9">
+						<input type="text" name="team_draw_num" id="J_team_draw_num" value="<?php echo empty($item['draw_num'])?'0':$item['draw_num'];?>" />
+					</div>
+				</div>
+
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 商品佣金比例：</label>
+
+					<div class="col-sm-9">
+						<input type="text"  name="commision" id="commision" value="<?php  echo $item['commision'] == 0 ?'0':$item['commision']*100;?>" /> % &nbsp;&nbsp;<span style="color: #737373" id="show_commision">佣金：<?php echo $item['commision']*$item['timeprice'];?>元</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 运费模板：</label>
+
+					<div class="col-sm-9">
+						<select  style="margin-right:15px;" id="pcate" name="pcate"  autocomplete="off">
+							<option value="0">请选择一级分类</option>
+							<?php foreach($disharea as $row) { ?>
+								<?php  if($row['parentid'] == 0) { ?>
+									<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['pcate']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name']." [{$row['displayorder']}元]";?></option>
+								<?php  } ?>
+							<?php  }  ?>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" > 免运费：</label>
+
+					<div class="col-sm-9">
+						<input type="checkbox" name="issendfree" value="1" id="isnew" <?php  if($item['issendfree'] == 1) { ?>checked="true"<?php  } ?> /> 打勾表示此不会产生运费花销，否则按照正常运费计算。
+						&nbsp;
+					</div>
+				</div>
 
             </div>
             
-	            <div class="tab-pane fade" id="tab2primary">
-   <div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" >广告图：<br/>（建议640*640）</label>
-
-										<div class="col-sm-9">
-				  <div class="fileupload fileupload-new" data-provides="fileupload">
-                        <div class="fileupload-preview thumbnail" style="width: 150px; height: 100px;">
-                        	 <?php  if(!empty($item['thumb'])) { ?>
-                            <img src="<?php  echo $item['thumb'];?>" alt="" onerror="$(this).remove();">
-                              <?php  } ?>
-                            </div>
-                        <div>
-                         <input name="thumb" id="thumb" type="file" />
-                            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">移除图片</a>
-                        </div>
-                    </div>
-										</div>
-		</div>
-		
-		
-				<div class="form-group" style="display:none;">
-										<label class="col-sm-2 control-label no-padding-left" > 其他图片：</label>
-
-										<div class="col-sm-9">
-				         <span id="selectimage" tabindex="-1" class="btn btn-primary"><i class="icon-plus"></i> 上传照片</span><span style="color:red;">
-                    <input name="piclist" type="hidden" value="<?php  echo $item['piclist'];?>" /></span>
-                <div id="file_upload-queue" class="uploadify-queue"></div>
-                <ul class="ipost-list ui-sortable" id="fileList">
-                    <?php  if(is_array($piclist)) { foreach($piclist as $v) { ?> 
-                    <li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 125px;  height: 130px;">
-                        <span class="item_box">
-                            <img src="<?php  echo $v['picurl'];?>" style="width:50px;height:50px">    </span>
-                       		 <a  href="javascript:;" onclick="deletepic(this);" title="删除">删除</a>
-                    
-                        <input type="hidden" value="<?php  echo $v['picurl'];?>" name="attachment[]">
-                    </li>
-                    <?php  } } ?>
-                </ul>
-										</div>
-		</div>
-	            </div>
-	            <div class="tab-pane fade" id="tab3primary">
+			<div class="tab-pane fade" id="tab2primary">
 				<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >广告标题：</label>
-										<div class="col-sm-4">
-										<input id="headline" class="form-control" name="headline" maxlength="100" value="<?php  echo $item['headline'];?>" type="text" />
-										</div>
-	        	            </div>
-							<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >广告描述：</label>
-										<div class="col-sm-9">
-				                 <textarea style="height:100px;"  id="advertising" name="advertising" cols="70"><?php  echo $item['advertising'];?></textarea>           
-										</div>
-	        	            </div>
-	                        <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >简单描述：</label>
-										<div class="col-sm-9">
-				                 <textarea style="height:100px;"  id="description" name="description" cols="70"><?php  echo $item['description'];?></textarea>           
-										</div>
-	        	            </div>
-		
-		
-				<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >详细描述：<br/><span style="font-size:12px">(建议图片宽不超过640px)</span></label>
+					<label class="col-sm-2 control-label no-padding-left" >广告图：<br/>（建议640*640）</label>
 
-										<div class="col-sm-9">
-                  <textarea  id="container" style="min-height: 500px;" name="content" ><?php  echo $item['content'];?></textarea>
-             
-										</div>
-		</div>
-		
-        
-      
-      	
-	            </div>
-	            <div class="tab-pane fade" id="tab4primary">
-	    <?php  include page('goods_option');?>
-	            </div>
+					<div class="col-sm-9">
+						<div class="fileupload fileupload-new" data-provides="fileupload">
+							<div class="fileupload-preview thumbnail" style="width: 150px; height: 100px;">
+								<?php  if(!empty($item['thumb'])) { ?>
+									<img src="<?php  echo $item['thumb'];?>" alt="" onerror="$(this).remove();">
+								<?php  } ?>
+							</div>
+							<div>
+								<input name="thumb" id="thumb" type="file" />
+								<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">移除图片</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="form-group" style="">
+					<label class="col-sm-2 control-label no-padding-left" > 其他图片：</label>
+
+					<div class="col-sm-9">
+						<span id="selectimage" tabindex="-1" class="btn btn-primary"><i class="icon-plus"></i> 上传照片</span><span style="color:red;">
+
+						<div id="file_upload-queue" class="uploadify-queue"></div>
+						<ul class="ipost-list ui-sortable" id="fileList">
+							<?php  if(is_array($piclist)) { foreach($piclist as $v) { ?>
+								<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 125px;  height: 130px;">
+									<span class="item_box">
+										<img src="<?php  echo $v['picurl'];?>" style="width:95px;height:70px">
+									</span>
+									<a  href="javascript:;" onclick="deletepic(this);" title="删除">删除</a>
+
+									<input type="hidden" value="<?php  echo $v['picurl'];?>" name="attachment[]">
+								</li>
+							<?php  } } ?>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="tab3primary">
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" >简单描述：</label>
+					<div class="col-sm-9">
+						<textarea style="height:100px;"  id="description" name="description" cols="70"><?php  echo $item['description'];?></textarea>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-left" >详细描述：<br/><span style="font-size:12px">(建议图片宽不超过640px)</span></label>
+
+					<div class="col-sm-9">
+						<textarea  id="container" style="min-height: 500px;" name="content" ><?php  echo $item['content'];?></textarea>
+
+					</div>
+				</div>
+
+			</div>
+			<div class="tab-pane fade" id="tab4primary">
+	    			<?php  include page('goods_option');?>
+			</div>
             
         </div>
         
         
     </div>
-    </div>
-    <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" ></label>
 
-										<div class="col-sm-9">
-				    <button type="submit" class="btn btn-primary span2" name="submit" value="submit"><i class="icon-edit"></i>保存信息</button>    
-										</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" ></label>
+
+		<div class="col-sm-9">
+			<button type="submit" class="btn btn-primary span2" name="submit" value="submit"><i class="icon-edit"></i>保存信息</button>
 		</div>
+	</div>
 </div>
 </form>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/themes/default/default.css" />
@@ -795,51 +582,7 @@
     
     
 <script language="javascript">
-		var area = <?php  echo json_encode($children)?>;
-   function fetchChildarea(cid) {
-	var html = '<option value="0">请选择二级分类</option>';
-	if (!area || !area[cid]) {
-		$('#cate_2').html(html);
-		return false;
-	}
-	for (i in area[cid]) {
-		html += '<option value="'+area[cid][i][0]+'">'+area[cid][i][1]+'</option>';
-	}
-	$('#cate_2').html(html);
-}
-fetchChildarea(document.getElementById("pcate").options[document.getElementById("pcate").selectedIndex].value);
-<?php if(!empty( $item['ccate'])){?>
-   document.getElementById("cate_2").value="<?php echo $item['ccate']?>";
- <?php }?>
-  var category = <?php  echo json_encode($childrens)?>;
- function fetchChildCategory(o_obj,cid) {
-	var html = '<option value="0">请选择二级分类</option>';
 
-	var obj = $(o_obj).parent().find('.cates_2').get(0);
-	if (!category || !category[cid]) {
-		$(o_obj).parent().find('.cates_2').html(html);
-
-			fetchChildCategory2(o_obj,obj.options[obj.selectedIndex].value);
-		return false;
-	}
-	for (i in category[cid]) {
-		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
-	}
-	$(o_obj).parent().find('.cates_2').html(html);
-    	fetchChildCategory2(o_obj,obj.options[obj.selectedIndex].value);
-
- }
-  function fetchChildCategory2(o_obj,cid) {
-	var html = '<option value="0">请选择三级分类</option>';
-	if (!category || !category[cid]) {
-		$(o_obj).parent().find('.cate_3').html(html);
-		return false;
-	}
-	for (i in category[cid]) {
-		html += '<option value="'+category[cid][i][0]+'">'+category[cid][i][1]+'</option>';
-	}
-	  $(o_obj).parent().find('.cate_3').html(html);
- }
 $(function(){
 
 	var i = 0;
@@ -873,18 +616,17 @@ $(function(){
 		});
 	});
 
-	//select2下拉框初始化
-	$("#c_goods,#taxid").select2();
+
 
 	$('#J_type').change(function() {
 		if(parseInt($(this).val())==0)
 		{
-			$('#istime').prop('checked',false);
+			$('#istime').val(0);
+			$('.show_time_set').hide();
 			$('#J_team_buy_count_div').hide();
 			$('#J_team_buy_draw_div').hide();
 			$('#J_team_buy_draw_num_div').hide();
-		}
-		else{
+		} else{
 			if(parseInt($(this).val())==1)
 			{
 				$('#J_team_buy_count_div').show();
@@ -901,7 +643,8 @@ $(function(){
 				$('#J_team_buy_draw_num_div').hide();
 			}
 
-			$('#istime').prop('checked',true);
+			$('#istime').val(1);
+			$('.show_time_set').show();
 		}
 	});
 	$("[name='draw']").change(function() {
@@ -911,42 +654,7 @@ $(function(){
 			$('#J_team_buy_draw_num_div').hide();
 		}
 	});
-	//会员价格
-	var vipNum = parseInt($(".vip-number").val());
-	var vip_i = 1 ;
-	$(".addvip").on("click",function(){
-		var addHtml = $(".vip-form:last").clone();
-		if ( vip_i < vipNum){
-			vip_i++;
-			$(".vip-form:last").after(addHtml);
-			$(".vip-form:last").find(".no-padding-left").text("");
-			$(".vip-form:last").find(".vip_price").val("");
-		}
-	});
-	$("body").on("click",".remove_vip",function(){
-		var vipLength = $(".vip-form").length;
-		if( vipLength == 1 ){
-			$(".vip-select").val(-1);
-			$(".vip_price").val("");
-			return false;
-		}else{
-			vip_i--;
-			$(this).parents(".vip-form").remove();
-		}
-		$(".vip-form:first").find(".no-padding-left").text(" 会员价格：");
-	});
 
-	$("body").on("blur",".vip_price",function(){
-		var regEx = /^(([1-9]\d*)|\d)(\.\d{1,2})?$/;
-		if( !regEx.test($(this).val()) ){
-			var price = parseFloat($(this).val());
-			if ( isNaN(price) )
-			{
-				price = 0;
-			}
-			$(this).val(price);
-		}
-	})
 });
 function deletepic(obj){
 	if (confirm("确认要删除？")) {
@@ -962,14 +670,7 @@ function deletepic(obj){
 		},"html");	
 	}
 }
-function findgoods(){
-    var pcate = $('#pcates').val();
-	var ccate = $('#cates_2').val();
-	var ccate2 = $('#cate_3').val();
-    $.post('<?php  echo create_url('site',array('name' => 'shop','do' => 'dish','op' => 'query'))?>',{pcate:pcate,ccate:ccate,ccate2:ccate2},function(m){
-	    $('#c_goods').html(m);
-	},"html");	
-}
+
 function fillform()
 {
 		if(ue.queryCommandState( 'source' )==1)
@@ -996,50 +697,6 @@ function fillform()
 	return true;
 }
 
-//添加扩展分类
-function add_kuozhan_fenlei(){
-	$(".kuozhan_fenlei:last").after($(".kuozhan_fenlei:last").clone())
-	$(".kuozhan_fenlei:last").find(".no-padding-left").html('');
-	$(".kuozhan_fenlei:last").find('.extendids_kuozhan').val('');
-
-	//清除已经选择的下拉
-	$(".kuozhan_fenlei:last .pcates>option").attr('selected',false);
-	$(".kuozhan_fenlei:last .cates_2>option").attr("selected",false);
-	$(".kuozhan_fenlei:last .cates_3>option").attr("selected",false);
-
-}
-function remove_kuozhan_fenlei(obj){
-	if($(obj).parent().parent().find('.extendids_kuozhan').val().length != 0){
-		var kuozhan_id = $(obj).parent().parent().find('.extendids_kuozhan').val();
-		if($('.delete_extend_ids').val() != ''){  //不为空就直接拼接
-			var kuozhan_id = $('.delete_extend_ids').val() + "," + kuozhan_id;
-			$('.delete_extend_ids').val(kuozhan_id);
-		}else{  //为空则直接赋值
-			$('.delete_extend_ids').val(kuozhan_id);
-		}
-	}
-	if($(".kuozhan_fenlei").length == 1){
-		//清除已经选择的下拉
-		$(".kuozhan_fenlei:last .pcates>option").attr('selected',false);
-		$(".kuozhan_fenlei:last .cates_2>option").attr("selected",false);
-		$(".kuozhan_fenlei:last .cates_3>option").attr("selected",false);
-		$(obj).parent().parent().find('.extendids_kuozhan').val('');
-
-	}else{
-		$(obj).parent().parent().remove();
-		$(".kuozhan_fenlei").eq(0).find('.no-padding-left').html('扩展分类：');
-	}
-
-}
-
-//输入佣金比例改变佣金
-//$("#commision").change(function(){
-//	var commision = $(this).val();
-//	commision = commision /100;
-//	var price = $("#timeprice").val();
-//	var result = (commision * price).toFixed(2);
-//	$("#show_commision").html("佣金："+ result + '元');
-//})
 
 //输入佣金比例改变佣金
 $("#commision").on("input propertychange",function(){
@@ -1059,16 +716,11 @@ $("#timeprice").on("input propertychange",function(){
 	$("#show_commision").html("佣金："+ result + '元');
 })
 
-//批发价格修改下拉框值变化，修改对应的货币符号
-
-function changeFun(obj){
-	var currency_val = $(obj).find("option:selected").attr("currency");
-	if( currency_val ==1 ){
-		$(obj).siblings('.input-group').find(".input-group-addon").text("￥");
-	}else if( currency_val ==2 ){
-		$(obj).siblings('.input-group').find(".input-group-addon").text("$");
-	}
-}
-
+$(".add_the_brand").click(function(){
+	var url ="<?php echo web_url('dish',array('op'=>'addbrand')); ?>";
+	$.ajaxLoad(url,'',function(){
+		$('#alterModal').modal('show');
+	});
+})
     </script>
 <?php  include page('footer');?>
