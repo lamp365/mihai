@@ -19,5 +19,3 @@ foreach( $listFuncs as $func) {
 if (file_exists(WEB_ROOT . '/config/config.php') && file_exists(WEB_ROOT . '/config/install.link')) {
 	require (WEB_ROOT . '/system/common/lib/lib.php');
 }
-
-$cfg = globaSetting();

@@ -1,4 +1,5 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');
+	   $cfg = globaSetting();
        if ( empty( $member ) ){
              $member=get_member_account(false);
 		   	 if(empty($member['openid'])){
@@ -119,7 +120,6 @@
 	   <div class="re">
 	   		<ul class="re-list">
 	   			<li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'display')); ?>" target="_blank"><i class="icon-flag" style="margin-right:5px;color: #E31436"></i>每日签到</a></li>
-	   			<li><a href="<?php echo mobile_url('merchant',array('name'=>'shopwap')) ?>" target="_blank">商家入驻</a></li>
 	   			<li><a href="<?php  echo mobile_url('myorder',array('name'=>'shopwap')); ?>" target="_blank">我的订单</a></li>
 	   			<!-- <li class="re-collection">
 	   				<a href="javascript:;" class="re-collection-a">我的收藏<i class="re-icon icon-sort-down"></i></a>
@@ -148,7 +148,7 @@
    </div>
 </div>
 <div class="nav" style="overflow: visible;height: 104px;box-sizing: border-box;">
-    <a href="index.php" style="margin:0 60px 0 0;float:left;"><img src="<?php echo $cfg['shop_logo']; ?>" height="60" /></a>
+    <a href="<?php echo WEBSITE_ROOT;?>" style="margin:0 60px 0 0;float:left;"><img src="<?php echo $cfg['shop_logo']; ?>" height="60" /></a>
     <div class="WX_search1" id="mallHead" >
 		  <form class="WX_search_frm1" action="index.php" id="searchForm"
 			name="searchForm">

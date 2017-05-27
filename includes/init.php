@@ -67,7 +67,6 @@ $allow_module = array(
         'bonus',
         'alipay',
         'promotion',
-        'seller'
     ),
 );
 // 命名空间的使用，后期修改为映射，现在不考虑，先用数组
@@ -103,7 +102,7 @@ if(in_array($modulename,$allow_module['controller'])){
 				if (!in_array($modulename, array('public','seller'))) {
 					checklogin();
 				}                    
-				if ($modulename != "modules" && !in_array($modulename, array('index','common','public','seller'))) {
+				if ($modulename != "modules" && !in_array($modulename, array('index','common','public'))) {
 					if (checkrule($modulename, $_GP['do'],$_GP['op']) == false) {
 						message("您没有权限操作此功能",refresh(),'error');
 					}
@@ -136,10 +135,7 @@ if(in_array($modulename,$allow_module['controller'])){
     ));
     if (! empty($tmp_modules['isdisable'])) {
         if (SYSTEM_ACT == 'mobile') {
-            header("location:" . WEBSITE_ROOT . create_url('mobile', array(
-                'name' => 'shopwap',
-                'do' => 'index'
-            )));
+            header("location:" . WEBSITE_ROOT);
             exit();
         } else {
             message("插件已关闭，页面刷新后该插件菜单将隐藏");
