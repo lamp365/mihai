@@ -34,8 +34,8 @@ class MenuEnum {
     public static $getMenuEnumValues = array(
         self::TUAN_GOU_MANGE        => '换购管理',
 		self::SHOP_DITCH_MANGE      => '批发管理',
-        self::SHOP_SALE_MANGE       => '出售中的宝贝',
-        self::PRODUCT_MANGE         => '产品库管理',
+        self::SHOP_SALE_MANGE       => '产品库管理',
+        self::PRODUCT_MANGE         => '类目管理',
         self::IMG_MANGE             => '图片管理',
         self::ORDER_MANGE           => '订单管理',
         self::DATA_REPORT_MANGE     => '数据报表',

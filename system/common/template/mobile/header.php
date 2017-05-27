@@ -111,7 +111,7 @@
 		   					</ul>
 		   				</div>
 	                </li>
-					<li style="position: relative;"><span style="position: absolute;left: -3px;color: #ccc">|</span><a href="<?php  echo mobile_url('regedit',array('name'=>'shopwap')); ?>" target="_blank" style="padding: 0 7px;">免费注册</a></li>
+					<li style="position: relative;"><span style="position: absolute;left: -3px;color: #ccc">|</span><a href="<?php  echo mobile_url('regedit',array('name'=>'shopwap')); ?>"  style="padding: 0 7px;">免费注册</a></li>
 				<?php
 				}
 				?>

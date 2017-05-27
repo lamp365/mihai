@@ -489,31 +489,31 @@
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-magnet"></i>
-                            <span class="menu-text"> 出售中的宝贝</span>
+                            <span class="menu-text"> 产品库管理</span>
 
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
                             <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('出售中的宝贝 - > 宝贝列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'list'))?>" target="main">
+                                <li> <a  onclick="navtoggle('产品库管理 - > 宝贝列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'lists'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         宝贝列表
                                     </a>   </li>
-                                <li> <a onclick="navtoggle('出售中的宝贝 - > 添加新宝贝')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'post'))?>" target="main">
+                                <li> <a onclick="navtoggle('产品库管理 - > 添加新宝贝')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'post'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         添加新宝贝
                                     </a>   </li>
-                                <li> <a onclick="navtoggle('出售中的宝贝 - > 仓库管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'disharea','op'=>'display'))?>" target="main">
+                                <li> <a onclick="navtoggle('产品库管理 - > 仓库管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'disharea','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         仓库管理
                                     </a>   </li>
-                                <li> <a onclick="navtoggle('出售中的宝贝 - > 评论管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'comment'))?>" target="main">
+                                <li> <a onclick="navtoggle('产品库管理 - > 评论管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'comment'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         评论管理
                                     </a>   </li>
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::SHOP_SALE_MANGE] as $row){
-                                    $zi = "出售中的宝贝 - > {$row['moddescription']}";
+                                    $zi = "产品库管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
                                     }else{
@@ -539,40 +539,32 @@
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-shopping-cart"></i>
-                            <span class="menu-text"> 产品库管理</span>
+                            <span class="menu-text"> 类目管理</span>
 
                             <b class="arrow icon-angle-down"></b>
                         </a>
 
                         <ul class="submenu">
                             <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('商品管理 - > 商品列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'goods','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        产品库列表
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('商品管理 - > 添加新商品')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'goods','op'=>'post'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        添加新产品
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('商品管理 - > 管理分类')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'category','op'=>'display'))?>" target="main">
+                                <li> <a onclick="navtoggle('类目管理 - > 管理分类')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'category','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>管理分类
                                     </a>
                                 </li>
-                                <li> <a onclick="navtoggle('商品管理 - > 品牌列表')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'brand','op'=>'display'))?>" target="main">
+                                <li> <a onclick="navtoggle('类目管理 - > 品牌列表')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'brand','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>品牌列表
                                     </a>
                                 </li>
-                                <li> <a onclick="navtoggle('商品管理 - > 添加品牌')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'brand','op'=>'add'))?>" target="main">
+                                <li> <a onclick="navtoggle('类目管理 - > 添加品牌')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'brand','op'=>'add'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>添加品牌
                                     </a>
                                 </li>
-                                <li> <a onclick="navtoggle('商品管理 - > 管理国家')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'country','op'=>'display'))?>" target="main">
+                                <li> <a onclick="navtoggle('类目管理 - > 管理国家')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'country','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>管理国家
                                     </a>
                                 </li>
                             <?php }else{
                                 foreach($parentMenuList[MenuEnum::PRODUCT_MANGE] as $row){
-                                    $zi = "商品管理 - > {$row['moddescription']}";
+                                    $zi = "类目管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
                                     }else{

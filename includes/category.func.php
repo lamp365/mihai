@@ -139,3 +139,121 @@ function operateCategoryExtend($cate1,$cate2,$cate3,$add_extend_ids,$delete_exte
         }
     }
 }
+
+
+
+/**
+ * 获取分类树  shopCategoryTree($list,$data);  会返回list
+ * 带有层级结构
+ * @param $list
+ * @param $data
+ * @param int $pid
+ * @param int $level
+ */
+function shopCategoryTree(&$list,$data, $pid = 0, $level = 1){
+    if (!is_null($pid)) {
+        foreach ($data as $tmp) {
+            if ($tmp['parentid'] == $pid) {
+                $list[$tmp['id']]['main']  = $tmp;
+                $list[$tmp['id']]['level'] = $level;
+                $list[$tmp['id']]['child'] = array();
+                shopCategoryTree($list[$tmp['id']]['child'], $data,$tmp['id'], $level + 1);
+            }
+        }
+    }
+}
+
+/**
+ * 获取分类树  $arr = selectCategoryTree($data);
+ * 没有层级结构但是方便 下拉框做展示
+ * @param $list
+ * @param int $pid
+ * @param int $level
+ * @param string $html
+ * @return array
+ */
+function selectCategoryTree(&$list,$pid=0,$level=0,$html='--'){
+    static $tree = array();
+    foreach($list as $v){
+        if($v['parentid'] == $pid){
+            $v['sort'] = $level;
+            $v['html'] = str_repeat($html,$level);
+            $tree[] = $v;
+            selectCategoryTree($list,$v['id'],$level+1,$html);
+        }
+    }
+    return $tree;
+}
+
+
+/**
+ * 获取所有的父级分类
+ * @param string $filed
+ * @return array
+ */
+function getCategoryAllparent($filed = "id,name"){
+    $category = mysqld_selectall("SELECT {$filed}  FROM " . table('shop_category') . "  where parentid=0 and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+    return $category;
+}
+
+/**
+ * 通过pid获取所有的子类
+ * @param $parentid
+ * @param string $filed
+ * @return array
+ */
+function getCategoryByParentid($parentid,$filed = "id,name"){
+    if(empty($parentid)){
+        return array();
+    }
+    $category = mysqld_selectall("SELECT {$filed}  FROM " . table('shop_category') . "  where parentid={$parentid} and  deleted=0 order by displayorder ASC");
+    return $category;
+}
+
+
+/**
+ * 按照分类获取品牌
+ * @param $p1
+ * @param $p2
+ * @param $p3
+ * @param string $field
+ * @return array
+ */
+function getBrandByCategory($p1,$p2,$p3,$field="id,brand"){
+    $where = '1=1';
+    if(!empty($p1)){
+        $where .= " and p1={$p1}";
+    }
+    if(!empty($p2)){
+        $where .= " and p2={$p2}";
+    }
+    if(!empty($p3)){
+        $where .= " and p3={$p3}";
+    }
+    $brand = mysqld_selectall("select {$field} from ".table('shop_brand')." where  {$where} and deleted =0");
+    return $brand;
+}
+
+
+/**
+ * 按照分类获取商品模型
+ * @param $p1
+ * @param $p2
+ * @param $p3
+ * @param string $field
+ * @return array
+ */
+function getGoodtypeByCategory($p1,$p2,$p3,$field="id,name"){
+    $where = '1=1';
+    if(!empty($p1)){
+        $where .= " and p1={$p1}";
+    }
+    if(!empty($p2)){
+        $where .= " and p2={$p2}";
+    }
+    if(!empty($p3)){
+        $where .= " and p3={$p3}";
+    }
+    $gtype = mysqld_selectall("select {$field} from ".table('goods_type')." where  {$where} and status =1");
+    return $gtype;
+}

@@ -4,36 +4,6 @@
  */
 
 
-
-/**
- * 新增访问记录
- * 
- * @param $flag_code:string  标识码
- * @param $is_app:是否是app端
- */
-function insertAccessLog($flag_code,$is_app='')
-{
-	//访问记录
-	$accessInfo = mysqld_select("SELECT access_id FROM " . table('access_log') . " where flag_code='".$flag_code."' and createtime='".date('Y-m-d')."' ");
-	
-	//是否有当日的访问记录
-	if(empty($accessInfo))
-	{
-		$openid = '';
-		
-		// 账户验证
-		$openid = checkIsLogin();
-		
-		$data = array(	'ip'    		=> getClientIP(),
-						'device_type' 	=> get_mobile_type($is_app),
-						'flag_code'  	=> $flag_code,
-						'openid'    	=> $openid,
-						'createtime'	=> date('Y-m-d'));
-	
-		mysqld_insert('access_log',$data);
-	}
-}
-
 /**
  * 获得指定期间内的平均访问量
  *
