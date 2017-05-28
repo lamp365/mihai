@@ -507,6 +507,12 @@
                                         <i class="icon-double-angle-right"></i>
                                         运费管理
                                     </a>   </li>
+                                <li>
+                                    <a onclick="navtoggle('产品库管理 - > 规格模型')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'goodstype','op'=>'lists'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        规格模型
+                                    </a>
+                                </li>
                                 <li> <a onclick="navtoggle('产品库管理 - > 评论管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'comment'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         评论管理

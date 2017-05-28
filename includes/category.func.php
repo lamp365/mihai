@@ -243,7 +243,7 @@ function getBrandByCategory($p1,$p2,$p3,$field="id,brand"){
  * @param string $field
  * @return array
  */
-function getGoodtypeByCategory($p1,$p2,$p3,$field="id,name"){
+function getGoodtypeByCategory($p1=0,$p2=0,$field="id,gtype_name"){
     $where = '1=1';
     if(!empty($p1)){
         $where .= " and p1={$p1}";
@@ -251,9 +251,6 @@ function getGoodtypeByCategory($p1,$p2,$p3,$field="id,name"){
     if(!empty($p2)){
         $where .= " and p2={$p2}";
     }
-    if(!empty($p3)){
-        $where .= " and p3={$p3}";
-    }
-    $gtype = mysqld_selectall("select {$field} from ".table('goods_type')." where  {$where} and status =1");
+    $gtype = mysqld_selectall("select {$field} from ".table('goodstype')." where  {$where} and status =1");
     return $gtype;
 }

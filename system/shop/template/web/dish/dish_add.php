@@ -577,7 +577,7 @@
 
 			</div>
 			<div class="tab-pane fade" id="tab4primary">
-	    			<?php  include page('goods_option');?>
+	    			<?php  include page('dish/goodtype');?>
 			</div>
             
         </div>

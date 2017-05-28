@@ -174,13 +174,19 @@ class dish extends \common\controller\basecontroller
                 $_GP['p1'] = $item['pcate'];
                 $_GP['p2'] = $item['ccate'];
             }
-            $piclist = mysqld_selectall("SELECT * FROM " . table('shop_dish_piclist') . " where goodid={$id} ORDER BY id ASC");
+            $piclist = mysqld_select("SELECT * FROM " . table('shop_dish_piclist') . " where goodid={$id}");
+            if(!empty($piclist)){
+                $piclist = explode(',',$piclist);
+            }
 
         }
         //运费模板
         $disharea = mysqld_selectall("SELECT * FROM " . table('dish_list') . "  where deleted=0 and enabled =1 ORDER BY displayorder DESC");
         //获取品牌
         $brandlist     = getBrandByCategory(0,0,0);
+        //获取商品模型
+        $gtype_list    = getGoodtypeByCategory();
+
         $cat_name1     = mysqld_select("select name from ".table('shop_category')." where id={$_GP['p1']}");
         $cat_name2     = mysqld_select("select name from ".table('shop_category')." where id={$_GP['p2']}");
 
