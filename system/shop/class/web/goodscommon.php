@@ -69,11 +69,11 @@ if($op == 'getCate'){
     if(empty($_GP['gtype_id'])){
         die(showAjaxMess(1002,'参数有误！'));
     }
-    $goods_id      = $_GP['goods_id'];
+    $dish_id       = $_GP['dish_id'];
     $gtype_id      = $_GP['gtype_id'];
 
     $goodsService  = new \service\shop\goodscommonService();
-    $res = $goodsService->goodsSpecInput($gtype_id,$goods_id);
+    $res = $goodsService->goodsSpecInput($gtype_id,$dish_id);
     if($res){
         die(showAjaxMess(200,$res));
     }else{
@@ -83,11 +83,11 @@ if($op == 'getCate'){
     if(empty($_GP['spec_arr'])){
         die(showAjaxMess(1002,'参数有误！'));
     }
-    $goods_id      = $_GP['goods_id'];
+    $dish_id      = $_GP['dish_id'];
     $spec_arr      = $_GP['spec_arr'];
 
     $goodsService  = new \service\shop\goodscommonService();
-    $res = $goodsService->goodsSpecInput_info($spec_arr,$goods_id);
+    $res = $goodsService->goodsSpecInput_info($spec_arr,$dish_id);
     if($res){
         die(showAjaxMess(200,$res));
     }else{

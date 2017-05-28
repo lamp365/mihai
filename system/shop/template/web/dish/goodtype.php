@@ -32,6 +32,9 @@ table {
 	margin:0;
 	padding:0;
 }
+.set_bat{
+	cursor: pointer;
+}
 </style>
 <!-- 商品模型-->
 <div class="ncap-form-default tab_div_3">
@@ -39,16 +42,16 @@ table {
 	    <div class="tab-pane" id="tab_goods_spec">
 	        <table class="table table-bordered" id="goods_spec_table">                                
 	            <tr>
-	                <td width="24%">商品模型:（按产品分类进行获取）</td>
+	                <td width="24%">规格模型:</td>
 	                <td>                                        
 	                  <select name="goods_type" id="goods_type" class="form-control choose_gtype" style="width:250px;" >
-	                    <option value="0">选择商品模型</option>
+	                    <option value="0">选择规格模型</option>
 						  <?php foreach($gtype_list as $one_gtype){
 							  $sel = '';
 							  if($item['gtype_id'] == $one_gtype['id']){
 								  $sel = "selected";
 							  }
-							  echo "<option value='{$one_gtype['id']}' {$sel}>{$one_gtype['name']}</option>";
+							  echo "<option value='{$one_gtype['id']}' {$sel}>{$one_gtype['gtype_name']}</option>";
 						  } ?>
 	                  </select>
 
@@ -72,7 +75,7 @@ table {
 									<td><b></b></td>
 									<td><b>价格</b></td>
 					               	<td><b>库存</b></td>
-					               	<td><b>SKU</b></td>
+					               	<td><b>货号</b></td>
 					               	<td><b>操作</b></td>
 				             	</tr>
 			             	</tbody>
@@ -90,15 +93,41 @@ table {
 	    </div>
     </dl>             
 </div>   
-<!-- 商品模型--> 
+<!-- 商品模型-->
+
+<div class="modal fade" id="setBate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width: 28%">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel"><span  class="tit">批量设置</span>
+					<span style="font-size: 12px;margin-left: 20px;color: red" class="error_tip"></span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" style="padding: 0 25px;">
+					<label for="name"></label>
+					<input type="text" class="form-control" id="set_bat_input" placeholder="批量设置">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<input type="hidden" class="to_set_class" value="">
+				<input type="hidden" class="put_type" value=""> <!-- 1数字 2字符串-->
+				<button type="button" class="btn btn-primary" onclick="sure_set()">确认设置</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
 <script>
 /** 以下 商品规格相关 js*/
 $(document).ready(function(){
     // 商品模型切换时 ajax 调用  返回不同的属性输入框
     $("#goods_type").change(function(){
-        var goods_id = '<?php echo $item['id']; ?>';
+        var dish_id = '<?php echo $item['id']; ?>';
         var gtype_id = $(this).val();
-		getGoodsAttrAndSpec(gtype_id,goods_id);
+		getGoodsAttrAndSpec(gtype_id,dish_id);
     });
 	// 触发商品规格
 	$("#goods_type").trigger('change');
@@ -112,9 +141,47 @@ $(document).ready(function(){
 			$(this).removeClass('btn-default');
 			$(this).addClass('btn-success');
 		}
-		var goods_id = '<?php echo $item['id']; ?>';
-		getGoodsSpecInputInfo(goods_id); // 显示下面的输入框
+		var dish_id = '<?php echo $item['id']; ?>';
+		getGoodsSpecInputInfo(dish_id); // 显示下面的输入框
 	});
 
 });
+
+function set_bat_conf(_class){
+	//批量设置
+	$("#setBate").modal('show');
+	$(".to_set_class").val(_class);
+	if(_class == 'set_productprice'){
+		$("#setBate .tit").html('批量设置【市场价】');
+		$(".put_type").val(1);
+	}else if(_class == 'set_marketprice'){
+		$("#setBate .tit").html('批量设置【促销价】');
+		$(".put_type").val(1);
+	}else if(_class == 'set_total'){
+		$("#setBate .tit").html('批量设置【库存】');
+		$(".put_type").val(1);
+	}else if(_class == 'set_productsn'){
+		$("#setBate .tit").html('批量设置【货号】');
+		$(".put_type").val(2);
+	}
+}
+
+function sure_set(){
+	var set_bat_input = $("#set_bat_input").val();
+	var to_set_class = $(".to_set_class").val();
+	var put_type = $(".put_type").val()  //1必须是数字   2可以是其他
+	if($.trim(set_bat_input) == ''){
+		$(".error_tip").html('请输入对应的值！');
+		return false;
+	}
+	if(put_type == 1){
+		if(isNaN(set_bat_input)){
+			$(".error_tip").html('请输入数字！');
+			return false;
+		}
+	}
+	$("."+to_set_class).val(set_bat_input);
+	$("#setBate").modal('hide');
+
+}
 </script>

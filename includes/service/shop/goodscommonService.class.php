@@ -77,7 +77,7 @@ class goodscommonService extends \service\publicService
      * @param int $goods_id
      * @return bool|string
      */
-    public function goodsSpecInput($gtype_id,$goods_id=0)
+    public function goodsSpecInput($gtype_id,$dish_id=0)
     {
         $specList = mysqld_selectall("select * from ".table('goodstype_spec')." where gtype_id={$gtype_id}");
         if(empty($specList)){
@@ -88,8 +88,8 @@ class goodscommonService extends \service\publicService
             $specList[$k]['spec_item'] = mysqld_selectall("select id,item_name from ".table('goodstype_spec_item')." where spec_id={$v['spec_id']} and status =1"); // 获取规格项
 
         $items_ids = array();
-        if(!empty($goods_id)){
-            $items_id  = mysqld_select("select GROUP_CONCAT(`spec_key` SEPARATOR '_') AS items_id from ".table('goods_spec_price')." where goods_id={$goods_id}");
+        if(!empty($dish_id)){
+            $items_id  = mysqld_select("select GROUP_CONCAT(`spec_key` SEPARATOR '_') AS items_id from ".table('dish_spec_price')." where dish_id={$dish_id}");
             $items_ids = explode('_', $items_id['items_id']);
         }
 
@@ -120,7 +120,7 @@ class goodscommonService extends \service\publicService
      * @param $goods_id
      * @return string
      */
-    public function goodsSpecInput_info($spec_arr,$goods_id)
+    public function goodsSpecInput_info($spec_arr,$dish_id)
     {
         // <input name="item[2_4_7][price]" value="100" /><input name="item[2_4_7][name]" value="蓝色_S_长袖" />
         /*$spec_arr = array(
@@ -156,8 +156,8 @@ class goodscommonService extends \service\publicService
         ) **/
         //获取当前的 产品对应的 具体规格项的值
         $curentSpecPrice_speckey = $curentSpecPrice_idkey = array();
-        if(!empty($goods_id)){
-            $curentSpecPrice = mysqld_selectall("select * from ".table('goods_spec_price')." where goods_id={$goods_id}");
+        if(!empty($dish_id)){
+            $curentSpecPrice = mysqld_selectall("select * from ".table('dish_spec_price')." where dish_id={$dish_id}");
             foreach($curentSpecPrice as $item){
                 $curentSpecPrice_speckey[$item['spec_key']]    = $item;
             }
@@ -171,9 +171,10 @@ class goodscommonService extends \service\publicService
             $speclist[$spec_id] = $one_spec['spec_name'];
             $tr .="<td><b>{$one_spec['spec_name']}</b></td>";    //规格名字
         }
-        $tr .= "<td><b>价格</b></td>
-                <td><b>库存</b></td>
-                <td><b>SKU</b></td>
+        $tr .= "<td><b>促销价</b> [<span onclick=\"set_bat_conf('set_marketprice')\" class='set_bat'>批量</span>]</td>
+                <td><b>市场价</b> [<span onclick=\"set_bat_conf('set_productprice')\"  class='set_bat'>批量</span>]</td>
+                <td><b>库存</b> [<span onclick=\"set_bat_conf('set_total')\"  class='set_bat'>批量</span>]</td>
+                <td><b>货号</b> [<span onclick=\"set_bat_conf('set_productsn')\"  class='set_bat'>批量</span>]</td>
              </tr>";
 
 
@@ -198,16 +199,18 @@ class goodscommonService extends \service\publicService
             $item_key  = implode('_', $item);
             $item_name = implode('@@', $item_key_name);
 
-            $val_price = $val_store_count = $val_key_name = $val_sku = '';
+            $val_marketprice = $val_productprice = $val_store_count = $val_key_name = $val_sku = '';
             if(array_key_exists($item_key,$curentSpecPrice_speckey)){
-                $val_price       = FormatMoney($curentSpecPrice_speckey[$item_key]['marketprice'],0);
-                $val_store_count = $curentSpecPrice_speckey[$item_key]['store_count'];
-                $val_sku         = $curentSpecPrice_speckey[$item_key]['sku'];
+                $val_marketprice = $curentSpecPrice_speckey[$item_key]['marketprice'];
+                $val_productprice= $curentSpecPrice_speckey[$item_key]['productprice'];
+                $val_store_count = $curentSpecPrice_speckey[$item_key]['total'];
+                $val_sku         = $curentSpecPrice_speckey[$item_key]['productsn'];
                 $val_key_name    = $curentSpecPrice_speckey[$item_key]['key_name'];
             }
-            $tbody .= "<td><input type='number' name='specitem[{$item_key}][marketprice]' class='form-control' value='{$val_price}'/></td>";
-            $tbody .= "<td><input  type='number' name='specitem[$item_key][store_count]' class='form-control' value='{$val_store_count}'/></td>";
-            $tbody .= "<td><input  type='number' name='specitem[$item_key][sku]' class='form-control' value='{$val_sku}'/>";
+            $tbody .= "<td><input type='number' name='specitem[{$item_key}][marketprice]' class='form-control set_marketprice' value='{$val_marketprice}'/></td>";
+            $tbody .= "<td><input type='number' name='specitem[{$item_key}][productprice]' class='form-control set_productprice' value='{$val_productprice}'/></td>";
+            $tbody .= "<td><input  type='number' name='specitem[$item_key][total]' class='form-control set_total' value='{$val_store_count}'/></td>";
+            $tbody .= "<td><input  type='text' name='specitem[$item_key][productsn]' class='form-control set_productsn' value='{$val_sku}'/>";
             $tbody .= " <input type='hidden' name='specitem[{$item_key}][key_name]' value='{$item_name}' /></td>";
 
             $tbody .= "</tr>";

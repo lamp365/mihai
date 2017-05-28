@@ -3,24 +3,6 @@
 其余杂乱公用方法
 */
 
-function noises(){
-     echo 'noises';
-}
-
-function fileext($file)
-{
-    return pathinfo($file, PATHINFO_EXTENSION);
-}
-
-function dump($varVal, $isExit = FALSE){
-    ob_start();
-    var_dump($varVal);
-    $varVal = ob_get_clean();
-    $varVal = preg_replace("/\]\=\>\n(\s+)/m", "] => ", $varVal);
-    echo '<pre>'.$varVal.'</pre>';
-    $isExit && exit();
-}
-
 // 根据字段排序数组
 function array_order($arrUsers, $field, $direction='SORT_ASC') {
     $sort = array(  
@@ -67,119 +49,6 @@ function is_mobile_request()
     }else{
         return false;
     }
-    /*$_SERVER['ALL_HTTP'] = isset($_SERVER['ALL_HTTP']) ? $_SERVER['ALL_HTTP'] : '';
-    $mobile_browser = '0';
-    if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|iphone|ipad|ipod|android|xoom)/i', strtolower($_SERVER['HTTP_USER_AGENT'])))
-        $mobile_browser ++;
-    if ((isset($_SERVER['HTTP_ACCEPT'])) and (strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') !== false))
-        $mobile_browser ++;
-    if (isset($_SERVER['HTTP_X_WAP_PROFILE']))
-        $mobile_browser ++;
-    if (isset($_SERVER['HTTP_PROFILE']))
-        $mobile_browser ++;
-    $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
-    $mobile_agents = array(
-        'w3c ',
-        'acs-',
-        'alav',
-        'alca',
-        'amoi',
-        'audi',
-        'avan',
-        'benq',
-        'bird',
-        'blac',
-        'blaz',
-        'brew',
-        'cell',
-        'cldc',
-        'cmd-',
-        'dang',
-        'doco',
-        'eric',
-        'hipt',
-        'inno',
-        'ipaq',
-        'java',
-        'jigs',
-        'kddi',
-        'keji',
-        'leno',
-        'lg-c',
-        'lg-d',
-        'lg-g',
-        'lge-',
-        'maui',
-        'maxo',
-        'midp',
-        'mits',
-        'mmef',
-        'mobi',
-        'mot-',
-        'moto',
-        'mwbp',
-        'nec-',
-        'newt',
-        'noki',
-        'oper',
-        'palm',
-        'pana',
-        'pant',
-        'phil',
-        'play',
-        'port',
-        'prox',
-        'qwap',
-        'sage',
-        'sams',
-        'sany',
-        'sch-',
-        'sec-',
-        'send',
-        'seri',
-        'sgh-',
-        'shar',
-        'sie-',
-        'siem',
-        'smal',
-        'smar',
-        'sony',
-        'sph-',
-        'symb',
-        't-mo',
-        'teli',
-        'tim-',
-        'tosh',
-        'tsm-',
-        'upg1',
-        'upsi',
-        'vk-v',
-        'voda',
-        'wap-',
-        'wapa',
-        'wapi',
-        'wapp',
-        'wapr',
-        'webc',
-        'winw',
-        'winw',
-        'xda',
-        'xda-'
-    );
-    if (in_array($mobile_ua, $mobile_agents))
-        $mobile_browser ++;
-    if (strpos(strtolower($_SERVER['ALL_HTTP']), 'operamini') !== false)
-        $mobile_browser ++;
-        // Pre-final check to reset everything if the user is on Windows
-    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows') !== false)
-        $mobile_browser = 0;
-        // But WP7 is also Windows, with a slightly different characteristic
-    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'windows phone') !== false)
-        $mobile_browser ++;
-    if ($mobile_browser > 0)
-        return true;
-    else
-        return false;*/
 }
 /**
  * 获取访问设备的类型
@@ -243,22 +112,7 @@ function check_mobile_type($type){
     return $res;
 }
 
-function is_had_mess()
-{
-    // 先判断是否登录
-    $login = is_login_account();
-    $urls = $_SERVER['PHP_SELF'];
-    $url = explode('/', $urls);
-    $end = end($url);
-    if (! $login) {
-        if (empty($_COOKIE['mess']) && $_GET['do'] != 'messlist' && $_GET['mod'] != 'site' && $end != 'admin.php') {
-            message("", WEBSITE_ROOT . 'index.php?mod=mobile&name=shopwap&do=messlist');
-        }
-    }
-    // 如果没登录，再判断是否有食堂信息
-    // 最后得出结论跳出
-}
-//is_had_mess();
+
 
 function random($length, $nc = 0)
 {
@@ -589,4 +443,46 @@ function check_request_times($key='default',$limit_num=5,$limit_time=60){
         }
     }
 
+}
+
+
+
+/**
+ * 多个数组的笛卡尔积
+ * @param unknown_type $data
+ */
+function combineDika() {
+    $data = func_get_args();
+    $data = current($data);
+    $cnt  = count($data);
+    $result = array();
+    $arr1   = array_shift($data);
+    foreach($arr1 as $key=>$item)
+    {
+        $result[] = array($item);
+    }
+
+    foreach($data as $key=>$item)
+    {
+        $result = combineArray($result,$item);
+    }
+    return $result;
+}
+/**
+ * 两个数组的笛卡尔积
+ * @param unknown_type $arr1
+ * @param unknown_type $arr2
+ */
+function combineArray($arr1,$arr2) {
+    $result = array();
+    foreach ($arr1 as $item1)
+    {
+        foreach ($arr2 as $item2)
+        {
+            $temp = $item1;
+            $temp[] = $item2;
+            $result[] = $temp;
+        }
+    }
+    return $result;
 }

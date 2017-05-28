@@ -162,12 +162,12 @@ function addBrandByCategory(obj,brandname,icon,p1,p2,p3){
  * @param gtype_id
  * @param goods_id
  */
-function getGoodsAttrAndSpec(gtype_id,goods_id){
+function getGoodsAttrAndSpec(gtype_id,dish_id){
     var parame   ={
         'gtype_id' : gtype_id,
-        'goods_id' : goods_id
+        'dish_id' : dish_id
     };
-    var url ="./index.php?mod=site&name=shop&do=goodscommon&op=goodget_attr";
+   /* var url ="./index.php?mod=site&name=shop&do=goodscommon&op=goodget_attr";
     $.post(url,parame,function(data){
         if(data.errno == 200){
             var result = data.message;
@@ -176,7 +176,7 @@ function getGoodsAttrAndSpec(gtype_id,goods_id){
         }else{
             $("#goods_attr_table tr:gt(0)").remove();
         }
-    },'json');
+    },'json');*/
 
     var url2 ="./index.php?mod=site&name=shop&do=goodscommon&op=goodget_spec";
     $.post(url2,parame,function(data){
@@ -186,7 +186,7 @@ function getGoodsAttrAndSpec(gtype_id,goods_id){
             $("#goods_spec_table1").append(result);
             $("#goods_spec_table2").html('');
             //触发不同的输入框选项
-            getGoodsSpecInputInfo(goods_id);
+            getGoodsSpecInputInfo(dish_id);
         }else{
             $("#goods_spec_table1 tr:gt(0)").remove();
             $("#goods_spec_table2").html('');
@@ -199,7 +199,7 @@ function getGoodsAttrAndSpec(gtype_id,goods_id){
  * 返回 不同的输入框选项
  * @param goods_id
  */
-function getGoodsSpecInputInfo(goods_id){
+function getGoodsSpecInputInfo(dish_id){
     var spec_arr = {};// 用户选择的规格数组
     // 选中了哪些属性
     $("#goods_spec_table1  button").each(function(){
@@ -216,7 +216,7 @@ function getGoodsSpecInputInfo(goods_id){
     });
 
     var parame  = {
-        'goods_id' : goods_id,
+        'dish_id' : dish_id,
         'spec_arr' : spec_arr
     };
     var url ="./index.php?mod=site&name=shop&do=goodscommon&op=goodspect_input";

@@ -39,7 +39,7 @@
 		display:block;
 	}
 </style>
-<h3 class="header smaller lighter blue">请先选择分类 </h3>
+<h3 class="header smaller lighter blue">请先选择分类 <span style="font-size: 12px;margin-left: 20px;color: red">如果商品需要规则，请先创建规格模型</span></h3>
 <div class="form-horizontal" style="padding: 0px 20px 0px 220px;width: 45%">
 	<div class="form-group choosetype-list">
 		<div class="left-list">
