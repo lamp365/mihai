@@ -18,23 +18,65 @@ namespace service\shop;
 
 class goodsService extends \service\publicService
 {
+    public function check_data_beforadd($data)
+    {
+        if(empty($data['title'])){
+            $this->error = '宝贝标题不能为空！';
+            return false;
+        }
+        if(empty($data['productprice']) || empty($data['marketprice']) ){
+            $this->error = '价格不能为空！';
+            return false;
+        }
+        if($data['type'] != 0){
+            if(empty($data['timestart']) || empty($data['timeend'])){
+                $this->error = '活动时间不能为空！';
+                return false;
+            }
+        }
+        if(empty($data['transport_id'])){
+            $this->error = '运费模板不能为空！';
+            return false;
+        }
+        if(empty($data['total'])){
+            $this->error = '请设置库存！';
+            return false;
+        }
+        if(empty($data['id'])){  //添加的时候 图片必须给
+            if(empty($_FILES['thumb']['name'])){
+                $this->error = '商品主图不能为空！';
+                return false;
+            }
+        }
+
+        //团购商品时
+        if(intval($data['type'])==1 && isset($data['team_buy_count']) && empty($data['team_buy_count'])) {
+            $this->error = '请设置成团人数！';
+            return false;
+        } elseif (intval($data['type'])==1 && isset($data['draw']) && $data['draw'] == 1 && empty($_GP['team_draw_num'])) {
+            $this->error = '请设置抽奖人数！';
+            return false;
+        }
+
+        return true;
+    }
+
     //添加产品的时候 c操作图片
     public  function actGoodsPicture($id,$_GP)
     {
-        $cur_index = 0;
         $hsdata = array();
-        if (! empty($_GP['attachment-new'])) {
+        if (!empty($_GP['attachment-new'])) {
             foreach ($_GP['attachment-new'] as $index => $row) {
                 if (empty($row)) {
                     continue;
                 }
                 $hsdata[$index] = array(
-                    'attachment' => $_GP['attachment-new'][$index]
+                    'attachment' => $_GP['attachment-new'][$index],
                 );
             }
             $cur_index = $index + 1;
         }
-        if (! empty($_GP['attachment'])) {
+        if (!empty($_GP['attachment'])) {
             foreach ($_GP['attachment'] as $index => $row) {
                 if (empty($row)) {
                     continue;
@@ -44,16 +86,15 @@ class goodsService extends \service\publicService
                 );
             }
         }
-        mysqld_delete('shop_goods_piclist', array(
-            'goodid' => $id
-        ));
+        mysqld_delete('shop_dish_piclist', array('goodid' => $id));
         foreach ($hsdata as $row) {
             $data = array(
                 'goodid' => $id,
-                'picurl' => $row['attachment']
+                'picurl' =>$row['attachment']
             );
-            mysqld_insert('shop_goods_piclist', $data);
+            mysqld_insert('shop_dish_piclist', $data);
         }
+
 
     }
     
@@ -167,18 +208,21 @@ class goodsService extends \service\publicService
         if(empty($id)){
             return '';
         }
-        mysqld_delete("goods_spec_price",array('goods_id'=>$id));
-
+        mysqld_delete("goods_spec_price",array('dish_id'=>intval($id)));
+        if(empty($specitem)){
+            return '';
+        }
         foreach($specitem as $spec_key => $item){
             $spec_key_str  = $spec_key;
             $insert_data  = array(
-                'goods_id'    => $id,
-                'spec_key'    => $spec_key_str,
-                'key_name'    => $item['key_name'],
-                'marketprice' => FormatMoney($item['marketprice']),
-                'store_count' => intval($item['store_count']),
-                'bar_code'    => $item['bar_code'],
-                'sku'         => $item['sku'],
+                'dish_id'      => $id,
+                'spec_key'     => $spec_key_str,
+                'key_name'     => $item['key_name'],
+                'marketprice'  => $item['marketprice'],
+                'productprice' => $item['productprice'],
+                'total'        => intval($item['total']),
+                'productsn'    => $item['productsn'],
+                'createtime'   => time(),
             );
             mysqld_insert('goods_spec_price',$insert_data);
         }//end foreach

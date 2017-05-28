@@ -277,7 +277,7 @@
 }
 </style>
 
-<form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
+<form action="<?php echo web_url('dish',array('op'=>'do_post')); ?>" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
 <div class="panel with-nav-tabs panel-default">
     <div class="panel-heading">
             <ul class="nav nav-tabs">
@@ -308,7 +308,7 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 宝贝名称</label>
 					<div class="col-sm-4">
-						<input type="text" name="dishname" id="dishname" class="form-control span7" maxlength="100" value="<?php  echo $item['title'];?>" />
+						<input type="text" name="title" id="dishname" class="form-control span7" maxlength="100" value="<?php  echo $item['title'];?>" />
 					</div>
 				</div>
 				<div class="form-group">
@@ -493,11 +493,11 @@
 					<label class="col-sm-2 control-label no-padding-left" > 运费模板：</label>
 
 					<div class="col-sm-2">
-						<select  style="margin-right:15px;" id="pcate" name="pcate"  autocomplete="off" class="form-control">
+						<select  style="margin-right:15px;" id="transport_id" name="transport_id"  autocomplete="off" class="form-control">
 							<option value="0">请选择一级分类</option>
 							<?php foreach($disharea as $row) { ?>
 								<?php  if($row['parentid'] == 0) { ?>
-									<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['pcate']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name']." [{$row['displayorder']}元]";?></option>
+									<option value="<?php  echo $row['id'];?>" <?php  if($row['id'] == $item['transport_id']) { ?> selected="selected"<?php  } ?>><?php  echo $row['name']." [{$row['displayorder']}元]";?></option>
 								<?php  } ?>
 							<?php  }  ?>
 						</select>
@@ -520,7 +520,7 @@
 
 					<div class="col-sm-9">
 						<div class="fileupload fileupload-new" data-provides="fileupload">
-							<div class="fileupload-preview thumbnail" style="width: 150px; height: 100px;">
+							<div class="fileupload-preview thumbnail" style="width: 145px; height: 140px;">
 								<?php  if(!empty($item['thumb'])) { ?>
 									<img src="<?php  echo $item['thumb'];?>" alt="" onerror="$(this).remove();">
 								<?php  } ?>
@@ -543,9 +543,9 @@
 						<div id="file_upload-queue" class="uploadify-queue"></div>
 						<ul class="ipost-list ui-sortable" id="fileList">
 							<?php  if(is_array($piclist)) { foreach($piclist as $v) { ?>
-								<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 125px;  height: 130px;">
+								<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 150px;  height: 145px;">
 									<span class="item_box">
-										<img src="<?php  echo $v['picurl'];?>" style="width:95px;height:70px">
+										<img src="<?php  echo $v['picurl'];?>" style="width:130px;height:125px">
 									</span>
 									<a  href="javascript:;" onclick="deletepic(this);" title="删除">删除</a>
 
@@ -589,7 +589,7 @@
 		<label class="col-sm-2 control-label no-padding-left" ></label>
 
 		<div class="col-sm-9">
-			<button type="submit" class="btn btn-primary span2" name="submit" value="submit"><i class="icon-edit"></i>保存信息</button>
+			<button type="submit" class="btn btn-primary btn-md span2" name="submit" value="submit"><i class="icon-edit"></i>全部保存</button>
 		</div>
 	</div>
 </div>
@@ -621,8 +621,8 @@ $(function(){
 					if (list && list.length > 0) {
 						for (i in list) {
 							if (list[i]) {
-								html =	'<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;  width: 125px;  height: 130px;">'+
-								'<span class="item_box"> <img src="'+list[i]['url']+'" style="width:50px;height:50px"></span>'+
+								html =	'<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;  width: 150px;  height: 145px;">'+
+								'<span class="item_box"> <img src="'+list[i]['url']+'" style="width:130px;height:125px"></span>'+
 								'<a href="javascript:;" onclick="deletepic(this);" title="删除">删除</a>'+
 								'<input type="hidden" name="attachment-new[]" value="'+list[i]['filename']+'" />'+
 								'</li>';
@@ -696,27 +696,52 @@ function deletepic(obj){
 
 function fillform()
 {
-		if(ue.queryCommandState( 'source' )==1)
-		{
-			
-	document.getElementById("container").value=ue.getContent();	
-		}else
-			{
-			
-	document.getElementById("container").value=ue.body.innerHTML;	
-			}
-	if ( $('#c_goods').val() == 0)
-	{   
-		alert('请选择产品');
+	if(ue.queryCommandState( 'source' )==1)
+	{
+
+		document.getElementById("container").value=ue.getContent();
+	}else {
+		document.getElementById("container").value=ue.body.innerHTML;
+	}
+	if($("#productprice").val() == '' || $("#productprice").val() == 0){
+		alert('请设置市场价！');
 		return false;
 	}
-	else if(parseInt($('#J_type').val())!=0 && ($('#datepicker_timestart').val()=='' || $('#datepicker_timeend').val()==''))
-	{
-		alert('请设置促销时间！');
+	if($("#marketprice").val() == '' || $("#marketprice").val() == 0){
+		alert('请设置促销价！');
+		return false;
+	}
+	if($("#total").val() == 0){
+		alert('请设置库存！');
+		return false;
+	}
+	if($("#transport_id").val() == 0){
+		alert('请选择运费模板！');
 		return false;
 	}
 
-	
+	if(parseInt($('#J_type').val())!=0 && ($('#datepicker_timestart').val()=='' || $('#datepicker_timeend').val()==''))
+	{
+		alert('请设置活动时间！');
+		return false;
+	}
+	if($('.fileupload-preview img').length < 1){
+		alert('请上传宝贝主图！');
+		return false;
+	}
+
+	if($(".set_marketprice").val() == ''){
+		alert('规格中的促销价不能为空！');
+		return false;
+	}
+	if($(".set_productprice").val() == ''){
+		alert('规格中的市场价不能为空！');
+		return false;
+	}
+	if($(".set_total").val() == ''){
+		alert('规格中的库存不能为空！');
+		return false;
+	}
 	return true;
 }
 

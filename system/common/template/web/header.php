@@ -18,6 +18,7 @@
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/goodsCommon.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/kindeditor-min.js"></script>
+<script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/script/jquery.form.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/themes/default/default.css" />
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />

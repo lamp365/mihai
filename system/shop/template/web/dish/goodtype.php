@@ -150,6 +150,7 @@ $(document).ready(function(){
 function set_bat_conf(_class){
 	//批量设置
 	$("#setBate").modal('show');
+	$(".error_tip").html('');
 	$(".to_set_class").val(_class);
 	if(_class == 'set_productprice'){
 		$("#setBate .tit").html('批量设置【市场价】');

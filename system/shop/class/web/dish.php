@@ -196,175 +196,114 @@ class dish extends \common\controller\basecontroller
     public function addbrand()
     {
         $_GP = $this->request;
+        if(checksubmit('is_add')){
+            if(empty($_GP['brandname'])){
+                ajaxReturnData(0,'品牌名不能为空！');
+            }
+            if(empty($_GP['country_id'])){
+                ajaxReturnData(0,'请选择国家！');
+            }
+            $data['brand']      = $_GP['brandname'];
+            $data['country_id'] = $_GP['country_id'];
+
+            if (!empty($_FILES['icon']['name'])) {
+                $upload = file_upload($_FILES['icon']);
+                if (is_error($upload)) {
+                    ajaxReturnData(0,$upload['message']);
+                }
+                $data['icon'] = $upload['path'];
+            }
+
+            mysqld_insert('shop_brand',$data);
+            if($last_id = mysqld_insertid()){
+                $data['id'] = $last_id;
+                ajaxReturnData(1,'操作成功！',$data);
+            }else{
+                ajaxReturnData(0,'操作失败！');
+            }
+
+        }
         $country = mysqld_selectall("select id,name from ".table('shop_country'));
         include page('dish/addbrand');
     }
     public function do_post()
     {
         $_GP = $this->request;
-
-        if (empty($_GP['pcate'])) {
-            message('请选择商品分类！');
-        }
-        //非一般商品时   以下isset要有，对于权限操作后不可以见，所加的。
-        elseif(isset($_GP['type']) && intval($_GP['type'])!=0 && (empty($_GP['timestart']) || empty($_GP['timeend'])))
-        {
-            message('请设置促销时间！');
-        }
-        //团购商品时
-        elseif(isset($_GP['type']) && intval($_GP['type'])==1 && isset($_GP['team_buy_count']) && empty($_GP['team_buy_count']))
-        {
-            message('请设置成团人数！');
-        }
-        elseif (isset($_GP['type']) && intval($_GP['type'])==1 && isset($_GP['draw']) && $_GP['draw'] == 1 && isset($_GP['team_draw_num']) && empty($_GP['team_draw_num'])) {
-            message('请设置抽奖人数！');
+        $service = new \service\shop\goodsService();
+        $res = $service->check_data_beforadd($_GP);
+        if(!$res){
+            message($service->getError());
         }
 
-        // 获取模板产品库的数据
-        $shop_goods = mysqld_select("SELECT * FROM ". table('shop_goods') . " WHERE id = ".intval($_GP['c_goods'])." limit 1 ");
-        //不要加类型转换，PHP本就是弱类型不用做类型转换，加了类型转化，会破坏原始数据格式,有些时候影响业务
-        $data = array();
-        if(empty($id)){    //这一步是为兼顾，权限，因为有些管理员不能修改价钱
-            //新添加数据
-            $timeprice    = !empty($_GP['timeprice']) && ($_GP['timeprice'] > 0) ?$_GP['timeprice']:$shop_goods['marketprice'];
-            $marketprice  = !empty($_GP['marketprice']) && ($_GP['marketprice'] > 0)?$_GP['marketprice']:$shop_goods['marketprice'];
-            $productprice = !empty($_GP['productprice']) && ($_GP['productprice'] > 0)?$_GP['productprice']:$shop_goods['productprice'];
-            $app_marketprice = !empty($_GP['app_marketprice']) && ($_GP['app_marketprice'] > 0) ? $_GP['app_marketprice'] : $marketprice;
-        }else{
-            $timeprice    = $_GP['timeprice'];
-            $marketprice  = $_GP['marketprice'] == 0 ? $shop_goods['marketprice'] : $_GP['marketprice'];
-            $productprice = $_GP['productprice'];
-            $app_marketprice = !empty($_GP['app_marketprice']) && ($_GP['app_marketprice'] > 0) ? $_GP['app_marketprice'] : $marketprice;
-        }
         $data = array(
-            'pcate' => intval($_GP['pcate']),
-            'ccate' => intval($_GP['ccate']),
-//					'taxid' => intval($_GP['taxid']),
-            'timeprice'=> $timeprice,
-            'gid'  => intval($_GP['c_goods']),
-//                    'status' => $_GP['status'],
-            'displayorder' => intval($_GP['displayorder']),
-            'title' =>  !empty($_GP['dishname'])?$_GP['dishname']:$shop_goods['title'],
-            'description' => $_GP['description'],
-            'content' => htmlspecialchars_decode($_GP['content']),
-            'dishsn' => $_GP['dishsn'],
-            'explain' => $_GP['explain'],
-            'advertising'=>$_GP['advertising'],
-            'headline'=>$_GP['headline'],
-            'productsn' => $_GP['productsn'],
-//                    'marketprice' => $marketprice,
-            'weight' => $_GP['weight'],
-//                    'productprice' => $productprice,
-//                    'commision' => $_GP['commision']/100,
-            'total' => intval($_GP['total']),
-            'totalcnf' => intval($_GP['totalcnf']),
-            'credit' => intval($_GP['credit']),
-            'createtime' => TIMESTAMP,
-            'isnew' => intval($_GP['isnew']),
-            'isfirst' => intval($_GP['isfirst']),
-            'ishot' => intval($_GP['ishot']),
-            'isjingping' => intval($_GP['isjingping']),
-            'issendfree' => intval($_GP['issendfree']),
-            'ispurchase'=>intval($_GP['ispurchase']),
-//                    'type' => $_GP['type'],								//促销类型
-            'ishot' => intval($_GP['ishot']),
-            'isdiscount' => intval($_GP['isdiscount']),
-            'isrecommand' => intval($_GP['isrecommand']),
-//                    'istime' => $_GP['istime'],
-//                    'timestart' => strtotime($_GP['timestart']),
-            'hasoption' => intval($_GP['hasoption']),
-//                    'timeend' => strtotime($_GP['timeend']),
-            'max_buy_quantity' => (int)$_GP['max_buy_quantity']			//单笔最大购买数量
+            'p1'             => intval($_GP['pcate']),
+            'p2'             => intval($_GP['ccate']),
+            'brand'          => intval($_GP['brand']),
+            'status'         => $_GP['status'],
+            'displayorder'   => intval($_GP['displayorder']),
+            'total'          => intval($_GP['total']),
+            'totalcnf'       => intval($_GP['totalcnf']),
+            'issendfree'     => intval($_GP['issendfree']),  //免邮
+            'transport_id'   => intval($_GP['transport_id']),  //运费id
+
+            'title'          =>  $_GP['title'],
+            'description'    => $_GP['description'],
+            'content'        => changeUeditImgToAli($_GP['content']),
+
+            'productsn'      => $_GP['productsn'],
+            'marketprice'    => $_GP['marketprice'],
+            'productprice'   => $_GP['productprice'],
+            'commision'      => $_GP['commision']/100,   //佣金存进去 是已经除以100的
+
+            'timeprice'      => $_GP['timeprice'],
+            'istime'         => $_GP['istime'],
+            'timestart'      => strtotime($_GP['timestart']),
+            'timeend'        => strtotime($_GP['timeend']),
+
+            'gtype_id'       => intval($_GP['goods_type']),
+            'createtime'   => TIMESTAMP,
+            'isnew'        => intval($_GP['isnew']),
+            'isfirst'      => intval($_GP['isfirst']),
+            'ishot'        => intval($_GP['ishot']),
+            'isjingping'   => intval($_GP['isjingping']),
+            'type'         => $_GP['type'],								//促销类型
+            'ishot'        => intval($_GP['ishot']),
+            'isdiscount'   => intval($_GP['isdiscount']),
+            'isrecommand'  => intval($_GP['isrecommand']),
+
+
         );
 
-        //保税设置
-        $data = getDataIsNotNull($data,'taxid',$_GP['taxid']);
-        //是否销售
-        $data = getDataIsNotNull($data,'status',$_GP['status']);
-        $data = getDataIsNotNull($data,'marketprice',$marketprice);
-        $data = getDataIsNotNull($data,'app_marketprice',$app_marketprice);
-        $data = getDataIsNotNull($data,'productprice',$productprice);
-        $data = getDataIsNotNull($data,'timeprice',$timeprice);
-        //促销类型
-        $data = getDataIsNotNull($data,'type',$_GP['type']);
-        //促销时间
-        $data = getDataIsNotNull($data,'istime',$_GP['istime']);
-        //商品佣金比例
-        $data = getDataIsNotNull($data,'commision',$_GP['commision']);
-        $data = getDataIsNotNull($data,'timestart',$_GP['timestart']);
-        $data = getDataIsNotNull($data,'timeend',$_GP['timeend']);
 
-
-        //团购商品时
-        if(intval($_GP['type'])==1)
-        {
-            $data = getDataIsNotNull($data,'team_buy_count',$_GP['team_buy_count']);
-            $data = getDataIsNotNull($data,'draw',$_GP['draw']);
-            if ($_GP['draw'] !== NULL) {
-                //因为加入权限后，部分字段不可以见，再修改的时候，提交得不到数据，会被修改为0。故加这个判断
-                if($_GP['draw'] == 1)
-                    $data['draw_num'] = (int)$_GP['team_draw_num'];
-                else
-                    $data['draw_num'] = 0;
-            }
-        }
-        $c_p = mysqld_select("SELECT * FROM ".table("shop_goods")." WHERE id = ".$_GP['c_goods']);
-        $data['p1'] = $c_p['pcate'];
-        $data['p2'] = $c_p['ccate'];
-        $data['p3'] = $c_p['ccate2'];
         if (!empty($_FILES['thumb']['tmp_name'])) {
             $upload = file_upload($_FILES['thumb']);
             if (is_error($upload)) {
-                message($upload['message'], '', 'error');
+                message($upload['message']);
             }
             $data['thumb'] = $upload['path'];
         }
-        if (empty($id)) {
-            $data['sales']=0;
+        if (empty($_GP['id'])) {
             mysqld_insert('shop_dish', $data);
             $id = mysqld_insertid();
             if ( empty($id) ){
-                message('宝贝已存在，请勿重复添加');
+                message('操作失败!');
             }
         } else {
             unset($data['createtime']);
-            unset($data['sales']);
-            mysqld_update('shop_dish', $data, array('id' => $id));
+            mysqld_update('shop_dish', $data, array('id' => $_GP['id']));
+            $id = $_GP['id'];
         }
 
+        $goodsService  = new \service\shop\goodsService();
+        //添加产品的时候 加入图片
+        $goodsService->actGoodsPicture($id,$_GP);
+        // 处理商品规格 以及属性
+//        $goodsService->actGoodsAttr($id,$_GP['attritem']);
+        $goodsService->actGoodsSpec($id,$_GP['specitem']);
 
-        $hsdata=array();
-        if (!empty($_GP['attachment-new'])) {
-            foreach ($_GP['attachment-new'] as $index => $row) {
-                if (empty($row)) {
-                    continue;
-                }
-                $hsdata[$index] = array(
-                    'attachment' => $_GP['attachment-new'][$index],
-                );
-            }
-            $cur_index = $index + 1;
-        }
-        if (!empty($_GP['attachment'])) {
-            foreach ($_GP['attachment'] as $index => $row) {
-                if (empty($row)) {
-                    continue;
-                }
-                $hsdata[$cur_index + $index] = array(
-                    'attachment' => $_GP['attachment'][$index]
-                );
-            }
-        }
-        mysqld_delete('shop_dish_piclist', array('goodid' => $id));
-        foreach ($hsdata as $row) {
-            $data = array(
-                'goodid' => $id,
-                'picurl' =>$row['attachment']
-            );
-            mysqld_insert('shop_dish_piclist', $data);
-        }
-
-        message('商品操作成功！',  'refresh', 'success');
+        message('商品操作成功！', web_url('dish', array(
+            'op' => 'lists',
+        )), 'success');
 
     }
 
