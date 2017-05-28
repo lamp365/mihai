@@ -4,13 +4,13 @@
 			$result['message'] = '上传失败，请重试！';
 			exit(json_encode($result));
 		}
-     $extention = pathinfo($_FILES['imgFile']['name'], PATHINFO_EXTENSION);
-			$extentions=array('gif', 'jpg', 'jpeg', 'png');
-	if(!in_array(strtolower($extention), $extentions)) {
-				$result['message'] = '不允许上传此类文件！';
-			exit(json_encode($result));
-	}
-		$file = file_upload($_FILES['imgFile'], 'image');
+		$extention = pathinfo($_FILES['imgFile']['name'], PATHINFO_EXTENSION);
+		$extentions=array('gif', 'jpg', 'jpeg', 'png');
+		if(!in_array(strtolower($extention), $extentions)) {
+					$result['message'] = '不允许上传此类文件！';
+					exit(json_encode($result));
+		}
+		$file = file_upload($_FILES['imgFile']);
 		if (is_error($file)) {
 			$result['message'] = $file['message'];
 			exit(json_encode($result));

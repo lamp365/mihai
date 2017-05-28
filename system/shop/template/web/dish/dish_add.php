@@ -258,6 +258,23 @@
     color: #fff; /* active text color */
     background-color: #a94442; /* active bg color */
 }
+.time_put{
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+
+}
 </style>
 
 <form action="" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
@@ -291,20 +308,22 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 宝贝名称</label>
 					<div class="col-sm-4">
-						<input type="text" name="dishname" id="dishname" class="form-control" maxlength="100" class="span7"  value="<?php  echo $item['title'];?>" />
+						<input type="text" name="dishname" id="dishname" class="form-control span7" maxlength="100" value="<?php  echo $item['title'];?>" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 品牌：</label>
 
-					<div class="col-sm-9">
-						<select name="brand" class="js-example-responsive choose_brand" id="brand">
+					<div class="col-sm-2">
+						<select name="brand" class="js-example-responsive choose_brand form-control" id="brand">
 							<option value="0">请选择品牌</option>
 							<?php foreach ( $brandlist as $brand_value ){ $selected = ($brand_value['id'] == $item['brand'])?"selected":"";?>
 								<option <?php echo $selected; ?> value="<?php echo $brand_value['id']; ?>"><?php echo $brand_value['brand']; ?></option>
 							<?php } ?>
 						</select>
-						<span class="btn btn-info btn-xs add_the_brand">添加品牌</span>
+					</div>
+					<div class="cos-sm-2">
+						<span class="btn btn-info btn-xs add_the_brand" style="margin-top: 3px;">添加品牌</span>
 					</div>
 				</div>
 				 <div class="form-group" >
@@ -319,7 +338,7 @@
 					<label class="col-sm-2 control-label no-padding-left" > 市场价格：</label>
 
 					<div class="col-sm-2">
-						<input type="text" class="form-control" name="productprice" id="productprice"  value="<?php  echo empty($item['productprice'])?'0':$item['productprice'];?>" />
+						<input type="number" class="form-control" name="productprice" id="productprice"  value="<?php  echo empty($item['productprice'])?'0':$item['productprice'];?>" />
 					</div>
 				</div>
 
@@ -328,7 +347,7 @@
 					<label class="col-sm-2 control-label no-padding-left" > 促销价格：</label>
 
 					<div class="col-sm-2">
-						<input type="text" class="form-control" name="marketprice" id="marketprice" value="<?php  echo empty($item['marketprice'])?'0':$item['marketprice'];?>" />
+						<input type="number" class="form-control" name="marketprice" id="marketprice" value="<?php  echo empty($item['marketprice'])?'0':$item['marketprice'];?>" />
 					</div>
 				</div>
 
@@ -336,17 +355,17 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 排序：</label>
 
-					<div class="col-sm-9">
-						<input type="text" name="displayorder" id='displayorder' value="<?php  echo empty($item['displayorder'])?'0':$item['displayorder'];?>" />
+					<div class="col-sm-2">
+						<input type="text" name="displayorder" class="form-control" id='displayorder' value="<?php  echo empty($item['displayorder'])?'0':$item['displayorder'];?>" />
 					</div>
 				</div>
 
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 库存：</label>
-					<div class="col-sm-9">
+					<div class="col-sm-2">
 
-						<input type="text" name="total" id="total" value="<?php  echo empty($item['total'])?'0':$item['total'];?>" />
+						<input type="text" name="total" class="form-control" id="total" value="<?php  echo empty($item['total'])?'0':$item['total'];?>" />
 					</div>
 				</div>
 
@@ -380,8 +399,8 @@
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" >商品类型:</label>
-					<div class="col-sm-9">
-						<select id="J_type" name="type">
+					<div class="col-sm-2">
+						<select id="J_type" name="type" class="form-control">
 							<option value="0" <?php if($item['type']==0){?>selected="selected"<?php  } ?>>一般商品</option>
 							<option value="1" <?php if($item['type']==1){?>selected="selected"<?php  } ?> >团购商品</option>
 							<option value="2" <?php if($item['type']==2){?>selected="selected"<?php  } ?>>秒杀商品</option>
@@ -394,12 +413,12 @@
 
 
 				<div class="form-group show_time_set" style="display: none">
-					<div class="row">
-						<label class="col-sm-2 control-label no-padding-left" > 活动时间：</label>
+					<div class="">
+						<label class="col-sm-2 control-label no-padding-left" > 活动时间:</label>
 
-						<div class="col-sm-9">
-							<input type="hidden" name="istime" id='istime' value="<?php intval($item['istime']); ?>"   />
-							<input type="text" id="datepicker_timestart" name="timestart" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timestart']);}?>" readonly="readonly" />
+						<div class="col-sm-4">
+							<input type="hidden" name="istime" id='istime' value="<?php intval($item['istime']); ?>" />
+							<input type="text" id="datepicker_timestart" name="timestart" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timestart']);}?>" readonly="readonly" class="time_put"/>
 							<script type="text/javascript">
 								laydate({
 									elem: '#datepicker_timestart',
@@ -411,7 +430,7 @@
 								});
 								laydate.skin("molv");
 							</script> -
-							<input type="text"  id="datepicker_timeend" name="timeend" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timeend']);}?>" readonly="readonly" />
+							<input type="text"  id="datepicker_timeend" name="timeend" value="<?php if(!empty($item['timestart'])){echo date('Y-m-d H:i',$item['timeend']);}?>" readonly="readonly" class="time_put"/>
 							<script type="text/javascript">
 								laydate({
 									elem: '#datepicker_timeend',
@@ -427,19 +446,20 @@
 					</div>
 
 					<br/>
-					<div class="row">
+					<br/>
+					<div style="clear: both;margin-top: 5px;">
 						<label class="col-sm-2 control-label no-padding-left" >活动价格:</label>
-						<div class="col-sm-9">
-							<input type="text" name="timeprice" id="timeprice" value="<?php  echo empty($item['timeprice'])?'0':$item['timeprice'];?>" />
-							<p class="help-block">该金额只有在活动时间内有效，结束时间后恢复促销价</p>
+						<div class="col-sm-2">
+							<input type="number" name="timeprice" id="timeprice" value="<?php  echo empty($item['timeprice'])?'0':$item['timeprice'];?>" class="form-control"/>
+							<p class="help-block">该金额只在活动时间内有效，结束恢复促销价</p>
 						</div>
 					</div>
 				</div>
 
 				<div id="J_team_buy_count_div" class="form-group" <?php if($item['type']!=1){?>style="display:none;"<?php  } ?> >
 					<label class="col-sm-2 control-label no-padding-left" >成团人数:</label>
-					<div class="col-sm-9">
-						<input type="text" name="team_buy_count" id="J_team_buy_count" value="<?php echo empty($item['team_buy_count'])?'0':$item['team_buy_count'];?>" />
+					<div class="col-sm-2">
+						<input type="text" class="form-control" name="team_buy_count" id="J_team_buy_count" value="<?php echo empty($item['team_buy_count'])?'0':$item['team_buy_count'];?>" />
 					</div>
 				</div>
 
@@ -452,8 +472,8 @@
 				</div>
 				<div id="J_team_buy_draw_num_div" class="form-group" <?php if($item['draw']!=1){?>style="display:none;"<?php  } ?> >
 					<label class="col-sm-2 control-label no-padding-left" > 抽奖人数：</label>
-					<div class="col-sm-9">
-						<input type="text" name="team_draw_num" id="J_team_draw_num" value="<?php echo empty($item['draw_num'])?'0':$item['draw_num'];?>" />
+					<div class="col-sm-2">
+						<input type="number" class="form-control" name="team_draw_num" id="J_team_draw_num" value="<?php echo empty($item['draw_num'])?'0':$item['draw_num'];?>" />
 					</div>
 				</div>
 
@@ -462,15 +482,18 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 商品佣金比例：</label>
 
-					<div class="col-sm-9">
-						<input type="text"  name="commision" id="commision" value="<?php  echo $item['commision'] == 0 ?'0':$item['commision']*100;?>" /> % &nbsp;&nbsp;<span style="color: #737373" id="show_commision">佣金：<?php echo $item['commision']*$item['timeprice'];?>元</span>
+					<div class="col-sm-2">
+						<input type="number"  class="form-control" name="commision" id="commision" value="<?php  echo $item['commision'] == 0 ?'0':$item['commision']*100;?>" />
+					</div>
+					<div class="col-sm-2" style="margin-top: 3px;">
+						% &nbsp;&nbsp;<span style="color: #737373" id="show_commision">佣金：<?php echo $item['commision']*$item['timeprice'];?>元</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 运费模板：</label>
 
-					<div class="col-sm-9">
-						<select  style="margin-right:15px;" id="pcate" name="pcate"  autocomplete="off">
+					<div class="col-sm-2">
+						<select  style="margin-right:15px;" id="pcate" name="pcate"  autocomplete="off" class="form-control">
 							<option value="0">请选择一级分类</option>
 							<?php foreach($disharea as $row) { ?>
 								<?php  if($row['parentid'] == 0) { ?>
@@ -493,7 +516,7 @@
             
 			<div class="tab-pane fade" id="tab2primary">
 				<div class="form-group">
-					<label class="col-sm-2 control-label no-padding-left" >广告图：<br/>（建议640*640）</label>
+					<label class="col-sm-2 control-label no-padding-left" >宝贝主图：<br/></label>
 
 					<div class="col-sm-9">
 						<div class="fileupload fileupload-new" data-provides="fileupload">
@@ -573,7 +596,7 @@
 </form>
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/themes/default/default.css" />
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/kindeditor-min.js"></script>
-<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/lang/zh_CN.js"></script>    
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/kindeditor/lang/zh_CN.js"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/ueditor.config.js?x=201508021"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/ueditor/ueditor.all.min.js?x=141"></script>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/select2.min.js"></script>

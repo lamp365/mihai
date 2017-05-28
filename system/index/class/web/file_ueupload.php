@@ -16,7 +16,7 @@
 	if(empty($upfile))
 	{
 		$upfile=$_FILES['imgFile'];
-		}
+	}
 	if (!empty($upfile['name'])) {
 		if ($_FILES['upfile']['error'] != 0) {
 			$result['state'] = '上传失败，请重试！';
