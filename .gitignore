@@ -1,9 +1,8 @@
-config/
-cache/
-addons/
-include/init.php
-logs/
-index.php
-admin.php
-mobile.php
+./config/
+./cache/
+./addons/
+./include/init.php
+./logs/
+./index.php
+./admin.php
 	

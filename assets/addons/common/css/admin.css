@@ -1,0 +1,36 @@
+.items ul{
+   margin:0;
+   padding:0;
+   list-style:none;
+   overflow:hidden;
+   min-width:600px;
+}
+.items ul li{
+   float:left;
+   text-align:center;
+   margin-top:10px;
+}
+.items .price,.items .tot{
+   width:12%;
+}
+.items .tot .shouhou_status a{color:red;}
+.items .title{
+   width:54%;
+   text-align:left;
+}
+.items .title div{
+   float:left;
+   margin-bottom:2px;
+   clear:both;
+}
+.items .img{
+   width:8%;
+}
+.items .name{
+   border:1px solid #FE3D53;
+   color:#FE3D53;
+   font-size:10px;
+}
+.items .sn{
+   font-size:10px;
+}

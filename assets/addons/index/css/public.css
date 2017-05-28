@@ -1,0 +1,124 @@
+.memberinto-wrap{
+	margin-top: 20px;
+}
+.memberinto-wrap h3{
+	display: inline-block
+}
+li{
+	list-style-type: none;
+}
+.memberinto-wrap td li{
+	float: left;
+}
+.search-ul{
+	width: 100%;
+	border: 1px solid #ddd;
+	overflow: hidden;
+	padding: 0;
+}
+.search-ul .input-height{
+	height: 30px;
+	padding-left: 5px;
+}
+.search-ul li{
+	float: left;
+	margin: 7px 5px;
+}
+.search-ul .left-span{
+	float: left;
+    line-height: 28px;
+    background-color: #ededed;
+    padding: 0 5px;
+    border: 1px solid #cdcdcd;
+    border-right: 0;
+    font-size: 12px;
+}
+.search-ul .checkbox-div{
+	float: left;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    padding: 6px;
+    //background-color: #ededed;
+}
+.search-ul .checkbox-div input{
+	width: 15px;
+	height: 15px;
+	margin: 0;
+	padding: 0;
+}
+.memberinto-wrap .third-party #tab1primary .table>tbody>tr>td{
+	border-top: 1px solid #ddd;
+}
+.panel.with-nav-tabs .panel-heading{
+    padding: 5px 5px 0 5px;
+}
+.panel.with-nav-tabs .nav-tabs{
+	border-bottom: none;
+}
+.panel.with-nav-tabs .nav-justified{
+	margin-bottom: -1px;
+}
+.with-nav-tabs.panel-default .nav-tabs > li > a{
+	color: #777;
+}
+.third-party-user-list .table{
+	font-size: 12px;
+}
+.message-ul li{
+	overflow: hidden;
+	width: 100%;
+}
+.message-ul .radio_demo{
+	float: left;
+	width: 20px;
+}
+.message-ul label{
+	width: 100%;
+	display: block;
+	font-weight: 400;
+    margin-bottom: 6px;
+    overflow: hidden;
+}
+.message-ul .demo-div{
+	float: left;
+	width: 95%;
+}
+.department-step-1{
+	margin-top: 20px;
+}
+.search-ul .small-title{
+    padding: 6px 0;
+    font-size: 13px;
+}
+.department-step-2 .search-ul{
+	padding: 0 10px 10px 10px;
+}
+.department-step-2-btn{
+	margin-left: 5px;
+}
+.clearfix {zoom:1;}    /*==for IE6/7 Maxthon2==*/
+.clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
+.department-table .table>tbody>tr>td{
+	border: 1px solid #ddd;
+}
+.department-wrap .add-user,.department-wrap .add-department{
+	margin-left: 10px;
+	margin-top: -3px;
+}
+.add-user-input .left-title{
+	vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+    width: 130px;
+}
+.add-user-input td{
+	padding-bottom:15px; 
+}
+.department-wrap .add-user-modal .check-department{
+	width: 174px;height: 26px;
+}
+.add-user-input .back-account{
+	width: 174px;
+    height: 26px;
+}
