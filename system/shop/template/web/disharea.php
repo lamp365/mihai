@@ -64,15 +64,15 @@
 												</div>
 									</div>
 									
-									 <div class="form-group">
+									<!-- <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 清关材料</label>
 
 										<div class="col-sm-9">
 					
-                        <input type='radio' name='isrecommand' value=1' <?php  if($disharea['isrecommand']==1) { ?>checked<?php  } ?> /> 是&nbsp;
-                        <input type='radio' name='isrecommand' value=0' <?php  if($disharea['isrecommand']==0) { ?>checked<?php  } ?> /> 否
+                        <input type='radio' name='isrecommand' value=1' <?php /* if($disharea['isrecommand']==1) { */?>checked<?php /* } */?> /> 是&nbsp;
+                        <input type='radio' name='isrecommand' value=0' <?php /* if($disharea['isrecommand']==0) { */?>checked<?php /* } */?> /> 否
 												</div>
-									</div>
+									</div>-->
 	
 	
 			 <div class="form-group">

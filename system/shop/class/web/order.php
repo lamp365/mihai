@@ -23,13 +23,9 @@ if ($operation == 'display') {
 	$psize = 10;
 	$status = !isset($_GP['status']) ? 1 : $_GP['status'];
 	$sendtype = !isset($_GP['sendtype']) ? 0 : $_GP['sendtype'];
-	$condition = 'A.ordertype<>-2';   //批发订单不显示在订单列表里
+	$condition = '1=1';
 	$param_ordersn=$_GP['ordersn'];
-    //业务员只能查看跟自己有关联客户的订单
-	if(isAgentAdmin()){
-		$amdin_uid = $_SESSION['account']['id'];
-		$condition .= " AND A.relation_uid={$amdin_uid}";
-	}
+
 	if (!empty($_GP['ordersn'])) {
 		$condition .= " AND A.ordersn LIKE '%{$_GP['ordersn']}%'";
 	}

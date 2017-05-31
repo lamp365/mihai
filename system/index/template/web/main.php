@@ -622,6 +622,12 @@
                                         所有订单
                                     </a>
                                 </li>
+                                <li>
+                                    <a  onclick="navtoggle('订单管理 - > 退换单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'return'))?>" target="main">
+                                        <i class="icon-double-angle-right"></i>
+                                        退换单
+                                    </a>
+                                </li>
                                 <li> <a  onclick="navtoggle('拼团订单 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'groupbuy','op' => 'list'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         拼团订单

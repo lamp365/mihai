@@ -257,11 +257,12 @@
 	 line-height: 29px;
 	 padding: 0 15px 0 5px;
 	 position: relative;
-	 z-index: 3;
+	 z-index: 33;
 }
 .freight:hover{
 	 border-color: #d5d5d5 #d5d5d5 #fff;
 	 background: #fff;
+	border-bottom: none;
 }
 
 .freightdetail{
@@ -272,9 +273,10 @@
 	line-height: 22px;
 	padding: 10px 15px;
 	position: absolute;
-	top: 30px;
+	top: 29px;
 	width: 280px;
-	display: none;	
+	z-index: 30;
+	display: none;
 }
 .comment_list{
 	border-bottom: 1px dashed #eee;clear: both;overflow: hidden;padding: 15px 0px;list-style: none;
@@ -706,18 +708,21 @@ function point(){
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
 							<p class="name">运 费:</p>	
 							<span style="position: relative;display: inline-block;">
+							 <!--@php if ( $goods['issendfree'] == 1 ){ @-->
+								此商品商家免邮
+							<!--@php }else{   @-->
 								<i class="freight">
-									<!--@php echo $promotion['description']; @-->
-									<img src="__RESOURCE__/recouse/images/xia.png" style="position: absolute;top: 7px;" />
+									<span>
+										<!--@php echo $promotion['description']; @-->
+									</span>
+									<img src="__RESOURCE__/recouse/images/xia.png" style="margin-top: 5px;" />
 								</i>
 								<i class="freightdetail">
-								     <!--@php if ( $goods['issendfree'] == 1 ){ @-->
-                                             此商品商家免邮
-									 <!--@php }else{ @-->
 									<!--@php if (is_array($depots)){ foreach( $depots as $depots_value ){ echo $depots_value['description']; @-->
                                            <br/>
-									<!--@php }}} @-->
+									<!--@php }} @-->
 								</i>
+							<!--@php } @-->
 							</span>
 						</div>
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
@@ -1261,42 +1266,6 @@ function addtocart(){
 
 }
 
-
- //点击添加购物车的动画
-$(function(){	
- rightNavShow(1);
- var endTop = $('.fix_gundon').position().top - $(document).scrollTop();
-  $(window).scroll(function(){   
-	if($(window).scrollTop() > distanceTop){
-		endTop =$('.fix_gundon').position().top;
-	}			
-	else 
-		 endTop = $('.fix_gundon').position().top - $(document).scrollTop();
-		 
- });
- $("#addTocar").click(function(ev) {    
-	var e = ev || event;	
-    var offset = $(".fix_gundon .to_gowuche").offset();//获得购物车的位置
-    var img = $(".jqzoom img").attr('src'); //获取当前商品链接    
-    var flyer = $('<img class="flyer-img" src="' + img + '">'); //抛物体对象  
-    flyer.fly({    	
-        start: { 
-            left:e.clientX,//抛物体起点横坐标 
-            top: e.clientY//抛物体起点纵坐标 
-        }, 
-        end: { 
-            left: offset.left,//抛物体终点横坐标 
-            top: endTop, //抛物体终点纵坐标 
-        },  
-        onEnd: function() { 
-            this.destroy(); //销毁抛物体 
-        } 
-    });    
-    setTimeout(function(){
-    	getCartTotal();
-    },1000)
- }); 
-})
 function option_selected(){
    
      var ret= {

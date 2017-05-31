@@ -21,14 +21,14 @@
             
             	</td>
 			<td> <?php  echo $row['displayorder'];?></td>
-           <td>             <?php  if($row['isrecommand']==1) { ?>
-                                                <span class='label label-success'>清关</span>
-                                                 <?php  } ?><?php  if($row['enabled']==1) { ?>
-                                                <span class='label label-success'>显示</span>
-                                                <?php  } else { ?>
-                                                <span class='label label-danger'>隐藏</span>
-                                                <?php  } ?></td>
-					<td>
+           <td>
+			   <?php  if($row['enabled']==1) { ?>
+				<span class='label label-success'>显示</span>
+				<?php  } else { ?>
+				<span class='label label-danger'>隐藏</span>
+				<?php  } ?>
+		   </td>
+				<td>
 						<?php  if(empty($row['parentid'])) { ?>
 						<?php if(isHasPowerToShow('shop','disharea','post','add')){ ?>
 							<a class="btn btn-xs btn-info"  href="<?php  echo web_url('disharea', array('parentid' => $row['id'], 'op' => 'post'))?>" style="display:none;"><i class="icon-plus-sign-alt"></i> 添加子区域</a><?php  } ?>&nbsp;&nbsp;
