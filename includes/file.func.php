@@ -241,23 +241,29 @@ function get_qiniu_allpic()
  * 将在线编辑器上传的图片 转移到 阿里
  * @param $content
  */
-function changeUeditImgToAli($content,$alidir=''){
-    if(empty($content)){
-        return $content;
+function changeUeditImgToAli($dish_content,$alidir=''){
+    if(empty($dish_content)){
+        return $dish_content;
     }
-    $contents =  htmlspecialchars_decode($content);
+    $contents =  htmlspecialchars_decode($dish_content);
     preg_match_all('<img.*?src=\"(.*?.*?)\".*?>',$contents,$match);
     $oldimg   =  $match[1];
     foreach ( $oldimg as $key=>$oldimg_value ){
         // 将本地的图片上传到阿里云上
         if ( strstr($oldimg_value, 'ueditor' )){
+
             $picurl   = rtrim(WEBSITE_ROOT,'/').$oldimg_value;
-            $newimg   = aliyunOSS::putObject($picurl,'',$alidir);
-            $contents = str_replace($oldimg_value, $newimg['oss-request-url'],$contents);
-            //删除本地图片
-            $unlink_pic = ".".$oldimg_value;  //相对路径
-            @unlink ($unlink_pic);
+            if(file_exists($picurl)){
+                $newimg   = aliyunOSS::putObject($picurl,'',$alidir);
+
+                $content = str_replace($oldimg_value, $newimg['oss-request-url'],$dish_content);
+                $dish_content = htmlspecialchars_decode($content);
+                //删除本地图片
+                $unlink_pic = ".".$oldimg_value;  //相对路径
+                @unlink ($unlink_pic);
+            }
+
         }
     }
-    return $content;
+    return $dish_content;
 }

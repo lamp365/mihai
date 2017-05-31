@@ -44,7 +44,7 @@ table {
 	            <tr>
 	                <td width="24%">规格模型:</td>
 	                <td>                                        
-	                  <select name="goods_type" id="goods_type" class="form-control choose_gtype" style="width:250px;" >
+	                  <select name="gtype_id" id="goods_type" class="form-control choose_gtype" style="width:250px;" >
 	                    <option value="0">选择规格模型</option>
 						  <?php foreach($gtype_list as $one_gtype){
 							  $sel = '';

@@ -64,38 +64,19 @@ class goodsService extends \service\publicService
     //添加产品的时候 c操作图片
     public  function actGoodsPicture($id,$_GP)
     {
-        $hsdata = array();
-        if (!empty($_GP['attachment-new'])) {
-            foreach ($_GP['attachment-new'] as $index => $row) {
-                if (empty($row)) {
-                    continue;
-                }
-                $hsdata[$index] = array(
-                    'attachment' => $_GP['attachment-new'][$index],
-                );
-            }
-            $cur_index = $index + 1;
-        }
-        if (!empty($_GP['attachment'])) {
-            foreach ($_GP['attachment'] as $index => $row) {
-                if (empty($row)) {
-                    continue;
-                }
-                $hsdata[$cur_index + $index] = array(
-                    'attachment' => $_GP['attachment'][$index]
-                );
-            }
-        }
-        mysqld_delete('shop_dish_piclist', array('goodid' => $id));
-        foreach ($hsdata as $row) {
+        $picurl_str = empty($_GP['attachment-new']) ? '' : implode(',',$_GP['attachment-new']);
+        $find       = mysqld_select("select id from ".table('shop_dish_piclist')." where id={$id} ");
+        if($find){
+            mysqld_update('shop_dish_piclist',array('picurl'=>$picurl_str),array('id'=>$find['id']));
+
+        }else{
+            //新添加
             $data = array(
                 'goodid' => $id,
-                'picurl' =>$row['attachment']
+                'picurl' => $picurl_str
             );
             mysqld_insert('shop_dish_piclist', $data);
         }
-
-
     }
     
     //添加dish到shop_goods
@@ -208,7 +189,7 @@ class goodsService extends \service\publicService
         if(empty($id)){
             return '';
         }
-        mysqld_delete("goods_spec_price",array('dish_id'=>intval($id)));
+        mysqld_delete("dish_spec_price",array('dish_id'=>intval($id)));
         if(empty($specitem)){
             return '';
         }
@@ -224,7 +205,7 @@ class goodsService extends \service\publicService
                 'productsn'    => $item['productsn'],
                 'createtime'   => time(),
             );
-            mysqld_insert('goods_spec_price',$insert_data);
+            mysqld_insert('dish_spec_price',$insert_data);
         }//end foreach
     }
 }

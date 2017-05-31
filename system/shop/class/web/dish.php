@@ -164,6 +164,7 @@ class dish extends \common\controller\basecontroller
             }
 
             $piclist = array();
+            $item    = array();
         }else{
             //修改的
             $item = mysqld_select("SELECT * FROM " . table('shop_dish') . " WHERE id = :id", array(':id' => $id));
@@ -171,12 +172,14 @@ class dish extends \common\controller\basecontroller
                 message('抱歉，商品不存在或是已经删除！', '', 'error');
             }
             if(empty($_GP['p1']) && empty($_GP['p2'])){
-                $_GP['p1'] = $item['pcate'];
-                $_GP['p2'] = $item['ccate'];
+                $_GP['p1'] = $item['p1'];
+                $_GP['p2'] = $item['p2'];
             }
             $piclist = mysqld_select("SELECT * FROM " . table('shop_dish_piclist') . " where goodid={$id}");
-            if(!empty($piclist)){
-                $piclist = explode(',',$piclist);
+            if(!empty($piclist['picurl'])){
+                $piclist = explode(',',$piclist['picurl']);
+            }else{
+                $piclist = array();
             }
 
         }
@@ -226,6 +229,7 @@ class dish extends \common\controller\basecontroller
         $country = mysqld_selectall("select id,name from ".table('shop_country'));
         include page('dish/addbrand');
     }
+
     public function do_post()
     {
         $_GP = $this->request;
@@ -253,23 +257,26 @@ class dish extends \common\controller\basecontroller
             'productsn'      => $_GP['productsn'],
             'marketprice'    => $_GP['marketprice'],
             'productprice'   => $_GP['productprice'],
-            'commision'      => $_GP['commision']/100,   //佣金存进去 是已经除以100的
+            'commision'      => number_format($_GP['commision']/100,2),   //佣金存进去 是已经除以100的
 
             'timeprice'      => $_GP['timeprice'],
             'istime'         => $_GP['istime'],
             'timestart'      => strtotime($_GP['timestart']),
             'timeend'        => strtotime($_GP['timeend']),
 
-            'gtype_id'       => intval($_GP['goods_type']),
+            'gtype_id'       => intval($_GP['gtype_id']),
             'createtime'   => TIMESTAMP,
-            'isnew'        => intval($_GP['isnew']),
-            'isfirst'      => intval($_GP['isfirst']),
-            'ishot'        => intval($_GP['ishot']),
-            'isjingping'   => intval($_GP['isjingping']),
-            'type'         => $_GP['type'],								//促销类型
-            'ishot'        => intval($_GP['ishot']),
-            'isdiscount'   => intval($_GP['isdiscount']),
-            'isrecommand'  => intval($_GP['isrecommand']),
+            'type'         => $_GP['type'],					//商品类型
+            'isnew'        => intval($_GP['isnew']),       //是否新品
+            'isfirst'      => intval($_GP['isfirst']),       //是否广告
+            'ishot'        => intval($_GP['ishot']),         //是否热卖
+            'isjingping'   => intval($_GP['isjingping']),    //是否精品
+            'isdiscount'   => intval($_GP['isdiscount']),    //是否是活动的
+            'isrecommand'  => intval($_GP['isrecommand']),   //首页推荐
+
+            'team_buy_count' => intval($_GP['team_buy_count']),
+            'draw'           => intval($_GP['draw']),
+            'draw_num'       => intval($_GP['team_draw_num']),
 
 
         );

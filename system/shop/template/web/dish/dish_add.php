@@ -275,6 +275,7 @@
 	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 
 }
+.thumbnail>img{height: 100%;}
 </style>
 
 <form action="<?php echo web_url('dish',array('op'=>'do_post')); ?>" method="post" enctype="multipart/form-data" class="tab-content form-horizontal" role="form" onsubmit="return fillform()">
@@ -308,7 +309,7 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label no-padding-left" > 宝贝名称</label>
 					<div class="col-sm-4">
-						<input type="text" name="title" id="dishname" class="form-control span7" maxlength="100" value="<?php  echo $item['title'];?>" />
+						<input type="text" name="title" id="title" class="form-control span7" maxlength="100" value="<?php  echo $item['title'];?>" />
 					</div>
 				</div>
 				<div class="form-group">
@@ -522,7 +523,7 @@
 						<div class="fileupload fileupload-new" data-provides="fileupload">
 							<div class="fileupload-preview thumbnail" style="width: 145px; height: 140px;">
 								<?php  if(!empty($item['thumb'])) { ?>
-									<img src="<?php  echo $item['thumb'];?>" alt="" onerror="$(this).remove();">
+									<img src="<?php  echo download_pic($item['thumb'],145,140);?>"  onerror="$(this).remove();">
 								<?php  } ?>
 							</div>
 							<div>
@@ -542,16 +543,16 @@
 
 						<div id="file_upload-queue" class="uploadify-queue"></div>
 						<ul class="ipost-list ui-sortable" id="fileList">
-							<?php  if(is_array($piclist)) { foreach($piclist as $v) { ?>
+							<?php  foreach($piclist as $v) { ?>
 								<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 150px;  height: 145px;">
 									<span class="item_box">
-										<img src="<?php  echo $v['picurl'];?>" style="width:130px;height:125px">
+										<img src="<?php  echo $v;?>" style="width:130px;height:125px">
 									</span>
 									<a  href="javascript:;" onclick="deletepic(this);" title="删除">删除</a>
 
-									<input type="hidden" value="<?php  echo $v['picurl'];?>" name="attachment[]">
+									<input type="hidden" value="<?php  echo $v;?>" name="attachment[]">
 								</li>
-							<?php  } } ?>
+							<?php  }  ?>
 						</ul>
 					</div>
 				</div>
@@ -589,6 +590,7 @@
 		<label class="col-sm-2 control-label no-padding-left" ></label>
 
 		<div class="col-sm-9">
+			<input type="hidden" value="<?php echo $_GP['id'];?>" name="id">
 			<button type="submit" class="btn btn-primary btn-md span2" name="submit" value="submit"><i class="icon-edit"></i>全部保存</button>
 		</div>
 	</div>
@@ -678,7 +680,10 @@ $(function(){
 		}
 	});
 
+	$("#J_type").trigger('change');
+
 });
+
 function deletepic(obj){
 	if (confirm("确认要删除？")) {
 		var $thisob=$(obj);
@@ -702,6 +707,10 @@ function fillform()
 		document.getElementById("container").value=ue.getContent();
 	}else {
 		document.getElementById("container").value=ue.body.innerHTML;
+	}
+	if($("#title").val() == 0){
+		alert('标题不能为空！');
+		return false;
 	}
 	if($("#productprice").val() == '' || $("#productprice").val() == 0){
 		alert('请设置市场价！');
@@ -750,7 +759,7 @@ function fillform()
 $("#commision").on("input propertychange",function(){
 	var commision = $(this).val();
 	commision = commision /100;
-	var price = $("#timeprice").val();
+	var price = $("#marketprice").val();
 	var result = (commision * price).toFixed(2);
 	$("#show_commision").html("佣金："+ result + '元');
 })
