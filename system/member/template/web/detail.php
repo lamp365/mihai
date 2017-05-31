@@ -40,25 +40,25 @@
 		       <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 用户名：</label>
 
-										<div class="col-sm-9">
-												<input type="text" name="realname" id="realname"  class="col-xs-10 col-sm-2"  value="<?php  echo $member['realname'];?>" />
+										<div class="col-sm-3">
+												<input type="text" name="realname" id="realname"  class="form-control"  value="<?php  echo $member['realname'];?>" />
 										</div>
 									</div>
 		
 				       <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 联系电话：</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 											<?php if(!empty($member['mobile'])){  $disabled = "disabled"; }else{ $disabled=''; } ;?>
-											<input type="text" <?php echo $disabled; ?> name="mobile" id="mobile" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['mobile'];?>" />
+											<input type="text" <?php echo $disabled; ?>  id="mobile" maxlength="100" class="form-control"  value="<?php  echo $member['mobile'];?>" />
 										</div>
 									</div>
 									
 										       <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 邮箱:</label>
 
-										<div class="col-sm-9">
-												<input type="text" name="email" id="email" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['email'];?>" />
+										<div class="col-sm-3">
+												<input type="text" name="email" id="email" maxlength="100" class="form-control"  value="<?php  echo $member['email'];?>" />
 										</div>
 									</div>
 									
@@ -73,20 +73,20 @@
 									      <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 新密码:</label>
 
-										<div class="col-sm-9">
-												<input type="password" name="password" id="password" maxlength="100" class="col-xs-10 col-sm-2"  value="" />
+										<div class="col-sm-3">
+												<input type="password" name="password" id="password" maxlength="100" class="form-control"  value="" />
 										</div>
 									</div>
 									
 											      <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 确认密码:</label>
 
-										<div class="col-sm-9">
-													<input type="password" name="repassword" id="repassword" maxlength="100" class="col-xs-10 col-sm-2"  value="" />
+										<div class="col-sm-3">
+													<input type="password" name="repassword" id="repassword" maxlength="100" class="form-control"  value="" />
 										</div>
 									</div>
 
-								 <div class="form-group">
+								 <div class="form-group" style="display: none">
 									 <label class="col-sm-2 control-label no-padding-left" > 分配业务员:</label>
 
 									 <div class="col-sm-9">
@@ -136,14 +136,14 @@
 									 <label class="col-sm-2 control-label no-padding-left" > 平台名称:</label>
 
 									 <div class="col-sm-9">
-										 <input type="text" name="platform_name" id="platform_name" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['platform_name'];?>" />
+										 <input type="text" name="platform_name" id="platform_name" maxlength="100" class="form-control"  value="<?php  echo $member['platform_name'];?>" />
 									 </div>
 								 </div>
 								 <div class="form-group the_box">
 									 <label class="col-sm-2 control-label no-padding-left" > 平台链接:</label>
 
-									 <div class="col-sm-9">
-										 <input type="text" name="platform_url" id="platform_url" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['platform_url'];?>" />
+									 <div class="col-sm-3">
+										 <input type="text" name="platform_url" id="platform_url" maxlength="100" class="form-control"  value="<?php  echo $member['platform_url'];?>" />
 									 </div>
 								 </div>
 								 <div class="form-group the_box">
@@ -171,22 +171,22 @@
 								  <div class="form-group">
 									 <label class="col-sm-2 control-label no-padding-left" > QQ:</label>
 
-									 <div class="col-sm-9">
-										 <input type="text" name="QQ" id="QQ" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['QQ'];?>" />
+									 <div class="col-sm-3">
+										 <input type="text" name="QQ" id="QQ" maxlength="100" class="form-control"  value="<?php  echo $member['QQ'];?>" />
 									 </div>
 								 </div>
 								  <div class="form-group">
 									 <label class="col-sm-2 control-label no-padding-left" > 微信:</label>
 
-									 <div class="col-sm-9">
-										 <input type="text" name="weixin" id="weixin" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['weixin'];?>" />
+									 <div class="col-sm-3">
+										 <input type="text" name="weixin" id="weixin" maxlength="100" class="form-control"  value="<?php  echo $member['weixin'];?>" />
 									 </div>
 								 </div>
 								  <div class="form-group">
 									 <label class="col-sm-2 control-label no-padding-left" > 旺旺:</label>
 
-									 <div class="col-sm-9">
-										 <input type="text" name="wanwan" id="wanwan" maxlength="100" class="col-xs-10 col-sm-2"  value="<?php  echo $member['wanwan'];?>" />
+									 <div class="col-sm-3">
+										 <input type="text" name="wanwan" id="wanwan" maxlength="100" class="form-control"  value="<?php  echo $member['wanwan'];?>" />
 									 </div>
 								 </div>
 										      <div class="form-group">

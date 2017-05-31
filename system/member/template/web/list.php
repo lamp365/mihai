@@ -81,7 +81,7 @@
 							<td>
 								<li>
 									<span class="left-span">用户名</span>
-									<input name="realname" class="li-height" placeholder="用户名" type="text" value="<?php  echo $_GP['realname'];?>" />
+									<input name="nickname" class="li-height" placeholder="用户名" type="text" value="<?php  echo $_GP['realname'];?>" />
 								</li>
 								<li>
 									<span class="left-span">手机号码</span>
@@ -106,19 +106,6 @@
 								<li >
 									<span class="left-span">微信昵称</span>
 									<input name="weixinname" class="li-height" placeholder="微信昵称" type="text" value="<?php  echo $_GP['weixinname'];?>" />
-								</li>
-								<li>
-									<span class="left-span">支付宝昵称</span>
-									<input name="alipayname" class="li-height" placeholder="支付宝昵称" type="text" value="<?php  echo $_GP['alipayname'];?>" />
-								</li>
-								<li style="display: none;"><span>按食堂筛选：</span></li>
-								<li style="display: none;">
-									<select style="margin-right:15px;" id="mess" name="mess" >
-			 							<option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
-										<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
-	                 					<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
-				                  		<?php  } } ?>
-				                   	</select>
 								</li>
 								<li>
 									<div class="btn-group">
@@ -177,7 +164,6 @@
 				<tr>
 					<th style="text-align:center;">手机号码</th>
 						<th style="text-align:center;">微信昵称</th>
-						<th style="text-align:center;">支付宝昵称</th>
 					<th style="text-align:center;">用户名</th>
 					<th style="text-align:center;">注册时间</th>
 					<th style="text-align:center;">会员等级</th>
@@ -191,21 +177,17 @@
  <?php  if(is_array($list)) { 
 	 foreach($list as $v) { ?>
 								<tr>
-										<td class="text-center">
+									<td class="text-center">
 										<?php  echo $v['mobile'];?>
 									</td>
-											<td class="text-center">
-											<?php foreach($v['weixin'] as $wxfans) { ?>
-						<?php echo $wxfans['nickname']; ?><br/>
-						<?php  }?>
-									</td>
-										<td class="text-center">
-										<?php foreach($v['alipay'] as $alifans) { ?>
-						<?php echo $alifans['nickname']; ?><br/>
-						<?php  }?>
-									</td>
 									<td class="text-center">
-										<?php  echo $v['realname'];?>
+											<?php foreach($v['weixin'] as $wxfans) { ?>
+												<?php echo $wxfans['nickname']; ?><br/>
+											<?php  }?>
+									</td>
+
+									<td class="text-center">
+										<?php  echo $v['nickname'];?>
 									</td>
 								
 									<td class="text-center">
@@ -281,7 +263,7 @@
 										<input name="email" type="text"   value="" />
 									</td>
 								</tr>
-								<tr>
+								<tr style="display: none">
 									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">分配业务员：</td>
 									<td>
 										<select name="relation_uid" class="purchase_roler_id" style="width: 175px;height: 30px;line-height: 28px;" onchange="show_box()">

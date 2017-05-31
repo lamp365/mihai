@@ -9,22 +9,14 @@
 
      if (checksubmit('submit')) {
 
-			/*  前端已经把 手机号 disabled 不可更改了 这里接收不到值了 也不用验证
-			 * if($member['mobile']!=$_GP['mobile'])
-			{
-			
-				$checkmember = mysqld_select('SELECT * FROM '.table('member').' where mobile=:mobile', array(':mobile' => $_GP['mobile']));
-		 		if(!empty($checkmember['openid']))
-		 		{
-					message($_GP['mobile']."已被注册。");	
-				}
-			}*/
 			 if($_GP['parent_roler_id'] != 0 && $_GP['son_roler_id']==0){
 				 message('对不起，会员身份选择有误！',refresh(),'error');
 			 }
 		 	$url  = empty($_GP['platform_url']) ? '' : $_GP['platform_url'];
+            $name = $_GP['realname'] ?: '会员'.random(5);
 			$datas = array(
-				'realname'=> $_GP['realname'],
+				'realname'=> $name,
+				'nickname'=> $name,
 				'email'   => $_GP['email'],
 				'relation_uid'    => empty($_GP['relation_uid']) ? 0 : $_GP['relation_uid'],
 				'parent_roler_id' => empty($_GP['parent_roler_id']) ? 0 : $_GP['parent_roler_id'],
@@ -44,7 +36,7 @@
 	     	{
 	     			if($_GP['password']==$_GP['repassword'])
 			     	{
-			     		$datas['pwd']=md5($_GP['password']);
+			     		$datas['pwd']=encryptPassword($_GP['password']);
 			     	}else
 			     	{
 			     		

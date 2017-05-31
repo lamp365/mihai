@@ -48,7 +48,7 @@ if($op == 'list'){
        'nickname' => $_GP['realname'],
        'mobile'   => $_GP['mobile'],
        'email'    => $_GP['email'],
-       'pwd'      => md5('hinrc_123456'),
+       'pwd'      => encryptPassword('hinrc_123456'),
        'avatar'   => $avatar,
        'createtime' => time(),
        'openid'   => $openid,
