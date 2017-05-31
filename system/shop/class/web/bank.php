@@ -10,7 +10,7 @@ $op = empty($_GP['op']) ? 'list' : $_GP['op'];
 switch($op){
     case 'list':
         $bank = mysqld_selectall("select * from ". table('bank_img'));
-        include page('bank_list');
+        include page('setting/bank_list');
         break;
     case 'edit':
     case 'add':
@@ -60,7 +60,7 @@ switch($op){
                 $bank = mysqld_select('select * from '. table('bank_img') ." where id={$_GP['id']}");
             }
             $select_bank = get_all_bank();
-            include page('bank_add');
+            include page('setting/bank_add');
         }
         break;
 
@@ -72,45 +72,5 @@ switch($op){
             mysqld_delete('bank_img',array('id'=>$id));
             message("删除成功！",refresh());
         }
-        break;
-    case 'setting':
-        $sett = mysqld_selectall("SELECT * FROM ".table('config')." WHERE name IN ('com_gold','credit_ratio','com_credit','teller_limit')");
-        include page('bank_setting');
-        break;
-    case 'post':
-        $com_gold = $_GP['set_1'];
-        $credit_ratio = $_GP['set_2'];
-        $com_credit = $_GP['set_3'];
-        $teller_limit = $_GP['set_4'];
-        $com_gold = (float)$com_gold/100;
-
-        $have_1 = mysqld_select("SELECT name FROM ".table('config')." WHERE name='com_gold'");
-        if (!empty($have_1)) {
-            mysqld_update('config',array('value' => $com_gold),array('name' => 'com_gold'));
-        }else{
-            mysqld_insert('config',array('value' => $com_gold,'name' => 'com_gold'));
-        }
-
-        $have_2 = mysqld_select("SELECT name FROM ".table('config')." WHERE name='credit_ratio'");
-        if (!empty($have_2)) {
-            mysqld_update('config',array('value' => $credit_ratio),array('name' => 'credit_ratio'));
-        }else{
-            mysqld_insert('config',array('value' => $credit_ratio,'name' => 'credit_ratio'));
-        }
-
-        $have_3 = mysqld_select("SELECT name FROM ".table('config')." WHERE name='com_credit'");
-        if (!empty($have_3)) {
-            mysqld_update('config',array('value' => $com_credit),array('name' => 'com_credit'));
-        }else{
-            mysqld_insert('config',array('value' => $com_credit,'name' => 'com_credit'));
-        }
-
-        $have_4 = mysqld_select("SELECT name FROM ".table('config')." WHERE name='teller_limit'");
-        if (!empty($have_4)) {
-            mysqld_update('config',array('value' => $teller_limit),array('name' => 'teller_limit'));
-        }else{
-            mysqld_insert('config',array('value' => $teller_limit,'name' => 'teller_limit'));
-        }
-        message("设置成功！",refresh());
         break;
 }

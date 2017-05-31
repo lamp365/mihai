@@ -13,7 +13,7 @@
 <br/>
 <ul class="nav nav-tabs" >
 	<li style="" <?php  if($_GP['op'] == 'index') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('config',  array('op' => 'index'))?>">基础设置</a></li>
-	<li style="" <?php  if($_GP['op'] == 'generl') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('config',  array('op' => 'generl'))?>">佣金比例</a></li>
+	<li style="" <?php  if($_GP['op'] == 'otherSet') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('config',  array('op' => 'otherSet'))?>">其他设置</a></li>
 </ul>
 <br/>
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >

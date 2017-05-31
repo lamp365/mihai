@@ -43,11 +43,29 @@ class config extends \common\controller\basecontroller
         if(!empty($settings['shop_kfcode'])){
             $qq_info = json_decode($settings['shop_kfcode'],true);
         }
-        include page('setting');
+        include page('setting/setting');
     }
 
-    public function generl()
+    public function otherSet()
     {
+        $_GP = $this->request;
+        if(checksubmit('doadd')){
+            $com_gold = $_GP['com_gold'];
+            $com_gold = (float)$com_gold/100;
+            $credit_ratio = $_GP['credit_ratio'];
+            $com_credit   = $_GP['com_credit'];
+            $teller_limit = $_GP['teller_limit'];
 
+            $cfg = array(
+                'com_gold'        => $com_gold,
+                'credit_ratio'    => $credit_ratio,
+                'com_credit'      => $com_credit,
+                'teller_limit'    => $teller_limit,
+            );
+            refreshSetting($cfg);
+            message("设置成功！",refresh());
+        }
+        $sett = globaSetting();
+        include page('setting/other_setting');
     }
 }

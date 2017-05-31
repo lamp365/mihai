@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <body class="J_scroll_fixed">
-    <h3 class="header smaller lighter blue">银行卡列表<a class="btn btn-info btn-sm add-user" href="<?php echo web_url('bank', array('op' => 'setting'))?>">数据配置</a></h3>
+    <h3 class="header smaller lighter blue">银行卡列表</h3>
     <div class="wrap jj">
         <div class="well form-search">
             
