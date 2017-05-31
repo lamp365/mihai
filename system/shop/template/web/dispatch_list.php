@@ -46,8 +46,11 @@
           	echo $regionName;?>
           	&nbsp;<?php  } ?>
           	</td>
-         <td class="text-center"><a class="btn btn-xs btn-info"  href="<?php  echo web_url('dispatch', array('id' => $item['id'], 'op' => 'post','code'=>$code))?>"><i class="icon-edit"></i>&nbsp;编&nbsp;辑&nbsp;</a>&nbsp;&nbsp;<a class="btn btn-xs btn-danger"  href="<?php  echo web_url('dispatch', array('id' => $item['id'], 'op' => 'delete','code'=>$code))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a></td>
-				</tr>
+			 <td class="text-center">
+				 <a class="btn btn-xs btn-info"  href="<?php  echo web_url('dispatch', array('id' => $item['id'], 'op' => 'post','code'=>$code))?>"><i class="icon-edit"></i>&nbsp;编&nbsp;辑&nbsp;</a>&nbsp;&nbsp;
+				 <a class="btn btn-xs btn-danger"  href="<?php  echo web_url('dispatch', array('id' => $item['id'], 'op' => 'delete','code'=>$code))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
+			 </td>
+			</tr>
 				<?php  } } ?>
   			</tbody>
   		</table>

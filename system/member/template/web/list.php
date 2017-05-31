@@ -171,12 +171,8 @@
 				</table>
 			</form>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
-		<ul class="nav nav-tabs" >
-	<li style="width:7%" <?php  if($vc == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 1))?>">商城会员</a></li>
-	<li style="width:7%" <?php  if($vc == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 2))?>">特殊会员</a></li>
-	<li style="width:7%" <?php  if($vc == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => -1))?>">全部会员</a></li>
-			</ul>
-					<table class="table table-striped table-bordered table-hover">
+
+	<table class="table table-striped table-bordered table-hover">
 			<thead >
 				<tr>
 					<th style="text-align:center;">手机号码</th>

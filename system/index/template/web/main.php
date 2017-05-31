@@ -336,8 +336,8 @@
                 </a>
       </div>
 	  	<ul class="breadcrumb" style="margin-left: 25px;color:#fff;">                    
-                    <li><span style="display: inline-block;color:#fff;"> USD → CNY: <span class="usa-to-rmb" style="color:#fff;"><?php echo isset($exchange_rate['value'])?$exchange_rate['value']:6.88; ?></span></span></li>
-                </ul><!-- .breadcrumb -->
+
+        </ul><!-- .breadcrumb -->
       <div class="head-second-nav">
          <ul>
              <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
@@ -353,26 +353,7 @@
                                 <span>商城首页</span>
                             </a>
                         </li>
-                        <li class="Larger">
-                            <a data-toggle="dropdown" href="#" class="dropdown-toggle modify">
-                                <i class="icon-strikethrough"></i>
-                                    <span>修改汇率</span>                       
-               
-                                <!-- <i class="icon-caret-down"></i> -->
-                            </a>
-        <!--                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                                <li>
-                                    <a class="modify" href="javascript:;">
-                                        <i class="icon-off"></i>
-                                        <span class="modify-exchange-rate">修改汇率</span>
-                                    </a>
-                                    <a class="modify-record" href="javascript:;">
-                                        <i class="icon-off"></i>
-                                        <span class="modify-record-exchange-rate">汇率修改记录</span>
-                                    </a>
-                                </li>
-                            </ul> -->
-                        </li>
+
                         <li class="Larger">
                             <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
                                  <i class="icon-key"></i>
@@ -383,7 +364,7 @@
                             <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                                 <span>
 								      <i class="icon-user"></i>
-                                      <small>欢迎光临,</small>
+                                      <small>欢迎您,</small>
                                       <?php echo $username ?>                             
 								</span>
 
@@ -395,18 +376,10 @@
                                 <li>
                                     <a onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>">
                                         <i class="icon-off"></i>
-                                        退出
+                                        退出系统
                                     </a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="Larger">
-                           
-                            <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
-                                <i class="icon-off"></i>
-                                <span>退出系统</span>
-                            </a>
-                           
                         </li>
                     </ul><!-- /.ace-nav -->
                 </div><!-- /.navbar-header -->
@@ -765,44 +738,7 @@
                         </ul>
                     </li>
                 <?php }?>
-                <?php if (checkAdmin() || in_array("shop-purchase",$menurule)) { ?>
-                    <li class="shangjia">
-                        <!-- 导航第一级 -->
-                        <a href="#" class="dropdown-toggle">
-                            <i class="icon-tasks"></i>
-                            <span class="menu-text"> 批发管理 </span>
-                            <b class="arrow icon-angle-down"></b>
-                        </a>
-                        <ul class="submenu">  
-						  <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                               <li> <a  onclick="navtoggle('批发管理 - > 订单管理')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'purchase','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        批发订单
-                                    </a>   
-							   </li>
-							   <li> <a  onclick="navtoggle('批发管理 - > 渠道商列表')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'purchase'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        渠道商列表
-                                    </a>   
-							   </li>
-						  <?php
-						       }else{
-							   foreach($parentMenuList[MenuEnum::SHOP_DITCH_MANGE] as $row){
-                                    $zi = "批发管理 - > {$row['moddescription']}";
-                                    if(empty($row['modop'])){
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
-                                    }else{
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
-                                    }
-                                    echo "
-                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
-                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
-                                        </a></li>
-                                        ";
-                             }}?>
-                        </ul>
-                    </li>
-                <?php   }  ?>
+
                 <?php if (checkAdmin() ||in_array("shop-set",$menurule)) { ?>
                     <li class="jichu">
                         <!-- 导航第一级 -->
@@ -866,13 +802,6 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a onclick="navtoggle('分销商管理 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'distributor', 'op' => 'display'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        分销商列表
-                                    </a>
-                                </li>
-                     
-                                <li>
                                     <a onclick="navtoggle('虚拟用户 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'dummy'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>
                                         虚拟用户
@@ -885,9 +814,9 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a onclick="navtoggle('会员管理 - > 余额提现申请 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'outchargegold'))?>" target="main" >
+                                    <a onclick="navtoggle('会员管理 - > 余额提现 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'outchargegold'))?>" target="main" >
                                         <i class="icon-double-angle-right"></i>
-                                        审核余额提现操作
+                                        余额提现
                                     </a>
                                 </li>
                             <?php }else{
@@ -911,96 +840,6 @@
                     </li>
                 <?php }?>
 
-                <?php if (checkAdmin() ||in_array("member-info",$menurule)) { ?>
-                    <li class="huiyuan">
-                        <!-- 导航第一级 -->
-                        <a href="#" class="dropdown-toggle">
-                            <i class="icon-group"></i>
-                            <span class="menu-text"> 第三方用户导入</span>
-
-                            <b class="arrow icon-angle-down"></b>
-                        </a>
-
-                        <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li>
-                                    <a onclick="navtoggle('会员管理 - > 第三方用户导入 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'memberinto'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        第三方用户池
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('会员管理 - > 客户管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'customers'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        客户管理
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('权限管理 - > 部门管理 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'department','op' => 'index'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        部门管理
-                                    </a>
-                                </li>
-                            <?php }else{
-                                foreach($parentMenuList[MenuEnum::T_MEMBER_MANGE] as $row){
-                                    $zi = "第三方用户导入 - > {$row['moddescription']}";
-                                    if(empty($row['modop'])){
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
-                                    }else{
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
-                                    }
-                                    echo "
-                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
-                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
-                                        </a></li>
-                                        ";
-                                }
-
-                            }?>
-
-                        </ul>
-                    </li>
-                <?php }?>
-                 <?php if (checkAdmin() ||in_array("member-info",$menurule)) { ?>
-                    <li class="xiaoshou">
-                        <!-- 导航第一级 -->
-                        <a href="#" class="dropdown-toggle">
-                            <i class="icon-group"></i>
-                            <span class="menu-text"> 天猫店铺管理</span>
-
-                            <b class="arrow icon-angle-down"></b>
-                        </a>
-
-                        <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li>
-                                    <a onclick="navtoggle('店铺管理 - > 店铺管理 ')"  href="<?php  echo create_url('site', array('name' => 'tmall','do' => 'tmall_control'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        店铺管理
-                                    </a>
-                                </li>
-                            <?php }else{
-                                foreach($parentMenuList[MenuEnum::T_MEMBER_MANGE] as $row){
-                                    $zi = "天猫店铺管理 - > {$row['moddescription']}";
-                                    if(empty($row['modop'])){
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
-                                    }else{
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
-                                    }
-                                    echo "
-                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
-                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
-                                        </a></li>
-                                        ";
-                                }
-
-                            }?>
-
-                        </ul>
-                    </li>
-                <?php }?>
-
-
                 <?php if (checkAdmin() ||in_array("bonus-bonus",$menurule)) { ?>
                     <li class="yingxiao">
                         <a href="#" class="dropdown-toggle">
@@ -1020,29 +859,6 @@
                                 <li> <a  onclick="navtoggle('营销管理 - > 促销免运费')"  href="<?php  echo create_url('site', array('name' => 'promotion','do' => 'promotion','op'=>'display'))?>" target="main">
                                         <i class="icon-double-angle-right"></i>
                                         促销免运费
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('营销管理 - > 红包管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'red','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        红包管理
-                                    </a>
-                                </li>
-                                
-                                <li> <a  onclick="navtoggle('营销管理 - > 免单管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'free_order','op'=>'new_list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        免单管理
-                                    </a>
-                                </li>
-                                
-                                <li> <a  onclick="navtoggle('营销管理 - > 邀请收益配置')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'invite_setting','op'=>'new_list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        	邀请收益配置
-                                    </a>
-                                </li>
-                                
-                                <li> <a  onclick="navtoggle('营销管理 - > 助力订单管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'share_order'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        	助力订单管理
                                     </a>
                                 </li>
                                 
@@ -1453,7 +1269,6 @@
 					<ul>
 						<li class="jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
 						<li class="huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
-						<li class="shangjia"><i class="icon-sitemap"></i><span>渠道管理<span></li>
 						<li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
 						<li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
 						<li class="yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>
@@ -1493,45 +1308,7 @@
 
 
     </div>
-<!-- 修改汇率 -->
-<div class='modal fade modify-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
-    <div class='modal-dialog modal-lg'>
-        <div class='modal-content'>
-            <div class='modal-header'> 
-                <button type='button' class='close' data-dismiss='modal'>
-                    <span aria-hidden='true'>&times;</span>
-                    <span class='sr-only'>Close</span>
-                </button>
-                <h4 class='modal-title' id='myModalLabel'>修改汇率</h4>
-            </div>
-            <div class='modal-body' style="text-align: center;">
-                <div style="padding: 50px 0;">输入要修改的汇率:<input type="text" name="" value="" class="modify-val"><button type="button" class="modify-sure" value="" style="    color: #fff;
-    background-color: #428bca;border:none;margin-left: 5px;height: 28px;line-height: 28px; border-color: #357ebd;">确定</button></div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class='modal fade modify-record-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
-    <div class='modal-dialog modal-lg'>
-        <div class='modal-content'>
-            <div class='modal-header'> 
-                <button type='button' class='close' data-dismiss='modal'>
-                    <span aria-hidden='true'>&times;</span>
-                    <span class='sr-only'>Close</span>
-                </button>
-                <h4 class='modal-title' id='myModalLabel'>修改汇率</h4>
-            </div>
-            <div class='modal-body'>
-                <ul style="list-style: none;padding-left: 50px;">
-                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
-                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
-                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
-                    <li><span>修改的时间</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>修改的人</span></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+
     <!-- /.main-container-inner -->
 <script type="text/javascript">
     $(function(){

@@ -4,10 +4,7 @@
       $condition='';
       $conditiondata=array();
 	  $mess_list = array();
-	 /* $_mess    =  mysqld_selectall("SELECT * FROM " . table('shop_mess'));
-	  if (!empty($_GP['mess'])){
-		  $condition .= " AND mess_id = ".$_GP['mess'];
-	  }*/
+
     if(!empty($_GP['timestart']) && !empty($_GP['timeend'])){
         $timestart = strtotime($_GP['timestart']);
         $timeend   = strtotime($_GP['timeend']);
@@ -25,17 +22,7 @@
       	 $conditiondata[':mobile']= '%'.trim($_GP['mobile']).'%';
       }
 
-	  $vc = isset($_GP['status'])? $_GP['status']: 1;
-      switch ( $vc ){
-                case 1:
-					$condition=$condition.' and parent_roler_id = 0 and son_roler_id = 0 ';
-					break;	 
-				case 2:
-					$condition=$condition.' and parent_roler_id > 0 and son_roler_id > 0 ';
-					break;
-				default :
-					break;
-	  }
+
 
        if(!empty($_GP['weixinname']))
       {

@@ -10,7 +10,6 @@ class MenuEnum {
     //菜单显示   把距离拉开是为了 以免以后中间要插入一些菜单
     const TUAN_GOU_MANGE        = '10';       //团购管理
     const SHOP_SALE_MANGE       = '30';       //出售中的宝贝
-	const SHOP_DITCH_MANGE     = '40';       //批发管理
     const PRODUCT_MANGE         = '50';       //产品库管理
     const IMG_MANGE             = '60';       //图片库管理
     const ORDER_MANGE           = '70';       //订单管理
@@ -33,7 +32,6 @@ class MenuEnum {
 
     public static $getMenuEnumValues = array(
         self::TUAN_GOU_MANGE        => '换购管理',
-		self::SHOP_DITCH_MANGE      => '批发管理',
         self::SHOP_SALE_MANGE       => '产品库管理',
         self::PRODUCT_MANGE         => '类目管理',
         self::IMG_MANGE             => '图片管理',
@@ -44,7 +42,6 @@ class MenuEnum {
         self::TAXS_MANGE            => '税率管理',
         self::GEXING_MANGE          => '个性设置',
         self::MEMBER_MANGE          => '会员管理',
-		self::T_MEMBER_MANGE          => '第三方用户管理',     //第三方用户管理
         self::YINGXIAO_MANGE        => '营销管理',
         self::SHOP_MANGE            => '商城配置',
         self::TEMPLATE_MANGE        => '模板设置',
@@ -57,7 +54,6 @@ class MenuEnum {
     public static $getMenuEnumUrl = array(
         self::TUAN_GOU_MANGE        => 'shop-mess',
         self::SHOP_SALE_MANGE       => 'shop-dish',
-		self::SHOP_DITCH_MANGE      => 'shop-purchase',
         self::PRODUCT_MANGE         => 'shop-category',
         self::IMG_MANGE             => 'shop-img',
         self::ORDER_MANGE           => 'shop-order',
@@ -67,7 +63,6 @@ class MenuEnum {
         self::TAXS_MANGE            => 'shop-taxrate',
         self::GEXING_MANGE          => 'shop-set',
         self::MEMBER_MANGE          => 'member-list',
-		self::T_MEMBER_MANGE          => 'member-info',     //第三方用户管理
         self::YINGXIAO_MANGE        => 'bonus-bonus',
         self::SHOP_MANGE            => 'shop-config',
         self::TEMPLATE_MANGE        => 'template-set',
