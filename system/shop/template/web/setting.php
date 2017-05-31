@@ -1,155 +1,153 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-<h3 class="header smaller lighter blue">商城基础设置</h3>
+
 <style>
 	.good_line_table{
 		
 		width:100%;
 		}
 	.choose_kefu span{margin-right: 10px;cursor: pointer}
-	</style>
+	.nav-tabs li a{
+		padding: 6px 15px;
+	}
+</style>
+<br/>
+<ul class="nav nav-tabs" >
+	<li style="" <?php  if($_GP['op'] == 'index') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('config',  array('op' => 'index'))?>">基础设置</a></li>
+	<li style="" <?php  if($_GP['op'] == 'generl') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('config',  array('op' => 'generl'))?>">佣金比例</a></li>
+</ul>
+<br/>
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >
-	   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 商店名称：</label>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 商店名称：</label>
 
-										<div class="col-sm-9">
-												  <input type="text" name="shop_title" class="col-xs-10 col-sm-2" value="<?php  echo $settings['shop_title'];?>" />
-										</div>
-									</div>
-									
-									<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 备案号：</label>
-										<div class="col-sm-9">
-												  <input type="text" name="shop_icp" class="col-xs-10 col-sm-2" value="<?php  echo $settings['shop_icp'];?>" />
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 注册赠送积分：</label>
-										<div class="col-sm-9">
-												  <input type="number" name="shop_regcredit" class="col-xs-10 col-sm-2" value="<?php  echo $settings['shop_regcredit'];?>" />
-										</div>
-									</div>
-									   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 商店描述：</label>
+		<div class="col-sm-3">
+			<input type="text" name="shop_title" class="form-control" value="<?php  echo $settings['shop_title'];?>" />
+		</div>
+	</div>
 
-										<div class="col-sm-9">
-												 <input type="text" name="shop_description" class="col-xs-10 col-sm-4" value="<?php  echo $settings['shop_description'];?>" />
-										</div>
-									</div>
-									
-									<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 商店关键字：</label>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 备案号：</label>
+		<div class="col-sm-3">
+			<input type="text" name="shop_icp" class="form-control" value="<?php  echo $settings['shop_icp'];?>" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 注册赠送积分：</label>
+		<div class="col-sm-3">
+			<input type="number" name="shop_regcredit" class="form-control" value="<?php  echo $settings['shop_regcredit'];?>" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 商店描述：</label>
 
-										<div class="col-sm-9">
-												 <input type="text" name="shop_keyword" class="col-xs-10 col-sm-4" value="<?php  echo $settings['shop_keyword'];?>" />
-										</div>
-									</div>
-									
-										   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 商店 Logo：<br/>(建议160*30)</label>
+		<div class="col-sm-5">
+			<input type="text" name="shop_description" class="form-control" value="<?php  echo $settings['shop_description'];?>" />
+		</div>
+	</div>
 
-										<div class="col-sm-9">
-											
-											<div class="fileupload fileupload-new" data-provides="fileupload">
-			                        <div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;">
-			                        	 <?php  if(!empty($settings['shop_logo'])) { ?>
-			                            <img style="width:100%" src="<?php  echo $settings['shop_logo'];?>" alt="" onerror="$(this).remove();">
-			                              <?php  } ?>
-			                            </div>
-			                        <div>
-			                         <input name="shop_logo" id="shop_logo" type="file"  />
-			                            <a href="#" class="fileupload-exists" data-dismiss="fileupload">移除图片</a>
-			                        </div>
-			                    </div>
-											
-										</div>
-									</div>
-									
-									
-										   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 是否开启注册：</label>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 商店关键字：</label>
 
-										<div class="col-sm-9">
-												   <input type="radio" name="shop_openreg" value="0" id="shop_closereg" <?php  if($settings['shop_openreg'] == 0) { ?>checked="true"<?php  } ?> /> 关闭  &nbsp;&nbsp;
-             
-              		  <input type="radio" name="shop_openreg" value="1" id="shop_closereg"  <?php  if($settings['shop_openreg'] == 1) { ?>checked="true"<?php  } ?> /> 开启
-             
-										</div>
-									</div>
-					
-							 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 调用第三方统计代码</label>
+		<div class="col-sm-5">
+			<input type="text" name="shop_keyword" class="form-control" value="<?php  echo $settings['shop_keyword'];?>" />
+		</div>
+	</div>
 
-										<div class="col-sm-9">
-											<textarea name="shop_tongjicode"  cols="60" rows="8"><?php  echo $settings['shop_tongjicode'];?></textarea>
-											</div>
-									</div>
-					                <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >客服电话：</label>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 商店 Logo：<br/>(建议160*30)</label>
 
-										<div class="col-sm-9">
-												 <input type="text" name="shop_tel" class="col-xs-10 col-sm-4" value="<?php  echo $settings['shop_tel'];?>" />
-										</div>
-									</div>
-									 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >地址：</label>
+		<div class="col-sm-9">
 
-										<div class="col-sm-9">
-												 <input type="text" name="shop_address" class="col-xs-10 col-sm-4" value="<?php  echo $settings['shop_address'];?>" />
-										</div>
-									</div>
-									 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" >客服QQ：</label>
+			<div class="fileupload fileupload-new" data-provides="fileupload">
+				<div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;">
+					<?php  if(!empty($settings['shop_logo'])) { ?>
+						<img style="width:100%" src="<?php  echo $settings['shop_logo'];?>" alt="" onerror="$(this).remove();">
+					<?php  } ?>
+				</div>
+				<div>
+					<input name="shop_logo" id="shop_logo" type="file"  />
+					<a href="#" class="fileupload-exists" data-dismiss="fileupload">移除图片</a>
+				</div>
+			</div>
 
-										<div class="col-sm-9">
-											<div class="show_kefu" style="display: block;overflow: hidden;width: 100%;">
-												<input type="text" class="col-xs-10 col-sm-2" value="" placeholder="请输入QQ">
-												<div class="col-xs-10 col-sm-2"><span class="btn btn-xs btn-info sure_qq">确定</span>&nbsp;&nbsp;双击QQ可删除</div>
-											</div>
-											<div class="choose_kefu" style="display: block;overflow: hidden;width: 100%;margin-top: 10px;">
-											<?php if(!empty($qq_info)){ ?>
-												<?php foreach($qq_info as $qq => $num){ ?>
-												<input type="checkbox" <?php if($num ==1){ echo "checked";}?> class="each_kefu"/><span class="remove_qq"><?php echo $qq;?></span>
-												<?php }} ?>
-											</div>
-											<input name="shop_kfcode"  type="hidden" value='<?php  echo $settings['shop_kfcode'];?>'/>
-										</div>
-									</div>
-                                    <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 消息通知：</label>
-										<div class="col-sm-9">
-										   <input name="news"  class="col-xs-6"  type="text" value='<?php  echo $settings['news'];?>' />
-									    </div>
-									</div>
-<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 开启心愿刷单：</label>
+		</div>
+	</div>
 
-										<div class="col-sm-9">
-											<input type="radio" name="open_shareactive" value="0" id="open_shareactive" <?php  if($settings['open_shareactive'] == 0) { ?>checked="true"<?php  } ?> /> 关闭  &nbsp;&nbsp;
 
-											<input type="radio" name="open_shareactive" value="1" id="open_shareactive"  <?php  if($settings['open_shareactive'] == 1) { ?>checked="true"<?php  } ?> /> 开启
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 是否开启注册：</label>
 
-										</div>
-									</div>
+		<div class="col-sm-9">
+			<input type="radio" name="shop_openreg" value="0" id="shop_closereg" <?php  if($settings['shop_openreg'] == 0) { ?>checked="true"<?php  } ?> /> 关闭  &nbsp;&nbsp;
 
-									 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 帮助说明：</label>
+			<input type="radio" name="shop_openreg" value="1" id="shop_closereg"  <?php  if($settings['shop_openreg'] == 1) { ?>checked="true"<?php  } ?> /> 开启
 
-										<div class="col-sm-9">
-											<textarea name="help" id="help" cols="60" rows="8"><?php  echo $settings['help'];?></textarea>
-											</div>
-									</div>
-									
-									
-									 
-													
-											  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> </label>
+		</div>
+	</div>
 
-										<div class="col-sm-9">
-										<br/><input name="submit" type="submit" value=" 提 交 " class="btn btn-info"/>
-										
-		                     </div>
-		                     </div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 调用第三方统计代码</label>
+
+		<div class="col-sm-4">
+			<textarea name="shop_tongjicode"  cols="60" rows="8" class="form-control"><?php  echo $settings['shop_tongjicode'];?></textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" >客服电话：</label>
+
+		<div class="col-sm-3">
+			<input type="text" name="shop_tel" class="form-control" value="<?php  echo $settings['shop_tel'];?>" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" >地址：</label>
+
+		<div class="col-sm-3">
+			<input type="text" name="shop_address" class="form-control" value="<?php  echo $settings['shop_address'];?>" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" >客服QQ：</label>
+
+		<div class="col-sm-5">
+			<div class="show_kefu" style="display: block;overflow: hidden;width: 100%;">
+				<div style="float: left;width: 60%">
+					<input type="text" class="form-control" value="" placeholder="请输入QQ">
+				</div>
+				<div style="float: left;width: 35%;margin-top: 5px;">
+					&nbsp;&nbsp;<span class="btn btn-xs btn-info sure_qq">确定</span>&nbsp;&nbsp;双击QQ可删除
+				</div>
+			</div>
+			<div class="choose_kefu" style="display: block;overflow: hidden;width: 100%;margin-top: 10px;">
+				<?php if(!empty($qq_info)){ ?>
+					<?php foreach($qq_info as $qq => $num){ ?>
+						<input type="checkbox" <?php if($num ==1){ echo "checked";}?> class="each_kefu"/><span class="remove_qq"><?php echo $qq;?></span>
+					<?php }} ?>
+			</div>
+			<input name="shop_kfcode"  type="hidden" value='<?php  echo $settings['shop_kfcode'];?>'/>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" > 帮助说明：</label>
+
+		<div class="col-sm-9">
+			<textarea name="help" id="help" cols="60" rows="8" class="form-control"><?php  echo $settings['help'];?></textarea>
+		</div>
+	</div>
+
+
+
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> </label>
+
+		<div class="col-sm-9">
+			<br/><input name="submit" type="submit" value=" 提 交 " class="btn btn-info"/>
+
+		</div>
+	</div>
 				
 </form>
 
@@ -170,7 +168,7 @@
 						 filterMode: false,
 						 
 						 formatUploadUrl:false,
-		uploadJson : "<?php echo WEBSITE_ROOT.mobile_url('keupload');?>",
+						uploadJson : "<?php echo WEBSITE_ROOT.mobile_url('keupload');?>",
 						newlineTag : 'br',
 					items : [
 						'source','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',

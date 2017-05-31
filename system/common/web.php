@@ -9,10 +9,10 @@ abstract class BjSystemModule {
 				include_once  $file;
 				$name = "{$_CMS['module']}\\controller\\{$name}";
 				if(class_exists($name)){
-					$obj = new $name();
-					$obj->request = $_GP;
-					$op = $_GP['op'] ?: 'index';
-					call_user_func(array($obj, $op));
+					$obj       =  new $name();
+                    $_GP['op'] = $_GP['op'] ?: 'index';
+                    $obj->request = $_GP;
+					call_user_func(array($obj, $_GP['op']));
 				}
 			}else{
 				if(DEVELOPMENT){

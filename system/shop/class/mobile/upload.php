@@ -10,7 +10,7 @@
 				$result['message'] = '不允许上传此类文件！';
 			exit(json_encode($result));
 	}
-		$file = file_upload($_FILES['imgFile'], 'image');
+		$file = file_upload($_FILES['imgFile']);
 		if (is_error($file)) {
 			$result['message'] = $file['message'];
 			exit(json_encode($result));
