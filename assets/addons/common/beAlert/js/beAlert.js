@@ -140,8 +140,12 @@ if (typeof $ === 'function') {
             data:data,
             type:method,
             success:function(result){
-                $("#alterModal").html(result);
-                $.isFunction(success) && success(result);
+                if(result.hasOwnProperty('errno')){
+                    alert(result.message);
+                }else{
+                    $("#alterModal").html(result);
+                    $.isFunction(success) && success(result);
+                }
             },
             error:function(result){
                 $.isFunction(error) && error(result);
