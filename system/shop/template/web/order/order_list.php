@@ -320,6 +320,9 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
     border: 1px solid #ddd;
     text-align: left;
 }
+.nav-tabs li a{
+	padding: 6px 22px;
+}
 </style>
 <script>
 	function cleartime()
@@ -328,98 +331,8 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 	document.getElementById("endtime").value='';
 	}
 	</script>
-	<h3 class="header smaller lighter blue">订单管理</h3>
-	
-<form action="" target="_blank">
-	<input type="hidden" name="name" value="addon16" />
-	<input type="hidden" name="do"  value="print" />
-	<input type="hidden" name="op"  value="normal_print" />
-		<input type="hidden" name="mod"  value="site" />
-	
-	<input type="hidden" name="print_orderid" id="print_orderid" value="" />
-		<div id="modal-normalprint" class="modal  fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">快递单打印</h4>
-      </div>
-      <div class="modal-body">
-      	
-      		  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 打印模板：</label>
+<h3 class="header smaller lighter blue">订单管理</h3>
 
-										<div class="col-sm-9">
-														<select name="print_modle_id"  >
-																	<?php  foreach($normal_order_list as $item){?>
-										<option value="<?php echo $item['id'];?>" data-name=""><?php echo $item['name'];?></option>
-										
-													<?php } ?>
-                                        </select>
-										</div>
-									</div>
-      	
-      	
-      	  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > </label>
-
-										<div class="col-sm-9">
-      								</div>
-									</div>
-      </div>
-      <div class="modal-footer">
-      	<button type="submit" class="btn btn-primary" name="do_normal_print" value="yes">打印</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</form>
-
-<form action="" target="_blank">
-		<input type="hidden" name="name" value="addon16" />
-	<input type="hidden" name="do"  value="print" />
-	<input type="hidden" name="op"  value="express_print" />
-			<input type="hidden" name="mod"  value="site" />
-	<input type="hidden" name="print_express_orderid" id="print_express_orderid" value="" />
-		<div  id="modal-expressprint"  class="modal  fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">发货单打印</h4>
-      </div>
-      <div class="modal-body">
-      	
-      		  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 打印模板：</label>
-
-										<div class="col-sm-9">
-														<select name="print_modle_id"  >
-																	<?php  foreach($express_order_list as $item){?>
-										<option value="<?php echo $item['id'];?>" data-name=""><?php echo $item['name'];?></option>
-										
-													<?php } ?>
-                                        </select>
-										</div>
-									</div>
-									
-									  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > </label>
-
-										<div class="col-sm-9">
-      								</div>
-									</div>
-      </div>
-      <div class="modal-footer">
-      	<button type="submit" class="btn btn-primary" name="do_normal_print" value="yes">打印</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</form>
-	
 
 <div class="panel with-nav-tabs panel-default">	
     <div class="panel-heading">
@@ -510,10 +423,6 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 									<span class="left-span">购买者手机</span>
 									<input class="li-height" name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" placeholder="购买者手机"/>
 								</li>
-								<li>
-									<span class="left-span">宝贝id</span>
-									<input class="li-height" name="dishid" type="text" value="<?php  echo $_GP['dishid'];?>" placeholder="宝贝id"/>
-								</li>
 								<li >
 									<span class="left-span">导出模板</span>
 				                    <select name="template" class="li-height">
@@ -536,7 +445,6 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 								<li>
 									
 									<button type="submit" name="report" value="report" class="btn btn-warning btn-sm">导出excel</button>&nbsp;&nbsp;
-									<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" class="btn btn-info btn-sm" target="_blank">打印订单</a>
 								</li>
 							</td>
 
@@ -573,20 +481,14 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 
 			
 <h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo $total ?></strong></span></h3>
-			<ul class="nav nav-tabs" >
-	<li style="width:7%" <?php  if($status == -99) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -99))?>">全部</a></li>
-	<li style="width:7%" <?php  if($status == 0) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 0))?>">待付款</a></li>
-	<li style="width:7%" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 1))?>">待发货</a></li>
-	<li style="width:7%" <?php  if($status == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 2))?>">待收货</a></li>
-	<li style="width:7%" <?php  if($status == 3) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 3))?>">已完成</a></li>
-	<li style="width:7%" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -1))?>">已关闭</a></li>
-		<li style="width:7%" <?php  if($status == -2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -2))?>">退款中</a></li>
-		<li style="width:7%" <?php  if($status == -4) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -4))?>">退货中</a></li>
-		<li style="width:7%" <?php  if($status == 34) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 34))?>">退款完成</a></li>
-		<li style="width:7%" <?php  if($status == 14) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 14))?>">退货完成</a></li>
-		<li style="width:7%" <?php  if($status == -321) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -321))?>">退款关闭</a></li>
-		<li style="width:7%" <?php  if($status == -121) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -121))?>">退货关闭</a></li>
-			</ul>
+<ul class="nav nav-tabs" >
+	<li style="" <?php  if($status == null) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display'))?>">全部</a></li>
+	<li style="" <?php  if($status!= null && $status == 0) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 0))?>">待付款</a></li>
+	<li style="" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 1))?>">待发货</a></li>
+	<li style="" <?php  if($status == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 2))?>">待收货</a></li>
+	<li style="" <?php  if($status == 3) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 3))?>">已完成</a></li>
+	<li style="" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -1))?>">已关闭</a></li>
+</ul>
 		
 
 <table class="table  table-bordered table-hover">
@@ -607,7 +509,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 			</thead>
 			<tbody>
 				<?php  if(is_array($list)) { foreach($list as $item) { ?>
-				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;<?php echo $item['relation_uid']>0?'<span class="label label-primary">一件代发</span>':''; ?><?php echo $item['relation_uid']>0?'&nbsp;&nbsp;<span class="label label-primary">业务员:'.$item['relation_name'].'</span>':''; ?></td></tr>
+				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;</td></tr>
 				<tr class="order_info">
 				    <td  colspan="4">
 					<?php 
@@ -616,10 +518,10 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 					?>
 					    <div class="items">
 						      <ul>
-							      <li class="img"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><img src="<?php echo getGoodsThumb($goods['gid']); ?>" height="40" /></a></li>
+							      <li class="img"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><img src="<?php echo download_pic($goods['thumb'],40,40,2); ?>" height="40" /></a></li>
 								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>" class="tab_title"><?php echo $goods['title']; ?></a></div>
 									  <div>
-										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
+										  <div class="name"><?php echo getGoodsProductPlace($goods['transport_id']); ?></div>
 										  &nbsp;&nbsp;&nbsp;<span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;"><?php  echo getGoodsCategory($goods['p1']);?></span>
 								  		  <?php if($item['isdraw'] == 1) { ?>
 										   &nbsp;&nbsp; <span class="label label-success">抽奖团</span>
@@ -627,7 +529,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 										   &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span>
 										  <?php } ?>
 								      </div>
-									  <div class="sn">商家编码: <?php echo $goods['goodssn']; ?></div>
+									  <div class="sn">商品货号: <?php echo $goods['productsn']; ?></div>
 								  </li>
 								  <li class="price"><?php echo $goods['orderprice']; ?></li>
 								  <li class="tot"><?php echo $goods['total']; ?></li>
@@ -679,7 +581,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 						   $retag = json_decode($item['retag'],true);
 						   if(!empty($retag['recoder'])){
 							   echo "<input type='hidden' value='{$item['retag']}' class='hide_order_log'/>";
-							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><span class='glyphicon glyphicon-pushpin show_order_log'></span></span>";
+							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><img src='images/tag.png' class='show_order_log' /></span>";
 						   }
 					   }
 					   ?>
@@ -709,25 +611,21 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 						</div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看详情</a></div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'identity', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看清关材料</a></div>
-						<?php  if($hasaddon11) { ?>
-						&nbsp;<a class="btn btn-xs btn-info"  href="<?php  echo create_url('site',array('name' => 'addon11','do' => 'orderPrint','orderid' =>$item['id']))?>"><i class="icon-print"></i>小票打印</a>
-						<?php  } ?>
-					<?php  if($hasaddon16) { ?>
-						&nbsp;<a class="btn btn-xs btn-info"   onclick="document.getElementById('print_orderid').value='<?php  echo $item['id']?>';$('#modal-normalprint').modal()" href="javascript:;">发货单打印</a>
-						&nbsp;
-						<a  class="btn btn-xs btn-info"  onclick="document.getElementById('print_express_orderid').value='<?php  echo $item['id']?>';$('#modal-expressprint').modal()" href="javascript:;">快递单打印</a>
-					<?php  } ?>
-				&nbsp;&nbsp;
-						</td>
-						<td align="center" valign="middle" style="vertical-align: middle;"><div><?php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];?> 元 </div><?php  if($item['hasbonus']>0) { ?><div class="label label-success">惠<?php echo $item['bonusprice'];?></div><?php  }?><div style="font-size:10px;color:#999;">(含运费:<?php  echo $item['dispatchprice'];?> 元)</div><div style="font-size:10px;color:#999;">(含进口税:<?php  echo $item['taxprice'];?> 元)</div></td>
-						<td align="center" valign="middle" style="vertical-align: middle;">
-							<div style="position:relative">
-								<a class="tag-remark" type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><img src="images/btag<?php echo $item['tag']; ?>.png" /></a>
-								<div class="tag-remark-detail">
-									<?php if(!empty($item['retag'])){ $retag_json = json_decode($item['retag'],true); echo $retag_json['beizhu'];}else{ echo '没有标注信息'; } ?>
-								</div>
+					</td>
+					<td align="center" valign="middle" style="vertical-align: middle;">
+						<div><?php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];?> 元 </div>
+						<?php  if($item['hasbonus']>0) { ?><div class="label label-success">惠<?php echo $item['bonusprice'];?></div><?php  }?>
+						<div style="font-size:10px;color:#999;">(含运费:<?php  echo $item['dispatchprice'];?> 元)</div>
+						<div style="font-size:10px;color:#999;">(含进口税:<?php  echo $item['taxprice'];?> 元)</div>
+					</td>
+					<td align="center" valign="middle" style="vertical-align: middle;">
+						<div style="position:relative">
+							<a class="tag-remark" type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><img src="images/btag<?php echo $item['tag']; ?>.png" /></a>
+							<div class="tag-remark-detail">
+								<?php if(!empty($item['retag'])){ $retag_json = json_decode($item['retag'],true); echo $retag_json['beizhu'];}else{ echo '没有标注信息'; } ?>
 							</div>
-						</td>
+						</div>
+					</td>
 				</tr>
 				<?php  } } ?>
 			</tbody>

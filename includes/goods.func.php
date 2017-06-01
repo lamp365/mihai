@@ -481,8 +481,8 @@ function get_change_good($id,$check=''){
  * @return mixed
  * @content返回产地仓库 如自营美国一号
  */
-function getGoodsProductPlace($pcate){
-	$sql = "select name from ".table('dish_list')." where id={$pcate}";
+function getGoodsProductPlace($transport_id){
+	$sql = "select name from ".table('dish_list')." where id={$transport_id}";
 	$info = mysqld_select($sql);
 	return $info['name'];
 }

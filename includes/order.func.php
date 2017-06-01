@@ -1205,33 +1205,9 @@ function sureUserCommisionToMoney($order_goods,$order){
 		//同时还要给用户 对应的佣金所得积分
 		member_credit($member_info['recommend_openid'],$crited_val,'addcredit',PayLogEnum::getLogTip('LOG_BACK_CREDIT_RATIO_TIP',$name));
 
-		//给卖家APP推送消息  不给推荐人推送
-		/*$dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$list[0]['goodsid']}");
-		$title    = $dishInfo['title'];
-		$num      = count($list);
-
-		$msg = "你的佣金{$total_yongjin}已到账
-订单编号：{$order['ordersn']}
-购买商品：{$title}等{$num}件商品
-支付金额：{$order['price']}元
-实际收入：{$total_yongjin}元
-下单时间：{$time}";
-		pushOrderImMessage(IM_WEALTH_FROM_USER,$member_info['recommend_openid'],$msg);*/
-
 	}
 
 
-	//给买家推送APP消息
-	if(empty($title)){
-		$dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$order_goods[0]['goodsid']}");
-		$title = $dishInfo['title'];
-	}
-	$num = count($order_goods);
-	$msg  = "客官，你的订单已经确认收货~~
-订单编号:{$order['ordersn']}
-购买商品:{$title}等{$num}件商品
-下单时间:{$time}";
-	pushOrderImMessage(IM_ORDER_FROM_USER,$order['openid'],$msg);
 }
 
 /**

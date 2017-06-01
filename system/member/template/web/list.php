@@ -237,31 +237,37 @@
 						<h4 class="modal-title">添加会员</h4>
 					</div>
 					<div class="modal-body" style="overflow: hidden">
-							<table class="table" style="width:100%;" align="left">
+							<table class="table form-group" style="width:100%;" align="left">
 								<tbody>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px"><i>*</i>手机号码：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">
+										<i>*</i>手机号码：
+									</td>
 									<td>
-										<input name="mobile" type="text"   value="" />
+										<input name="mobile" type="text"   value="" class="form-control" />
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px">用户名：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">用户名：</td>
 									<td style="width:300px">
-										<input name="realname"  type="text" value="" />
+										<input name="realname"  type="text" value="" class="form-control" />
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px"><i>*</i>密码：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;"><i>*</i>密码：</td>
 									<td style="width:300px">
-										<input name="pwd"  type="password" value="" />
+										<input name="pwd"  type="password" value="" class="form-control" />
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">email：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">email：</td>
 									<td>
-										<input name="email" type="text"   value="" />
+										<input name="email" type="text"   value="" class="form-control" />
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr style="display: none">
 									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">分配业务员：</td>
@@ -318,22 +324,25 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">QQ：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">QQ：</td>
 									<td>
-										<input name="QQ" type="text"   value="" />
+										<input name="QQ" type="text"   value="" class="form-control"/>
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">微信：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">微信：</td>
 									<td>
-										<input name="weixin" type="text"   value="" />
+										<input name="weixin" type="text"   value="" class="form-control"/>
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">旺旺：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">旺旺：</td>
 									<td>
-										<input name="wanwan" type="text"   value="" />
+										<input name="wanwan" type="text"   value="" class="form-control" />
 									</td>
+									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								</tbody>
 							</table>

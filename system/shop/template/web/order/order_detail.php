@@ -16,96 +16,6 @@
 	}
 </style>
 <h3 class="header smaller lighter blue">订单基本信息&nbsp;&nbsp; <span class="btn btn-xs btn-info return">返回列表</span></h3>
-<form action="" target="_blank">
-	<input type="hidden" name="name" value="addon16" />
-	<input type="hidden" name="do"  value="print" />
-	<input type="hidden" name="op"  value="normal_print" />
-		<input type="hidden" name="mod"  value="site" />
-	
-	<input type="hidden" name="print_orderid" id="print_orderid" value="" />
-		<div id="modal-normalprint" class="modal  fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">快递单打印</h4>
-      </div>
-      <div class="modal-body">
-      	
-      		  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 打印模板：</label>
-
-										<div class="col-sm-9">
-														<select name="print_modle_id"  >
-																	<?php  foreach($normal_order_list as $item){?>
-										<option value="<?php echo $item['id'];?>" data-name=""><?php echo $item['name'];?></option>
-										
-													<?php } ?>
-                                        </select>
-										</div>
-									</div>
-      	
-      	
-      	  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > </label>
-
-										<div class="col-sm-9">
-      								</div>
-									</div>
-      </div>
-      <div class="modal-footer">
-      	<button type="submit" class="btn btn-primary" name="do_normal_print" value="yes">打印</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</form>
-
-<form action="" target="_blank">
-		<input type="hidden" name="name" value="addon16" />
-	<input type="hidden" name="do"  value="print" />
-	<input type="hidden" name="op"  value="express_print" />
-			<input type="hidden" name="mod"  value="site" />
-	<input type="hidden" name="print_express_orderid" id="print_express_orderid" value="" />
-		<div  id="modal-expressprint"  class="modal  fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">发货单打印</h4>
-      </div>
-      <div class="modal-body">
-      	
-      		  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 打印模板：</label>
-
-										<div class="col-sm-9">
-														<select name="print_modle_id"  >
-																	<?php  foreach($express_order_list as $item){?>
-										<option value="<?php echo $item['id'];?>" data-name=""><?php echo $item['name'];?></option>
-										
-													<?php } ?>
-                                        </select>
-										</div>
-									</div>
-									
-									  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > </label>
-
-										<div class="col-sm-9">
-      								</div>
-									</div>
-      </div>
-      <div class="modal-footer">
-      	<button type="submit" class="btn btn-primary" name="do_normal_print" value="yes">打印</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</form>
-
 
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >
 <div class="order-times">
@@ -392,12 +302,7 @@
 					<?php  if($order['status'] ==-1 && isHasPowerToShow('shop','order','open')) { ?>
 						<a href="<?php echo web_url('order',array('op'=>'open','id'=>$order['id']));?>" class="btn btn-success span2" onclick="return confirm('确认开启此订单吗？'); return false;" name="open">开启订单</a>
 					<?php  } ?>
-					
-								<?php  if($hasaddon16) { ?>
-						&nbsp;<a onclick="document.getElementById('print_orderid').value='<?php  echo $order['id']?>';$('#modal-normalprint').modal()" href="javascript:;">发货单打印</a>
-						&nbsp;
-						<a    onclick="document.getElementById('print_express_orderid').value='<?php  echo $order['id']?>';$('#modal-expressprint').modal()" href="javascript:;">快递单打印</a>
-					<?php  } ?>
+
 				</td>
 			</tr>
 		</table>
@@ -420,7 +325,6 @@
 							<div class="col-sm-9">
 								<select name="express" id='express'>
 										<option value="-1" data-name="">请选择快递</option>
-										<option value="beihai" data-name="贝海国际速递">贝海国际速递</option>
 										<?php   foreach($dispatchlist as $dispatchitem) { ?>
 										<option value="<?php echo $dispatchitem['code'];?>" data-name="<?php echo $dispatchitem['name'];?>"><?php echo $dispatchitem['name'];?></option>
 										<?php   } ?>
@@ -489,39 +393,39 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 姓名：</label>
-						<div class="col-sm-8">
-							<input type="text" name="address_realname" class="span5" value="<?php echo $order['address_realname'];?>" />
+						<div class="col-sm-5">
+							<input type="text" name="address_realname" class="form-control span5" value="<?php echo $order['address_realname'];?>" />
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 联系电话：</label>
-						<div class="col-sm-8">
-							<input type="text" name="address_mobile" class="span5" value="<?php echo $order['address_mobile'];?>"/>
+						<div class="col-sm-5">
+							<input type="text" name="address_mobile" class="form-control span5" value="<?php echo $order['address_mobile'];?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 省份：</label>
-						<div class="col-sm-8">
-							<input type="text" name="address_province" class="span5"  value="<?php echo $order['address_province'];?>"/>
+						<div class="col-sm-5">
+							<input type="text" name="address_province" class="form-control span5"  value="<?php echo $order['address_province'];?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 城市：</label>
-						<div class="col-sm-8">
-							<input type="text" name="address_city" class="span5"  value="<?php echo $order['address_city'];?>"/>
+						<div class="col-sm-5">
+							<input type="text" name="address_city" class="form-control span5"  value="<?php echo $order['address_city'];?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 地区：</label>
-						<div class="col-sm-8">
-							<input type="text" name="address_area" class="span5"  value="<?php echo $order['address_area'];?>"/>
+						<div class="col-sm-5">
+							<input type="text" name="address_area" class="form-control span5"  value="<?php echo $order['address_area'];?>"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 地址：</label>
-						<div class="col-sm-8">
-							<input type="text" name="address_address" class="span5"  value="<?php echo $order['address_address'];?>"/>
+						<div class="col-sm-5">
+							<input type="text" name="address_address" class="form-control span5"  value="<?php echo $order['address_address'];?>"/>
 						</div>
 					</div>
 				</div>
