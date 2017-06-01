@@ -90,7 +90,37 @@ class order extends \common\controller\basecontroller
 		include page('order/order_list');
 	}
 
+	public function returnDish()
+	{
+		$_GP = $this->request;
+		$pindex = max(1, intval($_GP['page']));
+		$psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
+		$limit= ($pindex-1)*$psize;
+		$sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
+		if ($_GP['status'] == 4){
+			$sql .=" and (og.status=-1 or og.status=4)";//退单完成 退单失败
+		}elseif ($_GP['status'] == 1){
+			$sql .=" and og.status=1 ";//待处理
+		}elseif($_GP['status'] == -2){//进行中
+			$sql .= " and (og.status=2 or og.status=3) ";
+		}else {
+			$sql .= " and (og.status=1 or og.status=2 or og.status=3) ";//pc端待处理和进行中在一起
 
+		}
+		$total = count(mysqld_selectall($sql,array('sts_id'=>$this->storeid)));
+		$sql .= " ORDER BY og.createtime DESC LIMIT ".$limit.",".$psize;
+		$returnList = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
+		if ($returnList){
+			foreach ($returnList as &$v){
+				$nickname = member_get($v['openid'],"nickname");
+				$v["nickname"] = $nickname['nickname'];
+				$v['price'] = FormatMoney($v['price'],0);
+				$v['status_name'] = ordersService::$status_name_og[$v['status']];
+				$v['type_name'] = ordersService::$type_name_og[$v['type']];
+			}
+		}
+		$pager = pagination($total, $pindex, $psize);
+	}
 	public function detail()
 	{
 		$_GP = $this->request;
