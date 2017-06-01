@@ -6,17 +6,14 @@ function  hinrcAutoload($className) {
 
 
     if(count($classArr) == 2){
-
-        if($classArr[0] == 'service'){
-            //service  实例化是  new \service\test()
-            $filePath = WEB_ROOT."/includes/service/{$classArr[1]}.class.php";
-        }
+        //service  实例化是  new \service\test()   new \model\test();
+        $filePath = WEB_ROOT."/includes/{$classArr[0]}/{$classArr[1]}.class.php";
 
     }else if(count($classArr) == 3){
 
-        if($classArr[0] == 'service'){
-            //service  实例化是  new \service\api\test()
-            $filePath = WEB_ROOT."/includes/service/{$classArr[1]}/{$classArr[2]}.class.php";
+        if($classArr[0] == 'service' || $classArr[0] == 'model'){
+            //service  实例化是  new \service\api\test()     new \model\api\test()
+            $filePath = WEB_ROOT."/includes/{$classArr[0]}/{$classArr[1]}/{$classArr[2]}.class.php";
 
         }else if($classArr[1] == 'controller'){
 

@@ -419,25 +419,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?>        <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('换购管理 > 换购列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'mess','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        换购列表
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('换购管理 > 添加新换购')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'mess','op'=>'post'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        添加新换购
-                                    </a>   </li>
-
-                                <li> <a onclick="navtoggle('换购管理 > 管理区间')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'area','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        管理区间
-                                    </a>   </li>
-                            <li style="display:none;"> <a onclick="navtoggle('换购管理 > 换购记录')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'mess','op'=>'comment'))?>" target="main">
-                                    <i class="icon-double-angle-right"></i>
-                                    换购记录
-                                </a>   </li>
-                            <?php } else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::TUAN_GOU_MANGE] as $row){
                                     $zi = "换购管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -451,7 +433,7 @@
                                         </a></li>
                                         ";
                                 }
-                            } ?>
+                             ?>
 
                         </ul>
                     </li>
@@ -467,30 +449,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('产品库管理 - > 宝贝列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'lists'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        宝贝列表
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('产品库管理 - > 添加新宝贝')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'post'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        添加新宝贝
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('产品库管理 - > 运费管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'disharea','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        运费管理
-                                    </a>   </li>
-                                <li>
-                                    <a onclick="navtoggle('产品库管理 - > 规格模型')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'goodstype','op'=>'lists'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        规格模型
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('产品库管理 - > 评论管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dish','op'=>'comment'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        评论管理
-                                    </a>   </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::SHOP_SALE_MANGE] as $row){
                                     $zi = "产品库管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -504,7 +463,7 @@
                                         </a></li>
                                         ";
                                 }
-                            } ?>
+                             ?>
 
                         </ul>
                     </li>
@@ -524,24 +483,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
-                                <li> <a onclick="navtoggle('类目管理 - > 管理分类')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'category','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>管理分类
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('类目管理 - > 品牌列表')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'brand','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>品牌列表
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('类目管理 - > 添加品牌')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'brand','op'=>'add'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>添加品牌
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('类目管理 - > 管理国家')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'country','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>管理国家
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::PRODUCT_MANGE] as $row){
                                     $zi = "类目管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -556,7 +498,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
@@ -572,18 +514,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?>                 <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('图片管理 - > 图片列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'img_mange','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        图片列表
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('图片管理 - > 批量上传')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'img_mange','op'=>'batupload'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        批量上传
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::IMG_MANGE] as $row){
                                     $zi = "图片管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -598,7 +529,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
@@ -615,35 +546,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?>
-                                <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('订单管理 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -99))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        所有订单
-                                    </a>
-                                </li>
-                                <li>
-                                    <a  onclick="navtoggle('订单管理 - > 退换单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'return'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        退换单
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('拼团订单 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'groupbuy','op' => 'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        拼团订单
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('订单审核 - > 所有订单')"  href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'audit'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        订单审核
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('订单管理 - > 批量发货')" href="<?php  echo create_url('site', array('name' => 'shop','do'=>'orderbat','op' => 'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        批量发货
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::ORDER_MANGE] as $row){
                                     $zi = "订单管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -657,7 +560,7 @@
                                         </a></li>
                                         ";
                                 }
-                            } ?>
+                             ?>
                         </ul>
                     </li>
                 <?php }
@@ -714,19 +617,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('税率管理 - > 税率列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'taxs','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        税率列表
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('税率管理 - > 添加税率')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'taxs','op'=>'post'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        添加税率
-                                    </a>
-                                </li>
-
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::TAXS_MANGE] as $row){
                                     $zi = "税率管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -740,7 +631,7 @@
                                         </a></li>
                                         ";
                                 }
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
@@ -754,21 +645,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('个性管理 - > 热搜词列表')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'hottopic','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        热搜词列表
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('个性管理 - > 添加热搜词')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'hottopic','op'=>'add'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        添加热搜词
-                                    </a>   </li>
-                                <li> <a onclick="navtoggle('个性管理 - > 设置通用详情')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'good_setting','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        设置通用详情
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::GEXING_MANGE] as $row){
                                     $zi = "个性管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -783,7 +660,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php   }  ?>
@@ -800,32 +677,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li>
-                                    <a onclick="navtoggle('会员管理 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'list'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        会员管理
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('虚拟用户 - > 会员管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'dummy'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        虚拟用户
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('会员管理 - > 会员等级管理 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'rank'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        会员等级
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('会员管理 - > 余额提现 ')"  href="<?php  echo create_url('site', array('name' => 'member','do' => 'outchargegold'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        余额提现
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::MEMBER_MANGE] as $row){
                                     $zi = "会员管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -840,7 +692,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
 
                         </ul>
                     </li>
@@ -856,19 +708,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li> <a  onclick="navtoggle('营销管理 - > 优惠券管理')"  href="<?php  echo create_url('site', array('name' => 'bonus','do' => 'bonus','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        优惠券管理
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('营销管理 - > 促销免运费')"  href="<?php  echo create_url('site', array('name' => 'promotion','do' => 'promotion','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        促销免运费
-                                    </a>
-                                </li>
-                                
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::YINGXIAO_MANGE] as $row){
                                     $zi = "营销管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -883,7 +723,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
@@ -900,44 +740,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-
-                                <li> <a  onclick="navtoggle('商城配置 - > 商城基础设置')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'config'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        商城基础设置
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('商城配置 - > 银行卡管理')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'bank'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        银行卡管理
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('商城配置 - > 新订单邮件提醒')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'noticemail'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        新订单邮件提醒
-                                    </a>
-                                </li>
-                                <li> <a  onclick="navtoggle('商城配置 - > 首页广告')"  href="<?php  echo create_url('site', array('name' => 'shop','do' => 'adv','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        首页广告
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('商城配置 - > 支付方式')" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'payment','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>支付方式
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('商城配置 - > 快捷登录')" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'thirdlogin'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>快捷登录
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('商城配置 - > 配送方式')" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        配送方式
-                                    </a>
-                                </li>
-
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::SHOP_MANGE] as $row){
                                     $zi = "商城配置 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -952,7 +755,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
@@ -965,24 +768,7 @@
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li>
-                                    <a  onclick="navtoggle('模板设置 - > 商城主题模板')"  href="<?php  echo create_url('site', array('name' => 'shopwap','do' => 'themes','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>商城主题模板
-                                    </a>
-                                </li>
-                                <li>
-                                    <a  onclick="navtoggle('模板设置 - > 商城菜单')"  href="<?php  echo create_url('site', array('name' => 'shopwap','do' => 'shop_menu','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>商城菜单
-                                    </a>
-                                </li>
-                                <li>
-                                    <a  onclick="navtoggle('模板设置 - > 个人中心菜单')"  href="<?php  echo create_url('site', array('name' => 'shopwap','do' => 'fansindex_menu','op'=>'display'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        个人中心菜单
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::TEMPLATE_MANGE] as $row){
                                     $zi = "商城配置 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -997,7 +783,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php  } ?>
@@ -1012,32 +798,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li>
-                                    <a onclick="navtoggle('微信设置 - > 微信号设置 ')"  href="<?php  echo create_url('site', array('name' => 'weixin','do' => 'setting'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        微信号设置
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('微信设置 - > 菜单管理 ')"  href="<?php  echo create_url('site', array('name' => 'weixin','do' => 'designer'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        菜单管理
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('微信设置 - > 自定义回复 ')"  href="<?php  echo create_url('site', array('name' => 'weixin','do' => 'rule'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        自定义回复
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('微信设置 - > 快速关注设置 ')"  href="<?php  echo create_url('site', array('name' => 'weixin','do' => 'guanzhu'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        快速关注设置
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::WECHAT_MANGE] as $row){
                                     $zi = "微信设置 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -1052,13 +813,13 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
                 
                 
-                <?php if (empty($menurule) ||in_array("social-manage",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("social-manage",$menurule)) { ?>
                     <li class="jichu">
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-comments"></i>
@@ -1068,16 +829,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
-                                <li> <a onclick="navtoggle('社区管理 - > 觅海头条管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'headline','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>觅海头条管理
-                                    </a>
-                                </li>
-                                <li> <a onclick="navtoggle('社区管理 - > 图文笔记管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'note','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>图文笔记管理
-                                    </a>
-                                </li>
-                            <?php }else{ 
+                            <?php
                                 foreach($parentMenuList[MenuEnum::SOCIAL_MANGE] as $row){
                                     $zi = "社区管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -1090,13 +842,13 @@
                                             <i class='icon-double-angle-right'></i>{$row['moddescription']}
                                         </a></li>
                                         ";
-                                }  }?>
+                                }?>
                         </ul>
                     </li>
                 <?php }?>
                 
                 
-                 <?php if (empty($menurule) ||in_array("app-manage",$menurule)) { ?>
+                 <?php if (checkAdmin() ||in_array("app-manage",$menurule)) { ?>
                     <li class="xitong">
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-mobile-phone"></i>
@@ -1106,36 +858,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (empty($menurule)) { ?> <!-- 子菜单 第二级-->
-                                
-                                <li> <a onclick="navtoggle('app管理 - > app端banner管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_banner','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        app端banner管理
-                                    </a>
-                                </li>
-                                
-                                <li><a onclick="navtoggle('app管理 - > app端专题管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_topic','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        app端专题管理
-                                    </a>
-                                </li>
-                                
-                                <li> <a onclick="navtoggle('app管理 - > app视频管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_video','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>app视频管理
-                                    </a>
-                                </li>
-                                
-                                <li> <a onclick="navtoggle('app管理 - > app微信设置')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_weixin'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>app微信设置
-                                    </a>
-                                </li>
-                                
-                                 <li> <a onclick="navtoggle('app管理 - > app版本管理')" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'app_version','op'=>'list'))?>" target="main">
-                                        <i class="icon-double-angle-right"></i>
-                                        app版本管理
-                                    </a>
-                                </li>
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::APP_MANGE] as $row){
                                     $zi = "微信设置 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -1149,11 +872,11 @@
                                             </a></li>
                                             ";
                                 }
-                            }?>
+                            ?>
                         </ul>
                     </li>
                 <?php }?>
-                <?php if (empty($menurule) ||in_array("user-user",$menurule)) { ?>
+                <?php if (checkAdmin() ||in_array("user-user",$menurule)) { ?>
                     <li class="xitong">
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
@@ -1164,33 +887,7 @@
                         </a>
 
                         <ul class="submenu">
-                            <?php if (checkAdmin()) { ?> <!-- 子菜单 第二级-->
-                                <li>
-                                    <a onclick="navtoggle('权限管理 - > 管理员列表 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'user','op' => 'listuser'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        管理员列表
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('权限管理 - > 角色身份 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'user','op' => 'rolerlist'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        角色身份
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('权限管理 - > 菜单节点 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'user','op' => 'menudisplay'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        菜单节点
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="navtoggle('权限管理 - > 行为日志 ')"  href="<?php  echo create_url('site', array('name' => 'user','do' => 'behave','op' => 'list'))?>" target="main" >
-                                        <i class="icon-double-angle-right"></i>
-                                        行为日志
-                                    </a>
-                                </li>
-
-                            <?php }else{
+                            <?php
                                 foreach($parentMenuList[MenuEnum::ROLE_MANGE] as $row){
                                     $zi = "权限管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
@@ -1205,7 +902,7 @@
                                         ";
                                 }
 
-                            }?>
+                            ?>
 
                         </ul>
                     </li>

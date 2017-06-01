@@ -11,7 +11,9 @@ class PdoUtil
     {
         global $_CMS;
         if (empty($cfg)) {
-            exit("无法读取/config/config.php数据库配置项.");
+            $cfg = $_CMS['config']['db'];
+            if(empty($cfg))
+                exit("无法读取/config/config.php数据库配置项.");
         }
         $mysqlurl = "mysql:dbname={$cfg['database']};host={$cfg['host']};port={$cfg['port']}";
         try {

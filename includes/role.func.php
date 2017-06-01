@@ -95,8 +95,8 @@ function isHasPowerToShow($modname, $moddo, $modop, $act_type = '',$id=''){
         }
     }
     if(empty($id)){
-        //该操作没有录入系统中的话，默认不给看 但是root可以看
-        return checkAdmin();
+        //该操作没有录入系统中的话，都可以看
+        return true;
     }
 //    file_put_contents('sql.txt',"{$modname}-{$moddo}-{$modop}-{$id}\n\r",FILE_APPEND);
     $hasPower = false;
@@ -108,7 +108,8 @@ function isHasPowerToShow($modname, $moddo, $modop, $act_type = '',$id=''){
     if(!empty($user_rule['rule'])){   //空的话，说明该用户一个规则都没有设置，不可以查看
         $rule_arr = explode(',',$user_rule['rule']);
         if(in_array($id,$rule_arr)){
-            $hasPower = true;
+            //能找到的  就是要禁止不给看的
+            $hasPower = false;
         }
 
     }else{
@@ -258,4 +259,23 @@ function cleanAdminHasRule($role_id){
         $memcache->delete($mem_key);
     }
 
+}
+
+function diffUserRule($allRule,$userHasRule){
+    if(empty($userHasRule)){
+        //不用去除
+        return $allRule;
+    }
+    $data_rule = array();
+    foreach($allRule as $one){
+        $data_rule[$one['id']] = $one;
+    }
+
+    foreach($userHasRule as $item){
+        //用户有的权限 就是需要禁止的，那么从所有的节点中去除掉
+        if(array_key_exists($item['id'],$data_rule)){
+            unset($data_rule[$item['id']]);
+        }
+    }
+    return $data_rule;
 }

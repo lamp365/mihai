@@ -58,14 +58,20 @@ function checkrule($modname, $moddo, $modop)
         }
         $hasPower = findOneRule($tmpdata,$userIsHasRule);
 
-    }else{   //一条规则都没有则还没设置，默认不可以看，但是管理员root给看
-        $hasPower = checkAdmin();
+    }else{   //一条规则都没有则还没设置，默认都可以操作
+        $hasPower = true;
     }
     return $hasPower;
 }
+/**
+ * 从禁止中的url中，能找到的说明时候被禁止的 返回false
+ * @param $tmpdata
+ * @param $userIsHasRule
+ * @return bool
+ */
 function findOneRule($tmpdata,$userIsHasRule)
 {
-    $hasPower = false;
+    $hasPower = true;
     if(count($tmpdata) == 0){   //如果没有找到对应的默认可以看
         $hasPower = true;
     }else if(count($tmpdata) > 1){  //可能有添加和编辑  地址是一样的 只是多了一个id
@@ -88,7 +94,7 @@ function findOneRule($tmpdata,$userIsHasRule)
             if($row['id'] == $tmpdata[0]['id']){
                 //记录管理员行为日志
                 recoderAdminBehaveLog($tmpdata);
-                $hasPower =  true;
+                $hasPower =  false;
             }
         }
     }

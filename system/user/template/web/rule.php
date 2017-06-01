@@ -82,7 +82,7 @@
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
     	<input type="hidden" value="<?php echo $id ?>"  name="id"  />
 		<h3 class="header smaller lighter blue">权限设置</h3>
-		<p class="alert alert-info" ><i class="icon-lightbulb"></i>注：对于产品库，未上架的商品，不判断权限，只有上架后业务才会权限判断。</p>
+		<p class="alert alert-info" ><i class="icon-lightbulb"></i>注：权限这里是逆向思维，打钩后，表示不允许被操作的。</p>
 
 		<div class="form-group">
 			<div class="col-sm-12 control-label no-padding-left" style="text-align: left"> 

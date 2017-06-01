@@ -6,13 +6,18 @@
 // +----------------------------------------------------------------------
 // | Author: 小物社区 <QQ:119006873> <http://www.squdian.com>
 // +----------------------------------------------------------------------
-$allrule    = mysqld_selectall('SELECT * FROM '.table('rule'));
-$account    = mysqld_select('SELECT * FROM '.table('user')." WHERE  id=:id" , array(':id'=> $_CMS['account']['id']));
+$account        = mysqld_select('SELECT * FROM '.table('user')." WHERE  id=:id" , array(':id'=> $_CMS['account']['id']));
+//所有权限
+$allrule        = getSystemRule();
+//所拥有的权限就是需要被 禁止的
 $userRule       = getAdminHasRule($_CMS['account']['id']);
-$parentMenuList = '';
+//从所有的权限中移除掉 被禁止的
+$diff_rule      = diffUserRule($allrule,$userRule);
+
+$parentMenuList = array();
 $menurule 		= array();
-if(!empty($userRule)){
-	foreach($userRule as  $rule){
+if(!empty($diff_rule)){
+	foreach($diff_rule as  $rule){
 		$str = $rule['modname']."-".$rule['moddo'];
 		if(!empty($rule['modop'])){
 			$str .= "-{$rule['modop']}";
@@ -21,23 +26,12 @@ if(!empty($userRule)){
 		if($rule['pid'] == 0)
 			$parentMenuList[] = $rule;
 	}
-	$result         = getCatRuleUrl($menurule,$userRule,$parentMenuList);
+
+	$result         = getCatRuleUrl($menurule,$diff_rule,$parentMenuList);
+//	ppd($result);
 	$menurule       = $result['menuRule'];
 	$parentMenuList = $result['parentMenuList'];
 //		ppd($parentMenuList);
-}
-
-//得到快捷菜单
-$top_menu = '';
-if(!empty($parentMenuList)){
-	foreach($parentMenuList as $m_list){
-		foreach($m_list as $t_menu){
-			if($t_menu['top_menu'] == 1){
-				$top_menu[] = $t_menu;
-			}
-		}
-	}
-
 }
 
 
@@ -64,5 +58,5 @@ foreach($result as $index => $module)  {
 	$module['menus'] 	= mysqld_selectall("SELECT * FROM " . table('modules_menu') . " WHERE `module`=:module order by id",array(':module'=>$module['name']));
 	$modulelist[$key]   = $module;
 }
-$exchange_rate = mysqld_select("SELECT * FROM " .table('config'). " WHERE  name = 'exchange_rate' limit 1");
+
 include page('main');
