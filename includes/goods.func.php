@@ -21,7 +21,7 @@ function get_goods($array=array()){
 		$field = $array['field'];
 	}
 	else{
-		$field = ' a.*,b.title as btitle,b.thumb as imgs,b.goodssn,b.content as bcontent,b.description as goodesc, b.productprice as price, b.marketprice as market, b.brand ';
+		$field = ' a.*';
 	}
 	
 	$where = $limit = $order = '';
@@ -34,24 +34,16 @@ function get_goods($array=array()){
 	if (!empty($array['order'])){
         $order = ' ORDER BY '.$array['order'];
 	}
-	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS {$field} FROM " . table($tables) . " as a LEFT JOIN ". table('shop_goods') ." as b on a.gid=b.id".$where.$order.$limit);
+	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS {$field} FROM " . table($tables) . " as a ".$where.$order.$limit);
 	foreach ( $result as $key=>$val){
 		 if (!empty($val['brand'])){
 		     $brand = mysqld_select("SELECT a.brand, b.* FROM ".table('shop_brand')." as a LEFT JOIN ".table('shop_country')." as b on a.country_id = b.id WHERE a.id=".$val['brand']);
 		 }
 		 $result[$key]['brands'] = $brand;
-		 $result[$key]['img'] = empty($val['thumb']) ? $val['imgs'] : $val['thumb'];  //dish表中的图片
-		 $result[$key]['thumb'] = $val['imgs']; //good表中的图片
-		 $result[$key]['small'] = download_pic($val['imgs'],'400','400');
-		 $val['marketprice'] = get_limit_price($val);
-		 $result[$key]['desc'] = !empty($val['description'])?$val['description']:$val['goodesc'];
-		 $result[$key]['productprice'] = ($val['productprice']==0.00)?$val['price']:$val['productprice'];
-		 $result[$key]['marketprice'] = ($val['marketprice']==0.00)?$val['market']:$val['marketprice'];
-		 $result[$key]['title'] = !empty($val['title'])?$val['title']:$val['btitle'];
-		if(isset($val['content']) && isset($val['bcontent']))
-		{
-		 	$result[$key]['content'] = !empty($val['content'])?$val['content']:$val['bcontent'];
-		}
+		 $result[$key]['img']    =  $val['thumb'];  //dish表中的图片
+		 $result[$key]['small']  = download_pic($val['thumb'],'400','400',2);
+		 $val['marketprice']     = get_limit_price($val);
+		 $result[$key]['desc']   = $val['description'];
 	}
 	
 	return $result;
@@ -68,7 +60,7 @@ function get_good($array=array()){
 		$field = $array['field'];
 	}
 	else{
-		$field = ' a.*,b.title as btitle,b.thumb as imgs,a.timeprice,a.commision,b.content as bcontent,b.productprice as price, b.marketprice as market, b.description as desc2, b.brand ';
+		$field = ' a.*';
 	}
 	
 	$where = $limit = $order = '';
@@ -81,21 +73,12 @@ function get_good($array=array()){
 	if (!empty($array['order'])){
         $order = ' ORDER BY '.$array['order'];
 	}
-	$result = mysqld_select("SELECT {$field} FROM " . table($tables) . " as a LEFT JOIN ". table('shop_goods') ." as b on a.gid=b.id".$where.$order.$limit);
+	$result = mysqld_select("SELECT {$field} FROM " . table($tables) . " as a ".$where.$order.$limit);
 	if($result)
 	{
-		$result['img'] = $result['thumb'];
-		$result['thumb'] = $result['imgs'];
-		$result['small'] = download_pic($result['imgs'],'400','400');
+		$result['img']         = $result['thumb'];
+		$result['small']       = download_pic($result['imgs'],'400','400',2);
 		$result['marketprice'] = get_limit_price($result);
-		$result['description'] = empty($result['description'])?$result['desc2']:$result['description'];
-		$result['productprice'] = ($result['productprice']==0.00)?$result['price']:$result['productprice'];
-		$result['marketprice'] = ($result['marketprice']==0.00)?$result['market']:$result['marketprice'];
-		$result['title'] = !empty($result['title'])?$result['title']:$result['btitle'];
-		if(isset($result['content']) && isset($result['bcontent']))
-		{
-			$result['content'] = $result['content'].$result['bcontent'];
-		}
 	}
 	else{
 		return false;
@@ -337,7 +320,7 @@ function get_limits($num=4){
 }
 function get_limit_price($goods=array()){
 	   $istime = 0;
-       if (($goods['istime'] == 1 && $goods['type'] == 4) or ($goods['istime'] == 1 && $goods['isdiscount'] == 1)) {
+       if ($goods['istime'] == 1 && $goods['type'] != 0) {
 			$istime = 1;
             if (time() < $goods['timestart']) {
                 $istime = 0;

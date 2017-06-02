@@ -403,8 +403,10 @@
 					<div class="col-sm-2">
 						<select id="J_type" name="type" class="form-control">
 							<option value="0" <?php if($item['type']==0){?>selected="selected"<?php  } ?>>一般商品</option>
+							<!--
 							<option value="1" <?php if($item['type']==1){?>selected="selected"<?php  } ?> >团购商品</option>
 							<option value="2" <?php if($item['type']==2){?>selected="selected"<?php  } ?>>秒杀商品</option>
+							-->
 							<option value="3" <?php if($item['type']==3){?>selected="selected"<?php  } ?>>今日特价商品</option>
 							<option value="4" <?php if($item['type']==4){?>selected="selected"<?php  } ?>>限时促销</option>
 						</select>
