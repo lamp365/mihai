@@ -94,9 +94,9 @@ class order extends \common\controller\basecontroller
 	{
 		$_GP = $this->request;
 		$pindex = max(1, intval($_GP['page']));
-		$psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
+		$psize = isset($_GP['limit'])?$_GP['limit']:15;//默认每页10条数据
 		$limit= ($pindex-1)*$psize;
-		$sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
+		$sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.dishid,og.spec_key_name,og.total as goods_num from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
 		if ($_GP['status'] == 4){
 			$sql .=" and (og.status=-1 or og.status=4)";//退单完成 退单失败
 		}elseif ($_GP['status'] == 1){
@@ -177,6 +177,10 @@ class order extends \common\controller\basecontroller
 		$json_retag = setOrderRetagInfo($order['retag'], $payreason);
 
 		mysqld_update('shop_order', array('status' => 1,'retag'=>$json_retag,'paytime'=>time()), array('id' => $_GP['id']));
+
+        $mark = \PayLogEnum::getLogTip('LOG_SHOPBUY_TIP');
+        member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['id']);  //paylog
+
 		message('操作成功！', refresh(), 'success');
 	}
 
@@ -454,7 +458,7 @@ class order extends \common\controller\basecontroller
 			{
 				//paylog记录
 				$mark = PayLogEnum::getLogTip('LOG_BACK_THIRD_TIP');
-				member_gold($orderInfo['openid'],$aftersales['refund_price'],'addgold',$mark,false,$orderInfo['ordersn']);
+				member_gold($orderInfo['openid'],$aftersales['refund_price'],'addgold',$mark,false,$orderInfo['id']);
 			}
 
 			$orderAllGood = mysqld_selectall("select id,status,type from ". table('shop_order_goods') ." where orderid={$order_id}");
@@ -503,6 +507,10 @@ class order extends \common\controller\basecontroller
 		die(showAjaxMess(200,$admin));
 	}
 
+    public function refundbat()
+    {
+        message('已经关闭该功能!',refresh(),'error');
+    }
 
 	/**
 	 * 对现金、余额等进行过滤

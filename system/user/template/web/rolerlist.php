@@ -38,7 +38,7 @@
 	}
 </style>
 
-<ul id="myTab" class="nav nav-tabs">
+<!--<ul id="myTab" class="nav nav-tabs">
 	<li class="active">
 		<a href="#admin" data-toggle="tab">
 			管理员身份
@@ -49,7 +49,7 @@
 			会员身份
 		</a>
 	</li>
-</ul>
+</ul>-->
 <div id="myTabContent" class="tab-content">
 	<div class="tab-pane fade in active" id="admin">
 		<h3 class="header smaller lighter blue" style="display: inline-block;margin-right: 15px;">管理员身份列表</h3> <a  class="btn btn-primary add_rolers" href="javascript:;" >新增管理员身份</a>

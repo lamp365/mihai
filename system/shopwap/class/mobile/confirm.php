@@ -453,6 +453,7 @@ header("Expires:0");
 				   mysqld_update('bonus_user',array('isuse'=>1,'bonus_sn'=>$bonus_sn,'used_time'=>time(),'order_id'=>$orderid),array('bonus_id'=>$use_bonus['bonus_id']));
               }
 			//插入订单后，后续动作，如插入paylog
+            $data['orderid'] = $orderid;
 			after_insert_order($data);
 
             //如果有换购商品，则进行货存处理
@@ -604,13 +605,13 @@ function after_insert_order($data){
 	$free_use = $data['freeorder_price'];
 	$gold_use = $data['balance_sprice'];
 	$openid   = $data['openid'];
-	$ordersn  = $data['ordersn'];
+	$orderid  = $data['orderid'];
 	if ( $free_use > 0 ){
 		$remark = PayLogEnum::getLogTip('LOG_FREE_BALANCE_TIP');
-		member_freegold($openid,$free_use,'usegold',$remark,$ordersn);
+		member_freegold($openid,$free_use,'usegold',$remark,$orderid);
 	}
 	if ( $gold_use > 0 ){
 		$remark = PayLogEnum::getLogTip('LOG_BALANCE_TIP');
-		member_gold($openid,$gold_use,'usegold',$remark,true,$ordersn);
+		member_gold($openid,$gold_use,'usegold',$remark,true,$orderid);
 	}
 }

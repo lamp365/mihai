@@ -67,7 +67,7 @@
 						mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
 						//paylog  少用 updateOrderStock 已没有价值了
 						$mark = PayLogEnum::getLogTip('LOG_SHOPBUY_TIP');
-						member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['ordersn']);
+						member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['id']);
 						mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin'));
 	                    require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
 	                    mailnotice($orderid);

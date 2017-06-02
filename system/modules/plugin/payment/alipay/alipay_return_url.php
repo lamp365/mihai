@@ -35,7 +35,7 @@ if($verify_result) {
 							      mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
 								  //paylog  少用 updateOrderStock 已没有价值了
 								  $mark = PayLogEnum::getLogTip('LOG_SHOPBUY_TIP');
-								  member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['ordersn']);
+								  member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['id']);
 							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
 								  Header("Location:".WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success'); 
 		                          // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');

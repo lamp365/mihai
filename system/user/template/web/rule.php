@@ -87,8 +87,8 @@
 		<div class="form-group">
 			<div class="col-sm-12 control-label no-padding-left" style="text-align: left"> 
 				 角色名：<?php echo $roler_name; ?>
-				 权限：<strong><a href="javascript:;" onclick="checkrule(true)">全选</a>，<a href="javascript:;"  onclick="checkrule(false)">全否</a></strong> &nbsp;&nbsp;&nbsp;&nbsp;<span onclick="getAjaxFiledData()" class="btn btn-sm btn-info">高级权限</span>
-				 <input name="submit" type="submit" value=" 提 交 " class="btn btn-sm btn-info tijiao"/>
+				 权限：<strong><a href="javascript:;" onclick="checkrule(true)">全选</a>，<a href="javascript:;"  onclick="checkrule(false)">全否</a></strong> &nbsp;&nbsp;&nbsp;&nbsp;<!--<span onclick="getAjaxFiledData()" class="btn btn-sm btn-info">高级权限</span>-->
+				 <input name="submit" type="submit" value=" 提 交 保 存 " class="btn btn-sm btn-info tijiao"/>
 			</div>
 
 		</div>
