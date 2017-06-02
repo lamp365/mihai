@@ -104,7 +104,7 @@ if ($operation == 'changepwduser') {
 				message('两次密码不一致！',refresh(),'error');
 			}
 			if(!empty($_GP['newpassword'])){
-				$data['password']  = md5($_GP['newpassword']);
+				$data['password']  = encryptPassword($_GP['newpassword']);
 			}
 			// 头像
 			if (!empty($_FILES['thumb']['tmp_name'])) {
@@ -150,7 +150,7 @@ if ($operation == 'adduser') {
 				message('两次密码不一致！');
 
 			}
-			$data= array('username'=> $_GP['username'],'nickname'=>$_GP['username'],'password'=> md5($_GP['newpassword']),'createtime'=>time());
+			$data= array('username'=> $_GP['username'],'nickname'=>$_GP['username'],'password'=> encryptPassword($_GP['newpassword']),'createtime'=>time());
 			//有些管理员需要输入手机，那么需要验证手机，同时注册普通会员
 			if(!empty($_GP['mobile'])){
 				$data['mobile']  = $_GP['mobile'];
@@ -162,7 +162,7 @@ if ($operation == 'adduser') {
 				//是否在会员表中有该用户了
 				$this_user =  mysqld_select("select openid,pwd from ".table('member')." where mobile='{$_GP['mobile']}'");
 				if($this_user){
-					if($this_user['pwd'] != md5($_GP['newpassword'])){
+					if($this_user['pwd'] != encryptPassword($_GP['newpassword'])){
 						message('该手机用户已是商城会员，您输入的密码不匹配，不能创建该管理员！');
 					}
 				}else{
@@ -175,7 +175,7 @@ if ($operation == 'adduser') {
 					}
 					$data = array(
 						'mobile' 		  => $_GP['mobile'],
-						'pwd'    		  => md5($_GP['newpassword']),
+						'pwd'    		  => encryptPassword($_GP['newpassword']),
 						'nickname'	      => $_GP['username'],
 						'realname'	      => $_GP['username'],
 						'createtime'       => time(),
@@ -204,7 +204,7 @@ if ($operation == 'adduser') {
 		//是否管理员表中已经存在过该手机号
 		$this_admin = mysqld_select("select id from ".table('user')." where mobile='{$_GP['mobile']}'");
 		if($this_admin){
-			die(showAjaxMess('1002','已经存在该手机号了'));
+			die(showAjaxMess('1002','管理员中已存在该手机号了'));
 		}
 		//发送短信
 		$code     = set_sms_code($_GP['mobile']);

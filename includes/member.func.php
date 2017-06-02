@@ -166,10 +166,17 @@ function to_member_loginfromurl()
 
 function member_get($openid,$filed='*')
 {
+    if(empty($openid)) return array();
     $member = mysqld_select("SELECT {$filed} FROM " . table('member') . " where openid=:openid ", array(
         ':openid' => $openid
     ));
     return $member;
+}
+//通过手机号获取用户信息
+function member_get_bymobile($mobile='',$field='mobile,openid'){
+    if(empty($mobile)) return array();
+    $memberData = mysqld_select("SELECT {$field} FROM ".table('member')." where mobile = {$mobile} limit 1");
+    return $memberData;
 }
 
 /**

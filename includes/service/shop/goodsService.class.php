@@ -65,17 +65,21 @@ class goodsService extends \service\publicService
     public  function actGoodsPicture($id,$_GP)
     {
         $picurl_str = empty($_GP['attachment-new']) ? '' : implode(',',$_GP['attachment-new']);
-        $find       = mysqld_select("select id from ".table('shop_dish_piclist')." where id={$id} ");
-        if($find){
-            mysqld_update('shop_dish_piclist',array('picurl'=>$picurl_str),array('id'=>$find['id']));
-
+        $find       = mysqld_select("select id from ".table('shop_dish_piclist')." where goodid={$id} ");
+        if(empty($find)){
+            if(empty($picurl_str)){
+                return '';
+            }else{
+                //首次插入
+                //新添加
+                $data = array(
+                    'goodid' => $id,
+                    'picurl' => $picurl_str
+                );
+                mysqld_insert('shop_dish_piclist', $data);
+            }
         }else{
-            //新添加
-            $data = array(
-                'goodid' => $id,
-                'picurl' => $picurl_str
-            );
-            mysqld_insert('shop_dish_piclist', $data);
+            mysqld_update('shop_dish_piclist',array('picurl'=>$picurl_str),array('id'=>$find['id']));
         }
     }
     

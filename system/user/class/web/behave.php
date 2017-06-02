@@ -9,6 +9,11 @@ defined('SYSTEM_IN') or exit('Access Denied');
 
 $op = $_GP['op'];
 if($op == 'list'){
+    //删除20天之前的数据
+    $del_time = time()-3600*24*20;
+    mysqld_query("delete from ".table('admin_behave_log')." where createtime<{$del_time}");
+
+
     $condition = ' where 1=1';
     if(!empty($_GP['uid'])){
         $condition .= " and uid={$_GP['uid']}";
