@@ -241,7 +241,7 @@ function member_credit($openid, $fee, $type, $remark)
  * @param $remark
  * @return bool
  */
-function member_freegold($openid, $fee, $type, $remark,$ordersn='')
+function member_freegold($openid, $fee, $type, $remark,$orderid='')
 {
     $add_arr = array('addgold');
     $use_arr = array('usegold');
@@ -263,7 +263,7 @@ function member_freegold($openid, $fee, $type, $remark,$ordersn='')
             'account_fee' => $member['freeorder_gold'] + $fee,
             'createtime' => TIMESTAMP,
             'openid'  => $openid,
-            'ordersn' => $ordersn
+            'orderid' => $orderid
         );
         //以免扣掉时为负数
         $gold  = max(0,$member['freeorder_gold'] + $fee);
@@ -287,7 +287,7 @@ function member_freegold($openid, $fee, $type, $remark,$ordersn='')
  * 有些地方不一定要更新gold，只需要有记录。如下单后，钱是第三方的，但是会记录一个paylog,这时候不是扣除余额，不能进行更新
  * @return bool
  */
-function member_gold($openid, $fee, $type, $remark,$update=true,$ordersn='')
+function member_gold($openid, $fee, $type, $remark,$update=true,$orderid='')
 {
     $add_arr = array('addgold');
     $use_arr = array('usegold');
@@ -309,7 +309,7 @@ function member_gold($openid, $fee, $type, $remark,$update=true,$ordersn='')
             'account_fee' => $member['gold'] + $fee,
             'createtime' => TIMESTAMP,
             'openid'  => $openid,
-            'ordersn' => $ordersn,
+            'orderid' => $orderid,
         );
         $gold  = max(0,$member['gold'] + $fee);
         mysqld_insert('member_paylog', $data);
@@ -334,7 +334,7 @@ function member_gold($openid, $fee, $type, $remark,$update=true,$ordersn='')
  * @param $remark
  * @return bool
  */
-function member_commisiongold($openid, $friend_openid,$fee, $type, $ordersn='',$remark='')
+function member_commisiongold($openid, $friend_openid,$fee, $type, $orderid='',$remark='')
 {
     $add_arr = array('addgold_byorder');
     $use_arr = array('usegold_byorder');
@@ -364,7 +364,7 @@ function member_commisiongold($openid, $friend_openid,$fee, $type, $ordersn='',$
             'createtime'    => TIMESTAMP,
             'openid'        => $openid,
             'friend_openid' => $friend_openid,
-            'ordersn'       => $ordersn,
+            'orderid'       => $orderid,
         );
         //以免扣掉时为负数
         $freeze_gold  = max(0,$member['gold'] + $fee);
@@ -390,7 +390,7 @@ function member_commisiongold($openid, $friend_openid,$fee, $type, $ordersn='',$
  * 
  * @return bool
  */
-function member_invitegold($openid,$friend_openid, $fee, $type,$remark='',$ordersn='')
+function member_invitegold($openid,$friend_openid, $fee, $type,$remark='',$orderid='')
 {
     $add_arr = array('addgold_byinvite');
     $use_arr = array('usegold_byinvite');
@@ -422,7 +422,7 @@ function member_invitegold($openid,$friend_openid, $fee, $type,$remark='',$order
             'createtime'    => TIMESTAMP,
             'openid'        => $openid,
             'friend_openid' => $friend_openid,
-        	'ordersn'		=> $ordersn
+        	'orderid'		=> $orderid
         );
         //以免扣掉时为负数
         $gold  = max(0,$member['gold'] + $fee);
