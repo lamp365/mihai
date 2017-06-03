@@ -1,5 +1,5 @@
 <?php
-		   $member=get_member_account(true,true);
+		   $member=get_member_account(true);
 			$openid = $member['openid'];
        $member=member_get($openid);
        

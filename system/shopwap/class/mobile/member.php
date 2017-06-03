@@ -1,5 +1,5 @@
 <?php
-$member=get_member_account(true,true);
+$member=get_member_account(true);
 $openid =$member['openid'] ;
 $memberinfo=member_get($openid);
 $op = $_GP['op'];
@@ -167,7 +167,7 @@ if ( $op == 'collect'){
 			    message('资料修改成功！', mobile_url('fansindex'), 'success');
 			  
 			}
-		    include themePage('member');
+		    include themePage('member/member');
 }
 
 

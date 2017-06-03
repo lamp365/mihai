@@ -30,6 +30,9 @@ class PayLogEnum{
 
         //提款
         'LOG_OUTMONEY_FAIL_TIP'    => '提现审核失败返回账户',
+        'LOG_OUTMONEY_TIP'         => '提现到审核中',
+        'LOG_OUTMONEY_ALI_TIP'     => '提现到 支付宝',
+        'LOG_OUTMONEY_BANK_TIP'    => '提现到 @@@',
 
         //积分
         'LOG_REGIST_JIFEN_TIP'     => '注册系统赠送积分',

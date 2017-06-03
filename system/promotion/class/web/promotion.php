@@ -3,7 +3,7 @@
 			$operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
 				if($operation=='display')
 			{
-				$pormotions = mysqld_selectall("SELECT  * FROM " . table('shop_pormotions') );
+				$pormotions = mysqld_selectall("SELECT  * FROM " . table('shop_pormotions')." where promoteType=1" );
   	
 				include page('promotion_list');
 				    	exit;

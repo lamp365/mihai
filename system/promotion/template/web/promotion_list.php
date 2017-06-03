@@ -12,7 +12,7 @@
 </ul>
 <h3 class="header smaller lighter blue">促销免运费&nbsp;&nbsp;&nbsp;
 	<?php if(empty($pormotions)){ ?>
-	<a href="<?php  echo web_url('promotion', array('do'=>'promotion','op'=>'post'));?>" class="btn btn-primary">添加促销免运费</a>
+	<a href="<?php  echo web_url('promotion', array('name'=>'promotion','op'=>'post'));?>" class="btn btn-primary">添加促销免运费</a>
 	<?php } ?>
 </h3>
 <table class="table table-striped table-bordered table-hover">

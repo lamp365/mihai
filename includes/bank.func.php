@@ -122,3 +122,30 @@ function get_all_bank() {
 
     return $bank_ary;
 }
+
+
+/**
+ * 检验银卡 是否是合法的
+ * @param $num
+ * @return bool
+ */
+function checkBankIsRight($num){
+    $url = "https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={$num}&cardBinCheck=true";
+    $res = http_get($url);
+    $res = json_decode($res,'true');
+    if($res['validated']){
+        return $res['bank'];  //返回银卡的标识 用于可能有后续作用
+    }else{
+        return false;
+    }
+}
+
+/**
+ * 把该用户下的所有银行卡去除默认，当前操作的银行卡进行设置为默认
+ * @param $openid
+ * @param $bank_id
+ */
+function set_bank_default($openid,$bank_id){
+    mysqld_update('member_bank',array('is_default'=>0),array('openid'=>$openid));
+    mysqld_update('member_bank',array('is_default'=>1),array('id'=>$bank_id,'openid'=>$openid));
+}

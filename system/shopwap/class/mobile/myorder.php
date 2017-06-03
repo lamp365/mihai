@@ -1,5 +1,5 @@
 <?php
-$member=get_member_account(true,true);
+$member=get_member_account(true);
 $openid =$member['openid'] ;
 $id = $profile['id'];
 $op = $_GP['op'];

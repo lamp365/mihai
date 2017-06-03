@@ -17,25 +17,25 @@
 		   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 运费</label>
 
-										<div class="col-sm-9">
-														<input type="text" name="displayorder" class="col-xs-10 col-sm-2" value="<?php  echo $disharea['displayorder'];?>" />
+										<div class="col-sm-3">
+														<input type="text" name="displayorder" class="form-control" value="<?php  echo $disharea['displayorder'];?>" />
 										</div>
 									</div>
 	
 			   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 仓库名称</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 												
-									<input type="text" name="catename" class="col-xs-10 col-sm-2" value="<?php  echo $disharea['name'];?>" />
+									<input type="text" name="catename" class="form-control" value="<?php  echo $disharea['name'];?>" />
 										</div>
 									</div>
 									<div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 快递名称</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 
-											<input type="text" name="kuaidi" class="col-xs-10 col-sm-2" value="<?php  echo $disharea['kuaidi'];?>" />
+											<input type="text" name="kuaidi" class="form-control" value="<?php  echo $disharea['kuaidi'];?>" />
 										</div>
 									</div>
 									
@@ -66,9 +66,9 @@
 	  <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 描述</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-4">
 											
-						<input type="text" name="description" class="col-xs-10 col-sm-5" value="<?php  echo $disharea['description'];?>" />
+						<input type="text" name="description" class="form-control" value="<?php  echo $disharea['description'];?>" />
 												</div>
 									</div>
 									

@@ -10,7 +10,7 @@
 			   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 促销活动类型</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 												
 
 											<input  name="radioPromotionType" type="radio"  value="1"  checked="checked" >满额免运费
@@ -22,9 +22,9 @@
 									   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > <label for=""><span id='money'>*满足金额(元) </span>	</label></label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 											<input type="hidden" name="type" value="0">
-											<input type="text" name="promotionmoney" class="col-xs-10 col-sm-2" value="<?php echo $pro['condition']?>" />	
+											<input type="text" name="promotionmoney" class="form-control" value="<?php echo $pro['condition']?>" />
 										</div>
 									</div>
 									
@@ -32,9 +32,9 @@
 									   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 促销活动名称</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 												
-												<input type="text" name="promotionname" class="col-xs-10 col-sm-2" value="<?php  echo $pro['pname'];?>" />
+												<input type="text" name="promotionname" class="form-control" value="<?php  echo $pro['pname'];?>" />
 										</div>
 									</div>
 									
@@ -44,9 +44,9 @@
 									    <div class="form-group" >
 										<label class="col-sm-2 control-label no-padding-left" > 起始日期</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 												
-   										 	  <input type="text" readonly="readonly" name="start_time" id="start_time"  class="col-xs-10 col-sm-2" value="<?php  echo date('Y-m-d H:i',empty($pro['starttime'])?time():$pro['starttime']);?>" />
+   										 	  <input type="text" readonly="readonly" name="start_time" id="start_time"  class="form-control" value="<?php  echo date('Y-m-d H:i',empty($pro['starttime'])?time():$pro['starttime']);?>" />
 							
      							</div>
 									</div>
@@ -55,9 +55,9 @@
 									 <div class="form-group" id="sel2">
 										<label class="col-sm-2 control-label no-padding-left" > 终止日期</label>
 
-										<div class="col-sm-9">
+										<div class="col-sm-3">
 												
-   										 	  <input type="text" readonly="readonly" name="end_time"  id="end_time"  class="col-xs-10 col-sm-2" value="<?php  echo date('Y-m-d H:i',empty($pro['endtime'])?time():$pro['endtime']);?>" />
+   										 	  <input type="text" readonly="readonly" name="end_time"  id="end_time"  class="form-control" value="<?php  echo date('Y-m-d H:i',empty($pro['endtime'])?time():$pro['endtime']);?>" />
 							
      							</div>
 									</div>
@@ -65,8 +65,8 @@
 												 <div class="form-group" id="sel2">
 										<label class="col-sm-2 control-label no-padding-left" > 描述</label>
 
-										<div class="col-sm-9">
-											<textarea name="description" class="span6" cols="70"><?php echo $pro['description'];?></textarea>
+										<div class="col-sm-3">
+											<textarea name="description" class="form-control span6" cols="70"><?php echo $pro['description'];?></textarea>
      							</div>
 									</div>
 									

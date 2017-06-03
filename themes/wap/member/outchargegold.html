@@ -35,11 +35,30 @@
     <form class="form-horizontal img-rounded" method="post" >
     <ul class="maneylist" style="display: ;">
 
-           <li class="maneylist-li">
+        <li class="maneylist-li">
+            <a  class="a-personal">
+                <i class="icon-money-circle"></i>
+                <span class="text">提现到</span>
+                <span class="text">
+                    <select name="bank_id" id="">
+                        <option value="0">选择提款账户</option>
+                        <?php foreach($bank_list['all'] as $item){
+                            if($item['type'] == 1){
+                                 $str_bank = $item['bank_name'].' 尾号'.$item['bank_bumber_wei'];
+                            }else{
+                                $str_bank = $item['bank_number'];
+                            }
+                            echo "<option value='{$item['id']}'>{$str_bank}</option>";
+                         }?>
+                    </select>
+                </span>
+            </a>
+        </li>
+        <li class="maneylist-li">
             <a  class="a-personal">
                 <i class="icon-money-circle"></i>
                 <span class="text">提取金额</span>
-                      <span class="text">	<input type="text" name="charge" value="" /></span>
+                <span class="text">	<input type="number" name="money" value="" /></span>
             </a>
         </li>
       

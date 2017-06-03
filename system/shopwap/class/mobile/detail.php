@@ -74,7 +74,7 @@
 	   // 获取运费模板信息
         $depot = mysqld_select("SELECT name,kuaidi,displayorder FROM " . table('dish_list') . "  WHERE id=:depotid", array(':depotid' => $goods['transport_id']));
 		// 免运费申明
-		$promotion=mysqld_select("select * from ".table('shop_pormotions')." where starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
+		$promotion=mysqld_select("select * from ".table('shop_pormotions')." where promoteType=1 and starttime<=:starttime and endtime>=:endtime",array(':starttime'=>TIMESTAMP,':endtime'=>TIMESTAMP));
 
 	   // 获取产品活动时间
 		$istime = 0;

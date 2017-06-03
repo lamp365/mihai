@@ -312,13 +312,13 @@ function member_gold($openid, $fee, $type, $remark,$update=true,$orderid='')
             'orderid' => $orderid,
         );
         $gold  = max(0,$member['gold'] + $fee);
-        mysqld_insert('member_paylog', $data);
+        $pid   = mysqld_insert('member_paylog', $data);
         if($update){
             mysqld_update('member', array( 'gold' => $gold), array(
                 'openid' => $openid
             ));
         }
-        return true;
+        return $pid;
     }
     return false;
 }

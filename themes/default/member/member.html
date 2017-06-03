@@ -10,7 +10,7 @@
 <title><!--@php echo $cfg['shop_title'] @--></title>
 <link rel="stylesheet"  href="__RESOURCE__/login/css/bootstrap.min.css">
 <link rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css">
-<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
 <link rel="shortcut icon" href="favicon.ico"/>
 <script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
@@ -69,6 +69,9 @@ body{}
 		.col-sm-6{
 			display: inline\9;
 		}
+		.member-tab li a{
+			text-decoration: none;
+		}
 		</style>
 		<div class="new-fansindex-wrap">
 		<div class="viewport new-fansindex">
@@ -81,8 +84,8 @@ body{}
 		    </div>
 		    <div class="member-tab">
 		    	<ul class="clearfix">
-		    		<li class="member-tab-active">基本资料</li>
-		    		<li>账户安全</li>
+		    		<li class="member-tab-active"><a href="<!--@php echo mobile_url('member'); @-->">基本资料</a></li>
+		    		<li><a href="<!--@php echo mobile_url('account'); @-->">账户安全</a></li>
 		    	</ul>
 		    </div>
 			<form style="border-radius:0 0 4px 4px" class="member-tab-div form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);">
@@ -148,9 +151,6 @@ body{}
 					
 			
 			</form>
-			<div class="member-tab-div">
-				sdfsdsdf
-			</div>
 	</div>
 	<div class="l-member"> 
 		 <!--@php include themePage('leftmenu');@-->
@@ -159,20 +159,6 @@ body{}
 </div>
 
 		<script type="text/javascript">
-		$(function(){
-			//tab切换
-			var index = 0;
-			$(".member-tab li").click(function(){
-				index = $(this).index();
-				$(".member-tab li").removeClass("member-tab-active");
-				$(this).addClass("member-tab-active");
-				$(".member-tab-div").hide();
-				$(".member-tab-div").eq(index).show();
-				$(".crumbs .i-text").text($(this).text());
-			});
-
-		})
-
 			function checkInfo(form) {
 				var mobile = form['mobile'].value;
 				if (!mobile) {
