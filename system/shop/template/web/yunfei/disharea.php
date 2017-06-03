@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 
-<h3 class="header smaller lighter blue"><?php  if(!empty($disharea['id'])) { ?>编辑<?php  }else{ ?>新增<?php  } ?>区域</h3>
+<h3 class="header smaller lighter blue"><?php  if(!empty($disharea['id'])) { ?>编辑<?php  }else{ ?>新增<?php  } ?>仓库运费</h3>
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >
 	
 	<input type="hidden" name="parentid" value="<?php  echo $parent['id'];?>" />
@@ -23,16 +23,24 @@
 									</div>
 	
 			   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 区域名称</label>
+										<label class="col-sm-2 control-label no-padding-left" > 仓库名称</label>
 
 										<div class="col-sm-9">
 												
 									<input type="text" name="catename" class="col-xs-10 col-sm-2" value="<?php  echo $disharea['name'];?>" />
 										</div>
 									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > 快递名称</label>
+
+										<div class="col-sm-9">
+
+											<input type="text" name="kuaidi" class="col-xs-10 col-sm-2" value="<?php  echo $disharea['kuaidi'];?>" />
+										</div>
+									</div>
 									
 									   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 区域图片</label>
+										<label class="col-sm-2 control-label no-padding-left" > 图片</label>
 
 										<div class="col-sm-9">
 												
@@ -56,7 +64,7 @@
 									</div>
 	
 	  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 区域描述</label>
+										<label class="col-sm-2 control-label no-padding-left" > 描述</label>
 
 										<div class="col-sm-9">
 											
@@ -89,7 +97,8 @@
 
 										<div class="col-sm-9">
                        
-					<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
+											<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
+											<button onclick="window.history.back()"  class="btn btn-primary span3">返回上页</button>
 												</div>
 									</div>
 </form>

@@ -644,9 +644,6 @@
         //加入购物车
         $("#add_gouwuche").click(function(){
             var shop_type = "<!--@php echo $goods['type']; @-->";
-            if(!checkIsCanBuy(shop_type)){
-                return ;
-            }
             var url = "<!--@php  echo mobile_url('mycart',array('op'=>'add','id'=>$goods['id']),true);@-->" +"&optionid=" + $("#optionid").val() + "&total=1";
             if($("#accesskey").val() != '' ){
                 url = url + "&accesskey="+$("#accesskey").val();
@@ -672,9 +669,6 @@
 
         $(".liji_buy").click(function(){
             var shop_type = "<!--@php echo $goods['type']; @-->";
-            if(!checkIsCanBuy(shop_type)){
-                return ;
-            }
             var height = $(document.body).height() + $(window).scrollTop();
             $("#slidemain").css('height',height);
             $("#slidemain").fadeIn(500);
@@ -864,15 +858,6 @@
     })
 
 
-    function checkIsCanBuy(shop_type){
-//        if(shop_type != 0){  //暂时去掉允许购买等APP2.0上去后
-        if(shop_type == 100){
-            //弹窗 提示下载
-            tipUserToDown("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",2);
-            return false;
-        }
-        return true;
-    }
     
     var index = 1 ; //定义开关,定义开关是为了防止一直点击，
     //点击更多评论

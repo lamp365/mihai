@@ -12,25 +12,18 @@
 
 										<div class="col-sm-9">
 												
-							<input  name="radioPromotionType" type="radio" value="0" <?php if($pro['promoteType']==0){ ?> checked="checked" <?php } ?> onclick="to_change()">满件免运费，
-				<input  name="radioPromotionType" type="radio"  value="1"  <?php if($pro['promoteType']==1){ ?>checked="checked"<?php } ?>onclick="to_change()">满额免运费
+
+											<input  name="radioPromotionType" type="radio"  value="1"  checked="checked" >满额免运费
 				
 										</div>
 									</div>
-							 <div class="form-group">
-								<label class="col-sm-2 control-label no-padding-left" > 适用区域</label>
-										<div class="col-sm-9">	
-										     <select name="type">
-                                                   <option value="0" <?php if($pro['type']==0){ echo 'selected'; } ?>>商城系统</option>
-												   <option value="1" <?php if($pro['type']==1){ echo 'selected'; } ?>>代发系统</option>
-											 </select>
-										</div>
-									</div>		
+
 									
 									   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > <label for=""><span id='money' <?php if($pro['promoteType']==0){ ?> style='display:none;'<?php } ?>>*满足金额(元) </span>	<span id='num'  <?php if($pro['promoteType']==1){ ?>style='display:none;'<?php } ?> >*满足数量(件)</span></label></label>
+										<label class="col-sm-2 control-label no-padding-left" > <label for=""><span id='money'>*满足金额(元) </span>	</label></label>
 
 										<div class="col-sm-9">
+											<input type="hidden" name="type" value="0">
 											<input type="text" name="promotionmoney" class="col-xs-10 col-sm-2" value="<?php echo $pro['condition']?>" />	
 										</div>
 									</div>
@@ -83,7 +76,8 @@
 
 										<div class="col-sm-9">
                        
-					<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
+											<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
+											<button onclick="window.history.back()"  class="btn btn-primary span3">返回上页</button>
 												</div>
 									</div>
 </form>   
