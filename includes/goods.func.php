@@ -77,7 +77,7 @@ function get_good($array=array()){
 	if($result)
 	{
 		$result['img']         = $result['thumb'];
-		$result['small']       = download_pic($result['imgs'],'400','400',2);
+		$result['small']       = download_pic($result['thumb'],'400','400',2);
 		$result['marketprice'] = get_limit_price($result);
 	}
 	else{
@@ -229,6 +229,30 @@ function cs_goods($categoryid,$p=0, $tip=0, $num=0, $is_guess=false){
 		 'order'  =>  'a.displayorder desc'
      ));
 	 return $c_goods;
+}
+
+function cs_goods_bytime($categoryid,$p,$num){
+	$where = ' a.status = 1 ';
+	if ( !empty($categoryid) ){
+		switch ($p){
+			case 1:
+				$where .=" and a.p1 =".$categoryid;
+				break;
+			case 2:
+				$where .=" and a.p2 =".$categoryid;
+				break;
+			default:
+				$where .=" and a.p3 =".$categoryid;
+				break;
+		}
+	}
+	$c_goods = get_goods(array(
+		'table'  =>   'shop_dish',
+		'where' =>  $where,
+		'limit'   =>  $num,
+		'order'  =>  'a.id desc'
+	));
+	return $c_goods;
 }
 function get_category($id){
     $result = mysqld_select("SELECT * FROM ".table('shop_category')."  WHERE id = ".$id);
@@ -697,4 +721,67 @@ function getGoodsFromCountry($brand_id){
 	}
 	$brand = mysqld_select("SELECT a.brand,b.name,b.icon FROM ".table("shop_brand")." as a LEFT JOIN ".table("shop_country"). " as b on a.country_id = b.id WHERE a.id = ".$brand_id);
 	return $brand;
+}
+
+
+function get_dishs_comment(&$comments){
+	//获取评论对应的图片
+	foreach($comments as $k=> &$row){
+		$user_info = getUserFaceAndName($row['openid'],$row['username'],$row['face']);
+		$row['username'] = $user_info['username'];
+		$row['face']     = $user_info['face'];
+		$comments[$k]['piclist'] = mysqld_selectall("select img from ". table('shop_comment_img') ." where comment_id={$row['id']}");
+	}
+
+
+	if(!empty($_POST['page'])) {  //wap端手机页面上会滚动加载评论数据
+		$html = '';
+		foreach($comments as $key=>$rows){
+			$system    = getSystemType($rows['system']);
+			$html .= "<li>
+								<div class='user-name'>用户名：{$rows['username']}</div> <span class='date-time'>来自 {$system} 版</span>
+                                <h4 class='detail-content'>{$rows['comment']}</h4>";
+			if(!empty($rows['piclist'])){
+				$html .= "<ul class='img-list' data-clicked='0' data-key='{$key}'>";
+
+				foreach($rows['piclist'] as $picurl){
+					$max_pic   = download_pic($picurl['img'],650);
+					$small_pic = download_pic($picurl['img'],50,50,1);
+					$html .= "<li>
+                                        <a class='fancybox_{$key}' href='{$max_pic}' data-fancybox-group='gallery'>
+                                            <img src='{$small_pic}'>
+                                        </a>
+                                    </li>";
+				}
+
+				$html .= "</ul>";
+			}
+
+			$html .= "</li>";
+
+		}
+
+		echo $html;
+		die();
+
+	}else{
+		// 获取评论数量
+		$pindex = max(1, intval($_REQUEST['page']));
+		$total = $goods['count'] = mysqld_selectcolumn('SELECT COUNT(*) FROM '. table('shop_goods_comment') .'WHERE dishid = '.$_GET['id']);
+		$tpage = ceil($total / 15);
+		if ($tpage > 1) {
+			$beforesize = 5;
+			$aftersize  = 4;
+			$cindex = $pindex;
+			$rastart = max(1, $cindex - $beforesize);
+			$raend = min($tpage, $cindex + $aftersize);
+			if ($raend - $rastart < $beforesize + $aftersize) {
+				$raend = min($tpage, $rastart + $beforesize + $aftersize);
+				$rastart = max(1, $raend - $beforesize - $aftersize);
+			}
+		}
+
+		$pager = pagination($total, $pindex, 15,'.show_comment');
+	}
+	return $pager;
 }

@@ -403,7 +403,7 @@
 	});
 function chgNum(nums) {
 	var number = $("#total");
-	var max = <?php echo $goods['total']; ?>;
+	var max = "<?php echo $goods['total']; ?>";
 	var p = parseInt(number.val());
 
 	if (nums == 1) {
@@ -417,7 +417,7 @@ function chgNum(nums) {
 }
 function point(){
       var num = $("#total").val();
-	  var max = <?php echo $goods['total']; ?>;
+	  var max = "<?php echo $goods['total']; ?>";
 	  var po = (num / max * 100).toFixed(2);
 	  $("#goodstotail").text(po+'%');
    }
@@ -473,7 +473,7 @@ function point(){
 			 return;
 		  }   
           var num = parseInt( $("#total").val() );
-          var maxbuy = <?php if(empty($goods['dicount'])){  echo 0;}else{ echo $goods['dicount'];} ?>;
+          var maxbuy = "<?php if(empty($goods['dicount'])){  echo 0;}else{ echo $goods['dicount'];} ?>";
           var mb = maxbuy; 
           if(num>mb && mb>0){
                     alert("最多只能购买 " + mb + " 件!",true);
@@ -495,11 +495,10 @@ function point(){
 
 					<div id="viewport" class="viewport">
 					<div class="crumbs f-cb">
-                         <a href="http://www.hinrc.com/" target="_blank" >觅海全球购</a>&nbsp;&gt;&nbsp;<span class="ellipsis crumbs-title"><!--@php  echo $goods['title'];@--></span> </div>
+                         <a href="<?php echo WEBSITE_ROOT; ?>" target="_blank" ><!--@php echo $cfg['shop_title']; @--></a>&nbsp;&gt;&nbsp;<span class="ellipsis crumbs-title"><!--@php  echo $goods['title'];@--></span> </div>
                         <div class="detailtop">
 							<div class="slider card card-nomb" style="float:left;width:400px;padding:20px 0 80px 20px;">
 
-								<!--<link href="__RESOURCE__/recouse/jqzoom/css/jqzoombase.css" rel="stylesheet" type="text/css" />-->
 								<script type="text/javascript" src="__RESOURCE__/recouse/jqzoom/js/jquery.jqzoom.js"></script>
 								<script type="text/javascript" src="__RESOURCE__/recouse/jqzoom/js/jqzoombase.js"></script>
 								<div id="preview" class="spec-preview"> 
@@ -570,18 +569,14 @@ function point(){
 								<span class="split" style="float: left;margin: 0 5px;">|</span>
 								<a class="brand" target="_blank" href="<!--@php  echo mobile_url('goodlist', array('bid'=>$goods['brand']))@-->" style="float: left;"><!--@php echo $brand['brand']; @--></a>
 								<!--分类-->
-								<img src="__RESOURCE__/recouse/images/classify.png" style="margin:3px 5px 0 10px"/>
+								<img src="__RESOURCE__/recouse/images/classify.png" style="margin:3px 5px 0 20px"/>
 								<!--@php  echo getGoodsCategory($goods['p1']);@-->
-					    	</span>					    	
-							<i class="crosstag tag" style="float: right;">跨境</i>
+					    	</span>
                         </dt>
 						<p class="pro-name">
-							<span id="itemNameZy" class="zy">自营</span><strong>
+							<strong>
 								<!--@php  echo $goods['title'];@-->
 							</strong>
-						</p>
-						<p class="pro-desc" style="padding-left: 10px;height:36px; overflow:hidden; font-size:12px;clear:both;">
-								<!--@php  echo $goods['description'];@-->
 						</p>
 
 						<!--@php  if( $istime == 2) { @-->
@@ -713,20 +708,18 @@ function point(){
 							<!--@php }else{   @-->
 								<i class="freight">
 									<span>
-										<!--@php echo $promotion['description']; @-->
+										<!--@php echo $depot['kuaidi'].' — ¥'.$depot['displayorder'];@-->
 									</span>
 									<img src="__RESOURCE__/recouse/images/xia.png" style="margin-top: 5px;" />
 								</i>
 								<i class="freightdetail">
-									<!--@php if (is_array($depots)){ foreach( $depots as $depots_value ){ echo $depots_value['description']; @-->
-                                           <br/>
-									<!--@php }} @-->
+									<!--@php echo $promotion['description']; @-->
 								</i>
 							<!--@php } @-->
 							</span>
 						</div>
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
-							<p class="name">服 务:</p> &nbsp;本商品由&nbsp;<u><!--@php echo $goods['depot'];@--></u> 发货				
+							<p class="name">服 务:</p> &nbsp;本商品由&nbsp;<u><!--@php echo $depot['name'];@--></u> 发货
 						</div>
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
 							<p class="name">税 率:</p> &nbsp;<!--@php echo $tax;@-->		
@@ -831,22 +824,22 @@ function point(){
 				<div class="shopinfo">
                      <div id="cshopBox" class="proinfo-side">
                           <div id="seeAgainTile" class="customer-rec">
-                                <div class="customer-rec-title"><h3><span>看了又看</span></h3></div>
+                                <div class="customer-rec-title"><h3><span>最新上架</span></h3></div>
 								<div id="seeAndsee" class="customer-rec-list" style="">
 								<ul>
 								 
-                                 <!--@php  if ( is_array($jp_goods) && !empty($jp_goods)){ $num = 1; foreach ( $jp_goods as $hstory_value ){ if ($num <=5 ){@-->
+                                 <!--@php  if (!empty($goods_bytime)){ $num = 1; foreach ( $goods_bytime as $hstory_value ){ if ($num <=5 ){@-->
 	                             <li>
 	                                 <a target="_blank"  title="<!--@php echo $hstory_value['title']; @-->" href="<!--@php  echo mobile_url('detail', array('id' => $hstory_value['id'],'op'=>'dish'))@-->" target="_blank" class="product-img">
-									    <img alt="<!--@php echo $hstory_value['title']; @-->" data-original="<!--@php echo $hstory_value['small']; @-->" class="lazy" src="images/loading.gif" height="80" />
+									    <img alt="<!--@php echo $hstory_value['title']; @-->" data-original="<!--@php echo $hstory_value['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->" height="80" />
 	                                 </a>
 	                                <p style="padding: 0;">	           
-	                                	<a href="<!--@php  echo mobile_url('detail', array('id' => $hstory_value['id'],'op'=>'dish'))@-->" title="<!--@php echo $hstory_value['title']; @-->" " target="_blank" class="title"><!--@php echo $hstory_value['title']; @--></a>
+	                                	<a href="<!--@php  echo mobile_url('detail', array('id' => $hstory_value['id'],'op'=>'dish'))@-->" title="<!--@php echo $hstory_value['title']; @-->" target="_blank" class="title"><!--@php echo $hstory_value['title']; @--></a>
 					                	<span class="price"><i>¥</i><em><!--@php echo $hstory_value['marketprice']; @--></em></span>
 	                                </p>
-	        </li>
-	     <!--@php $num++; } } }@-->
-        </ul>
+									</li>
+								 <!--@php $num++; } } }@-->
+								</ul>
 								</div>
 
 						  </div>
@@ -862,7 +855,7 @@ function point(){
 			     <!--@php foreach ( $jp_goods as $jp_value ){ @-->
                     <div class="newRecomItemWrap ">						
 					   <a target="_blank"  href="<!--@php  echo mobile_url('detail', array('id' => $jp_value['id'],'op'=>'dish'))@-->" target="_blank" class="itemImg">	
-					       <img border="0" style="opacity: 1;" data-original="<!--@php echo $jp_value['small']; @-->" class="lazy" src="images/loading.gif" alt="<!--@php echo $jp_value['title']; @-->" title="<!--@php echo $jp_value['title']; @-->">		
+					       <img border="0" style="opacity: 1;" data-original="<!--@php echo $jp_value['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->" alt="<!--@php echo $jp_value['title']; @-->" title="<!--@php echo $jp_value['title']; @-->">
 					   </a>						
 					   <p class="itemTitle">							
 					       <a target="_blank" title="<!--@php echo $jp_value['title']; @-->"  href="<!--@php  echo mobile_url('detail', array('id' => $jp_value['id'],'op'=>'dish'))@-->"><!--@php echo $jp_value['title']; @--></a>			
@@ -884,7 +877,7 @@ function point(){
                           </p>
 						  <p class="detail-service-qq">
 						       <!--@php  if ( is_array($qqarr) ){ foreach( $qqarr as $q => $qq_num ){  @-->
-						       <a target="_blank" href="<!--@php echo $qq_num; @-->"><img style="CURSOR: pointer" src="./images/qq_style.gif"  border="0">
+						       <a target="_blank" href="<!--@php echo $qq_num; @-->"><img style="CURSOR: pointer" src="<!--@php echo getFullPicUrl('images/qq_style.gif'); @-->"  border="0">
 						        </a>
 								<!--@php }} @-->
 						  </p>
@@ -899,7 +892,7 @@ function point(){
                            <!--@php foreach ( $best_goods as $best_value ){ @-->
                                  <li>
 								     <a title="<!--@php echo $best_value['title']; @-->" href="<!--@php  echo mobile_url('detail', array('id' => $best_value['id'],'op'=>'dish'))@-->" target="_blank" class="product-img">
-								       <img alt="<!--@php echo $best_value['title']; @-->" data-original="<!--@php echo $best_value['small']; @-->" class="lazy" src="images/loading.gif" width= "60%" />
+								       <img alt="<!--@php echo $best_value['title']; @-->" data-original="<!--@php echo $best_value['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->" width= "60%" />
 									 </a>
 									  <p>	           
 										<a href="<!--@php  echo mobile_url('detail', array('id' => $best_value['id'],'op'=>'dish'))@-->" title="<!--@php echo $best_value['title']; @-->" " target="_blank" class="title"><!--@php echo $best_value['title']; @--></a>
@@ -916,10 +909,10 @@ function point(){
                            <!--@php foreach ( $hstory_goods as $best_value ){ @-->
                                  <li>
 								     <a title="<!--@php echo $best_value['title']; @-->" href="<!--@php  echo mobile_url('detail', array('id' => $best_value['id'],'op'=>'dish'))@-->" target="_blank" class="product-img">
-								       <img alt="<!--@php echo $best_value['title']; @-->" data-original="<!--@php echo $best_value['small']; @-->" class="lazy" src="images/loading.gif" width= "60%" />
+								       <img alt="<!--@php echo $best_value['title']; @-->" data-original="<!--@php echo $best_value['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->" width= "60%" />
 									 </a>
 									  <p>	           
-										<a href="<!--@php  echo mobile_url('detail', array('id' => $best_value['id'],'op'=>'dish'))@-->" title="<!--@php echo $best_value['title']; @-->" " target="_blank" class="title"><!--@php echo $best_value['title']; @--></a>
+										<a href="<!--@php  echo mobile_url('detail', array('id' => $best_value['id'],'op'=>'dish'))@-->" title="<!--@php echo $best_value['title']; @-->"  target="_blank" class="title"><!--@php echo $best_value['title']; @--></a>
 										<span class="price"><i>¥</i><em><!--@php echo $best_value['marketprice']; @--></em></span>
 	                                  </p>
 								 </li>
@@ -1332,7 +1325,7 @@ $(window).scroll(function(){
 </script>
 <!--分享的js-->
 <script>
-	var qrcode_url ="<!--@php echo 'http://www.hinrc.com'.$_SERVER['REQUEST_URI'];@-->";
+	var qrcode_url ="<!--@php echo rtrim(WEBSITE_ROOT,'/').$_SERVER['REQUEST_URI'];@-->";
 $(".Qrcode").qrcode({
 	width: 75, //宽度
 	height:75, //高度

@@ -133,13 +133,12 @@
 	   				<div class="re-child-list">
 	   					<div><a href="<?php echo mobile_url('iclub',array('name'=>'shopwap')) ?>">俱乐部首页</a></div>
 	   					<div><a href="<?php echo mobile_url('iclub',array('name'=>'shopwap')) ?>">觅海币兑换</a></div>
-	   					<!-- <div><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'game')); ?>">免费抽大奖</a></div> -->
 	   				</div>
 	   			</li>
 			 
 				<li class="re-mobile"><a href="Javascript:;" >
-					<i class="icon-mobile-phone"></i>手机版</a>
-					<div class="mobile-code"><img src="images/weixin.jpg"><div style="text-align: center;">随时逛，及时抢</div></div>
+					<i class="icon-mobile-phone"></i>微信版</a>
+					<div class="mobile-code"><img src="<?php echo getFullPicUrl('images/weixin.jpg'); ?>"><div style="text-align: center;">随时逛，及时抢</div></div>
 				</li>
 				<li><a href="<?php  echo mobile_url('mycart',array('name'=>'shopwap')); ?>"  target="_blank" ><i class="re-icon icon-shopping-cart" style="color: #828282;margin-right: 5px;"></i>购物车</a></li>
 			  	
@@ -182,14 +181,14 @@
 	 <li class="f_category">
 	 <div class="lineicon"><i></i><i></i><i></i></div><span>所有分类</span>
 	 </li>
-    <?php foreach($shop_menu_list as $value){ ?>
-         <li><a href="<?php echo $value['url']; ?>" target="_blank" ><?php echo $value['tname']; ?></a></li>
+    <?php foreach($shop_menu_list as $value){ if(strstr("http://",$value['url'])){ $m_url = $value['url']; }else{ $url= WEBSITE_ROOT.$value['url']; } ?>
+         <li><a href="<?php echo $url; ?>" target="_blank" ><?php echo $value['tname']; ?></a></li>
 	<?php }?>
 	</ul>
     <ul class="catitmlst j-catmenu">
     <?php foreach($category as $value){ ?>
          <li style="height: 40px;">
-		        <a href="<?php  echo mobile_url('goodlist', array('name'=>'shopwap','pcate' => $value['id'],'op'=>'dish')); ?>" target="_blank" >
+		        <a href="<?php  echo mobile_url('goodlist', array('name'=>'shopwap','pcate' => $value['id'])); ?>" target="_blank" >
 				<img class="icon" src="<?php echo $value['thumb']; ?>">
 				<span class="t"><?php echo $value['name']; ?></span></A>
 				<i class="icon-angle-right"></i>
@@ -200,26 +199,9 @@
 				<div class="c_category">
 					<ul class="c2_category">
 					<?php if (is_array($children[$value['id']])){ foreach( $children[$value['id']] as $c_value ){ ?>
-						  <li><a href="<?php  echo mobile_url('goodlist', array('name'=>'shopwap','p2' => $c_value['id'],'op'=>'dish')); ?>" target="_blank" ><img  src="<?php echo $c_value['thumb']; ?>" height="40"><?php echo $c_value['name']; ?></a></li>
+						  <li><a href="<?php  echo mobile_url('goodlist', array('name'=>'shopwap','p2' => $c_value['id'])); ?>" target="_blank" ><img  src="<?php echo $c_value['thumb']; ?>" height="40"><?php echo $c_value['name']; ?></a></li>
 					<?php }} ?>
 					</ul>
-					<div class="c2_bander">
-						<ul class="right-banner-list clearfix">
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-							<li><a href="index.php?mod=mobile&bid=6&name=shopwap&do=goodlist"><img src="http://www.hinrc.com/attachment/jpg/2016/09/717878651397319.jpg"></a></li>
-						</ul>
-						
-						<div class="" style="background-color: #fff;color: #000;height: 120px;margin-top: 12px;line-height: 120px;text-align: center;">
-							预留的空白区域
-						</div>
-					</div>
 				</div>
          </li>
 	<?php }?>

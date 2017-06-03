@@ -24,6 +24,10 @@ class goodsService extends \service\publicService
             $this->error = '宝贝标题不能为空！';
             return false;
         }
+        if(empty($data['brand'])){
+            $this->error = '品牌不能为空！';
+            return false;
+        }
         if(empty($data['productprice']) || empty($data['marketprice']) ){
             $this->error = '价格不能为空！';
             return false;
@@ -31,6 +35,10 @@ class goodsService extends \service\publicService
         if($data['type'] != 0){
             if(empty($data['timestart']) || empty($data['timeend'])){
                 $this->error = '活动时间不能为空！';
+                return false;
+            }
+            if(empty($data['timeprice'])){
+                $this->error = '活动价格不能为空！';
                 return false;
             }
         }

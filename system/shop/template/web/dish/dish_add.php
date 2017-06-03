@@ -714,6 +714,10 @@ function fillform()
 		alert('标题不能为空！');
 		return false;
 	}
+	if($("#brand").val() == 0){
+		alert('品牌不能为空！');
+		return false;
+	}
 	if($("#productprice").val() == '' || $("#productprice").val() == 0){
 		alert('请设置市场价！');
 		return false;

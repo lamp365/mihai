@@ -206,3 +206,7 @@ function base64Toimg($base64_image_content){
     }
     return $res;
 }
+
+function getFullPicUrl($picurl){
+    return WEBSITE_ROOT.$picurl;
+}

@@ -157,7 +157,7 @@
 	  }
 	  foreach ( $list as &$comments){
           //评论是goodsid=gid
-          $comments['count'] = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table($comment) . " WHERE  goodsid = ".$comments['gid']);
+          $comments['count'] = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table($comment) . " WHERE  dishid = ".$comments['id']);
           //商品列表需要展示 国家和ico
           $good_brand = mysqld_select("SELECT a.brand,b.name,b.icon FROM ".table("shop_brand")." as a LEFT JOIN ".table("shop_country"). " as b on a.country_id = b.id WHERE a.id = ".$comments['brand']);
           $comments['brand_icon'] = $good_brand['icon'];
