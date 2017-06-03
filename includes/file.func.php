@@ -87,6 +87,11 @@ function remote_file_upload($picurl)
  */
 function download_pic($imgPath,$width = '', $height = '', $scaleType = 1)
 {
+    if(empty($imgPath)){
+        //可以返回默认图片
+        $default = "http://nrctest.oss-cn-shanghai.aliyuncs.com/201706/2017060211515930e0d52c645.png";
+        return $default;
+    }
     $imgPathArr = explode('attachment',$imgPath);
     //获取参数个数
     $numargs    = func_num_args();

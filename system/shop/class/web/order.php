@@ -15,7 +15,7 @@ class order extends \common\controller\basecontroller
 			$condition .= " AND A.status=0";
 		}else{
 			if(!empty($status)){
-				$condition .= " AND A.status=0";
+				$condition .= " AND A.status={$status}";
 			}
 		}
 
@@ -57,7 +57,7 @@ class order extends \common\controller\basecontroller
 			$selectCondition="";
 		}
 
-		$sql    = "SELECT A.* FROM " . table('shop_order') . " A  WHERE  {$condition} ORDER BY  A.createtime DESC ".$selectCondition;
+		$sql    = "SELECT A.* FROM " . table('shop_order') . " A  WHERE  {$condition} ORDER BY  A.id  DESC ".$selectCondition;
 		$sqlNum = 'SELECT COUNT(A.id) FROM ' . table('shop_order') . " A WHERE  {$condition}";
 
 		$list   = mysqld_selectall($sql);
@@ -65,7 +65,7 @@ class order extends \common\controller\basecontroller
 		$pager  = pagination($total, $pindex, $psize);
 
 		foreach ( $list as $id => $item) {
-			$sql  = "select o.total,o.aid, o.id as order_id,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
+			$sql  = "select o.total,o.goodsid, o.id as order_id,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type ";
 			$sql .= " ,h.marketprice as dishprice,h.transport_id,h.title,h.thumb,h.draw,h.p1,h.productsn from ".table('shop_order_goods')." as o ";
 			$sql .= " left join ".table('shop_dish')." as h ";
 			$sql .= " on o.goodsid=h.id ";
@@ -93,33 +93,37 @@ class order extends \common\controller\basecontroller
 	public function returnDish()
 	{
 		$_GP = $this->request;
-		$pindex = max(1, intval($_GP['page']));
-		$psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
-		$limit= ($pindex-1)*$psize;
-		$sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
-		if ($_GP['status'] == 4){
-			$sql .=" and (og.status=-1 or og.status=4)";//退单完成 退单失败
-		}elseif ($_GP['status'] == 1){
-			$sql .=" and og.status=1 ";//待处理
-		}elseif($_GP['status'] == -2){//进行中
-			$sql .= " and (og.status=2 or og.status=3) ";
-		}else {
-			$sql .= " and (og.status=1 or og.status=2 or og.status=3) ";//pc端待处理和进行中在一起
+		$pindex    = max(1, intval($_GP['page']));
+		$psize     = 15;
+		$limit     = "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
+		$status    = $_GP['status'] ?: 1;
 
+		$where  = "o.status={$status}";
+		$filed = "o.total,o.goodsid, o.id as order_id,o.orderid as oo_id,o.price as orderprice, o.status as order_status, o.type as order_type,o.shop_type";
+		$filed .= " ,h.marketprice as dishprice,h.transport_id,h.title,h.thumb,h.draw,h.p1,h.productsn";
+
+		$sql = "select  {$filed} from ".table('shop_order_goods')." as o ";
+		$sql .= " left join ".table('shop_dish')." as h ";
+		$sql .= " on o.goodsid=h.id";
+		$sql .= " where {$where} order by o.id desc {$limit}";
+
+		$sqlnum = "select count(o.id) from ".table('shop_order_goods')." as o ";
+		$sqlnum .= " left join ".table('shop_dish')." as h ";
+		$sqlnum .= " on o.goodsid=h.id";
+		$sqlnum .= " where {$where}";
+
+		$list = mysqld_selectall($sql);
+		$total = mysqld_selectcolumn($sqlnum);
+		$pager  = pagination($total, $pindex, $psize);
+
+		$list_data = array();
+		foreach($list as $key=> $item){
+			$order = mysqld_select("select * from ".table('shop_order')." where id={$item['oo_id']}");
+			$list_data[$key] = $order;
+			$list_data[$key]['goods'] = $item;
 		}
-		$total = count(mysqld_selectall($sql,array('sts_id'=>$this->storeid)));
-		$sql .= " ORDER BY og.createtime DESC LIMIT ".$limit.",".$psize;
-		$returnList = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
-		if ($returnList){
-			foreach ($returnList as &$v){
-				$nickname = member_get($v['openid'],"nickname");
-				$v["nickname"] = $nickname['nickname'];
-				$v['price'] = FormatMoney($v['price'],0);
-				$v['status_name'] = ordersService::$status_name_og[$v['status']];
-				$v['type_name'] = ordersService::$type_name_og[$v['type']];
-			}
-		}
-		$pager = pagination($total, $pindex, $psize);
+
+		include page('order/return_list');
 	}
 	public function detail()
 	{
@@ -156,9 +160,6 @@ class order extends \common\controller\basecontroller
 			mysqld_update('shop_order', array('tag' => $_GP['tag'], 'retag' => $json_retag), array('id' => $orderid));
 			message('订单操作成功！', refresh(), 'success');
 		}
-
-		$weixin_wxfans = mysqld_selectall("SELECT * FROM " . table('weixin_wxfans') . " WHERE openid = :openid", array(':openid' => $order['openid']));
-		$alipay_alifans = mysqld_selectall("SELECT * FROM " . table('alipay_alifans') . " WHERE openid = :openid", array(':openid' => $order['openid']));
 
 		include page('order/order_detail');
 	}

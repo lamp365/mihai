@@ -35,9 +35,6 @@
     <![endif]-->
 
     <style>
-        .main-container:after{
-            background: url(<?php echo RESOURCE_ROOT;?>/addons/index/css/ace/body_bg.png) repeat-x left top #EAF0F5;
-        }
         body{
             background-color: #F8FAFC;
             height: 100%;
@@ -972,8 +969,8 @@
 					<ul>
 						<li class="jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
 						<li class="huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
-						<li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
-						<li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
+                        <li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
+                        <li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
 						<li class="yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>
 						<li class="xiaoshou"><i class="icon-bar-chart"></i><span>销售报表<span></li>
 						<li class="xitong"><i class="icon-unlock-alt"></i><span>系统管理<span></li>

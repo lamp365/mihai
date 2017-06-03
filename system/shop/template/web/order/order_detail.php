@@ -30,9 +30,9 @@
 		<table class="table">
 			<tr>
 			<th style="width:150px"><label for="">订单编号:</label></th>
-				<td >
-					<?php  echo $order['ordersn']?>
-				</td>
+			<td style="width: 320px">
+				<?php  echo $order['ordersn']?>
+			</td>
 			<th style="width:150px"><label for="">订单状态:</label></th>
 				<td >
 					<?php  if($order['status'] == 0) { ?><span class="label label-warning" >待付款</span><?php  } ?>
@@ -62,11 +62,11 @@
 				<td >
 									<?php  echo date('Y-m-d H:i:s', $order['createtime'])?>
 				</td>
-				<th ><label for="">总金额:</label></th>
+				<th ><label for="" style="color: red">总金额:</label></th>
 				<td >
 					<font style="font-weight: bolder"><?php  echo $order['price']+$order['balance_sprice']+$order['freeorder_price']?></font>
-					<span>现金支付：<?php  echo $order['price']?></span>
-					<span>余额抵扣：<?php  echo $order['balance_sprice']+$order['freeorder_price']?></span>
+					&nbsp;&nbsp;&nbsp;&nbsp;<span>现金支付：<?php  echo $order['price']?></span>
+					&nbsp;&nbsp;&nbsp;&nbsp;<span>余额抵扣：<?php  echo $order['balance_sprice']+$order['freeorder_price']?></span>
 				</td>
 			</tr>
 			<tr>
@@ -119,44 +119,31 @@
 			<table class="table ">
 					<tr>
 				<th style="width:150px"><label for="">收货人姓名:</label></th>
-				<td  style="width:250px">
+				<td  style="width:320px">
 					<?php  echo $order['address_realname'];
-							$m_member = member_get($order['openid'],'mobile');
-							echo ' ['.$m_member['mobile'].']';
+							echo '  【'.$order['address_mobile'].'】';
 					?>
 				</td>
-				<th ><label for="">收货地址:</label></th>
+				<th style="width: 150px;"><label for="">收货地址:</label></th>
 				<td >
 		<?php  echo $order['address_province'];?><?php  echo $order['address_city'];?><?php  echo $order['address_area'];?><?php  echo $order['address_address'];?>
 				</td>
 			</tr>
 				<tr>
-								<th  style="width:150px"><label for="">联系电话:</label></th>
+						<th  style="width:150px"><label for="">下单人姓名:</label></th>
 				<td >
-						<?php  echo $order['address_mobile']?>
+						<?php $m_member = member_get($order['openid'],'mobile,nickname');
+						   echo $m_member['nickname'];
+							echo '  【'.$m_member['mobile'].'】';
+						?>
 				</td>
 				<th ><label for="">订单备注:</label></th>
 				<td >
-	<textarea readonly="readonly" style='width:300px;border: none;' type="text"><?php  echo $order['remark'];?></textarea>
+					<?php if(!empty($order['remark'])){ ?>
+					<textarea readonly="readonly" style='width:300px;border: none;' type="text"><?php  echo $order['remark'];?></textarea>
+					<?php  } ?>
 				</td>
 			</tr>
-					<?php   if(!empty($weixin_wxfans)||!empty($alipay_alifans)) {?>
-			<tr>
-						<th  style="width:150px"><label for="">微信账户:</label></th>
-				<td >
-						<?php foreach($weixin_wxfans as $wxfans) { ?>
-						<?php echo $wxfans['nickname']; ?>
-						<?php  }?>
-				</td>
-						<th  style="width:150px"><label for="">支付宝账户:</label></th>
-				<td >
-						<?php foreach($alipay_alifans as $alifans) { ?>
-						<?php echo $alifans['nickname']; ?> 
-						<?php  }?>
-				</td>
-			</tr>
-			<?php  } ?>
-
 		</table>
 
 	<?php
@@ -191,27 +178,35 @@
 
 <table class="table table-striped table-bordered table-hover">
 			<thead>
-				<tr>
-					<th style="width:50px;">序号</th>
-					<th >商品标题</th>
-            <th >商品规格</th>
-					<th >货号</th>
-					
-          <th style="color:red;">成交价</th>
-					<th >数量</th>
-					<th >状态</th>
-					<th >操作</th>
+			<tr>
+				<th style="width:50px;">序号</th>
+				<th >商品标题</th>
+				<th style="min-width: 160px;">商品规格</th>
+				<th >货号</th>
+				<th style="color:red;width: 75px;">成交价</th>
+				<th style="width: 50px;">数量</th>
+				<th style="width: 100px;">状态</th>
+				<th style="width: 100px;">操作</th>
 
-				</tr>
+			</tr>
 			</thead>
 			<?php  $i=1;?>
 			<?php  if(is_array($order['goods'])) { foreach($order['goods'] as $goods) { ?>
 			<tr>
 				<td><?php  echo $i;$i++?></td>
-				<td><?php  echo $goods['title'];?>
-                                </td>
-                                <td> <?php  if(!empty($goods['optionname'])) { ?><?php  echo $goods['optionname'];?><?php  } ?></td>
-				<td><?php  echo $goods['goodssn'];?></td>
+				<td><a target="_blank" href="<?php echo mobile_url('detail',array('name'=>'shopwap','id'=>$goods['id'])); ?>"><?php  echo $goods['title'];?></a></td>
+				<td> <?php
+						if(!empty($goods['spec_key_name'])) {
+							$spec_key_name = json_decode($goods['spec_key_name'], true);
+							$str = '';
+							foreach($spec_key_name as $spec_key => $spec_name){
+								$str .= $spec_key.'：'.$spec_name.' | ';
+							}
+							echo rtrim($str,'|');
+						}
+					?>
+					</td>
+				<td><?php  echo $goods['productsn'];?></td>
 
          <td style='color:red;font-weight:bold;'><?php  echo $goods['orderprice'];?></td>
 				<td><?php  echo $goods['total'];?></td>
@@ -272,7 +267,7 @@
 			<tr>
 				<th  style="width:50px"></th>
 				<td>
-				    <button type="submit" class="btn btn-danger span2" onclick="return confirm('确认更新此订单吗？'); return false;" name="reset" value="reset">确认</button>
+				    <button type="submit" class="btn btn-danger span2" onclick="return confirm('确认更新此订单备注吗？'); return false;" name="reset" value="reset">确认备注</button>
 
 					<?php  if($order['status']==0 && isHasPowerToShow('shop','order','confrimpay')) { ?>
 						<a href="javascript:;" class="btn btn-danger span2" data-toggle="modal" data-target="#modal-surepay">确认付款</a>
@@ -320,10 +315,10 @@
 				    <div class="modal-body">
       	
 						  <div class="form-group">
-							<label class="col-sm-2 control-label no-padding-left" > 快递公司：</label>
+							<label class="col-sm-3 control-label no-padding-left" > 快递公司：</label>
 
-							<div class="col-sm-9">
-								<select name="express" id='express'>
+							<div class="col-sm-5">
+								<select name="express" id='express' class="form-control">
 										<option value="-1" data-name="">请选择快递</option>
 										<?php   foreach($dispatchlist as $dispatchitem) { ?>
 										<option value="<?php echo $dispatchitem['code'];?>" data-name="<?php echo $dispatchitem['name'];?>"><?php echo $dispatchitem['name'];?></option>
@@ -334,9 +329,9 @@
 						  </div>
       	
 						  <div class="form-group">
-								<label class="col-sm-2 control-label no-padding-left" > 快递单号：</label>
-								<div class="col-sm-9">
-									<input type="text" name="expresssn" class="span5" />
+								<label class="col-sm-3 control-label no-padding-left" > 快递单号：</label>
+								<div class="col-sm-5">
+									<input type="text" name="expresssn" class="span5 form-control" />
 								</div>
 						  </div>
       	
@@ -364,8 +359,8 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-left" > 操作理由：</label>
-						<div class="col-sm-8">
-							<input type="text" name="payreason" class="span5" value="测试订单"/>
+						<div class="col-sm-5">
+							<input type="text" name="payreason" class="span5 form-control" value="测试订单"/>
 						</div>
 					</div>
 

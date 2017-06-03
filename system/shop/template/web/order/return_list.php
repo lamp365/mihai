@@ -324,170 +324,15 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 	padding: 6px 22px;
 }
 </style>
-<script>
-	function cleartime()
-	{
-	document.getElementById("begintime").value='';
-	document.getElementById("endtime").value='';
-	}
-	</script>
+
 <h3 class="header smaller lighter blue">订单管理</h3>
 
-
-<div class="panel with-nav-tabs panel-default">	
-    <div class="panel-heading">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab1primary" data-toggle="tab">基础查询</a></li>
-                <li><a href="#tab2primary" data-toggle="tab">批量退款
-                 </a></li>
-            </ul>
-    </div>
- 	<div class="panel-body">
-        <div class="tab-content">
-            <div class="tab-pane fade in active" id="tab1primary">
-            <form action="" method="get">
-			<input type="hidden" name="mod" value="site"/>
-			<input type="hidden" name="name" value="shop"/>
-			<input type="hidden" name="do" value="order"/>
-			<input type="hidden" name="op" value="display"/>
-			<input type="hidden" name="status" value="<?php  echo $_GP['status'];?>"/>
-            	<table  class="table dummy-table-list" align="center">
-					<tbody>
-						<tr>
-							<td>
-
-								<li>
-									<span class="left-span">订单编号</span>
-									<input class="li-height" name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" placeholder="订单编号"/> 
-								</li>	
-								<li >
-									<span class="left-span">起始日期</span>
-									<input class="li-height" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  placeholder="起始日期"/>
-								</li>	
-								<li> - </li>
-								<li>
-									<span class="left-span">终止日期</span>
-									<input class="li-height" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly" placeholder="终止日期" /> <a href="javascript:;" onclick="cleartime()">清空</a>
-								</li>
-									<script type="text/javascript">
-										laydate({
-										 	elem: '#begintime',
-										 	istime: true, 
-										 	event: 'click',
-										 	format: 'YYYY-MM-DD hh:mm:ss',
-										 	istoday: true, //是否显示今天
-										 	start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-										});
-										laydate({
-										 	elem: '#endtime',
-										 	istime: true, 
-										 	event: 'click',
-										 	format: 'YYYY-MM-DD hh:mm:ss',
-										 	istoday: true, //是否显示今天
-										 	start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-										});
-										laydate.skin("molv"); 
-									</script> 
-								<li>
-								<span class="left-span">支付方式</span>
-									<select  id="paytype" name="paytype" > 
-									 <option value="" <?php  echo empty($_GP['paytype'])?'selected':'';?>>--未选择--</option>
-									<?php  if(is_array($payments)) { foreach($payments as $item) { ?>
-					                 <option value="<?php  echo $item["code"];?>" <?php  echo $item['code']==$_GP['paytype']?'selected':'';?>><?php  echo $item['name']?></option>
-					                  	<?php  } } ?>
-				                   	</select>
-				                   
-								</li>
-								<li >
-									<span class="left-span">收货人姓名</span>
-									<input class="li-height" name="address_realname" type="text" placeholder="收货人姓名" value="<?php  echo $_GP['address_realname'];?>"/>
-								</li>
-								<li>	
-								<div class="btn-group">
-								  <input type="submit" name="submit" value=" 查 询 " class="btn btn-primary btn-sm">
-								  <button type="button" class="btn btn-primary dropdown-toggle add-more-btn btn-sm" data-toggle="dropdown">
-								    <span class="caret"></span>
-								    <span class="sr-only">Toggle Dropdown</span>
-								  </button>
-								</div>
-								</li>
-							</td>
-						</tr>
-						<tr class="">
-							<td >
-								<li >
-									<span class="left-span">收货人手机</span>
-									<input class="li-height" name="address_mobile" type="text" value="<?php  echo $_GP['address_mobile'];?>" placeholder="收货人手机"/>
-								</li>
-								<li >
-									<span class="left-span">购买者手机</span>
-									<input class="li-height" name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" placeholder="购买者手机"/>
-								</li>
-								<li >
-									<span class="left-span">导出模板</span>
-				                    <select name="template" class="li-height">
-				                          <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
-										  <option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
-									</select>
-								</li>	
-								<li >
-									<span class="left-span">标记</span>
-				                  	<select name="tag" class="li-height">
-									  <option value="-1" selected>--未选择--</option>
-				                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
-									  <option value="1" <?php  echo $_GP['tag']==1?'selected':'';?>>红色</option>
-									  <option value="2" <?php  echo $_GP['tag']==2?'selected':'';?>>黄色</option>
-									  <option value="3" <?php  echo $_GP['tag']==3?'selected':'';?>>绿色</option>
-									  <option value="4" <?php  echo $_GP['tag']==4?'selected':'';?>>蓝色</option>
-									  <option value="5" <?php  echo $_GP['tag']==5?'selected':'';?>>紫色</option>
-								  	</select>			
-								</li>	
-								<li>
-									
-									<button type="submit" name="report" value="report" class="btn btn-warning btn-sm">导出excel</button>&nbsp;&nbsp;
-								</li>
-							</td>
-
-						</tr>	
-					</tbody>
-				</table>
-				</form>
-            </div>
-            <div class="tab-pane fade" id="tab2primary">
-            	<form action="" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
-					<table  class="table dummy-table-list" align="center">
-					<tbody>
-						<tr>
-							<td>
-								<li style="line-height: 26px;">退款表单：</li>
-								<li >
-									<input style="line-height: 26px;" name="myxls" type="file"   value="" />
-								</li>
-								<li >
-									<button type="button" class="refund btn btn-md btn-warning btn-sm">批量退款</button>
-								</li>
-							</td>
-						</tr>	
-					</tbody>		
-					</table>
-				</form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-			
-
-			
 <h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo $total ?></strong></span></h3>
 <ul class="nav nav-tabs" >
-	<li style="" <?php  if($status == null) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display'))?>">全部</a></li>
-	<li style="" <?php  if($status!= null && $status == 0) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 0))?>">待付款</a></li>
-	<li style="" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 1))?>">待发货</a></li>
-	<li style="" <?php  if($status == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 2))?>">待收货</a></li>
-	<li style="" <?php  if($status == 3) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 3))?>">已完成</a></li>
-	<li style="" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -1))?>">已关闭</a></li>
+	<li style="" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'returnDish','status' => 1))?>">退换申请</a></li>
+	<li style="" <?php  if($status == 23) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'returnDish','status'=>23))?>">退换处理中</a></li>
+	<li style="" <?php  if($status == 4) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'returnDish', 'status' => 4))?>">退换成功</a></li>
+	<li style="" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'returnDish', 'status' => -1))?>">退换失败</a></li>
 </ul>
 		
 
@@ -508,13 +353,13 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 				</tr>
 			</thead>
 			<tbody>
-				<?php  if(is_array($list)) { foreach($list as $item) { ?>
+				<?php  foreach($list_data as $item) { ?>
 				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;</td></tr>
 				<tr class="order_info">
 				    <td  colspan="4">
 					<?php 
-					    if ( is_array($item['goods']) ){
-                               foreach ( $item['goods'] as $goods ){
+					    if ( !empty($item['goods']) ){
+							$goods = $item['goods'];
 					?>
 					    <div class="items">
 						      <ul>
@@ -553,9 +398,8 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 								   </li>
 							  </ul>
 						</div>
-					<?php
-							   }
-					    }?>
+
+					<?php } ?>
 					</td>
 			       
 					<td align="" valign="middle" style="vertical-align: middle;">
@@ -627,7 +471,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 						</div>
 					</td>
 				</tr>
-				<?php  } } ?>
+				<?php  } ?>
 			</tbody>
 		</table>
 
