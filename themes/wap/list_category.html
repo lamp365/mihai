@@ -34,7 +34,7 @@
 				</p>
 					<div class="data">
 						<!--@php  if(is_array($children[$item['id']])) { foreach($children[$item['id']] as $child) { @-->
-                    	<a href="<!--@php  echo mobile_url('goodlist', array('p2' => $child['id']))@-->"><img data-original="<!--@php  echo $child['thumb'];@-->" class="lazy" src="images/loading.gif" /><!--@php  echo $child['name'];@--></a>
+                    	<a href="<!--@php  echo mobile_url('goodlist', array('p2' => $child['id']))@-->"><img data-original="<!--@php  echo $child['thumb'];@-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>" /><!--@php  echo $child['name'];@--></a>
 						<!--@php  } } @-->
                     </div>
 			</div>

@@ -203,15 +203,17 @@ function pagination($total, $pindex, $psize = 15,$callback='',$style=0)
         if ($tpage > 1){
             $html .="<a class='loading' href='javascript:void(0)' onclick='calls();' style='height:50px;width:60px;margin:5px auto;line-height:50px;text-align:center;display:block;'>加载更多</a>";
         }
+        $loding_url = getFullPicUrl('images/load.gif');
         $html .='
           <script>
               function calls(){       
                 if (Number($("#lock").val()) == 1){
-                    var url = "index.php"+window.location.search;
-					
+                    var href = window.location.href;
+                    href = href.split("?");
+                    var url = href[0]+window.location.search;
                     $("#num").val(Number($("#num").val())+1);
                     var index = $("#num").val();
-                    var load = "<img src=\"images/load.gif\" height=\"20\" style=\"margin-top:15px;\"/> 正在加载";
+                    var load = "<img src=\"'.$loding_url.'\" height=\"20\" style=\"margin-top:15px;\"/> 正在加载";
                         var bodyparam = {
                               page : index              
                         };

@@ -127,15 +127,6 @@
 	   					<div><a href="#">收藏的商品(0)</a></div>
 	   				</div>
 	   			</li> -->
-	   			<li class="re-vip">
-	   				<a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'display')); ?>" target="_blank" class="re-vip-a">会员俱乐部<i class="re-icon icon-sort-down"></i></a>
-	   				
-	   				<div class="re-child-list">
-	   					<div><a href="<?php echo mobile_url('iclub',array('name'=>'shopwap')) ?>">俱乐部首页</a></div>
-	   					<div><a href="<?php echo mobile_url('iclub',array('name'=>'shopwap')) ?>">觅海币兑换</a></div>
-	   				</div>
-	   			</li>
-			 
 				<li class="re-mobile"><a href="Javascript:;" >
 					<i class="icon-mobile-phone"></i>微信版</a>
 					<div class="mobile-code"><img src="<?php echo getFullPicUrl('images/weixin.jpg'); ?>"><div style="text-align: center;">随时逛，及时抢</div></div>

@@ -146,6 +146,8 @@ function imgThumb($file,$width=310,$height=310){
             img2thumb($file_url, $dst_file, $width, $height, $cut = 0, $proportion = 0);
         }
         return $dst_file;
+    }else{
+        return $file_url;
     }
 }
 

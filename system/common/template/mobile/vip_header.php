@@ -11,7 +11,7 @@
 	    }
 		$is_login=is_login_account();
 		$article_foot = getArticle(4,1);
-		$shop_menu_list = mysqld_selectall("SELECT * FROM " . table('shop_menu')." where menu_type='fansindex' and type = 1 order by torder desc" );	
+
 		$advtop = mysqld_select("select * from " . table('shop_adv') . " where enabled=1 and type = 1 and page = 4 order by displayorder desc");
 		if ( empty($category) ){
 				$category = mysqld_selectall("SELECT * FROM " . table('shop_category') . " WHERE deleted=0 and enabled=1 ORDER BY parentid ASC, displayorder DESC");
@@ -39,9 +39,7 @@
 </div>
 <![endif]-->
 <script type="text/javascript" src="<?php echo WEBSITE_ROOT . 'themes/default/__RESOURCE__'; ?>/recouse/js/index_nav.js"></script>
-<div class="navtop" style="display:none;padding:0;background:none;height:100px;">
-      <a href="<?php echo $advtop['link'];?>" target="_blank" ><img src="<?php echo $advtop['thumb'];?>" height="100"/></a>
-</div>
+
 <div class="navtop vip-navtop">
    <div class="center">
        <div class="le"> 
@@ -128,43 +126,16 @@
 	   					<div><a href="#">收藏的商品(0)</a></div>
 	   				</div>
 	   			</li> -->
-	   			<li class="re-vip">
-	   				<a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'display')); ?>" target="_blank" class="re-vip-a">会员俱乐部<i class="re-icon icon-sort-down"></i></a>
-	   				<div class="re-child-list">
-	   					<div><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'display')); ?>">俱乐部首页</a></div>
-	   					<div><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'list')); ?>">觅海币兑换</a></div>
-	   					<!-- <div><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'game')); ?>">免费抽大奖</a></div> -->
-	   				</div>
-	   			</li>
 			  
 				<li class="re-mobile"><a href="Javascript:;" >
-					<i class="icon-mobile-phone"></i>手机版</a>
-					<div class="mobile-code"><img src="images/weixin.jpg"><div style="text-align: center;">随时逛，及时抢</div></div>
+					<i class="icon-mobile-phone"></i>微信版</a>
+					<div class="mobile-code"><img src="<?php echo getFullPicUrl('images/weixin.jpg'); ?>"><div style="text-align: center;">随时逛，及时抢</div></div>
 				</li>
 				<li>
 					<a href="<?php  echo mobile_url('mycart',array('name'=>'shopwap')); ?>" target="_blank" >
 						<i class="re-icon icon-shopping-cart" style="color: #828282;margin-right: 5px;"></i>购物车
 					</a>
 				</li>
-				<!-- <li class="re-more">
-					<a href="Javascript:;" style="z-index: 10001" class="re-more-a">更多<i class="re-icon icon-sort-down"></i></a>
-					<div class="re-child-list" style="z-index: 10000">
-					   					<div>
-					   						<p>合作专区</p>
-					   						<span>合作一</span><span>合作二</span><span>合作三</span>
-					   						<div style="height: 1px;border-bottom: 1px dashed #ccc"></div>
-					   						<p>关于我们</p>
-					   						<span>战略合作</span><span>招牌信息</span><span>网站简介</span>
-					   					</div>
-					   				</div>
-				</li> -->
-			  	<!-- <li>
-			  		<a href="javascript:void(0)" class="weixin" style="position:relative;z-index:1000;">关注公众微信号
-			  							<div class="weixins" style="z-index:1000;position:absolute;right:0;top:60px;width:100%;height:60px;background:#fff;">
-			  							    <img src="images/weixin.jpg" width="100%" style="z-index:1000;float:right;"/>
-			  							</div>
-			  			  			</a>
-			  			 		 </li> -->
 		  </ul>
 	   </div>
    </div>
@@ -177,9 +148,6 @@
     <div class="nav2">
     	<ul>
     		<li class="vip-index vip-li-active" ><a href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a></li>
-    		<!-- <li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'level')); ?>">成长体系</a></li> -->
-<!--     		<li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'privilege')); ?>">成长特权</a></li>
-<li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'game')); ?>">免费抽大奖</a></li> -->
     	</ul>
 	</div>
 </nav>

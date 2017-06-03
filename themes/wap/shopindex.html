@@ -487,7 +487,7 @@
 				    			<li>
 				    				<a  href="<!--@php  echo mobile_url('article',array('name'=>'addon8','id'=>$val['id']))@-->">
 				    					<!--文章图片-->
-				    					<img data-original="<!--@php  echo $val['thumb']@-->" class="lazy" src="images/loading.gif"/>
+				    					<img data-original="<!--@php  echo $val['thumb']@-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"/>
 				    					<!--文章标题-->
 				    					<p><!--@php  echo $val['title']@--></p>
 				    					<!--文章内容-->
@@ -559,14 +559,14 @@
                     <!--@php if (!empty($best_goods)) { foreach ($best_goods as $category_best ){ @-->
 					<div class="category-container" >
 					<div class="indextitle"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><!--@php echo $category_best['name']; @--></a></div>
-					<div style="padding:10px 0;"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><img width="100%" data-original="<!--@php echo $category_best['adv_wap']; @-->" class="lazy" src="images/loading.gif"/></a></div>
+					<div style="padding:10px 0;"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><img width="100%" data-original="<!--@php echo $category_best['adv_wap']; @-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"/></a></div>
 					<ul class="os_box_list">	
 						<!--@php foreach($category_best['hots'] as $item){@-->
 						<li>
 							<div class="item" style="position:relative;">
 								<div class="img">
 									<a href="<!--@php echo mobile_url('detail', array('id' => $item['id']))@-->">
-										<img data-original="<!--@php echo $item['small']; @-->" width="100%" alt="" class="lazy" src="images/loading.gif"></a>
+										<img data-original="<!--@php echo $item['small']; @-->" width="100%" alt="" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"></a>
 								</div>
 								<div class="hot" style="position:absolute; top:4px; left:4px;">
                                     	 热卖
@@ -602,7 +602,7 @@
 								<div class="img">
 								<img
 										data-original="<!--@php echo $item['logo']; @-->"
-										width="100%" alt="" class="lazy" src="images/loading.gif">
+										width="100%" alt="" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>">
 								</div>
 								</div>
 								</a>

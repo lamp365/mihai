@@ -722,9 +722,9 @@ function point(){
 							<p class="name">服 务:</p> &nbsp;本商品由&nbsp;<u><!--@php echo $depot['name'];@--></u> 发货
 						</div>
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
-							<p class="name">税 率:</p> &nbsp;<!--@php echo $tax;@-->		
+
 						</div>
-						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
+						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;margin-top: 15px;">
 							<p class="name">数 量:</p> <div class="addForm" style="width:auto;height:auto;">
 								<input type="button" value="-" class="btn" onClick="chgNum(-1);" style="float:left;"/>
 								<input type="text" id="total" name="number" value="1"
@@ -733,7 +733,7 @@ function point(){
 									onClick="chgNum(1);" style="float:left;" />
 							</div> &nbsp;&nbsp;&nbsp;( 库存：<!--@php echo $goods['total'];@--> ) 				
 						</div>
-					<div class="btn_wrap btn_wrap_fixed" id="btnTools" style="margin-left:10px;">
+					<div class="btn_wrap btn_wrap_fixed" id="btnTools" style="margin-left:10px;margin-top: 15px;">
 						<input type="hidden" id="favoriteId" value="" />
 						<!-- <a class="btn_fav" href="javascript:void(0);" id="collect-link"><i></i></a>    -->
 						<div class="btn_col" style="padding-top: 5px;">

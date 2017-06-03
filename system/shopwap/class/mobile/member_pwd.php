@@ -14,11 +14,11 @@
 						{
 							   message("新密码与确认密码不一致");	
 						}
-						if($memberinfo['pwd']!=md5($_GP['oldpwd']))
+						if($memberinfo['pwd']!=encryptPassword($_GP['oldpwd']))
 						{
 							   message("原始密码错误!");	
 						}
-				       $data = array('pwd' => md5($_GP['pwd']));
+				       $data = array('pwd' => encryptPassword($_GP['pwd']));
 				       $res  = mysqld_update('member', $data,array('openid'=>$openid));
 						if($res){
 							//如果该用户也是后台管理员 业务员，，那么同时修改该业务员的密码

@@ -148,20 +148,6 @@ if ( $op == 'collect'){
 					 }
 			 }
 			if (checksubmit("submit")) {
-				    if ( !empty( $_GP['outgold_bankcardcode'] ) ){
-						$bank_check = bankInfo($_GP['outgold_bankcardcode']);
-						if ( !$bank_check ){
-							 message('请输入正确的银行卡号码');
-						}
-					}
-					$outgoldinfo=array(
-						'outgold_paytype'=>$_GP['outgold_paytype'],
-						'outgold_bankname'=>$bank_check,
-						'outgold_bankcardname'=>$_GP['outgold_bankcardname'],
-						'outgold_bankcardcode'=>$_GP['outgold_bankcardcode'],
-						'outgold_alipay'=>$_GP['outgold_alipay'],
-						'outgold_weixin'=>$_GP['outgold_weixin']
-					);
 					if ( !empty($_GP['email']) ){
 						$objValidator	= new Validator();
 						if(!$objValidator->is($_GP['email'],'email')){
@@ -172,7 +158,6 @@ if ( $op == 'collect'){
 						'realname'   => $_GP['realname'],
                     	'email'      => $_GP['email'],
                     	'nickname'   => $_GP['nickname'],
-						'outgoldinfo'=>serialize($outgoldinfo)
 					);
                 if ( empty($memberinfo['birthday']) && !empty($_GP['birthday']) ){
                     $data['birthday'] = strtotime($_GP['birthday']);
@@ -181,13 +166,6 @@ if ( $op == 'collect'){
 			
 			    message('资料修改成功！', mobile_url('fansindex'), 'success');
 			  
-			}
-
-			if(!is_mobile_request()){
-				$hobby = mysqld_select("SELECT * FROM ".table('member_info')." WHERE openid = :openid ", array(":openid"=>$openid));
-				//获取分类
-				$cat_sql  = "SELECT id,name,thumb  FROM " . table('shop_category') . " WHERE parentid=0 and deleted=0";
-				$cat_data = mysqld_selectall($cat_sql);
 			}
 		    include themePage('member');
 }

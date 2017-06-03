@@ -133,15 +133,6 @@
 			$piclist[]=array("attachment" =>$one_pic,"small"=> download_pic($one_pic,'400','400'));
 		}
 
-
-		// 税率申明
-		$tax = mysqld_select("select tax from " . table('shop_tax') . " where  id=:id ", array(":id" => $goods['taxid']));
-	    if ( !empty($tax) ){
-		  $tax = '本商品适用税率为'.number_format($tax['tax'] *100,2,'.','')."%";
-		}else{
-          $tax = '';
-		}
-
 		$cfg   = globaSetting();
 		$qqarr = getQQ_onWork($cfg);
 		tosaveloginfrom();

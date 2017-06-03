@@ -162,7 +162,7 @@ input::-webkit-input-placeholder{
 							<div class="item" style="position:relative;">
 								<div class="img">
 									<a href="<!--@php echo mobile_url('detail', array('id' => $item['id']))@-->">
-										<img data-original="<!--@php echo $item['small']; @-->"	width="100%" class="lazy" src="images/loading.gif" ></a>
+										<img data-original="<!--@php echo $item['small']; @-->"	width="100%" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>" ></a>
 								</div>
 								<div class="txt">
 									<!--@php echo $item['title'];@-->

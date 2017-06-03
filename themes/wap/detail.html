@@ -419,47 +419,17 @@
                     <!--@php if ( $istime == 3 ){ @-->
                     <span class="huodong_price">活动价: <!--@php echo $goods['timeprice']; @--></span>
                     <!--@php } @-->
-                    <span class="good_cross">跨境</span>
                 </div>
                 <div class="good_title"><!--@php  echo $goods['title'];@--></div>
                 <p class="pro-name1"><strong></strong></p>
                 <div class="good_shuoming">
-                    <p>运 费：<span><!--@php if($goods['issendfree'] == 1){ echo "商家免邮"; }else{ echo $depot['displayorder'].'¥';} @--> (<!--@php echo $promotion['description']; @-->)</span></p>
-                    <p>服 务：<span>本商品由 <u><!--@php echo $goods['depot'];@--></u> 发货</span></p>
-                    <p>税 率：<span><!--@php if(empty($tax)){ echo "本商品适用税率为免费"; }else{ echo $tax;} @--></span></p>
+                    <p>运 费：<span><!--@php if($goods['issendfree'] == 1){ echo "商家免邮"; }else{ echo $depot['kuaidi'].' — '.$depot['displayorder'].'¥';} @--> (<!--@php echo $promotion['description']; @-->)</span></p>
+                    <p>服 务：<span>本商品由 <u><!--@php echo $depot['name'];@--></u> 发货</span></p>
                     <input type="hidden" class="hide_dish" value="<!--@php echo $_GP['id'];@-->">
                     <input type="hidden" class="kucun" value="<!--@php echo $goods['total'];@-->">
                     <input type="hidden" class="has_add" value="0">
                 </div>
             </div>
-
-
-            <!--有卖家显示卖家信息-->
-            <!--@php if($saller_openid){ @-->
-            <p class="pro-name1"><strong></strong></p>
-            <!-- 商家 -->
-            <div class="good_shoper">
-                <div class="shoper_pic">
-                    <img src="<!--@php if(!empty($shopInfo['logo'])){ echo $shopInfo['logo']; }else{ echo '__RESOURCE__/openshop/images/face.png'; } @-->" alt="">
-                </div>
-                <div class="shop_name">
-                    <p style="margin-top:10px;"><!--@php echo $shopInfo['shopname']; @--></p>
-                    <p><!--@php if(empty($shopInfo['area'])){ echo "地区暂无"; }else{ echo $shopInfo['area'];} @--></p>
-                </div>
-                <div class="go_home">
-                    <a href="<!--@php echo create_url('mobile',array('name'=>'shopwap','do'=>'openshop_home','accesskey'=>$_GP['accesskey'])); @-->" class="btn btn-default btn-xs" role="button">进店逛逛</a>
-                </div>
-            </div>
-            <!--@php } @-->
-
-            <!--商家管理的话显示分销说明-->
-            <!--@php if(!empty($toshangjia)){ @-->
-            <p class="pro-name1"><strong></strong></p>
-            <div class="fenxiao_shuoming">
-                <div class="fexiao_l" style="border-right: 1px solid #F5F5F5;"><img src="__RESOURCE__/recouse/images/daixiao.png" class="daixiao_shuoming"><span>代销说明</span></div>
-                <div class="fexiao_r"><img src="__RESOURCE__/recouse/images/peixun.png" alt=""><span>商家培训</span></div>
-            </div>
-            <!--@php } @-->
         </div>
     </section>
 
@@ -567,7 +537,7 @@
     <!-- 尾部 -->
     <div class="foot_menu">
         <div class="foot_left">
-            <div class="home"><a href="<!--@php  echo mobile_url('shopindex')@-->" ><img src="__RESOURCE__/recouse/images/home_page.png" width="19px" height='16px'><span>主页</span></a></div>
+            <div class="home"><a href="<!--@php  echo mobile_url('index')@-->" ><img src="__RESOURCE__/recouse/images/home_page.png" width="19px" height='16px'><span>主页</span></a></div>
             <div class="collect"><a href="javascript:;" id="shoucan" data-url=""><img src="__RESOURCE__/recouse/images/shoucan.png" width="18px" height='16px'><span>收藏</span></a></div>
             <div class="qq_kefu">
                 <!--@php  if ( is_array($qqarr) ){ $num = mt_rand(0,count($qqarr)-1); $qq_num=$qqarr[$num]; }@-->
@@ -576,14 +546,8 @@
         </div>
         <div class="foot_right">
             <input type="hidden" id="accesskey" value="<!--@php if(!empty($_GP['accesskey'])){ echo $_GP['accesskey']; }@-->">
-
-            <!--@php if(empty($toshangjia)){ @-->
             <div class="add_gouwuche"><a href="javascript:;" id="add_gouwuche">加入购物车</a></div>
             <div class="liji_buy"><a href="javascript:;">立即购买</a></div>
-            <!--@php }else{ @-->
-            <div class="shangxiajia" data-status="<!--@php echo $dish_shangjia_status['status']; @-->"><a href="javascript:;"><!--@php if(empty($dish_shangjia_status['status'])){ echo '上架代销';}else{ echo '下架商品';} @--></a></div>
-            <div class="to_share"><a href="javascript:;">立即分享</a></div>
-            <!--@php } @-->
         </div>
 
     </div>
@@ -649,13 +613,6 @@
 </div>
 
 <script src="__RESOURCE__/recouse/share/js/jquery.share.min.js"></script>
-<!--
-<script src="__RESOURCE__/recouse/js/appwakeup.js"></script>
-<script>
-    window.onload = function(){
-        appWakeUp("<?php echo create_url('mobile', array('name'=>'shopwap','do'=>'appdown','op'=>'get_appversion'));?>",1);
-    }
-</script>-->
 <script>
     $(document).ready(function(){
         $(".img-list img").click(function(){

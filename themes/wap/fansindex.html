@@ -302,35 +302,7 @@
 
     <div class="panel member-nav">
         <ul class="side-nav">
-           <!--@php  if($is_login){@-->           	
-            <li>
-            	<a href="<!--@php  echo mobile_url('free')@-->">            		
-            		<span class="text">我的免单</span>
-            		<span class="r_content r_icon"> <i class="icon-angle-right"></i> </span>
-            		<span class="r_content">每周一开出免单</span>
-            	</a>
-            </li>
-            <li>
-                <a href="<!--@php  echo mobile_url('iclub',array('from'=>'fansindex','op'=>'list'))@-->">                    
-                    <span class="text">积分商城</span>
-                    <span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-                    <span class="r_content">0元好礼，尽在积分商城</span>
-                </a>
-            </li>
-			<li>
-				<a href="<!--@php  echo mobile_url('identity')@-->">					
-					<span class="text">实名认证</span>	
-					<span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-					<span class="r_content"> 海淘清关用，100%保密 </span>
-				</a>
-			</li>
-			<li style="display:none;">
-				<a href="<!--@php  echo mobile_url('rechargegold')@-->">							
-					<span class="text">余额充值</span>
-					<span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-					<span class="r_content">  </span>
-				</a>
-			</li>
+
             <li>
             	<a href="<!--@php  echo mobile_url('outchargegold')@-->">           		           		
             		<span class="text">余额提现</span>
@@ -345,106 +317,29 @@
 					<span class="r_content"><!--@php echo $address; @--></span>
 				</a>
 			</li>
-            
-              <!--@php  }else{@-->            
-            <li>
-            	<a href="<!--@php  echo mobile_url('help')@-->">
-            		<i class="icon-question-sign icon_i"></i>
-            		<span class="text">帮助说明</span>  
-            		<span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-					<span class="r_content"></span>
-            	</a>
-            </li>
- 		<!--@php } @-->
-             
         </ul>
     </div>
 
-    <div class="panel member-nav">
-        <ul class="side-nav">
 
-            <li>
-                <a href="<!--@php  echo mobile_url('member',array('from'=>'fansindex','op'=>'collect'))@-->">                  
-                    <span class="text">我的购物习惯</span>
-                    <span class="r_content  r_icon"><i class="icon-angle-right"></i> </span>
-                    <span class="r_content"> 只为更了解您 </span>
-                </a>
-            </li>
-            <!--@php if(!empty($hobby)){ @-->
-            <li>
-                <a href="<!--@php  echo mobile_url('member',array('from'=>'fansindex','op'=>'collect'))@-->">                         
-                    <span class="text">形象</span>
-
-                    <span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-                    <span class="member_info"><!--@php if($hobby['sex'] == 1){ echo "神秘男士"; }else{ echo "神秘女士"; }  @--></span>
-                    <span class="r_content"> </span>
-                </a>
-            </li>
-            <li>
-                <a href="<!--@php  echo mobile_url('member',array('from'=>'fansindex','op'=>'collect'))@-->">
-                    <!--@php $to_buy = array(); if(!empty($hobby['tobuy'])){ $to_buy = explode(',',$hobby['tobuy']); } @-->
-                    <span class="text">购买对象</span>
-                    <span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-                    <span class="member_info">
-                        <!--@php $str = ''; foreach($to_buy as $buy_one){ $str .= $buyArr[$buy_one].'，'; }  echo rtrim($str,'，'); @-->
-                    </span>
-                    <span class="r_content"> </span>
-                </a>
-            </li>
-            <li>
-                <a href="<!--@php  echo mobile_url('member',array('from'=>'fansindex','op'=>'collect'))@-->">                         
-                    <span class="text">看重的功能</span>
-                    <span class="r_content  r_icon"><i class="icon-angle-right"></i></span>
-                    <span class="r_content"> </span>
-                </a>
-                <!--@php $to_fun = array(); if(!empty($hobby['fun'])){ $to_fun = explode(',',$hobby['fun']); } @-->
-                <div class="clearfix">
-                    <!--@php foreach($to_fun as $fun_one){ @-->
-                    <div class="member_info_div"><!--@php echo $funArr[$fun_one] @--></div>
-                    <!--@php } @-->
-                </div>
-            </li>
-            <li>
-                <a href="<!--@php  echo mobile_url('member',array('from'=>'fansindex','op'=>'collect'))@-->">                         
-                    <span class="text">喜欢的商品</span>
-                    <span class="r_content  r_icon"> <i class="icon-angle-right"></i> </span>
-                    <span class="r_content"> </span>
-                </a>
-                <div class="clearfix">
-                    <!--@php foreach($cat_arr as $cat_one){ @-->
-                    <div class="member_info_div"><!--@php echo $cat_one; @--></div>
-                    <!--@php } @-->
-                </div>
-            </li>
-            <!--@php } @-->
-        </ul>
-    </div>
-
-  	<!--@php   if(count($fansindex_menu_list)>0) { if(is_array($fansindex_menu_list)) { @-->
-   <!--  <div class="panel member-nav">
-       <ul class="side-nav"> -->
-        	<!--@php foreach($fansindex_menu_list as $item) { @-->
-        	<!-- <li><a href="@php  echo $item['url'] @">&nbsp;&nbsp;<i class="@php  echo empty($item['icon'])?"icon-ok":$item['icon'] @ icon_i"></i>&nbsp;<span class="text">@php  echo $item['tname'] @</span><i class="arrow"></i></a></li> -->
-				<!--@php  }@-->
-<!--                </ul>
-    </div> -->
-    	<!--@php }  }@-->
-
-	
-    
      <div class="panel member-nav">
         <div class="footer-list">
             <ul class="side-nav">
                 <li>
-                    <a href="<!--@php  echo mobile_url('miyou')@-->">
-                        <img src="__RESOURCE__/recouse/images/icon-friends.png">
-                        <div>觅友圈</div>
+                    <a href="<!--@php  echo mobile_url('outchargegold')@-->">
+                        <img src="__RESOURCE__/recouse/images/icon-heart.png">
+                        <div>余额提现</div>
                     </a>
                 </li>
                 <li>
-                    <a href="<!--@php  echo mobile_url('miyou',array('op'=>'invite'))@-->"> 
+                    <a href="<!--@php  echo mobile_url('account');@-->">
                         <img src="__RESOURCE__/recouse/images/icon-envite.png">
-                        <div>邀请好友</div>
+                        <div>账户安全</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="<!--@php  echo mobile_url('address',array('from'=>'fansindex'))@-->">
+                        <img src="__RESOURCE__/recouse/images/gouwuche.png">
+                        <div>收货地址</div>
                     </a>
                 </li>
                 <li>
@@ -456,7 +351,7 @@
                 <li>
                     <a href="<!--@php  echo mobile_url('member_pwd')@-->">
                         <img style="width:20px;" src="__RESOURCE__/recouse/images/icon-key.png">
-                        <div>修改密码</div>
+                        <div>密码修改</div>
                     </a>
                 </li>
                 <li>
