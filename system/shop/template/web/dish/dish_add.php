@@ -403,8 +403,10 @@
 					<div class="col-sm-2">
 						<select id="J_type" name="type" class="form-control">
 							<option value="0" <?php if($item['type']==0){?>selected="selected"<?php  } ?>>一般商品</option>
+							<!--
 							<option value="1" <?php if($item['type']==1){?>selected="selected"<?php  } ?> >团购商品</option>
 							<option value="2" <?php if($item['type']==2){?>selected="selected"<?php  } ?>>秒杀商品</option>
+							-->
 							<option value="3" <?php if($item['type']==3){?>selected="selected"<?php  } ?>>今日特价商品</option>
 							<option value="4" <?php if($item['type']==4){?>selected="selected"<?php  } ?>>限时促销</option>
 						</select>
@@ -571,7 +573,7 @@
 					<label class="col-sm-2 control-label no-padding-left" >详细描述：<br/><span style="font-size:12px">(建议图片宽不超过640px)</span></label>
 
 					<div class="col-sm-9">
-						<textarea  id="container" style="min-height: 500px;" name="content" ><?php  echo $item['content'];?></textarea>
+						<textarea  id="container" style="min-height: 500px;" name="content" ><?php  echo htmlspecialchars_decode($item['content']);?></textarea>
 
 					</div>
 				</div>
@@ -732,6 +734,11 @@ function fillform()
 	if(parseInt($('#J_type').val())!=0 && ($('#datepicker_timestart').val()=='' || $('#datepicker_timeend').val()==''))
 	{
 		alert('请设置活动时间！');
+		return false;
+	}
+	if(parseInt($('#J_type').val())!=0 && $('#timeprice').val()=='')
+	{
+		alert('请活动价格！');
 		return false;
 	}
 	if($('.fileupload-preview img').length < 1){

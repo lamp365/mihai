@@ -99,8 +99,10 @@
 						   <select name="type" >
 							   <option value="-1" selected>类型</option>
 							   <option value="0" <?php if($_GP['type']===0){?>selected="selected"<?php  } ?>>一般商品</option>
+							   <!--
                                <option value="1" <?php if($_GP['type']==1){?>selected="selected"<?php  } ?> >团购商品</option>
                                <option value="2" <?php if($_GP['type']==2){?>selected="selected"<?php  } ?>>秒杀商品</option>
+                               -->
                                <option value="3" <?php if($_GP['type']==3){?>selected="selected"<?php  } ?>>今日特价商品</option>
 						       <option value="4" <?php if($_GP['type']==4){?>selected="selected"<?php  } ?>>限时促销</option>
 						   </select>
@@ -131,17 +133,17 @@
 		</form>
 	<table class="table table-striped table-bordered table-hover">
   <tr>
-    <th class="text-center" >
+    <th class="text-center" style="width: 90px;">
     	<input type="checkbox" onclick="selectAll()" id="selectAll"/>
     	宝贝ID
     </th>
-    <th class="text-center" >首图</th>
-	<th class="text-center" >货号</th>
-    <th class="text-center" width="300">产品名称</th>
-	<th class="text-center" ><a href="<?php echo $sorturl."&orderprice=".$oprice; ?>">促销价</a></th>
-	<th class="text-center"><a href="<?php echo $sorturl."&ordertprice=".$otprice; ?>">活动价</a></th>
-	<th class="text-center" ><a href="<?php echo $sorturl."&ordertot=".$otot; ?>">库存</a></th>
-    <th class="text-center" >状态</th>
+    <th class="text-center"  style="width: 80px;">首图</th>
+	<th class="text-center"  style="width: 150px;">货号</th>
+    <th class="text-center" >产品名称</th>
+	<th class="text-center" style="width: 80px;"><a href="<?php echo $sorturl."&orderprice=".$oprice; ?>">促销价</a></th>
+	<th class="text-center" style="width: 80px;"><a href="<?php echo $sorturl."&ordertprice=".$otprice; ?>">活动价</a></th>
+	<th class="text-center" style="width: 80px;"><a href="<?php echo $sorturl."&ordertot=".$otot; ?>">库存</a></th>
+    <th class="text-center" style="width: 130px;">状态</th>
     <th class="text-center" >操作</th>
   </tr>
 
@@ -155,7 +157,7 @@
 				        <img src="<?php  echo download_pic($item['thumb'],40,40);?>" height="40" width="40">
 				        </p>
 				    </td>
-					<td style="text-align:center;"><?php  echo $item['goodssn']; ?> </td>
+					<td style="text-align:center;"><?php  echo $item['productsn']; ?> </td>
                 	<td style="text-align:center;" class="product-title">
                 		<input type="text" name="" class="modify-title form-control modify-input" ajax-title-id="<?php  echo $item['id'];?>">
                 		<a target="_blank" class="product-title-a" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $item['id']))?>"><?php  echo $item['title'];?></a>
@@ -166,6 +168,7 @@
 
 					<td style="text-align:center;" class="product-stock">
 						<input type="text" name="" class="modify-stock form-control modify-input" ajax-stock-id="<?php  echo $item['id'];?>"><span><?php  echo $item['total'];?></span>
+						<i class="modify-icon icon-pencil modify"></i>
 					</td>											
 
 					<td style="text-align:center;">
@@ -233,8 +236,8 @@
 		$(this).hide();
 	});
 	//修改库存操作
-	$(".product-stock span").on("click",function(){
-		var stockVal = $(this).text();
+	$(".product-stock .modify").on("click",function(){
+		var stockVal = $(this).prev().text();
 		$(this).siblings(".modify-stock").show().focus();
 		$(this).siblings(".modify-stock").val(stockVal);
 	});

@@ -257,7 +257,7 @@ function changeUeditImgToAli($dish_content,$alidir=''){
         // 将本地的图片上传到阿里云上
         if ( strstr($oldimg_value, 'ueditor' )){
 
-            $picurl   = rtrim(WEBSITE_ROOT,'/').$oldimg_value;
+            $picurl   = rtrim(WEB_ROOT,'/').$oldimg_value;
             if(file_exists($picurl)){
                 $newimg   = aliyunOSS::putObject($picurl,'',$alidir);
 
@@ -267,7 +267,6 @@ function changeUeditImgToAli($dish_content,$alidir=''){
                 $unlink_pic = ".".$oldimg_value;  //相对路径
                 @unlink ($unlink_pic);
             }
-
         }
     }
     return $dish_content;

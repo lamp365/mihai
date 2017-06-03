@@ -1,4 +1,4 @@
-<?php			
+<?php
 		$pindex = max(1, intval($_GP["page"]));
 		$carttotal = $this->getCartTotal();
 		$psize =  20;
@@ -103,9 +103,9 @@
 	  if ( !empty($_GP['bid']) ){
             $bid = intval($_GP['bid']);
 			$brand = mysqld_select("SELECT a.*,b.name,b.icon as cicon FROM ".table('shop_brand')." a left join ".table('shop_country')." b on a.country_id = b.id where a.id = ".$bid);
-			$brand['content'] = strip_tags($brand['content']);
-			$brand['num'] = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table($table) . " as a left join ".table('shop_goods')." as b on a.gid = b.id WHERE brand = :beid  and a.deleted=0  AND a.status = '1' ", array(':beid'=>$bid));
-            $condition .= " AND b.brand = '{$bid}'";
+            $brand['content'] = strip_tags($brand['content']);
+			$brand['num'] = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table($table) . " as a  WHERE a.brand = :beid  and a.deleted=0  AND a.status = '1' ", array(':beid'=>$bid));
+            $condition .= " AND a.brand = '{$bid}'";
 	  }
       if (!empty($_GP['keyword'])) {
              $condition .= " AND a.title LIKE '%{$_GP['keyword']}%' ";
@@ -135,7 +135,6 @@
 			 'order' => $sortfield
 	  ));
       if ( empty($list) && !empty($_GP['keyword'])){
-             $word = get_word($_GP['keyword']);
 			 if ( !empty($word) ){
 		     foreach ($word as $word_value ) {
 	               $keys[] = " b.title like '%".$word_value."%' ";
