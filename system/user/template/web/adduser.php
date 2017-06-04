@@ -54,38 +54,55 @@
         <div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > <font color="red">*</font>用户名：</label>
 
-			<div class="col-sm-9">
-				 <input type="text" name="username"  class="col-xs-10 col-sm-2" />
+			<div class="col-sm-3">
+				 <input type="text" name="username"  class="form-control" />
 			</div>
 		</div>
 	 <div class="form-group">
 		 <label class="col-sm-2 control-label no-padding-left" > 手机号：</label>
 
-		 <div class="col-sm-9">
-			 <input type="text" name="mobile"  class="mobile-input col-xs-10 col-sm-2" />
+		 <div class="col-sm-3">
+			 <input type="text" name="mobile"  class="mobile-input form-control" />
+		 </div>
+		 <div class="col-sm-2">
 			 <div class="btn btn-info sm-btn check-code">验证码</div>
 		 </div>
 	 </div>
 	 <div class="form-group">
 		 <label class="col-sm-2 control-label no-padding-left" > 验证码：</label>
 
-		 <div class="col-sm-9">
-			 <input type="text" name="code"  class="mobile-input col-xs-10 col-sm-2" />
+		 <div class="col-sm-3">
+			 <input type="text" name="code"  class="mobile-input form-control" />
 		 </div>
 	 </div>
 	   <div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>新密码：</label>
 
-			<div class="col-sm-9">
-				   <input type="password"  name="newpassword"  class="col-xs-10 col-sm-2" />
+			<div class="col-sm-3">
+				   <input type="password"  name="newpassword"  class="form-control" />
 			</div>
 		</div>
 									
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>确认密码：</label>
 
-			<div class="col-sm-9">
-				<input type="password"  name="confirmpassword" class="col-xs-10 col-sm-2"  />
+			<div class="col-sm-3">
+				<input type="password"  name="confirmpassword" class="form-control"  />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>角色分组：</label>
+
+			<div class="col-sm-3">
+				<select  name="rolers_id" class="form-control" >
+					<option value="0">选择角色分组</option>
+					<?php
+						foreach($all_rolers as $one){
+							echo "<option value='{$one['id']}'>{$one['name']}</option>";
+						}
+					?>
+				</select>
 			</div>
 		</div>
 

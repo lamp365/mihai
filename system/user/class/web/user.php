@@ -140,6 +140,9 @@ if ($operation == 'adduser') {
 		{
 			message('用户名或密码不能为空',refresh(),'error');
 		}
+		if(empty($_GP['rolers_id'])){
+			message('请选择角色分组',refresh(),'error');
+		}
 		$account = mysqld_select('SELECT * FROM '.table('user')." WHERE  username=:username" , array(':username'=> $_GP['username']));
 
 		if(empty($account['id']))
@@ -189,6 +192,13 @@ if ($operation == 'adduser') {
 			}
 			//注册管理员
 			mysqld_insert('user', $data);
+			$uid = mysqld_insertid();
+			//插入跟角色对应的关系
+			mysqld_insert('rolers_relation',array(
+				'rolers_id' => $_GP['rolers_id'],
+				'uid'       => $uid,
+				'createtime'=> time(),
+			));
 			message('新增用户成功！',web_url('user'),'succes');
 		}else
 		{
@@ -217,6 +227,13 @@ if ($operation == 'adduser') {
 		}else{
 			die(showAjaxMess(200,array('tit'=>'发送成功','des'=>'注册后，该手机号和密码同时会是商城普通用户')));
 		}
+	}
+
+	//找权限分组
+	$all_rolers = mysqld_selectall("select * from ".table('rolers')." where type=1");
+	if(empty($all_rolers)){
+		$url = web_url('user',array('op'=>'rolerlist'));
+		message('请选创建角色分组',$url,'error');
 	}
 	include page('adduser');
 
