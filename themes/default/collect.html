@@ -7,6 +7,7 @@
     <title>我的收藏</title>   
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
 	<link rel="shortcut icon" href="favicon.ico"/>
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/collect.css"/>
 	<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
 	<script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
@@ -84,8 +85,6 @@
  
 
 <script>
-	$(".fix_gundon").hide();
-	
 	//点击删除,出现遮罩层
 	$(".have_collect .del_icon").on("click",function(){
 		$(this).siblings(".cover").fadeIn();
