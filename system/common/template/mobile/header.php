@@ -119,7 +119,10 @@
 	   </div>
 	   <div class="re">
 	   		<ul class="re-list">
+				<!--
 	   			<li><a href="<?php  echo mobile_url('iclub',array('name'=>'shopwap','op'=>'display')); ?>" target="_blank"><i class="icon-flag" style="margin-right:5px;color: #E31436"></i>每日签到</a></li>
+				-->
+				<li><a href="<?php echo mobile_url('merchant',array('name'=>'shopwap')) ?>" target="_blank">商家入驻</a></li>
 	   			<li><a href="<?php  echo mobile_url('myorder',array('name'=>'shopwap')); ?>" target="_blank">我的订单</a></li>
 	   			<!-- <li class="re-collection">
 	   				<a href="javascript:;" class="re-collection-a">我的收藏<i class="re-icon icon-sort-down"></i></a>

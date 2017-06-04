@@ -10,10 +10,10 @@
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
-	<link type="text/css" rel="stylesheet"href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css">
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css">
 	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
-	<link type="text/css" rel="stylesheet"href="__RESOURCE__/recouse/css/font-awesome.min.css" />
-	<link type="text/css" rel="stylesheet"href="__RESOURCE__/mobile/style/common.mobile.css">
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/common.mobile.css">
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
@@ -120,7 +120,7 @@
 		right: -8px;
 		width: 17px;
 		height: 17px;
-		background: url('__RESOURCE__/recouse/images/close_icon.png') no-repeat -25px 0;
+		background: url('../__RESOURCE__/recouse/images/close_icon.png') no-repeat -25px 0;
 		cursor: pointer;
 	}
 	.btn:empty {
@@ -216,7 +216,7 @@
 </style>
 
 
-<link type="text/css" rel="stylesheet"href="__RESOURCE__/mobile/style/style.css">
+<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
 
 <body>
 <!--@php  include page('vip_header');@-->
@@ -233,7 +233,7 @@
 		<div class="state-current">
 			<div class="state-wrap">
 				<div class="top-wrap">
-					<img src="__RESOURCE__/recouse/images/attention.png"  style="width: 21px;height: 23px;margin-top: 10px;margin-right: 10px;">
+					<img src="__RESOURCE__/recouse/images/attention.png" style="width: 21px;height: 23px;margin-top: 10px;margin-right: 10px;">
 					<h3>当前状态：
 						<span><!--@php echo $status_ln[$item['status']]; @--></span>
 					</h3>
@@ -299,18 +299,18 @@
 			</div>
 			<span class="appDownload clearfix">
 				<span class="code">
-					<img src="images/weixin.jpg" height="60" />
+					<img src="/images/weixin.jpg" height="60" />
 				</span>
-				<a href="javascript:void(0)" target="_blank" class="textLink">关注觅海公众号，<br>实时跟踪订单物流</a>
+				<a href="javascript:void(0)" target="_blank" class="textLink">关注商城公众号，<br>获最新活动</a>
 			</span>
 		</div>
-		
+
 		<div style="padding: 10px;margin: 20px 0;border: solid 1px gainsboro;background: #FFF8DB;+width: 1000px;">
-				<img src="__RESOURCE__/recouse/images/laba.png"style="width: 25px;height: 25px;"/>
+				<img src="__RESOURCE__/recouse/images/laba.png" style="width: 25px;height: 25px;"/>
 				<p style="font-weight: bold;color: black;color: red;display: inline-block;">安全提醒：</p>
 				<p style="padding-left: 30px;">
-					请不要将银行卡、密码、手机验证码提供给他人，觅海不会通过任何非官方电话、QQ、微博、微信与您联系。
-					任何以“缺货、海关卡单、商品检验不合格、假货”等理由要求您点击山寨觅海链接进行退款或取消订单的都是骗子！
+					请不要将银行卡、密码、手机验证码提供给他人，我们不会通过任何非官方电话、QQ、微博、微信与您联系。
+					任何以“缺货、海关卡单、商品检验不合格、假货”等理由要求您点击链接进行退款或取消订单的都是骗子！
 				</p>
 				
 		</div>
@@ -332,7 +332,7 @@
 					订单金额：
 						<span class="false"> <!--@php  if($item['dispatchprice']<=0) { @-->
 							<!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@--> 元 <!--@php  } else { @--> <!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@-->
-						元 (含运费:<!--@php echo $item['dispatchprice']; @-->/含进口税: <!--@php  echo $item['taxprice'];@--> 元) <!--@php  } @-->
+						元 (含运费:<!--@php echo $item['dispatchprice']; @-->) <!--@php  } @-->
 				</span> <!--@php  if($item['hasbonus']>0) { @--> <span style="color: green">
 						( 已优惠：<!--@php  echo $item['bonusprice'];@--> 元)
 				</span> <!--@php  }  @-->
@@ -354,19 +354,14 @@
 					<!--@php if($item['status'] == 3) {  @-->
 						<span><!--@php  echo date('Y-m-d H:i', $item['completetime'])@--></span>
 					<!--@php }else{ @-->
-						<span style="color: red;">记得要确认收货，可参与免单</span>
+						<span style="color: red;">记得确认收货，评论得积分</span>
 					<!--@php } @-->
 				</p>
 				<p>
 					订单状态：
 					<span style="color:red"><!--@php echo $status_ln[$item['status']]; @--></span>
 				</p>
-				<!--@php if($item['ordertype'] !=0 ){ @-->
-				<p>
-					订单类型：
-					<span><!--@php echo getGoodsType($item['ordertype']); @--></span>
-				</p>
-				<!--@php } @-->
+
 				<!--@php if($item['ordertype'] ==1 ){ @-->
 				<p>
 					组团状态：
@@ -398,7 +393,6 @@
 				<ul>
 					<li class="img">商品图片</li>
 					<li class="tit" style="text-align: center;width: 270px;">商品标题</li>
-					<li class="ps">所属分类</li>
 					<li class="ps">商品价格</li>
 					<li class="num">商品数量</li>
 					<li class="ot">评论</li>
@@ -410,25 +404,30 @@
 			<div class="myoder-detail">
 			    <ul style="overflow: hidden;">
                  <li class="img">
-					 <a href="<!--@php  echo mobile_url('detail', array('id' => $g['aid']))@-->"  target="_blank" ><img src="<!--@php  echo $g['thumb'];@-->" width="160"></a>
+					 <a href="<!--@php  echo mobile_url('detail', array('id' => $g['goodsid']))@-->"  target="_blank" ><img src="<!--@php  echo $g['thumb'];@-->" width="160"></a>
 				</li>
 					 <li class="tit" style="width: 270px;">
-					 	<a  target="_blank" href="<!--@php  echo mobile_url('detail', array('id' => $g['aid']))@-->" style="text-align: center;">
+					 	<a  target="_blank" href="<!--@php  echo mobile_url('detail', array('id' => $g['goodsid']))@-->" style="text-align: center;">
 							<!--@php  echo $g['title'];@-->
 						</a>
 						 <br/>						 
 						 &nbsp;
-						 <span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($g['shop_type']); }@--></span>
+						 <span>
+							 <?php if(!empty($g['spec_key_name'])){
+									$spec_key_name = json_decode($g['spec_key_name'],true);
+									$spec_str = '';
+									foreach($spec_key_name as $spec_key => $spec_name){
+										$spec_str .= $spec_key.' : '.$spec_name.' | ';
+									}
+									echo rtrim($spec_str,'|');
+								}
+							?>
+						 </span>
 					 </li>
-					 <li class="ps"><!--@php  echo getGoodsCategory($g['pcate']);@--></li>
 					 <li class="ps"><span>
-							<!--@php   echo $g['marketprice'];@--> 元<!--@php  if($g['unit']) { @-->
-							/ <!--@php  echo $g['unit'];@-->
-							<!--@php  } @-->
+							<!--@php   echo $g['marketprice'];@--> 元
 						</span></li>
-					 <li class="num"><span class="num"><!--@php  echo $g['order_total'];@-->
-							<!--@php  if($g['unit']) { @--> <!--@php  echo $g['unit'];@-->
-							<!--@php  } @--></span></li>
+					 <li class="num"><span class="num"><!--@php  echo $g['order_total'];@--></span></li>
 					 <li class="ot">
 					<!--@php  if(empty($g['iscomment']) && ($item['status'] == 3)) { @-->
 						 <!--@php if($g['order_type'] == 3 && in_array($g['order_status'],array(-2,-1))){ @-->
@@ -637,7 +636,7 @@
 <script>
 	$(".shouhuo_link").click(function(){
 		var url = "<!--@php echo mobile_url('backgood',array('op'=>'shouhuo'));@-->";
-		url += "&orderid="+$(this).data('orderid')+ "&order_good_id="+$(this).data('ordergoodid');
+		url += "?orderid="+$(this).data('orderid')+ "&order_good_id="+$(this).data('ordergoodid');
 		$("#shouhuo").modal('show');
 		$("form[name='shouhuo_form']").attr('action',url);
 	})
@@ -653,7 +652,7 @@
 
 	$(".tuikuang_link").click(function(){
 		var url = "<!--@php echo mobile_url('backgood',array('op'=>'shouhuo','type'=>3));@-->";
-		url += "&orderid="+$(this).data('orderid')+ "&order_good_id="+$(this).data('ordergoodid');
+		url += "?orderid="+$(this).data('orderid')+ "&order_good_id="+$(this).data('ordergoodid');
 		$("#tuikuang").modal('show');
 		$("form[name='tuikuang_form']").attr('action',url);
 	})

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>退换单</title>
+	<meta charset="utf-8">
+	 <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<script type="text/javascript" src="__RESOURCE__/mobile/script/bootstrap.min.js"></script>
+
+	<link href="__RESOURCE__/recouse/css/bjcommon.css?v=1.1" rel="stylesheet" type="text/css" />
+	<style type='text/css'>
+		.my_nav ul{display:box;display:-ms-box;display:-webkit-box;display:flex;display:-ms-flexbox;display:-webkit-flex}
+		.my_nav li{display:block;flex:1;-ms-flex:1;-webkit-flex:1;box-flex:1;-ms-box-flex:1;-webkit-box-flex:1;
+					width: 245px\9;float: left;
+		}
+		.my_nav a:before{content:'\20';display:block}.layer .action a,.order_head .oh_btn.bg_1{background:#F3F3F3;color:#fff;border:1px solid transparent}
+		.my_nav{width:100%;margin-bottom: 0px;}
+		.my_nav ul{overflow:hidden}
+		.my_nav a{position:relative;display:block;height:50px;line-height:52px;text-align:center;color:#666;border-bottom:1px solid #ddd;padding-bottom:2px;font-size:16px;}
+		.my_nav a:before{width:1px;height:20px;position:absolute;left:-1px;top:50%;margin-top:-10px;background:#ddd}
+		.my_nav li.cur a{padding-bottom:0;border-bottom:2px solid #e4393c;color:#e4393c;font-weight:bold;}
+		.btn:empty {
+			display: none;
+		}
+		.myoder .myoder-hd .btn{color:#ffffff;}
+		.fix_gundon .to_gowuche,.fix_gundon .to_erweima,.fix_gundon .to_top {
+			height: 54px;
+		}
+	</style>
+	
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/style.css">
+
+</head>
+
+<body style="padding-top:0px;margin:0 auto;">
+<!--@php  include page('vip_header');@-->
+<div class="new-fansindex-wrap">
+<div class="viewport new-fansindex">
+    
+	<div class="r-member">
+		<div class="crumbs">
+	         <span>当前位置：</span>
+	         <a style="color:#000;" href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a><i style="margin-left: 5px;" class="icon-angle-right"></i>
+	         <i>我的订单</i>
+	   </div>
+		<div class="main" style="background:#fff;border:1px solid #e4e4e4;padding:0 15px;">
+			<div class="my_nav order_nav">
+			        <ul id="nav">
+			            <li <!--@php  if($status == 1) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('op'=>'returnDish','status'=>1))@-->">退换申请</a></li>
+			            <li <!--@php  if($status == 23) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('op'=>'returnDish','status'=>23))@-->">退换处理中</a></li>
+			            <li <!--@php  if($status==4) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('op'=>'returnDish','status'=>4))@-->">退换成功</span></a></li>
+			            <li <!--@php  if($status==-1) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('op'=>'returnDish','status'=>-1))@-->">退换失败</span></a></li>
+			        </ul>
+			 </div>
+			 <!--搜索订单,订单状态，下单时间-->
+			 <!--<div class="searchOrder">			 
+			 		<input type="text"class="inputSearch" placeholder="输入商品名称或订单号搜索"/>
+			 		<input type="button" name="" class="searchBtn" value="搜索"/>
+			 	<div class="OrderTime">
+				 	下单时间：
+				 	<select>
+				 		<option>近三个月</option>
+				 		<option>近六个月</option>
+				 		<option>2016年</option>
+				 	</select>
+			 	</div>
+			 	<div class="orderState">
+			 		订单状态：
+			 		<select>
+			 			<option>全部</option>
+			 			<option>等待买家付款</option>
+			 			<option >代发货</option>
+			 			<option>已发货</option>
+			 			<option>交易完成</option>
+			 			<option>交易失败</option>
+			 			<option>订单关闭</option>
+			 		</select>
+			 	</div>
+			 </div>-->
+		    <!--@php  if(count($listorder)<=0){ @-->
+			<div class="myoder" style='text-align:center;color:#aaa;padding:30px;border: none;'>
+				您当前没有任何订单！
+			</div>	
+		    <!--@php } @-->
+			<div style='margin-bottom:40px;'>
+				  <ul class="persViewTit clearfix">
+		                <li class="h-text h-goods">&nbsp;&nbsp;&nbsp;商品</li>
+	                    <li class="h-text h-total">总计(元)</li>
+	                    <li class="h-text h-status">订单状态</li>
+	                    <li class="h-text h-operate">商品操作</li>
+	             </ul>
+				 <!--@php foreach($listorder as $item) {  @-->
+				<div class="myoder" style="margin-bottom: 20px;">
+					<div class="myoder-hd">
+						<span class="pull-left">订单编号：<!--@php  echo $item['ordersn'];@--></span>&nbsp;&nbsp; <span class="btn btn-xs btn-info"><!--@php if($item['isdraw']==1){ echo '抽奖团'; }else{ echo getGoodsType($item['ordertype']); }@--></span>
+						<span class="pull-right">
+							<!--@php if($item['status'] == 2){ echo "<span>[确认收货 评论得积分]  </span>"; } @-->
+							<!--@php  echo date('Y-m-d H:i', $item['createtime'])@-->
+						</span>
+					</div>
+					<ul class="listview">
+		                <li class="h-text h-goods">
+						   <!--@php  $goods = $item['goods'];  @-->
+							<div class="img">
+	                            <a href="<!--@php  echo mobile_url('detail', array('id' => $goods['goodsid']))@-->" target="_blank">
+	                            	<img src="<!--@php  echo $goods['thumb'];@-->" width="80" height="80" style="+width: 60px;+height: 60px;">
+	                            </a>
+							</div>
+							<div class="name" style="text-align: left;">
+								<a href="<!--@php  echo mobile_url('detail', array('id' => $goods['goodsid']))@-->"  target="_blank">
+									<p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><!--@php  echo $goods['title'];@--></p>									
+								</a>		
+								<p style="font-size: 12px;">所属分类：<!--@php  echo getGoodsCategory($goods['p1']);@--></p>
+								<p style="font-size: 12px;margin-top: 5px;">规格：
+									<span>
+									<?php if(!empty($goods['spec_key_name'])){
+											$spec_key_name = json_decode($goods['spec_key_name'],true);
+											$spec_str = '';
+											foreach($spec_key_name as $spec_key => $spec_name){
+												$spec_str .= $spec_key.' : '.$spec_name.' | ';
+											}
+											echo rtrim($spec_str,'|');
+										}
+									?>
+									</span>
+								</p>
+							</div>
+						</li>
+                        <li class="h-text h-total">
+							<div class="prices">
+								<span class="false">
+			                        <!--@php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];@--> 元<br/>
+								 	<font style="font-size:10px;color:green">( 已优惠：<!--@php  echo $item['bonusprice'];@--> 元)</font><br/>
+			                        <font style="font-size:10px;">(含运费:<!--@php  echo $item['dispatchprice'];@--> 元) </font> <br/>
+
+							    </span>    						
+							</div>
+                        </li>
+	                    <li class="h-text h-status status">
+	                    	<span class="bts" style="margin-top:10px;">	                    	
+	                    		<!--@php  echo $status_ln[$status]; @-->
+	                    	</span>
+							<!--@php if($stat = showDrawOrderStatue($item)){  @-->
+	                    	<span class="bts">
+	                    		<!--@php echo $stat;@-->
+	                    	</span>
+							<!--@php } @-->
+	                    </li>
+	                    <li class="h-text h-operate operate" style="vertical-align: middle;">
+						    <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail','fromstatus'=>$status))@-->" class="bts" style="margin-top:10px;">订单详情</a> 
+							<!--@php if ($item['ifcustoms'] == 1){ @-->
+						 	<a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'identity','fromstatus'=>$status))@-->" class="bts">清关材料</a>
+							<!--@php } @-->
+							<!--@php if ($item['status'] == 0 && $item['ordertype'] != 1){ @-->
+                            <a href="<!--@php  echo mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'cancelsend','fromstatus'=>$status))@-->" class="bts">取消订单</a>
+							<!--@php } @-->
+						</li>
+					 </ul>
+				</div>
+				<!--@php  } @-->
+				<!--@php  echo  $pager; @-->
+			</div> 				
+	<!--后两个页面到这里结束-->		
+	 </div>	
+  </div><!--r-member到这结束-->
+
+  <div class="l-member"> 
+	 <!--@php include themePage('leftmenu');@-->
+  </div>
+</div>
+</div>
+<!--@php include themePage('footer');@-->
+<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript">
+	
+</script>
+
+<script>
+	$(function(){
+		$(".operate").each(function(){
+			var len = $(this).find("a").length;			
+			if(len == 2){
+				$(this).find("a").css("height","30px");
+				$(this).find("a").css("line-height","30px");
+			}else if(len == 1){
+				$(this).find("a").css("height","60px");
+				$(this).find("a").css("line-height","60px");
+			}else if(len==3){
+				$(this).find("a").css("height"," ");
+				$(this).find("a").css("line-height"," ");
+			}
+		})
+		
+		$(".status").each(function(){
+			var len = $(this).find("span").length;
+			if(len == 2){
+				$(this).find("span").css("height","30px");
+				$(this).find("span").css("line-height","30px");
+			}else if(len == 1){
+				$(this).find("span").css("height","60px");
+				$(this).find("span").css("line-height","60px");
+			}else if(len==3){
+				$(this).find("span").css("height"," ");
+				$(this).find("span").css("line-height"," ");
+			}
+		})
+	})
+</script>
+  </body>
+</html>
+

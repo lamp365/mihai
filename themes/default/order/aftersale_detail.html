@@ -13,8 +13,7 @@
 <link type="text/css" rel="stylesheet"href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css">
 <script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
 <link type="text/css" rel="stylesheet"href="__RESOURCE__/recouse/css/font-awesome.min.css" />
-<link type="text/css" rel="stylesheet"href="__RESOURCE__/mobile/style/common.mobile.css">
-<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" href="favicon.ico"/>
 <script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
 <script type="text/javascript"src="__RESOURCE__/mobile/script/jquery.touchwipe.js"></script>
@@ -112,56 +111,55 @@ select {
 <link type="text/css" rel="stylesheet"href="__RESOURCE__/mobile/style/style.css">
 
 <body>
-	<!--@php  include page('header');@-->
-<div class="viewport">
-	<div class="crumbs">
-         <span>当前位置：</span>
-         <a href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a>&gt;
-         <strong>售后详情</strong>
-	</div>
-    <div class="r-member">
-    	<div class="personalTitle pT">
-				售后详情
-		</div>
-		<div style="padding: 0 15px 15px 15px;overflow: hidden">
-			<h3><?php echo $title;?>详情</h3>
+	<!--@php  include page('vip_header');@-->
+<div class="viewport new-fansindex">
 
-			<input type="hidden" name="order_id" value="<?php  echo $_GP['order_good_id'];?>">
-			<div style="background: #E8E8E8;margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
+    <div class="r-member">
+		<div class="crumbs">
+			<span>当前位置：</span>
+			<a href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>">个人中心</a>&gt;
+			<strong>售后详情</strong>
+		</div>
+		<div class="main" style="background:#fff;border:1px solid #e4e4e4;padding:0 15px;width: 95%">
+			<div style="padding-bottom:20px;overflow: hidden">
+				<h3><?php echo $title;?>详情</h3>
+
+				<input type="hidden" name="order_id" value="<?php  echo $_GP['order_good_id'];?>">
+				<div style="background: #F5F5F5;margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
 
 					<p>原因：<?php echo $afterSale['reason'];?></p>
 					<p>说明：<?php echo $afterSale['description'];?></p>
 
-				<?php if(!empty($picArr)){ ?>
+					<?php if(!empty($picArr)){ ?>
 					<div class="piclist">
 						凭证：
 						<?php foreach($picArr as $picurl){ ?>
 						<a class='fancybox' href='<!--@php echo download_pic($picurl,600,600);@-->' data-fancybox-group='gallery' ><img src="<?php echo $picurl;?>" style="width: 70px;height: 70px;border: 1px solid #C6C6C6;background: #ffffff;padding: 1px;"/></a>
 						<?php } ?>
 					</div>
-				<?php } ?>
-				<p>时间：<?php echo $afterSale['createtime'];?></p>
-				<p>平台处理：
+					<?php } ?>
+					<p>时间：<?php echo $afterSale['createtime'];?></p>
+					<p>平台处理：
 					<span style="color: red">
 					<?php if($orderGoodInfo['status'] == -2){?>
 						买家已撤销
-					<?php }else if($orderGoodInfo['status'] == 1){?>
-					等待处理
-					<?php }else { echo "【已处理】".$afterSale['admin_explanation'];}?>
+						<?php }else if($orderGoodInfo['status'] == 1){?>
+						等待处理
+						<?php }else { echo "【已处理】".$afterSale['admin_explanation'];}?>
 					</span>
-				</p>
+					</p>
 
-				<?php if(!empty($afterSale['refund_price'])){ ?>
-				<p>退款金额：<span style="color: red"><?php echo $afterSale['refund_price'];?> <?php if($orderGoodInfo['status']==2 || $orderGoodInfo['status']==3 ){ echo "[待退]"; } ?></span></p>
-				<?php } ?>
+					<?php if(!empty($afterSale['refund_price'])){ ?>
+					<p>退款金额：<span style="color: red"><?php echo $afterSale['refund_price'];?> <?php if($orderGoodInfo['status']==2 || $orderGoodInfo['status']==3 ){ echo "[待退]"; } ?></span></p>
+					<?php } ?>
 
-				<?php if(!empty($delivery_corp)){ ?>
+					<?php if(!empty($delivery_corp)){ ?>
 					<p>买家物流：[<?php echo $delivery_name;?>] <a class="wuliu_danhao" target="_blank" href="http://m.kuaidi100.com/index_all.html?type=<?php echo $delivery_corp;?>&postid=<?php echo $delivery_no;?>#input"><?php echo $delivery_no;?></a> &nbsp;&nbsp;
 						<?php if($orderGoodInfo['status'] != 4){ ?>
 						<span class="btn btn-warning btn-xs" data-toggle="modal" data-target="#myModal">修改</span>
 						<?php } ?>
 					</p>
-				<?php }else if($orderGoodInfo['type'] == 1 && $orderGoodInfo['status']==2){ ?>
+					<?php }else if($orderGoodInfo['type'] == 1 && $orderGoodInfo['status']==2){ ?>
 
 					<div class="row" style="margin-top: 15px;overflow: hidden">
 						<div class="pull-left" style="width: 86px;text-align: right">发货单号：</div>
@@ -181,14 +179,14 @@ select {
 						</form>
 					</div>
 
-				<?php } ?>
-			</div>
+					<?php } ?>
+				</div>
 
-			<?php if(!empty($afterSaleDialog)) { ?>
-			<h3>协商记录</h3>
-			<div style="background: #E8E8E8;margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
-				<div class="dialog_list">
-					<?php
+				<?php if(!empty($afterSaleDialog)) { ?>
+				<h3>协商记录</h3>
+				<div style="background: #F5F5F5;margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
+					<div class="dialog_list">
+						<?php
 						foreach ($afterSaleDialog as $row) {
 							if($row['role'] == 1)
 								$master = '平台';
@@ -196,38 +194,40 @@ select {
 								$master = '买家';
 
 							echo "<p>时间：{$row['createtime']} [<span style='color:red;'>{$master}</span>]</p>";
-							echo "<p>内容：{$row['content']}</p>";
+						echo "<p>内容：{$row['content']}</p>";
 
 						}
 
-					?>
-				</div>
-				<?php if($orderGoodInfo['status'] == 1 && !empty($afterSaleDialog)){ ?>
-				<div class="row" style="margin-top: 15px;overflow: hidden">
-					<div class="pull-left" style="width: 58px;text-align: right">协商：</div>
-					<form action="<!--@php echo mobile_url('backgood',array('op'=>'aftersale_dialog','aftersales_id'=>$afterSale['aftersales_id'],'orderid'=>$order_id,'order_good_id'=>$order_good_id));@-->" method="post">
-					<div class="col-sm-6 pull-left"><input type="text" name="content" class="form-control" id="xieshang" placeholder="请输入协商内容" value=""></div>
-					<div class="col-sm-2 pull-left"><button type="submit" class="btn btn-sm btn-primary" id="dialog_btn">确定</button></div>
-					</form>
+						?>
+					</div>
+					<?php if($orderGoodInfo['status'] == 1 && !empty($afterSaleDialog)){ ?>
+					<div class="row" style="margin-top: 15px;overflow: hidden">
+						<div class="pull-left" style="width: 58px;text-align: right">协商：</div>
+						<form action="<!--@php echo mobile_url('backgood',array('op'=>'aftersale_dialog','aftersales_id'=>$afterSale['aftersales_id'],'orderid'=>$order_id,'order_good_id'=>$order_good_id));@-->" method="post">
+							<div class="col-sm-6 pull-left"><input type="text" name="content" class="form-control" id="xieshang" placeholder="请输入协商内容" value=""></div>
+							<div class="col-sm-2 pull-left"><button type="submit" class="btn btn-sm btn-primary" id="dialog_btn">确定</button></div>
+						</form>
+					</div>
+					<?php } ?>
 				</div>
 				<?php } ?>
-			</div>
-			<?php } ?>
 
 
-			<h3><?php echo $title;?>记录</h3>
-			<div style="background: #E8E8E8;margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
-				<?php if(!empty($afterSaleLog)){ foreach($afterSaleLog as $row) {
+				<h3><?php echo $title;?>记录</h3>
+				<div style="background: #F5F5F5;margin-top: 10px;border: 1px solid #c6c6c6;line-height: 24px;padding: 10px 20px;border-radius: 8px;">
+					<?php if(!empty($afterSaleLog)){ foreach($afterSaleLog as $row) {
                 echo "<p>时间：{$row['createtime']} [<span style='color:red;'>{$statusArr[$row['status']]}</span>]</p>";
-				echo "<p>{$row['title']}</p>";
+					echo "<p>{$row['title']}</p>";
 
-				}}?>
+					}}?>
+				</div>
+
+				<br/>
+				<br/>
+				<a class="btn btn-primary btn-sm" href="<!--@php echo mobile_url('myorder',array('op'=>'detail','orderid'=>$order_id,'fromstatus'=>99));@-->">返回订单详情</a>
 			</div>
-
-			<br/>
-			<br/>
-			<a class="btn btn-primary btn-sm" href="<!--@php echo mobile_url('myorder',array('op'=>'detail','orderid'=>$order_id,'fromstatus'=>99));@-->">返回订单详情</a>
 		</div>
+
 	</div>
 	<div class="l-member"> 
 		 <!--@php include themePage('leftmenu');@-->

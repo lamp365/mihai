@@ -705,8 +705,8 @@ function getDishId($id){
 	return $dish['id'];
 }
 
-function getGoodsCategory($pcate){
-	$catecory = mysqld_select("select name from ".table('shop_category')." where id={$pcate}");
+function getGoodsCategory($p){
+	$catecory = mysqld_select("select name from ".table('shop_category')." where id={$p}");
 	return $catecory['name'];
 }
 
