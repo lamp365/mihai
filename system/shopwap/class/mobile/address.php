@@ -1,5 +1,5 @@
 <?php
-		$member=get_member_account();
+		$member=get_member_account(true,true);
 		$openid =$member['openid'] ;
 		$from = $_GP['from'];
         $returnurl = urldecode($_GP['returnurl']);
@@ -46,15 +46,19 @@
 				'province'=>$_GP['province'],
                 'area' => $_GP['area'],
                 'address' => $_GP['address'],
-                'province' => $_GP['province'],
             );
             $objValidator = new Validator();
-            if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['address']) || empty($_GP['idname']) || empty($_GP['idnumber'])) {
+            if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['address'])) {
                 die(showAjaxMess('1002','请完善您的资料！'));
             }
-
-            if(!isset($_GP['no_identy'])){
+            if(!$objValidator->is($_GP['mobile'],'mobile')){
+                die(showAjaxMess('1002','手机格式有误！'));
+            }
+            if(empty($_GP['no_identy'])){
                 //如果没有设置这个参数就进行，验证
+                if( empty($_GP['idname']) || empty($_GP['idnumber'])){
+                    die(showAjaxMess('1002','请完善您的身份证信息！'));
+                }
                 if (!$objValidator->identityNumberValidator($_GP['idnumber']))
                 {
                     die(showAjaxMess('1002','身份证格式不正确！'));
@@ -65,7 +69,7 @@
             if (!empty($id)) {
                 unset($data['openid']);
                 mysqld_update('shop_address', $data, array('id' => $id));
-                if(!isset($_GP['no_identy'])){
+                if(empty($_GP['no_identy'])){
                     add_identityy_info($openid,$_GP['idname'],$_GP['idnumber']);
                 }
                 die(showAjaxMess('200',$id));
@@ -75,7 +79,7 @@
                 $data['isdefault'] = 1;
                 mysqld_insert('shop_address', $data);
                 $id = mysqld_insertid();
-                if(!isset($_GP['no_identy'])){
+                if(empty($_GP['no_identy'])){
                     add_identityy_info($openid,$_GP['idname'],$_GP['idnumber']);
                 }
 				if ( isset($_GP['ajax']) ){

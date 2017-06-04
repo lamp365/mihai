@@ -149,7 +149,7 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="address">
 				</div>
-				<!--@php if(!isset($_GP['no_identy'])){ @-->
+				<!--
 				<label for="" class="col-sm-3 control-label">身份证姓名：</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="idname" value="<?php if (is_array($idetail)){ echo $idetail['identity_name']; } ?>">
@@ -159,16 +159,12 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="idnumber" value="<?php if (is_array($idetail)){ echo $idetail['identity_number']; } ?>">
 				</div>
-				<!--@php } @-->
+				-->
 			</div>
 			<input type="hidden" id="addressid" value="" />
 			<div class="form-group">
 				<div class="col-sm-12">
-					<!--@php if(empty($_GP['no_identy'])){ @-->
-					<button type="button" class="btn btn-danger remote_url check_identy" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address')@-->">保存</button>
-					<!--@php }else{  @-->
 					<button type="button" class="btn btn-danger remote_url" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address',array('no_identy'=>1))@-->">保存</button>
-					<!--@php } @-->
 					<button type="button" class="btn close-btn" onclick="addAddress();$('#addAddressPanel').hide();$('#addressid').val('');">取消</button>
 				</div>
 			</div>
@@ -177,6 +173,8 @@
 	 
 </div>
 
+
+<!--@php include themePage('footer');@-->
 
 <script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -240,18 +238,7 @@ function saveAddress() {
 		alert('请输入您的详细地址！');
 		return false;
 	}
-	if(!idname){
-		alert("请输入您的身份证号码！");
-		return false;
-	}
-	if(!idnumber){
-		alert("请输入您的身份证号码！");
-		return false;
-	}
-	if(idnumber.length != 18){
-		alert("请输入正确的身份证号码！");
-		return;
-	}
+
 	tip("正在处理数据...");
 	var url = $(".remote_url").data('url');
 	$.post(url, {

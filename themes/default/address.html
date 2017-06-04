@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
 		<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">
+		<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
 		<script type="text/javascript" src="__RESOURCE__/script/bootstrap.js"></script>
 		<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
 		<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
@@ -22,6 +23,7 @@
 		<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
 		<script type="text/javascript" src="__RESOURCE__/mobile/script/jquery.touchwipe.js"></script>
 		<script type="text/javascript" src="__RESOURCE__/mobile/script/swipe.js"></script>
+		<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 		<style type='text/css'>
 			#poptip {
 				position: fixed;
@@ -278,6 +280,7 @@
 									<input type="text" class="form-control" id="address">
 								</div>
 							</div>
+							<!--
 							<div class="form-group">
 								<label for="idname" class="col-sm-3 control-label">身份证姓名：</label>
 								<div class="col-sm-9">
@@ -288,7 +291,9 @@
 									<input type="text" class="form-control" id="idnumber" value="<?php if (is_array($idetail)){ echo $idetail['identity_number']; } ?>">
 								</div>
 							</div>
+							-->
 							<input type="hidden" id="addressid" value="" />
+							<input type="hidden" name="no_identy" value="1" />
 							<div class="form-group">
 								<div class="col-sm-12">
 								    <button type="button" class="btn" onclick="addAddress();$('#addAddressPanel').hide();$('#addressid').val('');$('#addressBtn').show();">关闭</button>
@@ -354,14 +359,6 @@
 							province = '';
 						}
 						var address = $('#address').val();
-						if(!idname) {
-							alert('请输入您的身份证姓名！');
-							return false;
-						}
-						if(!idnumber) {
-							alert('请输入您的身份证号码！');
-							return false;
-						}
 						if(!realname) {
 							alert('请输入您的真实姓名！');
 							return false;
@@ -388,6 +385,7 @@
 								'idname': idname,
 								'area': area,
 								'address': address,
+								'no_identy':1,
 								'id': $('#addressid').val()
 							},
 							function(s) {
@@ -455,7 +453,7 @@
 					
 				
 function saveDefaultAddress(e,id) {
-	$.post('<!--@php  echo mobile_url('address', array('op' => 'default'))@-->', {
+	$.post("<!--@php  echo mobile_url('address', array('op' => 'default'))@-->", {
 		'id' : id,
 	   }, function(s) {
 		//$("input [name='address']").attr('checked', false);
@@ -465,19 +463,21 @@ function saveDefaultAddress(e,id) {
      e.stopPropagation() ;
 }
 function removeAddress(e,id){
-    if(confirm('确认要删除此收货地址吗?')){
-	$.post('<!--@php  echo mobile_url('address', array('op' => 'remove'))@-->', {
-		'id' : id,
-	}, function(s) {                            
-	        $("#address_"+id).remove();	        
-            if(s.maxid!='0'){
-                  $(".address_item").removeClass("shopcart-main1").addClass("shopcart-main");
-				  $("#address_"+s.maxid).addClass("shopcart-main1");
-               }
-            window.location.reload();
-	}, 'json');
-          e.stopPropagation() ;
-    }
+	confirm('确认要删除此收货地址吗?','',function(isSure){
+		if(isSure){
+			$.post("<!--@php  echo mobile_url('address', array('op' => 'remove'))@-->", {
+				'id' : id,
+			}, function(s) {
+				$("#address_"+id).remove();
+				if(s.maxid!='0'){
+					$(".address_item").removeClass("shopcart-main1").addClass("shopcart-main");
+					$("#address_"+s.maxid).addClass("shopcart-main1");
+				}
+				window.location.reload();
+			}, 'json');
+			e.stopPropagation() ;
+		}
+	});
 }
 
 		var isdef = 0;
@@ -485,7 +485,7 @@ function editAddress(id) {
 	$("#addressBtn").hide();
        if (from=='confirm'){
                //     location.href = '<!--@php  echo mobile_url('confirm')@-->';
-	$.post('<!--@php  echo mobile_url('address', array('op' => 'default'))@-->', {
+	$.post("<!--@php  echo mobile_url('address', array('op' => 'default'))@-->", {
 		'id' : id,
 	}, function(s) {
             tip_close(); 
@@ -493,12 +493,12 @@ function editAddress(id) {
                 location.href = returnurl;
                 return;
             }
-            location.href = '<!--@php  echo mobile_url('confirm')@-->';
+            location.href = "<!--@php  echo mobile_url('confirm')@-->";
        });
         return;
        }
                                         
-	$.get('<!--@php  echo mobile_url('address', array('op' => 'detail'))@-->', {
+	$.get("<!--@php  echo mobile_url('address', array('op' => 'detail'))@-->", {
 		'id' : id,
 	}, function(s){
      tip_close();
@@ -513,7 +513,7 @@ function editAddress(id) {
 	}, 'json');
        
 }
-				</script>
-				<!--@php  include page('footer');@-->
+</script>
+<!--@php  include page('footer');@-->
 					
 				
