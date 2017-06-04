@@ -119,9 +119,10 @@ function member_logout()
 /**
  * 获取用户信息  最后返回空数组 或者返回用户数据
  * @param bool $create_weixin_account
+ * @param bool $mustLogin   如果前端的 没有基类控制，需要判断后跳转登录的，加该参数为true
  * @return array|bool|int
  */
-function get_member_account($create_weixin_account = true)
+function get_member_account($create_weixin_account = true,$mustLogin = false)
 {
     if (extension_loaded('Memcached')) {
         $mcache = new Mcache();
@@ -146,7 +147,12 @@ function get_member_account($create_weixin_account = true)
             }
         } else{
             //非APP应用端请求  最后返回空数组 或者 weixin_openid
-            return get_session_account($create_weixin_account);
+           $account_data = get_session_account($create_weixin_account);
+            if(empty($account_data) && $mustLogin){
+                header("location:".to_member_loginfromurl());
+            }else{
+                return $account_data;
+            }
         }
     }else{
         return $_SESSION[MOBILE_ACCOUNT];
@@ -312,7 +318,8 @@ function member_gold($openid, $fee, $type, $remark,$update=true,$orderid='')
             'orderid' => $orderid,
         );
         $gold  = max(0,$member['gold'] + $fee);
-        $pid   = mysqld_insert('member_paylog', $data);
+        mysqld_insert('member_paylog', $data);
+        $pid   = mysqld_insertid();
         if($update){
             mysqld_update('member', array( 'gold' => $gold), array(
                 'openid' => $openid

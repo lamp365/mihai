@@ -1,5 +1,5 @@
 <?php
-        $member = get_member_account(True);
+        $member = get_member_account(True,true);
 		$openid = $member['openid'] ;
         $op     = empty($_GP['op']) ? 'list' : $_GP['op'];
 

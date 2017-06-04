@@ -1,5 +1,5 @@
 <?php
-				$member=get_member_account(true);
+				$member=get_member_account(true,true);
 				$openid =$member['openid'] ;
 				$memberinfo=member_get($openid);
 				if(empty($memberinfo['pwd'])){

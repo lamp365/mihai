@@ -5,7 +5,7 @@
  * Date: 2016/10/27
  * Time: 13:23
  */
-$member = get_member_account(true);
+$member = get_member_account(true,true);
 $openid = $member['openid'] ;
 
 $op            = $_GP['op'];

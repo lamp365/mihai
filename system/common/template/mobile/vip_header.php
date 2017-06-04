@@ -141,7 +141,7 @@
    </div>
 </div>
 <div class="nav vip-nav" >
-    <a href="index.php" style="margin:0 10px 0 0;float:left;"><img src="<?php echo $cfg['shop_logo']; ?>" height="60" /></a>
+    <a href="<?php echo WEBSITE_ROOT; ?>" style="margin:0 10px 0 0;float:left;"><img src="<?php echo $cfg['shop_logo']; ?>" height="60" /></a>
     <div style="line-height: 80px;font-size: 20px;font-weight: bold;">会员俱乐部</div>
 </div>
 <nav class="topTabbox vip-header" style="position: relative;z-index: 100;">

@@ -175,7 +175,8 @@ class accountService extends \service\publicService
         ));
         if($cash_id = mysqld_insertid()){
             if($bank_info['type'] == 2){
-                $remark = \PayLogEnum::getLogTip('LOG_OUTMONEY_ALI_TIP');
+                $replace = $bank_info['bank_number'];
+                $remark  = \PayLogEnum::getLogTip('LOG_OUTMONEY_ALI_TIP',$replace);
             }else{
                 $weihao  = mb_substr($bank_info['bank_number'], -4, 4, 'utf-8');
                 $replace = $bank_info['bank_name']."({$weihao})";

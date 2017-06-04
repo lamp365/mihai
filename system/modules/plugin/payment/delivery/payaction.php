@@ -1,5 +1,5 @@
 <?php 
-       $member=get_member_account(true);
+       $member=get_member_account(true,true);
 	   $openid = $member['openid'];
        $member=member_get($openid);
        $order = mysqld_select("SELECT * FROM " . table('shop_order')." where id=:id",array(":id"=>$orderid));

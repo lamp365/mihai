@@ -18,7 +18,7 @@ header("Expires:0");
 				clearloginfrom();	
 		}
 	// 控制非登录状态下下单安全
-	$member=get_member_account(true);
+	$member=get_member_account(true,true);
 
 	// 获取用户的opeinid;
 		$openid =$member['openid'] ;

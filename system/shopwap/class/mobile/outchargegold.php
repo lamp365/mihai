@@ -27,6 +27,7 @@ class outchargegold{
 		$_GP = $this->request;
 		$member = get_member_account();
 		$openid = $member['openid'];
+		$member = member_get($openid);
 		$Service    = new \service\shopwap\accountService();
 		$bank_list  = $Service->get_bank_list();
 
@@ -37,13 +38,13 @@ class outchargegold{
 
 		if (!strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 			//如果不是微信端操作，直接提示 体现流程
-			if(is_mobile_request()){
+			/*if(is_mobile_request()){
                 include themePage('member/outcharge_guide');
                 exit;
             }else{
                 include themePage('member/outchargegold');
                 exit;
-            }
+            }*/
 
 		}
 

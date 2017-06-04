@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title><!--@php echo $cfg['shop_title'] @--></title>
 <link rel="stylesheet"  href="__RESOURCE__/login/css/bootstrap.min.css">
+<link rel="stylesheet"  href="__RESOURCE__/mobile/style/style.css">
 <script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" charset="utf-8"></script>
 <style>
 body{background:#efefef ;}
@@ -20,7 +21,7 @@ body{background:#efefef ;}
 .head .order li > a{display:block; padding:0 10px; min-width:100px; height:35px; line-height:35px; font-size:16px; color:#666; text-decoration:none; border-top:1px #EEE solid;}
 .head .order li > a i{display:inline-block; width:20px;}
 .head .order li.icon-caret-up{font-size:20px;color:#F9F9F9;position:absolute;top:-11px;right:16px;}
-.form-horizontal{margin:5px; background:#fafafa; padding:20px 10px 10px 10px; overflow:hidden;}
+.form-horizontal{margin:10px 5px; background:#fafafa; padding:20px 10px 10px 10px; overflow:hidden;}
 .form-horizontal label{color:#555;}
 .form-horizontal .sendverify{margin-right:15px; width:100%;}
 .form-horizontal .resolve{background:#FFF; border-top:2px #769cdc solid; padding:10px;}
@@ -37,6 +38,14 @@ body{background:#efefef ;}
 .form-horizontal .control-label{margin-bottom:5px; font-size:14px;}
 .form-group{margin-bottom:10px;}
 </style>
+<div class="cart_title">
+   <span class="return" style="line-height: 45px;">
+		<img src="__RESOURCE__/openshop/images/return.png" width="10px" height="16px" style="vertical-align: middle;">
+   </span>
+	<div class="title_center">
+		密码修改
+	</div>
+</div>
 <form class="form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);">
 	<!--@php if($hiddenoldpwd!=true){@-->
 <div class="form-group">
@@ -67,6 +76,10 @@ body{background:#efefef ;}
 
 
 </form>
-
+<script>
+	$(".return").click(function(){
+		window.history.back();
+	});
+</script>
 <!--@php include themePage('footer');@-->
 </body></html>
