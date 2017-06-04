@@ -138,7 +138,8 @@
         }
 
         // 实例化
-        var upload_server_url = "fileupload.php?savelocal=0";
+        var host = 'http://'+window.location.host+'/';
+        var upload_server_url = host+"fileupload.php?savelocal=0";
 
         uploader = WebUploader.create({
             pick: {
