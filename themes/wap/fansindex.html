@@ -252,21 +252,13 @@
 	  
 		 <div class="my_menu">
 		 	<div class="all_order">
-		 		<a href="<!--@php  echo mobile_url('myorder',array('status'=>99))@-->" style="display: block;overflow: hidden;">
+		 		<a href="<!--@php  echo mobile_url('myorder')@-->" style="display: block;overflow: hidden;">
 			 		<span style="float: left;">全部订单</span>
 			 		<span class="r_content r_icon"> <i class="icon-angle-right"></i> </span>
 			 		<span class="r_content">查看全部订单</span>
 		 		</a>
 		 	</div>
             <ul style="border-top:none;	padding:15px 0 10px 0;">
-            	 <li class="tiao" >
-	           	 	<a href="<!--@php  echo mobile_url('myorder',array('status'=>99))@-->">
-	           	 		<img src="__RESOURCE__/recouse/images/allorder.png">
-            			<span class="text">我的订单</span>
-            			<!--右上角的数字-->
-            			<span class="num"><!--@php echo $state99; @--></span>
-		           	 </a>
-	           	 </li>
                 <li class="tiao" >
                     <a href="<!--@php  echo mobile_url('myorder',array('status'=>0))@-->" class="menu_2">
                     	<img src="__RESOURCE__/recouse/images/daifu.png">
@@ -283,7 +275,7 @@
                 </li>
                 <li class="tiao">
                     <a href="<!--@php  echo mobile_url('myorder',array('status'=>2))@-->" class="menu_3">
-                    	<img src="__RESOURCE__/recouse/images/daishou.png">
+                    	<img src="__RESOURCE__/recouse/images/allorder.png">
             			<span class="text">待收货</span>
             			<span class="num"><!--@php echo $state2; @--></span>
                     </a>
@@ -293,6 +285,14 @@
                     	<img src="__RESOURCE__/recouse/images/wancheng.png">
             			<span class="text">已完成</span>
             			<span class="num"><!--@php echo $state3; @--></span>
+                    </a>
+                </li>
+                <li class="tiao" >
+                    <a href="<!--@php  echo mobile_url('myorder',array('op'=>'returnDish'))@-->">
+                        <img src="__RESOURCE__/recouse/images/daishou.png">
+                        <span class="text">退换单</span>
+                        <!--右上角的数字-->
+                        <span class="num"><!--@php echo $state99; @--></span>
                     </a>
                 </li>
             </ul>

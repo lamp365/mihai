@@ -57,7 +57,7 @@ class myorder extends \common\controller\basecontroller
 
         $listorder = mysqld_selectall($sql);
         $total     = mysqld_selectcolumn($sqlNum);
-        $pager     = pagination($total, $pindex, $psize);
+        $pager     = pagination($total, $pindex, $psize,'.myoderlist');
 
         foreach ($listorder as &$orderow) {
             $goods = mysqld_selectall("SELECT h.id, h.title,h.thumb,h.transport_id,h.p1,o.price as marketprice,o.total,o.spec_key_name,o.goodsid,o.status as order_status, o.type as order_type,o.shop_type FROM " . table('shop_order_goods') . " o left join " . table('shop_dish') . " h on o.goodsid=h.id "
@@ -66,6 +66,7 @@ class myorder extends \common\controller\basecontroller
             $orderow['total'] = count($goods);
         }
 
+        $this->mobileGetOrderNextPage($listorder,$status_ln);
         include themePage('order/order');
     }
 
@@ -96,6 +97,7 @@ class myorder extends \common\controller\basecontroller
             $listorder[$key]['goods'] = $one;
             $listorder[$key]['total'] = 1;
         }
+        $this->mobileGetOrderNextPage2($listorder,$status_ln);
         include themePage('order/returnDish');
     }
 
@@ -334,6 +336,105 @@ class myorder extends \common\controller\basecontroller
                 $data = array_reverse($data);
         }
         die(showAjaxMess(200,$data));
+    }
+
+    function mobileGetOrderNextPage($listorder,$status_ln)
+    {
+        $html = '';
+        if ( !empty($_POST['page']) ){
+            if (is_array($listorder)) { foreach($listorder as $item) {
+                $html .= '<div class="myoder">
+						<div class="myoder-hd">
+							<span class="pull-left">订单编号：'.$item['ordersn'].'</span>
+							<span class="pull-right">'.date('Y-m-d H:i', $item['createtime']).'</span>
+						</div>';
+                if(count($item['goods'])==1) {
+                    if(is_array($item['goods'])) { foreach($item['goods'] as $goods) {
+                        $cate_name = getGoodsCategory($goods['p1']);
+                        $html .='
+							<div class="myoder-detail">
+								<a href="'.mobile_url('detail', array('id' => $goods['goodsid'])).'"><img src="'.$goods['thumb'].'" width="160"></a>
+								<div class="pull-left">
+									<div class="name"><a href="'.mobile_url('detail', array('id' => $goods['goodsid'])).'">'.$goods['title'].'</a></div>
+									<div class="price">
+										<span>¥'.$goods['marketprice'].' * '.$goods['total'].'</span>
+										<span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;">'.$cate_name.'</span>
+										<span class="btn btn-xs btn-success">'.getGoodsType($goods['ordertype']).'</span>
+                                    </div>
+                                </div>
+                                <div class="status">'.$status_ln[$item['status']].'</div>
+                            </div>';
+                    } }  } else {
+                    $html .='<div class="myoder-detail">';
+                    if(is_array($item['goods'])) { foreach($item['goods'] as $goods) {
+                        $cate_name = getGoodsCategory($goods['p1']);
+                        $html .= '<a href="'.mobile_url('detail', array('id' => $goods['goodsid'])).'" style="width:140px;"><img src="'.$goods['thumb'].'" width="160">
+                            <span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;">'.$cate_name.'</span>
+                        </a>';
+                    } }
+                    $html .= '<div class="status">'.$status_ln[$item['status']].'</div></div>';
+                }
+
+                $html .= '<div class="myoder-total">
+		<span>共计：<span class="false">';
+                $html .= $item['price'].' 元';
+                $html .= '<span style="font-size: 12px;">(含运费: '.$item['dispatchprice'].' 元) </span>';
+                $html .='</span>';
+                if($item['hasbonus']>0) {
+                    $html .='<span style="color:green;font-size: 12px;"> (优惠: '.$item['bonusprice'].' 元)</span>';
+                }
+                $html .='</span><a href="'.mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail')).'" class="btn btn-default pull-right btn-sm" >订单详情</a>
+                        </div>
+                    </div>';
+            }}
+            echo $html;
+            exit;
+        }
+    }
+
+    function mobileGetOrderNextPage2($listorder,$status_ln)
+    {
+        $html = '';
+        if ( !empty($_POST['page']) ){
+            if (is_array($listorder)) { foreach($listorder as $item) {
+                $html .= '<div class="myoder">
+						<div class="myoder-hd">
+							<span class="pull-left">订单编号：'.$item['ordersn'].'</span>
+							<span class="pull-right">'.date('Y-m-d H:i', $item['createtime']).'</span>
+						</div>';
+
+
+                $goods = $item['goods'];
+                $cate_name = getGoodsCategory($goods['p1']);
+                $html .='
+                    <div class="myoder-detail">
+                        <a href="'.mobile_url('detail', array('id' => $goods['goodsid'])).'"><img src="'.$goods['thumb'].'" width="160"></a>
+                        <div class="pull-left">
+                            <div class="name"><a href="'.mobile_url('detail', array('id' => $goods['goodsid'])).'">'.$goods['title'].'</a></div>
+                            <div class="price">
+                                <span>¥'.$goods['marketprice'].' * '.$goods['total'].'</span>
+                                <span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;">'.$cate_name.'</span>
+                                <span class="btn btn-xs btn-success">'.getGoodsType($goods['ordertype']).'</span>
+                            </div>
+                        </div>
+                        <div class="status">'.$status_ln[$item['status']].'</div>
+                    </div>';
+
+                $html .= '<div class="myoder-total">
+		<span>共计：<span class="false">';
+                $html .= $item['price'].' 元';
+                $html .= '<span style="font-size: 12px;">(含运费: '.$item['dispatchprice'].' 元) </span>';
+                $html .='</span>';
+                if($item['hasbonus']>0) {
+                    $html .='<span style="color:green;font-size: 12px;"> (优惠: '.$item['bonusprice'].' 元)</span>';
+                }
+                $html .='</span><a href="'.mobile_url('myorder', array('orderid' => $item['id'], 'op' => 'detail')).'" class="btn btn-default pull-right btn-sm" >订单详情</a>
+                        </div>
+                    </div>';
+            }}
+            echo $html;
+            exit;
+        }
     }
 
     function update_user_group_status($openid){

@@ -552,7 +552,7 @@
 									</span>
 									<a  href="javascript:;" onclick="deletepic(this);" title="删除">删除</a>
 
-									<input type="hidden" value="<?php  echo $v;?>" name="attachment[]">
+									<input type="hidden" value="<?php  echo $v;?>" name="attachment-new[]">
 								</li>
 							<?php  }  ?>
 						</ul>

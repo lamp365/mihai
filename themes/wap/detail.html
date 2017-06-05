@@ -738,53 +738,6 @@
 
     }
 
-    //上下架
-    $(".shangxiajia").click(function(){
-        var status = $(this).data('status');
-        if(status.length == 0){  //什么都没有说明之前没有添加过，需要先添加并上架
-            var url = "<!--@php echo mobile_url('openshop_action',array('act'=>'shangjia','dishid'=>$goods['id'],'p1'=>$goods['p1'],'p2'=>$goods['p2'],'p3'=>$goods['p3'],'isAdd'=>1));@-->";
-            tip("正在操作中！");
-            $.getJSON(url,function(data){
-                tip(data.message,1);
-                if(data.errno == 200){
-                    //改变状态
-                    $(".shangxiajia a").html('下架商品');
-                    $(".shangxiajia").data('status',1);
-                }
-            },'json')
-
-        }else if(status == 1){  //状态是0还是1则，说明是之前加入过   1要走下架
-            var url = "<!--@php echo mobile_url('openshop_action',array('act'=>'xiajia','dishid'=>$goods['id'],'p1'=>$goods['p1'],'p2'=>$goods['p2'],'p3'=>$goods['p3']));@-->";
-            tip("正在操作中！");
-            $.getJSON(url,function(data){
-                tip(data.message,1);
-                if(data.errno == 200){
-                    //改变状态
-                    $(".shangxiajia a").html('上架代销');
-                    $(".shangxiajia").data('status',0);   //下架完毕后，状态改为0
-                }
-            },'json')
-        }else{  //0要揍上架
-            var url = "<!--@php echo mobile_url('openshop_action',array('act'=>'shangjia','dishid'=>$goods['id'],'p1'=>$goods['p1'],'p2'=>$goods['p2'],'p3'=>$goods['p3']));@-->";
-            tip("正在操作中！");
-            $.getJSON(url,function(data){
-                tip(data.message,1);
-                if(data.errno == 200){
-                    //改变状态
-                    $(".shangxiajia a").html('下架商品');
-                    $(".shangxiajia").data('status',1);  //上架完毕后，状态改为1
-                }
-            },'json')
-        }
-    })
-
-    //代销说明
-    $(".daixiao_shuoming").click(function(){
-        $('#myModal').modal('show');
-        $(".modal-title").html('代销说明');
-        $(".modal-body").html('代销说明代销说明代销说明代销说明');
-    })
-
     var webUrl = "http://"+window.location.host;
     var shareUrl = $("meta[name='site']").attr("content");
     var imageUrl = $(".tempWrap li").eq(0).find('img').attr('src');

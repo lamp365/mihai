@@ -149,7 +149,8 @@ function get_member_account($create_weixin_account = true,$mustLogin = false)
             //非APP应用端请求  最后返回空数组 或者 weixin_openid
            $account_data = get_session_account($create_weixin_account);
             if(empty($account_data) && $mustLogin){
-                header("location:".to_member_loginfromurl());
+                tosaveloginfrom();
+                header("location:".mobile_url('login'));
             }else{
                 return $account_data;
             }

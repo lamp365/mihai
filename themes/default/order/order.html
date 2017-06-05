@@ -54,7 +54,7 @@
 		<div class="main" style="background:#fff;border:1px solid #e4e4e4;padding:0 15px;">
 			<div class="my_nav order_nav">
 			        <ul id="nav">
-			            <li <!--@php  if($status == null && empty($status)) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder')@-->">全部</a></li>
+			            <li <!--@php  if($status == null && empty($status)) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder')@-->">全部订单</a></li>
 			            <li <!--@php  if($status != null && $status==0) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('status'=>0))@-->">待付款</a></li>
 			            <li <!--@php  if($status==1) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('status'=>1))@-->">已付款</span></a></li>
 			            <li <!--@php  if($status==2) { @-->class='cur'<!--@php  } else { @-->class=""<!--@php  } @-->><a href="<!--@php  echo mobile_url('myorder',array('status'=>2))@-->">已发货</span></a></li>
