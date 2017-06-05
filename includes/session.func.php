@@ -26,9 +26,9 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
     
     foreach ($cartall as $cartitem) {
         $row = mysqld_select("SELECT * FROM " . table('shop_cart') . " WHERE session_id = :loginid  AND goodsid = :goodsid  and optionid=:optionid limit 1", array(
-            ':loginid' => $loginid,
-            ':goodsid' => $cartitem['goodsid'],
-            ':optionid' => $cartitem['optionid']
+            ':loginid'  => $loginid,
+            ':goodsid'  => $cartitem['goodsid'],
+            ':spec_key' => $cartitem['spec_key']
         ));
         if (empty($row['id'])) {
             
@@ -42,8 +42,8 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
             
             $data = array(
                 'marketprice' => $cartitem['marketprice'],
-                'total' => $t,
-                'optionid' => $optionid
+                'total'       => $t,
+                'spec_key'    => $cartitem['spec_key']
             );
             mysqld_update('shop_cart', $data, array(
                 'id' => $row['id']
@@ -68,24 +68,12 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
     ), array(
         'openid' => $oldsessionid
     ));
-    mysqld_update('shop_order_paylog', array(
-        'openid' => $loginid
-    ), array(
-        'openid' => $oldsessionid
-    ));
     mysqld_update('member_paylog', array(
         'openid' => $loginid
     ), array(
         'openid' => $oldsessionid
     ));
-    
-    /*
-     * 可能出现刷分情况，屏蔽
-     * if($sessionmember['credit']>0)
-     * {
-     * member_credit($loginid,intval($sessionmember['credit']),'addcredit','登陆后账户合并所得积分');
-     * }
-     */
+
     if ($sessionmember['gold'] > 0) {
         member_gold($loginid, intval($sessionmember['gold']), 'addgold', PayLogEnum::getLogTip('LOG_LOGIN_TIP'));
     }
@@ -93,19 +81,7 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
     mysqld_delete('member', array(
         'openid' => $oldsessionid
     ));
-    $alipaythirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='alipay'");
-    if (! empty($alipaythirdlogin) && ! empty($alipaythirdlogin['id'])) {
-        $alipayfans = mysqld_select("SELECT * FROM " . table('alipay_alifans') . " WHERE alipay_openid=:alipay_openid ", array(
-            ':alipay_openid' => $oldsessionid
-        ));
-        if (! empty($alipayfans['alipay_openid'])) {
-            mysqld_update('alipay_alifans', array(
-                'openid' => $loginid
-            ), array(
-                'alipay_openid' => $oldsessionid
-            ));
-        }
-    }
+
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
         $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
         if (! empty($weixinthirdlogin) && ! empty($unionid)) {
@@ -200,7 +176,7 @@ function get_session_account($useAccount = true)
                 'realname'	  => $wx_info['name'],
                 'avatar'	  => $wx_info['face'],
                 'mobile' => "",
-                'pwd' => md5(rand(10000, 99999)),
+                'pwd' => encryptPassword(rand(10000, 99999)),
                 'createtime' => time(),
                 'status' => 1,
                 'istemplate' => 1,

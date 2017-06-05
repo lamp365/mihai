@@ -1,17 +1,16 @@
 <?php
 $member = get_member_account(false);
-$credit = mysqld_select("select credit  from ".table('member')." where openid = '{$member['openid']}'");
-$openid = $member['openid'];
+$openid = $member['openid'] ?: session_id();
 $op = $_GP['op'];
 if ($op == 'token'){
 	 // type -1,正常类型  0，新增团  >0 参与的团购队伍ID
     //团购商品 时间还没开始的 不能开团
 //    isCanGoupBuy($_GP['type'],$_GP['id']);
      $goods = array(
-             'id'=>$_GP['id'],
-			 'total'=>$_GP['total'],
-		     'type'=>isset($_GP['type'])?$_GP['type']:-1,
-			 'optionid'=>$_GP['optionid'],
+             'id'      =>$_GP['id'],
+			 'total'   =>$_GP['total'],
+		     'type'    =>isset($_GP['type'])?$_GP['type']:-1,
+			 'spec_key'=>$_GP['spec_key'],
      );
     $table= array(
         'table'=>'shop_dish',
@@ -22,10 +21,7 @@ if ($op == 'token'){
         $result = array('result' => 1002,'message'=>'抱歉，该商品不存在或是已经被删除！');
         die(json_encode($result));
     }
-   /* if ($goods_shop['type'] != 0 && is_mobile_request()) {
-        $result = array('result' => 1002,'message'=>'此商品须下载APP才能购买！');
-        die(json_encode($result));
-    }*/
+
 
 	 $cookie = new LtCookie();
 	 $cookie->setCookie('goods',$goods,time()+3600*2);  //暂时2个小时
@@ -40,7 +36,7 @@ if ($op == 'add') {
     $total = intval($_GP['total']);
     $total = empty($total) ? 1 : $total;
 	// 选项
-    $optionid = intval($_GP['optionid']);
+    $spec_key = $_GP['spec_key'] ?: 0;
 	$table= array(
          'table'=>'shop_dish',
 	     'where' => 'a.id = '.$goodsid
@@ -50,36 +46,12 @@ if ($op == 'add') {
         $result['message'] = '抱歉，该商品不存在或是已经被删除！';
         message($result, '', 'ajax');
     }
-    /*if ($goods['type'] != 0 && is_mobile_request()) {
-        $result['message'] = '此活动商品须下载APP才能购买！';
-        message($result, '', 'ajax');
-    }*/
+
 	$carttotal = $this->getCartTotal($goodsid);
     $goodsOptionStock = 0;
     $goodsOptionStock = $goods['total'];
 	$goodsOptionStock = $goodsOptionStock - $count['nums'];
-	// 如果有选项属性则根据选项属性价格
-    if ( !empty($optionid) ) {
-        $option = mysqld_select("select marketprice,stock from " . table('shop_goods_option') . " where id=:id limit 1", array(
-            ":id" => $optionid
-        ));
-        if (! empty($option)) {
-            $marketprice = $option['marketprice'];
-            $goodsOptionStock = $option['stock'];
-        }
-    }else{
-	   $istime = 0;
-        if ($goods['istime'] == 1 && $goods['type'] ==4 ) {
-			$istime = 1;
-            if (time() < $goods['timestart']) {
-                $istime = 0;
-            }
-            if (time() > $goods['timeend'] && !empty($goods['timeend']) ) {
-                $istime = 0;
-            }
-        }
-       $marketprice = $istime == 1? $goods['timeprice'] :$goods['marketprice'];
-	}
+
     if ($goodsOptionStock < ($total+$carttotal) && $goodsOptionStock != - 1) {
         $result = array(
             'result' => 0,
@@ -89,10 +61,10 @@ if ($op == 'add') {
         exit();
     }
 
-    $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid  and optionid=:optionid", array(
-        ':session_id' => $openid,
-        ':goodsid' => $goodsid,
-        ':optionid' => $optionid,
+    $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid  and spec_key=:spec_key", array(
+        ':session_id' =>  $openid,
+        ':goodsid'    =>  $goodsid,
+        ':spec_key'   =>  $spec_key,
     ));
 
     if ($row == false) {
@@ -100,10 +72,9 @@ if ($op == 'add') {
         $data = array(
             'goodsid'       => $goodsid,
             'goodstype'     => $goods['type'],
-            'marketprice'   => $marketprice,
             'session_id'    => $openid,
             'total'         =>  $total,
-            'optionid'      =>  $optionid
+            'spec_key'      =>  $spec_key
         );
         mysqld_insert('shop_cart', $data);
     } else {
@@ -111,9 +82,8 @@ if ($op == 'add') {
         $t = $total + $row['total'];
         // 存在
         $data = array(
-            'marketprice' => $marketprice,
-            'total' => $t,
-            'optionid' => $optionid
+            'total'       => $t,
+            'spec_key'    => $spec_key
         );
         mysqld_update('shop_cart', $data, array(
             'id' => $row['id']
@@ -178,7 +148,11 @@ if ($op == 'add') {
             header("location: " .$url);
         }
     }else {
-                $list = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
+                $list = array();
+                if(empty($openid)){
+                    $list = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
+                }
+
                 $totalprice = 0;
                 if (! empty($list)) {
                     foreach ($list as $key=>&$item) {
@@ -199,6 +173,6 @@ if ($op == 'add') {
                     }
                     unset($item);
                 }
-				$jp_goods = cs_goods($goods['p1'], 1, 4, 10);
+				$jp_goods = empty($goods['p1']) ? array() : cs_goods($goods['p1'], 1, 4, 10);
                 include themePage('cart');
             }
