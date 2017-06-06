@@ -22,10 +22,15 @@ function get_taxs($array=array()) {
 	$result = array();
 
 	foreach ($array as $a_v) {
-		$item = mysqld_select("SELECT tax FROM " . table('shop_tax') ." WHERE id=".$a_v['taxid']);
-		$item['id'] = $a_v['id'];
-		$item['count'] = $a_v['count'];
-		$item['sum_tax'] = round($a_v['price']*(float)$item['tax']*$a_v['count'], 2) ;
+		if(empty($a_v['taxid'])){
+			$item = array();
+		}else{
+			$item = mysqld_select("SELECT tax FROM " . table('shop_tax') ." WHERE id=".$a_v['taxid']);
+			$item['id'] = $a_v['id'];
+			$item['count'] = $a_v['count'];
+			$item['sum_tax'] = round($a_v['price']*(float)$item['tax']*$a_v['count'], 2) ;
+		}
+
 		$result['goods'][$a_v['id']] = $item;
 	}
 

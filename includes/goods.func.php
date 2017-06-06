@@ -263,39 +263,71 @@ function get_category($id){
 *  运费计算规则
 *  1. 产品组中只要有免运费的，则直接跳过运费计算
 *  2. 根据产品组中的仓库进行分段，计算仓库数量及运费金额
-*  3. 返回运费金额 
+*  3. 返回运费金额
 */
 function shipcost($goods){
-    // 开始先审查一遍，是否有免运费的产品
+	// 开始先审查一遍，是否有免运费的产品
 	$shiptax = array(); // 初始化运费金额
 	$shiparr = array();
 	$issendfree = 0; // 设置为需要运费
-    foreach ( $goods as $value ){
-        if ( !empty($value['issendfree']) ){
-             $issendfree = 1;
+	foreach ( $goods as $value ){
+		if ( !empty($value['issendfree']) ){
+			$issendfree = 1;
 		}
 		// 将不同的仓库数据存入数组
-        if ( !in_array($value['pcate'], $shiparr ) ){
-             $shiparr[] = $value['pcate'];
+		if ( !in_array($value['transport_id'], $shiparr ) ){
+			$shiparr[] = $value['transport_id'];
 		}
 	}
 	// 设置清关功能
 	$ifcustoms = 0;
 	// 开始计算运费
 	foreach ( $shiparr as $value ){
-        $shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
+		$shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
 		if ($shiprice['isrecommand'] == 1){
-             $ifcustoms = 1;
+			$ifcustoms = 1;
 		}
 		if ( $issendfree != 1 ){
-		     $shiptax['price'] += $shiprice['displayorder'];
+			$shiptax['price'] += $shiprice['displayorder'];
 		}else{
-             $shiptax['price'] = 0;
+			$shiptax['price'] = 0;
 		}
 	}
 	$shiptax['ifcustoms'] = $ifcustoms;
 	return $shiptax;
 }
+
+/* 通过产品来计算运费
+*  运费计算规则
+*  1. 产品组中只要有免运费的，则直接跳过运费计算
+*  2. 根据产品组中的仓库进行分段，计算仓库数量及运费金额
+*  3. 返回运费金额
+*/
+function shipcost_max($goods){
+	// 开始先审查一遍，是否有免运费的产品
+	$shiptax = array(); // 初始化运费金额
+	$shiparr = array();
+	$issendfree = 0; // 设置为需要运费
+	foreach ( $goods as $value ){
+		if ( !empty($value['issendfree']) ){
+			$issendfree = 1;
+		}
+		// 将不同的仓库数据存入数组
+		if ( !in_array($value['transport_id'], $shiparr ) ){
+			$shiparr[] = $value['transport_id'];
+		}
+	}
+	// 设置清关功能
+	$ifcustoms = $price = 0;
+	// 开始计算运费
+	foreach ( $shiparr as $value ){
+		$shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
+		$price = max($price,$shiprice['displayorder']);
+	}
+	$shiptax['ifcustoms'] = $ifcustoms;
+	return $shiptax;
+}
+
 // 获取用户浏览记录
 function get_hstory($goodsid = 0){
         //添加浏览记录
@@ -359,6 +391,29 @@ function get_limit_price($goods=array()){
            return $goods['marketprice'];
 	  }
 }
+
+
+function get_spec_price($spec_key,$dishdata,$showWeb =0){
+	if(empty($spec_key))  return $dishdata;
+	$dish_id = $dishdata['id'];
+	$spec_info = mysqld_select("select * from ".table('dish_spec_price')." where dish_id={$dish_id} and spec_key='{$spec_key}'");
+	if(empty($spec_key)){
+		if($showWeb){
+			return false;
+		}else{
+			return $dishdata;
+		}
+	}else{
+		$dishdata['spec_key']      = $spec_key;
+		$dishdata['key_name']      = $spec_info['key_name'];
+		$dishdata['total']         = $spec_info['total'];
+		$dishdata['productprice']  = $spec_info['productprice'];
+		$dishdata['marketprice']   = $spec_info['marketprice'];
+		$dishdata['marketprice']   = get_limit_price($dishdata);
+		return $dishdata;
+	}
+}
+
 
 // 根据订单金额获取换购产品的信息
 function get_change_goods($orderprice = 0){
