@@ -447,7 +447,7 @@ if (checksubmit('submit')) {
 			'spec_key'      => $row['spec_key'],
 			'spec_key_name' => $row['key_name']
 		);
-		
+
 		//有推荐人的话，设置佣金
 		if(!empty($member['recommend_openid'])){
 			$the_commision      = empty($row['commision']) ? $crited_ratio_arr['com_gold'] : $row['commision'];
