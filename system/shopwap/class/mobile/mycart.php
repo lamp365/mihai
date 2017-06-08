@@ -149,7 +149,7 @@ if ($op == 'add') {
         }
     }else {
                 $list = array();
-                if(empty($openid)){
+                if(!empty($openid)){
                     $list = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
                 }
 

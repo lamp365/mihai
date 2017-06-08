@@ -39,9 +39,9 @@
 				{
 						message("请输入密码！");	
 				}
-				$pwd=md5($_GP['pwd']);
+				$pwd = encryptPassword($_GP['pwd']);
 		}else{
-			    $pwd='';
+			    $pwd = '';
 		}
 		$data = array(
                     'pwd' => $pwd

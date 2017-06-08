@@ -169,8 +169,13 @@ if (!$direct) {
 			$allgoods[] = $item;
 			// 获得订单总额
 			$totalprice += $item['totalprice'];
-			$issendfree = $item['issendfree'];
+			$issendfree += $item['issendfree'];
 		}
+		if($issendfree == count($list)){
+            $issendfree = 1;   //几个物品都是免邮的
+        }else{
+            $issendfree = 0;  //多个物品  一个不免邮 则不迷哪有
+        }
 		//========end===============
 		unset($g);
 	}
@@ -216,12 +221,10 @@ if(empty($issendfree)){
 	}
 }
 $dispatchprice = 0;
-$ships     = shipcost_max($allgoods);
-$ifcustoms = $ships['ifcustoms'];
-$ships     = $ships['price'];
-if($issendfree!=1){
-	$dispatchprice = $ships;
-}
+$ships              = shipcost_max($issendfree,$allgoods);
+$ifcustoms         = $ships['ifcustoms'];
+$dispatchprice     = $ships['price'];
+
 $paymentconfig="";
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 	$paymentconfig=" and code!='alipay'";
@@ -393,6 +396,7 @@ if (checksubmit('submit')) {
 		'bonusprice'   => $bonusprice,
 		'createtime' => time()
 	);
+
 	mysqld_insert('shop_order', $data);
 	$orderid = mysqld_insertid();
 

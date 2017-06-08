@@ -46,7 +46,7 @@
    <div class="center">
        <div class="le"> 
             <ul class="le-list">
-            <li style="margin-right: 5px;">您好，欢迎来到觅海环球购！</li>
+            <li style="margin-right: 5px;">您好，欢迎来到<?php echo $cfg['shop_title']; ?>！</li>
              <?php 
 	             if ( !empty($member['mobile']) ){
 			  ?>

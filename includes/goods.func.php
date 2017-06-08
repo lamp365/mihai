@@ -303,28 +303,29 @@ function shipcost($goods){
 *  2. 根据产品组中的仓库进行分段，计算仓库数量及运费金额
 *  3. 返回运费金额
 */
-function shipcost_max($goods){
+function shipcost_max($issendfree,$goods){
 	// 开始先审查一遍，是否有免运费的产品
 	$shiptax = array(); // 初始化运费金额
 	$shiparr = array();
-	$issendfree = 0; // 设置为需要运费
-	foreach ( $goods as $value ){
-		if ( !empty($value['issendfree']) ){
-			$issendfree = 1;
-		}
-		// 将不同的仓库数据存入数组
-		if ( !in_array($value['transport_id'], $shiparr ) ){
-			$shiparr[] = $value['transport_id'];
-		}
-	}
+
 	// 设置清关功能
 	$ifcustoms = $price = 0;
-	// 开始计算运费
-	foreach ( $shiparr as $value ){
-		$shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
-		$price = max($price,$shiprice['displayorder']);
-	}
+	// 如果不免运费  找出最大的那个运费
+    if($issendfree == 0){
+        foreach ( $goods as $value ){
+            // 将不同的仓库数据存入数组
+            if ( !in_array($value['transport_id'], $shiparr ) ){
+                $shiparr[] = $value['transport_id'];
+            }
+        }
+        foreach ( $shiparr as $value ){
+            $shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
+            $price = max($price,$shiprice['displayorder']);
+        }
+    }
+
 	$shiptax['ifcustoms'] = $ifcustoms;
+	$shiptax['price']     = $price;
 	return $shiptax;
 }
 

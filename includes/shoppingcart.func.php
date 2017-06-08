@@ -206,10 +206,10 @@ function deleteCartProducts($openid, $cartIds=''){
 
 function getCartTotal(){
 	$member   = get_member_account(false);
-	$openid   = $member['openid'];
+	$openid   = $member['openid'] ?: session_id();
 	$cartotal = '';
 	if(!empty($openid))
-		$cartotal = mysqld_selectcolumn("select sum(total) from " . table('shop_cart') . " where session_id='" . $openid . "'");
+		$cartotal = mysqld_selectcolumn("select count(id) from " . table('shop_cart') . " where session_id='" . $openid . "'");
 
 	return empty($cartotal) ? 0 : $cartotal;
 }
