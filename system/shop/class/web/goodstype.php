@@ -52,7 +52,7 @@ class goodstype extends \common\controller\basecontroller
     {
         $_GP = $this->request;
         if(checksubmit('sure_add')){
-            if(empty($_GP['gtype_name']) || empty($_GP['p1'])){
+            if(empty($_GP['gtype_name']) || empty($_GP['p1']) || empty($_GP['p2'])){
                 message("分类和名字不能为空！",refresh(),'error');
             }
 

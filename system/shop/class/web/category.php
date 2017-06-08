@@ -18,7 +18,7 @@
                     unset($category[$index]);
                 }
             }
-            include page('category_list');
+            include page('leimu/category_list');
         } elseif ($operation == 'post') {
             $parentid = intval($_GP['parentid']);
             $id = intval($_GP['id']);
@@ -117,7 +117,7 @@
                 }
                 message('更新分类成功！', web_url('category', array('op' => 'display')), 'success');
             }
-            include page('category');
+            include page('leimu/category');
         } elseif ($operation == 'delete') {
             $id = intval($_GP['id']);
             $category = mysqld_select("SELECT id, parentid FROM " . table('shop_category') . " WHERE id = '$id' and deleted=0 ");
@@ -147,7 +147,7 @@
 					 message('文件过大,请控制在1MB', '', 'error');
 				}
 		    }
-            include page('csv_category');
+            include page('leimu/csv_category');
         }
 function c_category($array=array()){
    if ( !empty($array) ){

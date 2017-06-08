@@ -78,7 +78,8 @@
                          <td class="text-center" ><?php echo $gtype['gtype_name'];?></td>
                          <td class="text-center" ><?php if($gtype['status'] == 1){ echo '<span class="btn btn-success btn-xs">已上架</span>'; }else{ echo '<span class="btn btn-danger btn-xs">已下架</span>';}?></td>
                          <td class="text-center">
-                             asdas
+                             <?php echo getCategoryDataById($gtype['p1'],'name');?>--
+                             <?php echo getCategoryDataById($gtype['p2'],'name');?>
                          </td>
                          <!--
                          <td class="text-center" >

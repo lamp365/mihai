@@ -83,33 +83,10 @@ function insertValueQuery(obj) {
 									</div>
 
 
-									<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > APP图标</label>
-
-										<div class="col-sm-9">
-
-											<div class="fileupload fileupload-new" data-provides="fileupload">
-												<div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;">
-													<?php  if(!empty($category['app_ico'])) { ?>
-														<img style="width:100%" src="<?php  echo $category['app_ico'];?>" alt="" onerror="$(this).remove();">
-													<?php  } ?>
-												</div>
-												<div>
-													<input name="app_ico" id="app_ico" type="file"  />
-													<a href="#" class="fileupload-exists" data-dismiss="fileupload">移除图片</a>
-													<?php  if(!empty($category['app_ico'])) { ?>
-														<input name="app_ico_del" id="app_ico_del" type="checkbox" value="1" />删除已上传图片
-													<?php  } ?>
-												</div>
-											</div>
-
-
-										</div>
-									</div>
-
+								<!--
 
 									 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 分类广告图【PC】</label>
+										<label class="col-sm-2 control-label no-padding-left" > 分类广告图【电脑端】</label>
 
 										<div class="col-sm-9">
 												
@@ -133,7 +110,7 @@ function insertValueQuery(obj) {
 									</div>
 
                                    <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 分类广告图【WAP】</label>
+										<label class="col-sm-2 control-label no-padding-left" > 分类广告图【手机端】</label>
 
 										<div class="col-sm-9">
 												
@@ -155,12 +132,6 @@ function insertValueQuery(obj) {
 											
 										</div>
 									</div>
-
-
-
-
-
-
 
 
 
@@ -201,6 +172,8 @@ function insertValueQuery(obj) {
 						<input type="text" name="description" class="col-xs-10 col-sm-5" value="<?php  echo $category['description'];?>" />
 												</div>
 									</div>
+
+									-->
 									
 									 <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 首页推荐</label>
@@ -212,15 +185,7 @@ function insertValueQuery(obj) {
 												</div>
 									</div>
 
-									<div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > APP首页推荐</label>
 
-										<div class="col-sm-9">
-
-											<input type='radio' name='app_isrecommand' value='1' <?php  if($category['app_isrecommand']==1) { ?>checked<?php  } ?> /> 是&nbsp;
-											<input type='radio' name='app_isrecommand' value='0' <?php  if($category['app_isrecommand']==0) { ?>checked<?php  } ?> /> 否
-										</div>
-									</div>
 
 	
 			 <div class="form-group">

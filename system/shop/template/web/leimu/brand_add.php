@@ -27,10 +27,10 @@
                         </select>
                         <br><br>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label no-padding-left" for="input-search">品牌图标(300*300)：</label>
+                            <label class="col-sm-2 control-label no-padding-left" for="input-search">品牌logo(100*100)：</label>
                             <div class="col-sm-2">
                             <div class="fileupload fileupload-new" data-provides="fileupload">
-                            <div class="fileupload-preview thumbnail" style="width: 300px; height: 300px;">
+                            <div class="fileupload-preview thumbnail" style="width: 100px; height: 100px;">
                             <?php  if(!empty($this_brand['icon'])) { ?>
                                 <img src="<?php  echo $this_brand['icon'];?>" alt="" onerror="$(this).remove();">
                             <?php  } ?>

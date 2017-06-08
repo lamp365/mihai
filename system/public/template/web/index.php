@@ -41,7 +41,12 @@
 				   </div>
 			 
 		</div>
-		<p class="copyright"> <a href="http://www.hinrc.com" target="_blank">&copy;福建觅海网络科技有限公司</a> </p>
+		<p class="copyright">
+			<a href="<?php echo WEBSITE_ROOT; ?>" target="_blank">&copy;<?php echo $settings['shop_title']; ?></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			By<a href="http://www.dayblog.cn" target="_blank">天天博客</a>
+
+		</p>
 	</div>
 	<!-- end login -->
    </form>

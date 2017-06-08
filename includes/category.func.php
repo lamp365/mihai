@@ -185,7 +185,20 @@ function selectCategoryTree(&$list,$pid=0,$level=0,$html='--'){
     return $tree;
 }
 
-
+/**
+ * 根据id获取分类的信息
+ * @param $id
+ * @param string $returnField
+ * @return bool|mixed
+ */
+function getCategoryDataById($id,$returnField = ''){
+    $category = mysqld_select("SELECT *  FROM " . table('shop_category') . "  where id={$id}");
+    if(!empty($returnField)){
+        return $category[$returnField];
+    }else{
+        return $category;
+    }
+}
 /**
  * 获取所有的父级分类
  * @param string $filed

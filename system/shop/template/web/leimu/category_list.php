@@ -24,11 +24,9 @@
             
             	</td>
            <td>                                <?php  if($row['isrecommand']==1) { ?>
-                                                <span class='label label-success'>首页推荐</span>
+                                                <span class='label label-warning'>首页推荐</span>
                                                  <?php  } ?>
-											   <?php  if($row['app_isrecommand']==1) { ?>
-												   <span class='label label-success'>app首页推荐</span>
-											   <?php  } ?>
+
 			   									<?php  if($row['enabled']==1) { ?>
                                                 <span class='label label-success'>显示</span>
                                                 <?php  } else { ?>
@@ -61,7 +59,7 @@
 					 <td>&nbsp;&nbsp;&nbsp;<?php  echo $row['name'];?>&nbsp;&nbsp; <img src="<?php  echo $row['thumb'];?>" width='60' height="50" onerror="$(this).remove()" style='padding:1px;border: 1px solid #ccc;float:left;' /></td>
 					<td>
 						 <?php  if($row['isrecommand']==1) { ?>
-                                                <span class='label label-success'>首页推荐</span>
+                                                <span class='label label-warning'>首页推荐</span>
                                                  <?php  } ?>
 						  <?php  if($row['enabled']==1) { ?>
                                                 <span class='label label-success'>显示</span>

@@ -24,7 +24,7 @@ if ($operation == 'display') {
 		mysqld_update('shop_brand',$data,array('id'=>$_GP['id']));
 		die(showAjaxMess('200',array('id'=>$_GP['id'], 'pifa'=>$pifa )));
 	}
-	include page('brand_list');
+	include page('leimu/brand_list');
 }elseif ($operation == 'add') {
 	$country = mysqld_selectall("SELECT * FROM " . table('shop_country') . "  where deleted=0");
 	$idEdit = false;
@@ -66,7 +66,7 @@ if ($operation == 'display') {
 		message('增加成功！',web_url('brand'),'succes');
 		return;
 	}
-	include page('brand_add');
+	include page('leimu/brand_add');
 }elseif ($operation == 'edit') {
 	$id = $_GP['id'];
 	$isEdit = true;
@@ -110,7 +110,7 @@ if ($operation == 'display') {
 		message('修改成功！',web_url('brand'),'succes');
 		return;
 	}
-	include page('brand_add');
+	include page('leimu/brand_add');
 }elseif ($operation == 'delete') {
 	mysqld_update('shop_brand', array('deleted' => 1), array('id'=> $_GP['id']));
 	message('删除成功',refresh(),'success');	
