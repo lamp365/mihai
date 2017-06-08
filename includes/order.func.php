@@ -191,7 +191,7 @@ function update_order_status($id, $status,$dishinfo='') {
 }
 
 /**
- * 支付成功后，推送相应信息、更新卖家佣金、记录账单等处理
+ * 支付成功后，推送相应信息、更新卖家佣金、记录账单等处理  库存的处理
  * 
  * @param $orderInfo: array 订单数组
  * 
@@ -204,6 +204,12 @@ function paySuccessProcess($orderInfo)
 		//增加账单记录
 		member_gold($orderInfo['openid'],$orderInfo['price'],'usegold',PayLogEnum::getLogTip('LOG_SHOPBUY_TIP'),false,$orderInfo['id']);
 	}
+	//余额支付么
+    $gold_use = $orderInfo['balance_sprice'];
+    if ( $gold_use > 0 ){
+        $remark = PayLogEnum::getLogTip('LOG_BALANCE_TIP');
+        member_gold($orderInfo['openid'],$gold_use,'usegold',$remark,true,$orderInfo['id']);
+    }
 }
 
 

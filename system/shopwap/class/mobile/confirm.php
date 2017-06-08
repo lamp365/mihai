@@ -331,7 +331,7 @@ if (checksubmit('submit')) {
 	{
 		message("没有获取到付款方式");
 	}
-	$paytype=$this->getPaytypebycode($payment['code']);
+
 	$free_if = $gold_if = 0;
 	$pay_price   =  $totalprice + $dispatchprice + $taxtot;
 
@@ -376,7 +376,7 @@ if (checksubmit('submit')) {
 		'taxprice'=> $taxtot,
 		'credit'=> $goodscredit,
 		'status' => 0,
-		'paytype'=> $paytype,
+		'paytype'=> 2,  //在线支付
 		'sendtype' => 0,
 		'paytypecode' => $payment['code'],
 		'paytypename' => $payment['name'],
@@ -404,8 +404,7 @@ if (checksubmit('submit')) {
 	if ($hasbonus == 1) {
 		mysqld_update('bonus_user',array('isuse'=>1,'bonus_sn'=>$bonus_sn,'used_time'=>time(),'order_id'=>$orderid),array('bonus_id'=>$use_bonus['bonus_id']));
 	}
-	//插入订单后，后续动作，如插入paylog
-	after_insert_order($data);
+
 
 	//如果有换购商品，则进行货存处理
 	if(!empty($dish_good_detail)){
@@ -535,19 +534,4 @@ function operation_member_balance($openid,$pay_price,$user_data){
 		'free_use'  => $free_use,
 		'gold_use'  => $gold_use
 	);
-}
-
-/**
- * 插入订单后后续动作  如paylog记录
- * @param $data
- */
-function after_insert_order($data){
-	$free_use = $data['freeorder_price'];
-	$gold_use = $data['balance_sprice'];
-	$openid   = $data['openid'];
-	$ordersn  = $data['ordersn'];
-	if ( $gold_use > 0 ){
-		$remark = PayLogEnum::getLogTip('LOG_BALANCE_TIP');
-		member_gold($openid,$gold_use,'usegold',$remark,true,$ordersn);
-	}
 }
