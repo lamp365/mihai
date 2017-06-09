@@ -486,3 +486,99 @@ function combineArray($arr1,$arr2) {
     }
     return $result;
 }
+
+
+/**
+ * 系统加密方法
+ * @param string $data 要加密的字符串
+ * @param string $key 加密密钥
+ * @param int    $expire 过期时间 单位 秒
+ * @return string
+ */
+function cbd_encrypt($data, $key = '', $expire = 0)
+{
+    $key = md5($key);
+    $data = base64_encode($data);
+    $x = 0;
+    $len = strlen($data);
+    $l = strlen($key);
+    $char = '';
+
+    for ($i = 0; $i < $len; $i++) {
+        if ($x == $l) $x = 0;
+        $char .= substr($key, $x, 1);
+        $x++;
+    }
+
+    $str = sprintf('%010d', $expire ? $expire + time() : 0);
+
+    for ($i = 0; $i < $len; $i++) {
+        $str .= chr(ord(substr($data, $i, 1)) + (ord(substr($char, $i, 1))) % 256);
+    }
+    return str_replace(array('+', '/', '='), array('%', '_', ''), base64_encode($str));
+}
+
+/**
+ * 系统解密方法
+ * @param  string $data 要解密的字符串 （必须是myblog365_encrypt方法加密的字符串）
+ * @param  string $key 加密密钥
+ * @return string
+ */
+function cbd_decrypt($data, $key = '')
+{
+    $key = md5($key);
+    $data = str_replace(array('%', '_'), array('+', '/'), $data);
+    $mod4 = strlen($data) % 4;
+    if ($mod4) {
+        $data .= substr('====', $mod4);
+    }
+    $data = base64_decode($data);
+    $expire = substr($data, 0, 10);
+    $data = substr($data, 10);
+
+    if ($expire > 0 && $expire < time()) {
+        return '';
+    }
+    $x = 0;
+    $len = strlen($data);
+    $l = strlen($key);
+    $char = $str = '';
+
+    for ($i = 0; $i < $len; $i++) {
+        if ($x == $l) $x = 0;
+        $char .= substr($key, $x, 1);
+        $x++;
+    }
+
+    for ($i = 0; $i < $len; $i++) {
+        if (ord(substr($data, $i, 1)) < ord(substr($char, $i, 1))) {
+            $str .= chr((ord(substr($data, $i, 1)) + 256) - ord(substr($char, $i, 1)));
+        } else {
+            $str .= chr(ord(substr($data, $i, 1)) - ord(substr($char, $i, 1)));
+        }
+    }
+    return base64_decode($str);
+
+}
+
+/**
+ * 获取随机ip
+ * @return string
+ */
+function getRandIp(){
+    $ip_long = array(
+        array('607649792', '608174079'), //36.56.0.0-36.63.255.255
+        array('1038614528', '1039007743'), //61.232.0.0-61.237.255.255
+        array('1783627776', '1784676351'), //106.80.0.0-106.95.255.255
+        array('2035023872', '2035154943'), //121.76.0.0-121.77.255.255
+        array('2078801920', '2079064063'), //123.232.0.0-123.235.255.255
+        array('-1950089216', '-1948778497'), //139.196.0.0-139.215.255.255
+        array('-1425539072', '-1425014785'), //171.8.0.0-171.15.255.255
+        array('-1236271104', '-1235419137'), //182.80.0.0-182.92.255.255
+        array('-770113536', '-768606209'), //210.25.0.0-210.47.255.255
+        array('-569376768', '-564133889'), //222.16.0.0-222.95.255.255
+    );
+    $rand_key = mt_rand(0, 9);
+    $ip= long2ip(mt_rand($ip_long[$rand_key][0], $ip_long[$rand_key][1]));
+    return $ip;
+}
