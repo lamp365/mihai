@@ -22,7 +22,12 @@ class login extends \common\controller\basecontroller {
            ajaxReturnData(0,$res['errmsg']);
        }
        //否则的话记录缓存 和 过期时间
-       $expires_in = $res['expires_in'];
+       $record = array();
+       $record['xcx_openid']       = $res['openid'];
+       $record['xcx_session_key']  = $res['session_key'];
+       $record['xcx_expires_in']   = TIMESTAMP + $res['expires_in'];
+       $seriaze_record        = serialize($record);
+//       save_weixin_access_token($seriaze_access_token);
        ajaxReturnData(1,'',$res);
    }
 
