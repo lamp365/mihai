@@ -46,24 +46,27 @@
     },
     {
         "name": "jaeger/querylist",
-        "version": "V3.2.0",
-        "version_normalized": "3.2.0.0",
+        "version": "V3.2.1",
+        "version_normalized": "3.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/jae-jae/QueryList.git",
-            "reference": "700d56db49590a3080a94dc7a63ecab212e920ff"
+            "reference": "1a7864dcf8d979d6d57a2a3508f2dd62ce3233d6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://files.phpcomposer.com/files/jae-jae/QueryList/700d56db49590a3080a94dc7a63ecab212e920ff.zip",
-            "reference": "700d56db49590a3080a94dc7a63ecab212e920ff",
+            "url": "https://files.phpcomposer.com/files/jae-jae/QueryList/1a7864dcf8d979d6d57a2a3508f2dd62ce3233d6.zip",
+            "reference": "1a7864dcf8d979d6d57a2a3508f2dd62ce3233d6",
             "shasum": ""
         },
         "require": {
-            "jaeger/phpquery-single": "^0.9.5",
+            "jaeger/phpquery-single": "^0.9",
             "php": ">=5.3.0"
         },
-        "time": "2017-04-20T05:53:32+00:00",
+        "suggest": {
+            "monolog/monolog": "Log support"
+        },
+        "time": "2017-06-09T04:25:07+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -88,5 +91,156 @@
             "phpQuery",
             "spider"
         ]
+    },
+    {
+        "name": "jaeger/curlmulti",
+        "version": "1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jae-jae/CurlMulti.git",
+            "reference": "059f13241e15ddfe6155c032ef765e58233a5aab"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/jae-jae/CurlMulti/059f13241e15ddfe6155c032ef765e58233a5aab.zip",
+            "reference": "059f13241e15ddfe6155c032ef765e58233a5aab",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "php": ">=5.1.0"
+        },
+        "time": "2015-12-23T16:28:22+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "QL\\Ext\\Lib\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Ares",
+                "email": "admin@phpdr.net"
+            }
+        ],
+        "description": "CurlMulti是PHP多线程类库,修改用于QueryList(http://querylist.cc ),CurlMulti项目地址:https://github.com/ares333/php-curlmulti"
+    },
+    {
+        "name": "jaeger/querylist-ext-aquery",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jae-jae/QueryList-Ext-AQuery.git",
+            "reference": "bfbf417363bb8f0caec2573f02d24ba2e921aeef"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/jae-jae/QueryList-Ext-AQuery/bfbf417363bb8f0caec2573f02d24ba2e921aeef.zip",
+            "reference": "bfbf417363bb8f0caec2573f02d24ba2e921aeef",
+            "shasum": ""
+        },
+        "time": "2016-01-06T07:51:20+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "QL\\Ext\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jaeger",
+                "email": "hj.q@qq.com"
+            }
+        ],
+        "description": "QueryList扩展，AQuery扩展基类"
+    },
+    {
+        "name": "jaeger/querylist-ext-multi",
+        "version": "1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jae-jae/QueryList-Ext-Multi.git",
+            "reference": "2c633480411b1cea31d93b2c1b754eb0bc79fea8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/jae-jae/QueryList-Ext-Multi/2c633480411b1cea31d93b2c1b754eb0bc79fea8.zip",
+            "reference": "2c633480411b1cea31d93b2c1b754eb0bc79fea8",
+            "shasum": ""
+        },
+        "require": {
+            "jaeger/curlmulti": "^1.0",
+            "jaeger/querylist-ext-aquery": "^1.0"
+        },
+        "time": "2015-12-28T06:09:36+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "QL\\Ext\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jaeger",
+                "email": "hj.q@qq.com"
+            }
+        ],
+        "description": "QueryList扩展，Multi多线程扩展"
+    },
+    {
+        "name": "xxh/think-wxminihelper",
+        "version": "1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/wulongtao/think-wxminihelper.git",
+            "reference": "9ff91da2ebee0b37a9d1faf39ff1c541514ca0e9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/wulongtao/think-wxminihelper/9ff91da2ebee0b37a9d1faf39ff1c541514ca0e9.zip",
+            "reference": "9ff91da2ebee0b37a9d1faf39ff1c541514ca0e9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2017-01-18T06:09:29+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "wlt\\wxmini\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "小小黑",
+                "email": "769418278@qq.com"
+            }
+        ],
+        "description": "weixin mini program helper"
     }
 ]
