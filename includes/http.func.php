@@ -4,6 +4,10 @@ curl
 */
 function http_get($url) {
     $ch = curl_init();
+    if (substr($url, 0, 8) == 'https://') {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+    }
     curl_setopt($ch, CURLOPT_URL,$url);
     curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
