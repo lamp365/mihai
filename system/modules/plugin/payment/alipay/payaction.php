@@ -31,7 +31,7 @@
 		"total_fee"	=> $order['price'],
 		"app_pay"	=> "Y",
 		"show_url"	=> WEBSITE_ROOT.mobile_url($tags.'myorder',array('name'=>'shopwap','op'=>'detail','orderid'=>$order['id'])),
-		"body"	=> $goodtitle,
+		"body"	    => $goodtitle,
 		//"it_b_pay"	=> $it_b_pay,
 	    //"extern_token"	=> $extern_token,
 		"_input_charset"	=> 'utf-8'

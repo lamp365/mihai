@@ -22,7 +22,8 @@ class myorder extends \common\controller\basecontroller
     public function __construct()
     {
         if(!checkIsLogin()){
-            header("location:".to_member_loginfromurl());
+            tosaveloginfrom();
+            header("location:".mobile_url('login'));
         }
         $mem = get_member_account();
         // 进行订单的自动关闭操作
@@ -446,5 +447,14 @@ class myorder extends \common\controller\basecontroller
             }
         }
 
+    }
+
+    function ajaxGetOrderStatus()
+    {
+        $_GP = $this->request;
+        $orderid = intval($_GP['id']);
+        $orders = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id", array(':id' => $orderid));
+
+         die(json_encode($orders));
     }
 }

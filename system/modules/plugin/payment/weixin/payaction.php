@@ -1,5 +1,5 @@
 <?php
-$cfg = globaSetting();
+
 if ( !isset( $tags ) ){
     $tags = '';
 }
@@ -15,20 +15,10 @@ if ($_GP['isok'] == '1') {
 $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
 $configs = unserialize($payment['configs']);
 
-$settings = globaSetting(array(
-    "weixin_appId",
-    "weixin_appSecret"
-));
-$_SESSION['test']='abcdefg';
-
-$weixin_openid = '';
-
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
-     $weixin_openid = get_weixin_openid();     
-}
+$settings = globaSetting();
 
 $package = array();
-$package['appid'] = $settings['weixin_appId'];
+$package['appid'] = $settings['weixin_appId']='wx861567a3f4af24a2';
 $package['mch_id'] = $configs['weixin_pay_mchId'];
 $package['nonce_str'] = random(8);
 $package['body'] = $goodtitle;
@@ -38,7 +28,7 @@ $package['spbill_create_ip'] = $_SERVER['REMOTE_ADDR'];
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
     $package['notify_url'] = WEBSITE_ROOT . 'notify/weixin_notify.php'; // todo: 这里调用$_W['siteroot']是在子目录下. 获取的是当前二级目录
     $package['trade_type'] = 'JSAPI';
-    $package['openid'] = $weixin_openid;
+    $package['openid'] = get_weixin_openid();
 } else {
     $package['notify_url'] = WEBSITE_ROOT . 'notify/weixin_native_notify.php'; // todo: 这里调用$_W['siteroot']是在子目录下. 获取的是当前二级目录
     $package['product_id'] = $order['ordersn'];
@@ -93,11 +83,11 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
         $string .= "key=" . $configs['weixin_pay_paySignKey'];
         $jsApiParameters['paySign'] = strtoupper(md5($string));
     }
-} else { 
+} else {
     $xml = @simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
     $code_url = $xml->code_url;
     if (empty($code_url)) {
-        message("无法发起二维码支付，请更换另外一种付款方式，或者联系管理员");
+        message("无法发起二维码支付，请更换另外2一种付款方式，或者联系管理员");
     }
     ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -123,8 +113,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 	<div class="p-header">
 		<div class="w">
 			<div id="logo">
-                	<?php if(!empty($cfg['shop_logo'])){ ?>
-                    <img  height="40" src="<?php echo $cfg['shop_logo'] ?>">
+                	<?php if(!empty($settings['shop_logo'])){ ?>
+                    <img  height="40" src="<?php echo $settings['shop_logo'] ?>">
                     <?php } ?>
                 
 			</div>
@@ -187,8 +177,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 					<a class="pc-wrap" id="reChooseUrl"
 						href="javascript:history.back();"> <i class="pc-w-arrow-left">&lt;</i>
 						<strong>选择其他支付方式</strong>
-					</a> <a class="pc-wrap" style="float: right"
-						href="<?php echo WEBSITE_ROOT;?>index.php?mod=mobile&name=shopwap&do=<?php echo $tags;?>myorder">
+					</a> <a class="pc-wrap" style="float: right" href="<?php echo mobile_url('myorder',array('name'=>'shopwap'));?>">
 						<strong>如完成支付没有跳转请点击</strong> <i class="pc-w-arrow-right">&gt;</i>
 					</a>
 				</div>
@@ -205,7 +194,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 	<div class="p-footer">
 		<div class="pf-wrap w">
 			<div class="pf-line">
-				<span class="pf-l-copyright">Copyright © <?php echo $cfg['shop_title'] ?></span>
+				<span class="pf-l-copyright">Copyright © <?php echo $settings['shop_title'] ?></span>
 
 			</div>
 		</div>
@@ -214,12 +203,13 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
 	<script type="text/javascript" language="javascript">
       function checkorder()
       {
-      	$.getJSON("<?php echo WEBSITE_ROOT;?><?php echo 	create_url('mobile',array('name' => 'shopwap','do' => 'getorder','id'=>$order['id']));?>", { }, function(json){
-  if(json.status>0)
-  {
-  location.href="<?php echo WEBSITE_ROOT;?>index.php?mod=mobile&name=shopwap&do=<?php echo $tags;?>myorder";	
-  }
-});
+	    var orderid = '<?php echo $order["id"] ?>';
+      	$.post("<?php echo mobile_url('myorder',array('name' => 'shopwap','op' => 'ajaxGetOrderStatus'));?>", {id:orderid}, function(json){
+			  if(json.status>0)
+			  {
+				location.href="<?php echo mobile_url('myorder',array('name'=>'shopwap'));?>";
+			  }
+		},'json');
       }
          setInterval("checkorder()", 2000);
     
@@ -247,7 +237,7 @@ document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 				'paySign' : '<?php echo $jsApiParameters['paySign'];?>'
 	}, function(res) {
 					if(res.err_msg == 'get_brand_wcpay_request:ok') {
-						location.search += '&isok=1';
+						location.search += '?isok=1';
 					} else {
 						alert('微信支付未完成');
 						history.go(-1);

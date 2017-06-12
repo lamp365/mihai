@@ -225,7 +225,7 @@ function logRecord($logMsg,$logFile) {
 
 	if(WRITE_LOG)
 	{
-		error_log(date('[c]')."{$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
+		error_log(date('H:i:s',time())."{$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
 	}
 }
 
@@ -581,4 +581,31 @@ function getRandIp(){
     $rand_key = mt_rand(0, 9);
     $ip= long2ip(mt_rand($ip_long[$rand_key][0], $ip_long[$rand_key][1]));
     return $ip;
+}
+
+/**
+ * 异步操作
+ * @param $url
+ * @param array $param
+ * @param int $timeout
+ */
+function asyn_doRequest($url, $param=array(),$timeout =10){
+    $urlParmas = parse_url($url);
+    $host      = $urlParmas['host'];
+    $path 	   = $urlParmas['path'];
+    $port      = isset($urlParmas['port'])? $urlParmas['port'] :80;
+    $errno     = 0;
+    $errstr    = '';
+
+    $fp        = fsockopen($host, $port, $errno, $errstr, $timeout);
+    $query     = isset($param)? http_build_query($param) : '';
+    $out       = "POST ".$path." HTTP/1.1\r\n";
+    $out      .= "host:".$host."\r\n";
+    $out      .= "content-length:".strlen($query)."\r\n";
+    $out      .= "content-type:application/x-www-form-urlencoded\r\n";
+    $out      .= "connection:close\r\n\r\n";
+    $out      .= $query;
+
+    fputs($fp, $out);
+    fclose($fp);
 }

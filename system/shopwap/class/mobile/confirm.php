@@ -80,7 +80,7 @@ if (!empty($id) && $_GP['op'] != 'cart' ) {
 	$itemStock = $item['total'];
 
 	//获取规格价格 和库存
-	$item = get_spec_price($spec_key,$id);
+	$item = get_spec_price($spec_key,$item);
 
 	// 对购买数量进行处理，如果购买数量大于库存，则将购买数量设置为库存
 	if( $total > $item['total']){

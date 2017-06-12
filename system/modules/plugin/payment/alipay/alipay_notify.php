@@ -7,7 +7,7 @@ $verify_result = verifyNotify($configs['alipay_safepid'],$configs['alipay_safeke
 
 $post_data = $GLOBALS['HTTP_RAW_POST_DATA']."|".$_SERVER["QUERY_STRING"];
 mysqld_insert('paylog', array('typename'=>'支付宝返回数据记录','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay','createtime'=>date('Y-m-d H:i:s')));
-     
+
 if($verify_result) {//验证成功
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,12 +39,15 @@ if($verify_result) {//验证成功
 
                             mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay','createtime'=>date('Y-m-d H:i:s')));
 
-                            paySuccessProcess($order);	//支付成功后的处理  库存的处理
+							//支付成功后的处理  库存的处理
+							$afterUrl = mobile_url('success',array('name'=>'shopwap','op'=>'afterPay'));
+							asyn_doRequest($afterUrl,array('orderid'=>$order['id']));
 
-	      	                message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','success');
+							Header("Location:".mobile_url('success',array('name'=>'shopwap')));
 						}else
 						{
-                            message('该订单不是支付状态无法支付',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','error');
+							mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
+							Header("Location:".mobile_url('success',array('name'=>'shopwap')));
 		
 						}
 						exit;

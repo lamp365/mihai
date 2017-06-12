@@ -27,12 +27,15 @@ if($verify_result) {
 							$order_cookie->setCookie('success', serialize($order));
 							if($order['status']==1){
 							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
-								  Header("Location:".WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success'); 
+								  Header("Location:".mobile_url('success',array('name'=>'shopwap')));
 		                     	  //message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
 							}else{
 							      mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
 							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
-								  Header("Location:".WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success'); 
+								  //支付成功后的处理  库存的处理
+								  $afterUrl =  mobile_url('success',array('name'=>'shopwap','op'=>'afterPay'));
+								  asyn_doRequest($afterUrl,array('orderid'=>$order['id']));
+								  Header("Location:".mobile_url('success',array('name'=>'shopwap')));
 		                          // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
 							}
 							exit;
