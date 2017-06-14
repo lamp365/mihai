@@ -13,6 +13,7 @@ class index
 	//如果没有定义op 默认显示index
 	public function index()
 	{
+        die('hello word');
         //进入首页后 就更新一下缓存，有这么一种情况，用户登录过了，申请了店铺，当前还没审核
         //用户类型还是普通会员 但审核通过了，但是他的缓存没有更新过来，所以在进入首页的时候，会调用该方法
 		$member = update_member_info();

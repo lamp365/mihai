@@ -61,7 +61,24 @@
 			 </div>
 		 </div>
 
+		 <div class="form-group">
+			 <label class="col-sm-2 control-label no-padding-left" >小程序AppId：</label>
 
+			 <div class="col-sm-9">
+
+				 <input type="text" name="xcx_appid" class="col-xs-10 col-sm-4" value="<?php  echo $settings['xcx_appid'];?>" />
+			 </div>
+		 </div>
+
+
+		 <div class="form-group">
+			 <label class="col-sm-2 control-label no-padding-left" >小程序AppSecret：</label>
+
+			 <div class="col-sm-9">
+
+				 <input type="text" name="xcx_appsecret" class="col-xs-10 col-sm-4" value="<?php  echo $settings['xcx_appsecret'];?>" />
+			 </div>
+		 </div>
 
 
 		 <div class="form-group">

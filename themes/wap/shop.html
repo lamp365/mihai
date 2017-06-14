@@ -1,0 +1,770 @@
+<!--@php  include themePage('header'); @-->
+<!--@php css_url('shop'); @-->
+<!--@php css_url('special'); @-->
+<!--加載高德地圖START -->
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=202a9a4762b30ac29f750d7aa8c179e1&plugin=AMap.CitySearch"></script>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=8ecaa654c1cb4291647a565c375cc5ae&plugin=AMap.Geocoder"></script>
+<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+<!--加載高德地圖END -->
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/recouse/cropper/js/html5shiv.min.js"></script>
+<script src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/recouse/cropper/js/respond.min.js"></script>
+<![endif]-->
+	<div class="mui-content">
+		<div class="banner-area">
+			
+			<div class="map-bg" id="container" style="height: 5rem;position:relative"></div>
+			<!-- <img class="map-bg" src="__RESOURCE__/recouse/images/map_bg.png"> -->
+			<img class="map-bg2" src="__RESOURCE__/recouse/images/map_bg.png">
+			<img class="map-up-bg" src="__RESOURCE__/recouse/images/map_up_bg.png">
+			<div class="up-div"></div>
+			<div class="touxiang_icon">
+				<div class="clearfix">
+					<img class="touxiang" src="<!--@php echo download_pic($storeInfo['sts_avatar'],200,200,2) @-->" onclick="storeInfo()">
+					<span class="shop-name"><!--@php echo $storeInfo['sts_name']; @--></span>
+				</div>
+				<div class="shop-info">
+					<div class="info-detail">
+						<span>配送范围：</span>
+						<span><!--@php echo $region_name['region_name']; @--></span>
+					</div>
+					<div class="info-detail">
+						<span>粉丝数量：</span>
+						<span><!--@php echo $count; @--></span>
+					</div>
+					<div class="info-detail">
+						<span>综合评分<span class="fraction"><!--@php echo $total; @--></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="shop-tab">
+				<ul>
+					<li>
+						<div class="shop-index"></div>
+						<div>首页</div>
+					</li>
+					<li>
+						<div class="shop-product"></div>
+						<div>商品</div>
+					</li>
+					<li>
+						<div class="shop-activity"></div>
+						<div>活动</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 店铺信息弹出框 begin-->
+		<div class="store-info">
+			<div class="store-address">
+				<img src="__RESOURCE__/recouse/images/map_bg.png">
+			</div>
+			<div class="store-info-detail">
+				<div class="add-time clearfix">
+					<div class="store-left-btn">入驻时间</div>
+					<div class="store-right"><!--@php echo date("Y:m:d",$storeInfo['sts_register_time']);  @--> 加入小城市，距今<!--@php echo ceil((time()-$storeInfo['sts_register_time'])/86400);  @-->天</div>
+				</div>
+				<div class="store-detail clearfix">
+					<div class="store-left-btn">店铺简介</div>
+					<div class="store-right"><!--@php echo $storeInfo['sts_summary']  @--></div>
+				</div>
+				<div class="store-address-detail clearfix">
+					<div class="store-left-btn">店铺地址</div>
+					<div class="store-right"><!--@php echo $address;  @--></div>
+				</div>
+				<!--@php if(!empty($storeInfo['identity'])){  @-->
+				<div class="store-img clearfix">
+					<div>营业资质</div>
+					<div class="store-img-div">
+						<img src="<!--@php echo $storeInfo['identity']['ssi_yingyezhizhao'];  @-->">
+						<img src="<!--@php echo $storeInfo['identity']['ssi_xukezheng'];  @-->">
+					</div>
+				</div>
+				<!--@php }  @-->
+				<div class="store-info-return" onclick="storeReturn()">返回</div>
+			</div>
+		</div>
+		<!-- 店铺信息弹出框 end-->
+
+		<div class="shop-head">
+			<!-- 搜索框 -->
+			<div class="mui-content-padded" style="margin:0;margin-bottom: -15px;">
+				<div class="mui-input-row mui-search">
+					<input type="search" class="search-input mui-input-clear" placeholder="输入商家、商品名称">
+				</div>
+			</div>
+		</div>
+		<div class="tab-area-div" style="display:block">
+		<!--@php if($couponList && is_array($couponList)){ @-->
+			<!-- 优惠券 -->
+			<div style="background-color:#fff;padding-bottom:10px;">
+				<div class="coupons-area" >
+					<div class="coupons-area-left"><span class="fuhao">￥</span><!--@php echo $coupon_amount; @--></div>
+					<div class="coupons-area-right">
+						<div>共<!--@php echo $conpou_total; @-->张优惠券</div>
+						<div>领券下单更优惠</div>
+					</div>
+					<div onclick="couponsBtn(this)" class="couponsBtn"></div>
+				</div>
+			</div>
+			<div class="zhezhao"></div>
+			<!-- 优惠券弹窗 -->
+			<div class="zhezhao-child">
+			    <div class="fadein-title">可领优惠券<span class="zhezhao-close" onclick="zzClose()">&times;</span></div>
+				<!--@php foreach($couponList as $v){ @-->
+			    <div class="zhezhao-list ">
+			        <div class="zhezhao-left">
+			            <div class="zhezhao-price">￥<span class="money"><!--@php echo $v['coupon_amount']; @--></span></div>
+			            <div class="zhezhao-price2">满<!--@php echo $v['amount_of_condition']; @-->减<!--@php echo $v['coupon_amount']; @--></div>
+			            <div class="zhezhao-time">有效期：<!--@php echo date("Y.m.d",$v['use_start_time']); @-->-<!--@php echo date("Y.m.d",$v['use_end_time']); @--></div>
+			        </div>
+			        <div class="zhezhao-btn" onclick="zzBtn(this,<!--@php echo $v['scid']; @-->)">立即领取</div>
+			    </div>
+			    <!--@php } @-->
+			</div>
+			<!--@php } @-->
+			<!-- 特卖 -->
+			<!--@php if($shopDiscount && is_array($shopDiscount)){ @-->
+			<div class="product-area">
+				<p class="big-title">特卖商品</p>
+				<ul class="clearfix">
+				<!--@php foreach($shopDiscount as $v){ @-->
+					<li>
+						<a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'goodsDetail','dishid'=>$v['id'])); @-->">
+							<img data-original="<!--@php echo download_pic($v['thumb'],200,200,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy">
+						</a>
+						<div class="product-name mui-ellipsis"><!--@php echo $v['title']; @--></div>
+						<div class="product-detail mui-ellipsis"><!--@php echo $v['description']; @--></div>
+						<div class="product-price">
+							<span class="now-price">￥<!--@php echo $v['marketprice']; @--></span>
+							<span class="old-price">￥<!--@php echo $v['productprice']; @--></span>
+						</div>
+					</li>
+					<!--@php } @-->
+				</ul>
+			</div>
+			<!--@php } @-->
+			<!-- 推荐 -->
+			<!--@php if($shopRecommand && is_array($shopRecommand)){ @-->
+			<div class="product-area product-0" style="margin-top:4px">
+				<p class="big-title">推荐商品</p>
+				<ul class="ajax-ul-list clearfix">
+				<!--@php foreach($shopRecommand as $v){ @-->
+					<li>
+						<a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'goodsDetail','dishid'=>$v['id'])); @-->">
+							<img data-original="<!--@php echo download_pic($v['thumb'],200,200,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy">
+						</a>
+						<div class="product-name mui-ellipsis"><!--@php echo $v['title']; @--></div>
+						<div class="product-detail mui-ellipsis"><!--@php echo $v['description']; @--></div>
+						<div class="product-price">
+							<span class="now-price">￥<!--@php echo $v['marketprice']; @--></span>
+							<span class="old-price">￥<!--@php echo $v['productprice']; @--></span>
+						</div>
+					</li>
+					<!--@php } @-->
+				</ul>
+			</div>
+			<!--@php } @-->
+		</div>
+		<!-- 商品tab页 -->
+		<div class="tab-area-div product-1">
+			<div class="product-sort">
+				<div class="sort-div o_cur" curval="" onclick="ajaxsearchshop(this)">综合</div>
+				<div class="sort-div" curval="sales_num" onclick="ajaxsearchshop(this,'sales_num')">销量</div>
+				<div class="sort-div" curval="isnew" onclick="ajaxsearchshop(this,'isnew')">上新</div>
+				<div class="sort-div" curval="price" vurtype="1" onclick="ajaxsearchshop(this,'price')">价格</div>
+				<div class="sort-filter" onclick="filterShow()">筛选</div>
+			</div>
+
+			<!-- 筛选弹出框 begin-->
+			<div class="filter-alert">
+				<div style="position:relative;height: 94%;overflow: auto;">
+					<div class="filter-title">价格区间(元)</div>
+					<div>
+						<input class="mini-price price-num" type="number" placeholder="最低价">
+						<span class="price-span"></span>
+						<input class="max-price price-num" type="number" placeholder="最高价">
+					</div>
+					<div class="filter-title">全部分类</div>
+					<div class="filter-div-tab" style="margin-bottom: 4%;">
+						<dl class="fenlei1">
+							<dt class="clearfix" onclick="twoCategoryShow(this)">
+								<span class="fl">分类一名称</span>
+								<span class="fr"><span class="category-result"></span><i class="icon-angle-down" aria-hidden="true"></i></span>
+							</dt>
+							<!-- 对应的二级分类 -->
+							<dd class="two-category clearfix">
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+							</dd>
+						</dl>
+						<dl class="fenlei1">
+							<dt class="clearfix" onclick="twoCategoryShow(this)">
+								<span class="fl">分类一名称</span>
+								<span class="fr"><span class="category-result"></span><i class="icon-angle-down" aria-hidden="true"></i></span>
+							</dt>
+							<!-- 对应的二级分类 -->
+							<dd class="two-category clearfix">
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+							</dd>
+						</dl>
+						<dl class="fenlei1">
+							<dt class="clearfix" onclick="twoCategoryShow(this)">
+								<span class="fl">分类一名称</span>
+								<span class="fr"><span class="category-result"></span><i class="icon-angle-down" aria-hidden="true"></i></span>
+							</dt>
+							<!-- 对应的二级分类 -->
+							<dd class="two-category clearfix">
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+								<em>全网通</em>
+							</dd>
+						</dl>
+					</div>
+					<div class="filter-title">全部品牌<span class="brand-result"></span></div>
+					<div class="filter-div-tab">
+					<!-- alt是品牌名称，必须填写 -->
+						<ul class="spec clearfix">
+							<li specId="1" class="cur-active"><img src="//image.suning.cn/uimg/pcms/brandLogo/0021_150x60.jpg" alt="苹果(Apple)"></li>
+							<li specId="2"><img src="//image.suning.cn/uimg/pcms/brandLogo/0021_150x60.jpg" alt="苹果(Apple)"></li>
+							<li specId="3"><img src="//image.suning.cn/uimg/pcms/brandLogo/0021_150x60.jpg" alt="苹果(Apple)"></li>
+							<li specId="4"><img src="//image.suning.cn/uimg/pcms/brandLogo/0021_150x60.jpg" alt="苹果(Apple)"></li>
+							<li specId="5"><img src="//image.suning.cn/uimg/pcms/brandLogo/0021_150x60.jpg" alt="苹果(Apple)"></li>
+						</ul>
+					</div>
+					<div class="filter-footer">
+						<div class="filter-reset" onclick="filterReset()">重置</div>
+						<div class="filter-sure" onclick="filterSure()">完成</div>
+					</div>
+				</div>
+			</div>
+			<!-- 筛选弹出框 end-->
+
+			<!--@php if($shopList && is_array($shopList)){ @-->
+			<div class="product-area">
+				<ul class="ajax-ul-list clearfix">
+				<!--@php foreach($shopList as $v){ @-->
+					<li>
+						<a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'goodsDetail','dishid'=>$v['id'])); @-->">
+							<img data-original="<!--@php echo download_pic($v['thumb'],200,200,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy">
+						</a>
+						<div class="product-name mui-ellipsis"><!--@php echo $v['title']; @--></div>
+						<div class="product-detail mui-ellipsis"><!--@php echo $v['description']; @--></div>
+						<div class="product-price">
+							<span class="now-price">￥<!--@php echo $v['marketprice']; @--></span>
+							<span class="old-price">￥<!--@php echo $v['productprice']; @--></span>
+						</div>
+					</li>
+					<!--@php } @-->
+				</ul>
+			</div>
+			<!--@php } @-->
+		</div>
+		<!-- 活动tab页 -->
+		<!--@php if($storeAdv && is_array($storeAdv)){ @-->
+		<div class="tab-area-div product-2" style="margin-top: .26667rem;">
+			<ul class="ajax-ul-list">
+				<!--@php foreach($storeAdv as $v){ @-->
+				<!--@php if($v['count'] < 3 && $v['count'] > 0){ @-->
+				<li>
+					<a class="m-topicRecommendItem" href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'advDetail','advid'=>$v['ssa_adv_id'])); @-->">
+						<!-- <div class="hd" >
+							<div class="avatar" >
+								<img  class="lazy" data-original="https://yanxuan.nosdn.127.net/14955054192381430.png?imageView&amp;thumbnail=64y64" src="__RESOURCE__/recouse/images/ajax-loader.gif">
+							</div>
+							<div class="author">严选推荐</div>
+						</div> -->
+						<div class="imgContainer">
+							<img  class="lazy" data-original="<!--@php echo download_pic($v['ssa_thumb'][0],300,200,2) @-->" src="__RESOURCE__/recouse/images/lazy640.jpg">
+							<div class="u-icon u-icon-topicReadCount">
+								<span class="eyeAndcount">
+									<span class="topicEyeContainer">
+										<i class="u-icon u-icon-topicEye"></i></span>
+									<span><!--@php echo $v['ssa_click_count']; @--></span>
+								</span>
+							</div>
+						</div>
+						<div class="topicInfo">
+							<div class="line1">
+								<div class="title" ><!--@php echo $v['ssa_title']; @--></div>
+							</div>
+							<div class="line2" >
+								<div class="subTitle"><!--@php echo $v['ssa_sub_title']; @--></div>
+							</div>
+						</div>
+					</a>
+				</li>
+				<!--@php }elseif($v['count'] >= 3){ @-->
+				<li>
+				<!-- 三张图片的样式 -->
+					<a class="m-yxBackSceneItem" href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'advDetail','advid'=>$v['ssa_adv_id'])); @-->">
+						<!-- <div class="hd" >
+							<div class="avatar" >
+								<img class="lazy" data-original="https://yanxuan.nosdn.127.net/14951010888339172.png?imageView&amp;thumbnail=64y64" src="__RESOURCE__/recouse/images/ajax-loader.gif">
+							</div>
+							<div class="author" >服装组：内内</div>
+						</div> -->
+						<div class="imgContainer">
+							<div class="left">
+								<img class="lazy" data-original="<!--@php echo download_pic($v['ssa_thumb'][0],200,156,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg">
+							</div>
+							<div class="right">
+								<div class="topicImg">
+									<img class="lazy" data-original="<!--@php echo download_pic($v['ssa_thumb'][1],100,100,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg">
+								</div>
+								<div class="topicImg">
+									<img class="lazy" data-original="<!--@php echo download_pic($v['ssa_thumb'][2],100,100,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg">
+								</div>
+							</div>
+							<div class="u-icon u-icon-topicReadCount" >
+								<span class="eyeAndcount">
+									<span class="topicEyeContainer"><i class="u-icon u-icon-topicEye" ></i></span><span ><!--@php echo $v['ssa_click_count']; @--></span>
+								</span>
+							</div>
+						</div>
+						<div class="topicInfo">
+							<div class="title" ><!--@php echo $v['ssa_title']; @--></div>
+							<div class="subTitle" >
+								<span><!--@php echo $v['ssa_sub_title']; @--></span>
+							</div>
+						</div>
+					</a>
+				</li>
+				<!--@php } @-->
+		<!--@php } @-->
+			</ul>
+		</div>
+		<!--@php } @-->
+	</div>
+
+<!--用来存当前page-->
+<input type="hidden" value="2" id="ShopRecPage"/>
+<input type="hidden" value="2" id="ShopListPage"/>
+<input type="hidden" value="2" id="AdvListPage"/>
+<input type="hidden" value="2" id="ajaxSearchPage"/>
+<div class="ajax_next_page">
+	<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+</div>
+
+<script type="text/javascript">
+var index = 1; //默认开关状态是打开	
+var li_index = 0; //保存tab 切换的索引值
+$(function(){
+	$(".coupon-btn").on("click",function(){
+		alert("领取按钮")
+	});
+	$("img").lazyload({
+        event : "sporty"
+    });
+    //tab 切换
+    $(".shop-tab li").on("click",function(){
+    	$(this).addClass("tab-active").siblings("li").removeClass("tab-active");
+    	li_index = $(this).index();
+    	$(".tab-area-div").hide();
+    	$(".tab-area-div").eq(li_index).show(); 
+    	$("img.lazy").trigger("sporty");
+    });
+	//滚动条到底部时就加载剩下数据
+	$(window).scroll(function(){
+		if( $(document).scrollTop() >= $(document).height()-$(window).height() ){
+			Refresh();
+		}
+	});
+	$(".product-sort .sort-div").on("click",function(){
+		$(this).addClass("o_cur").siblings().removeClass("o_cur");
+	});
+    $(".filter-div-tab li").on("click",function(){
+    	var brand_result = $(this).find("img").attr("alt");
+    	$(".brand-result").text(brand_result);
+    	$(this).addClass("cur-active").siblings().removeClass("cur-active");
+    });
+    $(".two-category em").on("click",function(){
+    	var this_val = $(this).text();
+    	$(".two-category em").removeClass("cur-active");
+    	$(this).addClass("cur-active");
+    	$(".category-result").text("");
+    	$(this).parent(".two-category").siblings("dt").find(".category-result").text(this_val);
+    })
+})
+//打开二级分类
+function twoCategoryShow(obj){
+	if( $(obj).hasClass("category-open") ){
+		$(obj).removeClass("category-open");
+		$(obj).siblings(".two-category").hide();
+	}else{
+		$(".fenlei1").find("dt").removeClass("category-open");
+		$(".fenlei1").find(".two-category").hide();
+		$(obj).addClass("category-open");
+		$(obj).siblings(".two-category").show();
+	}
+	
+}
+//店铺信息
+function storeInfo(){
+	$(".store-info").addClass("store-info-show");
+	$("body").css("overflow","hidden");
+}
+//关闭店铺
+function storeReturn(){
+	$(".store-info").removeClass("store-info-show");
+	$("body").css("overflow","auto");
+}
+//筛选重置
+function filterReset(){
+	$(".price-num").val("");
+	$(".category-result").text("");
+	$(".brand-result").text("");
+	$(".two-category").hide();
+	$(".two-category em").removeClass("cur-active");
+	$(".fenlei1").find("dt").removeClass("category-open");
+	$(".filter-div-tab li").removeClass("cur-active");
+}
+//筛选完成
+function filterSure(){
+	var mini_price = $(".mini-price").val();
+	var max_price = $(".max-price").val();
+	var url = "";
+	var fenleiId = $(".fenlei .cur-active").attr("fenleiId");
+	var specid = $(".spec .cur-active").attr("specid");
+	$.post(url,{},function(data){
+
+	},"json");
+	$(".filter-alert").removeClass("filter-alert-show");
+    $("body").css("overflow","auto");
+}
+//关闭领券 
+function zzClose(){
+    $(".zhezhao-child").slideUp("slow",function(){
+        $(".zhezhao").fadeOut();
+    });
+}
+//领券
+function couponsBtn(obj){
+    $(".zhezhao").show();
+    $(".zhezhao-child").slideDown("slow");
+}
+//领取优惠券按钮
+function zzBtn(obj,scid){
+	var url = "<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'ajaxGetCoupon')); @-->";
+	var storeid = "<!--@php echo $storeid; @-->";
+	$.post(url,{scid:scid,storeid:storeid},function(data){
+		if( data.errno == 1 ){
+			alert(data.data.mes);
+			if( data.data.status==0 ){
+				$(obj).parent(".zhezhao-list").remove();
+			}
+		}else{
+			alert(data.data.mes);
+		}
+	},"json");
+}
+function filterShow(){
+	$(".filter-alert").addClass("filter-alert-show");
+	$("body").css("overflow","hidden");
+}
+function Refresh(){
+	if( index == 1){
+		$(".ajax_next_page").show();
+		index = 0; //关闭开关
+		var page = 0;
+		var ajaxurl = "";
+		var storeid = "<!--@php echo $storeid; @-->";
+		var curval = $(".product-1 .o_cur").attr("curval");
+		if( li_index == 0 ){
+			//推荐商品
+			page = $("#ShopRecPage").val();
+			ajaxurl = "<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'ajaxShopRec')); @-->";
+		}else if( li_index == 1 ){
+			//全部商品
+			page = $("#ShopListPage").val();
+			ajaxurl = "<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'ajaxShopList')); @-->";
+		}else if( li_index == 2 ){
+			//活动列表
+			page = $("#AdvListPage").val();
+			ajaxurl = "<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'ajaxAdvList')); @-->";
+		}
+
+		$.post(ajaxurl, {'page' : page,'storeid':storeid,type_name:curval}, function(s){
+			if(s.errno == 1){
+				if( li_index == 0 ){
+					$("#ShopRecPage").val(++page);
+				}else if( li_index == 1 ){
+					$("#ShopListPage").val(++page);
+				}else if( li_index == 2 ){
+					$("#AdvListPage").val(++page);
+				}
+				var art_data = s.data;
+				if( art_data == "" ){
+					$(".ajax_next_page").hide();
+					return false;
+				}else{
+					for(var i = 0;i < art_data.length;i++){
+						//循环拼接 html下一页数据
+						if( li_index == 2 ){
+							AdvLoad(art_data[i]);
+						}else{
+							Load(art_data[i]);
+						}
+					}
+					index = 1;  //加载完后重新打开开关
+					$(".ajax_next_page").hide();
+				}
+			}else{
+				//如果没有数据
+				$(".ajax_next_page").hide();
+			}
+		}, 'json');
+
+	}
+}
+var ajaxliindex = 0;
+function Load(art_data){	
+	ajaxliindex++;
+	if( art_data.description == "" ){
+		art_data.description = "&nbsp;"
+	}
+	var li ='<li class="ajax-li-lazy-'+ajaxliindex+'">'+
+				'<a href="">'+
+					'<img data-original="'+art_data.thumb+'" '+
+					'src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy">'+
+				'</a>'+
+				'<div class="product-name mui-ellipsis">'+art_data.title+'</div>'+
+				'<div class="product-detail mui-ellipsis">'+art_data.description+'</div>'+
+				'<div class="product-price">'+
+					'<span class="now-price">￥'+art_data.marketprice+'</span>'+
+					'<span class="old-price">￥'+art_data.productprice+'</span>'+
+				'</div>'+
+			'</li>';
+	$(".product-"+li_index).find(".ajax-ul-list").append(li);
+	//异步加载的图片懒加载初始化
+	$(".ajax-li-lazy-"+ajaxliindex+" img.lazy").lazyload({
+		threshold : 200, //控制灵敏度
+		effect : "fadeIn"
+	});
+}
+function AdvLoad(art_data){
+	ajaxliindex++;
+	var imgContainer_html = "";
+	var aclass = "";
+	if( art_data.ssa_sub_title == "" ){
+		art_data.ssa_sub_title = "&nbsp;";
+	}
+	if( art_data.ssa_thumb.length < 3 ){
+		aclass = "m-topicRecommendItem";
+		imgContainer_html = '<div class="imgContainer">'+
+							'<img class="lazy" data-original="'+art_data.ssa_thumb[0]+'" src="__RESOURCE__/recouse/images/lazy640.jpg" style="display: block;">'+
+							'<div class="u-icon u-icon-topicReadCount">'+
+								'<span class="eyeAndcount">'+
+									'<span class="topicEyeContainer">'+
+										'<i class="u-icon u-icon-topicEye"></i></span>'+
+									'<span>'+art_data.ssa_click_count+'</span>'+
+								'</span>'+
+							'</div>'+
+						'</div>';
+	}else if( art_data.ssa_thumb.length >= 3 ){
+		aclass = "m-yxBackSceneItem";
+		imgContainer_html = '<div class="imgContainer">'+
+							'<div class="left">'+
+								'<img class="lazy" data-original="'+art_data.ssa_thumb[0]+'" src="__RESOURCE__/recouse/images/lazy200.jpg" style="display: block;">'+
+							'</div>'+
+							'<div class="right">'+
+								'<div class="topicImg">'+
+									'<img class="lazy" data-original="'+art_data.ssa_thumb[1]+'" src="__RESOURCE__/recouse/images/lazy200.jpg" style="display: block;">'+
+								'</div>'+
+								'<div class="topicImg">'+
+									'<img class="lazy" data-original="'+art_data.ssa_thumb[2]+'" src="__RESOURCE__/recouse/images/lazy200.jpg" style="display: block;">'+
+								'</div>'+
+							'</div>'+
+							'<div class="u-icon u-icon-topicReadCount">'+
+								'<span class="eyeAndcount">'+
+									'<span class="topicEyeContainer"><i class="u-icon u-icon-topicEye"></i></span><span>'+art_data.ssa_click_count+'</span>'+
+								'</span>'+
+							'</div>'+
+						'</div>';
+	}
+	var li ='<li class="ajax-li-lazy-'+ajaxliindex+'">'+
+					'<a class="'+aclass+'" href="">'+imgContainer_html+
+						'<div class="topicInfo">'+
+							'<div class="line1">'+
+								'<div class="title">'+art_data.ssa_title+'</div>'+
+							'</div>'+
+							'<div class="line2">'+
+								'<div class="subTitle">'+art_data.ssa_sub_title+'</div>'+
+							'</div>'+
+						'</div>'+
+					'</a>'+
+				'</li>';
+
+	$(".product-"+li_index).find(".ajax-ul-list").append(li);
+	//异步加载的图片懒加载初始化
+	$(".ajax-li-lazy-"+ajaxliindex+" img.lazy").lazyload({
+		threshold : 200, //控制灵敏度
+		effect : "fadeIn"
+	});
+}
+function ajaxsearchshop(obj,type_name){
+	
+	var ajaxurl = "<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'ajaxShopList')); @-->";
+	var storeid = "<!--@php echo $storeid; @-->";
+	var ajax_li = "";
+	//vurtype 1 代表升序 ，0代表降序
+	var vurtype = $(obj).attr("vurtype");
+
+	$.post(ajaxurl, {'type_name' : type_name,'type':vurtype,'storeid':storeid}, function(s){
+
+		if(s.errno != 1){
+			//如果没有数据
+		}else if(s.errno==1){
+			var art_data = s.data;
+			for(var i = 0;i < art_data.length;i++){
+				//循环拼接 html下一页数据
+				
+				var new_art_data = art_data[i];
+				if( new_art_data.description == "" ){
+					new_art_data.description = "&nbsp;"
+				}
+				ajax_li +='<li class="ajax-li-lazy-'+ajaxliindex+'">'+
+							'<a href="">'+
+								'<img data-original="'+new_art_data.thumb+'" '+
+								'src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy">'+
+							'</a>'+
+							'<div class="product-name mui-ellipsis">'+new_art_data.title+'</div>'+
+							'<div class="product-detail mui-ellipsis">'+new_art_data.description+'</div>'+
+							'<div class="product-price">'+
+								'<span class="now-price">￥'+new_art_data.marketprice+'</span>'+
+								'<span class="old-price">￥'+new_art_data.productprice+'</span>'+
+							'</div>'+
+						'</li>';
+			}
+			if( vurtype != undefined){
+				//请求成功后改变升降序的标记
+				if( vurtype == 1 ){
+					$(obj).attr("vurtype",0);
+				}else{
+					$(obj).attr("vurtype",1);
+				}
+			}
+			$(".product-"+li_index).find(".ajax-ul-list").html(ajax_li);
+			//异步加载的图片懒加载初始化
+			$(".ajax-li-lazy-"+ajaxliindex+" img.lazy").lazyload({
+				threshold : 200, //控制灵敏度
+				effect : "fadeIn"
+			});
+			$("#ShopListPage").val(2);
+		}
+	}, 'json');
+}
+
+var map, geolocation,marker,infoWindow,point,geocoder,isNew;
+isNew = 1;
+$(function(){
+    infoWindow = new AMap.InfoWindow({ offset: {x: 0, y: -30} });
+    //加载地图，调用浏览器定位服务
+    map = new AMap.Map('container', {
+        resizeEnable: false
+        ,dragEnable:false//拖拽还不太稳定
+    });
+
+    map.on('dragging', function(data) {
+        infoWindow.close();
+        marker.setPosition( map.getCenter());
+    });
+    map.on('dragging', function(data) {
+        marker.setPosition( map.getCenter());
+    });
+    map.on('dragend', function(data) {
+        marker.setPosition( map.getCenter());
+    });
+    map.on('click', function(data) {
+        marker.setPosition( data.lnglat );
+        var addr =pointToAddress(data.lnglat.getLng(),data.lnglat.getLat());
+        $("#point_lng").val( data.lnglat.getLng());
+        $("#point_lat").val( data.lnglat.getLat() );
+        infoWindow = new AMap.InfoWindow({
+           content: addr,
+           offset: {x: 0, y: -30}
+        });
+        infoWindow.open(map, marker.getPosition());
+    });
+    geocoder =  new AMap.Geocoder({radius: 1000});
+    
+    if(isNew>0){//新增页面用浏览器定位
+        map.plugin('AMap.Geolocation', function() {
+            geolocation = new AMap.Geolocation({
+                enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                timeout: 10000,                         //超过10秒后停止定位，默认：无穷大
+                buttonOffset: new AMap.Pixel(10, 20),  //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                zoomToAccuracy: true      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            });
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition();
+            AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        });
+    }else{//修改页面用已知点定位
+        point =  [ <?php echo $info['sts_lng']? $info['sts_lng']:0.00; ?>, <?php echo $info['sts_lat']? $info['sts_lat']:0.00; ?>];
+        geocoder.getAddress(point, function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                console.log(result);
+                addMarker(<?php echo $info['sts_lng']? $info['sts_lng']:0.00; ?>,<?php echo $info['sts_lat']? $info['sts_lat']:0.00; ?>) ;
+            }
+        });  
+        marker = new AMap.Marker({  //加点
+            map: map,
+            position: point
+        });
+        map.setFitView();
+        map.setZoom(map.getZoom()-2);
+    }
+})
+//解析定位结果
+    function onComplete(data) {
+        map.setZoom(map.getZoom()-2);
+        map.clearMap();//清除浏览器上的定位小点
+        marker = new AMap.Marker({
+            map: map,
+            draggable: true,
+            raiseOnDrag: false,
+            position: [data.position.getLng(), data.position.getLat()]
+        });
+        marker.on('dragend', function(data) {
+            var addr =pointToAddress(data.lnglat.getLng(),data.lnglat.getLat());
+            $("#point_lng").val( data.lnglat.getLng());
+            $("#point_lat").val( data.lnglat.getLat() );
+            infoWindow = new AMap.InfoWindow({
+               content: addr,
+               offset: {x: 0, y: -30}
+            });
+            infoWindow.open(map, marker.getPosition());
+        });
+//        document.getElementById('tip').innerHTML = str.join('<br>');
+    }
+    //解析定位错误信息
+    function onError(data) {
+        //document.getElementById('tip').innerHTML = '定位失败';
+    }
+    
+    function fetchMap() {
+        var fulltext =  $("#sts_locate_add_1").find("option:selected").text()+$("#sts_locate_add_2").find("option:selected").text()+$("#sts_locate_add_3").find("option:selected").text();
+        //地理编码,返回地理编码结果
+        geocoder.getLocation(fulltext, function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                geocoder_CallBack(result);
+            }
+        });
+    }
+
+    
+    </script>
+<!--@php include themePage('footer');@-->
+

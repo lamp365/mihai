@@ -1,0 +1,119 @@
+<!--@php include themePage('header'); @-->
+<!--@php css_url('shop'); @-->
+<!--@php css_url('category_search'); @-->
+<div class="g-bd">
+	<div id="j-bd">
+		<div class="g-row">
+			<div style="height: 44px;" >
+				<div class="m-hd">
+					<div class="m-topBar search">
+						<div class="bd" >
+							<div class="row active" >
+								<div class="m-hamburger toggle" ></div>
+								<form class="m-searchIptWrap searchIpt" role="search" action="/search" >
+									<i class="searchReturn icon-angle-left"></i>
+									<div onclick="searchShow()" class="searchdiv">
+										<ul>
+											<li class="searchdiv-li">
+												<span>男士</span>
+												<i style="font-size: 20px;">&times;</i>
+											</li>
+										</ul>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="m-searchSuggestionsViews">
+				<div class="m-searchSuggestions">
+					<header class="hd">
+						<h3 class="tit">热门搜索</h3>
+					</header>
+					<nav class="list">
+						<a class="item highlight" >全场满199减30</a>
+						<a class="item highlight" >配件换季特惠</a>
+						<a class="item">母婴限时冰点价</a>
+					</nav>
+				</div>
+			</div>
+
+			<section id="J_minisite" class="list_m_mdv minisite" style="height: 60px; padding: 9px;">
+				<a class="m_wrap" href="">
+				    <span class="m_name">
+				        七匹狼官方旗舰店<i class="list_m_font m_icon"></i>
+				    </span>
+				    <span class="m_img">
+				        <img src="//img.alicdn.com/bao/uploaded/TB1jSUWRXXXXXaDXXXXXXXXXXXX_170x120Q30s50.jpg_.webp" alt="七匹狼官方旗舰店">
+				    </span>
+				</a>
+			</section>
+			<div class="product-area">
+				<ul class="clearfix">
+					<li>
+						<a href="">
+							<img data-original="http://pic1.ymatou.com/G02/shangou/M04/FA/8D/CgvUA1jGWPiAIf4tAAEEuENA3ks328_41_53_n_w_lb.jpg" src="__RESOURCE__/recouse/images/loading.gif"  class="lazy">
+						</a>
+						<div class="product-name">sandro圆领针织衫</div>
+						<div class="product-detail mui-ellipsis">COTON2017春夏新款男装</div>
+						<div class="product-price">
+							<span class="now-price">￥1588</span>
+							<span class="old-price">￥2000</span>
+						</div>
+					</li>
+					<li>
+						<a href="">
+							<img data-original="http://pic1.ymatou.com/G02/shangou/M04/FA/8D/CgvUA1jGWPiAIf4tAAEEuENA3ks328_41_53_n_w_lb.jpg" src="__RESOURCE__/recouse/images/loading.gif"  class="lazy">
+						</a>
+						<div class="product-name">sandro圆领针织衫</div>
+						<div class="product-detail mui-ellipsis">COTON2017春夏新款男装</div>
+						<div class="product-price">
+							<span class="now-price">￥1588</span>
+							<span class="old-price">￥2000</span>
+						</div>
+					</li>
+					<li>
+						<a href="">
+							<img data-original="http://pic1.ymatou.com/G02/shangou/M04/FA/8D/CgvUA1jGWPiAIf4tAAEEuENA3ks328_41_53_n_w_lb.jpg" src="__RESOURCE__/recouse/images/loading.gif"  class="lazy">
+						</a>
+						<div class="product-name">sandro圆领针织衫</div>
+						<div class="product-detail mui-ellipsis">COTON2017春夏新款男装</div>
+						<div class="product-price">
+							<span class="now-price">￥1588</span>
+							<span class="old-price">￥2000</span>
+						</div>
+					</li>
+					<li>
+						<a href="">
+							<img data-original="http://pic1.ymatou.com/G02/shangou/M04/FA/8D/CgvUA1jGWPiAIf4tAAEEuENA3ks328_41_53_n_w_lb.jpg" src="__RESOURCE__/recouse/images/loading.gif"  class="lazy">
+						</a>
+						<div class="product-name">sandro圆领针织衫</div>
+						<div class="product-detail mui-ellipsis">COTON2017春夏新款男装</div>
+						<div class="product-price">
+							<span class="now-price">￥1588</span>
+							<span class="old-price">￥2000</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		$(".searchReturn").on("click",function(){
+			var refer = document.referrer;
+			if( refer.length == 0 ){
+				//没有来源
+				var url = "shopindex/index.html";
+				window.location.href = url;
+			}else{
+				window.history.back(-1);
+			}
+		})
+	})
+</script>
+<!-- search_page 搜索的侧边栏 -->
+<!--@php include themePage('search_page');@-->
+<!--@php include themePage('footer');@-->

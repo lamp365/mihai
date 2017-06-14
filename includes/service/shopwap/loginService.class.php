@@ -99,13 +99,13 @@ class loginService extends \service\publicService
             return false;
         }
 
-       /* if(strtolower($_SESSION["VerifyCode"][$_GP['mobile']]) == strtolower($_GP['mobilecode'])) {
+        if(strtolower($_SESSION["VerifyCode"][$_GP['mobile']]) == strtolower($_GP['mobilecode'])) {
             unset($_SESSION["VerifyCode"]);
         }else{
             //验证码有误
             $this->error = LANG('COMMON_PHONECODE_ERROR');
             return false;
-        }*/
+        }
 
         //验证手机号是否已经存在过
         $member = mysqld_select("select openid from ".table('member')." where mobile='{$_GP['mobile']}'");

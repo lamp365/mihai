@@ -1,0 +1,69 @@
+<!--@php include themePage('header'); @-->
+<!--@php css_url('advDetail'); @-->
+<!--头部-->	
+	<div class="top_header">
+	    <div class="header_left return">
+	        <a href="javascript:;" class="return" id="return" style="margin-top:2px;">
+	        	<img src="__RESOURCE__/recouse/images/return.png"  height="18px">
+	        </a>
+	    </div>
+	    <div class="header_title">
+			<!--@php echo $info['ssa_title']; @-->
+	    </div>        
+	</div>
+	<!-- 广告轮播 -->
+	<div class="adv-detail-banner">
+		<!-- 只有一张，不轮播 -->
+		<!--@php if($info['count']<=1){  @-->
+		<div class="one-img">
+			<img src="<!--@php echo download_pic($info['ssa_thumb'][0],640,300,2); @-->">
+		</div>
+		<!--@php }else{  @-->
+		<!-- 多张banner轮播 -->
+		<div class="swiper-container">
+		    <div class="swiper-wrapper">
+		    	<!--@php foreach($info['ssa_thumb'] as $v){ @-->
+		        <div class="swiper-slide">
+	        		<a class="banner-img" href="#">
+						<img src="<!--@php echo download_pic($v,640,300,2); @-->">
+					</a>
+				</div>
+				<!--@php } @-->
+		        <div class="swiper-slide">
+		        	<a class="banner-img" href="#">
+						<img src="https://yanxuan.nosdn.127.net/14954234296780891.jpg">
+					</a>
+		        </div>
+		    </div>
+		    <!-- 如果需要分页器 -->
+		    <div class="banner-pagination swiper-pagination"></div>
+		</div>
+		<!--@php } @-->
+	</div>
+	<!-- 活动内容 -->
+	<div class="adv-detail-content">
+		<div class="headline-detail">
+			<!--文章内容-->
+			<!--@php echo $info['ssa_content']; @-->
+			<div class="info">
+				<!--发布日期-->
+				<span><!--@php echo date("Y-m-d H:i:s",$info['ssa_create_time']) @--></span>
+			</div>			
+					
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".searchReturn").on("click",function(){
+				var refer = document.referrer;
+				if( refer.length == 0 ){
+					//没有来源
+					var url = "shopindex/index.html";
+					window.location.href = url;
+				}else{
+					window.history.back(-1);
+				}
+			})
+		})
+	</script>
+<!--@php include themePage('footer');@-->

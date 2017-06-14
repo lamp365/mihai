@@ -39,9 +39,9 @@ class loginService extends \service\publicService
 //       save_weixin_access_token($seriaze_access_token);
 
         /**
-         * 7.生成第三方3rd_session，用于第三方服务器和小程序之间做登录态校验。为了保证安全性，3rd_session应该满足：
+         * 生成第三方3rd_session，用于第三方服务器和小程序之间做登录态校验。为了保证安全性，3rd_session应该满足：
          * a.长度足够长。建议有2^128种组合，即长度为16B
-         * b.避免使用srand（当前时间）然后rand()的方法，而是采用操作系统提供的真正随机数机制，比如Linux下面读取/dev/urandom设备
+         * b.避免使用rand（当前时间）然后rand()的方法，而是采用操作系统提供的真正随机数机制，比如Linux下面读取/dev/urandom设备
          * c.设置一定有效时间，对于过期的3rd_session视为不合法
          *
          * 以 $session3rd 为key，sessionKey+openId为value，写入memcached

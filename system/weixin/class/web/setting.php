@@ -25,7 +25,9 @@ if($op == 'list'){
 			'weixintoken' => $_GP['weixintoken'],
 			'accesskey'   => $_GP['accesskey'],
 			'appid'       => $_GP['appid'],
-			'appsecret'   => $_GP['appsecret']
+			'appsecret'   => $_GP['appsecret'],
+			'xcx_appid'   => $_GP['xcx_appid'],
+			'xcx_appsecret'=> $_GP['xcx_appsecret']
 		);
 		if(empty($_GP['id'])){
 			$cfg['createtime'] = time();
