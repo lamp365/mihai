@@ -17,16 +17,17 @@ class shop extends base{
         $storeid = intval($_GP['storeid']);
         if (empty($storeid)) message('查不到该店铺',refresh(),'error');
         //取出店铺信息
-        $storeInfo = $storeShopService->getStoreInfoByStoreid($storeid);
+        $storeInfo = $storeShopService->StoreDetailByStoreid($storeid);
         if (empty($storeInfo)) message('查不到该店铺',refresh(),'error');
-        $province = $regionService->getRegionNByCode($storeInfo['sts_locate_add_1']);
-        $city = $regionService->getRegionNByCode($storeInfo['sts_locate_add_2']);
-        $area = $regionService->getRegionNByCode($storeInfo['sts_locate_add_3']);
+        count_store_visted($storeid);
+        $province = $regionService->getOneRegion(array('region_code'=>$storeInfo['sts_locate_add_1']),'region_name');
+        $city = $regionService->getOneRegion(array('region_code'=>$storeInfo['sts_locate_add_2']),'region_name');
+        $area = $regionService->getOneRegion(array('region_code'=>$storeInfo['sts_locate_add_3']),'region_name');
         $address = $province['region_name'].$city['region_name'].$area['region_name'].$storeInfo['sts_address'];
         //店铺粉丝数量
         $count = $storeShopService->getFunCount($storeid);
         //店铺配送地址
-        $region_name = $regionService->getRegionNByCode($storeInfo['sts_region']);
+        $region_name = $regionService->getOneRegion(array('region_code'=>$storeInfo['sts_region']),'region_name');
         //综合评分
         $total = $commentService->getstoreAvePingfen($storeid);
         //取特卖商品
@@ -37,7 +38,6 @@ class shop extends base{
         $shopList = $storeShopService->getShopByStoreid($_GP);
         //取得活动的文章
         $storeAdv = $storeShopService->getShopadByStoreid($_GP);
-        
         //优惠券
         //是否登入标识，$openid不为空表示登入,如果登入后则返回可以领取的优惠券
         $openid = checkIsLogin();
@@ -102,7 +102,7 @@ class shop extends base{
         //领取优惠券
         $getcoupons = $couponsService->getCoupons($data);
         if ($getcoupons['status'] == 1){
-            $flag = $couponsService->IsCanGetCoupon($data);
+            $flag = $couponsService->IsCanGetCoupon($data);//领取完判断能不能再领取
             $return = array(
                 'mes' => $getcoupons['mes'],
                 'status' => $flag['status'],
@@ -150,6 +150,7 @@ class shop extends base{
         $title = $cfg['shop_title'];
         $_GP = $this->request;
         $dishid = intval($_GP['dishid']);
+        count_dish_visted($dishid);
         $storeShopService = new storeShopService();
         $goods = $storeShopService->getGoodsInfoByDishid($dishid);
         if ($goods){
@@ -157,9 +158,9 @@ class shop extends base{
             $goods['productprice'] = FormatMoney($goods['productprice'],0);
         }
         //取出店铺信息
-        $storeInfo = $storeShopService->getStoreInfoByStoreid($goods['sts_id']);
+        $storeInfo = $storeShopService->getOneStoreShop(array('sts_id'=>$goods['sts_id']));
         $regionService = new regionService();
-        $area = $regionService->getRegionNByCode($storeInfo['sts_locate_add_3']);
+        $area = $regionService->getOneRegion(array('region_code'=>$storeInfo['sts_locate_add_3']),'region_name');
         $area = $area['region_name'];
         //取出评论
         $commentService = new commentService();

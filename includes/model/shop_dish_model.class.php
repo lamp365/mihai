@@ -13,6 +13,4 @@ class shop_dish_model extends model
 		$this->table_name = 'shop_dish';
 		parent::__construct();
 	}
-	
-    
 }

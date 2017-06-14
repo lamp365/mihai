@@ -4,6 +4,7 @@
  */
 namespace service\shopwap;
 use model\store_coupon_model;
+use model\store_coupon_member_model;
 class couponService extends \service\publicService
 {
     public $error_location = 0;
@@ -13,13 +14,44 @@ class couponService extends \service\publicService
         return $this->error_location;
     }
     /**
+     * 获得单条store_coupon表信息
+     *   */
+    public function getOneCoupon($where = array(),$param="*"){
+        if (empty($where)) return false;
+        $storeCouponModel = new store_coupon_model();
+        return $storeCouponModel->getOne($where,$param);
+    }
+    /**
+     * 获得多条store_coupon表信息
+     *   */
+    public function getAllCoupon($where,$param="*",$orderby=false){
+        $storeCouponModel = new store_coupon_model();
+        return $storeCouponModel->getAll($where,$param,$orderby);
+    }
+    /**
+     * 通过查询条件获取用户优惠券表,返回一条数据
+     *@param $condition array 查询条件
+     *   */
+    public function getOneMemberCoupon($where,$param="*",$orderby=false){
+        if (empty($where)) return false;
+        $storeCouponMemberModel = new store_coupon_member_model();
+        return $storeCouponMemberModel->getOne($where,$param);
+    }
+    /**
+     * 通过查询条件获取用户优惠券表,返回多条数据
+     *@param $condition array 查询条件
+     *   */
+    public function getAllMemberCoupon($where,$param="*",$orderby=false){
+        $storeCouponMemberModel = new store_coupon_member_model();
+        return $storeCouponMemberModel->getAll($where,$param,$orderby);
+    }
+    /**
      * 获得店铺优惠券
      *   */
     public function getStoreCoupons($storeid,$openid){
         if (empty($storeid)) return ;
         $mytime = time();
-        $storeCouponModel = new store_coupon_model();
-        $couponsList = $storeCouponModel->getAll("`store_shop_id`={$storeid} and `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
+        $couponsList = $this->getAllCoupon("`store_shop_id`={$storeid} and `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
         if (!empty($couponsList)){
             if ($openid){//用户已经登入，则返回可以领取的优惠券
                 $data = array(
@@ -56,62 +88,6 @@ class couponService extends \service\publicService
         }
     }
     /**
-     * 通过查询条件获取优惠券,返回多条数据
-     * @param $condition array 查询条件
-     *   */
-    public function getAllCouponsByCondition($condition=array(),$param="*",$front="AND"){
-        if (!empty($condition)){
-            if (is_array($condition)){
-                $condition = to_sqls($condition,$front);
-            }
-            $sql = "SELECT {$param} FROM ".table('store_coupon')." where {$condition}";
-            $return = mysqld_selectall($sql);
-            return $return;
-        }
-    }
-    /**
-     * 通过查询条件获取优惠券,返回一条数据
-     *@param $condition array 查询条件
-     *   */
-    public function getCouponsByCondition($condition=array(),$param="*",$front="AND"){
-        if (!empty($condition)){
-            if (is_array($condition)){
-                $condition = to_sqls($condition,$front);
-            }
-            $sql = "SELECT {$param} FROM ".table('store_coupon')." where {$condition}";
-            $return = mysqld_select($sql);
-            return $return;
-        }
-    }
-    /**
-     * 通过查询条件获取用户优惠券表,返回一条数据
-     *@param $condition array 查询条件
-     *   */
-    public function getMemberCoupons($condition=array(),$param="*",$front="AND"){
-        if (!empty($condition)){
-            if (is_array($condition)){
-                $condition = to_sqls($condition,$front);
-            }
-            $sql = "SELECT {$param} FROM ".table('store_coupon_member')." where {$condition}";
-            $return = mysqld_select($sql);
-            return $return;
-        }
-    }
-    /**
-     * 通过查询条件获取用户优惠券表,返回多条数据
-     *@param $condition array 查询条件
-     *   */
-    public function getAllMemberCoupons($condition=array(),$param="*",$front="AND"){
-        if (!empty($condition)){
-            if (is_array($condition)){
-                $condition = to_sqls($condition,$front);
-            }
-            $sql = "SELECT {$param} FROM ".table('store_coupon_member')." where {$condition}";
-            $return = mysqld_selectall($sql);
-            return $return;
-        }
-    }
-    /**
      * 是否可以领取优惠券
      * $data array
      * return array
@@ -120,7 +96,7 @@ class couponService extends \service\publicService
         if (!empty($data) && is_array($data)){
             $now = time();
             $con = "`scid`={$data['scid']} and `store_shop_id`={$data['stsid']}";
-            $info = $this->getCouponsByCondition($con,"scid,release_quantity,receive_start_time,receive_end_time,inventory,get_limit");
+            $info = $this->getOneCoupon($con,"scid,release_quantity,receive_start_time,receive_end_time,inventory,get_limit");
             $return['status'] = 0;
             /* and `payment`!=1 and {$now} >= `receive_start_time` and {$now} <= `receive_end_time` and `inventory`>0 */
             if (empty($info)) {
@@ -140,7 +116,7 @@ class couponService extends \service\publicService
                 $return['status'] = 1;
                 return $return;//用户可以无限制领取
             }
-            $myCoupons = $this->getAllMemberCoupons(array('openid'=>$data['openid'],'scid'=>$data['scid']));
+            $myCoupons = $this->getAllMemberCoupon(array('openid'=>$data['openid'],'scid'=>$data['scid']));
             if (count($myCoupons) < $info['get_limit']) {
                 $return['status'] = 1;
                 return $return;
@@ -172,12 +148,13 @@ class couponService extends \service\publicService
                 mysqld_insert("store_coupon_member",$insertData);
                 if (!mysqld_insertid()) throw new \PDOException('增加失败');
                 $now = time();
-                $info = $this->getCouponsByCondition("`scid`={$data['scid']} and {$now} >= `receive_start_time` and {$now} <= `receive_end_time`","release_quantity,inventory");
+                $info = $this->getOneCoupon("`scid`={$data['scid']} and {$now} >= `receive_start_time` and {$now} <= `receive_end_time`","release_quantity,inventory");
                 if (empty($info)) throw new \PDOException('对不起，不在领取的时间范围内');
                 $flag = $info['release_quantity']-$info['inventory'];
                 if($flag < 0) throw new \PDOException('对不起，优惠券数量不足');
                 $new_inventory = $info['inventory']+1;
-                mysqld_update('store_coupon',array('inventory'=>$new_inventory),array('scid'=>$data['scid']));
+                $storeCouponModel = new store_coupon_model();
+                $storeCouponModel->update($storeCouponModel->table_name,array('inventory'=>$new_inventory),array('scid'=>$data['scid']));
                 commit();
                 $return['status'] = 1;
                 $return['mes'] = '恭喜你，优惠券领取成功';

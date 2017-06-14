@@ -7,18 +7,12 @@ use service\publicService;
 use model\region_model;
 class regionService extends publicService
 {
-    
     /**
-     * 根据region_code取出region_name
+     * 获得单条region表信息
      *   */
-    public function getRegionNByCode($code){
-        if (empty($code)) return '';
+    public function getOneRegion($where = array(),$param="*"){
+        if (empty($where)) return false;
         $regionModel= new region_model();
-        $return = $regionModel->getOne(array('region_code'=>$code),'region_name');
-        return $return;
+        return $regionModel->getOne($where,$param);
     }
-    
-    
-    
-    
 }

@@ -344,7 +344,7 @@ class ordersService extends publicService
      *   */
     public function getAftersalesByCon($condition,$param="*"){
         if (!empty($condition)){
-            $info = getSingleDate('aftersales',$param,$condition);
+            $info = getOne('aftersales',$param,$condition);
             if ($info) return $info;
         }
     }
@@ -355,7 +355,7 @@ class ordersService extends publicService
      *   */
     public function getAftersalesLogByCon($condition,$param="*"){
         if (!empty($condition)){
-            $info = getSingleDate('aftersales_log',$param,$condition);
+            $info = getOne('aftersales_log',$param,$condition);
             if ($info) return $info;
         }
     }
@@ -366,7 +366,7 @@ class ordersService extends publicService
      *   */
     public function getOrderGoodsByCon($condition,$param="*"){
         if (!empty($condition)){
-            $info = getSingleDate('shop_order_goods',$param,$condition);
+            $info = getOne('shop_order_goods',$param,$condition);
             if ($info) return $info;
         }
     }

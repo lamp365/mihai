@@ -84,17 +84,31 @@ function rollback(){
 /**
  * 根据条件获得单条数据
  * $table 表名
- * $condition 条件
+ * $where 条件
  * $param 要取的参数
+ * return 一维数组
  * */
-function getSingleDate($table,$param="*",$condition,$front="AND"){
-    if (empty($table) || empty($condition)) return false;
-    if ($condition && is_array($condition)){
-        $con = to_sqls($condition,$front);
-    }else {
-        $con = $condition;
-    }
-    $sql = "SELECT {$param} FROM ".table($table)." WHERE {$con} ";
-    $info = mysqld_select($sql);
-    return $info;
+function getOne($table,$where,$param="*",$front="AND"){
+    if (empty($table)) return false;
+    if (is_array($where)) $where = to_sqls($where,$front);
+    
+    $sql = "SELECT {$param} FROM ".table($table);
+    $sql .= ($where) ? " WHERE $where" : '';
+    return mysqld_select($sql);
+}
+
+/**
+ * 获得多条数据
+ * $table 表名
+ * $where 条件
+ * $field 要取的参数
+ * return 二维数组
+ * */
+function getAll($table,$where,$field='*',$orderby = false){
+    if (empty($table)) return false;
+    if (is_array($where)) $where = to_sqls($where);
+    $sql = "SELECT {$field} FROM ".table($table);
+    $sql .= ($where) ? " WHERE $where" : '';
+    $sql .= ($orderby) ? " ORDER BY $orderby" : '';
+    return mysqld_selectall($sql);
 }

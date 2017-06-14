@@ -13,4 +13,12 @@ class shop_dish_piclist_model extends model
 		$this->table_name = 'shop_dish_piclist';
 		parent::__construct();
 	}
+	
+    /**
+	 * 获得单条shop_dish_piclist表信息
+	 *   */
+	public function getOneShopDishPiclist($where = array(),$param="*"){
+	    if (empty($where)) return false;
+	    return $this->getOne($where,$param);
+	}
 }

@@ -13,6 +13,12 @@ class shop_category_model extends model
 		$this->table_name = 'shop_category';
 		parent::__construct();
 	}
-	
+	/**
+	 * 获得单条shop_category表信息
+	 *   */
+	public function getOneShopCategory($where = array(),$param="*"){
+	    if (empty($where)) return false;
+	    return $this->getOne($where,$param);
+	}
     
 }
