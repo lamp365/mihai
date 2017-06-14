@@ -31,13 +31,8 @@ class loginService extends \service\publicService
             $this->error = $res['errmsg'];
             return false;
         }
-        //否则的话记录缓存 和 过期时间
-        $record = array();
-        $record['xcx_openid']       = $res['openid'];
-        $record['xcx_session_key']  = $res['session_key'];
-        $record['xcx_expires_in']   = TIMESTAMP + $res['expires_in'];
-        $seriaze_record             = serialize($record);
-        save_weixin_access_token($seriaze_record,2);
+
+        $expires_in   = TIMESTAMP + $res['expires_in'];
 
         /**
          * 生成第三方3rd_session，用于第三方服务器和小程序之间做登录态校验。为了保证安全性，3rd_session应该满足：
@@ -48,11 +43,21 @@ class loginService extends \service\publicService
          * 以 $session3rd 为key，sessionKey+openId为value，写入memcached
          */
         $session3rd         = $this->session3rd(16);
-        $res['session3rd']  = $session3rd;
+        //未注册的注册该用户信息
 
-        $this->set_session3rd_cache($session3rd,$res,$record['xcx_expires_in']);
+        $this->set_session3rd_cache($session3rd,$res,$expires_in);
 
         return $res;
+    }
+
+    public function insertAndgetUserinfo($weixin_openid)
+    {
+        get_member_account();
+        $info = mysqld_select("select id from ".table('weixinfans_xcx')." where weixin_openid={$weixin_openid}");
+        if(empty($info)){
+            //插入
+        }
+        return $info;
     }
 
     public function session3rd($len)
@@ -80,7 +85,7 @@ class loginService extends \service\publicService
             $memcache  = new \Mcache();
             $memcache->set($session3rd,$cache_val,$expires_in);
         }else {
-            $_SESSION[$session3rd] = $cache_val;
+            ajaxReturnData(0,'请开启缓存!');
         }
     }
 
@@ -91,7 +96,7 @@ class loginService extends \service\publicService
             $memcache  = new \Mcache();
             $data = $memcache->get($session3rd);
         }else {
-            $data = $_SESSION[$session3rd];
+            ajaxReturnData(0,'请开启缓存!');
         }
         if(empty($data)){
             return false;

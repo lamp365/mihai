@@ -273,3 +273,10 @@ function get_scan_cache($weixin_openid){
 	}
 	return $scan_openid;
 }
+
+function geixcx_qrcode(){
+//    https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+    //http://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN
+    //scene	String		最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
+    //width
+}
