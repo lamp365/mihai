@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>清关材料详情</title>
+<meta charset="utf-8">
+<meta name="viewport"content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
+<link type="text/css" rel="stylesheet"href="__RESOURCE__/mobile/style/bootstrap.css">
+<script type="text/javascript" src="__RESOURCE__/script/bootstrap.js"></script>
+<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
+<link type="text/css" rel="stylesheet"href="__RESOURCE__/recouse/css/font-awesome.min.css" />
+</head>
+
+<link type="text/css" rel="stylesheet"href="__RESOURCE__/mobile/style/style.css">
+<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/identity.css">
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="favicon.ico"/>
+<body>
+	<!--@php  include page('header');@-->
+ <div class="viewport">
+ 		
+    <div class="r-member">
+    	<div class="personalTitle">
+				清关材料详情
+		</div>
+	<div class="head"style="display: none;">
+		<a
+			href="<!--@php  echo mobile_url('myorder',array('status'=>intval($_GP['fromstatus'])))@-->"
+			class="bn pull-left"><i class="icon-angle-left"></i></a> <span
+			class="title">清关材料详情</span>
+	</div>
+	<h4 style="color: red;font-size: 16px;font-weight: bold;margin-bottom: 20px;">
+			请认真核对下面的信息，以便货物顺利到达你手中
+	</h4>
+<div>
+	<div class="myoder" style='padding:16px 10px 10px 16px;'>
+		
+		<!--@php if($identity){@-->
+			<div class="form-group">
+				<span class="express-company">身份证姓名:</span> <span class="express-num">
+					<!--@php  echo $identity['identity_name'];@-->
+				</span>
+			</div>
+	
+			<div class="form-group">
+				<span class="express-company">身份证号码:</span> <span class="express-num">
+					<!--@php  echo $identity['identity_number'];@-->
+				</span>
+			</div>
+	
+			<div class="form-group">
+				<span class="express-company">正面:</span> <span class="express-num">
+					<!--@php  if(!empty($identity['identity_front_image'])) { @--> <img
+					src="<!--@php  echo $identity['identity_front_image'];@-->"
+					> <!--@php  } @-->      <!-- 原来设为这个尺寸，图片会失真height="135" width="226"-->
+				</span>
+			</div>
+	
+			<div class="form-group">
+				<span class="express-company">反面:</span> <span class="express-num">
+					<!--@php  if(!empty($identity['identity_back_image'])) { @--> <img
+					src="<!--@php  echo $identity['identity_back_image'];@-->"
+					> <!--@php  } @-->
+				</span>
+			</div>
+			
+			
+			<div class="form-group">
+				<span class="express-company"><a class="btn btn-success" href="javascript:void(0)" onclick="$('#J_identity_list').toggle();">重新提交</a></span>
+			</div>
+			
+		<!--@php  }else{ @-->
+		无清关材料，请<a href="javascript:void(0)" onclick="$('#J_identity_list').show();"style="color: #428bca;">提交</a>。
+		<!--@php  } @-->
+	</div>	
+</div>
+	<div style="display:none;padding:10px;" id="J_identity_list">
+		<!--@php  if(!empty($arrIdentity)) { @-->
+		<form class="form-horizontal" method="post" autocomplete="off">
+		<input type="hidden" name="op" value="identity_submit" />
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" class="acticle-infor">
+				<tbody>
+					<tr>
+						<th>&nbsp;</th>
+						<th>身份证姓名</th>
+						<th>身份证号码</th>
+						<th>证件照片</th>
+					</tr>
+					
+					<!--@php foreach($arrIdentity as $row) { @-->			
+					<tr>
+						<td><input name="identity_id" type="radio" value="<!--@php  echo $row['identity_id'];@-->" class="left" ></td>
+						<td><!--@php  echo $row['identity_name'];@--></td>
+						<td><!--@php  echo $row['identity_number'];@--></td>
+						<td>
+							<!--@php  if(!empty($row['identity_front_image'])) { @-->
+							<img src="<!--@php  echo $row['identity_front_image'];@-->" height="32" width="46">
+							<!--@php  } @-->
+							
+							<!--@php  if(!empty($row['identity_back_image'])) { @-->
+							<img src="<!--@php  echo $row['identity_back_image'];@-->" height="32" width="46">
+							<!--@php  } @-->
+						</td>
+					</tr>
+					<!--@php  } @-->
+				</tbody>
+			</table>
+			
+			<div style="height: 20px;"></div>
+			<div class="col-sm-12" style="padding-right: 0;">
+				<button type="submit" class="btn btn-danger"  style="float: right;">保存</button>
+			</div>
+		</form>
+		
+		<!--@php  }else{ @-->
+		无身份证信息，请前往<a href="<!--@php echo mobile_url('identity')@-->" style="color: #428bca;">身份证管理页面</a>新增。
+		<!--@php  } @-->
+	</div>
+	
+	<!--提交清关材料的解释说明-->
+	<div class="explain" style="margin-top:15px;">
+		<div class="title">
+			为什么要提交清关信息?
+		</div>
+		<div class="explainDetail">
+			<p>
+				为确保货物顺利清关，根据中国人民共和国海关的要求，
+				请您尽快提交与收货人一致的信息。我们在得到您提交的完整信息后会尽快发货。<br />
+				期待您的理解和配合。
+			</p>
+		</div>
+	</div>
+</div>
+<div class="l-member"> 
+		 <!--@php include themePage('leftmenu');@-->
+    </div>
+ </div>
+ 
+ <!--@php include themePage('footer');@-->
+	<!--@php  include page('footer');@-->
+</body>
+</html>	

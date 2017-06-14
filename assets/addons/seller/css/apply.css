@@ -1,0 +1,136 @@
+body{
+	min-width: 1200px;
+	margin:0 auto;
+	background-color: #f1f4f5;
+}
+/* .top-nav{
+    background: #7d7d7d;
+    color: #fff;
+} */
+.top-nav li a{
+	color: #fff;
+}
+.form-area{
+    width: 1200px;
+    margin: 0 auto;
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 0;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+.prompt-msg{
+	line-height: 36px;
+	color: #666666;
+}
+.prompt{
+	width: 16px;
+	height: 16px;
+	margin-right: 5px;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+.left-list {
+    float: left;
+    width: 285px;
+    margin-right: 20px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 300px;
+    overflow-y: auto;
+}
+.right-list {
+    float: left;
+    width: 285px;
+    height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.choosetype-list li .parent-type-val {
+    cursor: pointer;
+}
+.child-type{
+    display: none;
+}
+.li-check{
+    background-color: #d9edf7;
+    color: #4e90b5;
+    border:1px solid #bee9f1;
+}
+.right-list .type-show{
+    display: block;
+}
+.choosetype-list li {
+    position: relative;
+    line-height: 30px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    border: 1px solid #fff;
+}
+.avatar-view{
+	width: 80px;
+}
+.avatar-view img{
+	width: 80px;
+	height: 80px;
+	border-radius: 80px;
+}
+.store-mark{
+	width: 810px;
+}
+.address-div .layui-input-inline{
+	width: 263px;
+}
+.store-left{
+	float: left;
+	width: 290px;
+	height: 220px;
+
+}
+.store-left img{
+	width: 100%;
+	box-sizing:border-box;
+	border:1px solid #ddd;
+}
+.store-right{
+    float: left;
+    color: #999999;
+    line-height: 25px;
+    padding-left: 15px;
+}
+a.step-next{
+	color: #fff;
+	text-decoration: none;
+}
+.top-nav{
+    height: 60px;
+    background-color: #002050;
+        border-bottom: 1px solid hsla(0, 0%, 100%, 0.15);
+}
+.top-nav li a,.top-nav li a:hover{
+    color: #fff;
+    text-decoration: none;
+}
+.top-nav li a:hover{
+    background-color: rgba(0,0,0,.1);
+}
+.top-logo{
+    float: left;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+.top-logo img{
+    width: 80%;
+    margin-top: 2px;
+}
+.top-nav-list{
+    line-height: 63px;
+}

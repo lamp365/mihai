@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta property="qc:admins" content="2145337462112113536375" />
+<meta content="telephone=no, address=no" name="format-detection">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" /> 
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title><!--@php echo $cfg['shop_title'] @--></title>
+<link rel="stylesheet"  href="__RESOURCE__/login/css/bootstrap.min.css">
+<link rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css">
+<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
+<link rel="shortcut icon" href="favicon.ico"/>
+<script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>/addons/common/css/datetimepicker.css" />
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/js/datetimepicker.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+<style>
+body{}
+.head{height:40px; line-height:40px;  padding:5px; 5px; color:#fff;border-bottom: 1px solid #a5d7de;  background: #5babe6 !important;}
+.head .bn{display:inline-block; height:30px; line-height:30px; padding:0 10px; margin-top:0px; font-size:20px; color:#FFF; text-decoration:none;}
+.head .bn.pull-right{position:absolute; right:5px; top:0;}
+.head .title{font-size:14pt;display:block;padding-left:10px;font-weight:bolder;margin-right:49px;text-align:center;height:40px;line-height:30px;text-overflow:ellipsis;white-space:nowrap;overflow: hidden;}
+.head .order{background:#F9F9F9; position:absolute; z-index:9999; right:0;}
+.head .order li > a{display:block; padding:0 10px; min-width:100px; height:35px; line-height:35px; font-size:16px; color:#666; text-decoration:none; border-top:1px #EEE solid;}
+.head .order li > a i{display:inline-block; width:20px;}
+.head .order li.icon-caret-up{font-size:20px;color:#F9F9F9;position:absolute;top:-11px;right:16px;}
+.form-horizontal{margin:5px; /*background:#fafafa;*/ padding:20px 10px 10px 10px; overflow:hidden;}
+.form-horizontal label{color:#555;}
+.form-horizontal .sendverify{margin-right:15px; width:100%;}
+.form-horizontal .resolve{background:#FFF; border-top:2px #769cdc solid; padding:10px;}
+.form-horizontal .resolve .resolver, .resolve .date{text-align:right; color:#888;}
+.form-horizontal .resolve .resolver{color:#779cdc;}
+.width-auto {width:auto;}
+.pull-right {float:right;}
+.pull-left {float:left;}
+
+</style>
+</head>
+
+	<body style="    background: rgb(245, 246, 248);">
+		 <!--@php  include page('vip_header');@-->
+		<style>
+		.form-horizontal .control-label{margin-bottom:5px; font-size:14px;width: 150px;}
+		.form-group{margin-bottom:10px;}
+		.form{
+			width: 434px;
+			background-color: #fff;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+			color: #555;
+			font-size: 14px;
+			height: 34px;
+			*+height: 20px;
+			*+line-height: 20px;
+			padding: 6px 12px;		
+		}
+		label{
+			height: 30px\9;
+			text-align: right\9;			
+		}
+		.col-sm-6{
+			display: inline-block;
+		}
+		.col-sm-6{
+			display: inline\9;
+		}
+		</style>
+		<div class="new-fansindex-wrap">
+		<div class="viewport new-fansindex">
+			
+   			 <div class="r-member">
+   			 <div class="crumbs">
+		         <span>当前位置：</span>
+		         <a style="color:#000;" href="<?php  echo mobile_url('fansindex',array('name'=>'shopwap')); ?>"> 个人中心</a><i style="margin-left: 5px;" class="icon-angle-right"></i>
+		         <i class="i-text">资料修改</i>
+		    </div>
+		    <div class="member-tab">
+		    	<ul class="clearfix">
+		    		<li class="member-tab-active">基本资料</li>
+		    		<li>个人档案</li>
+		    	</ul>
+		    </div>
+			<form style="border-radius:0 0 4px 4px" class="member-tab-div form-horizontal img-rounded" role="form" method="post" onsubmit="return checkInfo(this);">
+			
+					<div class="form-group">
+						<label for="realname" class="col-sm-3 control-label">登录名</label>
+						<div class="col-sm-6">
+							<!--把class的form-control都改成了form，不用bootstrap的-->
+							<label style="margin-top:6px;"><!--@php echo $memberinfo['mobile'];@--></label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="realname" class="col-sm-3 control-label">用户名</label>
+						<div class="col-sm-6">
+							<input type="text" id="realname" name="realname" value="<!--@php echo $memberinfo['realname'];@-->" class="form span2" placeholder="输入您的用户名" />
+						</div>
+					</div>
+				   <div class="form-group">
+						<label for="nickname" class="col-sm-3 control-label">昵称</label>
+						<div class="col-sm-6">
+							<input type="text" id="nickname" name="nickname" value="<!--@php echo $memberinfo['nickname'];@-->" class="form span2" placeholder="输入您的昵称" />
+						</div>
+					</div>
+                    <div class="form-group">
+						<label for="datepicker_timestart" class="col-sm-3 control-label">生日</label>
+						<div class="col-sm-6">
+						    <!--@php if ( empty($memberinfo['birthday']) ){ @-->
+							<input type="text" id="datepicker_timestart" name="birthday" value="" class="form span2" readonly="readonly"/>
+							<label>填写可享生日礼包哦~</label>
+							<!--@php }else{ @-->
+                            <label style="margin-top:6px;"><!--@php echo date('Y-m-d',$memberinfo['birthday']);@--></label>
+							<!--@php } @-->
+						</div>
+					</div>
+					<script type="text/javascript">
+						if($("#datepicker_timestart").length>0){
+							laydate({
+								elem: '#datepicker_timestart',
+								istime: true, 
+								event: 'click',
+								format: 'YYYY-MM-DD',
+								istoday: true, //是否显示今天
+								start: laydate.now(0, 'YYYY-MM-DD')
+							});
+							laydate.skin("molv");
+							$(".add-more-btn").click(function(){
+								$(".hide-tr").toggle();
+							});
+						}
+					</script>
+					<div class="form-group">
+						<label for="mobile" class="col-sm-3 control-label">邮箱</label>
+						<div class="col-sm-6">
+							<input type="text" id="email" name="email" value="<!--@php echo $memberinfo['email'];@-->" class="form span2" placeholder="输入您的邮箱" />
+						</div>
+					</div>
+					<!--<hr style="margin-bottom: 20px;"/>-->
+					<!--@php if(!empty($memberinfo['outgoldinfo'])){$outgoldinfo=unserialize($memberinfo['outgoldinfo']); }@-->
+					<div class="form-group">
+					
+						<label for="mobile" class="col-sm-3 control-label">取款方式</label>
+					
+						<div class="col-sm-6">
+					
+							<select name="outgold_paytype" id="outgold_paytype" style="width: 150px; height:40px;+margin-left:-12px;height: 30px\9;line-height:30px; padding:2px 0;text-indent: 5px;" onchange="changeoutgold(this)">
+					     				<option value="1" <!--@php if(empty($outgoldinfo['outgold_paytype'])||$outgoldinfo['outgold_paytype']==1){ @-->selected<!--@php  } @-->>银行卡</option>   
+					     				     				  				<option value="2" <!--@php  if($outgoldinfo['outgold_paytype']==2){ @-->selected<!--@php  } @-->>支付宝</option>
+					     				     				  					<option value="3" <!--@php if($outgoldinfo['outgold_paytype']==3){ @-->selected<!--@php  } @-->>微信号</option>
+					     							     				</select>
+					
+						</div>
+					
+					</div>
+					<span id="outgold_bank">																
+						<div class="form-group">					
+							<label for="mobile" class="col-sm-3 control-label">收款人姓名</label>					
+							<div class="col-sm-6">					
+						        <input type="text" name="outgold_bankcardname" value="<!--@php echo $outgoldinfo['outgold_bankcardname'];@-->" class="form span2" placeholder="收款人姓名" />			
+							</div>					
+						</div>
+						
+						<div class="form-group">						
+							<label for="mobile" class="col-sm-3 control-label">银行卡号码</label>						
+							<div class="col-sm-6">						
+								<input type="text" id="email" name="outgold_bankcardcode" value="<!--@php echo $outgoldinfo['outgold_bankcardcode'];@-->" class="form span2" placeholder="收款人账号" />
+							</div>						
+						</div>
+						
+						<div class="form-group">						
+							<label for="mobile" class="col-sm-3 control-label"></label>						
+							<div class="col-sm-6">
+						        <label><!--@php if(!empty($outgoldinfo['outgold_bankname']) && !empty($outgoldinfo['outgold_bankcardcode'])  ){ echo $outgoldinfo['outgold_bankname']; }else{ echo '请输入银行卡号码'; } @--></label>				
+							</div>						
+						</div>
+					</span>
+					
+					
+					<div class="form-group" id="outgold_alipay">
+					
+						<label for="mobile" class="col-sm-3 control-label">支付宝账户</label>
+					
+						<div class="col-sm-6">
+					
+					<input type="text"  name="outgold_alipay" value="<!--@php echo $outgoldinfo['outgold_alipay'];@-->" class="form span2" placeholder="输入您的邮箱" />
+					
+					
+						</div>
+					
+					</div>
+					
+					
+					<div class="form-group" id="outgold_weixin">
+					
+						<label for="mobile" class="col-sm-3 control-label">微信账户</label>
+					
+						<div class="col-sm-6">
+					
+					<input type="text"   id="t_outgold_weixin" name="outgold_weixin" value="<!--@php echo $outgoldinfo['outgold_weixin'];@-->" class="form span2" placeholder="微信账户openid" />
+					<!--@php if(!empty($weixin_openid)){ @-->
+					<a href="javascript:;" style="color:red" onclick="document.getElementById('t_outgold_weixin').value='<!--@php echo $weixin_openid;@-->';">获取当前微信号openid</a>
+					<!--@php }@-->
+						</div>
+					
+					</div>
+					
+					
+					<div class="form-group">
+						<div class="col-xs-12">
+							<button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg" style="width:20%;margin-left: 30%;height:40px\9;">提交</button>
+						</div>
+					</div>
+					
+			
+			</form>
+			<div class="member-tab-div">
+				<form action="<!--@php echo mobile_url('member',array('op'=>'hobby')); @-->" method="post" name="" class="collect-form">
+					<div class="member-collect">
+						<h4>让我们更多的了解您，以便为您提供更好的服务，请您填写一份简单的调查问卷。</h4>
+						<div class="collect-question">1、请问您的性别：</div>
+						<div class="collect-ask clearfix sex">
+							<div data-value="1" class="collect-radio collect-radio-1 <!--@php if($hobby['sex'] == 1){  echo 'active'; } @-->">
+								<i></i><span>男</span>
+							</div>
+							<div data-value="2" class="collect-radio collect-radio-2 <!--@php if($hobby['sex'] == 2){  echo 'active'; } @-->">
+								<i></i><span>女</span>
+							</div>
+							<input type="hidden" name="sex" class="sex-hidden" value="<!--@php echo $hobby['sex']; @-->">
+						</div>
+						<div class="collect-question">2、请问您的出生年代：</div>
+						<div class="collect-ask clearfix age">
+						<!-- active代表选中的 -->
+							<div data-value="90" class="collect-radio <!--@php if($hobby['age'] == 90){  echo 'active'; } @-->">
+								<i></i><span>90后</span>
+							</div>
+							<div data-value="85" class="collect-radio <!--@php if($hobby['age'] == 85){  echo 'active'; } @-->">
+								<i></i><span>85后</span>
+							</div>
+							<div data-value="80" class="collect-radio <!--@php if($hobby['age'] == 80){  echo 'active'; } @-->">
+								<i></i><span>80后</span>
+							</div>
+							<div data-value="75" class="collect-radio <!--@php if($hobby['age'] == 75){  echo 'active'; } @-->">
+								<i></i><span>75后</span>
+							</div>
+							<div data-value="70" class="collect-radio <!--@php if($hobby['age'] == 70){  echo 'active'; } @-->">
+								<i></i><span>70后</span>
+							</div>
+							<div data-value="none" class="collect-radio <!--@php if($hobby['age'] == 'none'){  echo 'active'; } @-->">
+								<i></i><span>都不是</span>
+							</div>
+							<input type="hidden" name="age" class="age-hidden" value="<!--@php echo $hobby['age']; @-->">
+						</div>
+						<div class="collect-question">3、您会帮哪些人购买：</div>
+						<div class="collect-ask clearfix buytowho">
+						<!-- active代表选中的 -->
+							<!--@php $to_buy = array(); if(!empty($hobby['tobuy'])){ $to_buy = explode(',',$hobby['tobuy']); } @-->
+							<div data-value="me" data-class="toBuyMe-hidden" class="collect-check <!--@php if(in_array('me',$to_buy)){ echo 'active'; } @-->">
+								<i></i><span>自己</span>
+							</div>
+							<div data-value="partner" data-class="toBuyPartner-hidden" class="collect-check <!--@php if(in_array('partner',$to_buy)){ echo 'active'; } @-->">
+								<i></i><span>伴侣</span>
+							</div>
+							<div data-value="elder" data-class="toBuyElder-hidden" class="collect-check <!--@php if(in_array('elder',$to_buy)){ echo 'active'; } @-->">
+								<i></i><span>长辈</span>
+							</div>
+							<div data-value="friend" data-class="toBuyFriend-hidden" class="collect-check <!--@php if(in_array('friend',$to_buy)){ echo 'active'; } @-->">
+								<i></i><span>朋友</span>
+							</div>
+							<input type="hidden" name="tobuy" class="toBuy-hidden" value="<!--@php echo $hobby['tobuy']; @-->">
+						</div>
+						<div class="collect-question">4、您购买保健品最重视：</div>
+						<div class="collect-ask clearfix importance">
+							<!--@php $to_fun = array(); if(!empty($hobby['fun'])){ $to_fun = explode(',',$hobby['fun']); } @-->
+							<div data-class="price-hidden" data-value="price" class="collect-check <!--@php if(in_array('price',$to_fun)){ echo 'active'; } @-->">
+								<i></i><span>价格</span>
+							</div>
+							<div data-class="effect-hidden" data-value="effect" class="collect-check <!--@php if(in_array('effect',$to_fun)){ echo 'active'; } @-->">
+								<i></i><span>功能</span>
+							</div>
+							<div data-class="brand-hidden" data-value="brand" class="collect-check <!--@php if(in_array('brand',$to_fun)){ echo 'active'; } @-->">
+								<i></i><span>品牌</span>
+							</div>
+							<div data-class="publicity-hidden" data-value="publicity" class="collect-check <!--@php if(in_array('publicity',$to_fun)){ echo 'active'; } @-->">
+								<i></i><span>知名度</span>
+							</div>
+							<input type="hidden" name="fun" class="importance-hidden" value="<!--@php echo $hobby['fun']; @-->">
+						</div>
+						<div class="collect-question">5、您对哪些商品感兴趣：</div>
+						<div class="collect-ask clearfix product-class">
+							<!--@php foreach($cat_data as $cat){ $category = array(); if(!empty($hobby['category'])){ $category = explode(',',$hobby['category']); } @-->
+							<!--@php $checked = ''; if(in_array($cat['id'],$category)){ $checked = 'active'; }  @-->
+							<div data-class="product-<!--@php echo $cat['id']; @-->" data-value="<!--@php echo $cat['id']; @-->" class="collect-check <!--@php echo $checked;@-->">
+								<i></i><span><!--@php echo $cat['name']; @--></span>
+							</div>
+							<!--@php } @-->
+
+							<input type="hidden" name="category" class="product-1" value="<!--@php echo $hobby['category']; @-->">
+						</div>
+					</div>
+					<div class="personal-footer">
+						<div class="btnLayer">
+							<a class="survey-submit">提交</a>
+							<a herf="javascript:void(0)" class="survy-reset">重置 </a>
+						</div>
+					</div>
+				</form>
+			</div>
+	</div>
+	<div class="l-member"> 
+		 <!--@php include themePage('leftmenu');@-->
+    </div>	
+    </div>
+</div>
+
+		<script type="text/javascript">
+		$(function(){
+			//tab切换
+			var index = 0;
+			$(".member-tab li").click(function(){
+				index = $(this).index();
+				$(".member-tab li").removeClass("member-tab-active");
+				$(this).addClass("member-tab-active");
+				$(".member-tab-div").hide();
+				$(".member-tab-div").eq(index).show();
+				$(".crumbs .i-text").text($(this).text());
+			});
+			//模拟单选框
+			$(".collect-ask .collect-radio").on("click",function(){
+				$(this).siblings("div").removeClass("active");
+				$(this).addClass("active");
+			});
+			//模拟多选框
+			$(".collect-ask .collect-check").on("click",function(){
+				$(this).toggleClass("active");
+			});
+			//性别隐藏域赋值
+			$(".sex .collect-radio").click(function(){
+				$(".sex-hidden").val($(this).attr("data-value"))
+			});
+			//年代隐藏域赋值
+			$(".age .collect-radio").click(function(){
+				$(".age-hidden").val($(this).attr("data-value"))
+			});
+			
+			checkVal(".buytowho .collect-check",".toBuy-hidden");
+			checkVal(".importance .collect-check",".importance-hidden");
+			checkVal(".product-class .collect-check",".product-1");
+			//提交按钮
+			$(".survey-submit").on("click",function(){
+				if($(".sex .collect-radio.active").length==0){
+					alert("请选择您的性别");
+					return false;
+				}
+				if($(".age .collect-radio.active").length==0){
+					alert("请选择您的出生年代");
+					return false;
+				}
+				if($(".buytowho .collect-check.active").length==0){
+					alert("请选择您会帮哪些人购买");
+					return false;
+				}
+				if($(".importance .collect-check.active").length==0){
+					alert("请选择您购买保健品最重视");
+					return false;
+				}
+				if($(".product-class .collect-check.active").length==0){
+					alert("请选择您对哪些商品感兴趣");
+					return false;
+				}
+				$(".collect-form").submit();
+			});
+			//重置
+			$(".survy-reset").on("click",function(){
+				$(".collect-form .collect-ask div").each(function(index,ele){
+					$(ele).removeClass("active");
+				});
+				$(".collect-form .collect-ask input").each(function(index,ele){
+					$(ele).val("");
+				});
+			});
+		})
+		function checkVal(checkClass,hiddenClass){
+			$(checkClass).on("click",function(){
+				var hidden_array = [];
+				if( $(hiddenClass).val() != "" ){
+					hidden_array = $(hiddenClass).val().split(",");
+				}
+				var tobuy_val = $(this).attr("data-value");
+				var arrar_index = 0;
+				if( $(this).hasClass("active") ){
+					arrar_index = $.inArray(tobuy_val,hidden_array);
+					if( arrar_index==-1 ){
+						hidden_array.push(tobuy_val);
+						$(hiddenClass).val(hidden_array);
+					}
+				}else{
+					arrar_index = $.inArray(tobuy_val,hidden_array);
+					hidden_array.splice(arrar_index,1);
+					$(hiddenClass).val(hidden_array);
+				}
+			});
+		}
+			function checkInfo(form) {
+				var mobile = form['mobile'].value;
+				if (!mobile) {
+					alert('请输入您的手机号码！');
+					return false;
+				}
+				if (mobile.search(/^([0-9]{11})?$/) == -1) {
+					alert('请输入正确的手机号码！');
+					return false;
+				}
+						if (!form['pwd'].value) {
+					alert('请输入登录密码。');
+					return false;
+				}
+					if (form['pwd'].value!=form['repwd'].value) {
+					alert('两次登录密码不一致。');
+					return false;
+				}
+		
+			}
+			
+				function changeoutgold(outgold)
+			{
+				if(outgold.value==1)
+				{
+					document.getElementById('outgold_bank').style.display="block";
+					document.getElementById('outgold_alipay').style.display="none";
+					document.getElementById('outgold_weixin').style.display="none";
+				}
+						if(outgold.value==2)
+				{
+						document.getElementById('outgold_bank').style.display="none";
+					document.getElementById('outgold_alipay').style.display="block";
+					document.getElementById('outgold_weixin').style.display="none";
+				}
+						if(outgold.value==3)
+				{
+						document.getElementById('outgold_bank').style.display="none";
+					document.getElementById('outgold_alipay').style.display="none";
+					document.getElementById('outgold_weixin').style.display="block";
+				}
+			}
+			
+			changeoutgold(document.getElementById('outgold_paytype'));
+		
+
+	
+		
+		</script>
+		<!--@php include themePage('footer');@-->
+	</body>
+</html>

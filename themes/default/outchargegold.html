@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<link rel="shortcut icon" href="favicon.ico"/>
+    <title>余额提现</title>
+   <!-- <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/fd.css"> 会影响鼠标移动下拉的样式-->
+    <!--<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/fcommom.css"> 会影响侧边栏的样式-->
+    <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/ds4.css">
+	<link href="__RESOURCE__/recouse/css/bottom.css" rel="stylesheet" type="text/css" />
+	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" /> 
+	<link rel="shortcut icon" href="favicon.ico"/>
+	<script src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__RESOURCE__/recouse/js/jquery.js"></script>
+    <script src="__RESOURCE__/recouse/js/foundation.js"></script>
+    <script src="__RESOURCE__/recouse/js/foundation.tab.js"></script>
+    <script src="__RESOURCE__/recouse/js/foundation.accordion.js"></script>
+    <script src="__RESOURCE__/recouse/js/func.js"></script>
+    <style>
+    .step1{
+    	background: url(__RESOURCE__/recouse/images/app_step_01.jpg) no-repeat center;
+    	height: 276px;
+    	width: 855px;
+    	position: relative;
+    }
+    .step2{
+    	background: url(__RESOURCE__/recouse/images/app_step_02.jpg) no-repeat center;
+    	height: 777px;
+    	width: 855px;
+    }
+    .step3{
+    	background: url(__RESOURCE__/recouse/images/app_step_03.jpg) no-repeat center;
+    	height: 904px;
+    	width: 855px;
+    }
+    .step4{
+    	position: relative;
+    	background: url(__RESOURCE__/recouse/images/app_step_04.jpg) no-repeat center;
+    	height: 1058px;
+    	width: 855px;
+    }
+    .step5{
+    	background: url(__RESOURCE__/recouse/images/app_step_05.jpg) no-repeat center;
+    	height: 814px;
+    	width: 855px;
+    }
+    .eweima{
+    	position: absolute;
+    	top: 114px;
+    	left: 489px;
+    	width: 150px;
+    	height: 150px;
+    }
+    </style>
+</head>
+<body>
+    <div class="mask"></div>
+    <!--@php  include page('vip_header');@-->
+<div class="new-fansindex-wrap">
+ <div class="viewport new-fansindex">
+	<div class="r-member">
+		<div class="step1">
+			<img src="http://www.hinrc.com/images/weixin.jpg" class="eweima">
+		</div>
+		<div class="step2"></div>
+		<div class="step3"></div>
+		<div class="step4">
+			<img src="http://www.hinrc.com/images/appdown.png" class="eweima">
+		</div>
+		<div class="step5"></div>
+<!-- 	    <div class="personalTitle pT">
+					余额提现
+		</div> -->
+<!-- 	   <form class="form-horizontal img-rounded" role="form" method="post"  style="border: none;">
+		
+		    topbar end
+		    amount begin
+		    <div class="bro-spare">
+		        <p class="tip-txt"><i class="icon-money"></i>余额</p>
+		        <span class="number-big">¥@php  echo $member['gold'];@</span>
+		        <p class="field-2">已提现金额：<big>¥ @php  echo $outgold;@</big></p>
+		         <p class="field-2">申请中金额：<big>¥ @php  echo $applygold;@</big></p>
+		    </div>
+		    amount end
+		    list begin
+		    
+		    <form class="form-horizontal img-rounded" method="post">
+			    <ul class="maneylist" style="display: ;">
+			
+			           <li class="maneylist-li">
+			            <a  class="a-personal">
+			                <i class="icon-money-circle"></i>
+			                <span class="text">提取金额</span>
+			                      <span class="text">	<input type="text" name="charge" value="" style="padding: 5px;"/></span>
+			            </a>
+			        </li>
+			      
+			    </ul>
+			    list end
+			    <div class="bro-extract-btn" style="overflow: hidden;padding:0 15px 15px 15px;">
+					<button type="submit" name="submit" value="submit" class="button [radius round] red" >申请提现</button>
+			
+				 <a href="@php  echo mobile_url('outchargegold',array('op'=>'history'))@" class="button [radius round] gray" style="width: 62px\9;">提现记录</a>
+			      
+			    </div>
+			</form>
+	</form> -->
+	</div>	
+	<div class="l-member"> 
+		 <!--@php include themePage('leftmenu');@-->
+    </div>
+ </div>
+ </div>
+  <!--@php  include page('footer');@-->	
+
+<!--@php include themePage('footer');@-->
+
+
