@@ -35,6 +35,9 @@
     <![endif]-->
 
     <style>
+        .main-container:after{
+            background: url(<?php echo RESOURCE_ROOT;?>/addons/index/css/ace/body_bg.png) repeat-x left top #EAF0F5;
+        }
         body{
             background-color: #F8FAFC;
             height: 100%;
@@ -332,9 +335,7 @@
                       <i class="icon-home"></i>&nbsp;<?php  echo empty($settings['shop_title'])?'小物网络':'后台管理';?>
                 </a>
       </div>
-	  	<ul class="breadcrumb" style="margin-left: 25px;color:#fff;">                    
-
-        </ul><!-- .breadcrumb -->
+	  
       <div class="head-second-nav">
          <ul>
              <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
@@ -350,7 +351,6 @@
                                 <span>商城首页</span>
                             </a>
                         </li>
-
                         <li class="Larger">
                             <a class="dropdown-toggle" onclick="navtoggle('修改密码')" href="<?php  echo create_url('site',array('name' => 'index','do' => 'changepwd'))?>" target="main">
                                  <i class="icon-key"></i>
@@ -361,7 +361,7 @@
                             <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                                 <span>
 								      <i class="icon-user"></i>
-                                      <small>欢迎您,</small>
+                                      <small>欢迎光临,</small>
                                       <?php echo $username ?>                             
 								</span>
 
@@ -373,10 +373,18 @@
                                 <li>
                                     <a onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>">
                                         <i class="icon-off"></i>
-                                        退出系统
+                                        退出
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="Larger">
+                           
+                            <a class="dropdown-toggle" onclick="navtoggle('退出系统')" href="<?php  echo create_url('site',array('name' => 'public','do' => 'logout'))?>" >
+                                <i class="icon-off"></i>
+                                <span>退出系统</span>
+                            </a>
+                           
                         </li>
                     </ul><!-- /.ace-nav -->
                 </div><!-- /.navbar-header -->
@@ -430,7 +438,7 @@
                                         </a></li>
                                         ";
                                 }
-                             ?>
+                            ?>
 
                         </ul>
                     </li>
@@ -441,14 +449,14 @@
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-magnet"></i>
-                            <span class="menu-text"> 产品库管理</span>
+                            <span class="menu-text"> 出售中的宝贝</span>
 
                             <b class="arrow icon-angle-down"></b>
                         </a>
                         <ul class="submenu">
                             <?php
                                 foreach($parentMenuList[MenuEnum::SHOP_SALE_MANGE] as $row){
-                                    $zi = "产品库管理 - > {$row['moddescription']}";
+                                    $zi = "出售中的宝贝 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
                                     }else{
@@ -474,7 +482,7 @@
                         <!-- 导航第一级 -->
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-shopping-cart"></i>
-                            <span class="menu-text"> 类目管理</span>
+                            <span class="menu-text"> 产品库管理</span>
 
                             <b class="arrow icon-angle-down"></b>
                         </a>
@@ -482,7 +490,7 @@
                         <ul class="submenu">
                             <?php
                                 foreach($parentMenuList[MenuEnum::PRODUCT_MANGE] as $row){
-                                    $zi = "类目管理 - > {$row['moddescription']}";
+                                    $zi = "商品管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
                                     }else{
@@ -695,6 +703,7 @@
                     </li>
                 <?php }?>
 
+
                 <?php if (checkAdmin() ||in_array("bonus-bonus",$menurule)) { ?>
                     <li class="yingxiao">
                         <a href="#" class="dropdown-toggle">
@@ -767,7 +776,7 @@
                         <ul class="submenu">
                             <?php
                                 foreach($parentMenuList[MenuEnum::TEMPLATE_MANGE] as $row){
-                                    $zi = "商城配置 - > {$row['moddescription']}";
+                                    $zi = "模板设置 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
                                     }else{
@@ -814,36 +823,7 @@
                         </ul>
                     </li>
                 <?php }?>
-                
-                
-                <?php if (checkAdmin() ||in_array("social-manage",$menurule)) { ?>
-                    <li class="jichu">
-                        <a href="#" class="dropdown-toggle">
-                            <i class="icon-comments"></i>
-                            <span class="menu-text"> 社区管理</span>
 
-                            <b class="arrow icon-angle-down"></b>
-                        </a>
-
-                        <ul class="submenu">
-                            <?php
-                                foreach($parentMenuList[MenuEnum::SOCIAL_MANGE] as $row){
-                                    $zi = "社区管理 - > {$row['moddescription']}";
-                                    if(empty($row['modop'])){
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
-                                    }else{
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
-                                    }
-                                    echo "
-                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
-                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
-                                        </a></li>
-                                        ";
-                                }?>
-                        </ul>
-                    </li>
-                <?php }?>
-                
                 
                  <?php if (checkAdmin() ||in_array("app-manage",$menurule)) { ?>
                     <li class="xitong">
@@ -857,7 +837,7 @@
                         <ul class="submenu">
                             <?php
                                 foreach($parentMenuList[MenuEnum::APP_MANGE] as $row){
-                                    $zi = "微信设置 - > {$row['moddescription']}";
+                                    $zi = "app管理 - > {$row['moddescription']}";
                                     if(empty($row['modop'])){
                                         $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
                                     }else{
@@ -942,6 +922,37 @@
                                 </ul>
                             </li>
                         <?php }  }}} ?>
+                
+                <?php if (checkAdmin() ||in_array("shangpu-shop",$menurule)) { ?>
+                    <li class="shangpu">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-comments"></i>
+                            <span class="menu-text"> 商铺管理</span>
+
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php
+                            foreach($parentMenuList[MenuEnum::SHANGPU] as $row){
+                                $zi = "商铺管理 - > {$row['moddescription']}";
+                                if(empty($row['modop'])){
+                                    $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                }else{
+                                    $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                }
+                                echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                            }
+
+                            ?>
+                        </ul>
+                    </li>
+                <?php }?>
+
             </ul>
             <div class="sidebar-collapse" id="sidebar-collapse">
                 <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
@@ -958,22 +969,17 @@
                 <script type="text/javascript">
                     try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                 </script>
-                <div class="head-second-nav" style="display:none;">
-                    <ul>
-                        <?php if(!empty($top_menu)){   foreach($top_menu as $one_menu){ $url = web_url($one_menu['moddo'],array('name'=>$one_menu['modname'],'op'=>$one_menu['modop']));  ?>
-                            <li><a target="main" href="<?php echo $url; ?>"><?php echo $one_menu['moddescription'] ?></a></li>
-                        <?php }} ?>
-                    </ul>
-                </div>
+
 				<div class="left-nav-tap">
 					<ul>
 						<li class="jichu left-nav-checked"><i class="icon-cog"></i><span>基础设置<span></li>
 						<li class="huiyuan"><i class="icon-user"></i><span>会员管理<span></li>
-                        <li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
-                        <li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
+						<li class="dingdan"><i class="icon-file-text-alt"></i><span>订单管理<span></li>
+						<li class="shangpin"><i class="icon-inbox"></i><span>商品管理<span></li>
 						<li class="yingxiao"><i class="icon-signal"></i><span>营销管理<span></li>
 						<li class="xiaoshou"><i class="icon-bar-chart"></i><span>销售报表<span></li>
 						<li class="xitong"><i class="icon-unlock-alt"></i><span>系统管理<span></li>
+                        <li class="shangpu"><i class="icon-unlock-alt"></i><span>商铺管理<span></li>
 					</ul>
 				</div>
 			
@@ -994,7 +1000,7 @@
                     	<span id="activeworker">首页</span>
                     </li>
                	</ul>			
-                <iframe  marginheight="0" marginwidth="0" width="100%" style="margin-top: 10px" frameborder="0" onload="reinitIframe()" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>
+                <iframe  marginheight="0" marginwidth="0" width="100%" style="margin-top: 20px" frameborder="0" onload="reinitIframe()" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
                 <script type="text/javascript" language="javascript">
                     function reinitIframe(){
                         var iframeHeight = $("#main").contents().find("html").height();

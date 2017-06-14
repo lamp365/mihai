@@ -19,10 +19,10 @@ use OSS\Core\OssException;
 class aliyunOSS
 {
     const endpoint        = 'oss-cn-shanghai.aliyuncs.com';
-    const accessKeyId     = 'Ft6j1i6G9kTWBzQl';
-    const accessKeySecret = 'VrTlrpC7izOK5aq7CNLY0uKehbzw93';
-    const bucket          = 'ugou';
-    const aliurl          = "http://ugou.oss-cn-shanghai.aliyuncs.com";
+    const accessKeyId     = 'LTAIADXNz3bJc6jr';
+    const accessKeySecret = '8KEQ9pXv3E9dyN4KsLI7JvCRlywkfn';
+    const bucket          = 'nrctest';
+    const aliurl          = "http://nrctest.oss-cn-shanghai.aliyuncs.com";
     private static $self  = NULL;
     /**
      * 根据Config配置，得到一个OssClient实例

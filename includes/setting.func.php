@@ -11,9 +11,6 @@ function refreshSetting($arrays)
                 ":name" => $cid
             ));
             if (empty($config_data)) {
-                mysqld_delete('config', array(
-                    'name' => $cid
-                ));
                 $data = array(
                     'name' => $cid,
                     'value' => $cate
@@ -80,25 +77,6 @@ function globaSetting($conditions = array())
         $config_arr['weixin_appSecret'] = $weixin_config['appsecret'];
         $config_arr['weixin_access_token'] = $weixin_config['weixin_access_token'];
         return $config_arr;
-    }
-}
-
-function bankSetting($type='') {
-    $con = mysqld_selectall("SELECT name,value FROM ".table('config')." WHERE name IN ('com_gold','credit_ratio','com_credit','teller_limit')");
-    //设置初始时为0，以免后台没有设置，没有数据，其他地方取值计算，取不到值，计算报错
-    $set_ary = array(
-        'com_gold'      => 0,   //返佣现金百分比：
-        'credit_ratio'  => 0,   //积分比例
-        'com_credit'    => 0,  //返佣积分比例
-        'teller_limit'  => 0,  //最低提现金额
-    );
-    foreach ($con as $conv) {
-        $set_ary[$conv['name']] = $conv['value'];
-    }
-    if (!empty($type)) {
-        return $set_ary[$type];
-    }else{
-        return $set_ary;
     }
 }
 

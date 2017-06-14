@@ -2613,7 +2613,7 @@ nav .catitmlst li .c2_category li{
 }
 
 .c2_category{
-   width:844px;
+   width:763px;
    box-sizing:border-box;
    padding-top:20px;
    height:398px;
@@ -2640,7 +2640,7 @@ nav .catitmlst li .c2_category li{
    position:absolute;
    background:#fff;
    left:160px;
-   width:845px;
+   width:1028px;
    box-sizing:border-box;
    top:2px;
    z-index:901;
@@ -4156,10 +4156,10 @@ del {
     width: 58px;
 }
 .prolist .itemgroup a:hover img,.partm li a:hover img{
-  filter:alpha(opacity=85);       /* IE */
- -moz-opacity:0.85;              /* 老版Mozilla */
-  -khtml-opacity:0.85;              /* 老版Safari */
-  opacity: 0.85;           /* 支持opacity的浏览器*/
+  filter:alpha(opacity=85);          /* IE */
+  -moz-opacity:0.85;              /* 老版Mozilla */
+  -khtml-opacity:0.85;             /* 老版Safari */
+  opacity: 0.85;                  /* 支持opacity的浏览器*/
 }
 .keyword{
   width:100%;

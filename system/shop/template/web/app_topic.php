@@ -29,13 +29,13 @@
 				<option value='1' <?php  if($appTopic['type'] == 1) { ?>
 					selected="selected" <?php  } ?>>布局1(自定义宽高)</option>
 				<option value='2' <?php  if($appTopic['type'] == 2) { ?>
-					selected="selected" <?php  } ?>>布局2(宽度比1:1)</option>
+					selected="selected" <?php  } ?>>布局2(宽高比1:1)</option>
 				<option value='3' <?php  if($appTopic['type'] == 3) { ?>
-					selected="selected" <?php  } ?>>布局3(宽度比1:1)</option>
+					selected="selected" <?php  } ?>>布局3(宽高比1:1)</option>
 				<option value='4' <?php  if($appTopic['type'] == 4) { ?>
-					selected="selected" <?php  } ?>>布局4(宽度比1:1)</option>
+					selected="selected" <?php  } ?>>布局4(宽高比1:1)</option>
 				<option value='5' <?php  if($appTopic['type'] == 5) { ?>
-					selected="selected" <?php  } ?>>布局5(宽度比310:220:220)</option>
+					selected="selected" <?php  } ?>>布局5(宽高比310:220:220)</option>
 			</select>
 		</div>
 	</div>

@@ -7,7 +7,7 @@
  */
 class MenuEnum {
 
-    //菜单显示   把距离拉开是为了 以免以后中间要插入一些菜单
+    //菜单显示   把距离拉开是为了 以免以后中间要插入一些菜单  这些id不可以改动
     const TUAN_GOU_MANGE        = '10';       //团购管理
     const SHOP_SALE_MANGE       = '30';       //出售中的宝贝
     const PRODUCT_MANGE         = '50';       //产品库管理
@@ -19,21 +19,19 @@ class MenuEnum {
     const TAXS_MANGE            = '130';       //税率管理
     const GEXING_MANGE          = '150';       //个性管理
     const MEMBER_MANGE          = '170';       //会员管理
-	const T_MEMBER_MANGE          = '180';       //第三方用户管理
     const YINGXIAO_MANGE        = '190';      //营销管理
     const SHOP_MANGE            = '210';      //商城配置
     const TEMPLATE_MANGE        = '230';      //模板设置
     const WECHAT_MANGE          = '250';      //微信设置
-    const SOCIAL_MANGE          = '260';      //社区管理
     const APP_MANGE          	= '261';      //app管理
     const ROLE_MANGE            = '270';      //权限管理
-    
+    const SHANGPU               = '280';      //商铺管理
 
 
     public static $getMenuEnumValues = array(
         self::TUAN_GOU_MANGE        => '换购管理',
-        self::SHOP_SALE_MANGE       => '产品库管理',
-        self::PRODUCT_MANGE         => '类目管理',
+        self::SHOP_SALE_MANGE       => '出售中的宝贝',
+        self::PRODUCT_MANGE         => '产品库管理',
         self::IMG_MANGE             => '图片管理',
         self::ORDER_MANGE           => '订单管理',
         self::DATA_REPORT_MANGE     => '数据报表',
@@ -46,9 +44,9 @@ class MenuEnum {
         self::SHOP_MANGE            => '商城配置',
         self::TEMPLATE_MANGE        => '模板设置',
         self::WECHAT_MANGE          => '微信设置',
-    	self::SOCIAL_MANGE          => '社区管理',
     	self::APP_MANGE          	=> 'app管理',
-        self::ROLE_MANGE            => '权限管理'
+        self::ROLE_MANGE            => '权限管理',
+        self::SHANGPU               => '商铺管理',
     );
 
     public static $getMenuEnumUrl = array(
@@ -67,8 +65,8 @@ class MenuEnum {
         self::SHOP_MANGE            => 'shop-config',
         self::TEMPLATE_MANGE        => 'template-set',
         self::WECHAT_MANGE          => 'weixin-weixin',
-    	self::SOCIAL_MANGE          => 'social-manage',
     	self::APP_MANGE          	=> 'app-manage',
+        self::SHANGPU               => 'shangpu-shop',
         self::ROLE_MANGE            => 'user-user'
     );
 
@@ -159,6 +157,22 @@ class MenuEnum {
     public static $dbFiledValue = array(
         'shop_goods' => '产品库管理',
         'shop_dish'  => '出售中宝贝'
+    );
+
+    ////////////////卖家一些其他权限如对库存修改 价格修改 权限等//////////////////
+    public static $sellerActRule = array(
+        'status'    => '修改上架',
+        'price'     => '修改价格',
+        'commision' => '修改商品佣金',
+    );
+
+    //允许卖家访问的一些模块
+    public static $allowSellerToVisted = array(
+        'seller/index',                 //卖家主页
+        'seller/main',                  //卖家首页
+        'seller/password',              //卖家修改自己密码
+        'seller/password/rePassword',    //卖家修改自己密码
+        'seller/shop/change_store',     //卖家切换店铺
     );
 
 }

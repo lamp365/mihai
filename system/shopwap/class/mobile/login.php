@@ -32,34 +32,24 @@ class login{
         if ( ! empty($qqlogin['id'])) {
             $showqqlogin = true;
         }
-
-        // 获取使用条款
-        $use_page = getArticle(1,2);
-
-        if ( !empty($use_page) ){
-            $use_page = mobile_url('article',array('name'=>'addon8','id'=>$use_page[0]['id']));
-        }else{
-            $use_page = 'javascript:void(0)';
-        }
-
-        // 获取用户隐私
-        $use_private = getArticle(1,3);
-        if ( !empty($use_private) ){
-            $use_private = mobile_url('article',array('name'=>'addon8','id'=>$use_private[0]['id']));
-        }else{
-            $use_private =  'javascript:void(0)';
-        }
-
-        //wap端关于我们
-        $use_about = getArticle(1,5);
-        if ( !empty($use_about) ){
-            $use_about = mobile_url('article',array('name'=>'addon8','id'=>$use_about[0]['id']));
-        }else{
-            $use_about =  'javascript:void(0)';
-        }
         include themePage('login');
     }
-
+    
+    
+    function resetPasswordByPhone()
+    {
+        $_GP = $this->request;
+        !$_GP['mobilecode'] && ajaxReturnData(0,'请输入验证码');
+        !$_GP['mobile'] && ajaxReturnData(0,'请输入手机号');
+        !$_GP['pwd'] && ajaxReturnData(0,'请输入新密码');
+        
+		$loginService = new \service\shopwap\loginService();
+		$res = $loginService->resetPasswordByPhone( $_GP );
+        $res===false && ajaxReturnData(0,$loginService->getError(),array( 'error_location'=>$loginService->getErrorLocation() ) );
+       
+		//先检测数据
+        ajaxReturnData(1,  LANG('COMMON_OPERATION_SUCCESS') );
+    }
 
     //表单提交 操作登录
     public function do_login()
@@ -69,10 +59,11 @@ class login{
         $loginService = new \service\shopwap\loginService();
         $res = $loginService->do_login($_GP);
         if($res){
-            $url =   WEBSITE_ROOT;
-            message('登录成功！',$url,'success');
+            $url =   to_member_loginfromurl();
+            checkIsAjax()?ajaxReturnData(1, LANG('COMMON_LOGIN_SUCCESS'),array('url'=>$url)): message(LANG('COMMON_LOGIN_SUCCESS'),$url,'success');
         }else{
-            message($loginService->getError(),refresh(),'error');
+             checkIsAjax()?ajaxReturnData(0,$loginService->getError(),array('error_location'=>$loginService->getErrorLocation())):
+                 message($loginService->getError(),refresh(),'error');
         }
     }
 

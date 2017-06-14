@@ -14,7 +14,7 @@ use Monolog\Handler\StreamHandler;
  * @author 			Jaeger
  * @email 			734708094@qq.com
  * @link            http://git.oschina.net/jae/QueryList
- * @version         3.2.1
+ * @version         3.1.2
  *
  * @example 
  *
@@ -106,7 +106,7 @@ class QueryList
      */
     public static function setLog($handler)
     {
-    	if(class_exists('Monolog\Logger'))
+    	if(class_exists(Logger::class))
     	{
     		if(is_string($handler))
     		{

@@ -27,33 +27,26 @@ class regedit{
 		if(!empty($qqlogin['id'])) {
 			$showqqlogin = true;
 		}
-		// 获取使用条款
-		$use_page = getArticle(1,2);
-		if ( !empty($use_page) ){
-			$use_page = mobile_url('article',array('name'=>'addon8','id'=>$use_page[0]['id']));
+
+		if(is_mobile_request()){
+			include Page('wap_regedit');
 		}else{
-			$use_page = 'javascript:void(0)';
+			include Page('regedit');
 		}
-		// 获取用户隐私
-		$use_private = getArticle(1,3);
-		if ( !empty($use_private) ){
-			$use_private = mobile_url('article',array('name'=>'addon8','id'=>$use_private[0]['id']));
-		}else{
-			$use_private =  'javascript:void(0)';
-		}
-		include themePage('regedit');
 	}
 
 	//发送注册短信
 	public function regedit_sms()
 	{
 		$_GP = $this->request;
+        $existMemberValidate =$_GP['is_already_member']==1?1:$_GP['is_already_member'];//已经注册的用户用来接收手机验证码
+        
 		$loginService = new \service\shopwap\loginService();
-		$res = $loginService->do_regeditSms($_GP['accout']);
+		$res = $loginService->do_regeditSms($_GP['accout'],$existMemberValidate);
 		if($res){
-			ajaxReturnData(1,'发送成功！');
+			ajaxReturnData(1,LANG('COMMON_SMS_SEND_SUCCESS'));
 		}else{
-			ajaxReturnData(0,$loginService->getError());
+			ajaxReturnData(0,$loginService->getError(),array( 'error_location'=>$loginService->getErrorLocation()));
 		}
 	}
 
@@ -66,13 +59,15 @@ class regedit{
 		//先检测数据
 		$res = $loginService->do_checksignin($_GP);
 		if(!$res){
-			message($loginService->getError(),'','error');
+            checkIsAjax()
+                ?ajaxReturnData(0, $loginService->getError(),array('error_location'=>$loginService->getErrorLocation()))
+                :message($loginService->getError(),'','error');
 		}
 
 		//开始注册
 		$res = $loginService->do_signin($_GP);
 		if($res){
-			message('注册成功！',to_member_loginfromurl(),'success');
+			message(LANG('COMMON_SIGNIN_SUCCESS'),to_member_loginfromurl(),'success');
 		}else{
 			message($loginService->getError(),'','error');
 		}

@@ -3,24 +3,68 @@
 其余杂乱公用方法
 */
 
+function fileext($file)
+{
+    return pathinfo($file, PATHINFO_EXTENSION);
+}
+
+function dump($varVal, $isExit = FALSE){
+    ob_start();
+    var_dump($varVal);
+    $varVal = ob_get_clean();
+    $varVal = preg_replace("/\]\=\>\n(\s+)/m", "] => ", $varVal);
+    echo '<pre>'.$varVal.'</pre>';
+    $isExit && exit();
+}
+
 // 根据字段排序数组
 function array_order($arrUsers, $field, $direction='SORT_ASC') {
-    $sort = array(  
+    $sort = array(
         'direction' => $direction, //排序顺序标志 SORT_DESC 降序；SORT_ASC 升序  
         'field'     => $field,       //排序字段  
     );
     $arrSort = array();
-    foreach($arrUsers AS $uniqid => $row) {  
-        foreach($row AS $key=>$value) {  
-            $arrSort[$key][$uniqid] = $value;  
+    foreach($arrUsers AS $uniqid => $row) {
+        foreach($row AS $key=>$value) {
+            $arrSort[$key][$uniqid] = $value;
         }
     }
-    if($sort['direction']) {  
-        array_multisort($arrSort[$sort['field']], constant($sort['direction']), $arrUsers);  
+    if($sort['direction']) {
+        array_multisort($arrSort[$sort['field']], constant($sort['direction']), $arrUsers);
     }
 
     return $arrUsers;
 }
+
+
+if(!function_exists('array_column')){ //如果高版本则不声明
+    function array_column($input, $columnKey, $indexKey=null){
+        $columnKeyIsNumber  = (is_numeric($columnKey))?true:false;
+        $indexKeyIsNull            = (is_null($indexKey))?true :false;
+        $indexKeyIsNumber     = (is_numeric($indexKey))?true:false;
+        $result                         = array();
+        foreach((array)$input as $key=>$row){
+            if($columnKeyIsNumber){
+                $tmp= array_slice($row, $columnKey, 1);
+                $tmp= (is_array($tmp) && !empty($tmp))?current($tmp):null;
+            }else{
+                $tmp= isset($row[$columnKey])?$row[$columnKey]:null;
+            }
+            if(!$indexKeyIsNull){
+                if($indexKeyIsNumber){
+                    $key = array_slice($row, $indexKey, 1);
+                    $key = (is_array($key) && !empty($key))?current($key):null;
+                    $key = is_null($key)?0:$key;
+                }else{
+                    $key = isset($row[$indexKey])?$row[$indexKey]:0;
+                }
+            }
+            $result[$key] = $tmp;
+        }
+        return $result;
+    }
+}
+
 
 function getClientIP()
 {
@@ -113,7 +157,6 @@ function check_mobile_type($type){
 }
 
 
-
 function random($length, $nc = 0)
 {
     $random = rand(1, 9);
@@ -125,15 +168,15 @@ function random($length, $nc = 0)
 
 /**
  * 生成包含数字字母的随机数
- * 
+ *
  * @param $len:int 随机数长度
- * 
+ *
  */
 function randString($len)
 {
-	$string = md5(uniqid('',true).rand(1,100000000));
+    $string = md5(uniqid('',true).rand(1,100000000));
 
-	return substr($string,0,$len);
+    return substr($string,0,$len);
 }
 
 
@@ -166,21 +209,7 @@ function ppd()
     die();
 }
 
-function getOpenshopAccessKey($openid){
-    $openid.="@@@kevin";
-    return DESService::instance()->encode($openid);
-}
 
-function decodeOpenshopAccessKey($accesskey){
-    $code = DESService::instance()->decode($accesskey);
-    $codeArr = explode('@@@',$code);
-    if($codeArr['1']!= 'kevin'){
-        return false;
-    }else{
-        $openid = $codeArr['0'];
-        return $openid;
-    }
-}
 
 /**
  * 字符串截取，支持中文和其他编码
@@ -223,10 +252,10 @@ function msubstr($str, $start=0, $length, $charset="utf-8", $suffix=true) {
  */
 function logRecord($logMsg,$logFile) {
 
-	if(WRITE_LOG)
-	{
-		error_log(date('[c]')."{$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
-	}
+    if(WRITE_LOG)
+    {
+        error_log(date('H:i:s',time())." | {$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
+    }
 }
 
 /**
@@ -237,7 +266,7 @@ function logRecord($logMsg,$logFile) {
 function getSystemType($type = ''){
     if(empty($type)){
         if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone')||strpos($_SERVER['HTTP_USER_AGENT'], 'iPad')){
-             return 3;   //ios
+            return 3;   //ios
         }else if(strpos($_SERVER['HTTP_USER_AGENT'], 'Android')){
             return 2;  //android
         }else{
@@ -250,54 +279,7 @@ function getSystemType($type = ''){
 
 }
 
-/**
- * @return bool
- * @content限制一分钟内 退货协商时只能回复10下 防止刷
- */
-function setAfterSaleDialogNum(){
-    if(isset($_COOKIE['dialog']) && !empty($_COOKIE['dialog'])){
-        $num = $_COOKIE['dialog'];
-        $diff_time = time() - $_COOKIE['firstTime'];
 
-        if($diff_time < 60){
-            if($num >5){
-                return false;
-            }else{
-                $num++;
-                setcookie('dialog',$num,time()+3600);
-                return true;
-            }
-        }else{
-            setcookie('dialog',1,time()+3600);
-            setcookie('firstTime',time(),time()+3600);
-            return true;
-        }
-    }else{
-        setcookie('dialog',1,time()+3600);
-        setcookie('firstTime',time(),time()+3600);
-        return true;
-    }
-}
-
-/**
- * wap页面控制新手礼弹窗2次
- * @return bool
- */
-function showNewMemberBonus(){
-    if(isset($_COOKIE['show_bonus_num']) && !empty($_COOKIE['show_bonus_num'])){
-        $num = $_COOKIE['show_bonus_num'];
-        if($num >= 2){
-            return false;
-        }else{
-            $num += 1;
-            setcookie('show_bonus_num',$num);
-            return true;
-        }
-    }else{
-        setcookie('show_bonus_num',1);   //不设置过期时间，随着关闭浏览器而关闭
-        return true;
-    }
-}
 
 function tosize($size) {
     $kb = 1024; // 1KB（Kibibyte，千字节）=1024B，
@@ -358,13 +340,13 @@ function arraySequence($array, $field, $sort = 'SORT_DESC')
     if(empty($array)){
         return $arrSort;
     }
-	foreach ($array as $uniqid => $row) {
-		foreach ($row as $key => $value) {
-			$arrSort[$key][$uniqid] = $value;
-		}
-	}
-	array_multisort($arrSort[$field], constant($sort), $array);
-	return $array;
+    foreach ($array as $uniqid => $row) {
+        foreach ($row as $key => $value) {
+            $arrSort[$key][$uniqid] = $value;
+        }
+    }
+    array_multisort($arrSort[$field], constant($sort), $array);
+    return $array;
 }
 
 /**
@@ -445,8 +427,6 @@ function check_request_times($key='default',$limit_num=5,$limit_time=60){
 
 }
 
-
-
 /**
  * 多个数组的笛卡尔积
  * @param unknown_type $data
@@ -487,7 +467,6 @@ function combineArray($arr1,$arr2) {
     return $result;
 }
 
-
 /**
  * 系统加密方法
  * @param string $data 要加密的字符串
@@ -526,6 +505,7 @@ function cbd_encrypt($data, $key = '', $expire = 0)
  */
 function cbd_decrypt($data, $key = '')
 {
+    if(empty($data))  return $data;
     $key = md5($key);
     $data = str_replace(array('%', '_'), array('+', '/'), $data);
     $mod4 = strlen($data) % 4;
@@ -581,4 +561,58 @@ function getRandIp(){
     $rand_key = mt_rand(0, 9);
     $ip= long2ip(mt_rand($ip_long[$rand_key][0], $ip_long[$rand_key][1]));
     return $ip;
+}
+
+function foot_active( $action, $gp='do' ){
+    if ( $GLOBALS['_GP'][$gp] == $action ){
+        echo 'class="item nav_'.$action.' tab_active"';
+    }else{
+        echo 'class="item nav_'.$action.'"';
+    }
+}
+
+/**
+在异步脚本的头部添加了：
+ignore_user_abort (true);
+set_time_limit (30);
+ * 异步操作
+ * @param $url
+ * @param array $param
+ * @param int $timeout
+ */
+function asyn_doRequest($url, $param=array(),$timeout =6){
+    ignore_user_abort (true);
+    $urlParmas = parse_url($url);
+    $host      = $urlParmas['host'];
+    $path 	   = $urlParmas['path'];
+    $port      = isset($urlParmas['port'])? $urlParmas['port'] :80;
+    $errno     = 0;
+    $errstr    = '';
+
+    $fp        = fsockopen($host, $port, $errno, $errstr, $timeout);
+    if(!$fp){
+        die("fsockopen操作失败 {$errstr}-- {$errno}");
+    }
+    stream_set_blocking($fp,0); //开启非阻塞模式
+    stream_set_timeout($fp, 3); //设置超时时间（s）
+    $query     = isset($param)? http_build_query($param) : '';
+    $out       = "POST ".$path." HTTP/1.1\r\n";
+    $out      .= "host:".$host."\r\n";
+    $out      .= "content-length:".strlen($query)."\r\n";
+    $out      .= "content-type:application/x-www-form-urlencoded\r\n";
+    $out      .= "connection:close\r\n\r\n";
+    $out      .= $query;
+
+    fputs($fp, $out);
+    fclose($fp);
+}
+/*
+    a 比较实际
+ *  */
+function count_days($date_time,$now_time){
+    $date_dt  = getdate($date_time);
+    $now_dt   = getdate($now_time);
+    $date_new = mktime(12, 0, 0, $date_dt['mon'], $date_dt['mday'], $date_dt['year']);
+    $now_new  = mktime(12, 0, 0, $now_dt['mon'], $now_dt['mday'], $now_dt['year']);
+    return round(abs($date_new-$now_new)/86400);
 }

@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>积分商城</title>
     <link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
     <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
@@ -86,42 +85,31 @@
     <!-- 轮播结束 --> 
     <div class="mihaibi-number clearfix">
         <div class="mihaibi-number-left">
-        <input type="hidden" value="<!--@php echo $merInfo['credit'];@-->" class="merInfo-credit">
+            <a href="#">
                 <div class="lf"><img src="__RESOURCE__/recouse/images/mihaibi.png"/></div>
                 <div class="rg">
-                <!--@php if(empty($merInfo)){ @-->
-                    <div class="mhn" style="line-height: 37px;"><a href="javascript:void(0);" onclick="login()">点此登录</a></div>
+                    <div>可用积分</div>
+                    <!--@php if(empty($merInfo)){ @-->
+                    <div class="mhn"><a href="javascript:void(0);" onclick="login()">暂未登录</a></div>
                     <!--@php }else{ @-->
-                        <!--@php if(empty($_GP['is_app'])){ @-->
-                        <a href="<!--@php echo mobile_url('iclub',array('op'=>'recorder'));@-->">
-                            <div>可用积分</div>
-                            <div class="mhn first-mihaibi"><span><!--@php echo $merInfo['credit'];@--></span></div>
-                        </a>
-                        <!--@php }else{ @-->
-                        
-                            <div>可用积分</div>
-                            <div class="mhn first-mihaibi"><span><!--@php echo $merInfo['credit'];@--></span></div>
-                        
-                        <!--@php } @-->
-                   
+                    <div class="mhn first-mihaibi"><span><!--@php echo $merInfo['credit'];@--></span></div>
                     <!--@php } @-->
                 </div>
+            </a>
         </div>
         <div class="mihaibi-number-right">
-
+            <a href="#">
                 <div class="lf"><img src="__RESOURCE__/recouse/images/mihaibi_record.png"/></div>
                 <div class="rg">
-                    <div style="line-height: 37px;;">
-                    <!--@php if(empty($_GP['is_app'])){ @-->
-                        <a href="<!--@php  echo mobile_url('miyou',array('op'=>'invite'))@-->">获取更多积分</a>  
-                    <!--@php }else{ @-->
-                        <a href="<!--@php echo mobile_url('iclub',array('op'=>'recorder','is_app'=>1));@-->">
-                        兑换记录
-                        </a>
-                     <!--@php } @-->
+                    <div>
+                        <!--@php if(empty($_GP['is_app'])){ @-->
+                        <a href="<!--@php echo mobile_url('iclub',array('op'=>'recorder'));@-->">兑换记录</a>
+                        <!--@php }else{ @-->
+                        <a href="<!--@php echo mobile_url('iclub',array('op'=>'recorder','is_app'=>1));@-->">兑换记录</a>
+                        <!--@php } @-->
                     </div>
                 </div>
-
+            </a>
         </div>
     </div>
     <!-- 积分超值兑 -->
@@ -239,10 +227,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-<div class="weixin_gzh"></div>
-<div class="weixin_gzh_img">
-    <img src="__RESOURCE__/recouse/images/weixin_gzh.png">
-</div>
+
     <!--用来存当前page-->
 <input type="hidden" value="2" id="page"/>
 <div class="ajax_next_page">
@@ -280,9 +265,6 @@ $(function(){
             Refresh();
         }
     })
-    $(".weixin_gzh,.weixin_gzh_img").on("click",function(){
-        $(".weixin_gzh,.weixin_gzh_img").hide();
-    });
     //后退按钮
     $(".return").click(function(){
         var refer = document.referrer;//没有来源url
@@ -319,21 +301,7 @@ $(function(){
 })
 
 function exchangeFun(thisObj,productid,mihaibi){
-    if(!check_is_weixin()){
-        //如果不是微信
-        return false;
-    }
     if(openid){
-        var keyong_jifen = parseInt($(".merInfo-credit").val());
-        var xuyao_jifen = parseInt($(thisObj).siblings(".price").find(".price-left").text());
-        if( keyong_jifen < xuyao_jifen ){
-            confirm('您的积分不足以兑换','',function(isconfirm){
-                if( isconfirm ){
-                   window.location.href = "<!--@php  echo mobile_url('miyou',array('op'=>'invite'))@-->";
-                }
-            },{confirmButtonText: '获取积分', cancelButtonText: '取消', width: 300});
-            return false;
-        } 
         var data_type = $(thisObj).attr("data-type");
         var ajax_url ="<!--@php echo mobile_url('iclub',array('op'=>'change'));@-->";
         if ( data_type == "2" ){
@@ -341,19 +309,7 @@ function exchangeFun(thisObj,productid,mihaibi){
                 if( isconfirm ){
                     $.post(ajax_url,{id:productid,address_id:''},function(data){
                         if( data.errno == 200 ){
-                            var url = "<!--@php  echo mobile_url('bonus')@-->";
-                            var daojishi = 0;
-                            alert("<div style='font-size:14px'>兑换成功,前往“卡券包”查看 自动：跳转<span class='daojishi'>3</span>s</div>",'',function(){
-                                window.location.href = url;
-                            });
-                            setInterval(function(){
-                                daojishi = parseInt($(".daojishi").text())-1;
-                                if( daojishi >= 0){
-                                    $(".daojishi").text(daojishi);
-                                }else{
-                                    window.location.href = url;
-                                }
-                            },1000);
+                            alert(data.message.tit);
                         }else{
                             alert(data.message);
                         }
@@ -379,17 +335,12 @@ function exchangeFun(thisObj,productid,mihaibi){
 }
 cascdeInit('__RESOURCE__/recouse/js','','','');
 function login(){
-    var url = "<!--@php echo mobile_url('login');@-->";
-    window.location.href = url;
-}
-function check_is_weixin(){
-    var is_weixin = "<!--@php echo $is_weixin; @-->";
-    if(is_weixin == 0){
-        $(".weixin_gzh,.weixin_gzh_img").show();
-        return false;
-    }else{
-        return true;
-    }
+     confirm('请先登录','',function(isconfirm){
+            if(isconfirm){
+                var url = "<!--@php echo mobile_url('login');@-->";
+                window.location.href = url;
+            }
+     },{confirmButtonText: '确认', cancelButtonText: '取消', width: 300});
 }
 function saveAddress() {
     var realname = $('#realname').val();

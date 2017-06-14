@@ -1,16 +1,11 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-<style>
-	.nav-tabs li a{
-		padding: 6px 23px;
-	}
-</style>
 
 <h3 class="header smaller lighter blue">余额提现申请</h3>
 
 			<ul class="nav nav-tabs" >
-	<li style="" <?php  if($status == 0) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'outchargegold','op' => 'display', 'status' => 0))?>">待审核</a></li>
-	<li style="" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'outchargegold','op' => 'display', 'status' => 1))?>">已审核</a></li>
-	<li style="" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'outchargegold','op' => 'display', 'status' => -1))?>">审核失败</a></li>
+	<li style="width:10%" <?php  if($status == 0) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'outchargegold','op' => 'display', 'status' => 0))?>">待审核</a></li>
+	<li style="width:10%" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'outchargegold','op' => 'display', 'status' => 1))?>">已审核</a></li>
+	<li style="width:10%" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'outchargegold','op' => 'display', 'status' => -1))?>">审核失败</a></li>
 </ul>
 		
 
@@ -18,12 +13,13 @@
 			<thead >
 				<tr>
 					<th style="width:50px;">序号</th>
-					<th style="width:180px;">昵称</th>
-					<th style="width:200px;">手机号</th>
+					<th style="width:100px;">昵称</th>
+					<th style="width:120px;">手机号</th>
+					<th style="width:130px;">商家</th>
 					<th >账户类型</th>
 					<th >打款账户</th>
 					<th >提现金额</th>
-					<th style="width:190px;">申请时间</th>
+					<th >申请时间</th>
 					<th >操作</th>
 				</tr>
 			</thead>
@@ -33,11 +29,10 @@
 					<td><?php  $index=$index+1;echo $index;?></td>
 					<td><?php  echo $item['nickname'];?></td>
 					<td><?php  echo $item['mobile'];?></td>
-					<td><?php  echo $item['bank_name'];?></td>
-					<td><?php  echo $item['bank_id'];?></td>
-          			 <td><?php  echo $item['fee'];?></td>
-			
-					
+					<td><?php  echo $item['sts_name'];?></td>
+				  <td><?php  echo $item['bank_name'];?></td>
+				  <td><?php  echo $item['bank_id'];?></td>
+          		  <td><?php  echo FormatMoney($item['fee'],0);?></td>
 					<td><?php  echo date('Y-m-d H:i', $item['createtime'])?></td>
 		
 					<td>

@@ -14,7 +14,7 @@
 <link rel="shortcut icon" href="favicon.ico"/>
 <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
 <link rel="shortcut icon" href="favicon.ico"/>
-
+<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/PingFang-font.css"/>
 <!--引入首页觅海头条，笔记的样式文件-->
 <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/community.css" />
 <script type="text/javascript" src="__RESOURCE__/recouse/js/fbi.js"></script>
@@ -326,7 +326,45 @@ video {
 </head>
 <body>
     <!--@php  include page('header');@-->	
-
+    
+   <!--左侧楼梯-->
+   <link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/floor.css" />
+   <div id="floor" style="display: none;">
+		<ul>
+			<li><a href="JavaScript:void(0);"  data-id="adsgd1">今日限购</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="c345">热门品牌</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="3">女性营养</a> </li>
+			<li><a href="JavaScript:void(0);"  data-id="235hnm1234">男性营养</a></li>
+			<li><a href="JavaScript:void(0);"  data-id="c345">中老年营养</a> </li>	
+			<li><a href="JavaScript:void(0);"  data-id="c345">母婴营养</a> </li>	
+		</ul>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			//滚动到指定模块
+			$("#floor ul li").click(function(){
+				var _index = $(this).find("a").attr("data-id");				
+				var _top = $("#" + _index ).offset().top;				
+				$("body,html").stop().animate({scrollTop:_top},500);
+			})		
+			//楼梯的left
+			var _width = -($(".viewport").eq(2).width() / 2 + 92);
+			$("#floor").css("margin-left",_width);			
+			//楼梯的top
+			var distanceTop ;
+			if($(".tempWrap").height()){
+				distanceTop = $(".slider").offset().top+$(".slider").height()+20;
+			}else{
+				distanceTop = $(".topTabbox").offset().top+50;
+			}
+			$(window).scroll(function(){   
+				if($(window).scrollTop() > distanceTop)
+					$("#floor").addClass("floor_fixed");
+				else 
+					$("#floor").removeClass("floor_fixed");	
+			});
+		})
+	</script>
 	<script> index = 1;</script>
 	<div class="viewport" style="width:100%;height:400px;">
 		<div id="focus" class="indexPicBox focus slider">
@@ -422,6 +460,7 @@ video {
 		$(".left-fixed").on("click",function(){
 			$(this).hide();
 		});
+		rightNavShow(1);
 	})
 	</script>
 	<div class="indexmain">

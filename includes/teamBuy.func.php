@@ -211,24 +211,6 @@ function add_group_mmber($group_id,$team_buy_count,$endtime){
  */
 function update_timeover_to_normalshop($dishinfo){
 	if(time()-$dishinfo['timeend']>=0) {
-		if ($dishinfo['type'] == '1') {
-			//团购活动已经结束了  开始操作一些未支付订单为关闭  把商品类型更新为一般商品
-			//取出该商品的所有团购
-//		ppd($dishinfo,"select m.openid,m.order_id from ".table('team_buy_group')." as t left join ". table('team_buy_member') ." as m on t.group_id=m.group_id where t.dish_id={$dishinfo['id']} and t.status=0 and t.finish =0 ");
-			$group = mysqld_selectall("select t.status,t.group_id,m.openid,m.order_id from " . table('team_buy_group') . " as t left join " . table('team_buy_member') . " as m on t.group_id=m.group_id where t.dish_id={$dishinfo['id']} and t.finish =0 and m.order_id<>0");
-			if (!empty($group)) {
-				foreach ($group as $item) {
-					//获取未支付的订单
-					$order = mysqld_select("select status,id from " . table('shop_order') . " where id={$item['order_id']} and openid='{$item['openid']}' and status=0");
-					if (!empty($order))
-						mysqld_update('shop_order', array('status' => '-1'), array('id' => $order['id']));
-
-					//更新该团购活动为结束
-					mysqld_update('team_buy_group', array('finish' => 1, 'modifiedtime' => date('Y-m-d H:i:s')), array('group_id' => $item['group_id']));
-				}
-			}
-		}
-
 		//更新该商品类型为一般商品
 		mysqld_update('shop_dish', array(
 			'type' => '0',
@@ -247,15 +229,6 @@ function update_timeover_to_normalshop($dishinfo){
  * 更新 过期团购商品为一般商品
  * **/
 function update_all_shop_status(){
-	//获得团购中和团购成功的对应商品
-	$group    = mysqld_selectall("SELECT distinct dish_id FROM ".table('team_buy_group')." WHERE finish=0");
-//	ppd($group);
-	if(!empty($group)){
-		foreach($group as $dish){
-			//更新这些商品的状态
-			update_group_status($dish['dish_id']);
-		}
-	}
 	//获取所有非一般商品
 	$dishinfo = mysqld_selectall("select type,timeend,id from ".table('shop_dish')." where type<>0");
 	if(!empty($dishinfo)){

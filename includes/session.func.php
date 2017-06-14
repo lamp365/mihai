@@ -8,7 +8,7 @@ function create_sessionid()
     return '_t' . date("mdHis") . rand(10000000, 99999999);
 }
 
-function integration_session_account($loginid, $oldsessionid, $unionid='')
+function integration_session_account($loginid, $oldsessionid)
 {
     $member = mysqld_select("SELECT * FROM " . table('member') . " WHERE openid = :openid ", array(
         ':openid' => $loginid
@@ -16,14 +16,14 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
     $sessionmember = mysqld_select("SELECT * FROM " . table('member') . " WHERE openid = :openid", array(
         ':openid' => $oldsessionid
     ));
-    
+
     if (empty($member['openid']) || $sessionmember['istemplate'] != 1) {
         return;
     }
     $cartall = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE session_id = :session_id ", array(
         ':session_id' => $oldsessionid
     ));
-    
+
     foreach ($cartall as $cartitem) {
         $row = mysqld_select("SELECT * FROM " . table('shop_cart') . " WHERE session_id = :loginid  AND goodsid = :goodsid  and optionid=:optionid limit 1", array(
             ':loginid'  => $loginid,
@@ -31,7 +31,7 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
             ':spec_key' => $cartitem['spec_key']
         ));
         if (empty($row['id'])) {
-            
+
             mysqld_update('shop_cart', array(
                 'session_id' => $loginid
             ), array(
@@ -39,7 +39,7 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
             ));
         } else {
             $t = $cartitem['total'] + $row['total'];
-            
+
             $data = array(
                 'marketprice' => $cartitem['marketprice'],
                 'total'       => $t,
@@ -77,7 +77,7 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
     if ($sessionmember['gold'] > 0) {
         member_gold($loginid, intval($sessionmember['gold']), 'addgold', PayLogEnum::getLogTip('LOG_LOGIN_TIP'));
     }
-    
+
     mysqld_delete('member', array(
         'openid' => $oldsessionid
     ));
@@ -85,26 +85,26 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
         $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
         if (! empty($weixinthirdlogin) && ! empty($unionid)) {
-            $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE unionid=:unionid ", array(
-                ':unionid' => $unionid
+            $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
+                ':weixin_openid' => $oldsessionid
             ));
             if (! empty($weixinfans['weixin_openid'])) {
                 mysqld_update('weixin_wxfans', array(
                     'openid' => $loginid
                 ), array(
-                    'unionid' => $unionid
+                    'weixin_openid' => $oldsessionid
                 ));
             }
         }
     }
-    
+
     if (! empty($_SESSION[MOBILE_QQ_OPENID])) {
         $qqlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='qq'");
         if (! empty($qqlogin) && ! empty($qqlogin['id'])) {
             $qqfans = mysqld_select("SELECT * FROM " . table('qq_qqfans') . " WHERE qq_openid=:qq_openid", array(
                 ':qq_openid' => $_SESSION[MOBILE_QQ_OPENID]
             ));
-            
+
             if (! empty($qqfans['qq_openid'])) {
                 mysqld_update('qq_qqfans', array(
                     'openid' => $loginid
@@ -114,40 +114,8 @@ function integration_session_account($loginid, $oldsessionid, $unionid='')
             }
         }
     }
-    
+
     // unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
-}
-function get_vip_session_account($useAccount = true, $mess_id = 0)
-{
-    $sessionAccount = "";
-    if (! empty($_SESSION[VIP_MOBILE_SESSION_ACCOUNT]) && ! empty($_SESSION[VIP_MOBILE_SESSION_ACCOUNT]['openid'])) {
-        $sessionAccount = $_SESSION[VIP_MOBILE_SESSION_ACCOUNT];
-    } else {
-        $sessionAccount = array(
-            'openid' => create_sessionid()
-        );
-        $_SESSION[VIP_MOBILE_SESSION_ACCOUNT] = $sessionAccount;
-    }
-    
-    if ($useAccount && ! empty($sessionAccount)) {
-        $member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid and istemplate=1 ", array(
-            ':openid' => $sessionAccount['openid']
-        ));
-        if (empty($member['openid'])) {
-            $data = array(
-                'mobile' => "",
-                'pwd' => md5(rand(10000, 99999)),
-                'createtime' => time(),
-                'status' => 1,
-                'mess_id'=>$mess_id,
-                'istemplate' => 1,
-                'experience' => 0,
-                'openid' => $sessionAccount['openid']
-            );
-            mysqld_insert('member', $data);
-        }
-    }
-    return $sessionAccount;
 }
 function get_session_account($useAccount = true)
 {
@@ -158,13 +126,13 @@ function get_session_account($useAccount = true)
     } else {
         //临时的用户不要注册 因为 第二天找不到这个临时用户，但是微信不一样，微信openid是唯一的
         //临时的用户注册没有一点意义
-        /* $sessionAccount = array(
-             'openid' => create_sessionid(),
-             'unionid' => ''
-         );
-         $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;*/
+       /* $sessionAccount = array(
+            'openid' => create_sessionid(),
+            'unionid' => ''
+        );
+        $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;*/
     }
-
+    
     if ($useAccount && ! empty($sessionAccount)) {
         $member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid and istemplate=1 ", array(
             ':openid' => $sessionAccount['openid']
@@ -227,45 +195,14 @@ function is_login_account()
     }
     return false;
 }
-function is_vip_account()
+
+
+function getTopOpenID()
 {
-	// 判断是否登录，如果是，则更新登录时间
-    if (! empty($_SESSION[VIP_MOBILE_ACCOUNT])) {
-		$member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid  limit 1", array(
-            ':openid' => $_SESSION[VIP_MOBILE_ACCOUNT]['openid']
-        ));
-		$createtime = $member['createtime'];
-	    $lastime    = $member['lastime'];
-	    $timeend   = 30 * 24  * 60 * 60;
-	    if ( ($createtime + $timeend) < time() ){
-			  $paytime = mysqld_select("SELECT * FROM ".table('shop_order'). " WHERE  status >= 1 and openid = :openid ORDER BY paytime desc", array(':openid'=>$member['openid']) );
-			  if (( $paytime['paytime'] + $lastime) < time() ){
-                   return false;
-			  }
-	    }
-		if ( !empty($_SESSION[VIP_MOBILE_ACCOUNT]['openid']) ){
-               $data = array('lastime'=>time());
-			   mysqld_update('member', $data, array('openid'=>$_SESSION[VIP_MOBILE_ACCOUNT]['openid']));
-		}
-        return true;
-    }
-    return false;
+    return $_SESSION[MOBILE_ACCOUNT]['top_open_id']?$_SESSION[MOBILE_ACCOUNT]['top_open_id']:$_SESSION[MOBILE_ACCOUNT]['openid'];
 }
+
 function getloginfrom($param = "")
 {
     return $_SESSION["mobile_login_fromurl"] . $param;
-}
-
-function getOpenShopId($openid = '')
-{
-    if(!empty($_SESSION['mobile_account']['openshop_id'])){
-        return $_SESSION['mobile_account']['openshop_id'];
-    }else{
-        if(!empty($openid)){
-            $shop = mysqld_select("select id from ". table('openshop') ." where openid=:openid",array(
-                'openid' => $openid
-            ));
-            return $shop['id'];
-        }
-    }
 }

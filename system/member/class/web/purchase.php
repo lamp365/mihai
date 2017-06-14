@@ -56,13 +56,13 @@ if($op == 'list'){
         $hasmember = mysqld_select("SELECT * FROM " . table('member') . " WHERE openid = :openid ", array(':openid' => $openid));
     }while($hasmember);
 
-    $name = $_GP['realname'] ?: '会员'.random(5);
+
     mysqld_insert('member',array(
-        'realname'   => $name,
-        'nickname'   => $name,
+        'realname'   => $_GP['realname'],
+        'nickname'   => $_GP['realname'],
         'mobile'     => $_GP['mobile'],
         'email'      => $_GP['email'],
-        'pwd'        => encryptPassword($_GP['pwd']),
+        'pwd'        => md5($_GP['pwd']),
         'createtime' => time(),
         'openid'     => $openid,
         'dummy'      => 0,

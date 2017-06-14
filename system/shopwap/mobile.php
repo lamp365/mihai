@@ -17,8 +17,8 @@ class shopwapAddons extends BjSystemModule
             $where = '';
 		}
         $member = get_member_account(false);
-        $openid = $member['openid']?:session_id();
-        $cartotal = mysqld_selectcolumn("select count(id) from " . table('shop_cart') . " where $where session_id='" . $openid . "'");
+        $openid = $member['openid'];
+        $cartotal = mysqld_selectcolumn("select sum(total) from " . table('shop_cart') . " where $where session_id='" . $openid . "'");
         return empty($cartotal) ? 0 : $cartotal;
     }
 

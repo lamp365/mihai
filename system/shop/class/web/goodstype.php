@@ -7,8 +7,32 @@
  */
 namespace shop\controller;
 
-class goodstype extends \common\controller\basecontroller
+class goodstype
 {
+    public $request = '';
+
+    /**
+     * 模型分组
+     */
+    public function index()
+    {
+        $goodstype = array();
+        $gtypeSerice  = new \service\seller\goodstypeService();
+        $group_res    = $gtypeSerice->getGtypeGroups(2);
+        $group_list   = $group_res['pingtaigroup'];
+        if(empty($group_list)){
+            //没有分组就默认创建一个分组
+            $data   = array(
+                'group_name'  => '默认分组',
+                'createtime'  => time(),
+                'modifytime'  => time(),
+            );
+            mysqld_insert('goods_type_group',$data);
+            $data['group_id'] = mysqld_insertid();
+            $group_list[] = $data;
+        }
+        include page('goodattr/goodstype_group');
+    }
 
     /**
      * 模型管理
@@ -16,8 +40,12 @@ class goodstype extends \common\controller\basecontroller
     public function lists()
    {
        $_GP = $this->request;
+       //获取分组
+       $gtypeSerice  = new \service\seller\goodstypeService();
+       $group_res    = $gtypeSerice->getGtypeGroups(2);
+       $group_list   = $group_res['pingtaigroup'];
 
-       //优先展示第一级分类的
+       //优先展示第一级分类的品牌
        $parent_category  = getCategoryAllparent();
        $first_son        = array();
        if($_GP['status'] == null || $_GP['status'] == -1){
@@ -34,16 +62,51 @@ class goodstype extends \common\controller\basecontroller
            $where .= " and p2={$_GP['p2']}";
        }
 
-       $psize =  30;
-       $pindex = max(1, intval($_GP["page"]));
-       $limit = ' limit '.($pindex-1)*$psize.','.$psize;
+       if(empty($_GP['group_id'])){
+            //模型一定是归于某个分组下  没有分组id  不查询数据
+           $goodstype = array();
+           $total     = $pager = '';
+       }else{
+           $where .= " and system_group_id={$_GP['group_id']}";
+           $psize =  30;
+           $pindex = max(1, intval($_GP["page"]));
+           $limit = ' limit '.($pindex-1)*$psize.','.$psize;
 
-       $goodstype  = mysqld_selectall("SELECT * FROM " . table('goodstype') . "  where {$where} order by id desc {$limit}");
-       $total      = mysqld_selectcolumn("select count('id') from ".table('goodstype')." where {$where}");
-       $pager      = pagination($total, $pindex, $psize);
+           $goodstype  = mysqld_selectall("SELECT * FROM " . table('goods_type') . "  where {$where} order by id desc {$limit}");
+           $total      = mysqld_selectcolumn("select count('id') from ".table('goods_type')." where {$where}");
+           $pager      = pagination($total, $pindex, $psize);
+       }
 
        include page('goodattr/goodstype_list');
    }
+    //添加分组
+    public function add_group()
+    {
+        $_GP = $this->request;
+        if(checksubmit('sure_add')){
+            if(empty($_GP['group_name'])){
+                message("分组名称不能为空！",refresh(),'error');
+            }
+            $data = array(
+                'group_name' => $_GP['group_name'],
+                'createtime' => time(),
+                'modifytime' => time(),
+            );
+            if(empty($_GP['group_id'])){
+                mysqld_insert('goods_type_group',$data);
+            }else{
+                mysqld_update('goods_type_group',$data,array('group_id'=>$_GP['group_id']));
+            }
+            message('操作成功！',refresh(),'success');
+        }
+
+        $edit_group = array();
+        if(!empty($_GP['group_id'])){
+            $edit_group = mysqld_select("select * from ".table('goods_type_group')." where group_id={$_GP['group_id']}");
+        }
+
+        include page('goodattr/add_group');
+    }
 
     /**
      * 添加模型
@@ -52,27 +115,35 @@ class goodstype extends \common\controller\basecontroller
     {
         $_GP = $this->request;
         if(checksubmit('sure_add')){
-            if(empty($_GP['gtype_name']) || empty($_GP['p1']) || empty($_GP['p2'])){
+            if(empty($_GP['gtype_name']) || empty($_GP['p1'])){
                 message("分类和名字不能为空！",refresh(),'error');
             }
-
+            if(empty($_GP['group_id'])){
+                //请选择分组
+                message("请选择分组！",refresh(),'error');
+            }
             $data = array(
-                'gtype_name' => $_GP['gtype_name'],
+                'name' => $_GP['gtype_name'],
                 'p1'   =>  intval($_GP['p1']),
                 'p2'   =>  intval($_GP['p2']),
+                'system_group_id'   =>  intval($_GP['group_id']),
             );
             if(empty($_GP['id'])){
-                mysqld_insert('goodstype',$data);
+                mysqld_insert('goods_type',$data);
             }else{
-                mysqld_update('goodstype',$data,array('id'=>$_GP['id']));
+                mysqld_update('goods_type',$data,array('id'=>$_GP['id']));
             }
             message('操作成功！',refresh(),'success');
         }
 
+        //获取分组
+        $gtypeSerice  = new \service\seller\goodstypeService();
+        $group_res    = $gtypeSerice->getGtypeGroups(2);
+        $group_list   = $group_res['pingtaigroup'];
 
         $edit_gtype  = $first_son = array();
         if(!empty($_GP['id'])){
-           $edit_gtype = mysqld_select("select * from ".table('goodstype')." where id={$_GP['id']}");
+           $edit_gtype = mysqld_select("select * from ".table('goods_type')." where id={$_GP['id']}");
            $first_son  = getCategoryByParentid($edit_gtype['p1']);
         }
         //优先展示第一级分类
@@ -88,7 +159,7 @@ class goodstype extends \common\controller\basecontroller
         if(empty($_GP['id'])){
             message('对不起，参数有误！',refresh(),'error');
         }
-        mysqld_update('goodstype',array('status'=>$_GP['status']),array('id'=>$_GP['id']));
+        mysqld_update('goods_type',array('status'=>$_GP['status']),array('id'=>$_GP['id']));
         message('操作成功！！',refresh(),'success');
     }
 
@@ -99,7 +170,7 @@ class goodstype extends \common\controller\basecontroller
         if(empty($_GP['id'])){
             message('对不起，参数有误！',refresh(),'error');
         }
-        $gtype    = mysqld_select("select * from ".table('goodstype')." where id={$_GP['id']}");
+        $gtype    = mysqld_select("select * from ".table('goods_type')." where id={$_GP['id']}");
         $attrlist = mysqld_selectall("select * from ".table('goodstype_attribute')." where gtype_id={$_GP['id']} order by attr_id desc");
         include page('goodattr/gattr_list');
     }
@@ -111,7 +182,7 @@ class goodstype extends \common\controller\basecontroller
         if(empty($_GP['gtype_id'])){
             message('对不起，参数有误！',refresh(),'error');
         }
-        $gtype    = mysqld_select("select * from ".table('goodstype')." where id={$_GP['gtype_id']}");
+        $gtype    = mysqld_select("select * from ".table('goods_type')." where id={$_GP['gtype_id']}");
 
         $edit_attr = array();
         if(!empty($_GP['id'])){
@@ -155,7 +226,7 @@ class goodstype extends \common\controller\basecontroller
         if(empty($_GP['id'])){
             message('对不起，参数有误！',refresh(),'error');
         }
-        $gtype    = mysqld_select("select * from ".table('goodstype')." where id={$_GP['id']}");
+        $gtype    = mysqld_select("select * from ".table('goods_type')." where id={$_GP['id']}");
         $speclist = mysqld_selectall("select * from ".table('goodstype_spec')." where gtype_id={$_GP['id']} order by spec_id desc");
         foreach($speclist as $key =>  $spec_one){
             $speclist[$key]['spec_item'] = mysqld_selectall("select id,item_name,status from ".table('goodstype_spec_item')." where spec_id={$spec_one['spec_id']}");
@@ -173,7 +244,7 @@ class goodstype extends \common\controller\basecontroller
         if(count($total_spec) >= 2){
             message('最多只能创建两个规格！',refresh(),'error');
         }
-        $gtype    = mysqld_select("select * from ".table('goodstype')." where id={$_GP['gtype_id']}");
+        $gtype    = mysqld_select("select * from ".table('goods_type')." where id={$_GP['gtype_id']}");
 
         $edit_spec = $edit_spec_item = array();
         if(!empty($_GP['id'])){
@@ -191,6 +262,10 @@ class goodstype extends \common\controller\basecontroller
         $_GP = $this->request;
         if(empty($_GP['gtype_id'])){
             ajaxReturnData(0,'对不起，参数有误！');
+        }
+        $total_spec = mysqld_selectall("select spec_id from ".table('goodstype_spec')." where gtype_id={$_GP['gtype_id']}");
+        if(count($total_spec) >= 2){
+            ajaxReturnData(0,'最多只能创建两个规格!');
         }
         if(empty($_GP['spec_name'])){
             ajaxReturnData(0,'对不起，请不要为空！');
@@ -265,7 +340,7 @@ class goodstype extends \common\controller\basecontroller
             if($_GP['type'] == 'attr'){
                 $attr_list = mysqld_selectall("select * from ".table('goodstype_attribute')." where gtype_id={$_GP['id']}");
             }else{
-                $gtype    = mysqld_select("select * from ".table('goodstype')." where id={$_GP['id']}");
+                $gtype    = mysqld_select("select * from ".table('goods_type')." where id={$_GP['id']}");
                 $spec_list = mysqld_selectall("select * from ".table('goodstype_spec')." where gtype_id={$_GP['id']} order by spec_id desc");
                 foreach($spec_list as $key =>  $spec_one){
                     $spec_list[$key]['spec_item'] = mysqld_selectall("select id,item_name,status from ".table('goodstype_spec_item')." where spec_id={$spec_one['spec_id']}");

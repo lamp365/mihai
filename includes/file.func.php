@@ -29,16 +29,15 @@ function mkdirs($path)
 {
     if (! is_dir($path)) {
         mkdirs(dirname($path));
-        mkdir($path);
+        mkdir($path,0777);
+        chmod($path,0777);
     }
     return is_dir($path);
 }
 
 /**
  * @param $file         参数$_FILES['pic']
- * @param bool|true $uploadByQiniu
- * @param string $width
- * @param string $height
+ * @param bool|true $uploadByAli    1传到阿里   0传到本地
  * @param string $type
  * @return array
  * @content 图片上传 返回数组
@@ -49,10 +48,10 @@ function mkdirs($path)
  }
   $pic = $upload['path'];
  */
-function file_upload($file, $uploadByAli=true, $width="350", $height="350",$type = 'image')
+function file_upload($file, $uploadByAli=1, $pic_group = '',$type = 'image')
 {
-    $fileObj = new FileUpload();
-    $result  = $fileObj->upload($file,$uploadByAli,$width,$height,$type);
+    $fileObj = new FileUpload($pic_group);
+    $result  = $fileObj->upload($file,$uploadByAli,$type);
     return $result;
 }
 /**
@@ -122,8 +121,13 @@ function download_pic($imgPath,$width = '', $height = '', $scaleType = 1)
                 //七牛的图片
                 $picUrl = download_qiniupic($imgPath,$width , $height, $scaleType);
             }else{
-                //阿里的图片
-                $picUrl = download_alipic($imgPath,$width , $height, $scaleType);
+                if(strstr($imgPath,"aliyuncs.com")){
+                    //阿里的图片
+                    $picUrl = download_alipic($imgPath,$width , $height, $scaleType);
+                }else{
+                    //返回原图
+                    $picUrl = $imgPath;
+                }
             }
 
         }
@@ -228,7 +232,6 @@ function get_qiniu_allpic()
 {
     $fileObj = new FileUpload();
     $result  = $fileObj->getQiniuPicList();
-    ppd($result);
     foreach($result['items'] as $k => $row){
         $picName = $row['key'];
         $picUrl  = "http://odozak4lg.bkt.clouddn.com/".$picName;
@@ -240,6 +243,45 @@ function get_qiniu_allpic()
         }
     }
     die('结束');
+}
+
+/*
+ * 统一图片校验封装
+ * @return array(url,error,errno,filename,url,message)    errno   0失败1成功
+ * @content 图片上传 返回数组  核心操作#4
+ */
+function checkImgFileAndUpload($postName='imgFile'){
+    $result  = array('errno'=>0);
+    $extentions=array('gif', 'jpg', 'jpeg', 'png');
+    #1.1
+    if(empty($_FILES[$postName]['name'])){
+        $result['message'] = '上传失败，请重试！';
+        return $result;
+    }
+    #1.2
+	if ($_FILES[$postName]['error'] != 0) {
+			$result['message'] = '上传失败，请重试！';
+			return $result;
+	}
+    #1.3
+    $extention = pathinfo($_FILES[$postName]['name'], PATHINFO_EXTENSION);
+	if(!in_array(strtolower($extention), $extentions)) {
+		$result['message'] = '不允许上传此类文件！';
+		return $result;
+	}
+    #2  核心操作上传
+    $file = file_upload($_FILES[$postName], 'image');
+    if (is_error($file)) {
+        $result['message'] = $file['message'];
+        return $result;
+    }
+    #3  返回数据
+    $result['error'] = 0;//这个是以前的，有用吗？
+    $result['errno'] = 1;//这个是用来判断是否成功
+    $result['url'] = $result['filename'] = $file['path'];
+    
+    return $result;
+	
 }
 
 /**
@@ -267,7 +309,27 @@ function changeUeditImgToAli($dish_content,$alidir=''){
                 $unlink_pic = ".".$oldimg_value;  //相对路径
                 @unlink ($unlink_pic);
             }
+
         }
     }
     return $dish_content;
 }
+
+//将详情内容里的部分网络图片上传到阿里云
+function changeWebImgToAli($content,$alidir=''){
+    if(empty($content)){
+        return array();
+    }
+    $return = array();
+    $contents =  htmlspecialchars_decode($content);
+    preg_match_all('<img.*?src=\"(.*?.*?)\".*?>',$contents,$match);
+    $oldimg   =  $match[1];
+    $i = 0;
+    foreach ( $oldimg as $key=>$oldimg_value ){
+       $return['img'][$i] = $oldimg_value;
+       $i++;
+    }
+    $return['content'] = strip_tags($content);
+
+    return $return;
+}	

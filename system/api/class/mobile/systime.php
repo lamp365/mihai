@@ -3,8 +3,13 @@
  * app 系统时间接口
  */
 
-$result['data']['systime'] 	= date('Y-m-d H:i:s');
-$result['code'] 			= 1;
+namespace api\controller;
+use api\controller;
 
-echo apiReturn($result);
-exit;
+class systime extends homebase{
+
+    public function index(){
+        $systime = date('Y-m-d H:i:s');
+        ajaxReturnData(1,'获取成功',$systime);
+    }
+}

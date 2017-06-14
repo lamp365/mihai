@@ -4,11 +4,11 @@
 * @author WZW
 */
 
-require_once WEB_ROOT . '/includes/bankList.php';
+
 
 // 获取卡类型
 function bankInfo($card) {
-  global $bankList; 
+ $bankList =   require_once WEB_ROOT . '/includes/bankList.php';
   $card_8 = substr($card, 0, 8); 
   if (isset($bankList[$card_8])) { 
     return $bankList[$card_8]; 
@@ -122,7 +122,6 @@ function get_all_bank() {
 
     return $bank_ary;
 }
-
 
 /**
  * 检验银卡 是否是合法的

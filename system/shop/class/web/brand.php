@@ -5,28 +5,36 @@ $cfg = globaSetting();
 $operation = ! empty($_GP['op']) ? $_GP['op'] : 'display';
 
 if ($operation == 'display') {
-	$brand = mysqld_selectall("SELECT * FROM " . table('shop_brand') . "  where deleted=0");
+	//优先展示第一级分类的品牌
+	$all_category  = getCategoryAllparent();
+	$first_son     = array();
+	$where = "deleted=0";
+	if(!empty($_GP['p1'])){
+		$first_son   = getCategoryByParentid($_GP['p1']);
+		$where .= " and p1={$_GP['p1']}";
+	}
+	if(!empty($_GP['p2'])){
+		$where .= " and p2={$_GP['p2']}";
+	}
+	if(!empty($_GP['p3'])){
+		$where .= " and p3={$_GP['p3']}";
+	}
+
+	$psize =  30;
+	$pindex = max(1, intval($_GP["page"]));
+	$limit = ' limit '.($pindex-1)*$psize.','.$psize;
+
+	$brand  = mysqld_selectall("SELECT * FROM " . table('shop_brand') . "  where {$where} {$limit}");
+	$total  = mysqld_selectcolumn("select count('id') from ".table('shop_brand')." where {$where}");
+	$pager  = pagination($total, $pindex, $psize);
     foreach ( $brand as &$brand_value ){
          $country = get_country($brand_value['country_id']);
 		 $brand_value['country_img'] = $country['icon'];
 	}
-	if ($_GP['ajax'] == 'daifa' && !empty($_GP['id'])){
-		$result = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id = ".$_GP['id']);
-        $daifa = ABS($result['daifa'] - 1 );
-		$data = array('daifa'=>$daifa);
-		mysqld_update('shop_brand',$data,array('id'=>$_GP['id']));
-		die(showAjaxMess('200',array('id'=>$_GP['id'], 'daifa'=>$daifa )));
-	}
-	if ($_GP['ajax'] == 'pifa' && !empty($_GP['id'])){
-         $result = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id = ".$_GP['id']);
-        $pifa = ABS($result['pifa'] - 1 );
-		$data = array('pifa'=>$pifa);
-		mysqld_update('shop_brand',$data,array('id'=>$_GP['id']));
-		die(showAjaxMess('200',array('id'=>$_GP['id'], 'pifa'=>$pifa )));
-	}
-	include page('leimu/brand_list');
+
+	include page('brand_list');
 }elseif ($operation == 'add') {
-	$country = mysqld_selectall("SELECT * FROM " . table('shop_country') . "  where deleted=0");
+
 	$idEdit = false;
 	if (checksubmit('submit')) {
 		if ($_GP['country'] == 'nil' or empty($_GP['u_brand'])) {
@@ -62,25 +70,49 @@ if ($operation == 'display') {
                     }
                     $data['brand_ad'] = $upload['path'];
           }
+          
+          //获取分类所属行业ID
+          $industryArr =  mysqld_select("SELECT industry_p1_id,industry_p2_id FROM " . table('shop_category') . " where id={$_GP['p1']}");
+          $data['industry_p1_id'] = $industryArr['industry_p1_id'];
+          $data['industry_p2_id'] = $industryArr['industry_p2_id'];
+          
 		mysqld_insert('shop_brand', $data);
 		message('增加成功！',web_url('brand'),'succes');
 		return;
 	}
-	include page('leimu/brand_add');
+
+	if(!empty($_GP['ajaxCat']) && !empty($_GP['id'])){
+		$all_category  = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where parentid={$_GP['id']} and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+		if(empty($all_category)){
+			die(showAjaxMess(1002,'无数据！'));
+		}else{
+			die(showAjaxMess(200,$all_category));
+		}
+	}
+
+	$all_category  = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where parentid=0 and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+	$country       = mysqld_selectall("SELECT * FROM " . table('shop_country') . "  where deleted=0");
+	include page('brand_add');
 }elseif ($operation == 'edit') {
 	$id = $_GP['id'];
 	$isEdit = true;
-	$country = mysqld_selectall("SELECT * FROM " . table('shop_country') . "  where deleted=0");
-	$this_brand = mysqld_select('SELECT * FROM '.table('shop_brand')." WHERE  id=:uid AND deleted=0" , array(':uid'=> $id));
-	// dump($this_hot);
-
 	if (checksubmit('submit')) {
 		if ($_GP['country'] == 'nil' or empty($_GP['u_brand'])) {
 			message('品牌或国家为空!',refresh(),'error');
 		}
 		$_GP['recommend'] = !empty($_GP['recommend']) ? 1 : 0 ;
         	$_GP['isindex'] = !empty($_GP['isindex']) ? 1 : 0 ;
-		$data = array('brand' => $_GP['u_brand'], 'country_id' => $_GP['country'], 'recommend' => $_GP['recommend'],'description' => $_GP['description'], 'content' => $_GP['content'],  'isindex' => $_GP['isindex']);
+		$data = array(
+			'brand' => $_GP['u_brand'],
+			'country_id' => $_GP['country'],
+			'recommend' => $_GP['recommend'],
+			'description' => $_GP['description'],
+			'content' => $_GP['content'],
+			'isindex' => $_GP['isindex'],
+			'p1' => $_GP['p1'],
+			'p2' => $_GP['p2'],
+			'p3' => $_GP['p3'],
+		);
 		if (!empty($_FILES['thumb']['tmp_name'])) {
             $upload = file_upload($_FILES['thumb']);
             // dump($_FILES['thumb']);
@@ -106,11 +138,31 @@ if ($operation == 'display') {
                     }
                     $data['brand_ad'] = $upload['path'];
           }
+          
+          
+          //获取分类所属行业ID
+          $industryArr =  mysqld_select("SELECT industry_p1_id,industry_p2_id FROM " . table('shop_category') . "  where id={$_GP['p1']}");
+          $data['industry_p1_id'] = $industryArr['industry_p1_id'];
+          $data['industry_p2_id'] = $industryArr['industry_p2_id'];
+          
 		mysqld_update('shop_brand', $data, array('id'=> $_GP['id']));
 		message('修改成功！',web_url('brand'),'succes');
 		return;
 	}
-	include page('leimu/brand_add');
+
+	$country    = mysqld_selectall("SELECT * FROM " . table('shop_country') . "  where deleted=0");
+	$this_brand = mysqld_select('SELECT * FROM '.table('shop_brand')." WHERE  id=:uid AND deleted=0" , array(':uid'=> $id));
+
+	$all_category  = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where parentid=0 and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+	$first_son     = $second_son = array();
+	if(!empty($this_brand['p1'])){
+		$first_son   = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where parentid={$this_brand['p1']} and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+	}
+	if(!empty($this_brand['p2'])){
+		$second_son   = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where parentid={$this_brand['p2']} and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+	}
+
+	include page('brand_add');
 }elseif ($operation == 'delete') {
 	mysqld_update('shop_brand', array('deleted' => 1), array('id'=> $_GP['id']));
 	message('删除成功',refresh(),'success');	

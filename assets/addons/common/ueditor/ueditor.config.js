@@ -19,8 +19,8 @@
      * 因此，UEditor提供了针对不同页面的编辑器可单独配置的根路径，具体来说，在需要实例化编辑器的页面最顶部写上如下代码即可。当然，需要令此处的URL等于对应的配置。
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
-    var URL = window.UEDITOR_HOME_URL || getUEBasePath();
-    URL = URL + 'ueditor/';
+    //var URL = window.UEDITOR_HOME_URL || getUEBasePath();
+    var URL = getUEBasePath();
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
      */
@@ -83,7 +83,7 @@
         //如果自定义，最好给p标签如下的行高，要不输入中文时，会有跳动感
         //,initialStyle:'p{line-height:1em}'//编辑器层级的基数,可以用来改变字体等
 
-        //,iframeCssUrl: URL + 'themes/iframe.css' //给编辑区域的iframe引入一个css文件
+        //,iframeCssUrl: URL + '/themes/iframe.css' //给编辑区域的iframe引入一个css文件
 
         //indentValue
         //首行缩进距离,默认是2em
@@ -281,9 +281,9 @@
 
         //scaleEnabled
         //是否可以拉伸长高,默认true(当开启时，自动长高失效)
-        ,scaleEnabled:true
-        ,minFrameWidth:600    //编辑器拖动时最小宽度,默认800
-        ,minFrameHeight:320  //编辑器拖动时最小高度,默认220
+        //,scaleEnabled:false
+        //,minFrameWidth:800    //编辑器拖动时最小宽度,默认800
+        //,minFrameHeight:220  //编辑器拖动时最小高度,默认220
 
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
@@ -356,11 +356,11 @@
         //,rgb2Hex:true               //默认产出的数据中的color自动从rgb格式变成16进制格式
 
 		// xss 过滤是否开启,inserthtml等操作
-		,xssFilterRules: false
+		,xssFilterRules: true
 		//input xss过滤
-		,inputXssFilter: false
+		,inputXssFilter: true
 		//output xss过滤
-		,outputXssFilter: false
+		,outputXssFilter: true
 		// xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
 		,whitList: {
 			a:      ['target', 'href', 'title', 'class', 'style'],
@@ -400,7 +400,7 @@
 			header: [],
 			hr:     [],
 			i:      ['class', 'style'],
-			img:    ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class'],
+			img:    ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class', 'data-latex'],
 			ins:    ['datetime'],
 			li:     ['class', 'style'],
 			mark:   [],

@@ -2,8 +2,7 @@
 	"require":{
 		"jaeger/querylist":"^3.1.2",
 		"jaeger/querylist-ext-aquery": "^1.0",
-		"jaeger/querylist-ext-multi": "^1.0",
-		"xxh/think-wxminihelper":"1.0"
+		"jaeger/querylist-ext-multi": "^1.0"
 	},
 	"repositories": {
 		"packagist": {

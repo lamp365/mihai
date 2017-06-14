@@ -164,8 +164,7 @@ function getSystemRule($uid=''){
         }
     }else{
         $system_rule = mysqld_selectall('SELECT * FROM ' . table('rule') ." order by cat_id asc,sort asc,id asc");
-    }
-    
+    }  
     return $system_rule;
 }
 
@@ -278,4 +277,85 @@ function diffUserRule($allRule,$userHasRule){
         }
     }
     return $data_rule;
+}
+
+/**
+ * 卖家是否有权限操作 一些其他的 字段权限  如金额修改  上下架修改
+ * @param $field
+ * @return bool
+'status'     '修改上架',
+'price'      '修改价格',
+'commision'  '修改商品佣金',
+ */
+function sellerIsCanOperateField($field){
+    if(empty($field)){
+        return true;
+    }
+    $member = get_member_account();
+    if($member['store_is_admin']){
+        //管理员直接可以操作
+        return true;
+    }
+    //获取该用户所属于的 权限分组
+    $file_res = mysqld_select("select group_id from ".table('seller_rule_relation')." where sts_id={$member['store_sts_id']}  and openid='{$member['openid']}'");
+    if(empty($file_res)){
+        return true;
+    }
+    //更具group_id找到 对应的other_rule
+    $other_rule = mysqld_select("select other_rule from ".table('seller_group')." where group_id={$file_res['group_id']}");
+    if(empty($other_rule['other_rule'])){
+        return true;
+    }
+
+    $rule_arr = explode(',',$other_rule['other_rule']);
+    //能找到的说明是 需要被禁止操作的
+    if(in_array($field,$rule_arr)){
+        return false;
+    }
+    return true;
+}
+
+/**
+ * @return int 1最高管理员 2店长  3店员
+ * 店员一修改价格就会自动下架掉
+ */
+function checkSellerRoler()
+{
+    $member = get_member_account();
+    if(!empty($member['store_is_admin'])){
+        return 1;
+    }
+    $sts_id = $member['store_sts_id'];
+    $openid = $member['openid'];
+    $relation = mysqld_select("select group_id from ".table('seller_rule_relation')." where sts_id={$sts_id} and openid='{$openid}'");
+    if(empty($relation)){
+        //万一找不到  直接编辑的产品下架
+        return 3;
+    }
+    //分组1 代表店长  分组2 代表 店员
+    if($relation['group_id'] == 1){
+        return 2;
+    }else{
+        return 3;
+    }
+}
+
+/**
+ * 检测当前是否还可以上架商品。根据商铺等级
+ * 不可以再上架了返回false  否则返回还可以上架的个数
+ * @param $curt_dish_num
+ * @return bool
+ */
+function checkMakeDishStatusNum($curt_dish_num)
+{
+    $member = get_member_account();
+    $sts_id = $member['store_sts_id'];
+    $store  = member_store_getById($sts_id,'sts_shop_level');
+    $rank_level = intval($store['sts_shop_level']);
+    $level  = mysqld_select("select dish_num from ".table('store_shop_level')." where rank_level={$rank_level}");
+    if($curt_dish_num <= $level['dish_num']){
+        return $level['dish_num'] - $curt_dish_num;
+    }else{
+        return false;
+    }
 }

@@ -4,13 +4,9 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd415802ab16f987cc0d8af7d29faf164
+class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
 {
     public static $prefixLengthsPsr4 = array (
-        'w' => 
-        array (
-            'wlt\\wxmini\\' => 11,
-        ),
         'Q' => 
         array (
             'QL\\Ext\\Lib\\' => 11,
@@ -20,10 +16,6 @@ class ComposerStaticInitd415802ab16f987cc0d8af7d29faf164
     );
 
     public static $prefixDirsPsr4 = array (
-        'wlt\\wxmini\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/xxh/think-wxminihelper/src',
-        ),
         'QL\\Ext\\Lib\\' => 
         array (
             0 => __DIR__ . '/..' . '/jaeger/curlmulti',
@@ -58,9 +50,9 @@ class ComposerStaticInitd415802ab16f987cc0d8af7d29faf164
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd415802ab16f987cc0d8af7d29faf164::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd415802ab16f987cc0d8af7d29faf164::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitd415802ab16f987cc0d8af7d29faf164::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita03732d71b5d719fd173028dfd41b5c2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita03732d71b5d719fd173028dfd41b5c2::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita03732d71b5d719fd173028dfd41b5c2::$classMap;
 
         }, null, ClassLoader::class);
     }

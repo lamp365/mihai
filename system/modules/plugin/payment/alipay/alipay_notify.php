@@ -35,23 +35,27 @@ if($verify_result) {//验证成功
 					{
 						if($order['status']==0)
 						{
-                            mysqld_update('shop_order', array('status'=>1,'paytime'=>time()), array('id' =>  $order['id']));
+						mysqld_update('shop_order', array('status'=>1,'paytime'=>time()), array('id' =>  $order['id']));
+	      
+						mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay','createtime'=>date('Y-m-d H:i:s')));
+						
+						paySuccessProcess($order);	//支付成功后的处理
 
-                            mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay','createtime'=>date('Y-m-d H:i:s')));
-
-                            paySuccessProcess($order);	//支付成功后的处理  库存的处理
-
-	      	                message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','success');
+						  //require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
+	            // mailnotice($orderid);
+	             
+	             		echo 'success';
+	      //	message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','success');
 						}else
 						{
-                            message('该订单不是支付状态无法支付',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','error');
+					   //				message('该订单不是支付状态无法支付',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','error');
 		
 						}
 						exit;
 					}else
 					{
 						mysqld_insert('paylog', array('typename'=>'未找到相关订单','pdate'=>$post_data,'ptype'=>'error','paytype'=>'alipay'));
-                        message('支付失败未找到订单！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','error');
+	      exit;
 					}
 			}else
 			{//余额支付

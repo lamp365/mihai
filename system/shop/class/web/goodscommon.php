@@ -18,6 +18,17 @@ if($op == 'getCate'){
         die(showAjaxMess(200,$all_category));
     }
 
+}else if($op == 'getNextRegion'){
+    //获取下一级分类
+    if(empty($_GP['region_id'])){
+        die(showAjaxMess(1002,'参数有误！'));
+    }
+    $all_region  = mysqld_selectall("SELECT * FROM " . table('region') . "  where parent_id={$_GP['region_id']}");
+    if(empty($all_region)){
+        die(showAjaxMess(1002,'无数据！'));
+    }else{
+        die(showAjaxMess(200,$all_region));
+    }
 }else if($op == 'getBrandByCate'){
     //通过下拉分类获取 商品模型 以及 品牌
     if(empty($_GP['p1'])){
@@ -69,11 +80,11 @@ if($op == 'getCate'){
     if(empty($_GP['gtype_id'])){
         die(showAjaxMess(1002,'参数有误！'));
     }
-    $dish_id       = $_GP['dish_id'];
+    $goods_id      = $_GP['goods_id'];
     $gtype_id      = $_GP['gtype_id'];
 
     $goodsService  = new \service\shop\goodscommonService();
-    $res = $goodsService->goodsSpecInput($gtype_id,$dish_id);
+    $res = $goodsService->goodsSpecInput($gtype_id,$goods_id);
     if($res){
         die(showAjaxMess(200,$res));
     }else{
@@ -83,11 +94,11 @@ if($op == 'getCate'){
     if(empty($_GP['spec_arr'])){
         die(showAjaxMess(1002,'参数有误！'));
     }
-    $dish_id      = $_GP['dish_id'];
+    $goods_id      = $_GP['goods_id'];
     $spec_arr      = $_GP['spec_arr'];
 
     $goodsService  = new \service\shop\goodscommonService();
-    $res = $goodsService->goodsSpecInput_info($spec_arr,$dish_id);
+    $res = $goodsService->goodsSpecInput_info($spec_arr,$goods_id);
     if($res){
         die(showAjaxMess(200,$res));
     }else{

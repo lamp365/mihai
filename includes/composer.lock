@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec0701418078835bd3488063bbb3742d",
+    "content-hash": "402aeedd00cdea332cb4127816f2fc46",
     "packages": [
         {
             "name": "jaeger/curlmulti",
@@ -88,24 +88,21 @@
         },
         {
             "name": "jaeger/querylist",
-            "version": "V3.2.1",
+            "version": "V3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jae-jae/QueryList.git",
-                "reference": "1a7864dcf8d979d6d57a2a3508f2dd62ce3233d6"
+                "reference": "700d56db49590a3080a94dc7a63ecab212e920ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/jae-jae/QueryList/1a7864dcf8d979d6d57a2a3508f2dd62ce3233d6.zip",
-                "reference": "1a7864dcf8d979d6d57a2a3508f2dd62ce3233d6",
+                "url": "https://files.phpcomposer.com/files/jae-jae/QueryList/700d56db49590a3080a94dc7a63ecab212e920ff.zip",
+                "reference": "700d56db49590a3080a94dc7a63ecab212e920ff",
                 "shasum": ""
             },
             "require": {
-                "jaeger/phpquery-single": "^0.9",
+                "jaeger/phpquery-single": "^0.9.5",
                 "php": ">=5.3.0"
-            },
-            "suggest": {
-                "monolog/monolog": "Log support"
             },
             "type": "library",
             "autoload": {
@@ -130,7 +127,7 @@
                 "phpQuery",
                 "spider"
             ],
-            "time": "2017-06-09T04:25:07+00:00"
+            "time": "2017-04-20T05:53:32+00:00"
         },
         {
             "name": "jaeger/querylist-ext-aquery",
@@ -201,42 +198,6 @@
             ],
             "description": "QueryList扩展，Multi多线程扩展",
             "time": "2015-12-28T06:09:36+00:00"
-        },
-        {
-            "name": "xxh/think-wxminihelper",
-            "version": "1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/wulongtao/think-wxminihelper.git",
-                "reference": "9ff91da2ebee0b37a9d1faf39ff1c541514ca0e9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://files.phpcomposer.com/files/wulongtao/think-wxminihelper/9ff91da2ebee0b37a9d1faf39ff1c541514ca0e9.zip",
-                "reference": "9ff91da2ebee0b37a9d1faf39ff1c541514ca0e9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "wlt\\wxmini\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "小小黑",
-                    "email": "769418278@qq.com"
-                }
-            ],
-            "description": "weixin mini program helper",
-            "time": "2017-01-18T06:09:29+00:00"
         }
     ],
     "packages-dev": [],

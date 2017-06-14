@@ -212,7 +212,6 @@ $("#dishid").blur(function(){
 	window.location.href=url;
 })
 
-var host = 'http://'+window.location.host+'/';
 var uploader = WebUploader.create({
 
 	// 选完文件后，是否自动上传。
@@ -221,7 +220,7 @@ var uploader = WebUploader.create({
 	swf: '__RESOURCE__/recouse/js/webuploader/Uploader.swf',
 
 	// 文件接收服务端。
-	server: host+'fileupload.php?savelocal=0',
+	server: 'fileupload.php?savelocal=0',
 
 	// 选择文件的按钮。可选。
 	// 内部根据当前运行是创建，可能是input元素，也可能是flash.

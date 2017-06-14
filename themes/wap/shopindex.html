@@ -1,876 +1,306 @@
-   <!--@php  include themePage('header'); @-->
-	<div id="viewport" class="viewport">
-		<div class="slider card card-nomb" style="visibility: visible;">
-			<script type="text/javascript" src="__RESOURCE__/recouse/js/TouchSlide.1.1.js"></script>
-			<div id="focus" class="focus">
-				<div class="hd">
-					<ul>
-					</ul>
-				</div>
-				<div class="bd">
-					<ul>
-						<!--@php  if(is_array($advs)) { foreach($advs as $adv) { @-->
-						<li>
-							<a href="<!--@php  if(empty($adv['link'])) { @--><!--@php  } else { @--><!--@php  echo $adv['link'];@--><!--@php  } @-->">
-								<img src="<!--@php  echo $adv['thumb'];@-->"/>
-							</a>
-						</li>
-						<!--@php  } } @-->
-					</ul>
+     <!--@php  include themePage('header'); @-->
+     <!--@php css_url('shopindex'); @-->
+	 <div class="shopindex-head">
+	    <div class="header_title">
+             <img src="<!--@php echo $cfg['shop_logo']; @-->" height="50" />
+		</div>
+		<!--  当前位置切换区域  -->
+		<div class="location-area">
+			<span onclick="addressShow()">鼓楼区<i class="icon-sort-down" aria-hidden="true"></i></span>
+		</div>
+	</div>
+	<!-- 地址弹出框 begin-->
+	<div class="address-alert">
+		<div class="address-alert-title"><span class="close-address">&times;</span>请选择区域</div>
+		<div>
+			<div class="now-address">当前区域</div>
+			<div class="address-area">鼓楼区五四路于山堂</div>
+		</div>
+		<div>
+			<div class="now-address">收货地址</div>
+			<div class="take-address-area">
+				<div>鼓楼区五四路于山堂</div>
+				<div class="address-name">张三 10086100861</div>
+			</div>
+		</div>
+		<div class="nearby">
+			<div class="now-address">附近地址</div>
+			<div class="address-area">鼓楼区五四路于山堂</div>
+			<div class="address-area">鼓楼区五四路于山堂</div>
+			<div class="address-area">鼓楼区五四路于山堂</div>
+		</div>
+	</div>
+	<!-- 地址弹出框 end-->
+	 	<div class="mui-content">
+			<div class="shop-head">
+			<!-- 搜索框 -->
+				<div class="mui-content-padded" style="margin: 0px;">
+					<div class="search_a" onclick="searchShow()"></div>
+					<div class="mui-input-row mui-search">
+						<input type="search" class="search-input mui-input-clear" placeholder="输入商家、商品名称">
+					</div>
 				</div>
 			</div>
-			<script type="text/javascript">
-				TouchSlide({
-					slideCell : "#focus",
-					titCell : ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
-					mainCell : ".bd ul",
-					delayTime : 600,
-					interTime : 4000,
-					effect : "leftLoop",
-					autoPlay : true,//自动播放
-					autoPage : true, //自动分页
-					switchLoad : "_src" //切换加载，真实图片路径为"_src" 
-				});
-				
-				
-			</script>
+	    </div>
+		<!-- 图文列表 带轮播 -->
+		<div class="swiper-container">
+		    <div class="swiper-wrapper">
+		    	<!-- 第一页 -->
+		    	<!--@php if(is_array($storeIcon)){ @-->
+		    	<!--@php if($storeIcon[0]){ @-->
+		        <div class="swiper-slide">
+		        	<ul class="swiper-banner">
+		        		<!--@php foreach($storeIcon[0] as $v){ @-->
+				        <li>
+				            <a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'index','storeid'=>$v['sts_id'])); @-->">
+				                <img class="mui-media-object" src="<!--@php echo download_pic($v['sts_avatar'],200,200,2) @-->">
+				                <div class="mui-media-body"><!--@php echo msubstr($v['sts_name'],0,5) @--></div>
+				            </a>
+		                </li>
+		                <!--@php } @-->
+				    </ul>
+		        </div>
+		        <!--@php }} @-->
+		        <!-- 第二页 -->
+		        <!--@php if(is_array($storeIcon)){ @-->
+		        <!--@php if($storeIcon[1] && (count($storeIcon[1]) == 8)){ @-->
+		        <div class="swiper-slide">
+		        	<ul class="swiper-banner">
+		        		<!--@php foreach($storeIcon[1] as $v){ @-->
+				        <li>
+				            <a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'index','storeid'=>$v['sts_id'])); @-->">
+				                <img class="mui-media-object" src="<!--@php echo download_pic($v['sts_avatar'],200,200,2) @-->">
+				                <div class="mui-media-body"><!--@php echo msubstr($v['sts_name'],0,5) @--></div>
+				            </a>
+		                </li>
+		                <!--@php } @-->
+				    </ul>
+		        </div>
+		        <!--@php }} @-->
+		        <!-- 第三页 -->
+		        <!--@php if(is_array($storeIcon)){ @-->
+		        <!--@php if($storeIcon[2] && (count($storeIcon[2]) == 8)){ @-->
+		        <div class="swiper-slide">
+		        	<ul class="swiper-banner">
+		        		<!--@php foreach($storeIcon[2] as $v){ @-->
+				        <li>
+				            <a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'index','storeid'=>$v['sts_id'])); @-->">
+				                <img class="mui-media-object" src="<!--@php echo download_pic($v['sts_avatar'],200,200,2) @-->">
+				                <div class="mui-media-body"><!--@php echo $v['sts_name'] @--></div>
+				            </a>
+		                </li>
+		                <!--@php } @-->
+				    </ul>
+		        </div>
+		        <!--@php }} @-->
+		    </div>
+		    <!-- 如果需要分页器 -->
+		    <div class="small-icon-pagination swiper-pagination"></div>
 		</div>
-		<!--@php  if ( !empty($category) or !empty($shop_menu_list) ){include themePage('nav');  }@-->
-		<style>
-		    .adv_mid {width:100%;overflow:hidden;}
-            .adv_mid li { float:left; width:50%; }
-			.adv_mid li a{ padding:3px; display:block;}
-			.adv_mid li img { width:100%; height:auto; -moz-border-radius: 5px;      /* Gecko browsers */
-    -webkit-border-radius: 5px;   /* Webkit browsers */
-    border-radius:5px;            /* W3C syntax */ }
-    		
-    		/*觅海头条*/
-    		.mhheadline{
-    			width: 100%;    			
-    			text-align: center;
-    			background: #D8D8D8;    		
-    			font-family: hzgb;
-				font-size: 30px;
-				color: #FFFFFF;
-				letter-spacing: 0;
-    		}
-			.per-mhnews{
-				margin-top: 10px;				
-			}
-			.per-mhnews ul{
-				overflow: hidden;				
-				width: 100%;
-    			box-sizing: border-box;
-			}
-			.per-mhnews ul li{
-			    width: 47%;
-			    height: 168px;
-			    overflow: hidden;
-			    float: left;
-			    margin-bottom: 10px;
-			    box-sizing: border-box;
-			}
-			.per-mhnews ul li:nth-child(odd){
-				margin-left: 2%;
-				margin-right: 1%;
-			}
-			.per-mhnews ul li:nth-child(even){
-				margin-left: 1%;
-				margin-right: 2%;
-			}
-			.per-mhnews ul li a img{
-				width: 100%;
-				height: 100px;
-			}
-			.per-mhnews ul li a p{				
-				font-size: 16px;
-				color: #333333;				
-				line-height: 18px;
-				
-				width: 100%;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				padding-right: 5px;
-				margin-top: 8px;
-			}
-			 .per-mhnews ul li a span{
-				font-family: PingFangSC-Regular;
-				font-size: 14px;
-				color: #999999;
-				letter-spacing: 0;
-				line-height: 18px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				padding-right: 5px;
-				width: 100%;
-				height: 18px;
-				display: inline-block;
-				
-			}
-			.per-mhnews ul li a p:hover{
-				text-decoration: underline;
-			}
-			.per-mhnews ul li a span:hover{
-				text-decoration: underline;
-			}
-			.per-mhnews ul li .hottag{
-				width: 28px;
-				height: 16px;
-				line-height: 16px;
-				font-size: 12px;
-				display: inline-block;
-				border: 1px solid #DC0200;
-				border-radius: 4px;
-				color: #DC0200;
-				float: left;
-				text-align: center;
-			}
-			.per-mhnews ul li .see{
-				display: inline-block;
-				margin-left: 10px;
-				height: 16px;
-				line-height: 16px;
-				float: left;
-				margin-top: 2px;
-			}
-			 .per-mhnews ul li .see img{
-				width: 14px;	
-				float: left;
-				margin-top: 3px;
-			}
-			 .per-mhnews ul li .see .seenum{
-				display: inline-block;
-				float: left;
-				font-family: .PingFang-SC-Regular;
-				font-size: 12px;
-				color: #999999;
-				letter-spacing: 0;
-				line-height: 16px;
-				margin-left: 2px;
-			}
-			.seemore{	
-				width: 60px;
-				height: 25px;
-				line-height: 25px;
-				text-align: center;
-				margin: 0 auto;				
-				border: 1px solid #E53A57;
-				border-radius: 4px;
-				
-			}
-			.seemore a{
-				font-family: PingFangSC-Regular;
-				font-size: 12px;
-				color: #E53A57;
-			}
-			
-			/*晒物笔记*/
-			
-			div.wrap{
-				width: 100%;											
-				position: relative;
-				background:rgb(243,243,243);
-			}
-			div.wrap div{				
-				border: 1px solid #eee;
-				position: absolute;
-				background: #fff;
-				padding-bottom: 1%;
-				box-sizing: border-box;
-				width: 47%;
-			}
-			div.wrap div.newnote{
-				visibility: hidden;
-			}
-			div.wrap div p{
-				padding:3% 3% 0 3%;
-				box-sizing: border-box;
-				line-height: 18px;
-				
-			}
-			div.wrap div p.title{
-				color: #333;
-				font-size: 14px;
-				font-weight: bold;
-				
-			}
-			div.wrap div p.detail{
-				color: #7F7F7F;
-				font-size: 12px;
-				height: 74px;
-				overflow: hidden;
-			}	
-			div.wrap div p.men img{
-				width: 30px;
-				height: 30px;
-				border-radius: 50%;
-			}
-			div.wrap div p.men span{
-				color: #7F7F7F;
-				font-size: 10px;
-				line-height: 30px;
-				width: 75%;
-				display: inline-block;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-			}
-			div.wrap div h3 {
-				line-height: 35px;
-			}
-			div.wrap div img {
-				width: 100%;
-			}
-
+		<!-- 广告轮播 -->
+		<div class="swiper-container">
+		    <div class="swiper-wrapper">
+		        <div class="swiper-slide">
+	        		<a class="banner-img" href="#">
+						<img src="https://m.360buyimg.com/mobilecms/jfs/t5674/362/53647236/176703/cf14b9bb/59150e5eN85f6415e.jpg!q70.jpg">
+					</a>
+				</div>
+		        <div class="swiper-slide">
+		        	<a class="banner-img" href="#">
+						<img src="https://img1.360buyimg.com/da/jfs/t5176/95/2532364514/99311/b4fca858/591c132dN0dec9999.jpg">
+					</a>
+		        </div>
+		    </div>
+		    <!-- 如果需要分页器 -->
+		    <div class="banner-pagination swiper-pagination"></div>
+		</div>
 		
-			/*觅海头条*/				
-			.dowebok { width: 75%; height: 50px; font-size: 14px;display: inline-block;float: right;}
-			.dowebok ul { width:100%; line-height: 25px;}
-			
-			.dowebok ul li img{
-				width: 25px;
-				height: 25px;
-				border-radius: 50%;
-			}
-			.dowebok ul li a{
-				width: 80%;
-				margin-left: 10px;
-				margin-top: 2px;
-				display: inline-block;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space:nowrap
-			}			
-			.dowebok a { color: #333; text-decoration: none;}
-			.dowebok a:hover { text-decoration: underline;}
-			.freepay-area{
-			    padding: 0 3%;
-			    text-align: center;
-			    background-color: #fff;
-			    padding-top: 10px;
-			    line-height: 1.8;
-			    padding-bottom: 7px;
-			}
-			.freepay-area-1{
-				float: left;
-				width: 33%;
-			}
-			.freepay-area-2{
-				float: left;
-				width: 34%;
-			}
-			.freepay-area-3{
-				float: left;
-				width: 33%;
-			}
-			.freepay-area-title{
-				color: #9a9a9a;
-				font-size: 13px;
-			}
-			.freepay-area-con{
-				color: #333;
-				font-weight: bold;
-				font-size: 16px;
-			}
-			.new-user-free-receive{
-				margin: 10px 0;
-			}
-			.new-user-free-receive-list li{
-				float: left;
-			    width: 49%;
-			    background-color: #fff;
-			    position: relative;
-			}
-			.new-user{
-				margin-right: 2%;
-			}
-			.new-user,.free-receive{
-				padding: 5% 10px;
-				box-sizing: border-box;
-			}
-			.new-user-left,.free-receive-left{
-				float: left;
-				width: 70%;
-				color: #9a9a9a;
-    			font-size: 13px;
-			}
-			.new-user-right,.free-receive-right{
-				width: 25%;
-			    position: absolute;
-			    right: 7%;
-			    top: 20%;
-			}
-			.new-user-right img,.free-receive-right img{
-				width: 100%;
-				max-width: 50px;
-				display: block;
-			}
-			.free-receive-left-div,.new-user-left-div{
-				color: #333;
-				font-size: 16px;
-				font-weight: bold;
-			}
-			.bonue_new_member_box{
-				display: none;
-				position: fixed;
-				width:100%;
-				height: 100%;
-				background:#000;
-				opacity: 0.5;
-				filter:alpha(opacity=0.5);
-				z-index: 990;
-				top: 0px;
-				left: 0px;
-			}
-			.bonus_new_memeber{
-				display: none;
-				position: fixed;
-			    top: 10%;
-			    left: 50%;
-			    width: 80%;
-			    margin-left: -40%;
-			    z-index: 999;
-			}
-			.bonus_new_close{
-				position: absolute;
-			    top: 8%;
-			    right: 7%;
-			    z-index: 995;
-			    cursor: pointer;
-			    width: 15%;
-			    height: 10%;
-			}
-			.bonus_new_area{
-				 position: absolute;    
-				 bottom: -20px;    
-				 width: 86%;    
-				 left: 7%;
-			}
-			.bonus_new_list{
-				position: absolute;
-			    top: 40%;
-				width: 64%;
-			    left: 18%;
-				overflow-y: scroll;
-			    height: 50%;
-			}
-			.bonus_new_list li img{
-				width: 100%;
-				display: block;
-				max-width: 100%;
-			}
-			.bonus_new_list li{
-				position: relative;
-			}
-			.bonus_new_list li:last-child{
-				margin-bottom: 15%;
-			}
-			.bonus_new_detail{
-				position: absolute;
-			    top: 9%;
-			    left: 4%;
-			    width: 57%;
-			}
-			.bonus_new_price{
-				position: absolute;
-			    top: 12%;
-			    right: 0;
-			    width: 37%;
-			    text-align: center;
-			}
-			.bonus_new_price_1{
-				color: #FF2D4B;
-			    display: inline-block;
-			}
-			.bonus_new_price_2{
-				color: #FF2D4B;
-			    font-size: 25px;
-			    display: inline-block;
-			    margin-left: -5px;
-			}
-			.bonus_new_detail_1{
-				color: #666;
-			}
-			.bonus_new_detail_2{
-				color: #999;
-				font-size: 12px;
-			}
-			@media only screen and (min-width: 375px) and (max-width: 400px) {
-				.bonus_new_detail{
-					top:12%;
-				}
-			}
-			@media only screen and (min-width: 401px) and (max-width: 450px) {
-				.bonus_new_detail{
-					top:15%;
-				}
-				.bonus_new_price{
-					top: 16%;
-				}
-			}
-			@media only screen and (min-width: 451px) and (max-width: 500px) {
-				.bonus_new_detail{
-					top:21%;
-				}
-				.bonus_new_price{
-					top: 18%;
-				}
-			}
-			@media only screen and (min-width: 500px){
-				.bonus_new_detail{
-					top:21%;
-				}
-				.bonus_new_detail_1{
-					font-size: 18px;
-				}
-				.bonus_new_detail_2{
-					font-size: 14px;
-				}
-				.bonus_new_price_2{
-					font-size: 30px;
-				}
-				.bonus_new_price{
-					top: 19%;
-				}
-			}
-		</style>
-
-
-		<!--新手礼、领券中心-->
-		<div class="new-user-free-receive">
-			<ul class="new-user-free-receive-list clearfix">
-				<li class="new-user" data-clicked = '0'>
-					<div class="new-user-left">
-						<div class="new-user-left-div">新手礼</div>
-						<div>新注册用户专享</div>
-					</div>
-					<div class="new-user-right">
-						<img src="__RESOURCE__/recouse/images/new_user_img.png">
-					</div>
-				</li>
-				<li class="free-receive">
-					<a href="<!--@php echo mobile_url('coupons'); @-->">
-						<div class="free-receive-left">
-							<div class="free-receive-left-div">领券中心</div>
-							<div>优惠券免费领</div>
-						</div>
-						<div class="free-receive-right">
-							<img src="__RESOURCE__/recouse/images/free_receive.png">
+		<div class="mui-content shop-areas-wrap">
+		<!-- 商家列表begin -->
+		<!--@php if(is_array($storeInfoAndGoods)){ @-->
+			<!--@php foreach($storeInfoAndGoods as $val){ @-->
+			<ul class="shop-areas mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right" href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'index','storeid'=>$val['sts_id'])); @-->">
+					<!-- 店铺logo -->
+						<img class="mui-media-object mui-pull-left" src="<!--@php echo download_pic($val['sts_avatar'],200,200,2) @-->">
+						<div class="shop-info mui-media-body">
+							<p class="mui-ellipsis">
+							<!-- 店铺名称 -->
+								<span class="shop-name"><!--@php echo $val['sts_name']; @--></span>
+								<span class="shop-detail"><!--@php echo $val['sts_summary']; @--></span>
+							</p>
 						</div>
 					</a>
 				</li>
-			</ul>
-		</div>	
-		
-        <div class="adv_mid">
-		      <ul>
-                   <!--@php if (!empty($advs_mid)) { $advs_mid_num =0; foreach ($advs_mid as $advs_mid_value ){ $advs_mid_num++; if ($advs_mid_num <=2 ){@-->
-                         <li><a href="<!--@php  if(empty($advs_mid_value['link'])) { @--><!--@php  } else { @--><!--@php  echo $advs_mid_value['link'];@--><!--@php  } @-->"><img src="<!--@php  echo $advs_mid_value['thumb'];@-->" /></a></li>
-				   <!--@php }}} @-->
-			  </ul>
-		</div>
-
-		<script type="text/javascript" src="__RESOURCE__/script/waterfloor.js"></script>
-		<div id="home-page"  style="overflow:hidden;">
-			<div role="main" class="ui-content ">
-				<div class="home-categories" >
-					<!--健康文化-->
-					<div class="category-container" style="padding-bottom: 10px;display: none;">
-						<div class="mhheadline">
-							<img src="__RESOURCE__/recouse/images/mhheadline .gif" style="width: 100%;height: 100%;"/>
+				<li class="shop-imgs clearfix">
+					<!--@php if(is_array($val['goodsinfo'])){ @-->
+					<!--@php foreach($val['goodsinfo'] as $v){ @-->
+					<a href="<!--@php echo mobile_url('shop',array('name'=>'shopwap','op'=>'goodsDetail','dishid'=>$v['id'])); @-->">
+					<div class="shop-imgs-left">
+					<!-- 商品图 -->
+						<img class="lazy" data-original="<!--@php echo download_pic($v['thumb'],200,200,2) @-->" src="__RESOURCE__/recouse/images/lazy200.jpg">
+						<div>
+						<!-- 商品价格 -->
+							<span class="now-price">￥<!--@php echo $v['marketprice'] @--></span>
+							<!--@php if($v['productprice'] != "0.00"){ @-->
+							<span class="old-price">￥<!--@php echo $v['productprice'] @--></span>
+							<!--@php } @-->
 						</div>
-						<div class="per-mhnews">    		 
-				    		<ul>    			
-				    		<!--@php if (is_array($article_healty)){ foreach ($article_healty as $val){ @-->
-				    			<li>
-				    				<a  href="<!--@php  echo mobile_url('article',array('name'=>'addon8','id'=>$val['id']))@-->">
-				    					<!--文章图片-->
-				    					<img data-original="<!--@php  echo $val['thumb']@-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"/>
-				    					<!--文章标题-->
-				    					<p><!--@php  echo $val['title']@--></p>
-				    					<!--文章内容-->
-				    					<span><!--@php  echo $val['description']@--></span>
-				    				</a>
-				    				<div style="overflow: hidden;">
-				    					<!--文章的热门标签-->
-					    				<?php if($val['iscommend'] == 1 && $val['ishot'] == 0) {?>			    				
-					    					<span class="hottag">推荐</span>
-					    				<?php }elseif($val['ishot'] == 1 && $val['iscommend'] == 0){ ?>
-					    					<span class="hottag">热门</span>
-					    				<?php }elseif($val['iscommend'] == 1 && $val['ishot'] == 1){ ?>
-					    					<span class="hottag">推荐</span>
-					    					<span class="hottag" style="margin-left: 10px;">热门</span>
-					    				<?php } ?>
-					    				<!--查看了文章的人数-->
-					    				<span class="see">
-					    					<img src="__RESOURCE__/recouse/images/seenum.png" />
-					    					<span class="seenum"><!--@php  echo $val['readcount']@--></span>
-					    				</span> 
-				    				</div>
-				    			</li>
-				    			<!--@php }}@-->
-				    		</ul>
-    					</div>
-    					<div class="seemore">
-				    		<a  href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'healty'))?>" style="color:#E53A57 ;">查看更多</a>    		
-				    	</div>
-					</div>	
-					
-					<!--觅海头条-->
-					<!--导入觅海头条的样式js-->
-					<link rel="stylesheet" type="text/css" href="__RESOURCE__/recouse/css/liMarquee.css"/>
-					<script type="text/javascript" src="__RESOURCE__/recouse/js/jquery.liMarquee.js" ></script>					
-					<div class="category-container" style="height: 50px;display: none;">
-						<!--觅海头条模块图片-->
-						<a style="width: 20%;float: left;height: 50px;display: inline-block;" href="<?php  echo mobile_url('article_list',array('name'=>'addon8','op'=>'headline'))?>">							
-							<img style="width: 100%;height: 100%;" src="__RESOURCE__/recouse/images/smheadline.png" />
-						</a>
-						<div class="dowebok">							
-							<ul>
-								<!--@php if (is_array($article_headline)){ foreach ($article_headline as $val){ @-->
-								<li>
-									<!--@php if(empty($val['avatar'])){ @-->
-										<img src="__RESOURCE__/recouse/images/userface.png"/>
-									<!--@php }else{ @-->
-										<img src="<!--@php  echo $val['avatar']@-->"/>
-									<!--@php } @-->
-									<a href="<?php  echo mobile_url('article',array('name'=>'addon8','op'=>'headline','id'=>$val['headline_id']))?>">
-										<!--@php  echo $val['title']@-->
-									</a>									
-								</li>
-								<!--@php }}@-->									
-							</ul>
-						</div>
+						<!-- 商品描述 -->
+						<p class="mui-ellipsis"><!--@php echo $v['title'] @--></p>
 					</div>
-					<!--觅海头条的滚动控制-->
-					<script>
-							$(function(){
-								$('.dowebok').liMarquee({
-									direction: 'up',
-									scrollamount:10,
-									scrolldelay:0
-								});
-							});
-					</script>
-		
-
-                    <!--@php if (!empty($best_goods)) { foreach ($best_goods as $category_best ){ @-->
-					<div class="category-container" >
-					<div class="indextitle"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><!--@php echo $category_best['name']; @--></a></div>
-					<div style="padding:10px 0;"><a href="<!--@php echo mobile_url('goodlist', array('pcate' => $category_best['id'])) @-->"><img width="100%" data-original="<!--@php echo $category_best['adv_wap']; @-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"/></a></div>
-					<ul class="os_box_list">	
-						<!--@php foreach($category_best['hots'] as $item){@-->
-						<li>
-							<div class="item" style="position:relative;">
-								<div class="img">
-									<a href="<!--@php echo mobile_url('detail', array('id' => $item['id']))@-->">
-										<img data-original="<!--@php echo $item['small']; @-->" width="100%" alt="" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"></a>
-								</div>
-								<div class="hot" style="position:absolute; top:4px; left:4px;">
-                                    	 热卖
-								</div>
-								<div class="txt">
-									<!--@php echo $item['title'];@-->
-								</div>
-								<div class="price">
-									  <em><i>¥</i><!--@php echo $item['marketprice']; @--></em>
-									  <em class="del"><i>¥</i><!--@php echo $item['productprice']; @--></em>
-								</div> 
-							</div>
-						</li>		
-						<!--@php } @-->		
-					</ul>
-					</div>
+					</a>
 					<!--@php }} @-->
-                    <ul class="os_box_view" style="display:none;">	
-						<!--@php foreach($category as $item){ @-->
-						<!--@php if($item['isrecommand']==1 && $item['ishot']!=1){ @-->
-						<li>
-						<a href="<!--@php echo mobile_url('detail', array('id' => $item['id'],'op'=>'yun'))@-->">
-						<div class="item">
-						        <div class="txt">
-									<!--@php echo $item['title'];@-->
-								</div>
-								<div class="names">
-									<!--@php echo $item['names'];@-->
-								</div>
-								<div class="buy">
-                                    立即参与
-								</div>
-								<div class="img">
-								<img
-										data-original="<!--@php echo $item['logo']; @-->"
-										width="100%" alt="" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>">
-								</div>
-								</div>
-								</a>
-						</li>		
-						<!--@php } @-->
-						<!--@php } @-->
-					</ul>
-					<!--晒物笔记-->
-					
-					<div class="category-container" style="background:rgb(243,243,243);padding-bottom: 10px;display: none;">
-						<div class="noteheadline" style="padding: 2% 15%;background: #fff;">
-							<img src="__RESOURCE__/recouse/images/noteheadline@3x.png" style="width: 100%;"/>
-						</div>
-						<div class="wrap" id="wrap"style="margin-bottom: 400px;">
-							<!--一个div是一篇文章-->
-							<!--@php if(!empty($article_note)){   foreach($article_note as $val){ @-->
-							<div>
-								<a href="<?php  echo mobile_url('article',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>">
-									<?php $pic = explode(';',$val['pic']); ?>
-									<img src="<?php echo download_pic($pic[0],180); ?>"/>
-								</a>
-								<a href="<?php  echo mobile_url('article',array('name'=>'addon8','op'=>'note','id'=>$val['note_id']))?>">
-									<p class="title"><!--@php echo $val['title']; @--></p>
-									<p class="detail"><!--@php echo  msubstr($val['description'],0,100); @--></p>
-								</a>
-								<p class="men">
-									<!--@php if(empty($val['avatar'])){  @-->
-									<img src="__RESOURCE__/recouse/images/icon2.png" />
-									<!--@php }else{ @-->
-									<img src="<!--@php echo $val['avatar']; @-->" alt="">
-									<!--@php } @-->
-									<span><!--@php echo $val['nickname']; @--></span>
-								</p>
-							</div>
-							<!--@php }} @-->							
-						</div>						
-						<!--用来存当前page-->
-						<input type="hidden" value="2" id="page"/>
-						<div class="seemore">
-							<a  href="javascript:;" style="color:#E53A57 ;" class="note_more">查看更多</a>
-						</div>						
-					</div>
-				</div>
-		</div>
-	</div>
-	<!--新手礼-->
-
-	<div class="bonue_new_member_box"></div>
-	<div class="bonus_new_memeber">
-		<div style="position: relative;max-width: 640px;margin:0 auto;">
-			<img src="__RESOURCE__/recouse/images/bonus_new_memeber_1.png" class="carousel-inner img-responsive img-rounded">
-			<p class="bonus_new_close"></p>
-			<ul class="bonus_new_list">
-				<!--@php if(!empty($all_new_bonus)){ foreach($all_new_bonus as $new_bon){  @-->
-				<li>
-					<img src="__RESOURCE__/recouse/images/bonus_new_memeber_bg.png">
-					<div class="bonus_new_detail">
-						<div class="bonus_new_detail_1">新用户专享</div>
-						<div class="bonus_new_detail_2">满<!--@php echo intval($new_bon['min_goods_amount']); @-->元使用</div>
-					</div>
-					<div class="bonus_new_price">
-						<span class="bonus_new_price_1">￥</span>
-						<span class="bonus_new_price_2"><!--@php echo intval($new_bon['type_money']); @--></span>
-					</div>
 				</li>
-				<!--@php } }　@-->
+				<li class="shop-remark">
+					<p class="mui-ellipsis">此处是信息预留此处是信息预留此处是信息预留此处是信息预留</p>
+				</li>
 			</ul>
-			<div class="bonus_new_area"><a href="<!--@php echo mobile_url('bonus');@-->"><img src="__RESOURCE__/recouse/images/bonus_new_memeber_2.png" class="carousel-inner img-responsive img-rounded"></a></div>
+			<!--@php }} @-->
+		<!-- 商家列表end -->
 		</div>
-		
-	</div>
+		<div class="right-fixed">
+			<div class="current-location-number">12</div>
+			<!-- 商家总数量，测试写死，后续由服务端传入值 -->
+			<div class="all-number"><!--@php echo $total; @--></div>
+		</div>
+		<div class="to-top" >
+			<img src="__RESOURCE__/recouse/images/scroll-to-top.png" width="40" height="40">
+		</div>
+<!--用来存当前page-->
+<input type="hidden" value="2" id="page"/>
+<div class="ajax_next_page">
+	<img class="jiazai" src="__RESOURCE__/recouse/images/ajax-loader.gif"/>
+</div>
 
-	<script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		Zepto(function($) {
-			var $nav = $('.global-nav'), $btnLogo = $('.global-nav__operate-wrap');
-			$btnLogo.on('click', function() {
-				if ($btnLogo.parent().hasClass('global-nav--current')) {
-					navHide();
-				} else {
-					navShow();
-				}
-			});
-			var navShow = function() {
-				$nav.addClass('global-nav--current');
-			}
-			var navHide = function() {
-				$nav.removeClass('global-nav--current');
-			}
+<script type="text/javascript">
+$(function(){
+	//滚动事件
 
-			$(window).on("scroll", function() {
-				if ($nav.hasClass('global-nav--current')) {
-					navHide();
-				}
-			});
-		})
-		function get_search_box() {
-			try {
-				document.getElementById('get_search_box').click();
-			} catch (err) {
-				document.getElementById('keywordfoot').focus();
-			}
+	$(window).scroll(function(){
+		var scroll_top = $(window).scrollTop();
+		var obj_top = $(".shop-areas-wrap").offset().top;
+		var reduce = scroll_top - obj_top;
+		var shop_height = $(".shop-areas-wrap .shop-areas").height();
+		var li_index = Math.round(reduce/shop_height);
+		var timeout = "";
+		$(".to-top").hide(); 
+		if( scroll_top >= obj_top ){
+			$(".right-fixed").show();
+		}else{
+			$(".right-fixed").hide();
 		}
-		function tip(msg,autoClose){
-			     var div = $("#poptip");
-			     var content =$("#poptip_content");
-			     if(div.length<=0){
-			         div = $("<div id='poptip'></div>").appendTo(document.body);
-			         content =$("<div id='poptip_content'>" + msg + "</div>").appendTo(document.body);
-			     }
-			     else{
-			         content.html(msg);
-			         content.show(); div.show();
-			     }
-			     if(autoClose) {
-			        setTimeout(function(){
-			            content.fadeOut(500);
-			            div.fadeOut(500);
-
-			        },1000);
-			     }
-			}
-			function tip_close(){
-			    $("#poptip").fadeOut(500);
-			     $("#poptip_content").fadeOut(500);
-			}
-		function addtocart(goodid){		            
-		    var total = 1;		        
-		    tip("正在处理数据...");		        
-		    var url = '<!--@php  echo mobile_url('mycart',array('op'=>'add'),true);@-->' +"&optionid=" + "&total=1"+"&id="+goodid;
-		    $.getJSON(url, function(s){
-				    if(s.result==0){
-				        tip("只能购买 " + s.maxbuy + " 件!");
-				    }else{
-				        tip_close();
-						tip("已加入购物车!");				
-						$("#cart_cnt").html(s.total);	
-						//alert("已加入购物车!");		          
-				   }
-		  	});
+		$(".current-location-number").text(li_index+1);
+		//滚动条到底部时就加载剩下数据
+		if( $(document).scrollTop() >= $(document).height()-$(window).height() ){
+			Refresh();
 		}
+	});
 
-		$(".note_more").click(function(data){
-			var page = $("#page").val(); //第一次传的是2
-			var url = "<!--@php echo mobile_url('article_list',array('name'=>'addon8','op'=>'note')); @-->";
-			$.post(url, {'page' : page,'nextpage' : 'ajax'}, function(s){
-				if(s.errno != 200){
-					//如果没有数据  不做处理
+	var count = 0, timer = null; 
+    var oldTop = newTop = $(window).scrollTop(); //为了方便起见，使用jquery或者zepto框架
+    function log(){
+        if(timer) clearTimeout(timer);
+        newTop = $(window).scrollTop();
+        if(newTop === oldTop) {
+            clearTimeout(timer);
+            $(".right-fixed").hide();
+            $(".to-top").show();
+            //已停止，写入业务代码
+        } else{
+            oldTop = newTop;
+            timer = setTimeout(log,100);
+            $(".right-fixed").show();
+            $(".to-top").hide();
+        }        
+    }
+    $(window).on('touchmove',log);
+    $(".to-top").on("click",function(){
+    	$("html,body").animate({scrollTop: 0},"slow");
+    });
+    $(".close-address").on("click",function(){
+    	$(".address-alert").removeClass("address-alert-show");
+    	$("body").css("overflow","auto");
+    });
+})
 
+function addressShow(){
+	$(".address-alert").addClass("address-alert-show");
+	$("body").css("overflow","hidden");
+}
+var index = 1; //默认开关状态是打开	
+function Refresh(){
+	if( index == 1){
+		$(".ajax_next_page").show();
+		var ajaxurl = "<!--@php echo mobile_url('shopindex',array('name'=>'shopwap','op'=>'ajaxGetStoreGoods')); @-->";
+		index = 0; //关闭开关
+		var page = $("#page").val(); //第一次传的是2
+		$.post(ajaxurl, {'page' : page}, function(s){
+			if(s.errno != 1){
+				//如果没有数据
+				$(".ajax_next_page").hide();
+			}else if(s.errno==1){
+				$("#page").val(++page);
+				var art_data = s.data;
+				if( s.data == "" ){
+					$(".ajax_next_page").hide();
+					return false;
 				}else{
-					$("#page").val(++page);
-					var art_data = s.message;
 					for(var i = 0;i < art_data.length;i++){
 						//循环拼接 html下一页数据
-						LoadHtml(art_data[i]);
+						Load(art_data[i]);
 					}
 					index = 1;  //加载完后重新打开开关
+					$(".ajax_next_page").hide();
 				}
-			}, 'json');
-		});
+				
+			}
+		}, 'json');
 
-		var openid_val = "<!--@php echo checkIsLogin(); @-->";
-		//免单
-		$(".freepay-area").on("click",function(){
-			if( !openid_val){
-				confirm('您还没登录！','',function(isconfirm){
-					if(isconfirm){
-						var url = "<!--@php echo mobile_url('login'); @-->";
-						window.location.href = url;
-					}
-				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
-				return '';
-			}else{
-				var free_url = "<!--@php echo mobile_url('free'); @-->";
-				window.location.href = free_url;
-			}
-		})
-		//新手礼
-		$(".new-user").on("click",function(){
-			if( !openid_val){
-				confirm('您还没登录！','',function(isconfirm){
-					if(isconfirm){
-						var url = "<!--@php echo mobile_url('login'); @-->";
-						window.location.href = url;
-					}
-				},{confirmButtonText: '立即登录', cancelButtonText: '稍后登录', width: 330});
-				return '';
-			}else{
-				<!--@php if ($isNewUserBonus){ @-->
-					//请求领取优惠券
-				    var clicked = $(".new-user").data('clicked');
-				    //因为是异步请求，故要有标记已经点击过了。
-					if(clicked == 1){
-						$(".bonue_new_member_box").show();
-						$(".bonus_new_memeber").show();
-					}else{
-						var url = "<!--@php echo mobile_url('bonus',array('op'=>'new_member')); @-->";
-						$.post(url,{'showajax':1},function(data){
-							if(data.errno == 200){
-								$(".bonue_new_member_box").show();
-								$(".bonus_new_memeber").show();
-								$(".new-user").data('clicked',1);
-							}else{
-								alert(data.message);
-							}
-						},'json');
-					}
-				<!--@php }else{  @-->
-					$(".bonue_new_member_box").show();
-					$(".bonus_new_memeber").show();
-				<!--@php } @-->
+	}
+}
+var index_load_index = 0;
 
-			}
-		});
+function Load(art_data){
+	var	shop_imgs_left = "";
+	index_load_index++;
+	$.each(art_data.goodsinfo,function(index,ele){
+		shop_imgs_left += '<div class="shop-imgs-left">'+
+			'<img class="lazy" data-original="'+ele.thumb+'" src="__RESOURCE__/recouse/images/lazy200.jpg">'+
+			'<div>'+
+				'<span class="now-price">￥'+ele.marketprice+'</span>'+
+				'<span class="old-price">￥'+ele.productprice+'</span>'+
+			'</div>'+
+			'<p class="mui-ellipsis">'+ele.title+'</p>'+
+		'</div>'
+	});
 
-		$(".bonus_new_close").click(function(){
-			$(".bonue_new_member_box").fadeOut(300);
-			$(".bonus_new_memeber").hide();
-		})
-		function LoadHtml(art_data){
-			var face = '';
-			var url = "<?php echo mobile_url('article',array('name'=>'addon8','op'=>'note'));?>";
-			url = url + "&id="+art_data.note_id;
-			if(art_data.avatar == ''){
-				face = "<?php echo WEBSITE_ROOT . 'themes/wap/__RESOURCE__'; ?>" + "/912865945439541.jpg";
-			}else{
-				face = art_data.avatar;
-			}
-			//pic 可能有多张 用分号分隔开的，所以要注意
-			var piclist = art_data.pic;
-			var picurl = "";
-			if(piclist.length > 0){
-				var perpic = piclist.split(";"); //字符串截取，成为数组
-				picurl     = perpic[0];
-			}
-			var li = '<div class="newnote">'+
-						'<a href="'+ url +'">'+
-							'<img src="'+picurl+'"/>'+
-						'</a>'+
-						'<a href="'+ url +'">'+
-							'<p class="title">'+art_data.title+'</p>'+
-							'<p class="detail">'+art_data.description+'</p>'+
-						'</a>'+
-						'<p class="men">'+
-							'<img src="'+ face +'" />'+
-							'<span>'+ art_data.nickname +'</span>'+
-						'</p>'+
-					'</div>';
-			$(".wrap").append(li);
-			waterfall();
-		}
-		
-		//4种主题布局控制		
-		$(".theme_box").each(function(){
-			var theme_num = $(this).find("a").length;
-			console.log(theme_num);
-			if(theme_num == 1){
-				$(this).addClass("theme_one");
-			}else if(theme_num == 2){
-				$(this).addClass("theme_two");
-			}else if(theme_num == 3){
-				$(this).addClass("theme_three");
-			}else{
-				$(this).addClass("theme_four");
-			}
-		})
-			
-		
-	</script>
-
-	<!--@php include themePage('footer');@-->
+	var ul = '<ul class="shop-areas mui-table-view mui-table-view-chevron ajxa-index-'+index_load_index+'">'+
+				'<li class="mui-table-view-cell mui-media">'+
+					'<a class="mui-navigate-right">'+
+						'<img class="mui-media-object mui-pull-left" src="'+art_data.sts_avatar+'">'+
+						'<div class="shop-info mui-media-body">'+
+							'<p class="mui-ellipsis">'+
+								'<span class="shop-name">'+art_data.sts_name+'</span>'+
+								'<span class="shop-detail">'+art_data.sts_summary+'</span>'+
+							'</p>'+
+						'</div>'+
+					'</a>'+
+				'</li>'+
+				'<li class="shop-imgs clearfix">'+shop_imgs_left+
+				'</li>'+
+				'<li class="shop-remark">'+
+					'<p class="mui-ellipsis">此处是信息预留此处是信息预留此处是信息预留此处是信息预留</p>'+
+				'</li>'+
+			'</ul>';
+	$(".shop-areas-wrap").append(ul);
+	$(".ajxa-index-"+index_load_index+" img.lazy").lazyload({
+		threshold : 200, //控制灵敏度
+		effect : "fadeIn"
+	});
+}
+</script>
+<!-- search_page 搜索的侧边栏 -->
+<!--@php include themePage('search_page');@-->
+<!--@php include themePage('footer');@-->

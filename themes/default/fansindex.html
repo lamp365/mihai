@@ -115,7 +115,7 @@ nav{display: block;}
       <div class="modal-dialog">
         <div class="modal-content">
 
-          <form class="avatar-form"  action="<?php echo WEBSITE_ROOT;?>fileupload.php?savelocal=0" method="post">
+          <form class="avatar-form"  action="fileupload.php?savelocal=0" method="post">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h4 class="modal-title" id="avatar-modal-label">修改头像</h4>
@@ -338,7 +338,7 @@ nav{display: block;}
           <!--@php if ( is_array($cart_list) ){ $num =0; foreach ( $cart_list as $listvalue ){ $num++; if ( $num <=3 ){@-->
             <div class="coupon-img">
               <a target="_blank" href="<!--@php  echo mobile_url('detail', array('id' => $listvalue['bid']))@-->">
-                  <img data-original="<!--@php echo $listvalue['thumb']; @-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>"/>
+                  <img data-original="<!--@php echo $listvalue['thumb']; @-->" class="lazy" src="images/loading.gif"/>   
              </a>
             </div>
             <!--@php }}} @-->
@@ -365,7 +365,7 @@ nav{display: block;}
             <div class="item">       
                               <div class="img">
                                 <a target="_blank"  href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item">
-                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>">
+                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="images/loading.gif">
                                    </a>
                               </div>  
                 <div class="buy">

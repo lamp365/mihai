@@ -1,6 +1,9 @@
 <?php
 /*
-message
+message('xxxx','','error')   不刷新页面 返回 用于表单填写了信息后 有误回来还能保留数据
+message('xxxx',refesh(),'error')   刷新页面 返回
+message('xxxxx')
+message('xxxxx',refresh(),'success')
 */
 
 function message($msg, $redirect = '', $type = '', $successAutoNext = true)
@@ -29,6 +32,8 @@ function message($msg, $redirect = '', $type = '', $successAutoNext = true)
         $vars['message'] = $msg;
         $vars['redirect'] = $redirect;
         $vars['type'] = $type;
+        $type=='success'&&  $vars['errno'] = 1;
+        $type=='error'&&    $vars['errno'] = 0;
         exit(json_encode($vars));
     }
     if (empty($msg) && ! empty($redirect)) {

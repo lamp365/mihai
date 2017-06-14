@@ -2,8 +2,6 @@
 /*
 清理相关
 */
-
-
 // 清理主题缓存
 function clear_theme_cache($path = '', $isdir = false)
 {

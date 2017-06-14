@@ -80,7 +80,7 @@ function set_sms_code($telphone='',$app=0,$type=''){
 			case 2:			//更换手机号码用的短信模板
 				$template = 'SMS_35035487';
 				break;
-            case 1:
+			case 1:
 				$template = 'SMS_13756412';
 				break;
 			default:

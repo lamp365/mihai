@@ -18,62 +18,11 @@ namespace service\shop;
 
 class goodsService extends \service\publicService
 {
-    public function check_data_beforadd($data)
-    {
-        if(empty($data['title'])){
-            $this->error = '宝贝标题不能为空！';
-            return false;
-        }
-        if(empty($data['brand'])){
-            $this->error = '品牌不能为空！';
-            return false;
-        }
-        if(empty($data['productprice']) || empty($data['marketprice']) ){
-            $this->error = '价格不能为空！';
-            return false;
-        }
-        if($data['type'] != 0){
-            if(empty($data['timestart']) || empty($data['timeend'])){
-                $this->error = '活动时间不能为空！';
-                return false;
-            }
-            if(empty($data['timeprice'])){
-                $this->error = '活动价格不能为空！';
-                return false;
-            }
-        }
-        if(empty($data['transport_id'])){
-            $this->error = '运费模板不能为空！';
-            return false;
-        }
-        if(empty($data['total'])){
-            $this->error = '请设置库存！';
-            return false;
-        }
-        if(empty($data['id'])){  //添加的时候 图片必须给
-            if(empty($_FILES['thumb']['name'])){
-                $this->error = '商品主图不能为空！';
-                return false;
-            }
-        }
-
-        //团购商品时
-        if(intval($data['type'])==1 && isset($data['team_buy_count']) && empty($data['team_buy_count'])) {
-            $this->error = '请设置成团人数！';
-            return false;
-        } elseif (intval($data['type'])==1 && isset($data['draw']) && $data['draw'] == 1 && empty($_GP['team_draw_num'])) {
-            $this->error = '请设置抽奖人数！';
-            return false;
-        }
-
-        return true;
-    }
-
     //添加产品的时候 c操作图片
     public  function actGoodsPicture($id,$_GP)
     {
         $picurl_str = empty($_GP['attachment-new']) ? '' : implode(',',$_GP['attachment-new']);
-        $find       = mysqld_select("select id from ".table('shop_dish_piclist')." where goodid={$id} ");
+        $find       = mysqld_select("select id from ".table('shop_goods_piclist')." where goodid={$id} ");
         if(empty($find)){
             if(empty($picurl_str)){
                 return '';
@@ -84,10 +33,10 @@ class goodsService extends \service\publicService
                     'goodid' => $id,
                     'picurl' => $picurl_str
                 );
-                mysqld_insert('shop_dish_piclist', $data);
+                mysqld_insert('shop_goods_piclist', $data);
             }
         }else{
-            mysqld_update('shop_dish_piclist',array('picurl'=>$picurl_str),array('id'=>$find['id']));
+            mysqld_update('shop_goods_piclist',array('picurl'=>$picurl_str),array('id'=>$find['id']));
         }
     }
     
@@ -108,26 +57,16 @@ class goodsService extends \service\publicService
             'ccate'        => intval($shop_cat_array['p2']),
             'type'         => $info['type'],
             'brand'        => $info['brand'],
-            'gtype_id'     => $info['gtype_id'],
-//                    'coefficient'  => $info['type'],
-            'status'       => intval($info['status']),
             'sort'         => intval($info['sort']),
             'title'        => $info['title']?$info['title']:'',
-//            'subtitle'     => $info['subtitle']?$info['subtitle']:'',
-//            'thumb'        => $info['thumb']?$info['thumb']:'',
+            'thumb'        => $info['thumb']?$info['thumb']:'',
             'description'  => $info['description']?$info['description']:'',
             'content'      => $info['content']?$info['content']:'',
-//            'goodssn'      => $info['goodssn']?$info['goodssn']:'',
-//                    'weight'       => $_GP['productsn'],
-//                    'unit'         => $_GP['marketprice'],
-//                    'weight'       => $_GP['weight'],
             'marketprice'  => $info['marketprice'],
             'productprice' => $info['productprice'],
             'store_count'  => $info['store_count'],
             'totalcnf'     => $info['totalcnf'],
-            'sales'        => $info['sales_num'],
             'createtime'   => TIMESTAMP,
-//                    'credit'       => intval($_GP['isfirst']),
             'isnew'        => $info['isnew']?$info['isnew']:0,
             'issendfree'   => $info['issendfree']?$info['issendfree']:0,
             'ishot'        => $info['ishot']?$info['ishot']:0,
@@ -138,16 +77,90 @@ class goodsService extends \service\publicService
             'istime'       => $info['istime']?$info['istime']:0,
             'timestart'    => $info['timestart']?$info['timestart']:0,
             'timeend'      => $info['timeend']?$info['timeend']:0,
-            'deleted'      => $info['deleted']?$info['deleted']:0,
         );
-        $info['thumb'] && $data['thumb'] = $info['thumb'];
-//        ppd($data);
+
         mysqld_insert('shop_goods',$data);
         $id = mysqld_insertid();
         if($id){
-            $effect = mysqld_update('shop_dish',array('is_already_in_shop'=>1), array('id' => $info['id']));
+            $effect = mysqld_update('shop_dish',array('is_already_in_shop'=>$id), array('id' => $info['id']));
+            
+            //将图片导入产品库
+            $sql_piclist = "select picurl,contentpicurl from " . table('shop_dish_piclist') . " where goodid = {$info['id']}";
+            $rs_piclist  = mysqld_select($sql_piclist);
+
+            $data_list = array();
+            $data_list['goodid']        = $id;
+            $data_list['picurl']        = $rs_piclist['picurl'];
+            $data_list['contentpicurl'] = $rs_piclist['contentpicurl']; 
+            $list_insert = mysqld_insert('shop_goods_piclist',$data_list);
         }
         return $id;
+    }
+    
+    //批量添加dish到shop_goods
+    /*
+     * 返回成功添加数
+     */
+    public function addsDishToShopGoods($dish_id,$shop_cat_array=array('p1'=>'','p2'=>''))
+    {
+        $info = mysqld_selectall("select * from " . table('shop_dish') . " where id in ({$dish_id})");
+        $i = 0;
+        foreach($info as $v){
+            if(!$v){
+                $this->error = "id匹配不到数据";
+                return false;
+            }
+            if( $info['is_already_in_shop'] ){
+                $this->error = "已经在产品库中";
+                return false;
+            }
+            $data = array(
+                'pcate'        => intval($v['p1']),
+                'ccate'        => intval($v['p2']),
+                'type'         => $v['type'],
+                'brand'        => $v['brand'],
+                'sort'         => intval($v['sort']),
+                'title'        => $v['title']?$v['title']:'',
+                'thumb'        => $v['thumb']?$v['thumb']:'',
+                'description'  => $v['description']?$v['description']:'',
+                'content'      => $v['content']?$v['content']:'',
+                'marketprice'  => $v['marketprice'],
+                'productprice' => $v['productprice'],
+                'store_count'  => $v['store_count'],
+                'totalcnf'     => $v['totalcnf'],
+                'createtime'   => TIMESTAMP,
+                'isnew'        => $v['isnew']?$v['isnew']:0,
+                'issendfree'   => $v['issendfree']?$v['issendfree']:0,
+                'ishot'        => $v['ishot']?$v['ishot']:0,
+                'isfirst'      => $v['isfirst']?$v['isfirst']:0,
+                'isjingping'   => $v['isjingping']?$v['isjingping']:0,
+                'isdiscount'   => $v['isdiscount']?$v['isdiscount']:0,
+                'isrecommand'  => $v['isrecommand']?$v['isrecommand']:0,
+                'istime'       => $v['istime']?$v['istime']:0,
+                'timestart'    => $v['timestart']?$v['timestart']:0,
+                'timeend'      => $v['timeend']?$v['timeend']:0,
+            );
+
+            mysqld_insert('shop_goods',$data);
+            $id = mysqld_insertid();
+            if($id){
+                $effect = mysqld_update('shop_dish',array('is_already_in_shop'=>$id), array('id' => $v['id']));
+                
+                //将图片导入产品库
+                $sql_piclist = "select picurl,contentpicurl from " . table('shop_dish_piclist') . " where goodid = {$v['id']}";
+                $rs_piclist  = mysqld_select($sql_piclist);
+                
+                $data_list = array();
+                $data_list['goodid']        = $id;
+                $data_list['picurl']        = $rs_piclist['picurl'];
+                $data_list['contentpicurl'] = $rs_piclist['contentpicurl']; 
+                $list_insert = mysqld_insert('shop_goods_piclist',$data_list);
+
+                $i = $i+1;
+            }
+        
+        }
+        return $i;
     }
     
     public function actGoodsAttr($id,$attritem)
@@ -201,23 +214,22 @@ class goodsService extends \service\publicService
         if(empty($id)){
             return '';
         }
-        mysqld_delete("dish_spec_price",array('dish_id'=>intval($id)));
-        if(empty($specitem)){
-            return '';
-        }
+        mysqld_delete("goods_spec_price",array('goods_id'=>$id));
+
+        if(empty($specitem)) return '';
+
         foreach($specitem as $spec_key => $item){
             $spec_key_str  = $spec_key;
             $insert_data  = array(
-                'dish_id'      => $id,
-                'spec_key'     => $spec_key_str,
-                'key_name'     => $item['key_name'],
-                'marketprice'  => $item['marketprice'],
-                'productprice' => $item['productprice'],
-                'total'        => intval($item['total']),
-                'productsn'    => $item['productsn'],
-                'createtime'   => time(),
+                'goods_id'    => $id,
+                'spec_key'    => $spec_key_str,
+                'key_name'    => $item['key_name'],
+                'marketprice' => FormatMoney($item['marketprice']),
+                'store_count' => intval($item['store_count']),
+                'bar_code'    => $item['bar_code'],
+                'sku'         => $item['sku'],
             );
-            mysqld_insert('dish_spec_price',$insert_data);
+            mysqld_insert('goods_spec_price',$insert_data);
         }//end foreach
     }
 }

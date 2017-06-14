@@ -17,7 +17,7 @@
                     unset($disharea[$index]);
                 }
             }
-            include page('yunfei/disharea_list');
+            include page('disharea_list');
         } elseif ($operation == 'post') {
             $parentid = intval($_GP['parentid']);
             $id = intval($_GP['id']);
@@ -35,12 +35,11 @@
                 }
             }
             if (checksubmit('submit')) {
-                if (empty($_GP['catename']) || empty($_GP['kuaidi'])) {
-                    message('仓库名称，快递名称不能为空！');
+                if (empty($_GP['catename'])) {
+                    message('抱歉，请输入分类名称！');
                 }
                 $data = array(
                     'name' => $_GP['catename'],
-                    'kuaidi' => $_GP['kuaidi'],
                     'enabled' => intval($_GP['enabled']),
                     'displayorder' => intval($_GP['displayorder']),
                     'isrecommand' => intval($_GP['isrecommand']),
@@ -66,15 +65,15 @@
                     mysqld_insert('dish_list', $data);
                     $id = mysqld_insertid();
                 }
-                message('更新成功！', web_url('disharea', array('op' => 'display')), 'success');
+                message('更新分类成功！', web_url('disharea', array('op' => 'display')), 'success');
             }
-            include page('yunfei/disharea');
+            include page('disharea');
         } elseif ($operation == 'delete') {
             $id = intval($_GP['id']);
             $disharea = mysqld_select("SELECT id, parentid FROM " . table('dish_list') . " WHERE id = '$id' and deleted=0 ");
             if (empty($disharea)) {
-                message('抱歉，不存在或是已经被删除！', web_url('disharea', array('op' => 'display')), 'error');
+                message('抱歉，分类不存在或是已经被删除！', web_url('disharea', array('op' => 'display')), 'error');
             }
             mysqld_update('dish_list', array('deleted' => 1), array('id' => $id, 'parentid' => $id), 'OR');
-            message('删除成功！', web_url('disharea', array('op' => 'display')), 'success');
+            message('分类删除成功！', web_url('disharea', array('op' => 'display')), 'success');
         }

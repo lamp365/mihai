@@ -72,3 +72,29 @@ function table($table)
 {
     return "`squdian_{$table}`";
 }
+function begin(){
+    return mysqldb()->begin();
+}
+function commit(){
+    return mysqldb()->commit();
+}
+function rollback(){
+    return mysqldb()->rollback();
+}
+/**
+ * 根据条件获得单条数据
+ * $table 表名
+ * $condition 条件
+ * $param 要取的参数
+ * */
+function getSingleDate($table,$param="*",$condition,$front="AND"){
+    if (empty($table) || empty($condition)) return false;
+    if ($condition && is_array($condition)){
+        $con = to_sqls($condition,$front);
+    }else {
+        $con = $condition;
+    }
+    $sql = "SELECT {$param} FROM ".table($table)." WHERE {$con} ";
+    $info = mysqld_select($sql);
+    return $info;
+}

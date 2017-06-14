@@ -47,17 +47,17 @@
 	</style>
  <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
         <input type="hidden" name="id" value="<?php  echo $adv['id'];?>" />
-		<h3 class="header smaller lighter blue">新增用户</h3>
+	 <h3 class="header smaller lighter blue">新增用户</h3>
 	 <div class="alert alert-info" style="margin:10px 0; width:auto;">
 		 <i class="icon-lightbulb"></i> 部分管理员需要手机号，如业务员。有填写手机号则，需要验证，没有填写手机号，则无需验证
 	 </div>
-        <div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > <font color="red">*</font>用户名：</label>
+	 <div class="form-group">
+		 <label class="col-sm-2 control-label no-padding-left" > <font color="red">*</font>用户名：</label>
 
-			<div class="col-sm-3">
-				 <input type="text" name="username"  class="form-control" />
-			</div>
-		</div>
+		 <div class="col-sm-3">
+			 <input type="text" name="username"  class="form-control" />
+		 </div>
+	 </div>
 	 <div class="form-group">
 		 <label class="col-sm-2 control-label no-padding-left" > 手机号：</label>
 
@@ -75,36 +75,36 @@
 			 <input type="text" name="code"  class="mobile-input form-control" />
 		 </div>
 	 </div>
-	   <div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>新密码：</label>
+	 <div class="form-group">
+		 <label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>新密码：</label>
 
-			<div class="col-sm-3">
-				   <input type="password"  name="newpassword"  class="form-control" />
-			</div>
-		</div>
-									
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>确认密码：</label>
+		 <div class="col-sm-3">
+			 <input type="password"  name="newpassword"  class="form-control" />
+		 </div>
+	 </div>
 
-			<div class="col-sm-3">
-				<input type="password"  name="confirmpassword" class="form-control"  />
-			</div>
-		</div>
+	 <div class="form-group">
+		 <label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>确认密码：</label>
 
-		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>角色分组：</label>
+		 <div class="col-sm-3">
+			 <input type="password"  name="confirmpassword" class="form-control"  />
+		 </div>
+	 </div>
 
-			<div class="col-sm-3">
-				<select  name="rolers_id" class="form-control" >
-					<option value="0">选择角色分组</option>
-					<?php
-						foreach($all_rolers as $one){
-							echo "<option value='{$one['id']}'>{$one['name']}</option>";
-						}
-					?>
-				</select>
-			</div>
-		</div>
+	 <div class="form-group">
+		 <label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>角色分组：</label>
+
+		 <div class="col-sm-3">
+			 <select  name="rolers_id" class="form-control" >
+				 <option value="0">选择角色分组</option>
+				 <?php
+				 foreach($all_rolers as $one){
+					 echo "<option value='{$one['id']}'>{$one['name']}</option>";
+				 }
+				 ?>
+			 </select>
+		 </div>
+	 </div>
 
 
 

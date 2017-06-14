@@ -52,6 +52,52 @@ function getShop_sonCategroy(obj,num)
 
 }
 
+function getNextRegion(obj,num){
+    var region_id = $(obj).val();
+    var url ="./index.php?mod=site&name=shop&do=goodscommon&op=getNextRegion";
+    if(region_id == 0){
+        var option1 = "<option value='0'>请选择城市</option>";
+        var option2 = "<option value='0'>请选择区域</option>";
+        if(num == 1){
+            $(obj).parent().parent().find(".get_next_region").eq(1).html(option1);
+            $(obj).parent().parent().find(".get_next_region").eq(2).html(option2);
+        }else if(num == 2){
+            $(obj).parent().parent().find(".get_next_region").eq(2).html(option2);
+        }
+    }else{
+        if(num == 3){
+            return '';
+        }
+        $.post(url,{'region_id':region_id},function(data){
+            if(data.errno == 200){
+                var msg = data.message;
+                if(num == 1) {
+                    var html = "<option value='0'>请选择城市</option>";
+                }else{
+                    var html = "<option value='0'>请选择区域</option>";
+                }
+                for(var i=0;i<msg.length;i++){
+                    var opt = msg[i];
+                    html = html + "<option value='"+ opt.region_id +"'>"+ opt.region_name +"</option>";
+                }
+                if(num == 1){
+                    $(obj).parent().parent().find(".get_next_region").eq(1).html(html);
+                    $(obj).parent().parent().find(".get_next_region").eq(2).html("<option value='0'>请选择区域</option>");
+                }else if(num == 2){
+                    $(obj).parent().parent().find(".get_next_region").eq(2).html(html);
+                }
+            }else{
+                if(num == 1){
+                    $(obj).parent().parent().find(".get_next_region").eq(1).html("<option value='0'>请选择城市</option>");
+                    $(obj).parent().parent().find(".get_next_region").eq(2).html("<option value='0'>请选择区域</option>");
+                }if(num == 2){
+                    $(obj).parent().parent().find(".get_next_region").eq(2).html("<option value='0'>请选择区域</option>");
+                }
+//                        alert('暂无数据');
+            }
+        },'json');
+    }
+}
 /**
  * 根据分类获取品牌以及对应的商品模型
  * @param obj
@@ -162,12 +208,12 @@ function addBrandByCategory(obj,brandname,icon,p1,p2,p3){
  * @param gtype_id
  * @param goods_id
  */
-function getGoodsAttrAndSpec(gtype_id,dish_id){
+function getGoodsAttrAndSpec(gtype_id,goods_id){
     var parame   ={
         'gtype_id' : gtype_id,
-        'dish_id' : dish_id
+        'goods_id' : goods_id
     };
-   /* var url ="./index.php?mod=site&name=shop&do=goodscommon&op=goodget_attr";
+    var url ="./index.php?mod=site&name=shop&do=goodscommon&op=goodget_attr";
     $.post(url,parame,function(data){
         if(data.errno == 200){
             var result = data.message;
@@ -176,7 +222,7 @@ function getGoodsAttrAndSpec(gtype_id,dish_id){
         }else{
             $("#goods_attr_table tr:gt(0)").remove();
         }
-    },'json');*/
+    },'json');
 
     var url2 ="./index.php?mod=site&name=shop&do=goodscommon&op=goodget_spec";
     $.post(url2,parame,function(data){
@@ -186,7 +232,7 @@ function getGoodsAttrAndSpec(gtype_id,dish_id){
             $("#goods_spec_table1").append(result);
             $("#goods_spec_table2").html('');
             //触发不同的输入框选项
-            getGoodsSpecInputInfo(dish_id);
+            getGoodsSpecInputInfo(goods_id);
         }else{
             $("#goods_spec_table1 tr:gt(0)").remove();
             $("#goods_spec_table2").html('');
@@ -199,7 +245,7 @@ function getGoodsAttrAndSpec(gtype_id,dish_id){
  * 返回 不同的输入框选项
  * @param goods_id
  */
-function getGoodsSpecInputInfo(dish_id){
+function getGoodsSpecInputInfo(goods_id){
     var spec_arr = {};// 用户选择的规格数组
     // 选中了哪些属性
     $("#goods_spec_table1  button").each(function(){
@@ -216,7 +262,7 @@ function getGoodsSpecInputInfo(dish_id){
     });
 
     var parame  = {
-        'dish_id' : dish_id,
+        'goods_id' : goods_id,
         'spec_arr' : spec_arr
     };
     var url ="./index.php?mod=site&name=shop&do=goodscommon&op=goodspect_input";

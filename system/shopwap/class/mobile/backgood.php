@@ -28,8 +28,7 @@ switch($op){
             message('对不起，团购商品不允许退款！',refresh(),'error');
 
         if($orderGoodInfo['status'] == 1 && $orderGoodInfo['type'] == 3){
-            //自己撤销的 恢复正常
-            $res = mysqld_update('shop_order_goods',array('status'=>'0','type'=>'0'),array('id'=>$order_good_id));
+            $res = mysqld_update('shop_order_goods',array('status'=>'-2'),array('id'=>$order_good_id));
             if($res){
                 //添加售后记录
                 $aftersales = mysqld_select ( "SELECT aftersales_id FROM " . table ( 'aftersales' )." WHERE order_goods_id = {$order_good_id} ");
@@ -45,6 +44,17 @@ switch($op){
 
                 //新增退款日志记录
                 mysqld_insert ( 'aftersales_log', $arrLog);
+
+                //给APP卖家推送消息   可以删除  没有卖家 无需推送
+                if(!empty($orderGoodInfo['seller_openid']) && !empty($orderGoodInfo['commision'])){
+                    $time     = date("Y-m-d H:i:s",$orderInfo['createtime']);
+                    $dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$orderGoodInfo['goodsid']}");
+                    $msg  = "老板，您好！{$arrLog['title']}
+订单编号：{$orderInfo['ordersn']}
+退款商品：{$dishInfo['title']}
+下单时间：{$time}";
+                    pushOrderImMessage(IM_ORDER_FROM_USER,$orderGoodInfo['seller_openid'],$msg);
+                }
 
                 message('已取消退款申请',refresh(),'success');
             }else{
@@ -101,6 +111,19 @@ switch($op){
                     $data2['aftersales_id'] = $aftersales_id;
                     mysqld_insert('aftersales_log',$data2);
 
+
+                    //给APP卖家推送消息
+                    if(!empty($orderGoodInfo['seller_openid']) && !empty($orderGoodInfo['commision'])){
+                        $time     = date("Y-m-d H:i:s",$orderInfo['createtime']);
+                        $dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$orderGoodInfo['goodsid']}");
+                        $msg  = "老板，您好！{$data2['title']}
+订单编号：{$orderInfo['ordersn']}
+退款商品：{$dishInfo['title']}
+下单时间：{$time}
+";
+                        pushOrderImMessage(IM_ORDER_FROM_USER,$orderGoodInfo['seller_openid'],$msg);
+                    }
+
                     message("{$zi}申请已提交",refresh(),'success');
                 }else{
                     //插入失败则撤掉操作
@@ -119,7 +142,7 @@ switch($op){
 
     case 'canclegood':  //取消退款退货申请
         if($orderGoodInfo['status'] == 1 && $orderGoodInfo['type'] == 1){
-            $res = mysqld_update('shop_order_goods',array('status'=>'0','type'=>0),array('id'=>$order_good_id));
+            $res = mysqld_update('shop_order_goods',array('status'=>'-2'),array('id'=>$order_good_id));
             if($res){
                 //添加售后记录
                 $aftersales = mysqld_select ( "SELECT aftersales_id FROM " . table ( 'aftersales' )." WHERE order_goods_id = {$order_good_id} ");
@@ -135,6 +158,18 @@ switch($op){
 
                 //新增退款日志记录
                 mysqld_insert ( 'aftersales_log', $arrLog);
+
+                //给APP卖家推送消息
+                if(!empty($orderGoodInfo['seller_openid']) && !empty($orderGoodInfo['commision'])){
+                    $time     = date("Y-m-d H:i:s",$orderInfo['createtime']);
+                    $dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$orderGoodInfo['goodsid']}");
+                    $msg  = "老板，您好！{$arrLog['title']}
+订单编号：{$orderInfo['ordersn']}
+退款商品：{$dishInfo['title']}
+下单时间：{$time}
+";
+                    pushOrderImMessage(IM_ORDER_FROM_USER,$orderGoodInfo['seller_openid'],$msg);
+                }
 
                 message('已取消退款退货申请',refresh(),'success');
             }else{
@@ -185,7 +220,7 @@ switch($op){
             $statusArr = array('-2'=>'撤销申请','-1'=>'审核驳回','1'=>'申请退货','2'=>'审核通过','3'=>'买家退货','4'=>'退货成功');
         }
 
-        include themePage('order/aftersale_detail');
+        include themePage('aftersale_detail');
         break;
 
 

@@ -29,10 +29,12 @@
                             <i class="icon-edit"></i>启&nbsp;动                               
                           </a>
                         <?php $code .= $item['code'].",";}else{ ?>
-                            <!--<a class="btn btn-xs btn-danger" href="<?php /* echo create_url('site', array('name' => 'shop','do' => 'dispatch','op'=>'display','code'=>$item['code']))*/?>" >
+                          &nbsp;&nbsp;&nbsp;
+                          <a class="btn btn-xs btn-danger" href="<?php  echo create_url('site', array('name' => 'shop','do' => 'dispatch','op'=>'display','code'=>$item['code']))?>" >
                               <i class="icon-edit"></i>配送区域                          
-                          </a>-->
-                            <a class="btn btn-xs btn-info" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch_uninstall','code'=>$item['code']))?>" >
+                          </a>
+                          &nbsp;&nbsp;&nbsp;	
+                           <a class="btn btn-xs btn-info" href="<?php  echo create_url('site', array('name' => 'modules','do' => 'dispatch_uninstall','code'=>$item['code']))?>" >
                                <i class="icon-edit"></i>卸&nbsp;载                       
                            </a>
                          <?php }?>  

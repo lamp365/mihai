@@ -176,23 +176,3 @@ function change_user_bonus($bonus_id,$openid){
     mysqld_insert('bonus_user',$data);
     return true;
 }
-
-/**
- * 检查是否礼品有人次兑换的限制
- * @param $award
- * @param $openid
- * @return bool
- */
-function checkJIfenShopIsFull($award,$openid){
-    if($award['change_times'] == 0){
-        return true;  //0不限制
-    }else{
-        $has_num = mysqld_selectcolumn("select count(id) from ".table('addon7_change')." where award_id={$award['id']} and openid='{$openid}'");
-        $has_num+=1;
-        if($has_num > $award['change_times']){
-            return false;
-        }else{
-            return true;
-        }
-    }
-}

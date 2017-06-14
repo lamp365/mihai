@@ -62,15 +62,13 @@
     var save_oldname = 0;
     var server_url = "";
     function set_dir(obj){
-        var host = 'http://'+window.location.host+'/';
-        server_url = host+"fileupload.php?savelocal=0";
+        server_url = "fileupload.php?savelocal=0";
         dir = $(obj).val();
         server_url = server_url + "&dir="+dir+"&save_oldname="+save_oldname;
         uploader.option( 'server', server_url);
     }
     function set_savename(obj){
-        var host = 'http://'+window.location.host+'/';
-        server_url = host+"fileupload.php?savelocal=0";
+        server_url = "fileupload.php?savelocal=0";
         save_oldname = $(obj).val();
         server_url = server_url + "&save_oldname="+save_oldname+ "&dir="+dir;
         uploader.option( 'server', server_url);

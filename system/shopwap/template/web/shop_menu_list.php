@@ -13,20 +13,15 @@
 			</thead>
 		<?php  if(is_array($shop_menu_list)) { foreach($shop_menu_list as $item) { ?>
 				<tr>
-					<td class="text-center">
-						<?php if(!empty($item['img'])){
-							$pic = download_pic($item['img'],50,50,2);
-							echo "<img src='{$pic}' width='35' height='35' />";
-						}?>
-					</td>
-					<td class="text-center"><?php echo $item['tname']; ?></td>
-					<td class="text-center"><?php if ( $item['type'] == 1 ) { echo 'PC端' ; } else{ echo '手机端';  } ?></td>
-					<td class="text-center"><?php echo $item['url']; ?></td>
-					<td class="text-center"><?php echo $item['torder']; ?></td>
-					<td class="text-center">
-						<a class="btn btn-xs btn-info"  href="<?php  echo web_url('shop_menu', array('op' => 'post', 'id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;</a>
-					&nbsp;&nbsp;	<a class="btn btn-xs btn-info" onclick="return confirm('此操作不可恢复，确认删除？');return false;"  href="<?php  echo web_url('shop_menu', array('op' => 'delete', 'id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a> </td>
-					</td>
+					<td class="text-center"><?php if(!empty($item['icon'])){ ?><i class="<?php echo $item['icon']; ?>"></i><?php } ?></td>
+          <td class="text-center"><?php echo $item['tname']; ?></td>
+		  <td class="text-center"><?php if ( $item['type'] == 1 ) { echo 'WEB端' ; } else{ echo 'WAP端';  } ?></td>
+           <td class="text-center"><?php echo $item['url']; ?></td>
+          <td class="text-center"><?php echo $item['torder']; ?></td>
+         <td class="text-center">
+                                                    	<a class="btn btn-xs btn-info"  href="<?php  echo web_url('shop_menu', array('op' => 'post', 'id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;</a> 
+                    	&nbsp;&nbsp;	<a class="btn btn-xs btn-info" onclick="return confirm('此操作不可恢复，确认删除？');return false;"  href="<?php  echo web_url('shop_menu', array('op' => 'delete', 'id' => $item['id']))?>"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a> </td>
+                                </td>
 				</tr>
 				<?php  } } ?>
 		</table>

@@ -13,7 +13,6 @@ if($op == 'list'){
     $del_time = time()-3600*24*20;
     mysqld_query("delete from ".table('admin_behave_log')." where createtime<{$del_time}");
 
-
     $condition = ' where 1=1';
     if(!empty($_GP['uid'])){
         $condition .= " and uid={$_GP['uid']}";

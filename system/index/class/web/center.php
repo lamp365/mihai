@@ -67,8 +67,7 @@
 		for ( $i = 1 ; $i <= 5; $i ++ ){
 			$ips_data = array();
 			$pv = 0;
-            $ips = "SELECT count(ip) as ip FROM ".table('traffic_count')." where shop_id >= 0 and system = ".$i." group by ip ";
-		    $ips_data = mysqld_selectall($ips);
+		    $ips_data = array();
 			$all_ip += count($ips_data);
 			$ips_list[$i] = array(
 			     'ip'=>count($ips_data)
@@ -95,8 +94,7 @@
 
 
         // 找出访问数量最多的产品
-        $view_pro = "SELECT count(shop_id) as num, shop_id FROM ".table('traffic_count')." where shop_id > 0 group by shop_id order by num desc limit 5";
-        $pro_data = mysqld_selectall($view_pro);
+        $pro_data = array();
 		$pro_list   = array();
         foreach( $pro_data as $pro_data_value ){
              $sql_data = array(
@@ -105,7 +103,7 @@
 			 );
 			 $goods = get_good($sql_data);
 			 $goods['view_num'] = $pro_data_value['num'];
-			 $goods['view_ip'] = count(mysqld_selectall("SELECT count(ip) FROM ".table('traffic_count')." WHERE shop_id = ".$pro_data_value['shop_id']." group by ip "));
+			 $goods['view_ip'] = 0;
 			 // 开始统计支付金额
 			 $pay_sql = "SELECT a.* FROM ".table('shop_order_goods')." AS a LEFT JOIN ".table('shop_order')." AS b ON a.orderid = b.id WHERE b.status >= 1 and a.goodsid = ".$pro_data_value['shop_id'];
 			 $pro_pay = mysqld_selectall($pay_sql);

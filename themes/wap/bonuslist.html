@@ -10,10 +10,8 @@
     <link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
     <link href="__RESOURCE__/recouse/css/bjdetail.css" rel="stylesheet" type="text/css" />
     <link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-    <link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" />
     <script type="text/javascript"  src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
-    <script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
 <style>
 html,body{
   background-color: #fff;
@@ -241,11 +239,6 @@ a {
     display: block;
     margin-bottom: 20px;
 }
-.bonus-time a.bonus-time-a{
-  color: red;
-  position: absolute;
-  right: 10px;
-}
 </style>
 
 
@@ -282,12 +275,7 @@ a {
       </div>
       <div class="bonus-time">
         <div class="bonus-time-1"><span class="begin-time"><!--@php echo date('Y.m.d', intval($bonus['use_start_date'])); @--></span>-<span class="end-time"><!--@php echo date('Y.m.d', $bonus['use_end_date']); @--></span></div>
-        <!--@php if($bonus['send_type'] == 2 || $bonus['send_type'] == 0){  @-->
-        <div style="font-size: 13px;position:relative">全场通用  <a href="<!--@php echo mobile_url('goodlist',array('op'=>'dish','pcate'=>$cate_id)); @-->" class="bonus-time-a">立即使用>></a></div>
-        <!--@php }else if($bonus['send_type'] == 1){ @-->
-        <div style="font-size: 13px;position:relative">全场通用  <a href="javascipt:;" onclick="get_bonus_goods(<!--@php echo $bonus['bonus_id'] @-->)" class="bonus-time-a">立即使用>></a></div>
-        <!--@php } @-->
-       
+        <div style="font-size: 13px;">全场通用</div>
       </div>
     </li>
     <!--@php  } @-->  
@@ -307,14 +295,6 @@ $(function(){
         }
     });
 })
-
-    function get_bonus_goods(bonus_id)
-    {
-        var url ="<!--@php echo mobile_url('bonus',array('op'=>'bonus_goods')); @-->";
-        $.ajaxLoad(url,{'bonus_id':bonus_id},function(){
-            $('#alterModal').modal('show');
-        });
-    }
 </script>
 </body>
 </html>

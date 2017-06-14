@@ -4,27 +4,46 @@
 		$op= $operation = $_GP['op']?$_GP['op']:'display';
 		$operation = !empty($_GP['op']) ? $_GP['op'] : 'display';
         if ($operation == 'display') {
+
             if (!empty($_GP['displayorder'])) {
                 foreach ($_GP['displayorder'] as $id => $displayorder) {
                     mysqld_update('shop_category', array('displayorder' => $displayorder), array('id' => $id));
                 }
                 message('分类排序更新成功！', web_url('category', array('op' => 'display')), 'success');
             }
-            $children = array();
-            $category = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where deleted=0  ORDER BY parentid ASC, displayorder ASC");
-            foreach ($category as $index => $row) {
-                if (!empty($row['parentid'])) {
-                    $children[$row['parentid']][] = $row;
-                    unset($category[$index]);
+
+            if(!empty($_GP['id'])){
+                $all_category     = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where parentid ={$_GP['id']} and  deleted=0  ORDER BY parentid ASC, displayorder ASC");
+                if(empty($all_category)){
+                    die(showAjaxMess('1002','无数据！'));
+                }else{
+                    die(showAjaxMess('200',$all_category));
                 }
             }
-            include page('leimu/category_list');
+            $first_instu      = mysqld_selectall("select * from ".table('industry')." where gc_pid=0");
+            $second_instu     = array();
+            if(!empty($_GP['industry_p1_id'])){
+                $second_instu = mysqld_selectall('select * from '.table('industry')." where gc_pid={$_GP['industry_p1_id']}");
+            }
+            if(!empty($_GP['industry_p2_id'])){
+                $where = " industry_p2_id={$_GP['industry_p2_id']} and parentid =0 and  deleted=0 ";
+            }else{
+                $where = " parentid =0 and  deleted=0 ";
+            }
+            $all_category     = mysqld_selectall("SELECT * FROM " . table('shop_category') . "  where {$where} ORDER BY parentid ASC, displayorder ASC");
+            include page('category_list');
         } elseif ($operation == 'post') {
+            //*************2017-5-3增加行业归属id，因此输出行业列表************//
+            $Service = new \service\shop\IndustryService();
+            $industry_data =   $Service->getAllDataStruct();
+            
             $parentid = intval($_GP['parentid']);
             $id = intval($_GP['id']);
 			$brands = array();
             if (!empty($id)) {
                 $category = mysqld_select("SELECT * FROM " . table('shop_category') . " WHERE id = '$id'");
+                $category['industry_p1_name'] =$industry_data[$category['industry_p1_id']]['gc_name'] ;
+                $category['industry_p2_name'] =$industry_data[$category['industry_p1_id']]['sub']['gc_name'] ;
 				$brands = unserialize($category['brands']);
             } else {
                 $category = array(
@@ -33,7 +52,12 @@
             }
 			
             if (!empty($parentid)) {
-                $parent = mysqld_select("SELECT id, name FROM " . table('shop_category') . " WHERE id = '$parentid'");
+                $parent = mysqld_select("SELECT id, name,industry_p1_id,industry_p2_id FROM " . table('shop_category') . " WHERE id = '$parentid'");
+                $category['industry_p1_name'] =$industry_data[$parent['industry_p1_id']]['gc_name'] ;
+                $category['industry_p2_name'] =$industry_data[$parent['industry_p1_id']]['sub'][$parent['industry_p2_id']]['gc_name'] ;
+                $category['industry_p1_id'] =$parent['industry_p1_id'] ;
+                $category['industry_p2_id'] =$parent['industry_p2_id'] ;
+//                ppd($industry_data);
                 if (empty($parent)) {
                     message('抱歉，上级分类不存在或是已经被删除！', web_url('post'), 'error');
                 }
@@ -52,13 +76,19 @@
                    $best_id = array_diff($best_id, $brands);
 			   }
 			}
+            
             if (checksubmit('submit')) {
                 if (empty($_GP['catename'])) {
                     message('抱歉，请输入分类名称！');
                 }
+                if (empty($_GP['industry_p2_id'])) {
+                    message('抱歉，请选择二级行业类别！');
+                }
                 $data = array(
                     'name' => $_GP['catename'],
                     'enabled' => intval($_GP['enabled']),
+                    'industry_p2_id' => intval($_GP['industry_p2_id']),
+                    'industry_p1_id' => intval($_GP['industry_p1_id']),
 					'brands' => serialize($_GP['sql_query']),
                     'displayorder' => intval($_GP['displayorder']),
                     'isrecommand' => intval($_GP['isrecommand']),
@@ -117,7 +147,7 @@
                 }
                 message('更新分类成功！', web_url('category', array('op' => 'display')), 'success');
             }
-            include page('leimu/category');
+            include page('category');
         } elseif ($operation == 'delete') {
             $id = intval($_GP['id']);
             $category = mysqld_select("SELECT id, parentid FROM " . table('shop_category') . " WHERE id = '$id' and deleted=0 ");
@@ -126,6 +156,12 @@
             }
             mysqld_update('shop_category', array('deleted' => 1), array('id' => $id, 'parentid' => $id), 'OR');
             message('分类删除成功！', web_url('category', array('op' => 'display')), 'success');
+        }else if($operation == 'getNextInstry'){
+            if(empty($_GP['industry_p1_id'])){
+                ajaxReturnData(0,'参数有误！');
+            }
+            $result = mysqld_selectall("select gc_id,gc_name from ".table('industry')." where gc_pid={$_GP['industry_p1_id']}");
+            ajaxReturnData(1,'',$result);
         }
 		elseif ($operation == 'csv_post') {
 		    if( !empty($_FILES['csv']["name"]) ){
@@ -147,7 +183,7 @@
 					 message('文件过大,请控制在1MB', '', 'error');
 				}
 		    }
-            include page('leimu/csv_category');
+            include page('csv_category');
         }
 function c_category($array=array()){
    if ( !empty($array) ){

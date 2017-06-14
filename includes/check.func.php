@@ -63,6 +63,7 @@ function checkrule($modname, $moddo, $modop)
     }
     return $hasPower;
 }
+
 /**
  * 从禁止中的url中，能找到的说明时候被禁止的 返回false
  * @param $tmpdata

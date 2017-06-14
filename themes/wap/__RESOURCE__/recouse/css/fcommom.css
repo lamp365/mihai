@@ -166,11 +166,11 @@ h1, h2, h3, h4, h5, h6{
 	overflow:hidden;
 	border:none;
 	background:none;
-	background:url(../images/bg11.jpg) no-repeat;
+	background:url("bg11.png") no-repeat;
 	background-size:cover;
 	width:100%;
 	border-radius: 0;
-	padding: 20px 0;
+	padding: 25px 0;
 	}
 .memberhead-base{
 	overflow:hidden;
@@ -1291,17 +1291,22 @@ button.top-button, .button.top-button{
 .my_menu .menu_5:before{
 	background-position:0 -100px
 	}
-
+.progress{
+	margin: 2px 10px;
+	background-color:#c2c1c0;
+	width: 50%;
+	height: 5px;
+	display: inline-block;
+}
 .rank{
 	text-align: center;
+	margin: 20px 0 5px 0!important;
 }
 .rank_num{
-    font-size: 12px;
-    color: #fff;
-    text-align: center;
-    width: 61%;
-    float: left;
-    margin-top: 5px;
+	font-size: 12px;
+	color: #fff;
+	text-align: center;
+	width: 100%;
 }
 .rank span{
 	color: #fff;

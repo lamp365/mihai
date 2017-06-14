@@ -19,3 +19,7 @@ foreach( $listFuncs as $func) {
 if (file_exists(WEB_ROOT . '/config/config.php') && file_exists(WEB_ROOT . '/config/install.link')) {
 	require (WEB_ROOT . '/system/common/lib/lib.php');
 }
+//引入verndon 自动加载类库
+require_once WEB_ROOT.'/includes/vendor/autoload.php';
+
+$cfg = globaSetting();

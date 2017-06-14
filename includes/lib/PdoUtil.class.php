@@ -7,7 +7,7 @@ class PdoUtil
 
     private $cfg;
 
-    public function __construct($cfg)
+    public function __construct($cfg = array())
     {
         global $_CMS;
         if (empty($cfg)) {
@@ -18,6 +18,8 @@ class PdoUtil
         $mysqlurl = "mysql:dbname={$cfg['database']};host={$cfg['host']};port={$cfg['port']}";
         try {
             $this->dbo = new PDO($mysqlurl, $cfg['username'], $cfg['password']);
+            $this->dbo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);//不用string匹配int数据，默认类型不改变
+            $this->dbo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);//不用string匹配类型，默认类型不改变
         } catch (PDOException $e) {
             message($e . "数据库连接失败，请检查数据库配置:/config/config.php");
         }
@@ -69,7 +71,11 @@ class PdoUtil
     public function fetch($sql, $params = array())
     {
         $statement = $this->dbo->prepare($sql);
-        $result = $statement->execute($params);
+		if (method_exists($statement, 'execute')){
+           $result = $statement->execute($params);
+		}else{
+           return false;
+		}
         if (SQL_DEBUG) {
             $this->debug($statement->errorInfo(),$sql);
         }
@@ -83,7 +89,11 @@ class PdoUtil
     public function fetchall($sql, $params = array(), $keyfield = '')
     {
         $statement = $this->dbo->prepare($sql);
-        $result = $statement->execute($params);
+		if (method_exists($statement, 'execute')){
+            $result = $statement->execute($params);
+		}else{
+            return false;
+		}
         if (SQL_DEBUG) {
             $this->debug($statement->errorInfo(),$sql);
         }
@@ -228,5 +238,14 @@ class PdoUtil
             message($errors[2]);
         }
         return $errors;
+    }
+    public function begin() {
+        $this->dbo->beginTransaction();
+    }
+    public function commit() {
+        $this->dbo->commit();
+    }
+    public function rollback() {
+        $this->dbo->rollBack();
     }
 }

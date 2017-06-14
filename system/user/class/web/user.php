@@ -235,6 +235,7 @@ if ($operation == 'adduser') {
 		$url = web_url('user',array('op'=>'rolerlist'));
 		message('请选创建角色分组',$url,'error');
 	}
+
 	include page('adduser');
 
 }

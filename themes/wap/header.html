@@ -4,22 +4,22 @@
 <title><!--@php echo $title @--></title>
 <meta name="description" content="觅海环球购美国直邮"/>
 <meta charset="utf-8">
-<meta name="viewport"
-	content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="format-detection" content="telephone=no">
-<link type="text/css" href="__RESOURCE__/recouse/bootstrap3/css/bootstrap.min.css" rel="stylesheet" />
-<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" />
-<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet"	type="text/css" />
-<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="__RESOURCE__/recouse/bootstrap3/js/bootstrap.min.js"></script>
-<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery.lazyload.min.js"></script>
-<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
+<!--@php css_url('bootstrap.min','bootstrap3'); @-->
+<!--@php css_url('BeAlert','common/beAlert', 'addons'); @-->
+<!--@php css_url('bjcommon'); @-->
+<!--@php css_url('mui.min', 'mui'); @-->
+<!--@php js_url('jquery-1.10.2.min'); @-->
+<!--@php js_url('bootstrap.min','bootstrap3'); @-->
+<!--@php js_url('jquery.lazyload.min'); @-->
+<!--@php js_url('mui.min','mui'); @-->
+<!--@php js_url('BeAlert','common/beAlert', 'addons'); @-->
+<!--@php js_url('swiper.min'); @-->
 <style type='text/css'>
-    #poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;
-        -webkit-border-radius:5px;
-        -moz-border-radius:5px;}
+#poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;}
 #poptip_content { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px; height: 27px; color:#fff;text-align:center;font-size:14px;z-index: 9909}
 .mesWindow{border:#666 1px solid;background:#fff;}
 .mesWindowTop{border-bottom:#eee 1px solid;margin-left:4px;padding:3px;font-weight:bold;text-align:left;font-size:12px;}
@@ -54,6 +54,20 @@
 input::-webkit-input-placeholder{
 	color: #d0d0d0!important;
 }
+.shopindex-head{
+	padding: 4%;
+	box-sizing:border-box;
+	background:#0398ff;
+}
+
+.location-area span{
+	position: relative;
+}
+.location-area span i{
+    position: absolute;
+    top: -4px;
+    right: -16px;
+}
 </style>
 <script type="text/javascript">
 // 对浏览器的UserAgent进行正则匹配，不含有微信独有标识的则为其他浏览器
@@ -73,60 +87,7 @@ jQuery(document).ready(function($) {
 			threshold : 200, //控制灵敏度
 			effect : "fadeIn"
 		});
-		$("#submit").click(function() {
-			if ($("#search_word").val()) {
-				$("#searchForm").submit();
-			} else {
-				alert("请输入关键词！");
-				return false;
-			}
-		});
-		$(".close_concern").click(function(){
-			$(".to_concern").fadeOut();
-			$(".guanzhu_box").fadeOut();
-			$(".guanzhu_modal").fadeOut();
-		})
-		$(".to_concern_btn").click(function(){
-			$(".guanzhu_modal").fadeIn();
-			$(".guanzhu_box").fadeIn();
-		})
-		$(".guanzhu_modal").click(function(){
-			$(".guanzhu_modal").fadeOut();
-			$(".guanzhu_box").fadeOut();
-		})
-	});
+});
 </script>
 </head>
 <body>
-
-   <!--@php if(is_show_follow()){ @-->
-	<!--立即关注-->
-	<div class="to_concern">
-		<img src="__RESOURCE__/recouse/images/to_cencern_logo.png" />
-		<span>关注觅海，了解最新活动</span>
-		<p class="to_concern_btn">立即关注</p>
-		<img src="__RESOURCE__/recouse/images/cha.png" class="close_concern"/>
-	</div>
-	<!--点击立即关注弹出的二维码-->
-   <div class="guanzhu_modal" id="weixin_guanzhu"></div>
-   <div class="guanzhu_box">
-	   <img src="__RESOURCE__/recouse/images/weixin.jpg" />
-   </div>
-	<!--@php }  @-->
-
-<div class="WX_search1" id="mallHead" style="padding-bottom: 2px;">
-		<form class="WX_search_frm1" action="index.php" id="searchForm"
-			name="searchForm">
-			<input type="hidden" name="mod" value="mobile" /> <input
-				type="hidden" name="do" value="goodlist" /> <input type="hidden"
-				name="name" value="shopwap" /> <input name="keyword"
-				id="search_word" class="WX_search_txt hd_search_txt_null"
-				placeholder="请输入商品名进行搜索！" ptag="37080.5.2" type="search"
-				AUTOCOMPLETE="off" />
-			<div class="WX_me">
-				<a href="javascript:;" id="submit" class="WX_search_btn_blue"></a>
-
-			</div>
-		</form>
-		<div class="search_bottom"></div>
-</div>

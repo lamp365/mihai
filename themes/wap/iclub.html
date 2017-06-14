@@ -349,10 +349,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-<div class="weixin_gzh"></div>
-<div class="weixin_gzh_img">
-    <img src="__RESOURCE__/recouse/images/weixin_gzh.png">
-</div>
+
     <!--@php if(empty($_GP['is_app'])){ @-->
     <!--@php include themePage('footer');@-->
     <!--@php } @-->
@@ -391,9 +388,6 @@ $(function(){
     //签到规则
     $(".question-icon").on("click",function(){
         $(".question-modal").modal();
-    });
-    $(".weixin_gzh,.weixin_gzh_img").on("click",function(){
-        $(".weixin_gzh,.weixin_gzh_img").hide();
     });
     //签到进度条
     function checkinProgress(){
@@ -464,10 +458,6 @@ function sign(){
 }
 
 function exchangeFun(thisObj,productid,mihaibi){
-    if(!check_is_weixin()){
-        //如果不是微信
-        return false;
-    }
     if(openid){
         var data_type = $(thisObj).attr("data-type");
         var ajax_url ="<!--@php echo mobile_url('iclub',array('op'=>'change'));@-->";
@@ -640,15 +630,6 @@ function saveAddress() {
 
     }, 'json');
 
-}
-function check_is_weixin(){
-    var is_weixin = "<!--@php echo $is_weixin; @-->";
-    if(is_weixin == 0){
-        $(".weixin_gzh,.weixin_gzh_img").show();
-        return false;
-    }else{
-        return true;
-    }
 }
 function closeAddAddress(){
     addAddress();

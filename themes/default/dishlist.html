@@ -112,7 +112,7 @@
 	<!--tag-->
 	<!--@php if ( !empty($p1) || !empty($p2) || !empty($brand['brand']) ){ @-->
 	<div class="crumbs">
-         <span><a href="<?php echo WEBSITE_ROOT; ?>" >首页</a></span>
+         <span><a href="index.php" target="_blank" >首页</a></span>
 		 <!--@php if ( !empty($p1) ){ @-->
          &nbsp; &gt; <a href="<!--@php  echo mobile_url('goodlist', array('pcate' => $p1['id']))@-->" target="_blank" ><!--@php echo $p1['name'];@--></a> 
 		 <!--@php } @-->
@@ -128,11 +128,11 @@
 	  <!--@php if ( !empty($brand['brand_ad']) ){ @-->
      <div class="brand-describe">
 			<!--左边的品牌大图-->
-              <img data-original="<!--@php echo $brand['brand_ad']; @-->" class="brand-pic lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->" />
+              <img data-original="<!--@php echo $brand['brand_ad']; @-->" class="brand-pic lazy" src="images/loading.gif" />
 			<!--右边的描述-->
 			<div class="brand-d">
 				<div class="brand-info">
-					<img class="logo lazy" data-original="<!--@php echo $brand['icon']; @-->" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->">
+					<img class="logo lazy" data-original="<!--@php echo $brand['icon']; @-->" src="images/loading.gif">
 					<div class="bname">
 						<h1 class="title"><!--@php echo $brand['brand']; @--></h1>
 						<p class="sold">在售商品<span><!--@php echo $brand['num']; @--></span>个</p>
@@ -173,7 +173,19 @@
     <!--@php }} @-->
     
    
-		<div class="tab">
+		<div class="tab">						
+			
+			<!--地区-->
+			<div class="area" style="display:none;">
+				<!--地区：-->
+				<span>
+					国家/地区：
+				</span>
+				<div class="arealist">
+					<a href="#">美国</a>
+				</div>
+			</div>
+			
 			<!--没有搜索结果-->
 			<!--@php if ( empty($list) ){ @-->
 			<div class="os_panel">
@@ -252,7 +264,7 @@
 							  	<div class="item">       
 	                                  <div class="img">
 	                                  	<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" >
-		                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->" >
+		                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="images/loading.gif" >
 		                                </a>
 	                                  </div>	
 									  <div class="buy">
@@ -303,7 +315,7 @@
 							  	<div class="item">       
 	                                  <div class="img">
 	                                  	<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" >
-		                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->">
+		                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="images/loading.gif">
 		                                   </a>
 	                                  </div>	
 									  <div class="buy">
@@ -352,7 +364,7 @@
 							  	<div class="item">       
 	                                  <div class="img">
 	                                  	<a href="<!--@php  echo mobile_url('detail', array('id' => $item['id']))@-->" class="item" target="_blank" >
-		                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->">
+		                                  <img data-original="<!--@php  echo $item['small']; @-->" class="lazy" src="images/loading.gif">
 		                                   </a>
 	                                  </div>	
 									  <div class="buy">
@@ -456,6 +468,7 @@
 				state = 0;
 			}
 		}
+		rightNavShow(1);
 	</script>
 </body>
 </html>

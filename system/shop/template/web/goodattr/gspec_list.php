@@ -1,11 +1,11 @@
 <div class="alertModal-dialog-sm" style="width: 56%">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">规格操作 <span style="margin-left: 25px;"></span></h4>
+        <h4 class="modal-title">规格操作 <span style="margin-left: 25px;">(只允许添加两个，故规格不要细分)</span></h4>
     </div>
 
     <div class="modal-body">
-        <p style="font-size: 16px"><b>[<?php echo $gtype['gtype_name']; ?>]</b> 模型规格列表 &nbsp;&nbsp;
+        <p style="font-size: 16px"><b>[<?php echo $gtype['name']; ?>]</b> 模型规格列表 &nbsp;&nbsp;
             <span class="btn-md btn-info btn" onclick="add_spec(this)">添加规格</span>
             <span style="margin-left: 10px;color: red;display: none" class="error_tip">最多只能建两个</span>
         </p>
@@ -55,14 +55,8 @@
 
 <script>
     function add_spec(obj){
-        var isok = true;
-        $(".spec_main tr").each(function(){
-            console.log($(this).find('td').eq(3).html());
-           if($(this).find('td').eq(3).html() == '&nbsp;'){
-               isok = false;
-           }
-        });
-        if(!isok){
+        if($('.spec_main').find("tr").length >=2){
+            $(".error_tip").show();
             return false;
         }
        //追加一条html
@@ -80,29 +74,19 @@
         var spec_id = $(obj).closest("td").attr('spec_id');
         var gtype_id = $("#gtype_id").val();
         var spec_name = $(obj).val();
-        if($.trim(spec_name) == '' || $.trim(spec_name) == 'null'){
+        if(spec_name == '' || spec_name == 'null'){
             return false;
         }
-
-        //获取tr中长度
-        var length =  $(".spec_main tr").length;
         //是否规格名一样
         var isok = true;
-        $(".spec_main tr").each(function(index,ele){
-            var num = index +1 ;
+        $(".spec_main tr").each(function(){
             var the_name = $(this).find('td').eq(0).html();
             the_name = $.trim(the_name);
-            if(num != length){
-                //不是最后一个做比对
-                if(the_name == spec_name){
-                    $(obj).val(' ');
-                    $(obj).focus();
-                    isok = false;
-                    $(".error_tip").html('规格名不能一样！');
-                    $(".error_tip").show();
-                }
+            if(the_name == spec_name){
+                $(obj).val(' ');
+                $(obj).focus();
+                isok = false;
             }
-
         });
         if(!isok){
             return false;

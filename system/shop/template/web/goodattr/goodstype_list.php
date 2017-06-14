@@ -1,9 +1,12 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <body class="J_scroll_fixed">
     <br/>
-
-    <h3 class="header smaller lighter blue">规格模型列表 &nbsp;&nbsp; <a data-url="<?php echo web_url('goodstype',array('op'=>'add_gtype')); ?>" class="btn btn-primary" href="javascript:;" onclick="add_gtype(this)">添加模型</a>
-    &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 13px;"></span>
+    <ul class="nav nav-tabs" >
+        <li style="width:7%" <?php  if(empty($_GP['op'])) { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('goodstype')?>">分组管理</a></li>
+        <li style="width:7%" <?php  if($_GP['op'] == 'lists') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('goodstype',  array('op' => 'lists'))?>">模型管理</a></li>
+    </ul>
+    <h3 class="header smaller lighter blue">商品模型列表 &nbsp;&nbsp; <a data-url="<?php echo web_url('goodstype',array('op'=>'add_gtype')); ?>" class="btn btn-primary" href="javascript:;" onclick="add_gtype(this)">添加模型</a>
+    &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 13px;">请按照分组查询</span>
     </h3>
     <form action="" class="form-horizontal" method="get">
         <input type="hidden" name="mod" value="site">
@@ -15,6 +18,19 @@
             <tr>
                 <td style="background-color: #fff">
                     <li style="float:left;list-style-type:none;">
+
+                        <select name="group_id" id="" style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0">
+                            <option value="0">请选择模型分组</option>
+                            <?php foreach($group_list as $gitem) {
+                                if($gitem['group_id'] == $_GP['group_id']){
+                                    $sel = "selected";
+                                }else{
+                                    $sel = '';
+                                }
+                                echo "<option value='{$gitem['group_id']}' {$sel} data-group_id='{$_GP['group_id']}'>{$gitem['group_name']}</option>";
+                            }
+                            ?>
+                        </select>
                         <select name="p1" class="get_category" id="getShopCategory_p1" onchange="getShop_sonCategroy(this,1)" style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" >
                             <option value="">请选择分类</option>
                             <?php foreach($parent_category as $item) {
@@ -75,11 +91,10 @@
                     <?php foreach($goodstype as $key => $gtype){ ?>
                      <tr>
                          <td class="text-center" ><?php echo ++$key;?></td>
-                         <td class="text-center" ><?php echo $gtype['gtype_name'];?></td>
+                         <td class="text-center" ><?php echo $gtype['name'];?></td>
                          <td class="text-center" ><?php if($gtype['status'] == 1){ echo '<span class="btn btn-success btn-xs">已上架</span>'; }else{ echo '<span class="btn btn-danger btn-xs">已下架</span>';}?></td>
                          <td class="text-center">
-                             <?php echo getCategoryDataById($gtype['p1'],'name');?>--
-                             <?php echo getCategoryDataById($gtype['p2'],'name');?>
+                             asdas
                          </td>
                          <!--
                          <td class="text-center" >

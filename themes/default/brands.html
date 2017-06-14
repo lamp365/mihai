@@ -358,7 +358,7 @@
 		        <!--@php foreach( $best_brand as $best_value ) { @-->
 				<div class="per-recommed">
 					<a href="<!--@php  echo mobile_url('goodlist', array('bid'=>$best_value['id']))@-->" target="_blank" class="recommend-pic">
-						<img data-original="<!--@php echo $best_value['brand_public']; @-->" class="lazy" src="<!--@php echo getFullPicUrl('images/loading.gif'); @-->"/>
+						<img data-original="<!--@php echo $best_value['brand_public']; @-->" class="lazy" src="images/loading.gif"/>
 					</a>
 					<a href="<!--@php  echo mobile_url('goodlist', array('bid'=>$best_value['id']))@-->" target="_blank" class="recommend-detail">
 						<img src="<!--@php echo $best_value['icon']; @-->" />

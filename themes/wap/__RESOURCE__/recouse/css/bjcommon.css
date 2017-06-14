@@ -162,6 +162,7 @@ body{
 	z-index:900;
 	width:100%;
 	bottom:0;
+	border-top:1px solid #ccc;
 	left:0;
 	}
 	
@@ -171,8 +172,7 @@ body{
 	padding-top:4px;
 	color:#FFF;
 	font-size:12px;
-	filter:alpha(opacity=50); 
-	background:rgba(49, 40, 40, 0.8) none repeat scroll 0 0 !important;
+	background:#fff;
 	text-align:center
 	}
 	

@@ -16,13 +16,13 @@
 	if(empty($upfile))
 	{
 		$upfile=$_FILES['imgFile'];
-	}
+		}
 	if (!empty($upfile['name'])) {
 		if ($_FILES['upfile']['error'] != 0) {
 			$result['state'] = '上传失败，请重试！';
 			exit(json_encode($result));
 		}
-		$file = file_upload($upfile);
+		$file = file_upload($upfile, 'other');
 		if (is_error($file)) {
 			$result['state'] = $file['message'];
 			exit(json_encode($result));

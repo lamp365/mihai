@@ -142,10 +142,6 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     </div>
-<div class="weixin_gzh"></div>
-<div class="weixin_gzh_img">
-    <img src="__RESOURCE__/recouse/images/weixin_gzh.png">
-</div>
     <input type="hidden" class="productid-hidden" value="">
     <input type="hidden" class="mihaibi-hidden" value="">
     <!--@php include themePage('footer');@-->
@@ -176,15 +172,8 @@ $(function(){
             }
         },"json");
     });
-    $(".weixin_gzh,.weixin_gzh_img").on("click",function(){
-        $(".weixin_gzh,.weixin_gzh_img").hide();
-    });
 })
 function exchangeFun(thisObj,productid,mihaibi){
-    if(!check_is_weixin()){
-        //如果不是微信
-        return false;
-    }
     if(openid){
         var data_type = $(thisObj).attr("data-type");
         var ajax_url ="<!--@php echo mobile_url('iclub',array('op'=>'change'));@-->";
@@ -215,15 +204,6 @@ function exchangeFun(thisObj,productid,mihaibi){
                 window.location.href = url;
             }
         },{confirmButtonText: '确认', cancelButtonText: '取消', width: 330});
-    }
-}
-function check_is_weixin(){
-    var is_weixin = "<!--@php echo $is_weixin; @-->";
-    if(is_weixin == 0){
-        $(".weixin_gzh,.weixin_gzh_img").show();
-        return false;
-    }else{
-        return true;
     }
 }
 function addAddress() {

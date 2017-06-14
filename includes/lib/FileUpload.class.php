@@ -12,6 +12,35 @@ class FileUpload
 {
     public $dir          = '';  //设置存放在阿里下的目录
     public $save_oldname = '';  //是否保存为图片原名
+
+    /**
+     * 图片保存方式：
+       年月/xxxxx.jpg
+       店铺id/年月/xxxxxxxx.jpg
+       店铺id/分组/年月/xxxxxxx.jpg
+     * FileUpload constructor.
+     * @param string $pic_group
+     * $pic_group为空 则        店铺id/年月/xxxxxxxx.jpg
+     * $pic_group不为空 则      店铺id/分组/年月/xxxxxxxx.jpg
+     */
+    public function __construct($pic_group = '')
+    {
+        if(function_exists('get_member_account')){
+            $member   = get_member_account();
+            $store_id = $member['store_sts_id'];
+        }else{
+            $store_id = 0;
+        }
+        if(!empty($store_id)){
+            $this->dir = 'shop'.$store_id.'/';
+            if(!empty($pic_group)){
+                $this->dir .= $pic_group.'/'.date('Ym');
+            }else{
+                $this->dir .= date('Ym');
+            }
+        }
+    }
+
     public function uploadRemotePic($urlpic)
     {
         if(empty($urlpic))
@@ -27,15 +56,13 @@ class FileUpload
      *  表单提交上来的文件  如果传到本地则默认生成缩略图
      * @param $file
      * @param bool|true $uploadByQiniu
-     * @param string $width
-     * @param string $height
      * @param string $type
      * @return array
      */
-    public function upload($file, $uploadByAli = true, $width, $height, $type = 'image')
+    public function upload($file, $uploadByAli = true, $type = 'image')
     {
         if ($file['error'] == 4) {
-            return  $this->error(- 1, '没有上传内容');
+            return $this->error(- 1, '没有上传内容');
         }
 
         // 返回文件后缀
@@ -75,19 +102,19 @@ class FileUpload
             $limit = 80000*1024;   //apk允许25造
         }
         if (! in_array(strtolower($extention), $extentions)) {
-            return  $this->error(- 1, '不允许上传此类文件');
+            return $this->error(- 1, '不允许上传此类文件');
         }
         if ($limit < filesize($file['tmp_name'])) {
             $daxiao = $this->conversion($limit);
-            return  $this->error(- 1, "上传的文件超过大小限制，请上传小于 " . $daxiao . " 的文件");
+            return $this->error(- 1, "上传的文件超过大小限制，请上传小于 " . $daxiao . " 的文件");
         }
 
-        //设置开关是否启用七牛服务器存储文件
+        //设置开关是否启用阿里云服务器存储文件
         if($uploadByAli){
 //            $result = $this->uploadByQiniu($file, $extention);
             $result = $this->uploadByAli($file, $extention);
         }else{
-            $result = $this->uploadBylocal($file, $extention, $width, $height, $type);
+            $result = $this->uploadBylocal($file, $extention);
         }
 
         return $result;
@@ -133,7 +160,7 @@ class FileUpload
             unset($qiniu);
             return $data;
         }else{
-            $msg =  $this->error(-1,$qiniu->errorStr);
+            $msg = $this->error(-1,$qiniu->errorStr);
             unset($qiniu);
             return $msg;
         }
@@ -143,15 +170,17 @@ class FileUpload
     /**
      * @param $file 表单提交上来的文件
      * @param $extention
-     * @param $width
-     * @param $height
      * @return array
      * @content 直接上传到本地
      */
-    public function uploadBylocal($file,$extention,$width, $height, $type='')
+    public function uploadBylocal($file,$extention)
     {
         $result = array();
-        $path = 'attachment/'.date('Ym').'/';
+        if(empty($this->dir)){
+            $path = 'attachment/'.date('Ym').'/';
+        }else{
+            $path = 'attachment/'.$this->dir.'/';
+        }
 
         $result['path'] = $path;
         mkdirs(WEB_ROOT . '/' . $result['path']);
@@ -163,12 +192,11 @@ class FileUpload
         $filename = WEB_ROOT .'/'. $result['path'];
         $result['extention'] = $extention;
         if (! file_move($file['tmp_name'], $filename)) {
-            return  $this->error(- 1, '保存上传文件失败');
+            return $this->error(- 1, '保存上传文件失败');
         }
 
         $result['path']    = WEBSITE_ROOT.$result['path'];
         $result['success'] = true;
-
         return $result;
 
     }
@@ -189,7 +217,7 @@ class FileUpload
             $data['success'] = true;
             return $data;
         }else{
-            $msg =  $this->error(-1,'上传失败！');
+            $msg = $this->error(-1,'上传失败！');
             return $msg;
         }
     }
@@ -224,6 +252,14 @@ class FileUpload
         }
         return FALSE;
     }
+
+    public function error($code, $msg = '')
+    {
+        return array(
+            'errno' => $code,
+            'message' => $msg
+        );
+    }
     /**
      * @return bool
      * 获取七牛所有的图片
@@ -242,11 +278,4 @@ class FileUpload
         return $res;
     }
 
-    public function error($code, $msg = '')
-    {
-        return array(
-            'errno' => $code,
-            'message' => $msg
-        );
-    }
 }

@@ -4,10 +4,12 @@
  * User: 刘建凡
  * Date: 2017/3/9
  * Time: 14:56
+ * 不在使用   统一使用 ｌａｎｇｕａｅ下面的语言包 操作 paylog
  */
 class PayLogEnum{
 
     public static $LogEnumValues = array(
+        
         'LOG_REGISTER_TIP'        => '邀请@好友注册奖励',
         'LOG_INVITE_TIP'          => '邀请@好友助力免单奖励',
         'LOG_BUYORDER_TIP'        => '好友@下单佣金奖励',
@@ -30,10 +32,16 @@ class PayLogEnum{
 
         //提款
         'LOG_OUTMONEY_FAIL_TIP'    => '提现审核失败返回账户',
-        'LOG_OUTMONEY_TIP'         => '提现到审核中',
-        'LOG_OUTMONEY_ALI_TIP'     => '提现到 支付宝@',
-        'LOG_OUTMONEY_BANK_TIP'    => '提现到 @',
-
+        
+        //购买
+        'LOG_BUY_SHOP_LEVEL_REMARK'    => '购买店铺等级',
+        
+        //LOG type类型
+        'LOG_TYPE_OF_CHARGE_MONEY'  => 1,
+        'LOG_TYPE_OF_USE_MONEY'     => -1,
+        'LOG_TYPE_OF_CHARGE_POINT'  => 2,
+        'LOG_TYPE_OF_USE_POINT'     => -2,
+        'LOG_TYPE_OF_CHARGE'        => 3,
         //积分
         'LOG_REGIST_JIFEN_TIP'     => '注册系统赠送积分',
         'LOG_REGIST_VIPJIFEN_TIP'  => '天猫老客户注册赠送积分',
@@ -44,7 +52,6 @@ class PayLogEnum{
         'LOG_SIGN_7JIFEN_TIP'      => '连续7天签到送积分',
         'LOG_JIFEN_CHANGE_TIP'     => '积分兑换礼品',
         'LOG_JIFEN_CHANGE_FAIL_TIP'=> '积分兑换礼品审核失败',
-
     );
 
 

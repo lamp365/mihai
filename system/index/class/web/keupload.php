@@ -16,7 +16,7 @@
 			$result['message'] = '上传失败，请重试！';
 			exit(json_encode($result));
 		}
-		$file = file_upload($_FILES['imgFile']);
+		$file = file_upload($_FILES['imgFile'], 'other');
 		if (is_error($file)) {
 			$result['message'] = $file['message'];
 			exit(json_encode($result));

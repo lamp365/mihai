@@ -47,7 +47,7 @@
 				$hobby  = mysqld_select("SELECT * FROM ".table('member_info')." WHERE openid = :openid ", array(":openid"=>$openid));
 				// 增加地址
 				$address  = mysqld_select("SELECT * FROM ".table('shop_address')." WHERE openid = :openid ", array(":openid"=>$openid));
-				if ( !empty($address) ) {
+				if ( !empty($address) ) { 
                     $address  = $address['address'];
 				}else{
                     $address  = '您还未设置配送地址';

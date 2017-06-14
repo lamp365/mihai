@@ -9,7 +9,7 @@
     <meta name="format-detection" content="telephone=no">
 	<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
-	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.css">
+	<?php css_url('bootstrap.min','bootstrap3'); ?>
 	<script type="text/javascript" src="__RESOURCE__/script/bootstrap.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
@@ -22,6 +22,14 @@
 	<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 
 	<style type='text/css'>
+	body{background: #fff}
+	.head{box-shadow:none;border-bottom: 1px solid rgba(109, 109, 109, 0.2)}
+	.shopcart-main {
+    overflow: hidden;
+    background: #FFF;
+    margin-top: 45px;
+    border: 1px solid rgba(109, 109, 109, 0.2);
+}
     #poptip { position: fixed; top:40%;left:50%;width:160px;margin-left:-80px;height: 27px;background:#000; opacity: 0.7;filter:alpha(opacity=0.7); color:#fff;z-index: 999;  border-radius:5px;
         -webkit-border-radius:5px;
         -moz-border-radius:5px;}
@@ -149,7 +157,7 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="address">
 				</div>
-				<!--
+				<!--@php if(!isset($_GP['no_identy'])){ @-->
 				<label for="" class="col-sm-3 control-label">身份证姓名：</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="idname" value="<?php if (is_array($idetail)){ echo $idetail['identity_name']; } ?>">
@@ -159,12 +167,16 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control" id="idnumber" value="<?php if (is_array($idetail)){ echo $idetail['identity_number']; } ?>">
 				</div>
-				-->
+				<!--@php } @-->
 			</div>
 			<input type="hidden" id="addressid" value="" />
 			<div class="form-group">
 				<div class="col-sm-12">
+					<!--@php if(empty($_GP['no_identy'])){ @-->
+					<button type="button" class="btn btn-danger remote_url check_identy" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address')@-->">保存</button>
+					<!--@php }else{  @-->
 					<button type="button" class="btn btn-danger remote_url" onclick="saveAddress()" data-url="<!--@php  echo mobile_url('address',array('no_identy'=>1))@-->">保存</button>
+					<!--@php } @-->
 					<button type="button" class="btn close-btn" onclick="addAddress();$('#addAddressPanel').hide();$('#addressid').val('');">取消</button>
 				</div>
 			</div>
@@ -173,8 +185,6 @@
 	 
 </div>
 
-
-<!--@php include themePage('footer');@-->
 
 <script src="__RESOURCE__/recouse/js/zepto.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -238,7 +248,18 @@ function saveAddress() {
 		alert('请输入您的详细地址！');
 		return false;
 	}
-
+	if(!idname){
+		alert("请输入您的身份证号码！");
+		return false;
+	}
+	if(!idnumber){
+		alert("请输入您的身份证号码！");
+		return false;
+	}
+	if(idnumber.length != 18){
+		alert("请输入正确的身份证号码！");
+		return;
+	}
 	tip("正在处理数据...");
 	var url = $(".remote_url").data('url');
 	$.post(url, {

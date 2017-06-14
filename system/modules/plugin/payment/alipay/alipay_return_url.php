@@ -23,6 +23,8 @@ if($verify_result) {
 						$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id and ordersn=:ordersn", array(':id' => $orderid,':ordersn'=>$ordersn));
 						if(!empty($order['id']))
 						{
+							require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
+		                    mailnotice($orderid);
 							$order_cookie =  new LtCookie();
 							$order_cookie->setCookie('success', serialize($order));
 							if($order['status']==1){
@@ -31,6 +33,9 @@ if($verify_result) {
 		                     	  //message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
 							}else{
 							      mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
+								  //paylog  少用 updateOrderStock 已没有价值了
+								  $mark = PayLogEnum::getLogTip('LOG_SHOPBUY_TIP');
+								  member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['ordersn']);
 							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
 								  Header("Location:".WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success'); 
 		                          // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');

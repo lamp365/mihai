@@ -1,49 +1,360 @@
-<!DOCTYPE html>
 <!--@php include themePage('header'); @-->
-<link href="__RESOURCE__/recouse/css/search_new.css" rel="stylesheet" type="text/css" />
-<div class="WX_search1" id="mallHead" style="display:none;">
-  
-	<form class="WX_search_frm1" action="mobile.php" id="searchForm" name="searchForm">
-					<input type="hidden" name="mod" value="mobile" />
-		<input type="hidden" name="do" value="goodlist" />
-		<input type="hidden" name="name" value="shopwap" />
-        <input name="keyword" id="search_word" class="WX_search_txt hd_search_txt_null" placeholder="请输入商品名进行搜索！" ptag="37080.5.2" type="search"  AUTOCOMPLETE="off"/>
-      
-   
-    <div class="WX_me">
-        <a href="javascript:;" id="submit" class="WX_search_btn_blue" >搜索</a>
-       
-    </div>
-	 </form>
-</div>
-
-
-
-
-
-<div class="tab">		
-<div class="category">
-	<ul>     	
-		<!--@php  if(is_array($category)) { foreach($category as $item) { @-->
-		<li class="clearfix">
-			<div class="info">
-				<p class="name">
-					<a href="<!--@php  echo mobile_url('goodlist', array('pcate' => $item['id']))@-->" style="color: #F3385F;">						
-					<!--@php  echo $item['name'];@-->
-					</a>
-				</p>
-					<div class="data">
-						<!--@php  if(is_array($children[$item['id']])) { foreach($children[$item['id']] as $child) { @-->
-                    	<a href="<!--@php  echo mobile_url('goodlist', array('p2' => $child['id']))@-->"><img data-original="<!--@php  echo $child['thumb'];@-->" class="lazy" src="<?php echo getFullPicUrl('images/loading.gif'); ?>" /><!--@php  echo $child['name'];@--></a>
-						<!--@php  } } @-->
-                    </div>
+<!--@php css_url('list_category'); @-->
+<div class="g-bd isOpenAppClosed">
+	<div class="g-row">
+		<div id="j-categoryList">
+			<div>
+				<div style="height: 44px;" >
+					<div class="m-hd">
+						<!--搜索结果的路径 <a href="@php  echo mobile_url('category_search')@"></a> -->
+						<a onclick="searchShow()" href="Javascript:;">
+							<div class="m-itemCateListHd">
+								<div class="m-topSearchIpt ipt">
+									<i class="icon"></i>
+									<span class="placeholder">
+										<span>商品搜索, 共</span>
+										<span>51761</span>
+										<span >款好物</span>
+									</span>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="m-cateNavVertWrap" style="left:0;">
+					<div class="m-catelist-left-area" style="position:relative;width:100%;overflow:scroll;">
+						<ul id="j-cateNav" class="m-cateNavVert" >
+						<!-- tabclass用来储存 tab页的class 和tab的div的class一一对应-->
+							<li class="item active " tabclass="tuijian">
+								<a class="txt" href="javascript:;">推荐</a>
+							</li>
+							<li class="item " tabclass="jujia">
+								<a class="txt" href="javascript:;">居家</a>
+							</li>
+							<li class="item " tabclass="canchu">
+								<a class="txt" href="javascript:;" >餐厨</a>
+							</li>
+							<li class="item " tabclass="peijian">
+								<a class="txt" href="javascript:;" >配件</a>
+							</li>
+							<li class="item " tabclass="fuzhuang">
+								<a class="txt" href="javascript:;">服装</a>
+							</li>
+							<li class="item " tabclass="tuijian">
+								<a class="txt" href="javascript:;">推荐</a>
+							</li>
+							<li class="item " tabclass="jujia">
+								<a class="txt" href="javascript:;">居家</a>
+							</li>
+							<li class="item " tabclass="canchu">
+								<a class="txt" href="javascript:;" >餐厨</a>
+							</li>
+							<li class="item " tabclass="peijian">
+								<a class="txt" href="javascript:;" >配件</a>
+							</li>
+							<li class="item " tabclass="fuzhuang">
+								<a class="txt" href="javascript:;">服装</a>
+							</li>
+							<li class="item " tabclass="tuijian">
+								<a class="txt" href="javascript:;">推荐</a>
+							</li>
+							<li class="item " tabclass="jujia">
+								<a class="txt" href="javascript:;">居家</a>
+							</li>
+							<li class="item " tabclass="canchu">
+								<a class="txt" href="javascript:;" >餐厨</a>
+							</li>
+							<li class="item " tabclass="peijian">
+								<a class="txt" href="javascript:;" >配件</a>
+							</li>
+							<li class="item " tabclass="fuzhuang">
+								<a class="txt" href="javascript:;">服装</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- tab切换的div 开始-->
+				<div class="m-subCateList tuijian" style="display:block;overflow:scroll;">
+					<div class="banner">
+						<img data-original="http://yanxuan.nosdn.127.net/7ba4f9b5d8d0205cd6cb639e645851d4.jpg" src="__RESOURCE__/recouse/images/lazy640.jpg"  class="lazy">
+					</div>
+					<div class="cateList">
+						<div class="hd">
+							<span class="text" >
+								<span>推荐</span>
+								<span>分类</span>
+							</span>
+						</div>
+						<ul class="list">
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="/item/list?categoryId=1022001&amp;subCategoryId=1031001">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊推荐</div>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- tab切换的div 结束-->
+				<!-- tab切换的div 开始-->
+				<div class="m-subCateList jujia" >
+					<div class="banner">
+						<img data-original="http://yanxuan.nosdn.127.net/7ba4f9b5d8d0205cd6cb639e645851d4.jpg"  src="__RESOURCE__/recouse/images/lazy640.jpg"  class="lazy">
+					</div>
+					<div class="cateList">
+						<div class="hd">
+							<span class="text" >
+								<span>推荐</span>
+								<span>分类</span>
+							</span>
+						</div>
+						<ul class="list">
+							<li class="cateItem">
+								<a href="">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊2推荐</div>
+								</a>
+							</li>
+							<li class="cateItem">
+								<a href="">
+									<div class="cateImgWrapper">
+										<img data-original="http://yanxuan.nosdn.127.net/fbee769af73c0f63f6120eb27ff3ce96.png?imageView&amp;quality=85&amp;thumbnail=144x144" alt="" src="__RESOURCE__/recouse/images/lazy200.jpg"  class="lazy cateImg">
+									</div>
+									<div class="name" >丁磊2推荐</div>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- tab切换的div 结束-->
 			</div>
-		</li>
-		<!--@php  } } @-->
-    </ul>
-</div>
 		</div>
 	</div>
-
-<!--@php  include page('footer');@-->	
+</div>
+<!-- search_page 搜索的侧边栏 -->
+<!--@php include themePage('search_page');@-->
+<script>
+	$(function(){
+		//tab 切换
+		$("img").lazyload({
+	        event : "sporty"
+	    });
+		function litab(){
+			var li_index = 0;
+			$("#j-cateNav li").on("click",function(){
+				li_index = $(this).index();
+				$(this).addClass("active").siblings("li").removeClass("active");
+				var tabclass = $(this).attr("tabclass");
+				$(".m-subCateList."+tabclass).show().siblings(".m-subCateList").hide();
+				$("img.lazy").trigger("sporty");
+			});
+		}
+		litab();
+		//分类高度计算
+		function CateListHeight(){
+			var m_tabBar_height = $(".m-tabBar").height();
+			var head_height = $(".g-bd").height();
+			var window_height = $(window).height();
+			var CateListHeight = window_height-head_height-m_tabBar_height-20;
+			var leftheight = CateListHeight+20;
+			$(".m-subCateList").height(CateListHeight);
+			$(".m-catelist-left-area").height(leftheight);
+			$("img.lazy").trigger("sporty");
+			$("body").css("overflow","hidden");
+		}
+		CateListHeight();
+		$(window).resize(function(){
+			CateListHeight();
+		});
+		
+	})
+</script>
 <!--@php include themePage('footer');@-->

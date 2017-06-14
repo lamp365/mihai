@@ -3,27 +3,40 @@
 member操作
 */
 
+
 function save_member_login($mobile = '', $openid = '')
 {
-    $member = array();
     if (! empty($mobile)) {
         $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
             ':mobile' => $mobile
         ));
-        if (! empty($member['openid'])) {
-            $_SESSION[MOBILE_ACCOUNT] = $member;
-        }
     }
     
     if (! empty($openid)) {
         $member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid limit 1", array(
             ':openid' => $openid
         ));
-        if (! empty($member['openid'])) {
-            $_SESSION[MOBILE_ACCOUNT] = $member;
-        }
     }
-    return $member;
+
+    //缓存用户信息
+    $member_info = array();
+    if (! empty($member['openid'])) {
+        $_SESSION[MOBILE_ACCOUNT] = $member;
+        //获取商铺信息  并缓存商铺的信息
+        $member_info = set_store_logincache($member);
+
+        //APP端将数据缓存一份到 memcache
+        if ($_GET['name'] == 'api' && extension_loaded('Memcached')) {
+            $mcache = new Mcache();
+            // app登陆 初始化
+            $app_key = $mcache->init_msession($_REQUEST['device_code'],$member_info);
+            $member_info['app_key'] = $_SESSION[MOBILE_ACCOUNT]['app_key'] = $app_key;
+        }
+    }else{
+        $_SESSION[MOBILE_ACCOUNT] = array();
+    }
+
+    return $member_info;
 }
 
 function member_login_qq($qq_openid)
@@ -88,7 +101,7 @@ function member_login($mobile, $pwd)
 {
     $member = mysqld_select("SELECT * FROM " . table('member') . " where mobile=:mobile limit 1", array(
         ':mobile' => $mobile
-    ));
+    ));  
     if (! empty($member['openid'])) {
         if ($member['status'] != 1) {
             //用户被禁用
@@ -109,9 +122,8 @@ function member_login($mobile, $pwd)
 
 function member_logout()
 {
-    unset($_SESSION["mobile_login_fromurl"]);
-    unset($_SESSION[MOBILE_QQ_OPENID]);
-    unset($_SESSION[MOBILE_ACCOUNT]);
+    $_SESSION = array();
+    session_destroy();
     header("location:" . WEBSITE_ROOT);
     exit();
 }
@@ -147,11 +159,12 @@ function get_member_account($create_weixin_account = true,$mustLogin = false)
             }
         } else{
             //非APP应用端请求  最后返回空数组 或者 weixin_openid
-           $account_data = get_session_account($create_weixin_account);
+            $account_data = get_session_account($create_weixin_account);
             if(empty($account_data) && $mustLogin){
                 tosaveloginfrom();
                 header("location:".mobile_url('login'));
             }else{
+                // 最后返回空数组 或者 weixin_openid
                 return $account_data;
             }
         }
@@ -161,13 +174,21 @@ function get_member_account($create_weixin_account = true,$mustLogin = false)
 }
 
 function to_member_loginfromurl()
-{
+{   
+	if (!empty($_SESSION["vip_mobile_login_fromurl"])){
+        $fromurl = $_SESSION["vip_mobile_login_fromurl"];
+        unset($_SESSION["vip_mobile_login_fromurl"]);
+        return $fromurl;
+	}
     if (!empty($_SESSION["mobile_login_fromurl"])) {
         $fromurl = $_SESSION["mobile_login_fromurl"];
         unset($_SESSION["mobile_login_fromurl"]);
         return $fromurl;
     } else {
-		return WEBSITE_ROOT;
+		return create_url('mobile', array(
+            'name' => 'shopwap',
+            'do' => 'index'
+        ));
     }
 }
 
@@ -179,6 +200,7 @@ function member_get($openid,$filed='*')
     ));
     return $member;
 }
+
 //通过手机号获取用户信息
 function member_get_bymobile($mobile='',$field='mobile,openid'){
     if(empty($mobile)) return array();
@@ -186,262 +208,98 @@ function member_get_bymobile($mobile='',$field='mobile,openid'){
     return $memberData;
 }
 
-/**
- * 更新 credit和experience字段  只对积分 和经验。。积分添加多少，经验就添加多少。
- * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
- * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
- * @param $openid
- * @param $fee
- * @param $type  addcredit    usecredit
- * @param $remark
- * @return bool
- */
-function member_credit($openid, $fee, $type, $remark)
+function member_store_getById($sts_id,$filed='*')
 {
-    $add_arr = array('addcredit');
-    $use_arr = array('usecredit');
-    $member = member_get($openid);
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee <= 0) {
-            //这里直接返回，不进行更新操作 不要弹出错误信息
-           return false;
-        }
-        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
-            return false;
-        }else if(in_array($type,$use_arr)){
-            //积分为负
-            $fee = -1*floor($fee);
-        }
-        $data = array(
-            'remark' => $remark,
-            'type'   => $type,
-            'fee'    =>  $fee,
-            'account_fee' => $member['credit'] + $fee,
-            'createtime' => TIMESTAMP,
-            'openid' => $openid
-        );
-        mysqld_insert('member_paylog', $data);
-        $credit     = max(0,$member['credit']+$fee);
-        $experience = max(0,$member['experience']+$fee);
-        $update     = array('credit'=>$credit);
-        if($fee > 0){
-            //经验不扣除，一般兑换礼品只扣积分不扣经验
-            $update['experience'] = $experience;
-        }
-
-        mysqld_update('member', $update, array(
-            'openid' => $openid
-        ));
-        return true;
+    if(empty($sts_id)){
+        return array();
     }
-    return false;
+    $store_info = mysqld_select("SELECT {$filed} FROM " . table('store_shop') . " where sts_id={$sts_id}");
+    return $store_info;
 }
 
 /**
- * 更新免单返现的字段  freeorder_gold
- * 只对 免单金额操作，  注意免单金额的使用，有一个免额过期时间，那么时间的判断是否可以使用免额，要在外部判断，正常是下单后判断免额没过期，订单总额扣除免额，再产生免额log
- * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
- * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
- * @param $openid
- * @param $fee
- * @param $type  addgold or usegold
- * @param $remark
- * @return bool
+ * 获取用户的默认店铺  该方法用在登录的时候，登录后 就会缓存起来，所以之后需要获取用户信息，
+ * 请使用以上方法  member_store_getById    从缓存中获取店铺id(store_sts_id)后丢进去
+ * @param $member
+ * @param string $filed
+ * @return array|bool|mixed
  */
-function member_freegold($openid, $fee, $type, $remark,$orderid='')
+function member_store_get($member,$filed='*')
 {
-    $add_arr = array('addgold');
-    $use_arr = array('usegold');
-    $member = member_get($openid);
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee <= 0) {
-           return false;
-        }
-        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
-            return false;
-        }else if(in_array($type,$use_arr)){
-            //金额为负
-            $fee = -1*$fee;
-        }
-        $data = array(
-            'remark' => $remark,
-            'type' => $type,
-            'fee' => $fee,
-            'account_fee' => $member['freeorder_gold'] + $fee,
-            'createtime' => TIMESTAMP,
-            'openid'  => $openid,
-            'orderid' => $orderid
-        );
-        //以免扣掉时为负数
-        $gold  = max(0,$member['freeorder_gold'] + $fee);
-        mysqld_insert('member_paylog', $data);
-        mysqld_update('member', array('freeorder_gold' => $gold ), array(
-            'openid' => $openid
-        ));
-        return true;
-    }
-    return false;
-}
-/**
- * 更新gold字段   只对金额操作
- * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
- * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
- * @param $openid
- * @param $fee
- * @param $type     addgold  usegold
- * @param $remark
- * @param $update 请用bool型，true  or  false
- * 有些地方不一定要更新gold，只需要有记录。如下单后，钱是第三方的，但是会记录一个paylog,这时候不是扣除余额，不能进行更新
- * @return bool
- */
-function member_gold($openid, $fee, $type, $remark,$update=true,$orderid='')
-{
-    $add_arr = array('addgold');
-    $use_arr = array('usegold');
-    $member = member_get($openid);
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee <= 0) {
-            return false;
-        }
-        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
-            return false;
-        }else if(in_array($type,$use_arr)){
-            //金额为负
-            $fee = -1*$fee;
-        }
-        $data = array(
-            'remark' => $remark,
-            'type' => $type,
-            'fee' => $fee,
-            'account_fee' => $member['gold'] + $fee,
-            'createtime' => TIMESTAMP,
-            'openid'  => $openid,
-            'orderid' => $orderid,
-        );
-        $gold  = max(0,$member['gold'] + $fee);
-        mysqld_insert('member_paylog', $data);
-        $pid   = mysqld_insertid();
-        if($update){
-            mysqld_update('member', array( 'gold' => $gold), array(
-                'openid' => $openid
-            ));
-        }
-        return $pid;
-    }
-    return false;
+    if($member['member_type'] != 2) return array();
+    //通过openid找到该用户当前默认的店铺id
+    $default =  mysqld_select("select sts_id,is_admin from ".table('member_store_relation')." where openid='{$member['openid']}' and is_default=1 ");
+    if(empty($default))  return array();
+
+    $store_info = mysqld_select("SELECT {$filed} FROM " . table('store_shop') . " where sts_id={$default['sts_id']}");
+    if(empty($store_info))  return array();
+    $store_info['is_admin'] = $default['is_admin'];
+    return $store_info;
 }
 
 /**
- * 更新 gold   只对佣金操作  会给卖家计算佣金
- * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
- * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
- * @param $openid          卖家openid
- * @param $friend_openid   买家openid
- * @param $fee
- * @param $type  addgold_byorder or usegold_byorder
- * @param $remark
- * @return bool
+ * 返回用户的所有店铺  法人的所有店铺  或者 每个子用户能管理的所有店铺
+ * @param $member
+ * @param $is_admin   0或者1
+ * @return array
  */
-function member_commisiongold($openid, $friend_openid,$fee, $type, $orderid='',$remark='')
+function member_allstore_get($member,$field='*',$is_admin = 1)
 {
-    $add_arr = array('addgold_byorder');
-    $use_arr = array('usegold_byorder');
-    $member = member_get($openid);
-
-    if(empty($remark)){
-        $friend_member =  member_get($friend_openid);
-        $name   = getNameByMemberInfo($friend_member);
-        $remark = PayLogEnum::getLogTip('LOG_BUYORDER_TIP',$name);
+    if($is_admin == 1){
+        $where = " and is_admin=1";
+    }else{
+        $where = " ";
     }
-
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee <= 0) {
-            return false;
-        }
-        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
-            return false;
-        }else if(in_array($type,$use_arr)){
-            //金额为负
-            $fee = -1*$fee;
-        }
-        $data = array(
-            'remark' => $remark,
-            'type' => $type,
-            'fee' => $fee,
-            'account_fee'   => $member['gold'] + $fee,
-            'createtime'    => TIMESTAMP,
-            'openid'        => $openid,
-            'friend_openid' => $friend_openid,
-            'orderid'       => $orderid,
-        );
-        //以免扣掉时为负数
-        $freeze_gold  = max(0,$member['gold'] + $fee);
-        mysqld_insert('member_paylog', $data);
-        mysqld_update('member', array( 'gold' => $freeze_gold), array(
-            'openid' => $openid
-        ));
-        return true;
+    if($member['member_type'] != 2) return array();
+    $relation = mysqld_selectall("select sts_id from ".table('member_store_relation')." where openid='{$member['openid']}' {$where}");
+    if(empty($relation))  return array();
+    $store_info = array();
+    foreach($relation as $item){
+        $store_info[] = mysqld_select("SELECT {$field} FROM " . table('store_shop') . " where sts_id={$item['sts_id']}");
     }
-    return false;
+    return $store_info;
+}
+/**
+ * 设置店铺的缓存
+ * @param $member
+ */
+function set_store_logincache($member,$store_info = array()){
+    if(empty($store_info)){
+        $store_info = member_store_get($member);
+    }
+    $member['store_sts_id']       = $_SESSION[MOBILE_ACCOUNT]['store_sts_id']   = $store_info['sts_id'];    //如果是空数组，则得到的store_sts_id为空，说明没有商铺
+    $member['store_sts_name']     = $_SESSION[MOBILE_ACCOUNT]['store_sts_name'] = $store_info['sts_name'];
+    $member['store_is_admin']     = $_SESSION[MOBILE_ACCOUNT]['store_is_admin'] = $store_info['is_admin'];
+    $member['sts_category_p1_id'] = $_SESSION[MOBILE_ACCOUNT]['sts_category_p1_id'] = $store_info['sts_category_p1_id'];
+    $member['sts_category_p2_id'] = $_SESSION[MOBILE_ACCOUNT]['sts_category_p2_id'] = $store_info['sts_category_p2_id'];
+    return $member;
 }
 
 /**
- * 更新gold字段  只对邀请好友时操作
- * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
- * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
- * @param $openid          邀请人openid
- * @param $friend_openid   当前被邀请openid
- * @param $fee
- * @param $type  addgold_byinvite  usegold_byinvite
- * @param $remark
- * @param $ordersn:订单编号,  可选
- * 
- * @return bool
+ * 检验卖家的身份状态
  */
-function member_invitegold($openid,$friend_openid, $fee, $type,$remark='',$orderid='')
-{
-    $add_arr = array('addgold_byinvite');
-    $use_arr = array('usegold_byinvite');
-    $member  = member_get($openid);
-
-    if(empty($remark)){
-        $friend_member =  member_get($friend_openid);
-        $name   = getNameByMemberInfo($friend_member);
-        $remark = PayLogEnum::getLogTip('LOG_REGISTER_TIP',$name);
-    }
-
-
-    if (! empty($member['openid'])) {
-        if (! is_numeric($fee) || $fee <= 0) {
-            //这里直接返回，不进行更新操作 不要弹出错误信息
-            return false;
+function checkSellerLoginStatus(){
+    $memInfo    = get_member_account();
+    //获取该用户的默认店铺
+    $store_info = member_store_get($memInfo);
+    if(empty($memInfo)){
+        //判断用户是否有登录
+        if( $_GET['name'] == 'api' ){
+            //2表示 app需要跳转登录的标记
+            ajaxReturnData(2,LANG('COMMON_PLEASE_LOGIN') );
+        }else{
+            message( LANG('COMMON_PLEASE_LOGIN'), WEBSITE_ROOT, 'error');
         }
-        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
-            return false;
-        }else if(in_array($type,$use_arr)){
-            //金额为负
-            $fee = -1*$fee;
+    }else if($memInfo['member_type'] != 2 || empty($store_info)){
+        //如果不是卖家 强行进来
+        if( $_GET['name'] == 'api' ){
+            ajaxReturnData(0,LANG('COMMON_NOTBE_SELLER') );
+        }else{
+            message( LANG('COMMON_NOTBE_SELLER'), WEBSITE_ROOT, 'error');
         }
-        $data = array(
-            'remark' => $remark,
-            'type' => $type,
-            'fee' => $fee,
-            'account_fee'   => $member['gold'] + $fee,
-            'createtime'    => TIMESTAMP,
-            'openid'        => $openid,
-            'friend_openid' => $friend_openid,
-        	'orderid'		=> $orderid
-        );
-        //以免扣掉时为负数
-        $gold  = max(0,$member['gold'] + $fee);
-        mysqld_insert('member_paylog', $data);
-        mysqld_update('member', array( 'gold' => $gold), array(
-            'openid' => $openid
-        ));
-        return true;
     }
-    return false;
 }
+
 /**
  * @param $openid
  * @param $name
@@ -616,37 +474,24 @@ function checkIsLogin(){
     }
 }
 
-
-
 /**
- * 该方法少用，尽量使用以下
- * 积分操作请用 member_credit()该方法    金额操作请用member_gold()  邀请好友操作用 member_invitegold()
- * 佣金操作请用 member_commisiongold()  免单返现操作请用member_freegold()
- *
- * 如果使用，请小心type类型，type的值，参照以上五个方法，并且金额fee支出(use)  要记为负数
- * 同时还要注意有friend_openid这个字段，如佣金 与邀请的 就必须存值，故该方法要小心使用
- *
- * 记录用户账单的收支情况
- * @param $openid :用户ID
- * @param $fee:收支费用
- * @param $account_fee:用户账号剩余金额
- * @param unknown $type:收支类型
- * @param unknown $remark :收支备注
- * @param $ordersn:订单编号 ，可选
+ * @return int
+ * @return int
+ * 验证用户是否APP首次登录，并赠送积分
+ * 
  */
-function insertMemberPaylog($openid, $fee,$account_fee, $type, $remark,$ordersn='')
-{
-	$data = array('remark' 			=> $remark,
-					'type' 			=> $type,
-					'fee' 			=> $fee,
-					'account_fee' 	=> $account_fee,
-					'createtime' 	=> TIMESTAMP,
-					'openid' 		=> $openid,
-					'ordersn'		=> $ordersn
-	);
-
-	return mysqld_insert('member_paylog', $data);
+function ifApp($openid=''){
+    if ( !empty($openid) ){
+        $member = mysqld_select("SELECT * FROM " . table('member') . " where ifapp = 0 and openid=:openid limit 1", array(
+            ':openid' => $openid
+        )); 
+		if ($member){
+			mysqld_update('member', array('ifapp'=>1), array('openid'=>$openid));
+            member_credit($openid, 50, 'addcredit', '首次登陆APP积分赠送50');
+		}
+	}
 }
+
 
 /**
  * @content 获得用户的余额
@@ -685,7 +530,7 @@ function register_credit($mobile,$openid){
     $shop_regcredit=intval($cfg['shop_regcredit']);
     if(!empty($shop_regcredit))
     {
-        member_credit($openid,$shop_regcredit,"addcredit",PayLogEnum::getLogTip('LOG_REGIST_JIFEN_TIP'));
+        member_credit($openid,$shop_regcredit,"2",PayLogEnum::getLogTip('LOG_REGIST_JIFEN_TIP'));
     }
 }
 
@@ -719,7 +564,7 @@ function get_weixininfo_from_regist(){
             $unionid =  $_SESSION[MOBILE_SESSION_ACCOUNT]['unionid'];
             $weixin  =  mysqld_select("select avatar,nickname,scan_openid from ".table('weixin_wxfans')." where unionid='{$unionid}'");
             if(empty($weixin)){
-                $name =  '会员'.random(5);
+                $name =  '小城市'.random(5);
                 $face = '';
                 $scan_openid = '';
             }else{
@@ -729,7 +574,7 @@ function get_weixininfo_from_regist(){
             }
         }
     }else{
-        $name =  '会员'.random(5);
+        $name =  '小城市'.random(5);
         $face = '';
         $scan_openid = '';
     }
@@ -765,10 +610,26 @@ function member_rank_next($rank=array()){
 
 
 /** 用户加密
- * @param $length
- * @return  code
- */
+* @param $length
+* @return  code
+*/
 function encryptPassword($password) {
     $result =  hash("sha256",md5($password));
-    return $result;
+    return $result;  
 }
+
+function update_member_info(){
+    $member = get_member_account();
+    if(empty($member))
+        return $member;
+
+    //获取用户的身份状态
+    $type_info = member_get($member['openid'],'member_type');
+    if($type_info['member_type'] != $member['member_type']){
+        //说明有店铺审核成功了 重新设置缓存
+        $member = save_member_login('',$member['openid']);
+    }
+    return $member;
+}
+
+

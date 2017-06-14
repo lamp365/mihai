@@ -232,6 +232,8 @@
          * @class Base
          */
         return {
+
+            idSuffix:0,
     
             /**
              * @property {String} version 当前版本号。
@@ -2372,6 +2374,9 @@
             statusMap = {};
     
         function gid() {
+            if(idSuffix == 0){  
+                idSuffix = Base.idSuffix;  
+            }  
             return idPrefix + idSuffix++;
         }
     

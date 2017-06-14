@@ -143,10 +143,20 @@ function update_order_status($id, $status,$dishinfo='') {
 			//已经没有冻结资金了，只有确认收货后，直接把拥金记录余额中
     	}
     	// 如果有使用余额抵扣，退还余额
-		if ($order['has_balance'] == '1' AND $order['return_balance'] == '0') {
+		if (($order['has_balance'] == '1' AND $order['return_balance'] == '0') || $order['freeorder_price']>0) {
 			
 			$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
-
+				
+			//该笔订单下单时间是在免单金额使用期内时
+			if(($mem['freeorder_gold_endtime']-7*24*3600) < $order['createtime'])
+			{
+				$memberData = array('freeorder_gold' => $order['freeorder_price']+$mem['freeorder_gold']);
+				
+				//记录用户账单的免单金额收支情况
+				$remark = PayLogEnum::getLogTip('LOG_BACK_FEE_TIP');
+				insertMemberPaylog($mem['openid'], $order['freeorder_price'],$memberData['freeorder_gold'], 'addgold', $remark);
+			}
+			
 			$memberData['gold'] = (float)$mem['gold']+(float)$order['balance_sprice'];
 			
 			mysqld_update ('member',$memberData,array('openid' =>$order['openid']));
@@ -191,25 +201,118 @@ function update_order_status($id, $status,$dishinfo='') {
 }
 
 /**
- * 支付成功后，推送相应信息、更新卖家佣金、记录账单等处理  库存的处理
+ * 支付成功后，推送相应信息、更新卖家佣金、记录账单等处理
  * 
  * @param $orderInfo: array 订单数组
  * 
  */
 function paySuccessProcess($orderInfo)
 {
+	$objOpenIm = new OpenIm();
+
+	//订单商品列表
+	$arrGoods  = mysqld_selectall("SELECT id,orderid,goodsid,seller_openid,commision FROM " . table('shop_order_goods') . " WHERE orderid = :orderid ", array(':orderid' => $orderInfo['id']));
+	// // 余额抵扣订单金额展示处理
+	// if ($orderInfo['has_balance'] == '1') {
+	// 	$orderInfo['price'] += $orderInfo['balance_sprice'];
+	// 	$orderInfo['price'] = (string)$orderInfo['price'];
+	// }
+	
+	//商品名称
+	$dishTitle= '';
+	
+	foreach ($arrGoods as $g) {
+		
+		$item = get_good (array('table' => 'shop_dish',
+								'where' => 'a.id=' . $g ['goodsid'],
+								'field' => 'a.id,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total,a.issendfree,a.pcate,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
+						) );
+		
+		$dishTitle = $item['title'].'等商品';
+		
+		//从分销商处购买的商品  后期可以去掉了，没有开店无需推送 seller_openid也不存值了
+		if(!empty($g['seller_openid']))
+		{
+			/*
+			//卖家佣金更新
+			mysqld_query("UPDATE ".table('member')." SET freeze_gold=freeze_gold+'".$g['commision']."',earning=earning+'".$g['commision']."' WHERE openid ='".$g['seller_openid']."' ");
+			
+			$arrSellerBill = array('order_id'		=> $orderInfo['id'],
+									'order_goods_id'=> $g['id'],
+									'type'			=> 1,						//收入佣金
+									'openid'		=> $g['seller_openid'],
+									'money'			=> $g['commision'],
+									'createtime'	=> time(),
+									'modifiedtime'	=> time()
+			);
+			
+			//卖家账单记录
+			mysqld_insert ( 'bill', $arrSellerBill );*/
+			
+			if($objOpenIm->isImUser($g['seller_openid']))
+			{
+				$immsg['from_user']	= IM_ORDER_FROM_USER;
+				$immsg['to_users']	= $g['seller_openid'];
+				$immsg['context']	= "老板 顾客付款下单啦～
+订单编号:{$orderInfo['ordersn']}
+购买商品:{$item['title']}
+下单时间:".date('Y-m-d H:i:s',$orderInfo['createtime'])."
+付款方式:{$orderInfo['paytypename']}
+支付金额:{$orderInfo['price']}
+实际收入:{$g['commision']}
+付款时间:".date('Y-m-d H:i:s');
+				
+				$objOpenIm->imMessagePush($immsg);
+			}
+		}
+	}
+	/*
+	$arrBuyerBill = array('order_id'		=> $orderInfo['id'],
+							'type'			=> 0,						//购买商品
+							'openid'		=> $orderInfo['openid'],
+							'money'			=> '-'.$orderInfo['price'],
+							'createtime'	=> time(),
+							'modifiedtime'	=> time()
+	);
+	
+		
+	//买家账单记录
+	mysqld_insert ( 'bill', $arrBuyerBill );*/
+	
+	if($objOpenIm->isImUser($orderInfo['openid']))
+	{
+		//向买家推送消息
+		$immsg['from_user']	= IM_ORDER_FROM_USER;
+		$immsg['to_users']	= $orderInfo['openid'];
+		$immsg['context']	= "报告，掌门！我们已收到您的货款，开始为您打包商品，请耐心等待～
+
+购买商品:{$dishTitle}
+
+";
+		if($orderInfo['price']>0)
+			$immsg['context'].="现金支付:{$orderInfo['price']}元
+";
+		
+		if($orderInfo['balance_sprice']>0)
+			$immsg['context'].="余额支付:{$orderInfo['balance_sprice']}元
+";
+		
+		if($orderInfo['freeorder_price']>0)
+			$immsg['context'].="免单支付:{$orderInfo['freeorder_price']}元
+";
+
+$immsg['context'].="订单编号:{$orderInfo['ordersn']}
+下单时间:".date('Y-m-d H:i:s',$orderInfo['createtime']);
+		
+		$objOpenIm->imMessagePush($immsg);
+	}
+
 	//有实付金额
 	if($orderInfo['price']>0)
 	{
 		//增加账单记录
-		member_gold($orderInfo['openid'],$orderInfo['price'],'usegold',PayLogEnum::getLogTip('LOG_SHOPBUY_TIP'),false,$orderInfo['id']);
+		member_gold($orderInfo['openid'],$orderInfo['price'],'usegold',PayLogEnum::getLogTip('LOG_SHOPBUY_TIP'),false,$orderInfo['ordersn']);
 	}
-	//余额支付么
-    $gold_use = $orderInfo['balance_sprice'];
-    if ( $gold_use > 0 ){
-        $remark = PayLogEnum::getLogTip('LOG_BALANCE_TIP');
-        member_gold($orderInfo['openid'],$gold_use,'usegold',$remark,true,$orderInfo['id']);
-    }
 }
 
 
@@ -1098,13 +1201,37 @@ function sureUserCommisionToMoney($order_goods,$order){
 		$name   = getNameByMemberInfo($member_info);
 		//记录paylog
 		$remark = PayLogEnum::getLogTip('LOG_BUYORDER_TIP',$name);
-		member_commisiongold($member_info['recommend_openid'],$order['openid'],$total_yongjin,'addgold_byorder',$order['id'],$remark);
+		member_commisiongold($member_info['recommend_openid'],$order['openid'],$total_yongjin,'addgold_byorder',$order['ordersn'],$remark);
 		//同时还要给用户 对应的佣金所得积分
 		member_credit($member_info['recommend_openid'],$crited_val,'addcredit',PayLogEnum::getLogTip('LOG_BACK_CREDIT_RATIO_TIP',$name));
+
+		//给卖家APP推送消息  不给推荐人推送
+		/*$dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$list[0]['goodsid']}");
+		$title    = $dishInfo['title'];
+		$num      = count($list);
+
+		$msg = "你的佣金{$total_yongjin}已到账
+订单编号：{$order['ordersn']}
+购买商品：{$title}等{$num}件商品
+支付金额：{$order['price']}元
+实际收入：{$total_yongjin}元
+下单时间：{$time}";
+		pushOrderImMessage(IM_WEALTH_FROM_USER,$member_info['recommend_openid'],$msg);*/
 
 	}
 
 
+	//给买家推送APP消息
+	if(empty($title)){
+		$dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$order_goods[0]['goodsid']}");
+		$title = $dishInfo['title'];
+	}
+	$num = count($order_goods);
+	$msg  = "客官，你的订单已经确认收货~~
+订单编号:{$order['ordersn']}
+购买商品:{$title}等{$num}件商品
+下单时间:{$time}";
+	pushOrderImMessage(IM_ORDER_FROM_USER,$order['openid'],$msg);
 }
 
 /**
@@ -1308,7 +1435,10 @@ function setOrderRetagInfo($order_retag,$reason){
 	}
 
 	$reason  = str_replace('-','',$reason);
-	$log     = $_SESSION['account']['id'].'-'.$reason.'-'.time();
+	//$log     = $_SESSION['account']['id'].'-'.$reason.'-'.time();
+	//现在是获取member表的openid
+	$member = get_member_account(1);
+	$log     = $member['openid'].'-'.$reason.'-'.time();
 	if(empty($retag['recoder'])){
 		$retag['recoder'] = $log;
 	}else{

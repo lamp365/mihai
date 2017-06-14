@@ -2,7 +2,7 @@
 $settings=globaSetting();
 $is_login = is_vip_account();
 if ( $is_login ){
-    integration_session_account($loginid, $oldsessionid, $unionid);
+    integration_session_account($loginid, $oldsessionid);
     header("location:".create_url('mobile', array('name' => 'shopwap','do' => 'purchase_order')));
 }
 // 获取品牌数据
@@ -32,7 +32,7 @@ if (checksubmit("submit")) {
     if (empty($loginid)) {
         message("用户名或密码错误");
     } else {
-        integration_session_account($loginid, $oldsessionid, $unionid);
+        integration_session_account($loginid, $oldsessionid);
         header("location:".create_url('mobile', array('name' => 'shopwap','do' => 'purchase_order')));
     }
 }		

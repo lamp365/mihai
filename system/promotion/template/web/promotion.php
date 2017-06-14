@@ -10,21 +10,28 @@
 			   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 促销活动类型</label>
 
-										<div class="col-sm-3">
+										<div class="col-sm-9">
 												
-
-											<input  name="radioPromotionType" type="radio"  value="1"  checked="checked" >满额免运费
+							<input  name="radioPromotionType" type="radio" value="0" <?php if($pro['promoteType']==0){ ?> checked="checked" <?php } ?> onclick="to_change()">满件免运费，
+				<input  name="radioPromotionType" type="radio"  value="1"  <?php if($pro['promoteType']==1){ ?>checked="checked"<?php } ?>onclick="to_change()">满额免运费
 				
 										</div>
 									</div>
-
+							 <div class="form-group">
+								<label class="col-sm-2 control-label no-padding-left" > 适用区域</label>
+										<div class="col-sm-9">	
+										     <select name="type">
+                                                   <option value="0" <?php if($pro['type']==0){ echo 'selected'; } ?>>商城系统</option>
+												   <option value="1" <?php if($pro['type']==1){ echo 'selected'; } ?>>代发系统</option>
+											 </select>
+										</div>
+									</div>		
 									
 									   <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > <label for=""><span id='money'>*满足金额(元) </span>	</label></label>
+										<label class="col-sm-2 control-label no-padding-left" > <label for=""><span id='money' <?php if($pro['promoteType']==0){ ?> style='display:none;'<?php } ?>>*满足金额(元) </span>	<span id='num'  <?php if($pro['promoteType']==1){ ?>style='display:none;'<?php } ?> >*满足数量(件)</span></label></label>
 
-										<div class="col-sm-3">
-											<input type="hidden" name="type" value="0">
-											<input type="text" name="promotionmoney" class="form-control" value="<?php echo $pro['condition']?>" />
+										<div class="col-sm-9">
+											<input type="text" name="promotionmoney" class="col-xs-10 col-sm-2" value="<?php echo $pro['condition']?>" />	
 										</div>
 									</div>
 									
@@ -32,9 +39,9 @@
 									   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 促销活动名称</label>
 
-										<div class="col-sm-3">
+										<div class="col-sm-9">
 												
-												<input type="text" name="promotionname" class="form-control" value="<?php  echo $pro['pname'];?>" />
+												<input type="text" name="promotionname" class="col-xs-10 col-sm-2" value="<?php  echo $pro['pname'];?>" />
 										</div>
 									</div>
 									
@@ -44,9 +51,9 @@
 									    <div class="form-group" >
 										<label class="col-sm-2 control-label no-padding-left" > 起始日期</label>
 
-										<div class="col-sm-3">
+										<div class="col-sm-9">
 												
-   										 	  <input type="text" readonly="readonly" name="start_time" id="start_time"  class="form-control" value="<?php  echo date('Y-m-d H:i',empty($pro['starttime'])?time():$pro['starttime']);?>" />
+   										 	  <input type="text" readonly="readonly" name="start_time" id="start_time"  class="col-xs-10 col-sm-2" value="<?php  echo date('Y-m-d H:i',empty($pro['starttime'])?time():$pro['starttime']);?>" />
 							
      							</div>
 									</div>
@@ -55,9 +62,9 @@
 									 <div class="form-group" id="sel2">
 										<label class="col-sm-2 control-label no-padding-left" > 终止日期</label>
 
-										<div class="col-sm-3">
+										<div class="col-sm-9">
 												
-   										 	  <input type="text" readonly="readonly" name="end_time"  id="end_time"  class="form-control" value="<?php  echo date('Y-m-d H:i',empty($pro['endtime'])?time():$pro['endtime']);?>" />
+   										 	  <input type="text" readonly="readonly" name="end_time"  id="end_time"  class="col-xs-10 col-sm-2" value="<?php  echo date('Y-m-d H:i',empty($pro['endtime'])?time():$pro['endtime']);?>" />
 							
      							</div>
 									</div>
@@ -65,8 +72,8 @@
 												 <div class="form-group" id="sel2">
 										<label class="col-sm-2 control-label no-padding-left" > 描述</label>
 
-										<div class="col-sm-3">
-											<textarea name="description" class="form-control span6" cols="70"><?php echo $pro['description'];?></textarea>
+										<div class="col-sm-9">
+											<textarea name="description" class="span6" cols="70"><?php echo $pro['description'];?></textarea>
      							</div>
 									</div>
 									
@@ -76,8 +83,7 @@
 
 										<div class="col-sm-9">
                        
-											<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
-											<button onclick="window.history.back()"  class="btn btn-primary span3">返回上页</button>
+					<input name="submit" type="submit" value="提交" class="btn btn-primary span3">
 												</div>
 									</div>
 </form>   

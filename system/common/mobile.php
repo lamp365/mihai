@@ -10,9 +10,9 @@ abstract class BjSystemModule {
 		        include_once  $file;
 				$name = "{$_CMS['module']}\\controller\\{$name}";
 				if(class_exists($name)){
-					$obj       = new $name();
-                    $_GP['op'] = $_GP['op'] ?: 'index';
-                    $obj->request = $_GP;
+					$obj = new $name();
+					$_GP['op'] = $_GP['op'] ?: 'index';
+					$obj->request = $_GP;
 					call_user_func(array($obj, $_GP['op']));
 				}
 			}else{
@@ -24,5 +24,5 @@ abstract class BjSystemModule {
 					exit('ContRoller Not Existed');
 				}
 			}
-	    }
+	}
 }

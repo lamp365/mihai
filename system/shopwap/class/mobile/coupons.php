@@ -1,5 +1,5 @@
 <?php
-$op     = empty($_GP['op']) ? 'list' : $_GP['op'];
+/* $op     = empty($_GP['op']) ? 'list' : $_GP['op'];
 $openid = checkIsLogin();
 
 if($op == 'list'){  //领券列表
@@ -40,4 +40,83 @@ if($op == 'list'){  //领券列表
     //记住当前地址
     tosaveloginfrom();
     include themePage('coupons');
+} */
+namespace shopwap\controller;
+use  service\shopwap\couponService; 
+class coupons
+{
+    public function __construct(){
+        $this->couponsService = new couponService();
+    }
+    //展示该店铺的优惠券
+	public function index()
+	{
+	    $_GP = $this->request;
+	    //$stsid = intval($_GP['stsid']);
+	    $stsid = 1;
+	    if (!$stsid) message("请重新选择店铺","refresh");
+	    $mytime = time();
+	    $couponsList = $this->couponsService->getAllCouponsByCondition("`store_shop_id`={$stsid} and `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
+	    if (!empty($couponsList)){
+	        foreach ($couponsList as $v){
+	            //var_dump(json_decode($v['store_shop_dishid']));
+	        }
+	    }
+	    include page('coupons/lists');
+	}
+	//用户获得优惠券
+	public function getCoupons(){
+	    
+	    if (!$openid=checkIsLogin()) message("请先登入，再领取优惠券");
+	    
+	    $_GP = $this->request;
+	    $stsid = intval($_GP['stsid']);
+	    $scid = intval($_GP['scid']);
+	    if (empty($scid) || empty($stsid)) message("请重新选择优惠券");
+	    $data = array('scid'=>$scid,'stsid'=>$stsid,'openid'=>$openid);
+	    //判断是否有资格领取优惠券
+	    $flag = $this->couponsService->IsCanGetCoupon($data);
+	    if ($flag && ($flag['status'] == 0)){
+	        message($flag['mes']);//不能领取优惠券
+	    }
+	    //领取优惠券
+	    $getcoupons = $this->couponsService->getCoupons($data);
+	    if ($getcoupons['status'] == 1){
+	        echo $getcoupons['mes'];exit;
+	        message($getcoupons['mes'],"refresh");
+	    }else {
+	        echo $getcoupons['mes'];exit;
+	    }
+	}
+	//根据该商品选择一张最好的优惠券使用
+	public function test(){
+	    $data = array(
+	        'dishid'=>2,
+	        'stsid'=>1,
+	        'price'=>FormatMoney(1000,1) ,
+	    );
+	    $info = $this->couponsService->getBestCouponByDishid($data);
+	    var_dump($info);
+	}
+	//根据分类选择一张最好的优惠券使用
+	public function test2(){
+	    $data = array(
+	        'dishid'=>2,
+	        'store_category_idone'=>71,//一级栏目id
+	        'store_category_idtwo'=>77,//二级栏目id
+	        'stsid'=>1,
+	        'price'=>FormatMoney(1000,1) ,
+	    );
+	    $info = $this->couponsService->getBestCouponByCategory($data);
+	    var_dump($info);
+	}
+	//选择店铺通用的优惠券
+	public function test3(){
+	    $data = array(
+	        'stsid'=>1,
+	        'price'=>FormatMoney(1000,1) ,
+	    );
+	    $info = $this->couponsService->getCouponByStore($data);
+	    var_dump($info);
+	}
 }

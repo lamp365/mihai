@@ -21,7 +21,7 @@ function get_goods($array=array()){
 		$field = $array['field'];
 	}
 	else{
-		$field = ' a.*';
+		$field = ' a.*,b.title as btitle,b.thumb as imgs,b.goodssn,b.content as bcontent,b.description as goodesc, b.productprice as price, b.marketprice as market, b.brand ';
 	}
 	
 	$where = $limit = $order = '';
@@ -34,16 +34,24 @@ function get_goods($array=array()){
 	if (!empty($array['order'])){
         $order = ' ORDER BY '.$array['order'];
 	}
-	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS {$field} FROM " . table($tables) . " as a ".$where.$order.$limit);
+	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS {$field} FROM " . table($tables) . " as a LEFT JOIN ". table('shop_goods') ." as b on a.gid=b.id".$where.$order.$limit);
 	foreach ( $result as $key=>$val){
 		 if (!empty($val['brand'])){
 		     $brand = mysqld_select("SELECT a.brand, b.* FROM ".table('shop_brand')." as a LEFT JOIN ".table('shop_country')." as b on a.country_id = b.id WHERE a.id=".$val['brand']);
 		 }
 		 $result[$key]['brands'] = $brand;
-		 $result[$key]['img']    =  $val['thumb'];  //dish表中的图片
-		 $result[$key]['small']  = download_pic($val['thumb'],'400','400',2);
-		 $val['marketprice']     = get_limit_price($val);
-		 $result[$key]['desc']   = $val['description'];
+		 $result[$key]['img'] = empty($val['thumb']) ? $val['imgs'] : $val['thumb'];  //dish表中的图片
+		 $result[$key]['thumb'] = $val['imgs']; //good表中的图片
+		 $result[$key]['small'] = download_pic($val['imgs'],'400','400');
+		 $val['marketprice'] = get_limit_price($val);
+		 $result[$key]['desc'] = !empty($val['description'])?$val['description']:$val['goodesc'];
+		 $result[$key]['productprice'] = ($val['productprice']==0.00)?$val['price']:$val['productprice'];
+		 $result[$key]['marketprice'] = ($val['marketprice']==0.00)?$val['market']:$val['marketprice'];
+		 $result[$key]['title'] = !empty($val['title'])?$val['title']:$val['btitle'];
+		if(isset($val['content']) && isset($val['bcontent']))
+		{
+		 	$result[$key]['content'] = !empty($val['content'])?$val['content']:$val['bcontent'];
+		}
 	}
 	
 	return $result;
@@ -60,7 +68,7 @@ function get_good($array=array()){
 		$field = $array['field'];
 	}
 	else{
-		$field = ' a.*';
+		$field = ' a.*,b.title as btitle,b.thumb as imgs,a.timeprice,a.commision,b.content as bcontent,b.productprice as price, b.marketprice as market, b.description as desc2, b.brand ';
 	}
 	
 	$where = $limit = $order = '';
@@ -73,12 +81,21 @@ function get_good($array=array()){
 	if (!empty($array['order'])){
         $order = ' ORDER BY '.$array['order'];
 	}
-	$result = mysqld_select("SELECT {$field} FROM " . table($tables) . " as a ".$where.$order.$limit);
+	$result = mysqld_select("SELECT {$field} FROM " . table($tables) . " as a LEFT JOIN ". table('shop_goods') ." as b on a.gid=b.id".$where.$order.$limit);
 	if($result)
 	{
-		$result['img']         = $result['thumb'];
-		$result['small']       = download_pic($result['thumb'],'400','400',2);
+		$result['img'] = $result['thumb'];
+		$result['thumb'] = $result['imgs'];
+		$result['small'] = download_pic($result['imgs'],'400','400');
 		$result['marketprice'] = get_limit_price($result);
+		$result['description'] = empty($result['description'])?$result['desc2']:$result['description'];
+		$result['productprice'] = ($result['productprice']==0.00)?$result['price']:$result['productprice'];
+		$result['marketprice'] = ($result['marketprice']==0.00)?$result['market']:$result['marketprice'];
+		$result['title'] = !empty($result['title'])?$result['title']:$result['btitle'];
+		if(isset($result['content']) && isset($result['bcontent']))
+		{
+			$result['content'] = $result['content'].$result['bcontent'];
+		}
 	}
 	else{
 		return false;
@@ -189,10 +206,10 @@ function cs_goods($categoryid,$p=0, $tip=0, $num=0, $is_guess=false){
 	 if ( !empty($categoryid) ){
 		 switch ($p){
 			case 1:
-				$where .=" and a.p1 =".$categoryid;
+				$where .=" and a.pcate =".$categoryid;
 				break;
 			case 2:
-				$where .=" and a.p2 =".$categoryid;
+				$where .=" and a.ccate =".$categoryid;
 				break;
 			default:
 				$where .=" and a.p3 =".$categoryid;
@@ -230,30 +247,6 @@ function cs_goods($categoryid,$p=0, $tip=0, $num=0, $is_guess=false){
      ));
 	 return $c_goods;
 }
-
-function cs_goods_bytime($categoryid,$p,$num){
-	$where = ' a.status = 1 ';
-	if ( !empty($categoryid) ){
-		switch ($p){
-			case 1:
-				$where .=" and a.p1 =".$categoryid;
-				break;
-			case 2:
-				$where .=" and a.p2 =".$categoryid;
-				break;
-			default:
-				$where .=" and a.p3 =".$categoryid;
-				break;
-		}
-	}
-	$c_goods = get_goods(array(
-		'table'  =>   'shop_dish',
-		'where' =>  $where,
-		'limit'   =>  $num,
-		'order'  =>  'a.id desc'
-	));
-	return $c_goods;
-}
 function get_category($id){
     $result = mysqld_select("SELECT * FROM ".table('shop_category')."  WHERE id = ".$id);
 	return $result;
@@ -263,72 +256,39 @@ function get_category($id){
 *  运费计算规则
 *  1. 产品组中只要有免运费的，则直接跳过运费计算
 *  2. 根据产品组中的仓库进行分段，计算仓库数量及运费金额
-*  3. 返回运费金额
+*  3. 返回运费金额 
 */
 function shipcost($goods){
-	// 开始先审查一遍，是否有免运费的产品
+    // 开始先审查一遍，是否有免运费的产品
 	$shiptax = array(); // 初始化运费金额
 	$shiparr = array();
 	$issendfree = 0; // 设置为需要运费
-	foreach ( $goods as $value ){
-		if ( !empty($value['issendfree']) ){
-			$issendfree = 1;
+    foreach ( $goods as $value ){
+        if ( !empty($value['issendfree']) ){
+             $issendfree = 1;
 		}
 		// 将不同的仓库数据存入数组
-		if ( !in_array($value['transport_id'], $shiparr ) ){
-			$shiparr[] = $value['transport_id'];
+        if ( !in_array($value['pcate'], $shiparr ) ){
+             $shiparr[] = $value['pcate'];
 		}
 	}
 	// 设置清关功能
 	$ifcustoms = 0;
 	// 开始计算运费
 	foreach ( $shiparr as $value ){
-		$shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
+        $shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
 		if ($shiprice['isrecommand'] == 1){
-			$ifcustoms = 1;
+             $ifcustoms = 1;
 		}
 		if ( $issendfree != 1 ){
-			$shiptax['price'] += $shiprice['displayorder'];
+		     $shiptax['price'] += $shiprice['displayorder'];
 		}else{
-			$shiptax['price'] = 0;
+             $shiptax['price'] = 0;
 		}
 	}
 	$shiptax['ifcustoms'] = $ifcustoms;
 	return $shiptax;
 }
-
-/* 通过产品来计算运费
-*  运费计算规则
-*  1. 产品组中只要有免运费的，则直接跳过运费计算
-*  2. 根据产品组中的仓库进行分段，计算仓库数量及运费金额
-*  3. 返回运费金额
-*/
-function shipcost_max($issendfree,$goods){
-	// 开始先审查一遍，是否有免运费的产品
-	$shiptax = array(); // 初始化运费金额
-	$shiparr = array();
-
-	// 设置清关功能
-	$ifcustoms = $price = 0;
-	// 如果不免运费  找出最大的那个运费
-    if($issendfree == 0){
-        foreach ( $goods as $value ){
-            // 将不同的仓库数据存入数组
-            if ( !in_array($value['transport_id'], $shiparr ) ){
-                $shiparr[] = $value['transport_id'];
-            }
-        }
-        foreach ( $shiparr as $value ){
-            $shiprice = mysqld_select("select isrecommand,displayorder from ".table('dish_list')." where id =:shipprice ",array(':shipprice'=>$value));
-            $price = max($price,$shiprice['displayorder']);
-        }
-    }
-
-	$shiptax['ifcustoms'] = $ifcustoms;
-	$shiptax['price']     = $price;
-	return $shiptax;
-}
-
 // 获取用户浏览记录
 function get_hstory($goodsid = 0){
         //添加浏览记录
@@ -377,7 +337,7 @@ function get_limits($num=4){
 }
 function get_limit_price($goods=array()){
 	   $istime = 0;
-       if ($goods['istime'] == 1 && $goods['type'] != 0) {
+       if (($goods['istime'] == 1 && $goods['type'] == 4) or ($goods['istime'] == 1 && $goods['isdiscount'] == 1)) {
 			$istime = 1;
             if (time() < $goods['timestart']) {
                 $istime = 0;
@@ -392,29 +352,6 @@ function get_limit_price($goods=array()){
            return $goods['marketprice'];
 	  }
 }
-
-
-function get_spec_price($spec_key,$dishdata,$showWeb =0){
-	if(empty($spec_key))  return $dishdata;
-	$dish_id = $dishdata['id'];
-	$spec_info = mysqld_select("select * from ".table('dish_spec_price')." where dish_id={$dish_id} and spec_key='{$spec_key}'");
-	if(empty($spec_key)){
-		if($showWeb){
-			return false;
-		}else{
-			return $dishdata;
-		}
-	}else{
-		$dishdata['spec_key']      = $spec_key;
-		$dishdata['key_name']      = $spec_info['key_name'];
-		$dishdata['total']         = $spec_info['total'];
-		$dishdata['productprice']  = $spec_info['productprice'];
-		$dishdata['marketprice']   = $spec_info['marketprice'];
-		$dishdata['marketprice']   = get_limit_price($dishdata);
-		return $dishdata;
-	}
-}
-
 
 // 根据订单金额获取换购产品的信息
 function get_change_goods($orderprice = 0){
@@ -544,8 +481,8 @@ function get_change_good($id,$check=''){
  * @return mixed
  * @content返回产地仓库 如自营美国一号
  */
-function getGoodsProductPlace($transport_id){
-	$sql = "select name from ".table('dish_list')." where id={$transport_id}";
+function getGoodsProductPlace($pcate){
+	$sql = "select name from ".table('dish_list')." where id={$pcate}";
 	$info = mysqld_select($sql);
 	return $info['name'];
 }
@@ -761,8 +698,8 @@ function getDishId($id){
 	return $dish['id'];
 }
 
-function getGoodsCategory($p){
-	$catecory = mysqld_select("select name from ".table('shop_category')." where id={$p}");
+function getGoodsCategory($pcate){
+	$catecory = mysqld_select("select name from ".table('shop_category')." where id={$pcate}");
 	return $catecory['name'];
 }
 
@@ -779,65 +716,110 @@ function getGoodsFromCountry($brand_id){
 	return $brand;
 }
 
+/**
+ * 商品访问量统计 pv 和 uv
+ * @param $dishid
+ */
+function count_dish_visted($dishid){
+	$zero_time = strtotime(date("Y-m-d",time()));
+	//删除五天前的数据  只保留五天
+	$before_time = $zero_time-3600*24*5;
 
-function get_dishs_comment(&$comments){
-	//获取评论对应的图片
-	foreach($comments as $k=> &$row){
-		$user_info = getUserFaceAndName($row['openid'],$row['username'],$row['face']);
-		$row['username'] = $user_info['username'];
-		$row['face']     = $user_info['face'];
-		$comments[$k]['piclist'] = mysqld_selectall("select img from ". table('shop_comment_img') ." where comment_id={$row['id']}");
+	$member    = get_member_account();
+	$cache_key = $member['openid'];
+	if(empty($cache_key)){
+		$cache_key = session_id();
 	}
+	//商品ID 和 个人openid  作为缓存的key
+	$cache_key = "dish_{$dishid}_visted_".$cache_key;
 
-
-	if(!empty($_POST['page'])) {  //wap端手机页面上会滚动加载评论数据
-		$html = '';
-		foreach($comments as $key=>$rows){
-			$system    = getSystemType($rows['system']);
-			$html .= "<li>
-								<div class='user-name'>用户名：{$rows['username']}</div> <span class='date-time'>来自 {$system} 版</span>
-                                <h4 class='detail-content'>{$rows['comment']}</h4>";
-			if(!empty($rows['piclist'])){
-				$html .= "<ul class='img-list' data-clicked='0' data-key='{$key}'>";
-
-				foreach($rows['piclist'] as $picurl){
-					$max_pic   = download_pic($picurl['img'],650);
-					$small_pic = download_pic($picurl['img'],50,50,1);
-					$html .= "<li>
-                                        <a class='fancybox_{$key}' href='{$max_pic}' data-fancybox-group='gallery'>
-                                            <img src='{$small_pic}'>
-                                        </a>
-                                    </li>";
-				}
-
-				$html .= "</ul>";
-			}
-
-			$html .= "</li>";
-
-		}
-
-		echo $html;
-		die();
-
+	//每天一条记录 pv和uv
+	$find = mysqld_select("select * from ".table('shop_dish_visted')." where dish_id={$dishid} and zero_time={$zero_time}");
+	if($find){
+		//更新 pv  或者 uv
+		$the_data['pv_count']   = $find['pv_count']+1;
+		$the_data['uv_count']   = get_uv_cont_bycache($find['uv_count'],$cache_key);
+		$the_data['modifytime'] = time();
+		mysqld_update('shop_dish_visted',$the_data,array('id'=>$find['id']));
 	}else{
-		// 获取评论数量
-		$pindex = max(1, intval($_REQUEST['page']));
-		$total = $goods['count'] = mysqld_selectcolumn('SELECT COUNT(*) FROM '. table('shop_goods_comment') .'WHERE dishid = '.$_GET['id']);
-		$tpage = ceil($total / 15);
-		if ($tpage > 1) {
-			$beforesize = 5;
-			$aftersize  = 4;
-			$cindex = $pindex;
-			$rastart = max(1, $cindex - $beforesize);
-			$raend = min($tpage, $cindex + $aftersize);
-			if ($raend - $rastart < $beforesize + $aftersize) {
-				$raend = min($tpage, $rastart + $beforesize + $aftersize);
-				$rastart = max(1, $raend - $beforesize - $aftersize);
-			}
-		}
+		//没有新添加的
+		$dish = mysqld_select("select sts_id from ".table('shop_dish')." where id={$dishid}");
+		$the_data['dish_id'] = $dishid;
+		$the_data['sts_id']  = $dish['sts_id'];
+		$the_data['pv_count']   = 1;
+		$the_data['uv_count']   = 1;
+		$the_data['modifytime'] = time();
+		$the_data['zero_time']  = $zero_time;
+		mysqld_insert('shop_dish_visted',$the_data);
 
-		$pager = pagination($total, $pindex, 15,'.show_comment');
+		mysqld_query("delete from ".table('shop_dish_visted')." where  dish_id={$dishid} and zero_time<={$before_time}");
 	}
-	return $pager;
+}
+
+/**
+ * 店铺访问量统计 pv 和 uv
+ * @param $sts_id
+ */
+function count_store_visted($sts_id){
+	$zero_time = strtotime(date("Y-m-d",time()));
+	//删除60天前的数据  只保留60天 UI上涉及到上个月
+	$before_time = $zero_time-3600*24*60;
+
+	$member    = get_member_account();
+	$cache_key = $member['openid'];
+	if(empty($cache_key)){
+		$cache_key = session_id();
+	}
+	//商品ID 和 个人openid  作为缓存的key
+	$cache_key = "store_{$sts_id}_visted_".$cache_key;
+
+	//每天一条记录 pv和uv
+	$find = mysqld_select("select * from ".table('store_shop_visted')." where sts_id={$sts_id} and zero_time={$zero_time}");
+	if($find){
+		//更新 pv  或者 uv
+		$the_data['pv_count']   = $find['pv_count']+1;
+		$the_data['uv_count']   = get_uv_cont_bycache($find['uv_count'],$cache_key);
+		$the_data['modifytime'] = time();
+		mysqld_update('store_shop_visted',$the_data,array('id'=>$find['id']));
+	}else{
+		//没有新添加的
+		$the_data['sts_id']     = $sts_id;
+		$the_data['pv_count']   = 1;
+		$the_data['uv_count']   = 1;
+		$the_data['modifytime'] = time();
+		$the_data['zero_time']  = $zero_time;
+		mysqld_insert('store_shop_visted',$the_data);
+
+		mysqld_query("delete from ".table('store_shop_visted')." where  sts_id={$sts_id} and zero_time<={$before_time}");
+	}
+}
+
+/**
+ * @param $pv_count
+ * @param $cache_key
+ * $cache_key = "dish_{$dishid}_visted_".$openid;
+ * $cache_key = "store_{$sts_id}_visted_".$openid;
+ * @return mixed
+ */
+function get_uv_cont_bycache($uv_count,$cache_key){
+	$zero_time = strtotime(date("Y-m-d",time()));
+	$zero_time = $zero_time+2400*24;   //今晚 24点凌晨
+	if(class_exists('Memcached')){
+		$memcache = new Mcache();
+		$cache_uv = $memcache->get($cache_key);
+		if(empty($cache_uv)){
+			$uv_count++;
+			//缓存到今晚 24点凌晨
+			$memcache->set($cache_key,$uv_count,$zero_time);
+		}
+	}else{
+		$cookie = new \LtCookie();
+		$cache_uv = $cookie->getCookie($cache_key);
+		if(empty($cache_uv)){
+			$uv_count++;
+			//缓存到今晚 24点凌晨
+			$cookie->setCookie($cache_key,$uv_count,$zero_time);
+		}
+	}
+	return $uv_count;
 }

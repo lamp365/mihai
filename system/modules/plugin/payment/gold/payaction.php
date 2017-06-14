@@ -9,7 +9,7 @@
 				if($getmember['gold']>=$order['price'])
 				{
 					$mark = PayLogEnum::getLogTip('LOG_SHOPBUY_TIP');
-					$usegold=member_gold($openid,$order['price'],'usegold',$mark,true,$order['id']);
+					$usegold=member_gold($openid,$order['price'],'usegold',$mark,true,$order['ordersn']);
 					if($usegold)
 					{
 					   mysqld_update('shop_order', array('status' => '1','paytype' => '1'), array('id' => $orderid));

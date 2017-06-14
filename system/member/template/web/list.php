@@ -81,7 +81,7 @@
 							<td>
 								<li>
 									<span class="left-span">用户名</span>
-									<input name="nickname" class="li-height" placeholder="用户名" type="text" value="<?php  echo $_GP['realname'];?>" />
+									<input name="realname" class="li-height" placeholder="用户名" type="text" value="<?php  echo $_GP['realname'];?>" />
 								</li>
 								<li>
 									<span class="left-span">手机号码</span>
@@ -106,6 +106,19 @@
 								<li >
 									<span class="left-span">微信昵称</span>
 									<input name="weixinname" class="li-height" placeholder="微信昵称" type="text" value="<?php  echo $_GP['weixinname'];?>" />
+								</li>
+								<li>
+									<span class="left-span">支付宝昵称</span>
+									<input name="alipayname" class="li-height" placeholder="支付宝昵称" type="text" value="<?php  echo $_GP['alipayname'];?>" />
+								</li>
+								<li style="display: none;"><span>按食堂筛选：</span></li>
+								<li style="display: none;">
+									<select style="margin-right:15px;" id="mess" name="mess" >
+			 							<option value="" <?php  echo empty($_GP['dispatch'])?'selected':'';?>>--未选择--</option>
+										<?php  if(is_array($_mess)) { foreach($_mess as $item) { ?>
+	                 					<option value="<?php  echo $item["id"];?>" <?php  echo $item['id']==$_GP['mess']?'selected':'';?>><?php  echo $item['title']?></option>
+				                  		<?php  } } ?>
+				                   	</select>
 								</li>
 								<li>
 									<div class="btn-group">
@@ -158,12 +171,17 @@
 				</table>
 			</form>
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
-
-	<table class="table table-striped table-bordered table-hover">
+		<ul class="nav nav-tabs" >
+	<li style="width:7%" <?php  if($vc == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 1))?>">商城会员</a></li>
+	<li style="width:7%" <?php  if($vc == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 2))?>">特殊会员</a></li>
+	<li style="width:7%" <?php  if($vc == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => -1))?>">全部会员</a></li>
+			</ul>
+					<table class="table table-striped table-bordered table-hover">
 			<thead >
 				<tr>
 					<th style="text-align:center;">手机号码</th>
 						<th style="text-align:center;">微信昵称</th>
+						<th style="text-align:center;">支付宝昵称</th>
 					<th style="text-align:center;">用户名</th>
 					<th style="text-align:center;">注册时间</th>
 					<th style="text-align:center;">会员等级</th>
@@ -177,17 +195,21 @@
  <?php  if(is_array($list)) { 
 	 foreach($list as $v) { ?>
 								<tr>
-									<td class="text-center">
+										<td class="text-center">
 										<?php  echo $v['mobile'];?>
 									</td>
-									<td class="text-center">
+											<td class="text-center">
 											<?php foreach($v['weixin'] as $wxfans) { ?>
-												<?php echo $wxfans['nickname']; ?><br/>
-											<?php  }?>
+						<?php echo $wxfans['nickname']; ?><br/>
+						<?php  }?>
 									</td>
-
+										<td class="text-center">
+										<?php foreach($v['alipay'] as $alifans) { ?>
+						<?php echo $alifans['nickname']; ?><br/>
+						<?php  }?>
+									</td>
 									<td class="text-center">
-										<?php  echo $v['nickname'];?>
+										<?php  echo $v['realname'];?>
 									</td>
 								
 									<td class="text-center">
@@ -237,39 +259,33 @@
 						<h4 class="modal-title">添加会员</h4>
 					</div>
 					<div class="modal-body" style="overflow: hidden">
-							<table class="table form-group" style="width:100%;" align="left">
+							<table class="table" style="width:100%;" align="left">
 								<tbody>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">
-										<i>*</i>手机号码：
-									</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px"><i>*</i>手机号码：</td>
 									<td>
-										<input name="mobile" type="text"   value="" class="form-control" />
+										<input name="mobile" type="text"   value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">用户名：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px">用户名：</td>
 									<td style="width:300px">
-										<input name="realname"  type="text" value="" class="form-control" />
+										<input name="realname"  type="text" value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;"><i>*</i>密码：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:120px"><i>*</i>密码：</td>
 									<td style="width:300px">
-										<input name="pwd"  type="password" value="" class="form-control" />
+										<input name="pwd"  type="password" value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">email：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">email：</td>
 									<td>
-										<input name="email" type="text"   value="" class="form-control" />
+										<input name="email" type="text"   value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
-								<tr style="display: none">
+								<tr>
 									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">分配业务员：</td>
 									<td>
 										<select name="relation_uid" class="purchase_roler_id" style="width: 175px;height: 30px;line-height: 28px;" onchange="show_box()">
@@ -324,25 +340,22 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">QQ：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">QQ：</td>
 									<td>
-										<input name="QQ" type="text"   value="" class="form-control"/>
+										<input name="QQ" type="text"   value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">微信：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">微信：</td>
 									<td>
-										<input name="weixin" type="text"   value="" class="form-control"/>
+										<input name="weixin" type="text"   value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px;padding-left:20px;">旺旺：</td>
+									<td style="vertical-align: middle;font-size: 14px;font-weight: bold;width:130px">旺旺：</td>
 									<td>
-										<input name="wanwan" type="text"   value="" class="form-control" />
+										<input name="wanwan" type="text"   value="" />
 									</td>
-									<td style="width: 100px;">&nbsp;</td>
 								</tr>
 								</tbody>
 							</table>
@@ -356,7 +369,6 @@
 		</form>
 	</div>
 	<script>
-	var host = 'http://'+window.location.host+'/';
 	var uploader = WebUploader.create({
 
 	// 选完文件后，是否自动上传。
@@ -365,7 +377,7 @@
 	swf: '__RESOURCE__/recouse/js/webuploader/Uploader.swf',
 
 	// 文件接收服务端。
-	server: host+'fileupload.php?savelocal=0',
+	server: 'fileupload.php?savelocal=0',
 
 	// 选择文件的按钮。可选。
 	// 内部根据当前运行是创建，可能是input元素，也可能是flash.

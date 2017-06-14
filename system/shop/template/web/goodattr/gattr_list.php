@@ -1,5 +1,10 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <body class="J_scroll_fixed">
+    <h3 class="header smaller lighter blue">[<?php echo $gtype['name']; ?>]模型属性列表 &nbsp;&nbsp;
+        <a href="javascript:;" data-url="<?php echo web_url('goodstype',array('op'=>'add_attr','gtype_id'=>$gtype['id'])); ?>" class="btn btn-primary" onclick="add_attr(this)">添加属性</a>
+        <a href="<?php echo web_url('goodstype',array('op'=>'gspec_list','id'=>$gtype['id'])); ?>" class="btn btn-info" >规格列表</a>
+        <a href="<?php echo web_url('goodstype',array('op'=>'lists')); ?>" class="btn btn-warning" >返回列表</a>
+    </h3>
 
     <div class="wrap jj">
         <div class="well form-search">

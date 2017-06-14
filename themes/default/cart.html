@@ -11,6 +11,7 @@
 	<script type="text/javascript"	src="__RESOURCE__/recouse/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/common.js"></script>
+	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/bootstrap.min.css">
 	
 	<script type="text/javascript" src="__RESOURCE__/mobile/script/bootstrap.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
@@ -159,7 +160,7 @@
 			     <!--@php foreach ( $jp_goods as $jp_value ){ @-->
                     <div class="newRecomItemWrap ">						
 					   <a  href="<!--@php  echo mobile_url('detail', array('id' => $jp_value['id'],'op'=>'dish'))@-->" target="_blank" class="itemImg">	
-					       <img border="0" style="opacity: 1;" data-original="<!--@php echo $jp_value['small']; @-->" class="lazy" src="/images/loading.gif" alt="<!--@php echo $jp_value['title']; @-->" title="<!--@php echo $jp_value['title']; @-->">
+					       <img border="0" style="opacity: 1;" data-original="<!--@php echo $jp_value['small']; @-->" class="lazy" src="images/loading.gif" alt="<!--@php echo $jp_value['title']; @-->" title="<!--@php echo $jp_value['title']; @-->">		
 					   </a>						
 					   <p class="itemTitle">							
 					       <a target="_blank" title="<!--@php echo $jp_value['title']; @-->"  href="<!--@php  echo mobile_url('detail', array('id' => $jp_value['id'],'op'=>'dish'))@-->"><!--@php echo $jp_value['title']; @--></a>			

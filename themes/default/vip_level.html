@@ -24,9 +24,9 @@
         <div class="vip-level-banner"></div>
         <div class="vip-level">
             <div class="vip-level-1">会员等级</div>
-            <div class="vip-level-2">会员积分体系包括<!--@php echo count($list); @-->个等级，分别为
+            <div class="vip-level-2">会员成长体系包括<!--@php echo count($list); @-->个等级，分别为
                 <!--@php $str = '';  foreach($list as $t_one){ $str.="{$t_one['rank_name']}、"; }  echo rtrim($str,'、'); @-->
-                。会员等级与积分值对照表：</div>
+                。会员等级与V值对照表：</div>
             <div class="vip-level-table" id="vip-level-table">
                 <table>
                     <tr>
@@ -44,27 +44,27 @@
                         <!--@php } @-->
                     </tr>
                     <tr>
-                        <td>积分</td>
+                        <td>V值(成长值)</td>
                         <!--@php foreach($list as $s_one){ @-->
                         <td><!--@php echo $s_one['experience']; @--></td>
                         <!--@php } @-->
                     </tr>
                 </table>
             </div>
-            <div class="vip-level-1">积分值是什么？</div>
-            <div class="vip-level-2">积分值，是衡量积分等级的数值。</div>
+            <div class="vip-level-1">V值是什么？</div>
+            <div class="vip-level-2">V值即为“成长值”，是衡量唯品会会员等级的数值。</div>
             <div class="vip-level-1">会员如何升级？</div>
-            <div class="vip-level-2">当年积分值统计周期：每年1月1日-12月31日，当会员的“当年积分值”达到或超过更高等级的积分值差额时，则自动升级到对应的等级；</div>
+            <div class="vip-level-2">当年V值统计周期：每年1月1日-12月31日，当会员的“当年V值”达到或超过更高等级的V值差额时，则自动升级到对应的等级；</div>
             <div class="vip-level-1">会员等级核算</div>
-            <div class="vip-level-2">每年1月1日将对获得最新等级身份超过1年的会员进行等级核算。新的等级身份根据会员在上年度的累计积分值到达的等级档位确定，积分值将调整为新等级的初始积分值。具体请查阅<a href="#vip-level-table" class="vip-level-table-a">《会员等级与积分值对照表》</a></div>
-            <!--<div class="vip-level-1">如何获得积分值？</div>
-            <div class="vip-level-2">完成下表中指定的任务，即可获得相应数量的积分值（移动端暂不支持获取行为值）：</div>
+            <div class="vip-level-2">每年1月1日将对获得最新等级身份超过1年的会员进行等级核算。新的等级身份根据会员在上年度的累计V值到达的等级档位确定，V值将调整为新等级的初始V值。具体请查阅<a href="#vip-level-table" class="vip-level-table-a">《会员等级与V值对照表》</a></div>
+            <div class="vip-level-1">如何获得V值？</div>
+            <div class="vip-level-2">完成下表中指定的任务，即可获得相应数量的V值（移动端暂不支持获取行为值）：</div>
             <table class="vip-level-table vip-level-table-2">
                 <tbody>
                   <tr>
-                    <td width="150" align="center" valign="middle" bgcolor="#feeeeb" style="height:32px;"><p>积分值类型</p></td>
+                    <td width="150" align="center" valign="middle" bgcolor="#feeeeb" style="height:32px;"><p>V值类型</p></td>
                     <td width="180" align="center" bgcolor="#feeeeb" style="height:32px;"><p>行为内容</p></td>
-                    <td width="145" align="center" bgcolor="#feeeeb" style="height:32px;"><p>奖励积分值</p></td>
+                    <td width="145" align="center" bgcolor="#feeeeb" style="height:32px;"><p>奖励V值</p></td>
                     <td width="140" align="center" bgcolor="#feeeeb" style="height:32px;"><p>奖励封顶</p></td>
                     <td width="215" align="center" bgcolor="#feeeeb" style="height:32px;"><p>获得途径</p></td>
                     <td width="120" align="center" bgcolor="#feeeeb" style="height:32px;"><p>备注</p></td>
@@ -75,7 +75,7 @@
                     <td align="center" valign="middle" bgcolor="#fffefb">当次合格购物金额*5</td>
                     <td align="center" valign="middle" bgcolor="#fffefb">无限制</td>
                     <td align="center" valign="middle" bgcolor="#fffefb">成功购物</td>
-                    <td align="center" valign="middle" bgcolor="#fffefb">订单状态显示“已完成”获得相应积分值奖励，退货、拒收商品不获得相应积分值奖励</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">订单状态显示“已完成”获得相应V值奖励，退货、拒收商品不获得相应V值奖励</td>
                   </tr>
                   <tr>
                     <td align="center" valign="middle" bgcolor="#fffefb">消费值</td>
@@ -83,10 +83,10 @@
                     <td align="center" valign="middle" bgcolor="#fffefb">30</td>
                     <td align="center" valign="middle" bgcolor="#fffefb">无限制</td>
                     <td align="center" valign="middle" bgcolor="#fffefb">使用快捷支付成功购物</td>
-                    <td align="center" valign="middle" bgcolor="#fffefb">订单状态显示“已完成”获得相应V值奖励，退货、拒收商品不获得相应积分值奖励</td>
+                    <td align="center" valign="middle" bgcolor="#fffefb">订单状态显示“已完成”获得相应V值奖励，退货、拒收商品不获得相应V值奖励</td>
                   </tr>
                 </tbody>
-            </table>-->
+            </table>
         </div>
     </div>
     <!--@php include themePage('footer');@-->

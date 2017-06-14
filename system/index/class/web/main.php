@@ -6,6 +6,7 @@
 // +----------------------------------------------------------------------
 // | Author: 小物社区 <QQ:119006873> <http://www.squdian.com>
 // +----------------------------------------------------------------------
+
 $account        = mysqld_select('SELECT * FROM '.table('user')." WHERE  id=:id" , array(':id'=> $_CMS['account']['id']));
 //所有权限
 $allrule        = getSystemRule();
@@ -14,7 +15,7 @@ $userRule       = getAdminHasRule($_CMS['account']['id']);
 //从所有的权限中移除掉 被禁止的
 $diff_rule      = diffUserRule($allrule,$userRule);
 
-$parentMenuList = array();
+$parentMenuList = '';
 $menurule 		= array();
 if(!empty($diff_rule)){
 	foreach($diff_rule as  $rule){
@@ -33,6 +34,7 @@ if(!empty($diff_rule)){
 	$parentMenuList = $result['parentMenuList'];
 //		ppd($parentMenuList);
 }
+
 
 
 $module_allow = array(

@@ -54,6 +54,29 @@ Cookie: ".$cookie;
     return $query;
 }
 
+//根据物流单号获取物流code
+function get_expresscode($nu) {
+    
+    $cookie = "WWWID=WWW04F16A4BCBCA3788F50FBC8A450C8284; __gads=ID=1495d93e17bc9c4d:T=1495612786:S=ALNI_MY9KPCvc-68CBHlVr_dowLWDD2Ukg; sortStatus=0; Hm_lvt_22ea01af58ba2be0fec7c11b25e88e6c=1495612726,1495613206; Hm_lpvt_22ea01af58ba2be0fec7c11b25e88e6c=1495613206";
+    $url = "http://www.kuaidi100.com/autonumber/autoComNum?text=$nu";
+    $method = "GET";
+    $header = "Host: www.kuaidi100.com$
+Connection: keep-alive$
+Accept: */*$
+X-Requested-With: XMLHttpRequest$
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36$
+Referer: http://www.kuaidi100.com/$
+Accept-Encoding: gzip, deflate$
+Accept-Language: zh-CN,zh;q=0.8$
+Cookie: ".$cookie;
+    // 抓取
+    $response = fetch($url, $method, array(), $header, $cookie);
+
+    $query = json_decode($response->results, true);
+
+    return $query;
+}
+
 // 贝海国际物流信息
 function fetch_beihai($nu) {
     $client_id = "868fe395-4e0e-45c5-aad8-bc3a740fb3d7";

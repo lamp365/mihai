@@ -1,13 +1,6 @@
-body {
-  background-color: #fcfcfc;
-}
-
 .avatar-view {
-
   cursor: pointer;
-
 }
-
 .avatar-view img {
   width: 100%;
 }
