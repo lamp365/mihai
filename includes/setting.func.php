@@ -67,6 +67,9 @@ function globaSetting($conditions = array())
         $config['weixin_appId']     = $weixin_config['appid'];
         $config['weixin_appSecret'] = $weixin_config['appsecret'];
         $config['weixin_access_token'] = $weixin_config['weixin_access_token'];
+        $config['xcx_appid']           = $weixin_config['xcx_appid'];
+        $config['xcx_appsecret']       = $weixin_config['xcx_appsecret'];
+        $config['xcx_access_token']    = $weixin_config['xcx_access_token'];
         return $config;
     } else {
         $config_arr = unserialize($system_config_cache['value']);
@@ -76,6 +79,9 @@ function globaSetting($conditions = array())
         $config_arr['weixin_appId']     = $weixin_config['appid'];
         $config_arr['weixin_appSecret'] = $weixin_config['appsecret'];
         $config_arr['weixin_access_token'] = $weixin_config['weixin_access_token'];
+        $config_arr['xcx_appid']           = $weixin_config['xcx_appid'];
+        $config_arr['xcx_appsecret']       = $weixin_config['xcx_appsecret'];
+        $config_arr['xcx_access_token']    = $weixin_config['xcx_access_token'];
         return $config_arr;
     }
 }
@@ -107,10 +113,18 @@ function getQQ_onWork($cfg){
     return $qqarr;
 }
 
-function save_weixin_access_token($seriaze_access_token){
+/**
+ * @param $seriaze_access_token
+ * @param int $type  1代表公众号  2代表小程序
+ */
+function save_weixin_access_token($seriaze_access_token,$type =1){
     $domain = $_SERVER['HTTP_HOST'];
-    $res = mysqld_update("weixin_config",array('weixin_access_token'=>$seriaze_access_token),array('domain'=>$domain));
+    $up_key = 'weixin_access_token';
+    if($type == 2){
+        $up_key = 'xcx_access_token';
+    }
+    $res = mysqld_update("weixin_config",array($up_key=>$seriaze_access_token),array('domain'=>$domain));
     if(!$res){
-        $res = mysqld_update("weixin_config",array('weixin_access_token'=>$seriaze_access_token),array('is_default'=>1));
+        $res = mysqld_update("weixin_config",array($up_key=>$seriaze_access_token),array('is_default'=>1));
     }
 }

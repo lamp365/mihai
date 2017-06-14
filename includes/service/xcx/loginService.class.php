@@ -22,8 +22,8 @@ class loginService extends \service\publicService
     {
         $seting = globaSetting();
         $appid  = $seting['xcx_appid'];
-        $secret = $seting['xcx_secret'];
-        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=wxea80facbec12df2d&secret=2f1e4a3fcb8620276bb8041cfbfe5b67&js_code='.$code.'&grant_type=authorization_code';
+        $secret = $seting['xcx_appsecret'];
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appid}&secret={$secret}&js_code=".$code.'&grant_type=authorization_code';
         $res = http_get($url);
         $res = json_decode($res,true);
         if(empty($res['openid']) || empty($res['session_key'])){
@@ -36,7 +36,7 @@ class loginService extends \service\publicService
         $record['xcx_session_key']  = $res['session_key'];
         $record['xcx_expires_in']   = TIMESTAMP + $res['expires_in'];
         $seriaze_record             = serialize($record);
-//       save_weixin_access_token($seriaze_access_token);
+        save_weixin_access_token($seriaze_record,2);
 
         /**
          * 生成第三方3rd_session，用于第三方服务器和小程序之间做登录态校验。为了保证安全性，3rd_session应该满足：
@@ -73,6 +73,7 @@ class loginService extends \service\publicService
 
     public function set_session3rd_cache($session3rd,$data,$expires_in)
     {
+        $session3rd = "session3rd_".$session3rd;
         $cache_val = serialize(array('openid'=>$data['opedid'],'session_key'=>$data['session_key']));
         if(class_exists('Memcached')){
             $memcache  = new \Mcache();
@@ -84,6 +85,7 @@ class loginService extends \service\publicService
 
     public function get_session3rd_cache($session3rd)
     {
+        $session3rd = "session3rd_".$session3rd;
         if(class_exists('Memcached')){
             $memcache  = new \Mcache();
             $data = $memcache->get($session3rd);
