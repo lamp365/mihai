@@ -173,48 +173,4 @@ class loginService extends \service\publicService
         return $member_info;
     }
 
-
-    public function session3rd($len)
-    {
-        $fp = @fopen('/dev/urandom','rb');
-        $result = '';
-        if ($fp !== FALSE) {
-            $result .= @fread($fp, $len);
-            @fclose($fp);
-        }else{
-            trigger_error('Can not open /dev/urandom.');
-        }
-        // convert from binary to string
-        $result = base64_encode($result);
-        // remove none url chars
-        $result = strtr($result, '+/', '-_');
-        return substr($result, 0, $len);
-    }
-
-    public function set_session3rd_cache($session3rd,$data,$expires_in)
-    {
-        $session3rd = "session3rd_".$session3rd;
-        $cache_val = serialize(array('openid'=>$data['opedid'],'session_key'=>$data['session_key']));
-        if(class_exists('Memcached')){
-            $memcache  = new \Mcache();
-            $memcache->set($session3rd,$cache_val,$expires_in);
-        }else {
-            ajaxReturnData(0,'请开启缓存!');
-        }
-    }
-
-    public function get_session3rd_cache($session3rd)
-    {
-        $session3rd = "session3rd_".$session3rd;
-        if(class_exists('Memcached')){
-            $memcache  = new \Mcache();
-            $data = $memcache->get($session3rd);
-        }else {
-            ajaxReturnData(0,'请开启缓存!');
-        }
-        if(empty($data)){
-            return false;
-        }
-        return unserialize($data);
-    }
 }

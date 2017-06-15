@@ -82,21 +82,7 @@ function integration_session_account($loginid, $oldsessionid)
         'openid' => $oldsessionid
     ));
 
-    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
-        $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
-        if (! empty($weixinthirdlogin) && ! empty($unionid)) {
-            $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
-                ':weixin_openid' => $oldsessionid
-            ));
-            if (! empty($weixinfans['weixin_openid'])) {
-                mysqld_update('weixin_wxfans', array(
-                    'openid' => $loginid
-                ), array(
-                    'weixin_openid' => $oldsessionid
-                ));
-            }
-        }
-    }
+
 
     if (! empty($_SESSION[MOBILE_QQ_OPENID])) {
         $qqlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='qq'");
