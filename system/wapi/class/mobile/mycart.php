@@ -13,15 +13,9 @@ class mycart extends base
    public function index()
    {
        $_GP =  $this->request;
-       $member = get_member_account();
-       $openid = $member['openid'];
-       $list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
-       $totalprice = 0;
-       $gooslist   = array();
-       if (! empty($list)) {
-          //找出对应的商品 信息
-       }
-        ajaxReturnData(1,'',$gooslist);
+       $service  = new \service\wapi\mycartService();
+       $cartlist = $service->cartlist();
+       ajaxReturnData(1,'请求成功',$cartlist);
    }
 
     public function addCart()

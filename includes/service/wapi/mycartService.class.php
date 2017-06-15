@@ -3,6 +3,43 @@ namespace service\wapi;
 
 class mycartService extends  \service\publicService
 {
+    public function cartlist()
+    {
+        $member = get_member_account();
+        $openid = $member['openid'];
+        $list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
+        $totalprice = 0;
+        $gooslist   = array();
+        if (! empty($list)) {
+            //找出对应的商品 信息
+            foreach($list as $item){
+                $sql = "select ac_dish_price from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']}";
+                $act_dish = mysqld_select($sql);
+                if(empty($act_dish) || $act_dish['ac_dish_status'] == 0 ||  $act_dish['ac_dish_total'] == 0){
+                    //找不到 或者已经下架 没有库存 删除掉
+                    mysqld_delete('shop_cart',array('id'=>$item['id']));
+                    continue;
+                }
+                $totalprice += $act_dish['ac_dish_price'];
+                $store = member_store_getById($item['sts_id'],'sts_name');
+                $field = '*';
+                $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
+
+                if(!array_key_exists($item['sts_id'],$gooslist)){
+                    $gooslist[$item['sts_id']]   = $store;
+                }
+                $gooslist[$item['sts_id']]['dishlist'][] = $dish;
+           }
+            $gooslist = array_values($gooslist);
+        }
+
+        $totalprice = FormatMoney($totalprice,0);
+        return array(
+            'goodslist'   => $gooslist,
+            'totalprice'  => $totalprice
+        );
+    }
+
     public function addCart($dishid,$total)
     {
         $member = get_member_account();

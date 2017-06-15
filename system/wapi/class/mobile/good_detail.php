@@ -7,7 +7,6 @@ class good_detail extends base {
   public function index()
   {
     $result = array();
-    $service = new \service\wapi\loginService();
     $_GP = $this->request;
     $dish_id = intval($_GP['dish_id']);
     $is_contont = $_GP['is_contont'];
@@ -15,28 +14,25 @@ class good_detail extends base {
 
     if (empty($dish_id)) {
       ajaxReturnData(0,'商品ID不能为空');
-      exit;
     }
 
-    $good = mysqld_select("SELECT * FROM ".table('shop_dish')."WHERE id=$dish_id");
+    $good = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=$dish_id");
     // dump($good);
     // return;
 
     if (empty($good)) {
       ajaxReturnData(0,'商品查询失败');
-      exit;
     }
 
     $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']);
     // if (empty($activity_dish)) {
     //   ajaxReturnData(0,'该商品不在限时购之内');
-    //   exit;
     // }
 
     // 获取主图
     $piclist = array();
     $piclist[] = $good['thumb'];
-    // 获取细节图
+    // 获取细节图      有误有误有误有误有误有误有误有误有误有误有误有误有误有误   shop_dish_piclist不是good_piclist
     $goods_piclist = mysqld_select("SELECT * FROM " . table('shop_goods_piclist') . " WHERE goodid = :goodid", array(':goodid' => $good['id']));
     if (!empty($goods_piclist)) {
       $pic_ary = explode(",",$goods_piclist['picurl']);
@@ -55,11 +51,11 @@ class good_detail extends base {
     // dump($piclist);
     // dump($contents);
 
-    // 获取仓库信息
+    // 获取仓库信息   没有没有没有没有没有没有没有没有没有没有没有没有没有没有没有没有
     $depot = mysqld_select("SELECT name FROM " . table('dish_list') . "  WHERE id=:depotid", array(':depotid' => $good['pcate']));
 
     $list = array();
-    // 当前是否已登陆
+    // 当前是否已登陆      没有没有没有没有没有没有没有没有没有没有不用判断，，用户一定是登录状态的，没有登录在base父类中已经告知app
     if (empty($member['openid'])) {
       $list['login'] = 0;
     }else{
@@ -83,14 +79,14 @@ class good_detail extends base {
     $list['total'] = $good['store_count'];
     // 展示图片
     $list['piclist'] = $piclist;
-    // 仓库
+    // 仓库  没有没有没有没有没有没有没有没有没有没有没有没有
     if (!empty($depot)) {
       $list['depot'] = $depot['name'];
     }else{
       $list['depot'] = null;
     }
     $use_tax = get_tax($good['taxid']);
-    // 税率
+    // 税率   没有没有没有没有没有没有没有没有没有没有
     if (!empty($use_tax)) {
       $list['tax'] = $use_tax['tax'];
     }else{
@@ -102,16 +98,16 @@ class good_detail extends base {
     $list['timestart'] = $good['timestart'];
     // timeend
     $list['timeend'] = $good['timeend'];
-    // 单笔最大购买数量
+    // 单笔最大购买数量  没有没有没有没有没有没有没有没有没有
     $list['max_buy_quantity'] = $good['max_buy_quantity'];
     // 品牌
     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
     $list['brand'] = $brand['brand'];
-    // 国家
+    // 国家  品牌没有对应国家  没有没有没有没有没有没有没有没有
     $country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
     $list['country'] = $country['name'];
     $list['country_icon'] = download_pic($country['icon']);
-    // 分类名
+    // 分类名       有误有误有误有误有误有误有误有误有误有误有误有误  activity_dish 从该表中 取出 对应分类ac_p2_id
     $category = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$good['store_p1']);
     $list['category'] = $category['name'];
     // 购物车商品数量
@@ -138,7 +134,7 @@ class good_detail extends base {
     $list['status'] = $good['status'];
     // 详情图
     if ($is_contont == 'yes') {
-      // 通用详情头尾
+      // 通用详情头尾       有误 有误有误有误 有误有误有误 有误有误有误 有误有误有误  从这里取 shop_dish_commontop
       $head = mysqld_select("SELECT * FROM ".table('config')." where name=:uname", array('uname' => 'detail_head'));
       $foot = mysqld_select("SELECT * FROM ".table('config')." where name=:uname", array('uname' => 'detail_foot'));
       $list['content_head'] = $head['value'];
