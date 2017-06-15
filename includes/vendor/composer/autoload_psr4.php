@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'wlt\\wxmini\\' => array($vendorDir . '/xxh/think-wxminihelper/src'),
     'QL\\Ext\\Lib\\' => array($vendorDir . '/jaeger/curlmulti'),
     'QL\\Ext\\' => array($vendorDir . '/jaeger/querylist-ext-aquery', $vendorDir . '/jaeger/querylist-ext-multi'),
     'QL\\' => array($vendorDir . '/jaeger/querylist'),

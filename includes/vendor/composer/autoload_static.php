@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
 {
     public static $prefixLengthsPsr4 = array (
+        'w' => 
+        array (
+            'wlt\\wxmini\\' => 11,
+        ),
         'Q' => 
         array (
             'QL\\Ext\\Lib\\' => 11,
@@ -16,6 +20,10 @@ class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
     );
 
     public static $prefixDirsPsr4 = array (
+        'wlt\\wxmini\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/xxh/think-wxminihelper/src',
+        ),
         'QL\\Ext\\Lib\\' => 
         array (
             0 => __DIR__ . '/..' . '/jaeger/curlmulti',

@@ -18,8 +18,6 @@ class asyn_action extends \common\controller\basecontroller
      */
     public function batAddCategory()
     {
-        $t = date("Y-m-d H:i:s");
-        logRecord($t.'进来啦','socket');
         ignore_user_abort (true);
         set_time_limit(0);
         /**
@@ -34,13 +32,15 @@ class asyn_action extends \common\controller\basecontroller
         $sql = "select g.*,p.id as picid,p.picurl,p.contentpicurl from ".table('shop_goods')." as g left join ".table('shop_goods_piclist')." as p ";
         $sql .= " on g.id=p.goodid where g.ccate={$_GP['sys_p2']}";
         $allGoods = mysqld_selectall($sql);
+
         $dish_sql = "select gid from ".table('shop_dish')." where store_p2={$_GP['store_p2']} and gid != 0";
         $allDish  = mysqld_selectall($dish_sql);
+
         $dishIds  = array();
         foreach($allDish as $item){
             $dishIds[] = $item['gid'];
         }
-        logRecord('进来啦,准备写入'.$t,'socket');
+
         foreach($allGoods as $good){
             if(in_array($good['id'],$dishIds)){
                 continue;
@@ -89,7 +89,7 @@ class asyn_action extends \common\controller\basecontroller
 
             }//lastid end
        }//allgood end
-        logRecord('一批数据写入完毕'.$t,'socket');
+        die();
     }
 
     public function reset_contpic($contPic,$contentpicurl)
