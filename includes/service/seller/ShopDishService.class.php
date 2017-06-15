@@ -291,6 +291,11 @@ class ShopDishService extends \service\publicService {
         return $redata;
     }
     
+    public function getIndexDishCount(){
+        $sql = "select count(1) as indexDishCount from {$this->table} where sts_id = {$this->memberData['store_sts_id']} and is_index = 1";
+        $redata = mysqld_select($sql);
+        return $redata;
+    }
     
 } 
 ?>

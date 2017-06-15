@@ -126,7 +126,10 @@ class ShopCategoryService extends \service\publicService {
         $findDish = mysqld_select("select id from ".table('shop_dish')." {$where} ");
         if($findDish){
             //设置显示不可见
-            mysqld_update('store_shop_category',array('status'=>0),array('id'=>$cateid));
+            //mysqld_update('store_shop_category',array('status'=>0),array('id'=>$cateid));
+            $this->error = '该分类下存在产品不允许删除';
+            return false;
+            
         }else{
             //直接删除
             mysqld_delete('store_shop_category',array('id'=>$cateid));

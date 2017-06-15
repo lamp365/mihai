@@ -702,7 +702,7 @@ class product extends base
 
        $redata = array();
        //测试数据开始
-       //$data['dish_id'] = 1802;
+       //$data['dish_id'] = 256;
        //测试数据结束
        if($data['dish_id'] <= 0)
        {
@@ -731,6 +731,11 @@ class product extends base
         {
             $dishData['xqimg']         = explode(',',$picData['contentpicurl']);
         }
+        
+        
+        //首页推荐数量
+        $indexDishCount = $this->shopdish->getIndexDishCount();
+        $dishData['indexDishCount'] = $indexDishCount['indexDishCount'];
         $redata['dish'] = $dishData;
         
         //获取宝贝的配置信息
@@ -758,6 +763,8 @@ class product extends base
             $redata['dishPrice'][$k]['marketprice']  = FormatMoney($v['marketprice'],2);
             $redata['dishPrice'][$k]['productprice'] = FormatMoney($v['productprice'],2);
         }
+        
+        
         ajaxReturnData(1,'宝贝详情',$redata);
    }  
     
@@ -1653,5 +1660,14 @@ class product extends base
         
         ajaxReturnData(1,'删除成功');
     }
+    
+    public function getDishIndexCount(){
+        $data = array();
+        $indexCount = $this->shopdish->getIndexDishCount();
+        $data['indexDishCount'] = $indexCount['indexDishCount'];
+        ajaxReturnData(1,'获取成功',$data);
+    }
+    
+    
     
 }

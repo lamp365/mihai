@@ -25,7 +25,9 @@ class goodsService extends \service\publicService
         if(!$chekres){
             return false;
         }
-
+        
+        
+        
         $meminfo = get_member_account();
         // 店铺id/分类1_分类2/年月/xxxxxxxx.jpg
         $alidir  = $meminfo['store_sts_id'].'/'.$_GP['store_p1'].'_'.$_GP['store_p2'].'/'.date("Ym");
@@ -68,6 +70,8 @@ class goodsService extends \service\publicService
             'isreason'     => $_GP['isreason'],
             'qr_code'      => $_GP['qr_code'],
             'brand'        => $_GP['brand'],
+            'activity_type'=> intval($_GP['activity_type']),
+            'is_index'     => intval($_GP['is_index']),
             'sts_id'       => $meminfo['store_sts_id'],
             'is_contentimg'=> $is_contentimg
         );
@@ -315,14 +319,14 @@ class goodsService extends \service\publicService
         $memberData   = get_member_account();
         
         //获取用户导入的产品
-        $sql_gids = "select gid from ".table('shop_dish')." where sts_id = {$memberData['store_sts_id']} and industry_p2_id = {$memberData['sts_category_p2_id']} and gid > 0";
+        $sql_gids = "select gid from ".table('shop_dish')." where sts_id = {$memberData['store_sts_id']} and gid > 0";
         $rs_gids  = mysqld_selectall($sql_gids);
         $gidStr = '';
         foreach($rs_gids as $v){
             $gidStr .= $v['gid'].',';
         }
         $gidStr = rtrim($gidStr,',');
-        
+
         $data['page'] = max(1, intval($data['page']));
         $data['limit'] = $data['limit']>0?$data['limit']:10; 
   

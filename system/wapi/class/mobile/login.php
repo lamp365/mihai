@@ -10,6 +10,9 @@ namespace wapi\controller;
 
 class login extends base {
 
+    /**
+     * 登录成功后，只是缓存了 微信信息和用户的 openid
+     */
    public function index()
    {
        $_GP = $this->request;
@@ -54,7 +57,7 @@ class login extends base {
        /**
         *
         * 使用返回的session_key解密encryptData, 将解得的信息与rawData中信息进行比较, 需要完全匹配,
-        * 解得的信息中也包括openid, 也需要与第4步返回的openid匹配. 解密失败或不匹配应该返回客户相应错误.
+        * 解得的信息中也包括openid, 也需要与返回的openid匹配. 解密失败或不匹配应该返回客户相应错误.
         * （使用官方提供的方法即可）
         */
        $user_info = $service->check_decryptData($sessionKey,$iv,$encryptedData,$appid);
@@ -73,5 +76,20 @@ class login extends base {
 
    }
 
-
+    /**
+     * 用于开发的时候调试 信息登录使用
+     */
+    public function pc_login()
+    {
+        $_GP = $this->request;
+        if(empty($_GP['mobile']) || empty($_GP['pwd'])){
+            ajaxReturnData(0,'账户和密码不能为空！');
+        }
+        $login = new \service\shopwap\loginService();
+        $mem_info = $login->do_login(array('mobile'=>$_GP['mobile'],'pwd'=>$_GP['pwd']));
+        if(!$mem_info){
+            ajaxReturnData(0,$login->getError());
+        }
+        ajaxReturnData(1,'成功',$mem_info);
+    }
 }

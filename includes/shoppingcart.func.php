@@ -8,7 +8,7 @@
  * @param $openid:用户ID
  * @return array 商品信息数组，总价
  */
-function getCartProducts($openid)
+/*function getCartProducts($openid)
 {
 	$sql = "SELECT c.id,d.id as dish_id,d.title,c.total,g.thumb,d.marketprice,d.app_marketprice,d.timeprice,d.type,d.timestart,d.timeend,d.max_buy_quantity,c.seller_openid,s.id as shop_id,s.shopname FROM " . table('shop_cart') . " c ";
 	$sql.= " left join " . table('shop_dish') . " d on d.id=c.goodsid ";
@@ -27,7 +27,7 @@ function getCartProducts($openid)
 	$result = array('product_list'=>$list);
 	
 	return $result;
-}
+}*/
 
 /**
  * 计算购物车件数
@@ -38,16 +38,10 @@ function countCartProducts($openid)
 {
 	$sql = "SELECT SUM( c.total ) as cnt FROM " . table('shop_cart') . " c ";
 	$sql.= " left join " . table('shop_dish') . " d on d.id=c.goodsid ";
-	$sql.= " left join " . table('shop_goods') . " g on d.gid=g.id ";
 	$sql.= " WHERE c.session_id = '" . $openid . "' ";
 	$sql.= " and d.status = 1 ";
 	$sql.= " and d.deleted = 0 ";
-	//$sql.= " and g.status = 1 ";
-	$sql.= " and g.deleted = 0 ";
-	$sql.= " and d.total > 0 ";
-
 	$count = mysqld_select($sql);
-	
 	return intval($count['cnt']);
 }
 
@@ -61,7 +55,7 @@ function countCartProducts($openid)
  * 
  * @return string 错误信息
  */
-function updateCartProducts($openid,$productId, $qty,$seller_openid){
+/*function updateCartProducts($openid,$productId, $qty,$seller_openid){
 	
 	$sql = "SELECT d.total,d.max_buy_quantity FROM " . table('shop_dish') . " d ";
 	$sql.= " left join " . table('shop_goods') . " g on d.gid=g.id ";
@@ -101,7 +95,7 @@ function updateCartProducts($openid,$productId, $qty,$seller_openid){
 	}
 	
 	return $errMsg;
-}
+}*/
 
 /**
  * 添加商品到购物车

@@ -215,7 +215,7 @@ function changeIsNew(id,data){
     //ar weburl = '/seller/product/changeDishIsNew.html';
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishIsNew')); ?>";
     $.post(weburl,{'dish_id':id,'isnew':data},function(redata){
-        location.reload();
+        //location.reload();
     },"json");
 }
 
@@ -223,7 +223,7 @@ function isRecommand(id,data){
     //var weburl = '/seller/product/changeDishRecommand.html';
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishRecommand')); ?>";
     $.post(weburl,{'dish_id':id,'isrecommand':data},function(redata){
-        location.reload();
+        //location.reload();
     },"json");
 }
 
@@ -231,7 +231,7 @@ function isStatus(id,data){
     //var weburl = '/seller/product/changeDishStatus.html';
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishStatus')); ?>";
     $.post(weburl,{'dish_id':id,'status':data},function(redata){
-        location.reload();
+        //location.reload();
     },"json");  
 }
 
@@ -239,7 +239,7 @@ function changeSort(id,data){
     //var weburl = '/seller/product/upChangeOrder.html';
     var weburl = "<?php echo mobile_url('product',array('op'=>'upChangeOrder')); ?>";
     $.post(weburl,{'dish_id':id,'sort':$(data).val()},function(redata){
-        location.reload();
+        //location.reload();
     },"json");
 }
 

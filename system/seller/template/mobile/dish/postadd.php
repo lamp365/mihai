@@ -108,7 +108,7 @@ table {
         <!-- 商品名称 -->
             <div class="layui-form " >
                 <div class="layui-form-item">
-                    <label class="layui-form-label"><font color="red">*</font> 商铺分类</label>
+                    <label class="layui-form-label"><font color="red">*</font> 商品分类</label>
                     <div class="layui-input-inline">
                         <div class="type-area" style="display:<?php if(empty($product['store_p1'])){ echo 'none';} ?> ">
                             <span class="type-area-1"><?php if(isset($shop_cate1)) echo $shop_cate1['name'] ?></span> > <span class="type-area-2"><?php if(isset($shop_cate2)) echo $shop_cate2['name'] ?></span>
@@ -309,6 +309,34 @@ table {
                     </div>
                 </div>
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">活动专区</label>
+                    <div class="layui-input-inline" style="width:270px;">
+                      <select name="activity_type" id="activity_type">
+                        <option value="0">请选择</option>
+                        <option value="1" <?php echo $product['activity_type']==1?'selected':'';?>>折扣专区</option>
+                        <option value="2" <?php echo $product['activity_type']==2?'selected':'';?>>店长推荐</option>
+                      </select>
+                    </div>
+                </div>
+                
+                
+                <?php
+                  $indexCount['indexDishCount'] = intval($indexCount['indexDishCount']);
+                  if($indexCount['indexDishCount'] < 2 || $product['is_index'] == 1)
+                  {
+                ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">首页展示(<?php echo $indexCount['indexDishCount']?>/2)</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="is_index" value="1" title="是"  <?php if($product['is_index'] == 1){ echo "checked";} ?>> &nbsp;
+                        <input type="radio" name="is_index" value="0" title="否"  <?php if($product['is_index'] == 0 ){ echo "checked";} ?>>
+                    </div>
+                </div>
+                <?php
+                  }
+                ?>
+                
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <input type="hidden" name="do_add" value="1">

@@ -19,12 +19,12 @@ class pkcs7EncoderService extends  \service\publicService
     function encode( $text )
     {
 
-        $block_size = pkc7sEncoder::$block_size;
+        $block_size = pkcs7EncoderService::$block_size;
         $text_length = strlen( $text );
         //计算需要填充的位数
-        $amount_to_pad = pkc7sEncoder::$block_size - ( $text_length % pkc7sEncoder::$block_size );
+        $amount_to_pad = pkcs7EncoderService::$block_size - ( $text_length % pkcs7EncoderService::$block_size );
         if ( $amount_to_pad == 0 ) {
-            $amount_to_pad = pkc7sEncoder::$block_size;
+            $amount_to_pad = pkcs7EncoderService::$block_size;
         }
         //获得补位所用的字符
         $pad_chr = chr( $amount_to_pad );

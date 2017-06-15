@@ -15,13 +15,14 @@ class base extends \common\controller\basecontroller
     {
         parent::__construct();
         //小程序不支持 session  cookie
-        if(!class_exists('Memcached')){
+        if(!class_exists('Memcached') && is_mobile_request()){
             ajaxReturnData(0,'请安装Memcache扩展');
         }
+        $this->check_devicecode();
     }
 
     /**
-     * app数据校验签名
+     * 参数验证
      */
     public function check_devicecode()
     {
@@ -37,11 +38,15 @@ class base extends \common\controller\basecontroller
             //方便 pc端直接不用传值 可以调数据
             $_REQUEST['device_code'] = $_REQUEST['device_code'] ?: session_id();
         }
+        if(is_mobile_request()){
+            $memc = new \Mcache();
+            $memInfo = $memc->get($_REQUEST['device_code']);
+        }else{
+            $memInfo = get_member_account();
+        }
 
-        //从memcahe中获取信息
-        $device_code = $_REQUEST['device_code'];
-        $mcache   = new \Mcache();
-//        get_member_account()
-        $userinfo = $mcache->get($device_code);
+        if(empty($memInfo)){
+            ajaxReturnData(0,'用户已经过期！');
+        }
     }
 }

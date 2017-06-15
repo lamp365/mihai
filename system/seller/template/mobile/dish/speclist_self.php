@@ -200,12 +200,15 @@ function item_remove(thisObj,item_id){
         
         var url = "<?php  echo mobile_url('product',array('op'=>'delete_completely'));?>";
         $.post(url,{'item_id':item_id,'gtype_id':$('#gtype_id').val()},function(data){
+            /*
             layer.open({
                 title: '提示',
                 content: data.message
             });
+            */
             if(data.errno = 1){
-                $('#item'+item_id).remove();
+                //$('#item'+item_id).remove();
+                location.reload();
             }
         },'json');
            

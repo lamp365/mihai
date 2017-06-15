@@ -77,6 +77,8 @@ class product extends base
                 unset($brand[0]);
                 $isEdit = 1;
             }
+            //统计店铺首页推荐数量
+            $indexCount = $this->shopdish->getIndexDishCount();
             
             include page('dish/postadd');
 	}
@@ -169,6 +171,9 @@ class product extends base
                     $xqImgJson = '';
                 }
                 
+                //统计店铺首页推荐数量
+                $indexCount = $this->shopdish->getIndexDishCount();
+                
                 include page('dish/postadd');
 	}
 
@@ -250,9 +255,12 @@ class product extends base
 		$gtypeService = new \service\seller\goodstypeService();
 		$gtype_info   = $gtypeService->getGtypelistsByoneGroup($_GP['group_id']);
 		if(empty($gtype_info))
-                    ajaxReturnData(0,'无对应的分组',$gtype_info);
-		else
+                {
+                    //ajaxReturnData(0,'无对应的分组',$gtype_info);
+                }
+		else{
                     ajaxReturnData(1,'获取成功',$gtype_info);
+                }
 	}
 
 	//发布商品的时候 进行保存分类
@@ -525,11 +533,14 @@ class product extends base
                     }
                 }
                 
-                //删除宝贝价格 dish_spec_price
-                $delDishSpecPriceStatus = $this->goodstype->delSpecPrice($dishIds);
+                if($dishIds != '')
+                {
+                    //删除宝贝价格 dish_spec_price
+                    $delDishSpecPriceStatus = $this->goodstype->delSpecPrice($dishIds);
+                }
             }
             
-            ajaxReturnData(1,'删除成功');
+            message("删除成功",refresh(),'error');
 	}
 
 	/**
@@ -556,6 +567,7 @@ class product extends base
         
         public function delete_completely(){
             $_GP = $this->request;
+            error_reporting(E_ALL);
             if($_GP['item_id'] <= 0 || $_GP['gtype_id'] <= 0){
                  ajaxReturnData(0,'必要参数必须存在');
             }
@@ -615,7 +627,9 @@ class product extends base
             $dishRecommand = new \service\seller\ShopDishService();
             $dishRecommand->changeDishRecommand($_GP);
             
-            ajaxReturnData(1,'更新成功');
+            $data = array();
+            $data = intval($_GP['isrecommand']);
+            ajaxReturnData(1,'更新成功',$data);
         }
         
         
@@ -625,8 +639,9 @@ class product extends base
             //changeDishRecommand
             $dishNew = new \service\seller\ShopDishService();
             $dishNew->changeDishIsNew($_GP);
-            
-            ajaxReturnData(1,'更新成功');
+            $data = array();
+            $data = intval($_GP['isnew']);
+            ajaxReturnData(1,'更新成功',$data);
         }
         
         public function changeDishStatus(){
@@ -634,8 +649,9 @@ class product extends base
             
             $dishStatus = new \service\seller\ShopDishService();
             $dishStatus->changeDishStatus($_GP);
-            
-            ajaxReturnData(1,'更新成功');
+            $data = array();
+            $data = intval($_GP['status']);
+            ajaxReturnData(1,'更新成功',$data);
         }
         
         public function deleteImg(){

@@ -41,20 +41,26 @@ class shopPriceService extends \service\publicService {
            //获取可能受影响的价格项
            $dishPriceData = $this->shopdish->dishPrice($dishIds);
            $ids = '';
-           foreach($dishPriceData as $v){
-               $spec_key_arr = array();
-               $spec_key_arr = explode('_', $v['spec_key']);
-               foreach($spec_key_arr as $vv)
-               {
-                   if($vv == $data['item_id'])
-                   {
-                     $ids .= $v['id'].',';  
-                   }
-               }
-           }
-           $ids = rtrim($ids,',');
+           if(is_array($dishPriceData) && count($dishPriceData) > 0){
+            foreach($dishPriceData as $v){
+                $spec_key_arr = array();
+                $spec_key_arr = explode('_', $v['spec_key']);
+                foreach($spec_key_arr as $vv)
+                {
+                    if($vv == $data['item_id'])
+                    {
+                      $ids .= $v['id'].',';  
+                    }
+                }
+            }
+            $ids = rtrim($ids,',');
 
-           $rs = $this->shopdish->deleteDishPrice($ids);
+            if($ids != '')
+            {
+             $rs = $this->shopdish->deleteDishPrice($ids);
+            }
+           }
+           
        }
        else{
            $rs = 0;
