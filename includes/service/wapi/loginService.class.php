@@ -18,15 +18,25 @@ namespace service\wapi;
 
 class loginService extends \service\publicService
 {
-    public function do_login($code)
+    public function check_parame($data)
     {
-        //wxee3d6d279578322b线上appid
-        //7d2ac6d21c548f5160c53ae55e61d6db线上 secret
-        //wxea80facbec12df2d个人appid
-        //2f1e4a3fcb8620276bb8041cfbfe5b67个人 secret
-        $seting = globaSetting();
-        $appid  = $seting['xcx_appid'];
-        $secret = $seting['xcx_appsecret'];
+        if(empty($data['code'])){
+            $this->error = 'code参数不能为空';
+            return false;
+        }
+        if(empty($data['rawData']) || empty($data['signature'])){
+            $this->error = 'signature参数不能为空';
+            return false;
+        }
+        if(empty($data['encryptedData']) || empty($data['iv'])){
+            $this->error = 'encryptedData参数不能为空';
+            return false;
+        }
+        return true;
+    }
+
+    public function get_appid($code,$appid,$secret)
+    {
         $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appid}&secret={$secret}&js_code=".$code.'&grant_type=authorization_code';
         $res = http_get($url);
         $res = json_decode($res,true);
@@ -34,34 +44,135 @@ class loginService extends \service\publicService
             $this->error = $res['errmsg'];
             return false;
         }
-
-        $expires_in   = TIMESTAMP + $res['expires_in'];
-
-        /**
-         * 生成第三方3rd_session，用于第三方服务器和小程序之间做登录态校验。为了保证安全性，3rd_session应该满足：
-         * a.长度足够长。建议有2^128种组合，即长度为16B
-         * b.避免使用rand（当前时间）然后rand()的方法，而是采用操作系统提供的真正随机数机制，比如Linux下面读取/dev/urandom设备
-         * c.设置一定有效时间，对于过期的3rd_session视为不合法
-         *
-         * 以 $session3rd 为key，sessionKey+openId为value，写入memcached
-         */
-        $session3rd         = $this->session3rd(16);
-        //未注册的注册该用户信息
-
-        $this->set_session3rd_cache($session3rd,$res,$expires_in);
-
         return $res;
     }
 
-    public function insertAndgetUserinfo($weixin_openid)
+    /**
+     * 检验数据的真实性，并且获取解密后的明文.
+     * @param $encryptedData string 加密的用户数据
+     * @param $iv string 与用户数据一同返回的初始向量
+     * @param $data string 解密后的原文
+     *
+     * @return int 成功0，失败返回对应的错误码
+     */
+    public function check_decryptData($sessionKey,$iv,$encryptedData,$appid)
     {
-        get_member_account();
-        $info = mysqld_select("select id from ".table('weixinfans_xcx')." where weixin_openid={$weixin_openid}");
+        if(strlen($sessionKey) != 24 || strlen($iv) != 24){
+            $this->error = 'iv参数有误！';
+            return false;
+        }
+        $aesKey    = base64_decode($sessionKey);
+        $aesIV     = base64_decode($iv);
+        $aesCipher = base64_decode($encryptedData);
+
+        try {
+
+            $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+            mcrypt_generic_init($module, $aesKey, $aesIV);
+
+            //解密
+            $decrypted = mdecrypt_generic($module, $aesCipher);
+            mcrypt_generic_deinit($module);
+            mcrypt_module_close($module);
+        } catch (\Exception $e) {
+            $this->error = 'aes解密失败！';
+            return false;
+        }
+
+        try {
+            //去除补位字符
+            $pkc_encoder = new \service\wapi\pkcs7EncoderService();
+            $result = $pkc_encoder->decode($decrypted);
+
+        } catch (\Exception $e) {
+            //print $e;
+            $this->error = 'aes解密失败！！';
+            return false;
+        }
+
+        $dataObj=json_decode($result,true);
+        if( $dataObj  == NULL || empty($dataObj))
+        {
+            $this->error = 'aes解密失败！！！';
+            return false;
+        }
+        /**  $dataObj
+        [openId] => oxDr-0ObKhg0Ly52XMpR07WxouLE
+        [nickName] => 建凡
+        [gender] => 1
+        [language] => zh_CN
+        [city] => Putian
+        [province] => Fujian
+        [country] => CN
+        [avatarUrl] => http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKGPGWdaGAibSOxv3uWMvucpnU8kBE9SBiaUPIUHS5WzsZPic7keDTw1ETuJbaIKMTLTxAATRsC7o4DQ/0
+        [unionId] => sadasdasdas
+        [watermark] => Array
+        (
+            [timestamp] => 1497504958
+            [appid] => wxee3d6d279578322b
+        )
+         */
+        if( $dataObj['watermark']['appid'] != $appid )
+        {
+            $this->error = 'aes解密失败。';
+            return false;
+        }
+        return $dataObj;
+    }
+
+    public function do_login($userInfo,$expires_in)
+    {
+        $info = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$userInfo['unionId']}'");
         if(empty($info)){
             //插入
+            $mem_openid  = date("YmdH",time()).rand(100,999);
+            $hasmember   = mysqld_select("SELECT openid FROM " . table('member') . " WHERE openid = :openid ", array(':openid' => $mem_openid));
+            if(isset($hasmember['openid']) && !empty($hasmember['openid'])) {
+                $mem_openid = date("YmdH",time()).rand(100,999);
+            }
+            $insert_data['openid'] = $mem_openid;
+            $insert_data['weixin_openid'] = $userInfo['openId'];
+            $insert_data['nickname']      = $userInfo['nickName'];
+            $insert_data['avatar']        = $userInfo['avatarUrl'];
+            $insert_data['gender']        = $userInfo['gender'];
+            $insert_data['unionid']       = $userInfo['unionId'];
+            $insert_data['createtime']    = time();
+            //插入微信用户
+            $res = mysqld_insert('weixin_wxfans',$insert_data);
+            if($res){
+                //插入用户 member
+                $mem_data = array(
+                    'nickname'	      => $userInfo['nickName'],
+                    'realname'	      => $userInfo['nickName'],
+                    'avatar'	      => $userInfo['avatarUrl'],
+                    'createtime'       => time(),
+                    'status'           => 1,
+                    'istemplate'       => 0,
+                    'experience'       => 0 ,
+                    'openid'           => $mem_openid,
+                    'member_type'      => 1,
+                );
+                mysqld_insert('member',$mem_data);
+                //注册送积分
+                register_credit('',$mem_openid);
+            }else{
+                $this->error = '登录失败，刷亲页面再试！';
+                return false;
+            }
+            $device_code = $userInfo['unionId'];
+            $member_info = $insert_data;
+        }else{
+            $device_code = $userInfo['unionId'];
+            $member_info = $info;
         }
-        return $info;
+
+        $member_info['device_code'] = $device_code;
+        //set cache  小程序 不支持 cookie  sesion
+        $memcache  = new \Mcache();
+        $memcache->set($device_code,$member_info,$expires_in);
+        return $member_info;
     }
+
 
     public function session3rd($len)
     {

@@ -8,50 +8,38 @@
 
 namespace wapi\controller;
 
-
-class login extends \common\controller\basecontroller {
+class login extends base {
 
    public function index()
    {
        $_GP = $this->request;
+       //wxee3d6d279578322b线上appid
+       //7d2ac6d21c548f5160c53ae55e61d6db线上 secret
+       //wxea80facbec12df2d个人appid
+       //2f1e4a3fcb8620276bb8041cfbfe5b67个人 secret
+       $seting = globaSetting();
+       $appid  = $seting['xcx_appid'];
+       $secret = $seting['xcx_appsecret'];
+
        $service = new \service\wapi\loginService();
-       $data = $service->do_login($_GP['code']);
-       if($data){
-           ajaxReturnData(1,'登录成功',$data);
-       }else{
+       $check   = $service->check_parame($_GP);
+       if(!$check){
            ajaxReturnData(0,$service->getError());
        }
-   }
-
-    /**
-     * 检验用户信息合法 是否已经过期
-     * errno 2 表示已经重新登录  1表示信息合法还在有效期
-     */
-   public function checkUser()
-   {
-       $service = new \service\wapi\loginService();
-       $_GP = $this->request;
-       if(empty($_GP['session3rd'])){
-           //直接登录
-           $data = $service->do_login($_GP['code']);
-           if($data){
-               ajaxReturnData(2,'登录成功',$data);
-           }else{
-               ajaxReturnData(0,$service->getError());
-           }
+       //获取sessinokey 和 对应的 openid
+       $session_key_arr = $service->get_appid($_GP['code'],$appid,$secret);
+       if(!$session_key_arr){
+           ajaxReturnData(0,$service->getError());
        }
 
-       //否则的话验证 用户信息
-       $session3rd_cache = $service->get_session3rd_cache($_GP['session3rd']);
-       if(!$session3rd_cache){
-           //已经过期 直接登录
-           $data = $service->do_login($_GP['code']);
-           if($data){
-               ajaxReturnData(2,'登录成功',$data);
-           }else{
-               ajaxReturnData(0,$service->getError());
-           }
-       }
+       $sessionKey = $session_key_arr['session_key'];
+       $expires_in = $session_key_arr['expires_in'];
+       $openid     = $session_key_arr['openid'];  //oxDr-0ObKhg0Ly52XMpR07WxouLE
+
+       $rawData       = html_entity_decode($_GP['rawData']);
+       $signature     = $_GP['signature'];
+       $encryptedData = $_GP['encryptedData'];
+       $iv = $_GP['iv'];
 
        /**
         * server计算signature, 并与小程序传入的signature比较, 校验signature的合法性, 不匹配则返回signature不匹配的错误. 不匹配的场景可判断为恶意请求, 可以不返回.
@@ -60,21 +48,30 @@ class login extends \common\controller\basecontroller {
         * 将 signature、rawData、以及用户登录态发送给开发者服务器，开发者在数据库中找到该用户对应的 session-key
         * ，使用相同的算法计算出签名 signature2 ，比对 signature 与 signature2 即可校验数据的可信度。
         */
-       $signature   = $_GP['signature'];
-       $rawData     = $_GP['rawData'];
-       $session_key = $session3rd_cache['session_key'];
-       $signature2  = sha1($rawData . $session_key);
+       $signature2 = sha1($rawData . $sessionKey);
+       if ($signature2 !== $signature) ajaxReturnData(0,'签名不匹配');
 
-       if ($signature2 !== $signature) {
-            //可能是因为 换了手机 临时缓存  信息不匹配 重新登录
-           $data = $service->do_login($_GP['code']);
-           if($data){
-               ajaxReturnData(2,'登录成功',$data);
-           }else{
-               ajaxReturnData(0,$service->getError());
-           }
+       /**
+        *
+        * 使用返回的session_key解密encryptData, 将解得的信息与rawData中信息进行比较, 需要完全匹配,
+        * 解得的信息中也包括openid, 也需要与第4步返回的openid匹配. 解密失败或不匹配应该返回客户相应错误.
+        * （使用官方提供的方法即可）
+        */
+       $user_info = $service->check_decryptData($sessionKey,$iv,$encryptedData,$appid);
+       if(!$user_info){
+            ajaxReturnData(0,$service->getError());
+       }
+       if(empty($user_info['unionId'])){
+           ajaxReturnData(0,'请添加到微信开放平台');
        }
 
-        ajaxReturnData(1,"用户合法");
+       $memInfo = $service->do_login($user_info,$expires_in);
+       if(!$memInfo){
+           ajaxReturnData(0,$service->getError());
+       }
+       ajaxReturnData(1,'登录成功',$memInfo);
+
    }
+
+
 }
