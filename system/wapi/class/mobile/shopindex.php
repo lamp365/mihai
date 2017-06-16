@@ -14,13 +14,13 @@ class shopindex extends base{
        $now = time();
        $where = "ac_status=0 and ac_time_end > $now";
        $list = $actListModel->getAllActList($where,'ac_id,ac_title,ac_time_str,ac_time_end');
-       if (count($list) == 0){
+       if ($list && count($list) == 0){
            ajaxReturnData(0,'暂无活动');
-       }elseif (count($list) == 1){
+       }elseif ($list && count($list) == 1){
             $actAreaModel = new \model\activity_area_model();
             $list = $list[0];
             $activty_area = $actAreaModel->getAllActArea(array('ac_list_id'=>$list['ac_id'],'ac_area_status'=>0),"ac_area_id,ac_area_time_str,ac_area_time_end");
-            if (!$activty_area) ajaxReturnData(0,'没有设置时间段');
+            if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
             ajaxReturnData(1,'',$activty_area);
        }else {//同时存在活动列表大于2的话先不考虑
            
@@ -46,6 +46,7 @@ class shopindex extends base{
        //取市id
        $regionModel = new \model\region_model();
        $info = $regionModel->getPCodeByCCode($ac_city_area);
+       
        $ac_city = !empty($info) ? $info['region_code']:'';
        if (empty($ac_city) || empty($ac_city_area)) ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
        $where = "ac_action_id = '$ac_list_id' and ac_dish_status=0 and (ac_area_id = '$ac_area_id' or ac_area_id=0) and IF(ac_city='$ac_city',ac_city_area='$ac_city_area',IF(ac_city_area=0,ac_city='$ac_city' OR ac_city=0,ac_city=0))";

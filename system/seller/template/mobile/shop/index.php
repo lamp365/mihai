@@ -84,6 +84,7 @@
             <ul class="layui-tab-title">
                 <li class="layui-this">店铺信息</li>
                 <li>资质信息</li>
+                <button class="layui-btn layui-btn-small" style="Float:right;margin-top: 5px;margin-right: 5px;" id="edit_shop"><i class="layui-icon"></i></button>
             </ul>
             <div class="layui-tab-content">
             <!-- 账户资质信息开始 -->
@@ -320,6 +321,12 @@ layui.use(['form','element','layer'], function(){
  }
 $(function(){
     
+     $('#edit_shop').on('click',function(){
+        var url= '<?php echo mobile_url('store_shop',array('op'=>'shop_edit')) ?>';
+        $.ajaxLoad(url,{},function(){
+            $('#alterModal').modal('show');
+        });
+    })
 
 })
 </script>

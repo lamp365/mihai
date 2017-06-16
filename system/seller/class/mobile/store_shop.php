@@ -307,5 +307,56 @@ class store_shop  {
             ajaxReturnData(1, LANG('COMMON_OPERATION_SUCCESS'),$return_data);
         }
     }
+    
+    public function shop_edit(){
+        $member = get_member_account();
+        $_GP = $this->request;
 
+        //获取店铺信息直接用session取id，如果没有则代表用户还没新增店铺
+        $fields = '*';
+        $storeInfo = member_store_getById($member['store_sts_id'],$fields);
+        
+        if($storeInfo){
+            $store_shop_identity_info =  mysqld_select("SELECT * FROM " . table('store_shop_identity') . " WHERE ssi_id = ".  $storeInfo['sts_id']);
+            $status = array('2'=>'审核中','0'=>'已认证','1'=>'填写资料中','12'=>'填写资料中','3'=>'审核不通过');
+            $storeInfo['sts_info_status_text'] = $status[$storeInfo['sts_info_status'] ];
+
+            $serviceRank = new \service\seller\RankService();
+            $rank_info =$serviceRank->getInfoByRankLevel($storeInfo['sts_shop_level']);
+            $storeInfo = array_merge($rank_info,$storeInfo);
+            $level_type_text = array('2'=>'市代理','1'=>'区代理','3'=>'省代理');
+            $storeInfo['level_type_text'] = $level_type_text[$rank_info['level_type'] ];
+//            ppd($storeInfo);
+        }
+        //用来匹配区域定位到select框
+        //$storeInfo['sts_locate_add_1_id'] = $reCodeToID[$storeInfo['sts_locate_add_1']]  ;
+        //$storeInfo['sts_locate_add_2_id'] = $reCodeToID[$storeInfo['sts_locate_add_2']]  ;
+        //$storeInfo['sts_locate_add_3_id'] = $reCodeToID[$storeInfo['sts_locate_add_3']]  ;
+
+        #1//*************查询区域数据************//
+        $regionService  = new \service\seller\regionService();
+        $resultProvince = getChildrenOfRegion();                              //省
+        $resultCity     = getChildrenOfRegion($storeInfo['sts_locate_add_1']);    //市
+        $resultCounty   = getChildrenOfRegion($storeInfo['sts_locate_add_2']);    //县
+        
+        include page('shop/shop_edit');
+    }
+    
+    public function shop_edit_sub(){
+        $_GP = $this->request;
+        $storeShopService = new \service\seller\StoreShopService();
+        
+        $status = $storeShopService->setshop($_GP);
+        
+        echo $status;
+    }
+    
+    public function childen_region(){
+        $_GP = $this->request;
+        $resultRegion     = getChildrenOfRegion($_GP['id'],'region_id,region_name,region_code');    //市
+        
+        echo json_encode($resultRegion);
+        exit;
+    }
+    
 }

@@ -16,8 +16,7 @@ class activity_dish_model extends model
 	/**
 	 * 获得多条activity_dish表信息
 	 *   */
-	public function getAllActivtyDish($where,$param="*",$orderby=false){
-	    return $this->getAll($where,$param,$orderby);
+	public function getAllActivtyDish($where,$param="*",$orderby=false,$group=false){
+	    return $this->getAll($where,$param,$orderby,$group);
 	}
-    
 }

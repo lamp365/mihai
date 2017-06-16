@@ -25,10 +25,12 @@ class model extends PdoUtil{
      * $field 要取的参数
      * return 一维数组
      * */
-    function getOne($where='',$field='*'){
+    function getOne($where='',$field='*',$orderby = false,$group = false){
         if (is_array($where)) $where = to_sqls($where);
         $sql = "SELECT {$field} FROM `{$this->full_table_name}`";
         $sql .= ($where) ? " WHERE $where" : '';
+        $sql .= ($group) ? " GROUP BY $group" : '';
+        $sql .= ($orderby) ? " ORDER BY $orderby" : '';
         return $this->fetch($sql);
     }
     /**
@@ -37,10 +39,11 @@ class model extends PdoUtil{
      * $field 要取的参数
      * return 二维数组
      * */
-    function getAll($where='',$field='*',$orderby = false){
+    function getAll($where='',$field='*',$orderby = false,$group = false){
         if (is_array($where)) $where = to_sqls($where);
         $sql = "SELECT {$field} FROM `{$this->full_table_name}`";
         $sql .= ($where) ? " WHERE $where" : '';
+        $sql .= ($group) ? " GROUP BY $group" : '';
         $sql .= ($orderby) ? " ORDER BY $orderby" : '';
         return $this->fetchall($sql);
     }

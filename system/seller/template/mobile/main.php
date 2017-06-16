@@ -198,7 +198,6 @@ $(function(){
         var url = $(this).data('url');
         $.ajaxLoad(url,{},function(){
             $('#alterModal').modal('show');
-            
         });
     })
 })

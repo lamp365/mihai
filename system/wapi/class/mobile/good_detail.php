@@ -4,9 +4,9 @@ namespace wapi\controller;
 
 class good_detail extends base {
 
+  // 商品详情首页
   public function index()
   {
-    $result = array();
     $_GP = $this->request;
     $dish_id = intval($_GP['dish_id']);
     $is_contont = $_GP['is_contont'];
@@ -32,8 +32,8 @@ class good_detail extends base {
     // 获取主图
     $piclist = array();
     $piclist[] = $good['thumb'];
-    // 获取细节图      有误有误有误有误有误有误有误有误有误有误有误有误有误有误   shop_dish_piclist不是good_piclist
-    $goods_piclist = mysqld_select("SELECT * FROM " . table('shop_goods_piclist') . " WHERE goodid = :goodid", array(':goodid' => $good['id']));
+    // 获取细节图
+    $goods_piclist = mysqld_select("SELECT * FROM " . table('shop_dish_piclist') . " WHERE goodid = :goodid", array(':goodid' => $good['id']));
     if (!empty($goods_piclist)) {
       $pic_ary = explode(",",$goods_piclist['picurl']);
       if (!empty($pic_ary)) {
@@ -51,16 +51,16 @@ class good_detail extends base {
     // dump($piclist);
     // dump($contents);
 
-    // 获取仓库信息   没有没有没有没有没有没有没有没有没有没有没有没有没有没有没有没有
-    $depot = mysqld_select("SELECT name FROM " . table('dish_list') . "  WHERE id=:depotid", array(':depotid' => $good['pcate']));
+    // 获取仓库信息
+    // $depot = mysqld_select("SELECT name FROM " . table('dish_list') . "  WHERE id=:depotid", array(':depotid' => $good['pcate']));
 
     $list = array();
     // 当前是否已登陆      没有没有没有没有没有没有没有没有没有没有不用判断，，用户一定是登录状态的，没有登录在base父类中已经告知app
-    if (empty($member['openid'])) {
-      $list['login'] = 0;
-    }else{
-      $list['login'] = 1;
-    }
+    // if (empty($member['openid'])) {
+    //   $list['login'] = 0;
+    // }else{
+    //   $list['login'] = 1;
+    // }
     // 商品ID 
     $list['id'] = $good['id'];
     // 销量
@@ -79,37 +79,39 @@ class good_detail extends base {
     $list['total'] = $good['store_count'];
     // 展示图片
     $list['piclist'] = $piclist;
-    // 仓库  没有没有没有没有没有没有没有没有没有没有没有没有
-    if (!empty($depot)) {
-      $list['depot'] = $depot['name'];
-    }else{
-      $list['depot'] = null;
-    }
-    $use_tax = get_tax($good['taxid']);
-    // 税率   没有没有没有没有没有没有没有没有没有没有
-    if (!empty($use_tax)) {
-      $list['tax'] = $use_tax['tax'];
-    }else{
-      $list['tax'] = null;
-    }
+    // 仓库
+    // if (!empty($depot)) {
+    //   $list['depot'] = $depot['name'];
+    // }else{
+    //   $list['depot'] = null;
+    // }
+    // $use_tax = get_tax($good['taxid']);
+    // 税率
+    // if (!empty($use_tax)) {
+    //   $list['tax'] = $use_tax['tax'];
+    // }else{
+    //   $list['tax'] = null;
+    // }
     // type
     $list['type'] = $good['type'];
     // timestart
     $list['timestart'] = $good['timestart'];
     // timeend
     $list['timeend'] = $good['timeend'];
-    // 单笔最大购买数量  没有没有没有没有没有没有没有没有没有
-    $list['max_buy_quantity'] = $good['max_buy_quantity'];
+    // 单笔最大购买数量
+    // $list['max_buy_quantity'] = $good['max_buy_quantity'];
     // 品牌
     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
     $list['brand'] = $brand['brand'];
     // 国家  品牌没有对应国家  没有没有没有没有没有没有没有没有
-    $country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
-    $list['country'] = $country['name'];
-    $list['country_icon'] = download_pic($country['icon']);
-    // 分类名       有误有误有误有误有误有误有误有误有误有误有误有误  activity_dish 从该表中 取出 对应分类ac_p2_id
-    $category = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$good['store_p1']);
-    $list['category'] = $category['name'];
+    // $country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
+    // $list['country'] = $country['name'];
+    // $list['country_icon'] = download_pic($country['icon']);
+    // 分类名
+    $category_p1 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$$activity_dish['ac_p1_id']);
+    $list['category_p1'] = $category_p1['name'];
+    $category_p2 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$$activity_dish['ac_p2_id']);
+    $list['category_p2'] = $category_p2['name'];
     // 购物车商品数量
     if (!empty($member)) {
       $list['shoppingcart_num'] = countCartProducts($member['openid']);
@@ -134,16 +136,56 @@ class good_detail extends base {
     $list['status'] = $good['status'];
     // 详情图
     if ($is_contont == 'yes') {
-      // 通用详情头尾       有误 有误有误有误 有误有误有误 有误有误有误 有误有误有误  从这里取 shop_dish_commontop
-      $head = mysqld_select("SELECT * FROM ".table('config')." where name=:uname", array('uname' => 'detail_head'));
-      $foot = mysqld_select("SELECT * FROM ".table('config')." where name=:uname", array('uname' => 'detail_foot'));
-      $list['content_head'] = $head['value'];
-      $list['content_foot'] = $foot['value'];
+      // 通用详情头尾 
+      $head = mysqld_selectall("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=1 ORDER BY is_default DESC,createtime DESC");
+      $foot = mysqld_selectall("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=2 ORDER BY is_default DESC,createtime DESC");
+      $list['content_head'] = $head;
+      $list['content_foot'] = $foot;
       $list['content'] = $contents;
     }
 
     // dump($list);
     ajaxReturnData(1,'获取成功',$list);
     exit;
+  }
+
+  // 获取商品评论
+  public function get_comment()
+  {
+    $result = array();
+    $_GP = $this->request;
+    $dish_id = intval($_GP['dish_id']);
+    if (empty($dish_id)) {
+      ajaxReturnData(0,'商品ID不能为空');
+    }
+    $pindex = max(1, intval($_GP['page']));
+    $psize = intval($_GP['limit'] ? $_GP['limit'] : 20);
+
+    $good = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=$dish_id");
+
+    $comments = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.openid, b.realname, b.nickname, b.avatar, b.mobile, b.member_description FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid WHERE a.dishid=".$good['id']." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+    // 总记录数
+    $total = mysqld_select("SELECT FOUND_ROWS() as total;");
+
+    if (!empty($comments)) {
+      foreach ($comments as $c_k => &$c_v) {
+        $c_img = mysqld_selectall("SELECT img FROM ".table('shop_comment_img')." WHERE comment_id=".$c_v['id']." ORDER BY id ASC LIMIT 5");
+        foreach ($c_img as $cmv) {
+          $comments[$c_k]['img'][] = $cmv['img'];
+        }
+      }
+      unset($c_v);
+    }
+
+    $result['comments'] = $comments;
+    $result['total'] = $total['total'];
+    ajaxReturnData(1,'获取成功',$result);
+    exit;
+  }
+
+  // 提交商品评论
+  public function add_comment()
+  {
+    # code...
   }
 }
