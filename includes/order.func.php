@@ -198,7 +198,6 @@ function update_order_status($id, $status,$dishinfo='') {
  */
 function paySuccessProcess($orderInfo)
 {
-	logRecord('zhifulaaa','pay');
 	//有实付金额
 	if($orderInfo['price']>0)
 	{

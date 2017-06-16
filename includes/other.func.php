@@ -225,7 +225,7 @@ function logRecord($logMsg,$logFile) {
 
 	if(WRITE_LOG)
 	{
-		error_log(date('H:i:s',time())."{$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
+		error_log(date('H:i:s',time())." | {$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
 	}
 }
 
@@ -590,6 +590,7 @@ function getRandIp(){
  * @param int $timeout
  */
 function asyn_doRequest($url, $param=array(),$timeout =10){
+    ignore_user_abort (true);
     $urlParmas = parse_url($url);
     $host      = $urlParmas['host'];
     $path 	   = $urlParmas['path'];
@@ -598,6 +599,11 @@ function asyn_doRequest($url, $param=array(),$timeout =10){
     $errstr    = '';
 
     $fp        = fsockopen($host, $port, $errno, $errstr, $timeout);
+    if(!$fp){
+        die("fsockopen操作失败 {$errstr}-- {$errno}");
+    }
+    stream_set_blocking($fp,0); //开启非阻塞模式
+    stream_set_timeout($fp, 3); //设置超时时间（s）
     $query     = isset($param)? http_build_query($param) : '';
     $out       = "POST ".$path." HTTP/1.1\r\n";
     $out      .= "host:".$host."\r\n";
