@@ -53,7 +53,7 @@ class mycart extends base
         $openid = $member['openid'];
         $id  = intval($_GP['id']);
         $num = intval($_GP['num']);
-        if(empty($id) || empty($num)){
+        if(empty($id) || empty($num) || $num<0){
             ajaxReturnData(0,'参数有误！');
         }
         $find = mysqld_select("select * from ".table('shop_cart')." where id={$id} and openid='{$openid}'");
@@ -111,7 +111,7 @@ class mycart extends base
     {
         $_GP    = $this->request;
         $service  = new \service\wapi\mycartService();
-        $res = $service->topay($_GP['cart_ids']);
+        $res = $service->topay($_GP['ids']);
         if(!$res){
             ajaxReturnData(0,$service->getError());
         }else{

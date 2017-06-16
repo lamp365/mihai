@@ -23,6 +23,7 @@ class shopPriceService extends \service\publicService {
    }
    
    public function deletePrice($data){
+       $rs = array();
         $delStatus = $this->goodstype->delete_completely($data['item_id']);
             
         //通过gtypeid获取对应的宝贝id

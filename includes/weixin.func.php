@@ -273,32 +273,3 @@ function get_scan_cache($weixin_openid){
 	}
 	return $scan_openid;
 }
-
-function geixcx_qrcode(){
-    $seting = globaSetting();
-    $appid  = $seting['xcx_appid'];
-    $secret = $seting['xcx_appsecret'];
-
-    $url     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
-    $content = http_get($url);
-
-    if (empty($content)) {
-        die('获取微信access token失败, 请稍后重试！');
-    }
-    $token = @json_decode($content, true);
-    if (empty($token) || ! is_array($token)) {
-        die('获取微信access token失败,公众平台返回原始数据为:' . $token);
-    }
-    if (empty($token['access_token']) || empty($token['expires_in'])) {
-        die('解析微信公众号授权失败, 请稍后重试！');
-    }
-
-    $access_token = $token['access_token'];
-    $qrcode_url   = "http://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token={$access_token}";
-    $qrcode_url   = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token={$access_token}";
-    $data = http_post($qrcode_url,json_encode(array('path'=>'5675667867','width'=>200)));
-    file_put_contents(WEB_ROOT.'/logs/22.png',$data);
-    ppd($access_token);
-    //scene	String		最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
-    //width
-}

@@ -1,29 +1,30 @@
 <?php
 /**
- *模型层:店铺广告
+ *模型层:区间设置
  *执行sql
  *Author:严立超 
  *   
  **/
 namespace model;
-class store_shop_adv_model extends model
+class activity_area_model extends model
 {
     public $table_name;
     public function __construct() {
-		$this->table_name = 'store_shop_adv';
+		$this->table_name = 'activity_area';
 		parent::__construct();
 	}
 	/**
-	 * 获得单条store_shop_adv表信息
+	 * 获得单条activity_area表信息
 	 *   */
-	public function getOneShopAdv($where = array(),$param="*"){
+	public function getOneActArea($where = array(),$param="*"){
 	    if (empty($where)) return false;
 	    return $this->getOne($where,$param);
 	}
 	/**
-	 * 获得多条store_shop_adv表信息
+	 * 获得多条activity_area表信息
 	 *   */
-	public function getAllShopAdv($where = array(),$param="*",$orderby=false){
+	public function getAllActArea($where = array(),$param="*",$orderby=false){
 	    return $this->getAll($where,$param,$orderby);
 	}
+    
 }

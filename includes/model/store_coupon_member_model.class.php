@@ -1,12 +1,11 @@
 <?php
 /**
- *模型层:store_coupon_member
+ *模型层:用户领取的优惠券模型
  *执行sql
  *Author:严立超 
  *   
  **/
 namespace model;
-use model\model;
 class store_coupon_member_model extends model
 {
     public function __construct() {

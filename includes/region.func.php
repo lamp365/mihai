@@ -84,6 +84,20 @@ function getIndustryByid($id){
     return $industry['gc_name'];
 }
 
+//通过经纬度访问区域code
+function getCodeByLttAndLgt($jd,$wd){
+    if (empty($jd) || empty($wd)) return false;
+    $key = GD_KEY;
+    $url = AL_CODE;
+    $location = $jd.",".$wd;
+    $data = array(
+        'key'=>$key,
+        'location'=>$location,
+    );
+    $url .="key=$key&location=$location"; 
+    return http_get($url);
+}
+
 
 
 

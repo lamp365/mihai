@@ -19,7 +19,6 @@ class index extends homebase
         $member_info['seller_roler'] = checkSellerRoler();
         $loginService = new \service\shopwap\loginService();
         $store_data   = $loginService->getStoreData($member_info);
-
         $data = array(
             'store'          => $store_data['store_info'],
             'store_identity' => $store_data['store_identity'],

@@ -996,9 +996,9 @@ class product extends base
         
         }
         else{
-            $data['page'] = max(1, intval($data['page']));
-            $data['page'] = ($data['page'] - 1) * $data['limit'];
-            $data['limit'] = $data['limit']>0?$data['limit']:10;
+            //$data['page'] = max(1, intval($data['page']));
+            //$data['page'] = ($data['page'] - 1) * $data['limit'];
+            //$data['limit'] = $data['limit']>0?$data['limit']:10;
 
             $reData['goods'] = $this->goodService->goodsListPage($data,'title,marketprice,store_count,id,thumb');
         }

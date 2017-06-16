@@ -6,7 +6,6 @@
  *   
  **/
 namespace model;
-use model\model;
 class store_shop_model extends model
 {
     public function __construct() {

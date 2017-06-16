@@ -1,12 +1,11 @@
 <?php
 /**
- *模型层:店铺商店模型
+ *模型层:商品评论模型
  *执行sql
  *Author:严立超 
  *   
  **/
 namespace model;
-use model\model;
 class shop_goods_comment_model extends model
 {
     public $table_name='';

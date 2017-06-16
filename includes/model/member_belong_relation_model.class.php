@@ -1,12 +1,11 @@
 <?php
 /**
- *模型层:店铺商店模型
+ *模型层:会员归属关系模型
  *执行sql
  *Author:严立超 
  *   
  **/
 namespace model;
-use model\model;
 class member_belong_relation_model extends model
 {
     public function __construct() {

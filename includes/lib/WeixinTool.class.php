@@ -213,4 +213,67 @@ class WeixinTool
 
         return $data;
     }
+
+    public function get_xcx_erweima($condition,$type)
+    {
+        return array('errno'=>0,'message'=>'稍等一会就回来！');
+        if(empty($condition) || empty($type)){
+            return array('errno'=>0,'message'=>'参数不能为空！');
+        }
+        $seting = globaSetting();
+        $appid  = $seting['xcx_appid'];
+        $secret = $seting['xcx_appsecret'];
+
+        $url     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+        $content = http_get($url);
+
+        if (empty($content)) {
+            return array('errno'=>0,'message'=>'获取微信access token失败, 请稍后重试！');
+        }
+        $token = @json_decode($content, true);
+        if (empty($token) || ! is_array($token)) {
+            return array('errno'=>0,'message'=>'获取微信access token失败, 请稍后重试。');
+        }
+        if (empty($token['access_token']) || empty($token['expires_in'])) {
+            return array('errno'=>0,'message'=>'解析微信公众号授权失败, 请稍后重试！');
+        }
+
+        $access_token = $token['access_token'];
+        $access_token = 'wvq5c-SOXGPxZvP0KVS_lT2ByAH55D_M-UNJSUL7rzjeKzICeH4hmY';
+        if($type == 1){
+            //只能是 $condition  跳转到某一个页面 不能带 ？参数  二维码数量有限
+            $url = "https://api.weixin.qq.com/wxa/getwxacode?access_token=".$access_token;
+            $parame['path']  = $condition;
+            $parame['width'] = 200;
+        }else if($type == 2){
+            //可以带入场景值 默认进入到首页  $condition 【用户member中的openid】就是对应的场景值  适合做推广型扫码 绑定用户上下级  数量无限
+            $url = "http://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=".$access_token;
+            $parame['scene']  = $condition;
+            $parame['width'] = 200;
+        }else if($type == 3){
+            //只能是 $condition  跳转到某一个页面 可以带 ？参数  二维码数量有限
+            $url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=".$access_token;
+            $parame['path']  = $condition;
+            $parame['width'] = 200;
+        }else{
+            return array('errno'=>0,'message'=>'类型参数有误！');
+        }
+
+        $parame = json_encode($parame);
+        $data   = http_post($url,$parame);
+        $result = json_decode($data,true);
+        if(is_array($result)){
+            //说明报错了
+            return array('errno'=>0,'message'=>$result['errmsg']);
+        }
+
+        //将二进制流 写入本地图片
+        $picfile = WEB_ROOT."/logs/".time().uniqid().'.png';
+        file_put_contents($picfile,$data);
+        //再上传到阿里上
+
+        if($type == 2){
+            //推广型二维码永久保存
+        }
+    }
 }

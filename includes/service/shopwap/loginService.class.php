@@ -259,13 +259,22 @@ class loginService extends \service\publicService
      * @param $member_info
      * @return array
      */
-    public function getStoreData($member_info)
+    public function getStoreData(&$member_info)
     {
         if(empty($member_info['store_sts_id'])){
             //一个店铺都没有，查看是否有正在申请的店铺
             $store_info  = mysqld_select("select * from ".table('store_shop_apply')." where sts_openid={$member_info['openid']}");
             $store_id    = intval($store_info['sts_id']);
             $store_identity = mysqld_select("select * from ".table('store_shop_identity_apply')." where ssi_id={$store_id}");
+            $member_info['store_sts_id'] = $store_info['sts_id'];
+            $member_info['store_sts_name'] = $store_info['sts_name'];
+            $member_info['store_sts_id'] = $store_info['sts_id'];
+            $member_info['sts_category_p1_id'] = $store_info['sts_category_p1_id'];
+            $member_info['sts_category_p2_id'] = $store_info['sts_category_p2_id'];
+            if($member_info['openid'] == $store_info['sts_openid'])
+                $member_info['store_is_admin'] = 1;
+            else
+                $member_info['store_is_admin'] = 0;
         }else{
             $store_info  = member_store_getById($member_info['store_sts_id']);
             $store_id    = intval($store_info['sts_id']);
