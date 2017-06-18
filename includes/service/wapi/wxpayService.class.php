@@ -33,23 +33,36 @@ class wxpayService extends  \service\publicService
 
     //统一下单接口
     private function unifiedorder(){
+        //微信接口
         $url='https://api.mch.weixin.qq.com/pay/unifiedorder';
         $parameters=array(
             'appid'     => $this->appid,//小程序ID
             'mch_id'    => $this->mch_id,//商户号
             'nonce_str' => $this->createNoncestr(),//随机字符串
             'body'      => '测试',//商品描述
-            'out_trade_no'     => '2015450806125346',//商户订单号
+            'out_trade_no'     => '20154508061253'.uniqid(),//商户订单号
             'total_fee'        => floatval(0.01*100),//总金额 单位 分
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
-            'notify_url'       => 'http://www.weixin.qq.com/wxpay/pay.php',//通知地址
+            'notify_url'       => WEBSITE_ROOT . 'notify/weixin_notify.php',//通知地址
             'openid'           => $this->openid,//用户id
             'trade_type'       => 'JSAPI'//交易类型
         );
         //统一下单签名
         $parameters['sign'] = $this->getSign($parameters);
-        $xmlData = arrayToXml($parameters);
-        $return  = xmlToArray(postXmlSSLCurl($xmlData,$url,60));
+        $xmlData            = $this->arrayToXml($parameters);
+        $postXmlSSLCurl     = $this->postXmlSSLCurl($xmlData,$url,60);
+        $return             = $this->xmlToArray($postXmlSSLCurl);
+        if($return['return_code'] == 'FAIL'){
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户支付错误---{$return['return_msg']}",'payError');
+            ajaxReturnData(0,'出错了,请重新再试一');
+        }else if($return['result_code'] == 'FAIL'){
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户支付错误---{$return['err_code_des']}",'payError');
+            ajaxReturnData(0,'出错了,'.$return['err_code_des']);
+        }
         return $return;
     }
 
@@ -95,4 +108,64 @@ class wxpayService extends  \service\publicService
         }
         return $reqPar;
     }
+
+    //作用：array转xml
+    public function arrayToXml($arr){
+        $xml = "<xml>";
+        foreach ($arr as $key=>$val){
+            if (is_numeric($val))
+                $xml.="<".$key.">".$val."</".$key.">";
+            else
+                $xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+        }
+        $xml.="</xml>";
+        return $xml;
+    }
+    //作用：将xml转为array
+    public function xmlToArray($xml){
+        //将XML转为array
+        $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $array_data;
+    }
+    //作用：使用证书，以post方式提交xml到对应的接口url
+    public function postXmlSSLCurl($xml,$url,$second=30){
+        $ch = curl_init();
+        //超时时间
+        curl_setopt($ch,CURLOPT_TIMEOUT,$second);
+        //这里设置代理，如果有的话
+        //curl_setopt($ch,CURLOPT_PROXY, '8.8.8.8');
+        //curl_setopt($ch,CURLOPT_PROXYPORT, 8080);
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,FALSE);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,FALSE);
+        //设置header
+        curl_setopt($ch,CURLOPT_HEADER,FALSE);
+        //要求结果为字符串且输出到屏幕上
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);
+        //设置证书
+        //使用证书：cert 与 key 分别属于两个.pem文件
+        //默认格式为PEM，可以注释
+        //curl_setopt($ch,CURLOPT_SSLCERTTYPE,'PEM');
+        //curl_setopt($ch,CURLOPT_SSLCERT, getcwd() . '/source/class/pay/Weixinnewpay/apiclient_cert.pem');
+        //默认格式为PEM，可以注释
+        //curl_setopt($ch,CURLOPT_SSLKEYTYPE,'PEM');
+        //curl_setopt($ch,CURLOPT_SSLKEY, getcwd() . '/source/class/pay/Weixinnewpay/apiclient_key.pem');
+        //post提交方式
+        curl_setopt($ch,CURLOPT_POST, true);
+        curl_setopt($ch,CURLOPT_POSTFIELDS,$xml);
+        $data = curl_exec($ch);
+        //返回结果
+        if($data){
+            curl_close($ch);
+            return $data;
+        }else {
+            $error = curl_errno($ch);
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户支付错误!",'payError');
+            curl_close($ch);
+            ajaxReturnData(0,'出错了,请重新再试一');
+        }
+    }
+
 }

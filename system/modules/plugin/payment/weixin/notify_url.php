@@ -38,6 +38,7 @@
 		}
 		$signkey = $_CMS['weixin_pay_paySignKey'];
 		$sign = strtoupper(md5($string1 . "key={$signkey}"));
+logRecord('wancheng支付','pay_fin');
 		if($sign == $array_data['sign']) {
 			if ($array_data["return_code"] == "FAIL") {
 			    //此处应该更新一下订单状态，商户自行增删操作
@@ -54,6 +55,7 @@
 				//$out_trade_no=explode('-',$array_data['out_trade_no']);
 				// 订单号
 				$ordersn = $array_data['out_trade_no'];
+            die();
 				// 订单ID
 				//$orderid = $out_trade_no[1];
 				$index=strpos($ordersn,"g");

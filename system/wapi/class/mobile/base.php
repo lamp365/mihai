@@ -15,7 +15,10 @@ class base extends \common\controller\basecontroller
     {
         parent::__construct();
         //小程序不支持 session  cookie
-        if(!class_exists('Memcached') && is_mobile_request()){
+        $fromURL = $_SERVER['HTTP_REFERER'];
+        $fromURL = parse_url($fromURL);
+        //只控制 小程序的 接口访问 严格memcache扩展,避免开发环境window也提示需要安装扩展
+        if(!class_exists('Memcached') && $fromURL['host'] == 'servicewechat.com'){
             ajaxReturnData(0,'请安装Memcache扩展');
         }
         $this->check_devicecode();
@@ -30,23 +33,27 @@ class base extends \common\controller\basecontroller
             //登陆操作 没有设备号  小程序中的设备号是服务端在登录通信后生成的
             return '';
         }
-        if(is_mobile_request()){
-            if(empty($_REQUEST['device_code'])){
-                ajaxReturnData(0,'未获取到设备号！');
-            }
-        }else{
-            //方便 pc端直接不用传值 可以调数据
-            $_REQUEST['device_code'] = $_REQUEST['device_code'] ?: session_id();
+        $fromURL= $_SERVER['HTTP_REFERER'];
+        $fromURL= parse_url($fromURL);
+        if($fromURL['host'] != 'servicewechat.com'){
+            //不属于 小程序访问的  属于直接浏览器 调试接口的
+            $_REQUEST['device_code'] = session_id();
         }
-        if(is_mobile_request()){
+
+        if(empty($_REQUEST['device_code'])){
+            ajaxReturnData(0,'未获取到设备号！');
+        }
+
+        if($fromURL['host'] != 'servicewechat.com'){
+            //不属于 小程序访问的  属于直接浏览器 调试接口的
+            $memInfo = get_member_account();
+        }else{
             $memc = new \Mcache();
             $memInfo = $memc->get($_REQUEST['device_code']);
-        }else{
-            $memInfo = get_member_account();
         }
 
         if(empty($memInfo)){
-            ajaxReturnData(0,'用户已经过期！');
+            ajaxReturnData(0,'用户已过期,刷新页面再试！');
         }
     }
 }
