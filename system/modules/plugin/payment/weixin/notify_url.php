@@ -62,25 +62,27 @@
 					 $order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
 					if(!empty($order['id']))
 					{
-						if($order['status']==0)
-						{
-						mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
-						//paylog  少用 updateOrderStock 已没有价值了
-						$mark = PayLogEnum::getLogTip('LOG_SHOPBUY_TIP');
-						member_gold($order['openid'],$order['price'],'usegold',$mark,false,$order['id']);
-						mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$xml,'ptype'=>'success','paytype'=>'weixin'));
-	                    require_once WEB_ROOT.'/system/shopwap/class/mobile/order_notice_mail.php';  
-	                    mailnotice($orderid);
-						message('支付成功！',WEBSITE_ROOT.mobile_url('myorder',array('status'=>99)),'success');
-					  }else{
-							message('该订单不是支付状态无法支付',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','error');
-			
-					  }
+                        $order_cookie =  new LtCookie();
+                        $order_cookie->setCookie('success', serialize($order));
+                        if($order['status']==1){
+                            mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
+                            Header("Location:".mobile_url('success',array('name'=>'shopwap')));
+                            //message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
+                        }else{
+                            mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
+                            mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
+                            //支付成功后的处理  库存的处理
+                            $afterUrl =  mobile_url('success',array('name'=>'shopwap','op'=>'afterPay'));
+                            asyn_doRequest($afterUrl,array('orderid'=>$order['id']));
+                            Header("Location:".mobile_url('success',array('name'=>'shopwap')));
+                            // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
+                        }
+                        exit;
 				  }else{
 						mysqld_insert('paylog', array('typename'=>'未找到相关订单','pdate'=>$xml,'ptype'=>'error','paytype'=>'weixin'));
 						message('未找到相关订单',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=myorder','error');
-					}
-					exit;
+				  }
+				  exit;
 				}else{//余额充值
 						$order = mysqld_select("SELECT * FROM " . table('gold_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
 						if(!empty($order['id']))

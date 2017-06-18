@@ -14,38 +14,37 @@ if($verify_result) {
 	$trade_no = $_GET['trade_no'];
 	$trade_status = $_GET['trade_status'];
     if($_GET['trade_status'] == 'TRADE_FINISHED' || $_GET['trade_status'] == 'TRADE_SUCCESS') {	
-    	$out_trade_no=explode('-',$out_trade_no);
-				        $ordersn = $out_trade_no[0];
-					    $orderid = $out_trade_no[1];
-						$index=strpos($ordersn,"g");
-				if(empty($index))
-				{
-						$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id and ordersn=:ordersn", array(':id' => $orderid,':ordersn'=>$ordersn));
-						if(!empty($order['id']))
-						{
-							$order_cookie =  new LtCookie();
-							$order_cookie->setCookie('success', serialize($order));
-							if($order['status']==1){
-							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
-								  Header("Location:".mobile_url('success',array('name'=>'shopwap')));
-		                     	  //message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
-							}else{
-							      mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
-							      mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
-								  //支付成功后的处理  库存的处理
-								  $afterUrl =  mobile_url('success',array('name'=>'shopwap','op'=>'afterPay'));
-								  asyn_doRequest($afterUrl,array('orderid'=>$order['id']));
-								  Header("Location:".mobile_url('success',array('name'=>'shopwap')));
-		                          // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
-							}
-							exit;
-						}else
-						{
-							mysqld_insert('paylog', array('typename'=>'未找到相关订单','pdate'=>$post_data,'ptype'=>'error','paytype'=>'alipay'));
-		                    exit;
+			$out_trade_no=explode('-',$out_trade_no);
+			$ordersn = $out_trade_no[0];
+			$orderid = $out_trade_no[1];
+			$index=strpos($ordersn,"g");
+			if(empty($index))
+			{
+					$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id = :id and ordersn=:ordersn", array(':id' => $orderid,':ordersn'=>$ordersn));
+					if(!empty($order['id']))
+					{
+						$order_cookie =  new LtCookie();
+						$order_cookie->setCookie('success', serialize($order));
+						if($order['status']==1){
+							  mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
+							  Header("Location:".mobile_url('success',array('name'=>'shopwap')));
+							  //message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
+						}else{
+							  mysqld_update('shop_order', array('status'=>1), array('id' =>  $order['id']));
+							  mysqld_insert('paylog', array('typename'=>'支付成功','pdate'=>$post_data,'ptype'=>'success','paytype'=>'alipay'));
+							  //支付成功后的处理  库存的处理
+							  $afterUrl =  mobile_url('success',array('name'=>'shopwap','op'=>'afterPay'));
+							  asyn_doRequest($afterUrl,array('orderid'=>$order['id']));
+							  Header("Location:".mobile_url('success',array('name'=>'shopwap')));
+							  // message('支付成功！',WEBSITE_ROOT.'index.php?mod=mobile&name=shopwap&do=success','success');
 						}
-			}else
-			{//余额充值
+						exit;
+					}else
+					{
+						mysqld_insert('paylog', array('typename'=>'未找到相关订单','pdate'=>$post_data,'ptype'=>'error','paytype'=>'alipay'));
+						exit;
+					}
+			}else {//余额充值
 					$order = mysqld_select("SELECT * FROM " . table('gold_order') . " WHERE id = :id and ordersn=:ordersn", array(':id' => $orderid,':ordersn'=>$ordersn));
 					if(!empty($order['id'])){
 						if($order['status']==0){
