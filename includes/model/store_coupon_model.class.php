@@ -13,4 +13,17 @@ class store_coupon_model extends model
 		$this->table_name = 'store_coupon';
 		parent::__construct();
 	}
+	/**
+	 * 获得单条store_coupon表信息
+	 *   */
+	public function getOneCoupon($where ,$param="*"){
+	    if (empty($where)) return false;
+	    return $this->getOne($where,$param);
+	}
+	/**
+	 * 获得多条store_coupon表信息
+	 *   */
+	public function getAllCoupon($where,$param="*",$orderby=false){
+	    return $this->getAll($where,$param,$orderby);
+	}
 }

@@ -101,20 +101,22 @@
                   <td>
                       <?php
                         if($v['isnew']){
-                             echo "<span class='layui-btn layui-btn-small layui-btn-warm' onclick='javascript:changeIsNew({$v['id']},0)'>是</span>";
+                             echo "<span class='layui-btn layui-btn-small layui-btn-warm' onclick='javascript:changeIsNew({$v['id']});' id='isnewobj_{$v['id']}' data-id='{$v['id']}'>是</span>";
                         }else{
-                             echo "<span class='layui-btn layui-btn-small layui-btn-danger' onclick='javascript:changeIsNew({$v['id']},1)'>否</span>";
+                             echo "<span class='layui-btn layui-btn-small layui-btn-danger' onclick='javascript:changeIsNew({$v['id']});' id='isnewobj_{$v['id']}' data-id='{$v['id']}'>否</span>";
                         }
                       ?>
+                      <input type="hidden" name="isnew_<?php echo $v['id'];?>" id="isnew_<?php echo $v['id'];?>" value="<?php echo $v['isnewc'];?>" >
                   </td>
                   <td>
                       <?php
                       if($v['isrecommand']){
-                          echo "<span class='layui-btn layui-btn-small layui-btn-warm' onclick='javascript:isRecommand({$v['id']},0)'>是</span>";
+                          echo "<span class='layui-btn layui-btn-small layui-btn-warm' onclick='javascript:isRecommand({$v['id']});' id='isrecommandobj_{$v['id']}' data-id='{$v['id']}'>是</span>";
                       }else{
-                          echo "<span class='layui-btn layui-btn-small layui-btn-danger' onclick='javascript:isRecommand({$v['id']},1)'>否</span>";
+                          echo "<span class='layui-btn layui-btn-small layui-btn-danger' onclick='javascript:isRecommand({$v['id']});' id='isrecommandobj_{$v['id']}' data-id='{$v['id']}'>否</span>";
                       }
                       ?>
+                      <input type="hidden" name="isrecommand_<?php echo $v['id'];?>" id="isrecommand_<?php echo $v['id'];?>" value="<?php echo $v['isrecommandc'];?>" >
                   </td>
                   <td>
                       <div class="layui-input-inline" style="width: 70px;text-align: center">
@@ -124,10 +126,11 @@
                   <td>
                       <a class="layui-btn layui-btn-small" href="<?php echo mobile_url('product',array('op'=>'editproduct','dish_id'=>$v['id'])); ?>">编辑</a>
                       <?php if($v['status']){ ?>
-                      <div class="layui-btn layui-btn-small layui-btn-danger" onclick='javascript:isStatus(<?php echo $v['id'];?>,0)'>下架</div>
+                      <div class="layui-btn layui-btn-small layui-btn-danger" onclick='javascript:isStatus(<?php echo $v['id'];?>);'  id='isstatusobj_<?php echo $v['id'];?>' data-id="<?php echo $v['id'];?>">设置下架</div>
                       <?php }else{ ?>
-                      <div class="layui-btn layui-btn-small layui-btn-warm" onclick='javascript:isStatus(<?php echo $v['id'];?>,1)'>上架</div>
+                      <div class="layui-btn layui-btn-small layui-btn-warm"  onclick='javascript:isStatus(<?php echo $v['id'];?>);'   id='isstatusobj_<?php echo $v['id'];?>' data-id="<?php echo $v['id'];?>">设置上架</div>
                       <?php } ?>
+                      <input type="hidden" name="isstatus_<?php echo $v['id'];?>" id="isstatus_<?php echo $v['id'];?>" value="<?php echo $v['isstatusc'];?>" >
                   </td>
                 </tr>
               <?php
@@ -211,27 +214,60 @@ layui.use(['laypage', 'layer','form','element'], function(){
     */
 });
 
-function changeIsNew(id,data){
+function changeIsNew(id){
     //ar weburl = '/seller/product/changeDishIsNew.html';
+    var data = $('#isnew_'+id).val();
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishIsNew')); ?>";
     $.post(weburl,{'dish_id':id,'isnew':data},function(redata){
-        //location.reload();
+        if(data == 1)
+        {
+            $('#isnewobj_'+id).attr("class","layui-btn layui-btn-small layui-btn-warm");
+            $('#isnewobj_'+id).html('是');
+            $('#isnew_'+id).val(0);
+        }
+        else{
+            $('#isnewobj_'+id).attr("class","layui-btn layui-btn-small layui-btn-danger");
+            $('#isnewobj_'+id).html('否');
+            $('#isnew_'+id).val(1);
+        }
     },"json");
 }
 
-function isRecommand(id,data){
+function isRecommand(id){
     //var weburl = '/seller/product/changeDishRecommand.html';
+    var data = $('#isrecommand_'+id).val();
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishRecommand')); ?>";
     $.post(weburl,{'dish_id':id,'isrecommand':data},function(redata){
-        //location.reload();
+        if(data == 1)
+        {
+            $("#isrecommandobj_"+id).attr("class","layui-btn layui-btn-small layui-btn-warm");
+            $('#isrecommandobj_'+id).html('是');
+            $('#isrecommand_'+id).val(0);
+        }
+        else{
+            $("#isrecommandobj_"+id).attr("class","layui-btn layui-btn-small layui-btn-danger");
+            $('#isrecommandobj_'+id).html('否');
+            $('#isrecommand_'+id).val(1);
+        }
     },"json");
 }
 
-function isStatus(id,data){
+function isStatus(id){
     //var weburl = '/seller/product/changeDishStatus.html';
+    var data = $('#isstatus_'+id).val();
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishStatus')); ?>";
     $.post(weburl,{'dish_id':id,'status':data},function(redata){
-        //location.reload();
+        if(data == 1)
+        {
+            $("#isstatusobj_"+id).attr("class","layui-btn layui-btn-small layui-btn-danger");
+            $('#isstatusobj_'+id).html('设置下架');
+            $('#isstatus_'+id).val(0);
+        }
+        else{
+            $("#isstatusobj_"+id).attr("class","layui-btn layui-btn-small layui-btn-warm");
+            $('#isstatusobj_'+id).html('设置上架');
+            $('#isstatus_'+id).val(1);
+        }
     },"json");  
 }
 

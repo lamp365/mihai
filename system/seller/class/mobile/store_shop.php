@@ -348,7 +348,9 @@ class store_shop  {
         
         $status = $storeShopService->setshop($_GP);
         
-        echo $status;
+        //cho $status;
+        $url = mobile_url('shop',array('op'=>'index'));
+        message('编辑成功！',$url,'success');
     }
     
     public function childen_region(){

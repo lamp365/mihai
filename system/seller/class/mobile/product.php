@@ -320,7 +320,16 @@ class product extends base
             $limit = " LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
             $fields = '*';
             $list  = mysqld_selectall("SELECT {$fields} FROM " . table('shop_dish') . " WHERE sts_id = {$memberData['store_sts_id']}  {$condition} ORDER BY sort asc,id DESC ".$limit);
+            foreach($list as $k=>$v){
+                $list[$k]['isnewc']       = $v['isnew']==0?1:0;
+                $list[$k]['isrecommandc'] = $v['isrecommand']==0?1:0;
+                $list[$k]['isstatusc']    = $v['status']==0?1:0;
+            }
+            
             $total = mysqld_selectcolumn('SELECT COUNT(id) FROM ' . table('shop_dish') . " WHERE sts_id = {$memberData['store_sts_id']}  {$condition}");
+            
+            
+            
             $pager = pagination($total, $pindex, $psize);
             include page('dish/productlist');
 	}
@@ -328,14 +337,14 @@ class product extends base
 
 	//获取二级分类
 	public function parCategory(){
-		$_GP = $this->request;
+            $_GP = $this->request;
 
-		//获取二级店铺商品分类
-		$dishCategoryFields = 'id,`name`';
-		$dishCategoryData    = getStoreCategoryChild($_GP['pid'],$dishCategoryFields);
+            //获取二级店铺商品分类
+            $dishCategoryFields = 'id,`name`';
+            $dishCategoryData    = getStoreCategoryChild($_GP['pid'],$dishCategoryFields);
 
-		echo json_encode($dishCategoryData);
-		exit;
+            echo json_encode($dishCategoryData);
+            exit;
 	}
         
 

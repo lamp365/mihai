@@ -121,7 +121,6 @@
                             <tr>
                                 <td class="stop-table-td-1">QQ号</td>
                                 <td><?php echo $storeInfo['sts_qq'] ?></td>
-
                             </tr>
                             <tr>
                                 <td class="stop-table-td-1">店铺简介</td>
@@ -163,6 +162,10 @@
                                 <td><?php echo $storeInfo['sts_address'] ?></td>
                             </tr>
 
+                            <tr>
+                                <td class="stop-table-td-1">佣金</td>
+                                <td><?php echo $storeInfo['commision'] ?></td>
+                            </tr>
                         </tbody>
                     </table>
                     </form>

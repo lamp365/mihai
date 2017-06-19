@@ -106,5 +106,12 @@ class regionService extends \service\publicService
             $result = mysqld_selectall("SELECT {$param}  FROM " . table('region') . " WHERE {$condition} ORDER BY region_order ASC");
             return $result;
         }
-    }  
+    }
+    
+    //获取省信息
+    
+    //获取市信息
+    
+    //获取区信息
+    
 }

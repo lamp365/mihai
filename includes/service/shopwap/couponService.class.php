@@ -14,38 +14,6 @@ class couponService extends \service\publicService
         return $this->error_location;
     }
     /**
-     * 获得单条store_coupon表信息
-     *   */
-    public function getOneCoupon($where = array(),$param="*"){
-        if (empty($where)) return false;
-        $storeCouponModel = new store_coupon_model();
-        return $storeCouponModel->getOne($where,$param);
-    }
-    /**
-     * 获得多条store_coupon表信息
-     *   */
-    public function getAllCoupon($where,$param="*",$orderby=false){
-        $storeCouponModel = new store_coupon_model();
-        return $storeCouponModel->getAll($where,$param,$orderby);
-    }
-    /**
-     * 通过查询条件获取用户优惠券表,返回一条数据
-     *@param $condition array 查询条件
-     *   */
-    public function getOneMemberCoupon($where,$param="*",$orderby=false){
-        if (empty($where)) return false;
-        $storeCouponMemberModel = new store_coupon_member_model();
-        return $storeCouponMemberModel->getOne($where,$param);
-    }
-    /**
-     * 通过查询条件获取用户优惠券表,返回多条数据
-     *@param $condition array 查询条件
-     *   */
-    public function getAllMemberCoupon($where,$param="*",$orderby=false){
-        $storeCouponMemberModel = new store_coupon_member_model();
-        return $storeCouponMemberModel->getAll($where,$param,$orderby);
-    }
-    /**
      * 获得店铺优惠券
      *   */
     public function getStoreCoupons($storeid,$openid){
@@ -96,7 +64,8 @@ class couponService extends \service\publicService
         if (!empty($data) && is_array($data)){
             $now = time();
             $con = "`scid`={$data['scid']} and `store_shop_id`={$data['stsid']}";
-            $info = $this->getOneCoupon($con,"scid,release_quantity,receive_start_time,receive_end_time,inventory,get_limit");
+            $couponModel = new \model\store_coupon_model();
+            $info = $couponModel->getOneCoupon($con,"scid,release_quantity,receive_start_time,receive_end_time,inventory,get_limit");
             $return['status'] = 0;
             /* and `payment`!=1 and {$now} >= `receive_start_time` and {$now} <= `receive_end_time` and `inventory`>0 */
             if (empty($info)) {
@@ -116,7 +85,8 @@ class couponService extends \service\publicService
                 $return['status'] = 1;
                 return $return;//用户可以无限制领取
             }
-            $myCoupons = $this->getAllMemberCoupon(array('openid'=>$data['openid'],'scid'=>$data['scid']));
+            $couponMemModel = new \model\store_coupon_member_model();
+            $myCoupons = $couponMemModel->getAllMemberCoupon(array('openid'=>$data['openid'],'scid'=>$data['scid']));
             if (count($myCoupons) < $info['get_limit']) {
                 $return['status'] = 1;
                 return $return;
@@ -148,7 +118,8 @@ class couponService extends \service\publicService
                 mysqld_insert("store_coupon_member",$insertData);
                 if (!mysqld_insertid()) throw new \PDOException('增加失败');
                 $now = time();
-                $info = $this->getOneCoupon("`scid`={$data['scid']} and {$now} >= `receive_start_time` and {$now} <= `receive_end_time`","release_quantity,inventory");
+                $couponModel = new \model\store_coupon_model();
+                $info = $couponModel->getOneCoupon("`scid`={$data['scid']} and {$now} >= `receive_start_time` and {$now} <= `receive_end_time`","release_quantity,inventory");
                 if (empty($info)) throw new \PDOException('对不起，不在领取的时间范围内');
                 $flag = $info['release_quantity']-$info['inventory'];
                 if($flag < 0) throw new \PDOException('对不起，优惠券数量不足');
@@ -179,7 +150,8 @@ class couponService extends \service\publicService
             $price = $data['price'];//店铺id
             $now = time();
             //查看自己领取的优惠券
-            $myCoupon = $this->getAllMemberCoupons(array('openid'=>$member['openid'],'status'=>0),"scmid,scid");
+            $couponMemModel = new \model\store_coupon_member_model();
+            $myCoupon = $couponMemModel->getAllMemberCoupons(array('openid'=>$member['openid'],'status'=>0),"scmid,scid");
             if(empty($myCoupon)) {
                 $return['mes'] = '抱歉，暂无优惠券可以使用';
                 return $return;
@@ -223,7 +195,8 @@ class couponService extends \service\publicService
             $price = $data['price'];//店铺id
             $now = time();
             //查看自己领取的优惠券
-            $myCoupon = $this->getAllMemberCoupons(array('openid'=>$member['openid'],'status'=>0),"scmid,scid");
+            $couponMemModel = new \model\store_coupon_member_model();
+            $myCoupon = $couponMemModel->getAllMemberCoupons(array('openid'=>$member['openid'],'status'=>0),"scmid,scid");
             if(empty($myCoupon)) {
                 $return['mes'] = '抱歉，暂无优惠券可以使用';
                 return $return;
@@ -274,7 +247,8 @@ class couponService extends \service\publicService
             $price = $data['price'];//店铺id
             $now = time();
             //查看自己领取的优惠券
-            $myCoupon = $this->getAllMemberCoupons(array('openid'=>$member['openid'],'status'=>0),"scmid,scid");
+            $couponMemModel = new \model\store_coupon_member_model();
+            $myCoupon = $couponMemModel->getAllMemberCoupons(array('openid'=>$member['openid'],'status'=>0),"scmid,scid");
             if(empty($myCoupon)) {
                 $return['mes'] = '抱歉，暂无优惠券可以使用';
                 return $return;

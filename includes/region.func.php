@@ -59,6 +59,11 @@ function getProvincesOfRegion() {
     return $result;
 }
 
+//返回子类id
+function getChildrenOfRegion($parent_id=1,$fields='*'){
+   $result = mysqld_selectall("select {$fields} from ".table('region')." where parent_id = {$parent_id} order by region_order ASC");
+   return $result;
+}
 
 function region_func_getNameByCode($id) {
     if(!$id){return ;}
