@@ -23,7 +23,7 @@ class activity_area_model extends model
 	/**
 	 * 获得多条activity_area表信息
 	 *   */
-	public function getAllActArea($where = array(),$param="*",$orderby=false){
+	public function getAllActArea($where,$param="*",$orderby=false){
 	    return $this->getAll($where,$param,$orderby);
 	}
     
