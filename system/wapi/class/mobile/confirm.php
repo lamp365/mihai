@@ -17,12 +17,13 @@ class confirm extends base
 
     public function topay()
     {
+        $meminfo = get_member_account();
         $setting = globaSetting();
         $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
         $configs = unserialize($payment['configs']);
-//        $appid  = $setting['weixin_appId'];
-        $appid  = 'wxee3d6d279578322b';//小程序appid
-        $openid = 'oxDr-0ObKhg0Ly52XMpR07WxouLE';  //个人要支付的openid
+
+        $appid  = $setting['xcx_appid'];//小程序appid
+        $openid = $meminfo['weixin_openid'];  //个人要支付的openid
         $mch_id = $configs['weixin_pay_mchId'];
         $key    = $configs['weixin_pay_paySignKey'];
 

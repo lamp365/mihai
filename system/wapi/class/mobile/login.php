@@ -18,8 +18,6 @@ class login extends base {
        $_GP = $this->request;
        //wxee3d6d279578322b线上appid
        //7d2ac6d21c548f5160c53ae55e61d6db线上 secret
-       //wxea80facbec12df2d个人appid
-       //2f1e4a3fcb8620276bb8041cfbfe5b67个人 secret
        $seting = globaSetting();
        $appid  = $seting['xcx_appid'];
        $secret = $seting['xcx_appsecret'];

@@ -25,7 +25,7 @@
     </h3>
     <ul class="nav nav-tabs" >
         <li class="active"><a href="<?php echo mobile_url('wuliu',array('name'=>'seller','op'=>'index'));?>">物流选择</a></li>
-        <li><a href="<?php echo mobile_url('wuliu',array('name'=>'seller','op'=>'freePrice','status'=>1));?>">免邮配置</a></li>
+        <li><a href="<?php echo mobile_url('wuliu',array('name'=>'seller','op'=>'freePrice','status'=>1));?>">邮费配置</a></li>
         <li><a href="<?php echo mobile_url('wuliu',array('name'=>'seller','op'=>'returnAddress','status'=>2));?>">退货地址配置</a></li>
     </ul>
 <form method="post" action="<?php echo mobile_url('wuliu',array('name'=>'seller','op'=>'addDispatch'));?>">

@@ -25,9 +25,9 @@ class good_detail extends base {
     }
 
     $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']);
-    // if (empty($activity_dish)) {
-    //   ajaxReturnData(0,'该商品不在限时购之内');
-    // }
+    if (empty($activity_dish)) {
+       ajaxReturnData(0,'该商品不在限时购之内');
+    }
 
     // 获取主图
     $piclist = array();
@@ -108,9 +108,9 @@ class good_detail extends base {
     // $list['country'] = $country['name'];
     // $list['country_icon'] = download_pic($country['icon']);
     // 分类名
-    $category_p1 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$$activity_dish['ac_p1_id']);
+    $category_p1 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p1_id']);
     $list['category_p1'] = $category_p1['name'];
-    $category_p2 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$$activity_dish['ac_p2_id']);
+    $category_p2 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p2_id']);
     $list['category_p2'] = $category_p2['name'];
     // 购物车商品数量
     if (!empty($member)) {
@@ -137,8 +137,8 @@ class good_detail extends base {
     // 详情图
     if ($is_contont == 'yes') {
       // 通用详情头尾 
-      $head = mysqld_selectall("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=1 ORDER BY is_default DESC,createtime DESC");
-      $foot = mysqld_selectall("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=2 ORDER BY is_default DESC,createtime DESC");
+      $head = mysqld_select("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=1 and is_default =1");
+      $foot = mysqld_select("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=2 and is_default =1");
       $list['content_head'] = $head;
       $list['content_foot'] = $foot;
       $list['content'] = $contents;

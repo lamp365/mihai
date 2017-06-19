@@ -56,7 +56,7 @@ class wxpayService extends  \service\publicService
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付错误---{$return['return_msg']}",'payError');
-            ajaxReturnData(0,'出错了,请重新再试一');
+            ajaxReturnData(0,'出错了,请重新再试!');
         }else if($return['result_code'] == 'FAIL'){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
@@ -164,7 +164,7 @@ class wxpayService extends  \service\publicService
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付错误!",'payError');
             curl_close($ch);
-            ajaxReturnData(0,'出错了,请重新再试一');
+            ajaxReturnData(0,'出错了,请重新再试!');
         }
     }
 

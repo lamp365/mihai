@@ -13,17 +13,21 @@ class mycartService extends  \service\publicService
         if (! empty($list)) {
             //找出对应的商品 信息
             foreach($list as $item){
-                $sql = "select ac_dish_price from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']}";
+                $sql = "select ac_dish_price,ac_dish_status,ac_dish_total from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']}";
                 $act_dish = mysqld_select($sql);
-                if(empty($act_dish) || $act_dish['ac_dish_status'] == 0 ||  $act_dish['ac_dish_total'] == 0){
-                    //找不到 或者已经下架 没有库存 删除掉
+                if(empty($act_dish)){
+                    //找不到
                     mysqld_delete('shop_cart',array('id'=>$item['id']));
                     continue;
                 }
                 $totalprice += $act_dish['ac_dish_price'];
                 $store = member_store_getById($item['sts_id'],'sts_name');
-                $field = '*';
+                $field = 'title,thumb';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
+                $dish['time_price']        = FormatMoney($act_dish['ac_dish_price'],0);
+                $dish['buy_num']           = $item['total'];
+                $dish['ac_dish_status']    = $act_dish['ac_dish_status'];
+                $dish['ac_dish_total']     = $act_dish['ac_dish_total'];
 
                 if(!array_key_exists($item['sts_id'],$gooslist)){
                     $gooslist[$item['sts_id']]   = $store;
@@ -43,6 +47,18 @@ class mycartService extends  \service\publicService
     public function addCart($dishid,$total)
     {
         $member = get_member_account();
+
+        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
+        $sql .= " where ac_shop_dish={$dishid}";
+        $find = mysqld_select($sql);
+        if (empty($find)) {
+            $this->error = '抱歉，该商品已不存在！';
+            return false;
+        }else if($find['ac_dish_status'] == 0){
+            $this->error = '请等待上架！';
+            return false;
+        }
+
         $dish   = mysqld_select("select id,sts_id,deleted,status from ".table('shop_dish')." where id={$dishid}");
         if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
             $this->error = '该商品不存在！';
@@ -63,21 +79,56 @@ class mycartService extends  \service\publicService
                 'sts_id'        => $dish['sts_id'],
                 'total'         =>  $total
             );
+            if($total > $find['ac_dish_total']){
+                $this->error = "库存剩下{$find['ac_dish_total']}个！";
+                return false;
+            }
             mysqld_insert('shop_cart', $data);
         } else {
             // 累加最多限制购买数量
             $t_num = $total + $row['total'];
-            // 存在
-            $data = array(
-                'total'       => $t_num
-            );
-            mysqld_update('shop_cart', $data, array(
-                'id' => $row['id']
-            ));
+            if($t_num > $find['ac_dish_total']){
+                $this->error = "库存剩下{$find['ac_dish_total']}个！";
+                return false;
+            }
+            $data = array('total' => $t_num);
+            mysqld_update('shop_cart', $data, array('id' => $row['id']));
         }
         return $data['total'];
     }
 
+    public function updateCart($cart_id,$num)
+    {
+        $member = get_member_account();
+
+        $cart   = mysqld_select("select * from ".table('shop_cart')." where id={$cart_id} and openid='{$member['openid']}'");
+        if(empty($cart)){
+            $this->error = '抱歉，该商品已不存在！';
+            return false;
+        }
+
+        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
+        $sql .= " where ac_shop_dish={$cart['goodsid']}";
+        $find = mysqld_select($sql);
+        if (empty($find)) {
+            $this->error = '抱歉，该商品已不存在！';
+            return false;
+        }else if($find['ac_dish_status'] == 0){
+            $this->error = '请等待上架！';
+            return false;
+        }
+
+        // 累加最多限制购买数量
+        $t_num = $num + $find['total'];
+        if($t_num > $find['ac_dish_total']){
+            $this->error = "库存剩下{$find['ac_dish_total']}个！";
+            return false;
+        }
+        $data = array('total' => $t_num);
+        mysqld_update('shop_cart', $data, array('id' => $cart_id));
+
+        return $data['total'];
+    }
     /**
      * 选择了哪些商品进行购买
      * @param $cart_ids

@@ -580,7 +580,7 @@ set_time_limit (30);
  * @param array $param
  * @param int $timeout
  */
-function asyn_doRequest($url, $param=array(),$timeout =6){
+function asyn_doRequest($url, $param=array(),$timeout =10){
     ignore_user_abort (true);
     $urlParmas = parse_url($url);
     $host      = $urlParmas['host'];

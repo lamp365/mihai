@@ -18,7 +18,7 @@ class wuliuService extends publicService
      * @param $type return type 返回类型，1表示返回店铺物流id，2表示返回店铺物流id和名称
      * **/
     public function getStoreDispatchList($type="1"){
-        $myDispatch = mysqld_select("SELECT id,sts_id,dispatch_id from " .table('store_dispatch'). " where sts_id =:sts_id" ,array('sts_id'=>$this->sts_id));
+        $myDispatch = mysqld_select("SELECT dispatch_id from " .table('store_extend_info'). " where store_id =:sts_id" ,array('sts_id'=>$this->sts_id));
         $dispatchId = array();
         if (!empty($myDispatch['dispatch_id'])){
             $dispatchId = explode(",", $myDispatch['dispatch_id']);
@@ -42,7 +42,7 @@ class wuliuService extends publicService
      * @param string $dispatchId 物流id ，逗号连接的字符串
      * **/
     public function addStoreDispatch($dispatchId =''){
-        $return = mysqld_update('store_dispatch',array('dispatch_id'=>$dispatchId),array('sts_id'=>$this->sts_id));
+        $return = mysqld_update('store_extend_info',array('dispatch_id'=>$dispatchId),array('store_id'=>$this->sts_id));
         return true;
     }
     /**更新 store_shop表
@@ -51,8 +51,8 @@ class wuliuService extends publicService
      *   */
     public function updateStoreShop($data=array(),$condition=array()){
         if (!empty($data)){
-            $condition['sts_id']=$this->sts_id;
-            $res = mysqld_update('store_shop',$data,$condition);
+            $condition['store_id']=$this->sts_id;
+            $res = mysqld_update('store_extend_info',$data,$condition);
             return $res;
         }
     }

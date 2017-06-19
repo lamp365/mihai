@@ -592,10 +592,10 @@ class StoreShopService extends \service\publicService {
             if (empty($info)){
                 $member=get_member_account();
                 $data['store_id'] = $member['store_sts_id'];
-                mysqld_insert('store_return_address',$data);
+                mysqld_insert('store_extend_info',$data);
                 return true;
             }else {
-                mysqld_update('store_return_address',$data,array('store_id'=>$info['store_id']));
+                mysqld_update('store_extend_info',$data,array('store_id'=>$info['store_id']));
                 return true;
             }
         }
@@ -608,7 +608,7 @@ class StoreShopService extends \service\publicService {
         $member=get_member_account();
         $condition['store_id'] = $member['store_sts_id'];
         $condition = to_sqls($condition,$front);
-        $sql = "SELECT {$param} FROM ".table('store_return_address')." WHERE {$condition}";
+        $sql = "SELECT {$param} FROM ".table('store_extend_info')." WHERE {$condition}";
         $info = mysqld_select($sql);
         if ($info) {
             return $info;

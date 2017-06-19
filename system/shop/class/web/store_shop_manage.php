@@ -127,6 +127,9 @@ class store_shop_manage extends basecontroller {
                 }
                 mysqld_insert('member_store_relation',$relat_data);
 
+                //插入商铺的扩展信息表
+                mysqld_insert('store_extend_info',array('store_id'=>$store_id,'createtime'=>time()));
+
                 //删除掉  申请表里的记录
                 mysqld_delete('store_shop_apply',array('sts_id'=>$_GP['id']));
                 mysqld_delete('store_shop_identity_apply',array('ssi_id'=>$_GP['id']));

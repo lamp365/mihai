@@ -25,17 +25,8 @@ class mycart extends base
         if(empty($dishid)){
             ajaxReturnData(0,'请选择商品');
         }
-        $total   = intval($_GP['total']);
+        $total   = intval($_GP['buy_num']);
         $total   = empty($total) ? 1 : $total;
-
-        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
-        $sql .= " where ac_shop_dish={$dishid}";
-        $find = mysqld_select($sql);
-        if (empty($find)) {
-            ajaxReturnData(0,'抱歉，该商品不存在或是已经被删除');
-        }else if($find['ac_dish_status'] == 0){
-            ajaxReturnData(0,'请等待上架！');
-        }
 
         $service  = new \service\wapi\mycartService();
         $cartotal = $service->addCart($dishid,$total);
@@ -49,20 +40,17 @@ class mycart extends base
     public function updateCart()
     {
         $_GP    =  $this->request;
-        $member = get_member_account();
-        $openid = $member['openid'];
+
         $id  = intval($_GP['id']);
         $num = intval($_GP['num']);
         if(empty($id) || empty($num) || $num<0){
             ajaxReturnData(0,'参数有误！');
         }
-        $find = mysqld_select("select * from ".table('shop_cart')." where id={$id} and openid='{$openid}'");
-        if(empty($find)){
-            ajaxReturnData(0,'该商品不存在');
+        $service  = new \service\wapi\mycartService();
+        $cartotal = $service->updateCart($id,$num);
+        if(!$cartotal){
+            ajaxReturnData(0,$service->getError());
         }
-        mysqld_query("update " . table('shop_cart') . " set total={$num} where id=:id", array(
-            ":id"     => $id
-        ));
         ajaxReturnData(1,'操作成功！');
     }
 

@@ -29,18 +29,28 @@ class wuliu extends base
     }
     //免邮价格的设置
     public function freePrice(){
-        $_GP = $this->request;
+        $member = get_member_account();
+        $_GP    = $this->request;
         $status = intval($_GP['status']);//区分物流配置或者免邮设置的tab
         $type = $_GP['type'];
         if ($type == 'add'){
-            $prices = floatval($_GP['price']);
-            $return = $this->wuliuService->updateStoreShop(array('free_dispatch'=>FormatMoney($prices,1)));
-            if ($return) message('免邮价格设置成功!',refresh(),'success');
+            $inset_data = array(
+                'free_dispatch' => FormatMoney($_GP['free_dispatch'],1),
+                'express_fee'   => FormatMoney($_GP['express_fee'],1),
+                'limit_send'    => FormatMoney($_GP['limit_send'],1),
+            );
+            if($_GP['free_dispatch'] < $_GP['limit_send']){
+                message('免邮配置不能比最低配送大');
+            }
+            $return = mysqld_update('store_extend_info',$inset_data,array('store_id'=>$member['store_sts_id']));
+            if ($return) message('邮费设置成功!',refresh(),'success');
         }
-        $StoreShopService = new StoreShopService();
-        $member = get_member_account();
-        $myFreeDispatch = $StoreShopService->getMydefaultShop($member['store_sts_id'],"sts_id,free_dispatch ");
-        $freePrice = FormatMoney($myFreeDispatch['free_dispatch'],0);
+
+        $service        = new \service\seller\StoreShopService();
+        $myFreeDispatch = $service->viewreturnAddress();
+        $free_dispatch  = FormatMoney($myFreeDispatch['free_dispatch'],0);
+        $express_fee    = FormatMoney($myFreeDispatch['express_fee'],0);
+        $limit_send     = FormatMoney($myFreeDispatch['limit_send'],0);
         include page('wuliu/freePrice');
     }
     //退货地址配置
