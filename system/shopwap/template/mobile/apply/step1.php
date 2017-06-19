@@ -356,6 +356,7 @@ $(function(){
 
     function addedit(obj){
         var fulltext =  $("#sts_locate_add_1").find("option:selected").text()+$("#sts_locate_add_2").find("option:selected").text()+$("#sts_locate_add_3").find("option:selected").text()+$("input[name=sts_address]").val();
+
         window.localStorage.setItem("poi_search_text", fulltext);
         layer.open({
         type: 2,

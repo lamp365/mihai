@@ -19,7 +19,8 @@ class couponService extends \service\publicService
     public function getStoreCoupons($storeid,$openid){
         if (empty($storeid)) return ;
         $mytime = time();
-        $couponsList = $this->getAllCoupon("`store_shop_id`={$storeid} and `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
+        $couponModel = new \model\store_coupon_model();
+        $couponsList = $couponModel->getAllCoupon("`store_shop_id`={$storeid} and `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
         if (!empty($couponsList)){
             if ($openid){//用户已经登入，则返回可以领取的优惠券
                 $data = array(
@@ -27,6 +28,7 @@ class couponService extends \service\publicService
                     'stsid' => $storeid,
                 );
                 $coupon_amount = 0;
+                $list = array();
                 foreach ($couponsList as $key=>$v){
                     $data['scid'] = $v['scid'];
                     $res = $this->IsCanGetCoupon($data);
