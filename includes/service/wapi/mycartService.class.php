@@ -3,11 +3,15 @@ namespace service\wapi;
 
 class mycartService extends  \service\publicService
 {
-    public function cartlist()
+    public function cartlist($cart_where = '',$get_express = 0)
     {
         $member = get_member_account();
         $openid = $member['openid'];
-        $list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
+        $where  = " session_id ='{$openid}'";
+        if(!empty($cart_where)){
+            $where .= " and {$cart_where}";
+        }
+        $list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE  {$where}");
         $totalprice = 0;
         $gooslist   = array();
         if (! empty($list)) {
@@ -22,7 +26,7 @@ class mycartService extends  \service\publicService
                 }
                 $totalprice += $act_dish['ac_dish_price'];
                 $store = member_store_getById($item['sts_id'],'sts_name');
-                $field = 'title,thumb';
+                $field = 'title,thumb,sts_id';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
                 $dish['time_price']        = FormatMoney($act_dish['ac_dish_price'],0);
                 $dish['buy_num']           = $item['total'];
@@ -31,6 +35,13 @@ class mycartService extends  \service\publicService
 
                 if(!array_key_exists($item['sts_id'],$gooslist)){
                     $gooslist[$item['sts_id']]   = $store;
+                    //获取店铺的运费，免邮等信息
+                    if($get_express){
+                        $expressInfo = mysqld_select("select free_dispatch,express_fee from ".table('store_extend_info')." where store_id={$dish['sts_id']}");
+                        $gooslist[$item['sts_id']]['free_dispatch'] = FormatMoney($expressInfo['free_dispatch'],0);
+                        $gooslist[$item['sts_id']]['express_fee']   = FormatMoney($expressInfo['express_fee'],0);
+                        $totalprice += $expressInfo['express_fee'];
+                    }
                 }
                 $gooslist[$item['sts_id']]['dishlist'][] = $dish;
            }

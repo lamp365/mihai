@@ -39,7 +39,7 @@
         </div>
 
         <p style="padding: 15px 38px;"></p>
-
+        <!--
         <label class="layui-form-label">最低多少配送</label>
         <div class="layui-input-inline" style="width: 300px;">
             <input type="text" name="limit_send" placeholder="最低多少配送；单位：元" class="layui-input"  value="<?php echo $limit_send;?>">
@@ -47,6 +47,7 @@
         <div class="layui-input-inline" style="width: 300px;">
             例如20块起 才配送
         </div>
+        -->
     </div>
     <br >
     <button class="btn btn-sm btn-info" type="submit" style="margin-left: 30px;">

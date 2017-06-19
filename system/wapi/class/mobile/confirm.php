@@ -12,7 +12,13 @@ class confirm extends base
 {
    public function index()
    {
+       $_GP =  $this->request;
+       $service  = new \service\wapi\mycartService();
+       $cart_where = "to_pay=1";
+       $cartlist   = $service->cartlist($cart_where,1);
+       //获取优惠卷和默认地址
 
+       ajaxReturnData(1,'请求成功',$cartlist);
    }
 
     public function topay()
