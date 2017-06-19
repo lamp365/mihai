@@ -15,13 +15,13 @@ class category extends base{
        }
        $actListModel = new \model\activity_list_model();
        $now = time();
-       $where = "ac_status=0 and ac_time_end > $now";
+       $where = "ac_status=1 and ac_time_end > $now";
        $list = $actListModel->getAllActList($where,'ac_id');
        if ($list && (count($list) == 1)){//暂时只考虑活动只有1的
            $actAreaModel = new \model\activity_area_model();
            $list = $list[0];
            $actDishModel = new \model\activity_dish_model();
-           $return = $actDishModel->getAllActivtyDish(array('ac_action_id'=>$list['ac_id'],'ac_dish_status'=>0),"ac_dish_id,ac_in_id,ac_p1_id","ac_dish_id DESC");
+           $return = $actDishModel->getAllActivtyDish(array('ac_action_id'=>$list['ac_id'],'ac_dish_status'=>1),"ac_dish_id,ac_in_id,ac_p1_id","ac_dish_id DESC");
            //判断行业数目
            if ($return){
                //如果行业数目大于1，一级栏目是行业名称，否则是一级栏目名称
@@ -71,7 +71,7 @@ class category extends base{
         $type = intval($_GP['type']);//类型
         $id = intval($_GP['id']);//栏目id
         if (empty($id) || empty($type)) ajaxReturnData(0,'参数错误');
-        $where['ac_dish_status']=0;
+        $where['ac_dish_status']=1;
         $actDishModel = new \model\activity_dish_model();
         if ($type == 1){
             $where['ac_in_id'] = $id;

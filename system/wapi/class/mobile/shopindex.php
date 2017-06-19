@@ -12,7 +12,7 @@ class shopindex extends base{
        //取出活动列表，理论上是一个，但不排除有多个
        $actListModel = new \model\activity_list_model();
        $now = time();
-       $where = "ac_status=0 and ac_time_end > $now";
+       $where = "ac_status=1 and ac_time_end > $now";
        $list = $actListModel->getAllActList($where,'ac_id,ac_title,ac_time_str,ac_time_end');
        if ($list && count($list) == 0){
            ajaxReturnData(0,'暂无活动');
@@ -21,7 +21,7 @@ class shopindex extends base{
             $list = $list[0];
             $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
             $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
-            $where = "ac_list_id= '{$list['ac_id']}' and ac_area_status=0 and ac_area_time_str >= '$beginToday' and ac_area_time_end <= '$endToday'";
+            $where = "ac_list_id= '{$list['ac_id']}' and ac_area_status=1 and ac_area_time_str >= '$beginToday' and ac_area_time_end <= '$endToday'";
             $activty_area = $actAreaModel->getAllActArea($where,"ac_area_id,ac_area_time_str,ac_area_time_end,ac_list_id");
             if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
             $data = array();
@@ -63,7 +63,7 @@ class shopindex extends base{
        
        $ac_city = !empty($info) ? $info['region_code']:'';
        if (empty($ac_city) || empty($ac_city_area)) ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
-       $where = "ac_action_id = '$ac_list_id' and ac_dish_status=0 and (ac_area_id = '$ac_area_id' or ac_area_id=0) and IF(ac_city='$ac_city',ac_city_area='$ac_city_area',IF(ac_city_area=0,ac_city='$ac_city' OR ac_city=0,ac_city=0))";
+       $where = "ac_action_id = '$ac_list_id' and ac_dish_status=1 and (ac_area_id = '$ac_area_id' or ac_area_id=0) and IF(ac_city='$ac_city',ac_city_area='$ac_city_area',IF(ac_city_area=0,ac_city='$ac_city' OR ac_city=0,ac_city=0))";
        
        //分页取数据
        $pindex = max(1, intval($_GP['page']));
