@@ -21,6 +21,11 @@ class shopindex extends base{
             $list = $list[0];
             $activty_area = $actAreaModel->getAllActArea(array('ac_list_id'=>$list['ac_id'],'ac_area_status'=>0),"ac_area_id,ac_area_time_str,ac_area_time_end");
             if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
+            foreach ($activty_area as $key=>$v){
+                $activty_area[$key]['ac_area_time_str'] = date("H:i",$v['ac_area_time_str']);
+                $activty_area[$key]['ac_area_time_end'] = date("H:i",$v['ac_area_time_end']);
+                $activty_area[$key]['ac_id'] = $list['ac_id'];
+            }
             ajaxReturnData(1,'',$activty_area);
        }else {//同时存在活动列表大于2的话先不考虑
            

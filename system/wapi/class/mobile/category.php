@@ -9,7 +9,6 @@ class category extends base{
     public function get_one()
    {
        if(class_exists('Memcached')){
-           var_dump(111);
            $memcache = new \Mcache();
            $data = $memcache->get('CATEGORY_ONE');
            if (!empty($data)) ajaxReturnData(1,'',$data);
