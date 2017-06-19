@@ -21,7 +21,7 @@ class shopindex extends base{
             $list = $list[0];
             $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
             $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
-            $where = "ac_list_id '{$list['ac_id']}' and ac_area_status=0 and ac_area_time_str >= '$beginToday' and ac_area_time_end <= '$endToday'";
+            $where = "ac_list_id= '{$list['ac_id']}' and ac_area_status=0 and ac_area_time_str >= '$beginToday' and ac_area_time_end <= '$endToday'";
             $activty_area = $actAreaModel->getAllActArea($where,"ac_area_id,ac_area_time_str,ac_area_time_end,ac_list_id");
             if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
             $data = array();
