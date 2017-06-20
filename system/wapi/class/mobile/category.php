@@ -37,9 +37,10 @@ class category extends base{
                    foreach ($ins_id as $key=>$v){
                        $industry = $industryModel->getOneIndustry(array('gc_id'=>$v),'gc_id,gc_name');
                        if (!empty($industry)){
-                           $data[$key]['id'] = $v;
-                           $data[$key]['name'] = $industry['gc_name'];
-                           $data[$key]['type'] = 1;
+                           $temp['id'] = $v;
+                           $temp['name'] = $industry['gc_name'];
+                           $temp['type'] = 1;
+                           $data[] = $temp;
                        }
                    }
                }else{
@@ -49,9 +50,10 @@ class category extends base{
                    foreach ($ac_p1_id as $key=>$v){
                        $category = $shopCategoryModel->getOneShopCategory(array('id'=>$v),'id,name');
                        if ($category){
-                           $data[$key]['id'] = $v;
-                           $data[$key]['name'] = $category['name'];
-                           $data[$key]['type'] = 2;
+                           $temp['id'] = $v;
+                           $temp['name'] = $category['name'];
+                           $temp['type'] = 2;
+                           $data[] = $temp;
                        }
                    }
                }
@@ -91,10 +93,11 @@ class category extends base{
                 foreach ($idarr as $k=>$v){
                     $category = $shopCategoryModel->getOneShopCategory(array('id'=>$v),'id,name,thumb');
                     if ($category){
-                        $data[$k]['id'] = $v;
-                        $data[$k]['name'] = $category['name'];
-                        $data[$k]['thumb'] = $category['thumb'];
-                        $data[$k]['type'] = 2;
+                        $temp['id'] = $v;
+                        $temp['name'] = $category['name'];
+                        $temp['thumb'] = $category['thumb'];
+                        $temp['type'] = 2;
+                        $data[] = $temp;
                     }
                 }
             }
