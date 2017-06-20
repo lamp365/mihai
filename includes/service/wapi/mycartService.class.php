@@ -175,7 +175,7 @@ class mycartService extends  \service\publicService
     {
         $member = get_member_account();
 
-        $cart   = mysqld_select("select * from ".table('shop_cart')." where id={$cart_id} and openid='{$member['openid']}'");
+        $cart   = mysqld_select("select * from ".table('shop_cart')." where id={$cart_id} and session_id='{$member['openid']}'");
         if(empty($cart)){
             $this->error = '抱歉，该商品已不存在！';
             return false;
@@ -217,9 +217,9 @@ class mycartService extends  \service\publicService
         }
 
         //先全部置0
-        mysqld_update('shop_cart',array('to_pay'=>0),array('openid'=>$member['openid']));
+        mysqld_update('shop_cart',array('to_pay'=>0),array('session_id'=>$member['openid']));
         foreach($cart_ids as $id){
-            mysqld_update('shop_cart',array('to_pay'=>1),array('id'=>$id,'openid'=>$member['openid']));
+            mysqld_update('shop_cart',array('to_pay'=>1),array('id'=>$id,'session_id'=>$member['openid']));
         }
         return true;
     }
