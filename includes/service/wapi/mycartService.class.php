@@ -181,7 +181,7 @@ class mycartService extends  \service\publicService
             return false;
         }
 
-        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
+        $sql = "select ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
         $sql .= " where ac_shop_dish={$cart['goodsid']}";
         $find = mysqld_select($sql);
         if (empty($find)) {
