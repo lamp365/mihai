@@ -22,17 +22,25 @@ class shopindex extends base{
             //取时间段
             $activty_area = $actAreaModel->getAll(array('ac_list_id'=>$list['ac_area']));
             if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
-            $data = array();
+            
             foreach ($activty_area as $key=>$val){
-                $data[$key]['ac_area_id'] = $val['ac_area_id'];
-                $data[$key]['ac_list_id'] = $val['ac_list_id'];
-                $data[$key]['ac_area_time_str'] = date("H:i",$val['ac_area_time_str']);
-                $data[$key]['ac_area_time_end'] = date("H:i",$val['ac_area_time_end']);
-                $data[$key]['status'] = 0; 
+                $temp['ac_area_id'] = $val['ac_area_id'];
+                $temp['ac_area_time_str'] = date("H:i",$val['ac_area_time_str']);
+                $temp['ac_area_time_end'] = date("H:i",$val['ac_area_time_end']);
+                $temp['status'] = 0; 
                 if (time() >= $val['ac_area_time_str'] && time() <= $val['ac_area_time_end']){
-                    $data[$key]['status'] = 1;
+                    $temp['status'] = 1;
+                    $date = date("Y:m:d");
+                    $date = $date." ".date('H:i:s',$val['ac_area_time_end']);
+                    $endtime = strtotime($date);
+                    $starttime = time();
+                    $section = $endtime-$starttime;
+                    $data['section'] = $section;
                 }
+                $tempAll[] = $temp;
             }
+            $data['detail'] = $tempAll;
+            $data['ac_id'] = $list['ac_id'];
             ajaxReturnData(1,'',$data);
        }else {//同时存在活动列表大于2的话先不考虑
            
@@ -42,7 +50,7 @@ class shopindex extends base{
    public function active_dish()
    {
        $_GP = $this->request;
-       $ac_list_id = intval($_GP['ac_list_id']);//活动id
+       $ac_list_id = intval($_GP['ac_id']);//活动id
        $ac_area_id = intval($_GP['ac_area_id']);//区域id
        if (empty($ac_list_id) || empty($ac_area_id)) ajaxReturnData(0,'参数错误');
        $jd = $_GP['longitude'];//经度
@@ -85,16 +93,17 @@ class shopindex extends base{
        foreach ($list as $key=>$v){
             $goods = $shopDishModel->getOneShopDish(array('id'=>$v['ac_shop_dish']),'title,thumb,marketprice');
             if(empty($goods)) continue;
-            $data[$key]['title'] = $goods['title'];
-            $data[$key]['thumb'] = $goods['thumb'];
-            $data[$key]['marketprice'] = FormatMoney($goods['marketprice'],0);
-            $data[$key]['ac_dish_id'] = $v['ac_dish_id'];
-            $data[$key]['ac_action_id'] = $v['ac_action_id'];
-            $data[$key]['ac_area_id'] = $v['ac_area_id'];
-            $data[$key]['ac_shop'] = $v['ac_shop'];
-            $data[$key]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
-            $data[$key]['ac_dish_total'] = $v['ac_dish_total'];
-            $data[$key]['ac_dish_sell_total'] = $v['ac_dish_sell_total'];
+            $temp['title'] = $goods['title'];
+            $temp['thumb'] = $goods['thumb'];
+            $temp['marketprice'] = FormatMoney($goods['marketprice'],0);
+            $temp['ac_dish_id'] = $v['ac_dish_id'];
+            $temp['ac_action_id'] = $v['ac_action_id'];
+            $temp['ac_area_id'] = $v['ac_area_id'];
+            $temp['ac_shop'] = $v['ac_shop'];
+            $temp['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
+            $temp['ac_dish_total'] = $v['ac_dish_total'];
+            $temp['ac_dish_sell_total'] = $v['ac_dish_sell_total'];
+            $data[] = $temp;
        }
        ajaxReturnData(1,'',$data);
    } 

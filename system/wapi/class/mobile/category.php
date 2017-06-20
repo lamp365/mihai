@@ -59,7 +59,7 @@ class category extends base{
                }
                if(class_exists('Memcached')){
                    $memcache = new \Mcache();
-                   $memcache->set('CATEGORY_ONE', $data,60);
+                   $memcache->set('CATEGORY_ONE', $data,86400);
                }
                ajaxReturnData(1,'',$data);
            }
