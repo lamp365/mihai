@@ -56,7 +56,7 @@ class mycartService extends  \service\publicService
                     }
                 }
                 $gooslist[$item['sts_id']]['dishlist'][] = $dish;
-                $totalprice = $totalprice + $dish['time_price'];
+                $totalprice = $totalprice + $dish['time_price']*$dish['buy_num'];
            }
             $gooslist = array_values($gooslist);
         }
@@ -70,7 +70,7 @@ class mycartService extends  \service\publicService
         return array(
             'goodslist'     => $gooslist,
             'out_gooslist'  => $out_gooslist,
-            'totalprice'    => $totalprice
+            'totalprice'    => number_format($totalprice,2)
         );
     }
 
@@ -94,13 +94,13 @@ class mycartService extends  \service\publicService
     {
         if(empty($gooslist))  return $totalprice;
         foreach($gooslist as &$item){
-            $free_dispatch = $item['free_dispatch'];  //满多少免邮
-            $express_fee   = $item['express_fee'];    //运费
+            $free_dispatch = $item['free_dispatch'];  //满多少免邮  单位元
+            $express_fee   = $item['express_fee'];    //运费       单位元
             $dish_arr      = $item['dishlist'];
             $total_dish_price = 0;
             $dishid_arr       = array();
             foreach($dish_arr as $one){
-                $total_dish_price += $one['time_price'];
+                $total_dish_price += $one['time_price']*$one['buy_num'];
                 $dishid_arr[]     =  $one['id'];
             }
             if($total_dish_price >= $free_dispatch){
@@ -114,7 +114,7 @@ class mycartService extends  \service\publicService
             $item['bonuslist'] = getCouponByPrice($item['sts_id'],$total_dish_price,$dishid_arr);
 
         }
-        return number_format($totalprice,2);
+        return $totalprice;
     }
 
 
