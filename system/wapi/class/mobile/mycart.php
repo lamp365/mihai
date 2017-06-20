@@ -51,7 +51,9 @@ class mycart extends base
         if(!$cartotal){
             ajaxReturnData(0,$service->getError());
         }
-        ajaxReturnData(1,'操作成功！');
+
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'操作成功',$cartlist);
     }
 
     public function del()
@@ -64,7 +66,10 @@ class mycart extends base
             'session_id' => $openid,
             'id' => $id
         ));
-        ajaxReturnData(1,'已经移除！');
+
+        $service  = new \service\wapi\mycartService();
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'已经移除!',$cartlist);
     }
 
     public function batdel()
@@ -81,7 +86,10 @@ class mycart extends base
                     'id' => $id
                 ));
             }
-            ajaxReturnData(1,'删除成功！');
+
+            $service  = new \service\wapi\mycartService();
+            $cartlist = $service->cartlist();
+            ajaxReturnData(1,'删除成功！',$cartlist);
         }
     }
 
@@ -92,7 +100,9 @@ class mycart extends base
         mysqld_delete('shop_cart', array(
             'session_id' => $openid
         ));
-        ajaxReturnData(1,'已全部移除！');
+        $service  = new \service\wapi\mycartService();
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'已全部移除！',$cartlist);
     }
     //所选择了哪些商品进行购买
     public function topay()
