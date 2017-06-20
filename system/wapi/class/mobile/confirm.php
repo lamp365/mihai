@@ -13,11 +13,14 @@ class confirm extends base
    public function index()
    {
        $_GP =  $this->request;
+       $memInfo  = get_member_account();
        $service  = new \service\wapi\mycartService();
        $cart_where = "to_pay=1";
        $cartlist   = $service->cartlist($cart_where,1);
        //获取优惠卷和默认地址
-
+       $defaultAddress   =   mysqld_select("SELECT * FROM " . table('shop_address') . " WHERE openid ='{$memInfo['openid']}'  and isdefault =1 and  deleted = 0 ");
+       $cartlist['default_address'] = $defaultAddress;
+       ppd($cartlist);
        ajaxReturnData(1,'请求成功',$cartlist);
    }
 

@@ -78,9 +78,25 @@ class coupon extends base{
     public function mycoupon(){
         $member = get_member_account();
         $openid = $member['openid'];
+        $_GP = $this->request;
+        $type = intval(isset($_GP['type'])) ? intval($_GP['type']) : '0';//type 0表示未使用，1已使用，3已过期
         if (empty($openid)) ajaxReturnData(0,'请先登入');
         $couponMemModel = new \model\store_coupon_member_model();
-        $couponMemModel->getAllMemberCoupon($where);
+        $now = time();
+        $where .=" openid='$openid' and ";
+        if ($type == 0){
+            $where = "a.status=0 and '$now' < b.use_end_time";//未使用且没有过期
+        }elseif ($type == 1){
+            $where = "a.status=1";
+        }else {
+            $where = "a.status=0 and '$now' > b.use_end_time";//未使用且已过期
+        }
+        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name");
+        if (empty($mycoupon)) ajaxReturnData(0,'暂无优惠券信息');
+        foreach ($mycoupon as $key=>$v){
+            $data[$key]['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
+        }
+        ajaxReturnData(0,'',$mycoupon);
     }
 }
 ?>
