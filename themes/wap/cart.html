@@ -15,15 +15,17 @@
 </div>
 <div class="shopcart-main">
 
-    <div style="text-align:center;padding:50px 0 50px 0; display:none" id="cartempty">
+    <div style="text-align:center;padding:50px 0 50px 0; <!--@php  if(count($list)>0) { @-->display:none<!--@php  } @-->" id="cartempty">
         <img src="__RESOURCE__/mobile/images/icon_cart_empty.png"><br><br>
         <span style="color:#adadad">您的购物车空空如也，赶紧去选购吧~~</span>
     </div>
-
+<!--@php  if(is_array($list) && !empty($list)) { @-->
         <div class="shopcart-item">
-        
-
         <form action="<!--@php echo mobile_url('myorder1') @-->" method="post" name="cartform">
+        <!--@php  foreach($list as $val) { @-->
+        <!--@php  foreach($val as $v) { @-->
+        <!--@php  $goods = $v['goods'];$storeInfo = $v['store'];@-->
+        
             <div class="cart-area">
                 <div class="shop-top clearfix">
                     <div class="cart_l cart-shop-name-l">
@@ -31,13 +33,14 @@
                         <label></label>
                     </div>
                     <div class="cart_r cart-shop-name-r" style="font-size:12px;">
-                        <span class="cart-shop-name mui-ellipsis">笛爱儿特卖专场笛爱儿特卖专场笛爱儿特卖专场</span><i class="icon-angle-right" aria-hidden="true"></i>
+                        <span class="cart-shop-name mui-ellipsis"><!--@php echo $storeInfo['sts_name'] @--></span><i class="icon-angle-right" aria-hidden="true"></i>
                         <div class="pull-right ">
                             <span class="coupons-btn" onclick="couponsBtn(this)">领券</span>
                             <span class="cart-edit" state="edit" onclick="cartEdit(this)">编辑</span>
                         </div>
                     </div>
                 </div>
+                <!--@php  if( count($val) == 1) { @-->
                 <div class="cart_list" id="item_11">
                     <div class="clearfix cart-right">
                         <div class="cart_l">
@@ -46,12 +49,12 @@
                         </div>
                         <div class="cart_r">
                             <div class="pic">
-                                <img data-original="http://odozak4lg.bkt.clouddn.com/20161125101958379fa583a27.jpg" class="lazy" src="__RESOURCE__/recouse/images/lazy200.jpg" >
+                                <img data-original="<!--@php echo download_pic($goods['thumb'],200,200,2); @-->" class="lazy" src="__RESOURCE__/recouse/images/lazy200.jpg" >
                             </div>
 
                             <div class="shopcart-item-detail">
                                 <div class="shop_title">
-                                    <div class="name"><a href="index.php?mod=mobile&amp;id=319&amp;name=shopwap&amp;do=detail">Neocell修复型水解胶原蛋白粉小分子蛋白肽女性美白滋养润泽防皱抗皱正品</a></div>
+                                    <div class="name"><a href="index.php?mod=mobile&amp;id=319&amp;name=shopwap&amp;do=detail"><!--@php echo $goods['title'] @--></a></div>
                                     <p class="description util-ellipsis" onclick="specShow(this)">浅褐色, 5.5g<i class="specShow icon-angle-down" aria-hidden="true"></i></p>
 
                                     <div class="input-group">
@@ -65,9 +68,9 @@
                                     </div>
                                 </div>
                                 <div class="price">
-                                    ¥<span class="singletotalprice" style="font-weight:bold">78.00</span>
-                                    <span class="old-price">￥128.00</span>
-                                    <span class="shuliang">×<span>4</span></span>
+                                    ¥<span class="singletotalprice" style="font-weight:bold">￥<!--@php echo $goods['marketprice'] @--></span>
+                                    <span class="old-price">￥<!--@php echo $goods['productprice'] @--></span>
+                                    <span class="shuliang">×<span><!--@php echo $v['total'] @--></span></span>
                                     
                                 </div>
 
@@ -77,11 +80,86 @@
                     </div>
                     <div class="small-total">
                         <span class="description">小计:</span>
-                        <span class="small-total-price">¥ 312.00</span>
+                        <span class="small-total-price">¥ <!--@php echo $v['totalprice']; @--></span>
                     </div>
                 </div>
+                <!--@php  }else{ @-->
+                <div class="cart_list" id="item_32">
+                    <div class="clearfix cart-right">
+                        <div class="cart_l">
+                            <input type="checkbox" id="list_index_31" class="cart_checkbox child_checkbox" name="cart_ids[]" value="32"><label for="list_index_31"></label>
+                            <input type="hidden" value="493" id="hide_kucun_32">
+                        </div>
+                        <div class="cart_r">
+                            <div class="pic">
+                                <img data-original="http://odozak4lg.bkt.clouddn.com/20161125102058379fec319d7.jpg" class="lazy" src="__RESOURCE__/recouse/images/lazy200.jpg" >
+                            </div>
+
+                            <div class="shopcart-item-detail">
+                                <div class="shop_title">
+                                    <div class="name"><a href="index.php?mod=mobile&amp;id=3&amp;name=shopwap&amp;do=detail">performix sst燃脂胶囊顽固型运动减脂瘦身持久高效60粒补充能量</a></div>
+                                    <p class="description util-ellipsis" onclick="specShow(this)">浅褐色, 5.5g<i class="specShow icon-angle-down"  aria-hidden="true"></i></p>
+                                    <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm btn-reduce" type="button" onclick="reduceNum(32)"><i class="icon-minus"></i></button>
+                                    </span>
+                                        <input type="tel" class="form-control input-sm pricetotal goodsnum" style="border-left:0;" value="1" price="310.00" pricetotal="310" id="goodsnum_32" cartid="32" maxbuy="0">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm btn-add" type="button" onclick="addNum(32,0)"><i class="icon-plus"></i></button>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    ¥<span class="singletotalprice" style="font-weight:bold">310.00</span> <span class="shuliang">×<span>1</span></span>
+                                   
+                                </div>
+
+                            </div>
+                            <div class="cart-remove" onclick="cartRemove(this)">删除</div>
+                        </div>
+                    </div>
+                    <div class="clearfix cart-right">
+                        <div class="cart_l">
+                            <input type="checkbox" id="list_index_32" class="cart_checkbox child_checkbox" name="cart_ids[]" value="32"><label for="list_index_32"></label>
+                            <input type="hidden" value="493" id="hide_kucun_32">
+                        </div>
+                        <div class="cart_r">
+                            <div class="pic">
+                                <img data-original="http://odozak4lg.bkt.clouddn.com/20161125102058379fec319d7.jpg" class="lazy" src="__RESOURCE__/recouse/images/lazy200.jpg" >
+                            </div>
+
+                            <div class="shopcart-item-detail">
+                                <div class="shop_title">
+                                    <div class="name"><a href="index.php?mod=mobile&amp;id=3&amp;name=shopwap&amp;do=detail">performix sst燃脂胶囊顽固型运动减脂瘦身持久高效60粒补充能量</a></div>
+                                    <p class="description util-ellipsis"  onclick="specShow(this)">浅褐色, 5.5g<i class="specShow icon-angle-down" aria-hidden="true"></i></p>
+                                    <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm btn-reduce" type="button" onclick="reduceNum(32)"><i class="icon-minus"></i></button>
+                                    </span>
+                                        <input type="tel" class="form-control input-sm pricetotal goodsnum" style="border-left:0;" value="1" price="310.00" pricetotal="310" id="goodsnum_32" cartid="32" maxbuy="0">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm btn-add" type="button" onclick="addNum(32,0)"><i class="icon-plus"></i></button>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    ¥<span class="singletotalprice" style="font-weight:bold">310.00</span> <span class="shuliang">×<span>1</span></span>
+                                    
+                                </div>
+
+                            </div>
+                            <div class="cart-remove" onclick="cartRemove(this)">删除</div>
+                        </div>
+                    </div>
+                    <div class="small-total">
+                        <span class="description">小计:</span>
+                        <span class="small-total-price">¥ 620.00</span>
+                    </div>
+                </div>
+                <!--@php  } @-->
             </div>
-            <div class="cart-area">
+            <!--@php }}  @-->
+            <!-- <div class="cart-area">
                 <div class="shop-top clearfix">
                     <div class="cart_l cart-shop-name-l">
                         <input type="checkbox" class="cart_checkbox small_all_choose" onclick="small_all_choose(this)">
@@ -167,11 +245,12 @@
                         <span class="small-total-price">¥ 620.00</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
+            
+            
         </form>
-
     </div>
-
+<!--@php  } @-->
     <div class="cart_foot">
     <div class="fahuodi">
             <div class="cart_l cart-shop-name-l">

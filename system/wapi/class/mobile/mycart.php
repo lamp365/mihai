@@ -42,7 +42,7 @@ class mycart extends base
         $_GP    =  $this->request;
 
         $id  = intval($_GP['id']);
-        $num = intval($_GP['num']);
+        $num = intval($_GP['buy_num']);
         if(empty($id) || empty($num) || $num<0){
             ajaxReturnData(0,'参数有误！');
         }

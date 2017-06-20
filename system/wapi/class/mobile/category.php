@@ -14,58 +14,53 @@ class category extends base{
            if (!empty($data)) ajaxReturnData(1,'',$data);
        }
        $actListModel = new \model\activity_list_model();
-       $now = time();
-       $where = "ac_status=1 and ac_time_end > $now";
-       $list = $actListModel->getAllActList($where,'ac_id');
-       if ($list && (count($list) == 1)){//暂时只考虑活动只有1的
-           $actAreaModel = new \model\activity_area_model();
-           $list = $list[0];
-           $actDishModel = new \model\activity_dish_model();
-           $return = $actDishModel->getAllActivtyDish(array('ac_action_id'=>$list['ac_id'],'ac_dish_status'=>1),"ac_dish_id,ac_in_id,ac_p1_id","ac_dish_id DESC");
-           //判断行业数目
-           if ($return){
-               //如果行业数目大于1，一级栏目是行业名称，否则是一级栏目名称
-               foreach ($return as $key=>$val){
-                   $ins_id[] = $val['ac_in_id'];
-                   $ac_p1_id[] = $val['ac_p1_id'];
-               }
-               $ins_id = array_unique($ins_id);
-               $num = count($ins_id);
-               if ($num > 1){
-                   //取行业名称
-                   $industryModel = new \model\industry_model();
-                   foreach ($ins_id as $key=>$v){
-                       $industry = $industryModel->getOneIndustry(array('gc_id'=>$v),'gc_id,gc_name');
-                       if (!empty($industry)){
-                           $temp['id'] = $v;
-                           $temp['name'] = $industry['gc_name'];
-                           $temp['type'] = 1;
-                           $data[] = $temp;
-                       }
-                   }
-               }else{
-                   //取一级栏目名称
-                   $ac_p1_id = array_unique($ac_p1_id);
-                   $shopCategoryModel = new \model\shop_category_model();
-                   foreach ($ac_p1_id as $key=>$v){
-                       $category = $shopCategoryModel->getOneShopCategory(array('id'=>$v),'id,name');
-                       if ($category){
-                           $temp['id'] = $v;
-                           $temp['name'] = $category['name'];
-                           $temp['type'] = 2;
-                           $data[] = $temp;
-                       }
-                   }
-               }
-               if(class_exists('Memcached')){
-                   $memcache = new \Mcache();
-                   $memcache->set('CATEGORY_ONE', $data,86400);
-               }
-               ajaxReturnData(1,'',$data);
+       $list = $actListModel->getCurrentAct();
+       if (empty($list)) ajaxReturnData(1,'暂时没有活动');
+       $actAreaModel = new \model\activity_area_model();
+       $actDishModel = new \model\activity_dish_model();
+       $return = $actDishModel->getAllActivtyDish(array('ac_action_id'=>$list['ac_id'],'ac_dish_status'=>1),"ac_dish_id,ac_in_id,ac_p1_id","ac_dish_id DESC");
+       //判断行业数目
+       if ($return){
+           //如果行业数目大于1，一级栏目是行业名称，否则是一级栏目名称
+           foreach ($return as $key=>$val){
+               $ins_id[] = $val['ac_in_id'];
+               $ac_p1_id[] = $val['ac_p1_id'];
            }
-       }else {
-           ajaxReturnData(1,'暂时没有活动');
+           $ins_id = array_unique($ins_id);
+           $num = count($ins_id);
+           if ($num > 1){
+               //取行业名称
+               $industryModel = new \model\industry_model();
+               foreach ($ins_id as $key=>$v){
+                   $industry = $industryModel->getOneIndustry(array('gc_id'=>$v),'gc_id,gc_name');
+                   if (!empty($industry)){
+                       $temp['id'] = $v;
+                       $temp['name'] = $industry['gc_name'];
+                       $temp['type'] = 1;
+                       $data[] = $temp;
+                   }
+               }
+           }else{
+               //取一级栏目名称
+               $ac_p1_id = array_unique($ac_p1_id);
+               $shopCategoryModel = new \model\shop_category_model();
+               foreach ($ac_p1_id as $key=>$v){
+                   $category = $shopCategoryModel->getOneShopCategory(array('id'=>$v),'id,name');
+                   if ($category){
+                       $temp['id'] = $v;
+                       $temp['name'] = $category['name'];
+                       $temp['type'] = 2;
+                       $data[] = $temp;
+                   }
+               }
+           }
+           if(class_exists('Memcached')){
+               $memcache = new \Mcache();
+               $memcache->set('CATEGORY_ONE', $data,86400);
+           }
+           ajaxReturnData(1,'',$data);
        }
+       
    }
    //根据一级分类id取二级分类
     public function get_two(){

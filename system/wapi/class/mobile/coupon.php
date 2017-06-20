@@ -26,7 +26,8 @@ class coupon extends base{
             $data = array();
             foreach ($couponList as $key=>$val){
                 $data[$key]['scid'] = $val['scid'];
-                $data[$key]['coupon_amount'] = $val['amount_of_condition'];//已经转换过的
+                $data[$key]['coupon_amount'] = $val['coupon_amount'];//已经转换过的
+                $data[$key]['amount_of_condition'] = $val['amount_of_condition'];//已经转换过的
                 $data[$key]['release_quantity'] = $val['release_quantity'];
                 $data[$key]['coupon_name'] = $val['coupon_name'];
                 $data[$key]['sts_id'] = $val['store_shop_id'];
@@ -83,7 +84,7 @@ class coupon extends base{
         if (empty($openid)) ajaxReturnData(0,'请先登入');
         $couponMemModel = new \model\store_coupon_member_model();
         $now = time();
-        $where .=" openid='$openid' and ";
+        $where .=" a.openid='$openid' and ";
         if ($type == 0){
             $where = "a.status=0 and '$now' < b.use_end_time";//未使用且没有过期
         }elseif ($type == 1){
@@ -91,12 +92,22 @@ class coupon extends base{
         }else {
             $where = "a.status=0 and '$now' > b.use_end_time";//未使用且已过期
         }
-        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name");
+        //分页取数据
+        $pindex = max(1, intval($_GP['page']));
+        $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
+        $limit= ($pindex-1)*$psize;
+        $orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
+        
+        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.usage_mode",$orderby);
         if (empty($mycoupon)) ajaxReturnData(0,'暂无优惠券信息');
         foreach ($mycoupon as $key=>$v){
-            $data[$key]['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
+            $temp['coupon_name'] = $v['coupon_name'];
+            $temp['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
+            $temp['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
+            $temp['scmid'] = $v['scmid'];
+            $data[] = $temp; 
         }
-        ajaxReturnData(0,'',$mycoupon);
+        ajaxReturnData(0,'',$data);
     }
 }
 ?>

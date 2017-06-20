@@ -11,40 +11,34 @@ class shopindex extends base{
    {
        //取出活动列表，理论上是一个，但不排除有多个
        $actListModel = new \model\activity_list_model();
-       $now = time();
-       $where = "ac_status=1 and ac_time_end > $now";
-       $list = $actListModel->getAllActList($where,'ac_id,ac_title,ac_time_str,ac_time_end,ac_area');
-       if ($list && count($list) == 0){
-           ajaxReturnData(0,'暂无活动');
-       }elseif ($list && count($list) == 1){
-            $actAreaModel = new \model\activity_area_model();
-            $list = $list[0];
-            //取时间段
-            $activty_area = $actAreaModel->getAll(array('ac_list_id'=>$list['ac_area']));
-            if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
-            
-            foreach ($activty_area as $key=>$val){
-                $temp['ac_area_id'] = $val['ac_area_id'];
-                $temp['ac_area_time_str'] = date("H:i",$val['ac_area_time_str']);
-                $temp['ac_area_time_end'] = date("H:i",$val['ac_area_time_end']);
-                $temp['status'] = 0; 
-                if (time() >= $val['ac_area_time_str'] && time() <= $val['ac_area_time_end']){
-                    $temp['status'] = 1;
-                    $date = date("Y:m:d");
-                    $date = $date." ".date('H:i:s',$val['ac_area_time_end']);
-                    $endtime = strtotime($date);
-                    $starttime = time();
-                    $section = $endtime-$starttime;
-                    $data['section'] = $section;
-                }
-                $tempAll[] = $temp;
-            }
-            $data['detail'] = $tempAll;
-            $data['ac_id'] = $list['ac_id'];
-            ajaxReturnData(1,'',$data);
-       }else {//同时存在活动列表大于2的话先不考虑
+       $list = $actListModel->getCurrentAct();
+       if (empty($list)) ajaxReturnData(1,'暂时没有活动');
+       $actAreaModel = new \model\activity_area_model();
+       //取时间段
+       $activty_area = $actAreaModel->getAll(array('ac_list_id'=>$list['ac_area']));
+       if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
+       foreach ($activty_area as $key=>$val){
+           $mydate = date("Y:m:d")." ".date('H:i:s',$val['ac_area_time_end']);
+           $endtime = strtotime($mydate);
+           if ($endtime <= time()) continue;
+           $temp['ac_area_id'] = $val['ac_area_id'];
+           $temp['ac_area_time_str'] = date("H:i",$val['ac_area_time_str']);
+           $temp['ac_area_time_end'] = date("H:i",$val['ac_area_time_end']);
+           $temp['status'] = 0;
            
+           if (time() >= $val['ac_area_time_str'] && time() <= $val['ac_area_time_end']){
+               $temp['status'] = 1;
+               $temp['section'] = $endtime-time();
+           }else{
+               $mydate1 = date("Y:m:d")." ".date('H:i:s',$val['ac_area_time_str']);
+               $endtime = strtotime($mydate1);
+               $temp['section'] = $endtime-time();
+           }
+           $tempAll[] = $temp;
        }
+       $data['detail'] = $tempAll;
+       $data['ac_id'] = $list['ac_id'];
+       ajaxReturnData(1,'',$data);
    }
    //根据活动区间返回活动商品
    public function active_dish()
