@@ -12,6 +12,12 @@ class store_shop_model extends model
 		$this->table_name = 'store_shop';
 		parent::__construct();
 	}
-	
+	/**
+	 * 获得单条store_shop表信息
+	 *   */
+	public function getOneStoreShop($where = array(),$param="*"){
+	    if (empty($where)) return false;
+	    return $this->getOne($where,$param);
+	}
     
 }

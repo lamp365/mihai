@@ -24,13 +24,14 @@ class coupon extends base{
         }
         if (!empty($couponList)){
             $data = array();
+            $storeShopModel = new \model\store_shop_model();
             foreach ($couponList as $key=>$val){
                 $data[$key]['scid'] = $val['scid'];
                 $data[$key]['coupon_amount'] = $val['coupon_amount'];//已经转换过的
                 $data[$key]['amount_of_condition'] = $val['amount_of_condition'];//已经转换过的
-                $data[$key]['release_quantity'] = $val['release_quantity'];
                 $data[$key]['coupon_name'] = $val['coupon_name'];
-                $data[$key]['sts_id'] = $val['store_shop_id'];
+                $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$val['store_shop_id']),'sts_name');
+                $data[$key]['sts_name'] = $store['sts_name'];
                 $data[$key]['thumb'] = '';
             }
             ajaxReturnData(1,'',$data);
@@ -98,13 +99,17 @@ class coupon extends base{
         $limit= ($pindex-1)*$psize;
         $orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
         
-        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.usage_mode",$orderby);
+        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id",$orderby);
         if (empty($mycoupon)) ajaxReturnData(0,'暂无优惠券信息');
+        $storeShopModel = new \model\store_shop_model();
         foreach ($mycoupon as $key=>$v){
             $temp['coupon_name'] = $v['coupon_name'];
             $temp['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
             $temp['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
-            $temp['scmid'] = $v['scmid'];
+            $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['store_shop_id']),'sts_name');
+            $temp['sts_name'] = $store['sts_name'];
+            $temp['use_start_time'] = date("Y-m-d",$v['use_start_time']);
+            $temp['use_end_time'] = date("Y-m-d",$v['use_end_time']);
             $data[] = $temp; 
         }
         ajaxReturnData(0,'',$data);
