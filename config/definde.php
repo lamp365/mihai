@@ -43,3 +43,4 @@ define('API_MAINTAIN',false);								//app接口访问暂停配置项；为true�
 define('IM_ICON_URL','http://odozak4lg.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720161125151517.png'); //im客户默认头像
 define('GD_KEY','447e9b30f3af97fbb075e55a9863fef2');//高德地图的key
 define('AL_CODE','http://restapi.amap.com/v3/geocode/regeo?');//逆地理编码API服务地址
+define('GD_IP','http://restapi.amap.com/v3/ip?');//IP定位API服务地址

@@ -95,11 +95,16 @@ function getCodeByLttAndLgt($jd,$wd){
     $key = GD_KEY;
     $url = AL_CODE;
     $location = $jd.",".$wd;
-    $data = array(
-        'key'=>$key,
-        'location'=>$location,
-    );
+    
     $url .="key=$key&location=$location"; 
+    return http_get($url);
+}
+//通过ip取得城市名称
+function getCodeByIP($ip){
+    if (empty($ip)) return false;
+    $key = GD_KEY;
+    $url = GD_IP;
+    $url .="key=$key&ip=$ip";
     return http_get($url);
 }
 
