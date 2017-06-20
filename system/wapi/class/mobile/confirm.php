@@ -20,7 +20,8 @@ class confirm extends base
        //获取优惠卷和默认地址
        $defaultAddress   =   mysqld_select("SELECT * FROM " . table('shop_address') . " WHERE openid ='{$memInfo['openid']}'  and isdefault =1 and  deleted = 0 ");
        $cartlist['default_address'] = $defaultAddress;
-       ppd($cartlist);
+       //去除过期商品对象，在清单结算页 不需要
+       unset($cartlist['out_gooslist']);
        ajaxReturnData(1,'请求成功',$cartlist);
    }
 

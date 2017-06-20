@@ -98,8 +98,10 @@ class mycartService extends  \service\publicService
             $express_fee   = $item['express_fee'];    //运费
             $dish_arr      = $item['dishlist'];
             $total_dish_price = 0;
+            $dishid_arr       = array();
             foreach($dish_arr as $one){
                 $total_dish_price += $one['time_price'];
+                $dishid_arr[]     =  $one['id'];
             }
             if($total_dish_price >= $free_dispatch){
                 //商品价格  没有超过 满邮的条件   总价加上运费
@@ -108,7 +110,8 @@ class mycartService extends  \service\publicService
             }else{
                 $item['totalprice'] = number_format($total_dish_price,2);
             }
-
+            //根据店铺以及价格来选出 结算的时候 可以使用的优惠卷
+            $item['bonuslist'] = getCouponByPrice($item['sts_id'],$total_dish_price,$dishid_arr);
 
         }
         return number_format($totalprice,2);
