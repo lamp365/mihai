@@ -292,12 +292,16 @@ class store_shop_manage extends basecontroller {
     public function general(){
         $_GP = $this->request;
         if ($_GP['submit']){
+            if($_GP['pay_rate'] > 10){
+                message('支付费率过高！');
+            }
             $data['comment_exchange'] = $_GP['comment_exchange'];
             $data['bid_exchange'] = $_GP['bid_exchange'];
             $data['order_num_exchange'] = $_GP['order_num_exchange'];
             $data['enter_exchange'] = $_GP['enter_exchange'];
             $data['lowst_draw_limit'] = FormatMoney($_GP['lowst_draw_limit'],1);
             $data['draw_money'] = FormatMoney($_GP['draw_money'],1);
+            $data['pay_rate']   = $_GP['pay_rate'];
             refreshSetting($data);
             message('保存成功', 'refresh', 'success');
         }

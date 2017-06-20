@@ -27,6 +27,7 @@ class confirm extends base
 
     public function topay()
     {
+        $_GP =  $this->request;
         $meminfo = get_member_account();
         $setting = globaSetting();
         $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
@@ -38,7 +39,17 @@ class confirm extends base
         $key    = $configs['weixin_pay_paySignKey'];
 
         $weixinpay = new \service\wapi\wxpayService($appid,$openid,$mch_id,$key);
+        //插入订单的信息
+        $res_data = $weixinpay->insertOrder($_GP);
+        if(!$res_data){
+            ajaxReturnData(0,$weixinpay->getError());
+        }
+
         $return    = $weixinpay->pay();
-        ajaxReturnData(1,'操作成功!',$return);
+        if(!$return){
+            ajaxReturnData(0,$weixinpay->getError());
+        }else{
+            ajaxReturnData(1,'操作成功!',$return);
+        }
     }
 }

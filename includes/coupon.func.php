@@ -11,7 +11,7 @@ function getCouponByPrice($sts_id,$totalprice,$dishid_arr){
     $meminfo    = get_member_account();
     $openid     = $meminfo['openid'];
     $totalprice = FormatMoney($totalprice,1);  //金额转为分
-    $bonus_sql = "select m.*,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
+    $bonus_sql = "select m.*,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name,c.store_shop_id from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
     $bonus_sql.= " on m.scid=c.scid where m.openid='{$openid}' and m.status=0 and c.store_shop_id={$sts_id} and c.amount_of_condition <= '{$totalprice}'";
     $bonus  = mysqld_selectall($bonus_sql);
 
@@ -33,4 +33,19 @@ function getCouponByPrice($sts_id,$totalprice,$dishid_arr){
     }else{
         return $bonus;
     }
+}
+
+/**
+ * 通过用户领取优惠卷后的 主键id 和店铺ID 得到 优惠卷信息
+ * @param $scmid
+ * @param $sts_id
+ * @return bool|mixed
+ */
+function getCouponByMemid($scmid,$sts_id){
+    $meminfo    = get_member_account();
+    $openid     = $meminfo['openid'];
+    $bonus_sql = "select m.*,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name,c.store_shop_id from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
+    $bonus_sql.= " on m.scid=c.scid where m.scmid = {$scmid} and m.openid='{$openid}' and m.status=0 and c.store_shop_id={$sts_id}";
+    $bonus  = mysqld_select($bonus_sql);
+    return $bonus;
 }

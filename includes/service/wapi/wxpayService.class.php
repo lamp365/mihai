@@ -168,4 +168,75 @@ class wxpayService extends  \service\publicService
         }
     }
 
+    public function insertOrder($data)
+    {
+        $memInfo  = get_member_account();
+        $openid   = $memInfo['openid'];
+        if(empty($data['address_id'])){
+            $this->error = '请选择对应的收货地址！';
+            return false;
+        }
+        //获取地址
+        $address = mysqld_select("select * from ".table('shop_address')." where id={$data['address_id']} and openid='{$openid}'");
+        if(empty($address)){
+            $this->error = '收货地址不存在！';
+            return false;
+        }
+        //是否有选择优惠卷  $data['bonus'] = ['8_18','38_89'];
+        $bonus = array();
+        if(!empty($data['bonus'])){
+            foreach($data['bonus'] as $one_item){
+                $one_arr = explode('_',$one_item);
+                if(count($one_arr) == 2){
+                    $bonus[$one_arr[0]] = $one_arr[1];
+                }
+            }
+        }
+
+        $service  = new \service\wapi\mycartService();
+        $cart_where = "to_pay=1";
+        $cartlist   = $service->cartlist($cart_where,1);
+        $goodslist  = $cartlist['goodslist'];
+        if(empty($goodslist)){
+            $this->error = '没有对应的商品';
+            return false;
+        }
+
+        //获取推荐人openid  没有的话为空
+        $recommend = mysqld_select("select p_openid from ".table('member_blong_relation')." where m_openid='{$openid}' and type=2");
+        $recommend_openid = $recommend['p_openid'];
+
+        foreach($goodslist as $item){
+            $ordersns = 'SN'.date('Ymd') . random(6, 1);
+            $randomorder = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE  ordersn=:ordersn limit 1", array(':ordersn' =>$ordersns));
+            if(!empty($randomorder['ordersn'])) {
+                $ordersns= 'SN'.date('Ymd') . random(6, 1);
+            }
+
+            $order_data = array();
+            $order_data['sts_id']           = $item['sts_id'];
+            $order_data['openid']           = $openid;
+            $order_data['recommend_openid'] = $recommend_openid;
+            $order_data['ordersn']          = $ordersns;
+            $order_data['ordertype']        = 4;    //限时购
+            $order_data['price']            = 4;    //总金额
+            $order_data['goodsprice']       = 4;    //商品价格
+            $order_data['dispatchprice']    = 4;    //运费
+            $order_data['status']           = 0;    //状态
+            $order_data['source']           = get_mobile_type();    //设备来源
+            $order_data['sendtype']         = 0;    //快递发货
+            $order_data['paytype']          = 2;    //在线付款
+            $order_data['paytypecode']      = 1;    //微信支付
+            $order_data['addressid']        = $data['address_id'];
+            $order_data['createtime']       = time();
+            $order_data['address_realname'] = $address['realname'];
+            $order_data['address_province'] = $address['province'];
+            $order_data['address_city']     = $address['city'];
+            $order_data['address_area']     = $address['area'];
+            $order_data['address_address']  = $address['address'];
+            $order_data['address_mobile']   = $address['mobile'];
+            $order_data['hasbonus']         = '';
+            $order_data['balance_sprice']   = '';
+        }
+    }
 }

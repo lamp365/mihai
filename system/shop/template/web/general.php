@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
-<h3 class="header smaller lighter blue">商城基础设置</h3>
+<h3 class="header smaller lighter blue">商铺常规设置</h3>
 <style>
 	.good_line_table{
 		
@@ -33,16 +33,25 @@
 				  <input type="number"  name="order_num_exchange" class="col-xs-10 col-sm-2" value="<?php if ($settings['order_num_exchange']) echo $settings['order_num_exchange'];?>" />
 			</div>
 		</div>
+	   <!--
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 最低提款限制：</label>
 			<div class="col-sm-9">
 				  <input type="number" step="0.01" name="lowst_draw_limit" class="col-xs-10 col-sm-2" value="<?php if ($settings['lowst_draw_limit']) echo FormatMoney($settings['lowst_draw_limit'],0);?>" />
 			</div>
 		</div>
+		-->
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 提款手续费：</label>
 			<div class="col-sm-9">
-				  <input type="number" step="0.01" name="draw_money" class="col-xs-10 col-sm-2" value="<?php if ($settings['draw_money']) echo FormatMoney($settings['draw_money'],0);?>" />
+				  <input type="number" step="10" name="draw_money" class="col-xs-10 col-sm-2" value="<?php if ($settings['draw_money']) echo FormatMoney($settings['draw_money'],0);?>" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label no-padding-left" > 支付费率(%)：</label>
+			<div class="col-sm-9">
+				  <input type="number" step="1" name="pay_rate" class="col-xs-10 col-sm-2" value="<?php if ($settings['pay_rate']) echo $settings['pay_rate'];?>" />
 			</div>
 		</div>
     
