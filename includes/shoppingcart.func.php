@@ -36,13 +36,11 @@
  */
 function countCartProducts($openid)
 {
-	$sql = "SELECT SUM( c.total ) as cnt FROM " . table('shop_cart') . " c ";
-	$sql.= " left join " . table('shop_dish') . " d on d.id=c.goodsid ";
-	$sql.= " WHERE c.session_id = '" . $openid . "' ";
-	$sql.= " and d.status = 1 ";
-	$sql.= " and d.deleted = 0 ";
-	$count = mysqld_select($sql);
-	return intval($count['cnt']);
+    $openid = $openid ?: get_sessionid();
+	$sql = "SELECT count(id) FROM " . table('shop_cart');
+	$sql.= " WHERE session_id = '" . $openid . "' ";
+	$count = mysqld_selectcolumn($sql);
+	return intval($count);
 }
 
 /**
@@ -200,7 +198,7 @@ function deleteCartProducts($openid, $cartIds=''){
 
 function getCartTotal(){
 	$member   = get_member_account(false);
-	$openid   = $member['openid'];
+	$openid   = $member['openid'] ?: get_sessionid();
 	$cartotal = '';
 	if(!empty($openid))
 		$cartotal = mysqld_selectcolumn("select sum(total) from " . table('shop_cart') . " where session_id='" . $openid . "'");
