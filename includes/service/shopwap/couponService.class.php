@@ -87,7 +87,11 @@ class couponService extends \service\publicService
             }
             $couponMemModel = new \model\store_coupon_member_model();
             $myCoupons = $couponMemModel->getAllMemberCoupon(array('openid'=>$data['openid'],'scid'=>$data['scid']));
-            if ($myCoupons && (count($myCoupons) < $info['get_limit'])) {
+            if (empty($myCoupons)){
+                $return['status'] = 1;
+                return $return;
+            }
+            if (count($myCoupons) < $info['get_limit']) {
                 $return['status'] = 1;
                 return $return;
             }else {
