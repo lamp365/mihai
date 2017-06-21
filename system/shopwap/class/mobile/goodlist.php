@@ -44,7 +44,7 @@
             $sortb33 = "asc";
         } else if ($sort == 3) {
             $sortb33 = $sortb3 == "asc" ? "desc" : "asc";
-            $sortfield = "a.marketprice " . $sortb3 . ","."b.marketprice " . $sortb3;
+            $sortfield = "a.marketprice " . $sortb3;
             $sortb00 = "desc";
             $sortb11 = "desc";
             $sortb22 = "desc";
@@ -98,8 +98,7 @@
             }
       }
 
-//模板和下文都没用到该变量
-//      $categorys = mysqld_selectall("SELECT * FROM ".table('shop_category')." where parentid = ".$parent);
+
 	  if ( !empty($_GP['bid']) ){
             $bid = intval($_GP['bid']);
 			$brand = mysqld_select("SELECT a.*,b.name,b.icon as cicon FROM ".table('shop_brand')." a left join ".table('shop_country')." b on a.country_id = b.id where a.id = ".$bid);
@@ -134,10 +133,11 @@
 			 'limit'=>  ($pindex-1)*$psize.','.$psize,
 			 'order' => $sortfield
 	  ));
+
       if ( empty($list) && !empty($_GP['keyword'])){
 			 if ( !empty($word) ){
 		     foreach ($word as $word_value ) {
-	               $keys[] = " b.title like '%".$word_value."%' ";
+	               $keys[] = " a.title like '%".$word_value."%' ";
 		      }
 		     $keys = implode(' or ' , $keys);
 		     $condition .= ' AND ('.$keys.')';
@@ -150,7 +150,7 @@
 			 }
 	  }
 	  $brands = array();
-	  $dish_brand = mysqld_selectall("SELECT b.brand FROM ". table('shop_goods') . " as b left join ". table($table) ." as a on b.id = a.gid where ".$condition." group by b.brand");
+	  $dish_brand = mysqld_selectall("SELECT a.brand FROM ". table($table) ." as a  where ".$condition." group by a.brand");
       foreach ( $dish_brand as $key=>$b_value ){
            $brands[$b_value['brand']] = mysqld_select('SELECT * FROM '. table('shop_brand') . ' WHERE id = :id ', array(":id"=> $b_value['brand']));
 		   $brands[$b_value['brand']]['url'] = mobile_url('goodlist', array("keyword" => $_GP['keyword'], 'bid'=> $b_value['brand'] ,"pcate" => $_GP['pcate'], "p2" => $_GP['p2']));
@@ -207,7 +207,7 @@
 			   }}
 			   echo $html;
 		}else{
-			$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table($table) . " as a left join ".table('shop_goods')." as b on a.gid = b.id WHERE $condition and a.deleted=0  AND a.status = '1' ");
+			$total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table($table) . " as a  WHERE $condition and a.deleted=0  AND a.status = '1' ");
 			$pager  = pagination($total, $pindex, $psize,'.os_box_list');
 			$pager2 = pagination($total, $pindex, $psize,'.os_box_list','1');
 			$best_goods = cs_goods('', 1, 1,10);

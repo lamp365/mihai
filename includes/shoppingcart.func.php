@@ -8,6 +8,8 @@
  * @param $openid:用户ID
  * @return array 商品信息数组，总价
  */
+
+/**
 function getCartProducts($openid)
 {
 	$sql = "SELECT c.id,d.id as dish_id,d.title,c.total,g.thumb,d.marketprice,d.app_marketprice,d.timeprice,d.type,d.timestart,d.timeend,d.max_buy_quantity,c.seller_openid,s.id as shop_id,s.shopname FROM " . table('shop_cart') . " c ";
@@ -28,27 +30,20 @@ function getCartProducts($openid)
 	
 	return $result;
 }
-
+*/
 /**
  * 计算购物车件数
  * @param $openid:用户ID
  * @return array 商品信息数组，总价
  */
+
 function countCartProducts($openid)
 {
-	$sql = "SELECT SUM( c.total ) as cnt FROM " . table('shop_cart') . " c ";
-	$sql.= " left join " . table('shop_dish') . " d on d.id=c.goodsid ";
-	$sql.= " left join " . table('shop_goods') . " g on d.gid=g.id ";
-	$sql.= " WHERE c.session_id = '" . $openid . "' ";
-	$sql.= " and d.status = 1 ";
-	$sql.= " and d.deleted = 0 ";
-	//$sql.= " and g.status = 1 ";
-	$sql.= " and g.deleted = 0 ";
-	$sql.= " and d.total > 0 ";
-
-	$count = mysqld_select($sql);
-	
-	return intval($count['cnt']);
+    $openid = $openid ?: get_sessionid();
+    $sql = "SELECT count(id) FROM " . table('shop_cart');
+    $sql.= " WHERE session_id = '" . $openid . "' ";
+    $count = mysqld_selectcolumn($sql);
+    return intval($count);
 }
 
 /**
@@ -61,6 +56,8 @@ function countCartProducts($openid)
  * 
  * @return string 错误信息
  */
+
+/**
 function updateCartProducts($openid,$productId, $qty,$seller_openid){
 	
 	$sql = "SELECT d.total,d.max_buy_quantity FROM " . table('shop_dish') . " d ";
@@ -103,6 +100,8 @@ function updateCartProducts($openid,$productId, $qty,$seller_openid){
 	return $errMsg;
 }
 
+ * */
+
 /**
  * 添加商品到购物车
  * @param $openid 用户ID
@@ -113,6 +112,8 @@ function updateCartProducts($openid,$productId, $qty,$seller_openid){
  * @return string 错误信息
  * 
  */
+
+/**
 function addProductsToCart($openid,$productId, $qty,$seller_openid){
 	
 	$sql = "SELECT d.total,d.max_buy_quantity FROM " . table('shop_dish') . " d ";
@@ -184,6 +185,8 @@ function addProductsToCart($openid,$productId, $qty,$seller_openid){
 	return $errMsg;
 }
 
+ * **/
+
 /**
  * 根据用户ID和商品ID，删除购物车中商品,可批量删除
  * 
@@ -192,6 +195,7 @@ function addProductsToCart($openid,$productId, $qty,$seller_openid){
  * 
  * 
  */
+/**
 function deleteCartProducts($openid, $cartIds=''){
 	
 	$sql = "delete FROM ".table('shop_cart')." WHERE session_id = '{$openid}'";
@@ -204,13 +208,15 @@ function deleteCartProducts($openid, $cartIds=''){
 	return mysqld_query($sql);
 }
 
-function getCartTotal(){
-	$member   = get_member_account(false);
-	$openid   = $member['openid'] ?: session_id();
-	$cartotal = '';
-	if(!empty($openid))
-		$cartotal = mysqld_selectcolumn("select count(id) from " . table('shop_cart') . " where session_id='" . $openid . "'");
+ * **/
 
-	return empty($cartotal) ? 0 : $cartotal;
+function getCartTotal(){
+    $member   = get_member_account(false);
+    $openid   = $member['openid'] ?: get_sessionid();
+    $cartotal = '';
+    if(!empty($openid))
+        $cartotal = mysqld_selectcolumn("select sum(total) from " . table('shop_cart') . " where session_id='" . $openid . "'");
+
+    return empty($cartotal) ? 0 : $cartotal;
 }
 ?>

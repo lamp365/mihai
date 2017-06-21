@@ -1,5 +1,12 @@
  <?php
-
+set_time_limit(0);
+ $dishs = mysqld_selectall("select id,gid from ".table('shop_dish'));
+ foreach ($dishs as $one){
+     $goods = mysqld_select("select thumb from ".table('shop_goods')." where id={$one['gid']}");
+     if(!empty($goods)){
+         mysqld_update('shop_dish',array('thumb'=>$goods['thumb']),array('id'=>$one['id']));
+     }
+ }
 $cfg = globaSetting();
 if (is_mobile_request()|| $_GET['wap'] == 1){
 	$title = $cfg['shop_title'];

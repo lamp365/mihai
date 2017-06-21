@@ -577,6 +577,7 @@ function getGoodsThumb($gid){
  */
 function getCategoryExtendDishId($cate_id)
 {
+    return array();
 	$arrDish = mysqld_selectall("SELECT dishid FROM " . table('shop_category_extend') . " where p1={$cate_id} or p2={$cate_id} or p3={$cate_id}");
 	$result  = array();
 

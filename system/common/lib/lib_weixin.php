@@ -20,7 +20,7 @@ function get_weixin_fans_byopenid($openid, $weixin_openid)
 function get_js_ticket()
 {
     $configs = globaSetting();
-    
+
     $jsapi_ticket = $configs['jsapi_ticket'];
     $jsapi_ticket_exptime = intval($configs['jsapi_ticket_exptime']);
 
@@ -28,13 +28,13 @@ function get_js_ticket()
 
     //加入 对token的过期验证，，可能是token的过期，导致 分享js 报错 config invalid signature
     if (empty($jsapi_ticket) || $jsapi_ticket_exptime < time() || empty($weixin_access_token['expire']) || $weixin_access_token['expire'] < TIMESTAMP) {
-        
+
         $accessToken = get_weixin_token();
         $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
         $content = http_get($url);
         $res = @json_decode($content, true);
         $ticket = $res['ticket'];
-        
+
         if (! empty($ticket)) {
             $cfg = array(
                 'jsapi_ticket' => $ticket,
@@ -66,13 +66,13 @@ function get_weixin_token($refresh = false)
 
         $appid = $configs['weixin_appId'];
         $secret = $configs['weixin_appSecret'];
-        
+
         if (empty($appid) || empty($secret)) {
             message('请填写公众号的appid及appsecret！');
         }
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
         $content = http_get($url);
-		
+
         if (empty($content)) {
             logRecord("微信授权失败！当前appid：{$appid}",'weixin_server');
             message('获取微信公众号授权失败, 请稍后重试！');
@@ -100,13 +100,13 @@ function weixin_send_custom_message($from_user, $msg)
     $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={$access_token}";
     $msg = str_replace('"', '\\"', $msg);
     $post = '{"touser":"' . $from_user . '","msgtype":"text","text":{"content":"' . $msg . '"}}';
-    
+
     http_post($url, $post);
 }
 
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
     $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
-    
+
     if (! empty($weixinthirdlogin) && ! empty($weixinthirdlogin['id'])) {
 
         function xoauth($appid, $secret)
@@ -118,14 +118,14 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
             }
             // 高级接口取未关注用户Openid
             if (isset($_GP['code'])) {
-                
+
                 if (empty($appid) || empty($secret)) {
                     message('微信公众号没有配置公众号AppId和公众号AppSecret!');
                 }
-                
+
                 $state = $_GP['state'];
                 // 0未获取用户资料 1获取用户资料
-                
+
                 // 查询活动时间
                 $code = $_GP['code'];
                 $oauth2_code = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid . "&secret=" . $secret . "&code=" . $code . "&grant_type=authorization_code";
@@ -140,7 +140,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
 
                 $access_token = get_weixin_token();
                 $oauth2_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $from_user . "&lang=zh_CN";
-                
+
                 $content = http_get($oauth2_url);
                 $info = @json_decode($content, true);
 
@@ -152,28 +152,13 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                     $follow = 0;
                 }
 
-                /**************等旧数据全部被更新完之后，这个部分可以去掉**************/
-               /* $fans_by_weixin_openid = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
-                    ':weixin_openid' => $from_user
-                ));
-                if(!empty($fans_by_weixin_openid) && empty($fans_by_weixin_openid['unionid'])){
-                    //之前的旧数据，更新 unionid
-                    //存在该记录， 但是没有unionid  则进行更新上对应的unionid
-                    mysqld_update('weixin_wxfans',array('unionid'=>$unionid),array('weixin_openid'=>$from_user));
-                    //旧数据的存在，app没办法得知，可能会再次插入一条数据，删除app的数据，更新旧数据
-                    mysqld_query("delete from ".table('weixin_wxfans')." where unionid='{$unionid}' and weixin_openid<>'{$from_user}'");
-                }*/
-                /**************等旧数据全部被更新完之后，这个部分可以去掉**************/
 
                 $fans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE unionid=:unionid ", array(
                     ':unionid' => $unionid
                 ));
-                if(!empty($fans) && $fans['weixin_openid'] != $from_user){
-                    //如果 该微信用户  之前存的   weixin_openid 跟现在的不一样，则说明是app端存的，更新为现在的weixin_openid
-                    mysqld_update('weixin_wxfans',array('weixin_openid'=> $from_user ),array('unionid'=>$unionid));
-                }
 
-                $gender = $info["gender"];
+
+                $gender   = $info["gender"];
                 $nickname = $info["nickname"];
 
                 if (empty($fans) || empty($fans['weixin_openid']) || empty($fans["nickname"])) {
@@ -181,27 +166,33 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         get_weixin_openid(1);
                         return;
                     }
-                    
+
                     if ($follow == 0 && $state == 1) {
                         $access_token = $token['access_token'];
                         $oauth2_url = "https://api.weixin.qq.com/sns/userinfo?access_token=" . $access_token . "&openid=" . $from_user . "&lang=zh_CN";
                         $content = http_get($oauth2_url);
                         $info = @json_decode($content, true);
                     }
-                    
+
                     if (empty($info) || ! is_array($info) || empty($info['openid'])) {
                         message('获取微信公众号授权失败[无法取得info], 请稍后重试');
                         exit();
                     }
-                    
+
                     $gender = $info['sex'];
                     $nickname = $info["nickname"];
                 }
                 if (empty($fans['weixin_openid'])) {
+                    $mem_openid  = date("YmdH",time()).rand(100,999);
+                    $hasmember   = mysqld_select("SELECT openid FROM " . table('member') . " WHERE openid = :openid ", array(':openid' => $mem_openid));
+                    if(isset($hasmember['openid']) && !empty($hasmember['openid'])) {
+                        $mem_openid = date("YmdH",time()).rand(100,999);
+                    }
                     $row = array(
                         'nickname' => $nickname,
-                        'follow' => $follow,
-                        'gender' => intval($gender),
+                        'follow'   => $follow,
+                        'gender'   => intval($gender),
+                        'openid'   => $mem_openid,
                         'weixin_openid' => $from_user,
                         'avatar'        => empty($info["headimgurl"]) ? '' : $info["headimgurl"],
                         'createtime'    => TIMESTAMP,
@@ -210,7 +201,23 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         //扫码渠道商  进来关注后  存的 渠道商 openid  用于无论什么时候完成注册，就可以得到绑定关系
                         'scan_openid'   => get_scan_cache($from_user),
                     );
-                    mysqld_insert('weixin_wxfans', $row);
+                    $res = mysqld_insert('weixin_wxfans', $row);
+                    if($res){
+                        //插入用户 member
+                        $mem_data = array(
+                            'nickname'	      => $nickname,
+                            'realname'	      => $nickname,
+                            'avatar'	      => empty($info["headimgurl"]) ? '' : $info["headimgurl"],
+                            'createtime'       => time(),
+                            'status'           => 1,
+                            'istemplate'       => 0,
+                            'experience'       => 0 ,
+                            'openid'           => $mem_openid,
+                        );
+                        mysqld_insert('member',$mem_data);
+                        //注册送积分
+                        register_credit('',$mem_openid);
+                    }
                 } else {
                     $row = array(
                         'nickname'     => $nickname,
@@ -221,117 +228,100 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
                         //扫码渠道商  进来关注后  存的 渠道商 openid  用于无论什么时候完成注册，就可以得到绑定关系
                         'scan_openid'   => get_scan_cache($from_user),
                     );
-                  foreach($row as $key => $row_val){
-                      if(empty($row_val))
-                          unset($row[$key]);
-                  }
+                    $row = array_filter($row); //过滤空值
                     mysqld_update('weixin_wxfans', $row, array(
                         'unionid' => $unionid
                     ));
                 }
-                //以下这一步，更新用户名的，没必要的后期可以去除掉
-                if (! empty($fans['openid']) && ! empty($nickname)) {
-                    $member = mysqld_select("SELECT realname FROM " . table('member') . " WHERE openid=:openid ", array(
-                        ':openid' => $fans['openid']
-                    ));
-                    if (empty($member['realname'])) {
-                        mysqld_update('member', array(
-                            'realname' => $nickname
-                        ), array(
-                            'openid' => $fans['openid']
-                        ));
-                    }
-                }
-                
                 return $from_user;
             } else {
                 message('微信端网页授权域名设置出错！');
                 exit();
             }
-        }     
-       
+        }
+
 
         function get_weixin_openid($state = 0)
         {
-           
-                global $_GP;
-                $settings = globaSetting(array(
-                    "weixin_appId",
-                    "weixin_appSecret"
+
+            global $_GP;
+            $settings = globaSetting(array(
+                "weixin_appId",
+                "weixin_appSecret"
+            ));
+            $appid = $settings['weixin_appId'];
+            $secret = $settings['weixin_appSecret'];
+
+            if (empty($appid) || empty($secret)) {
+                message('微信公众号没有配置公众号AppId和公众号AppSecret!');
+            }
+
+            $weixinfans = array();
+            if (! empty($_SESSION[MOBILE_WEIXIN_OPENID]) && ! empty($_SESSION[MOBILE_SESSION_ACCOUNT]) && ! empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
+                    ':weixin_openid' => $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']
                 ));
-                $appid = $settings['weixin_appId'];
-                $secret = $settings['weixin_appSecret'];
-                
-                if (empty($appid) || empty($secret)) {
-                    message('微信公众号没有配置公众号AppId和公众号AppSecret!');
-                }
-                
-                $weixinfans = array();
-                if (! empty($_SESSION[MOBILE_WEIXIN_OPENID]) && ! empty($_SESSION[MOBILE_SESSION_ACCOUNT]) && ! empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                    $weixinfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " WHERE weixin_openid=:weixin_openid ", array(
-                        ':weixin_openid' => $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']
-                    ));
-                    
-                    if (empty($weixinfans['weixin_openid'])) {
-                        if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                            if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
-                                unset($_SESSION[MOBILE_WEIXIN_OPENID]);
-                                unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
-                            }
+
+                if (empty($weixinfans['weixin_openid'])) {
+                    if (isset($_SESSION[MOBILE_WEIXIN_OPENID]) && isset($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                        if ($_SESSION[MOBILE_WEIXIN_OPENID] != $_SESSION[MOBILE_SESSION_ACCOUNT]['openid']) {
+                            unset($_SESSION[MOBILE_WEIXIN_OPENID]);
+                            unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
                         }
                     }
                 }
-               
-                if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
-                    if ($state == 1 || (isset($_GP['code']) && isset($_GP['state']) && $_GP['state'] == 1)) {
-                        $scope = "snsapi_userinfo";
-                        
-                        if (isset($_GP['code']) && isset($_GP['state']) && $_GP['state'] == 1) {
-                            
-                            $from_user = xoauth($appid, $secret);
-                            $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
-                            $sessionAccount = array(
-                                'openid'         => $from_user,
-                                'weixin_openid'  => $from_user,
-                                'unionid'        => $_GP['unionid']
-                            );
-                            $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
-                            return $from_user;
-                            exit();
-                        }
-                    } else {
-                        $scope = "snsapi_base";
-                       
-                        if (isset($_GP['code'])) {
-                            $from_user = xoauth($appid, $secret);
-                            $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
-                            $sessionAccount = array(
-                                'openid'         => $from_user,
-                                'weixin_openid'  => $from_user,
-                                'unionid'        => $_GP['unionid']
-                            );
-                            $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
-                            return $from_user;
-                            exit();
-                        }
+            }
+
+            if (empty($_SESSION[MOBILE_WEIXIN_OPENID]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]) || empty($_SESSION[MOBILE_SESSION_ACCOUNT]['openid'])) {
+                if ($state == 1 || (isset($_GP['code']) && isset($_GP['state']) && $_GP['state'] == 1)) {
+                    $scope = "snsapi_userinfo";
+
+                    if (isset($_GP['code']) && isset($_GP['state']) && $_GP['state'] == 1) {
+
+                        $from_user = xoauth($appid, $secret);
+                        $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
+                        $sessionAccount = array(
+                            'openid'         => $from_user,
+                            'weixin_openid'  => $from_user,
+                            'unionid'        => $_GP['unionid']
+                        );
+                        $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
+                        return $from_user;
+                        exit();
                     }
-                    
-                    $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";                  
-                    $oauth2_code = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appid . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=" . $scope . "&state=" . $state . "#wechat_redirect"; // $state 0 不拉取用户资料 1拉取用户资料
-                    
-                    header("location:$oauth2_code");
-                    exit();
-                } 
-                else {                                   
-                    return  $_SESSION[MOBILE_WEIXIN_OPENID];                   
+                } else {
+                    $scope = "snsapi_base";
+
+                    if (isset($_GP['code'])) {
+                        $from_user = xoauth($appid, $secret);
+                        $_SESSION[MOBILE_WEIXIN_OPENID] = $from_user;
+                        $sessionAccount = array(
+                            'openid'         => $from_user,
+                            'weixin_openid'  => $from_user,
+                            'unionid'        => $_GP['unionid']
+                        );
+                        $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
+                        return $from_user;
+                        exit();
+                    }
                 }
-            
+
+                $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                $oauth2_code = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appid . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=" . $scope . "&state=" . $state . "#wechat_redirect"; // $state 0 不拉取用户资料 1拉取用户资料
+
+                header("location:$oauth2_code");
+                exit();
+            }
+            else {
+                return  $_SESSION[MOBILE_WEIXIN_OPENID];
+            }
+
         }
 
-        $weixin_openid = get_weixin_openid();       
+        $weixin_openid = get_weixin_openid();
         if (! empty($weixin_openid) && empty($_SESSION[MOBILE_ACCOUNT]['openid'])) {
             //如果已经登陆过，不用再次查询登陆
             member_login_weixin($weixin_openid);
-        }      
+        }
     }
 }

@@ -165,11 +165,10 @@ class loginService extends \service\publicService
 
             if($needlogin){
                 $member  = get_session_account();
-                $oldsessionid = $member['openid'] ?: session_id();              //旧的openid
-                $unionid      = $member['unionid'];             //用于绑定微信用户
+                $oldsessionid = $member['openid'] ?: get_sessionid();              //旧的openid
                 $res_data     = save_member_login('',$openid);  //当前openid
                 $loginid      = $res_data['openid'];
-                integration_session_account($loginid,$oldsessionid, $unionid);
+                integration_session_account($loginid,$oldsessionid);
             }
             return $data;
         }else{
@@ -211,10 +210,9 @@ class loginService extends \service\publicService
             return false;
         }
 
-        $oldsessionid = $member['openid'] ?: session_id();              //旧的openid
-        $unionid      = $member['unionid']; //用于微信绑定
+        $oldsessionid = $member['openid'] ?: get_sessionid();              //旧的openid
         $loginid      = $info['openid'] ?: '';  //登录后的openid
-        integration_session_account( $loginid, $oldsessionid,$unionid);
+        integration_session_account( $loginid, $oldsessionid);
         return $info;
     }
 }
