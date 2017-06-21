@@ -1,6 +1,6 @@
 <?php
 $member = get_member_account(false);
-$openid = $member['openid'] ?: session_id();
+$openid = $member['openid'] ?: get_sessionid();
 $op = $_GP['op'];
 if ($op == 'token'){
     // type -1,正常类型  0，新增团  >0 参与的团购队伍ID

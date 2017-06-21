@@ -10,6 +10,17 @@ namespace wapi\controller;
 
 class confirm extends base
 {
+    public function __construct()
+    {
+        parent::__construct();
+        if(!checkIsLogin()){
+            ajaxReturnData(2,'请授权登录！');
+        }
+    }
+
+    /**
+     * 清单列表
+     */
    public function index()
    {
        $_GP =  $this->request;

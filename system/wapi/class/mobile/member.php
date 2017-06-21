@@ -9,6 +9,13 @@ namespace wapi\controller;
 
 class member extends base
 {
+    public function __construct()
+    {
+        parent::__construct();
+        if(!checkIsLogin()){
+            ajaxReturnData(2,'请授权登录！');
+        }
+    }
     /**
      * 获取个人小程序推广二维码
      */

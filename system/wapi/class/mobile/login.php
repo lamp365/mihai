@@ -99,7 +99,7 @@ class login extends base {
         $data['device_code'] = $device_code;
         //set cache  小程序 不支持 cookie  sesion
         $memcache  = new \Mcache();
-        $memcache->set($device_code,$data,3600*24*3);
+        $memcache->set($device_code,$data,3600*24*2);
         ajaxReturnData(1,'登录成功',$data);
     }
 

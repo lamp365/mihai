@@ -10,7 +10,15 @@ namespace wapi\controller;
 
 class mycart extends base
 {
-   public function index()
+    public function __construct()
+    {
+        parent::__construct();
+        if(!checkIsLogin()){
+            ajaxReturnData(2,'请授权登录！');
+        }
+    }
+
+    public function index()
    {
        $_GP =  $this->request;
        $service  = new \service\wapi\mycartService();
@@ -108,6 +116,29 @@ class mycart extends base
         $cartlist = $service->cartlist();
         ajaxReturnData(1,'已全部移除！',$cartlist);
     }
+
+    /**
+     * 立即购买的时候，先调用该方法添加到购物车中
+     */
+    public function lijiBuy()
+    {
+        $_GP =  $this->request;
+        $dishid  = intval($_GP['id']);
+        if(empty($dishid)){
+            ajaxReturnData(0,'请选择商品');
+        }
+        $total   = intval($_GP['buy_num']);
+        $total   = empty($total) ? 1 : $total;
+
+        $service  = new \service\wapi\mycartService();
+        $cartotal = $service->lijiBuyCart($dishid,$total);
+        if(!$cartotal){
+            ajaxReturnData(0,$service->getError());
+        }
+
+        ajaxReturnData(1,'操作成功！',$cartotal);
+    }
+
     //所选择了哪些商品进行购买  逗号分隔 多个id
     public function topay()
     {

@@ -76,7 +76,7 @@ class shopindex extends base{
            $info = $regionModel->getPCodeByCCode($ac_city_area);
            $ac_city = !empty($info) ? $info['region_code']:'';
            if (empty($ac_city) || empty($ac_city_area)) ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
-           $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area',IF(ac_city_area=0,ac_city='$ac_city' OR ac_city=0,ac_city=0))";
+           $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
        }
        
        //分页取数据

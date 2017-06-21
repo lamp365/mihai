@@ -5,13 +5,20 @@
 
 namespace wapi\controller;
 class address extends base{
+
+    public function __construct()
+    {
+        parent::__construct();
+        if(!checkIsLogin()){
+            ajaxReturnData(2,'请授权登录！');
+        }
+    }
     /**
      * 默认地址获取
-     *   */   
+     *   */
     public function getDefault(){
         $member= get_member_account();
         $openid = $member['openid'];
-        if (empty($openid)) ajaxReturnData(0,'请先登入');
         $shopAddressModel = new \model\shop_address_model();
         $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'isdefault'=>1,'deleted'=>0),'realname,mobile,province,city,area,address');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
@@ -23,7 +30,6 @@ class address extends base{
     public function getAllAddress(){
         $member= get_member_account();
         $openid = $member['openid'];
-        if (empty($openid)) ajaxReturnData(0,'请先登入');
         $shopAddressModel = new \model\shop_address_model();
         $info = $shopAddressModel->getAllAddress(array('openid'=>$openid,'deleted'=>0),'realname,mobile,province,city,area,address,isdefault');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
@@ -35,7 +41,6 @@ class address extends base{
     public function addAddress(){
         $member= get_member_account();
         $openid = $member['openid'];
-        if (empty($openid)) ajaxReturnData(0,'请先登入');
         $_GP = $this->request;
         extract($_GP);
         if (empty($realname) || empty($mobile) || empty($province) || empty($city) || empty($area) || empty($address)) {
@@ -61,7 +66,6 @@ class address extends base{
     public function updateAddress(){
         $member= get_member_account();
         $openid = $member['openid'];
-        if (empty($openid)) ajaxReturnData(0,'请先登入');
         $_GP = $this->request;
         extract($_GP);
         if (empty($id) || empty($realname) || empty($mobile) || empty($province) || empty($city) || empty($area) || empty($address)) {

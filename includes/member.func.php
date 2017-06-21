@@ -460,7 +460,7 @@ function checkIsLogin(){
             return '';
         }
     }else{
-        //非微信端存的 可能有临时的 前面带有 _t
+        //非微信端存的 可能有临时的 前面带有 _t  小程序也是走这里
         $member = get_member_account();
         if(empty($member)){
             return '';

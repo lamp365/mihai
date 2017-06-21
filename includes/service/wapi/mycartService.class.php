@@ -177,6 +177,47 @@ class mycartService extends  \service\publicService
         return $data['total'];
     }
 
+    public function lijiBuyCart($dishid,$total)
+    {
+        $member = get_member_account();
+
+        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
+        $sql .= " where ac_shop_dish={$dishid}";
+        $find = mysqld_select($sql);
+        if (empty($find)) {
+            $this->error = '抱歉，该商品已不存在！';
+            return false;
+        }else if($find['ac_dish_status'] == 0){
+            $this->error = '请等待上架！';
+            return false;
+        }
+
+        $dish   = mysqld_select("select id,sts_id,deleted,status from ".table('shop_dish')." where id={$dishid}");
+        if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
+            $this->error = '该商品不存在！';
+            return false;
+        }
+
+       //移除掉改用去其他商品的打钩状态
+        mysqld_update("shop_cart",array('to_pay'=>0),array('session_id'=>$member['openid']));
+
+        // 不存在
+        $data = array(
+            'goodsid'       => $dishid,
+            'goodstype'     => 0,
+            'session_id'    => $member['openid'],
+            'sts_id'        => $dish['sts_id'],
+            'to_pay'        => 1,  //当前立即购买的设置打钩状态的
+            'total'         =>  $total
+        );
+        if($total > $find['ac_dish_total']){
+            $this->error = "库存剩下{$find['ac_dish_total']}个！";
+            return false;
+        }
+        mysqld_insert('shop_cart', $data);
+        return $data['total'];
+    }
+
     public function updateCart($cart_id,$num)
     {
         $member = get_member_account();

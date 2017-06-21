@@ -200,7 +200,7 @@ class loginService extends \service\publicService
 
             if($needlogin){
                 $member  = get_session_account();
-                $oldsessionid = $member['openid'] ?: session_id();              //旧的openid
+                $oldsessionid = $member['openid'] ?: get_sessionid();              //旧的openid
                 $res_data     = save_member_login('',$openid);  //当前openid
                 $loginid      = $res_data['openid'];
                 integration_session_account($loginid,$oldsessionid);
@@ -248,7 +248,7 @@ class loginService extends \service\publicService
             return false;
         }
 
-        $oldsessionid = $member['openid'] ?: session_id();              //旧的openid(要门微信openid要么会话id)
+        $oldsessionid = $member['openid'] ?: get_sessionid();              //旧的openid(要门微信openid要么会话id)
         $loginid      = $info['openid'] ?: '';  //登录后的openid
         integration_session_account( $loginid, $oldsessionid);
         return $info;

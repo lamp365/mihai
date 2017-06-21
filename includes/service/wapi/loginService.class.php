@@ -170,6 +170,12 @@ class loginService extends \service\publicService
         //set cache  小程序 不支持 cookie  sesion
         $memcache  = new \Mcache();
         $memcache->set($device_code,$member_info,$expires_in);
+        if(!empty($_REQUEST['device_code'])){
+            //用户可以不同意授权，该方法操作，是将不同意授权时系统产生的临时用户，移除合并到新用户
+            integration_session_account($member_info['openid'],$_REQUEST['device_code']);
+            $memcache->delete($_REQUEST['device_code']);
+        }
+
         return $member_info;
     }
 
