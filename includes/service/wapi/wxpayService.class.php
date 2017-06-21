@@ -34,13 +34,16 @@ class wxpayService extends  \service\publicService
     //统一下单接口
     private function unifiedorder($pay_ordersn,$pay_money,$pay_title){
         //微信接口
+        if(is_array($pay_ordersn)){  //如果有多条订单的话  用下划线分隔
+            $pay_ordersn = implode('_',$pay_ordersn);
+        }
         $url='https://api.mch.weixin.qq.com/pay/unifiedorder';
         $parameters=array(
             'appid'     => $this->appid,//小程序ID
             'mch_id'    => $this->mch_id,//商户号
             'nonce_str' => $this->createNoncestr(),//随机字符串
             'body'      => $pay_title,//商品描述
-            'out_trade_no'     => implode('_',$pay_ordersn),  //商户订单号  如果有多条订单的话  用下划线分隔
+            'out_trade_no'     => $pay_ordersn,  //商户订单号  如果有多条订单的话  用下划线分隔
             'total_fee'        => $pay_money,//总金额 单位 分
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
             'notify_url'       => WEBSITE_ROOT . 'notify/weixin_notify.php',//通知地址
@@ -298,7 +301,11 @@ class wxpayService extends  \service\publicService
                     $o_good['promot_price']          = $promot_price;   //单位 分
                     $o_good['total']                 = $one_dish['buy_num'];
                     $o_good['createtime']            = time();
-                    mysqld_insert('shop_order_goods',$o_good);
+                    $res2 = mysqld_insert('shop_order_goods',$o_good);
+                    if(!$res2){
+                        //如果不成功  把提交给第三方的总额中去除该商品的价格
+                        $pay_total_money = $pay_total_money -  $o_good['price'];
+                    }
                 }
             }
         }
@@ -306,8 +313,37 @@ class wxpayService extends  \service\publicService
         //移除购物车
         mysqld_delete("shop_cart",array('session_id'=>$openid,'to_pay'=>1));
         return array(
-            'pay_ordersn'     => $pay_ordersn,
+            'pay_ordersn'     => $pay_ordersn,  //数组型的 订单号
             'pay_total_money' => $pay_total_money,
+            'pay_title'       => $pay_title,
+        );
+    }
+
+    public function getPayOrder($orderid)
+    {
+        $memInfo = get_member_account();
+        if(empty($orderid)){
+            $this->error = '参数有误！';
+            return false;
+        }
+        $order = mysqld_select("select ordersn,price,status from ".table('shop_order')." where id={$orderid} and openid='{$memInfo['openid']}'");
+        if(empty($order)){
+            $this->error = '订单不存在！';
+            return false;
+        }
+        if($order['status']!=0){
+            $this->error = '订单已经支付！';
+            return false;
+        }
+
+        $o_sql   = "select d.title from ".table('shop_order_goods')." as g left join ".table('shop_dish')." as h";
+        $o_sql  .= " on g.dishid=h.id where g.orderid={$order['id']}";
+        $o_goods = mysqld_select($o_sql);
+        $pay_title = str_replace('&','',$o_goods['title']);
+
+        return array(
+            'pay_ordersn'     => $order['ordersn'],   //单个订单号
+            'pay_total_money' => $order['price'],
             'pay_title'       => $pay_title,
         );
     }

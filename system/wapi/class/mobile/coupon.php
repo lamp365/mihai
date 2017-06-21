@@ -32,6 +32,7 @@ class coupon extends base{
                 $data[$key]['coupon_name'] = $val['coupon_name'];
                 $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$val['store_shop_id']),'sts_name');
                 $data[$key]['sts_name'] = $store['sts_name'];
+                $data[$key]['sts_id'] = $val['store_shop_id'];
                 $data[$key]['thumb'] = '';
             }
             ajaxReturnData(1,'',$data);

@@ -11,7 +11,7 @@ function getCouponByPriceOnpay($sts_id,$totalprice,$dishid_arr){
     $meminfo    = get_member_account();
     $openid     = $meminfo['openid'];
     $totalprice = FormatMoney($totalprice,1);  //金额转为分
-    $bonus_sql = "select m.*,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name,c.store_shop_id,c.store_shop_dishid from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
+    $bonus_sql = "select m.*,c.usage_mode,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name,c.store_shop_id,c.store_shop_dishid from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
     $bonus_sql.= " on m.scid=c.scid where m.openid='{$openid}' and m.status=0 and c.store_shop_id={$sts_id} and c.amount_of_condition <= '{$totalprice}'";
     $bonus  = mysqld_selectall($bonus_sql);
 
@@ -57,7 +57,7 @@ function getCouponByPriceOnpay($sts_id,$totalprice,$dishid_arr){
 function getCouponByMemidOnPay($scmid,$sts_id,$dishlist,$return_field=''){
     $meminfo    = get_member_account();
     $openid     = $meminfo['openid'];
-    $bonus_sql = "select m.*,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name,c.store_shop_id,c.store_shop_dishid from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
+    $bonus_sql = "select m.*,c.usage_mode,c.coupon_amount,c.amount_of_condition,c.use_start_time,c.use_end_time,c.coupon_name,c.store_shop_id,c.store_shop_dishid from ".table('store_coupon_member')." as m left join ".table('store_coupon')." as c";
     $bonus_sql.= " on m.scid=c.scid where m.scmid = {$scmid} and m.openid='{$openid}' and m.status=0 and c.store_shop_id={$sts_id}";
     $bonus  = mysqld_select($bonus_sql);
     if(empty($bonus)){

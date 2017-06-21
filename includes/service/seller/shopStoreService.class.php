@@ -36,6 +36,13 @@ class shopStoreService extends \service\publicService {
        return $data;
    }
    
+   
+   function getStoreShopInfo($sts_id,$fields='*'){
+       $sql = "SELECT {$fields} FROM {$this->table_store_shop} where sts_id = {$sts_id}";
+       $data  = mysqld_select($sql);
+       return $data;
+   }
+   
    //更新用户余额
    function updateStoreMoney($data,$sts_id){
        $upStatus = mysqld_update('store_shop',$data,array('sts_id'=>$sts_id ));

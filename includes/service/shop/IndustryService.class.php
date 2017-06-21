@@ -142,5 +142,12 @@ class IndustryService extends \service\publicService {
         }
         return $cat_key_num_value;
     }
-
+    
+    //
+     public function getIndustryInfo($gc_id = 0,$fields='*') {
+         $sql = "select {$fields} from ".table($this->myTableName)." where gc_id = {$gc_id}";
+         $rs  = mysqld_select($sql);
+         return $rs;
+     }
+    
 }

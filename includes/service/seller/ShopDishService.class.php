@@ -285,7 +285,7 @@ class ShopDishService extends \service\publicService {
         return $redata;
     }
     
-    public function getDishInfo($dish_id,$fields=''){
+    public function getDishInfo($dish_id,$fields='*'){
         $sql = "select {$fields} from {$this->table} where id = $dish_id";
         $redata = mysqld_select($sql);
         return $redata;

@@ -25,6 +25,13 @@ class confirm extends base
        ajaxReturnData(1,'请求成功',$cartlist);
    }
 
+    /**
+     * 从结算页进行提交订单结算
+     参数 array(
+                 address_id  => 2
+                 bonus  => ['2_68','3_89']  //表示店铺2 优惠卷 68  店铺3优惠卷89
+     * )
+     */
     public function topay()
     {
         $_GP =  $this->request;
@@ -52,4 +59,31 @@ class confirm extends base
             ajaxReturnData(1,'操作成功!',$return);
         }
     }
+
+    /**
+     * 从个人中心中继续完成支付   参数orderid
+     */
+    public function payorder()
+    {
+        $_GP =  $this->request;
+        $meminfo = get_member_account();
+        $setting = globaSetting();
+        $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
+        $configs = unserialize($payment['configs']);
+
+        $appid  = $setting['xcx_appid'];//小程序appid
+        $openid = $meminfo['weixin_openid'];  //个人要支付的openid
+        $mch_id = $configs['weixin_pay_mchId'];
+        $key    = $configs['weixin_pay_paySignKey'];
+
+        $weixinpay = new \service\wapi\wxpayService($appid,$openid,$mch_id,$key);
+        $res_data  = $weixinpay->getPayOrder($_GP['orderid']);
+        $return    = $weixinpay->pay($res_data['pay_ordersn'],$res_data['pay_total_money'],$res_data['pay_title']);
+        if(!$return){
+            ajaxReturnData(0,$weixinpay->getError());
+        }else{
+            ajaxReturnData(1,'操作成功!',$return);
+        }
+    }
+
 }

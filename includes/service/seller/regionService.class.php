@@ -108,6 +108,12 @@ class regionService extends \service\publicService
         }
     }
     
+    //根据ID获取对应信息
+    public function getRegionInfo($region_code='',$fields='*'){
+        $result = mysqld_select("SELECT {$fields}  FROM " . table('region') . " WHERE  region_code = {$region_code}");
+        return $result;
+    }
+    
     //获取省信息
     
     //获取市信息

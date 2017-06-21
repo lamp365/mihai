@@ -300,6 +300,14 @@ class product extends base
             {
                     $condition .= ' and store_p1 = '.$_GP['oneCategory'].'';
             }
+            
+            
+            if($_GP['is_ltc'] == 1){
+                $condition .= ' and ac_dish_id > 0';
+            }
+            elseif($_GP['is_ltc'] == 2){
+                $condition .= ' and ac_dish_id = 0';
+            }
 
             if($_GP['twoCategory'] > 0 )
             {
