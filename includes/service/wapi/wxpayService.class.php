@@ -16,9 +16,9 @@ class wxpayService extends  \service\publicService
     }
 
     //微信小程序接口
-    public function pay(){
+    public function pay($pay_ordersn,$pay_money,$pay_title){
         //统一下单接口
-        $unifiedorder=$this->unifiedorder();
+        $unifiedorder=$this->unifiedorder($pay_ordersn,$pay_money,$pay_title);
         $parameters=array(
             'appId'     => $this->appid,//小程序ID
             'timeStamp' => ''.time().'',//时间戳
@@ -32,16 +32,16 @@ class wxpayService extends  \service\publicService
     }
 
     //统一下单接口
-    private function unifiedorder(){
+    private function unifiedorder($pay_ordersn,$pay_money,$pay_title){
         //微信接口
         $url='https://api.mch.weixin.qq.com/pay/unifiedorder';
         $parameters=array(
             'appid'     => $this->appid,//小程序ID
             'mch_id'    => $this->mch_id,//商户号
             'nonce_str' => $this->createNoncestr(),//随机字符串
-            'body'      => '测试',//商品描述
-            'out_trade_no'     => '20154508061253'.uniqid(),//商户订单号
-            'total_fee'        => floatval(0.01*100),//总金额 单位 分
+            'body'      => $pay_title,//商品描述
+            'out_trade_no'     => implode('_',$pay_ordersn),  //商户订单号  如果有多条订单的话  用下划线分隔
+            'total_fee'        => $pay_money,//总金额 单位 分
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
             'notify_url'       => WEBSITE_ROOT . 'notify/weixin_notify.php',//通知地址
             'openid'           => $this->openid,//用户id
@@ -168,10 +168,23 @@ class wxpayService extends  \service\publicService
         }
     }
 
+    /**
+     * 插入订单 参数
+     * array(
+            address_id  => 2
+            bonus  => ['2_68','3_89']  //表示店铺2 优惠卷 68  店铺3优惠卷89
+     * )
+     * @param $data
+     * @return bool
+     */
     public function insertOrder($data)
     {
         $memInfo  = get_member_account();
         $openid   = $memInfo['openid'];
+        $pay_ordersn     = array();
+        $pay_total_money = 0;
+        $pay_title       = '';
+
         if(empty($data['address_id'])){
             $this->error = '请选择对应的收货地址！';
             return false;
@@ -212,17 +225,41 @@ class wxpayService extends  \service\publicService
             if(!empty($randomorder['ordersn'])) {
                 $ordersns= 'SN'.date('Ymd') . random(6, 1);
             }
+            $pay_ordersn[] = $ordersns;
+
+            $price      = FormatMoney($item['totalprice'],1);  //转为分入库  总金额
+            if($item['send_free'] == 1){
+                //免邮啦 总价格等于 产品总价格
+                $goodsprice  = FormatMoney($item['totalprice'],1);  //转为分入库  产品金额
+                $express_fee = 0;
+            }else{
+                //没有免邮  总价扣掉运费 等于产品价格
+                $goodsprice  = FormatMoney($item['totalprice']-$item['express_fee'],1);  //转为分入库  产品金额
+                $express_fee = FormatMoney($item['express_fee'],1);
+            }
+
+            //优惠卷
+            $bonus_id    = $bonus['sts_id'];
+            $bonus_price = 0;
+            if(array_key_exists($item['sts_id'],$bonus)){
+                //从库里面取出来的 价格是分
+                $bonus_price  = getCouponByMemidOnPay($bonus['sts_id'],$item['sts_id'],$item['dishlist'],'coupon_amount');
+                if(empty($bonus_price)){
+                    $bonus_id    = 0;
+                    $bonus_price = 0;
+                }
+            }
 
             $order_data = array();
             $order_data['sts_id']           = $item['sts_id'];
             $order_data['openid']           = $openid;
             $order_data['recommend_openid'] = $recommend_openid;
             $order_data['ordersn']          = $ordersns;
-            $order_data['ordertype']        = 4;    //限时购
-            $order_data['price']            = 4;    //总金额
-            $order_data['goodsprice']       = 4;    //商品价格
-            $order_data['dispatchprice']    = 4;    //运费
-            $order_data['status']           = 0;    //状态
+            $order_data['ordertype']        = 4;                        //限时购
+            $order_data['price']            = $price - $bonus_price;    //需要支付的总金额
+            $order_data['goodsprice']       = $goodsprice;              //商品价格
+            $order_data['dispatchprice']    = $express_fee;             //运费
+            $order_data['status']           = 0;    //状态未付款
             $order_data['source']           = get_mobile_type();    //设备来源
             $order_data['sendtype']         = 0;    //快递发货
             $order_data['paytype']          = 2;    //在线付款
@@ -235,8 +272,43 @@ class wxpayService extends  \service\publicService
             $order_data['address_area']     = $address['area'];
             $order_data['address_address']  = $address['address'];
             $order_data['address_mobile']   = $address['mobile'];
-            $order_data['hasbonus']         = '';
-            $order_data['balance_sprice']   = '';
+            $order_data['hasbonus']         = $bonus_id;
+            $order_data['bonusprice']       = $bonus_price;
+
+            mysqld_insert('shop_order',$order_data);
+            $orderid = mysqld_insertid();
+            if($orderid){
+                $pay_total_money = $pay_total_money + $order_data['price'];  //单位是分
+                //更新优惠卷为已经使用
+                if(!empty($bonus_id))
+                    mysqld_update('store_coupon_member',array('status'=>1),array('scmid'=>$bonus_id));
+
+                $dishlist = $item['dishlist'];
+                foreach($dishlist as $one_dish){
+                    $pay_title    = str_replace('&','',$one_dish['title']);  //去除带有 & 的字符
+                    //获取推广价
+                    $promot_price = getPromotPrice($one_dish['id'],$item['sts_id'],$one_dish['time_price'],$item['sts_shop_type']);
+                    $o_good = array();
+                    $o_good['orderid']               = $orderid;
+                    $o_good['sts_id']                = $item['sts_id'];
+                    $o_good['dishid']                = $one_dish['id'];
+                    $o_good['recommend_openid']      = $recommend_openid;
+                    $o_good['shop_type']             = 4;
+                    $o_good['price']                 = FormatMoney($one_dish['time_price'],1);  //商品单价 转为分
+                    $o_good['promot_price']          = $promot_price;   //单位 分
+                    $o_good['total']                 = $one_dish['buy_num'];
+                    $o_good['createtime']            = time();
+                    mysqld_insert('shop_order_goods',$o_good);
+                }
+            }
         }
+
+        //移除购物车
+        mysqld_delete("shop_cart",array('session_id'=>$openid,'to_pay'=>1));
+        return array(
+            'pay_ordersn'     => $pay_ordersn,
+            'pay_total_money' => $pay_total_money,
+            'pay_title'       => $pay_title,
+        );
     }
 }

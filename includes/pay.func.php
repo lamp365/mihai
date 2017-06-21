@@ -100,3 +100,39 @@ function weixinPayData($out_trade_no,$body,$total_fee)
 	
 	return $appParameters;
 }
+
+/**
+ * 获取推广价    返回分为单位
+ * @param $dishid
+ * @param $sts_id
+ * @param $price
+ * @param $sts_shop_type
+ * @return int|string
+ */
+function getPromotPrice($dishid,$sts_id,$price,$sts_shop_type){
+	$promot_price = 0;   //推广价
+	//获取商品 得到佣金比例或者推广价
+	$this_dish = mysqld_select("select commision,promot_price from ".table('shop_dish')." where id={$dishid}");
+	if($sts_shop_type == 5){
+		//自营的商家
+		if(empty($this_dish['promot_price'])){
+			//用店铺的默认 佣金来处理
+			$store_info   = mysqld_select("select commision from ".table('store_extend_info')." where store_id={$sts_id}");
+			$promot_price = number_format(($store_info['commision']/100)*$price,2);  //单位是元
+			$promot_price = FormatMoney($promot_price,1);     //转为分
+		}else{
+			$promot_price = $this_dish['promot_price'];      //从库里面取出来的是分
+		}
+	}else{
+		if(empty($this_dish['commision'])){
+			//用店铺的默认 佣金来处理
+			$store_info   = mysqld_select("select commision from ".table('store_extend_info')." where store_id={$sts_id}");
+			$promot_price = number_format(($store_info['commision']/100)*$price,2);  //单位是元
+			$promot_price = FormatMoney($promot_price,1);     //转为分
+		}else{
+			$promot_price = number_format(($this_dish['commision']/100)*$price,2);  //单位是元
+			$promot_price = FormatMoney($promot_price,1);     //转为分
+		}
+	}
+	return $promot_price;
+}

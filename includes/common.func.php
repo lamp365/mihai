@@ -42,7 +42,7 @@ function LANG($name_key = '',$module = 'common',$replace = '') {
     return $name_key;
 }
 
-//金额格式化  存入数据库的时候 type 1  页面展示的时候 type 0
+//金额格式化  存入数据库的时候 type 1 分   页面展示的时候 type 0 元
 function FormatMoney($money,$type=1){
     if(empty($money)) return sprintf("%.2f",0);
     if($type == 1)

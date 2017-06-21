@@ -131,6 +131,20 @@
                       <div class="layui-btn layui-btn-small layui-btn-warm"  onclick='javascript:isStatus(<?php echo $v['id'];?>);'   id='isstatusobj_<?php echo $v['id'];?>' data-id="<?php echo $v['id'];?>">设置上架</div>
                       <?php } ?>
                       <input type="hidden" name="isstatus_<?php echo $v['id'];?>" id="isstatus_<?php echo $v['id'];?>" value="<?php echo $v['isstatusc'];?>" >
+                      <?php
+                        if($v['ac_dish_id'] <= 0)
+                        {
+                      ?>
+                      <div class="layui-btn layui-btn-small layui-btn-warm addltc" data-id="<?php echo $v['id'];?>">参与限时购</div>
+                      <?php
+                        }
+                        else{
+                      ?>
+                      <div class="layui-btn layui-btn-small layui-btn-warm editltc" data-id="<?php echo $v['ac_dish_id'];?>">编辑限时购</div>
+                      <div class="layui-btn layui-btn-small layui-btn-warm delltc" data-id="<?php echo $v['ac_dish_id'];?>">限时购下架</div>
+                      <?php
+                        }
+                      ?>
                   </td>
                 </tr>
               <?php
@@ -159,6 +173,7 @@
 <!-- tab切换结束 -->
 
 <input type="hidden" name="total" id="total" value="<?php echo $total;?>">       
+<div id="alterModal" class="alertModalBox"></div>
 <script src="<?php echo RESOURCE_ROOT;?>addons/seller/plugins/layui/layui.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
@@ -279,7 +294,34 @@ function changeSort(id,data){
     },"json");
 }
 
-
+$(function(){
+    $('.addltc').on('click',function(){
+        var idval = $(this).attr('data-id');
+        var url= '<?php echo mobile_url('product',array('op'=>'addLtc')) ?>';
+        $.ajaxLoad(url,{id:idval},function(){
+            $('#alterModal').modal('show');
+        });
+    });
+    
+    $('.editltc').on('click',function(){
+        var idval = $(this).attr('data-id');
+        var url= '<?php echo mobile_url('product',array('op'=>'addLtc')) ?>';
+        $.ajaxLoad(url,{ac_dish_id:idval},function(){
+            $('#alterModal').modal('show');
+        });
+    });
+    
+    
+    $('.delltc').on('click',function(){
+        var idval = $(this).attr('data-id');
+        var url= '<?php echo mobile_url('product',array('op'=>'delLtc')) ?>';
+        $.post(url,{'ac_dish_id':idval},function(redata){
+            location.reload();
+        },"json");
+        
+    });
+    
+})
 </script>
 
 </body>

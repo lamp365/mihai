@@ -112,7 +112,7 @@ class coupon extends base{
             $temp['use_end_time'] = date("Y-m-d",$v['use_end_time']);
             $data[] = $temp; 
         }
-        ajaxReturnData(0,'',$data);
+        ajaxReturnData(1,'',$data);
     }
 }
 ?>

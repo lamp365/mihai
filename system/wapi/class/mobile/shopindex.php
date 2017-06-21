@@ -36,7 +36,14 @@ class shopindex extends base{
            }
            $tempAll[] = $temp;
        }
-       $data['detail'] = $tempAll;
+       if (count($tempAll) > 5){
+           for ($i=0;$i<5;$i++){
+               $trueAll[$i] = $tempAll[$i];
+           }
+       }else {
+           $trueAll = $tempAll;
+       }
+       $data['detail'] = $trueAll;
        $data['ac_id'] = $list['ac_id'];
        ajaxReturnData(1,'',$data);
    }

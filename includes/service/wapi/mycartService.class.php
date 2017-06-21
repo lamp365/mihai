@@ -39,7 +39,7 @@ class mycartService extends  \service\publicService
                 }
 
 
-                $store = member_store_getById($item['sts_id'],'sts_name,sts_id');
+                $store = member_store_getById($item['sts_id'],'sts_name,sts_id,sts_shop_type');
 
                 $dish['time_price']        = FormatMoney($act_dish['ac_dish_price'],0);
                 $dish['buy_num']           = $item['total'];
@@ -86,6 +86,7 @@ class mycartService extends  \service\publicService
         $express_fee   = $expressInfo['express_fee'];    //运费
         $gooslist[$sts_id]['free_dispatch'] = FormatMoney($free_dispatch,0);
         $gooslist[$sts_id]['express_fee']   = FormatMoney($express_fee,0);
+        $gooslist[$sts_id]['send_free']     = 0;
         $gooslist[$sts_id]['totalprice']    = 0;
 
     }
@@ -107,11 +108,12 @@ class mycartService extends  \service\publicService
                 //商品价格  没有超过 满邮的条件   总价加上运费
                 $totalprice +=  $express_fee;
                 $item['totalprice'] = number_format($total_dish_price + $express_fee,2);
+                $item['send_free']  = 1;
             }else{
                 $item['totalprice'] = number_format($total_dish_price,2);
             }
             //根据店铺以及价格来选出 结算的时候 可以使用的优惠卷
-            $item['bonuslist'] = getCouponByPrice($item['sts_id'],$total_dish_price,$dishid_arr);
+            $item['bonuslist'] = getCouponByPriceOnPay($item['sts_id'],$total_dish_price,$dishid_arr);
 
         }
         return $totalprice;

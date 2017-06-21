@@ -45,7 +45,7 @@ class confirm extends base
             ajaxReturnData(0,$weixinpay->getError());
         }
 
-        $return    = $weixinpay->pay();
+        $return    = $weixinpay->pay($res_data['pay_ordersn'],$res_data['pay_total_money'],$res_data['pay_title']);
         if(!$return){
             ajaxReturnData(0,$weixinpay->getError());
         }else{
