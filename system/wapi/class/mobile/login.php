@@ -75,6 +75,36 @@ class login extends base {
    }
 
     /**
+     * 当用户授权失败的时候，避免用户没有一个唯一标识，无法操作一些东西
+     * 如购物车 优惠卷
+     * 则临时分配给用户一个设备key,用于跟服务端交互，等到用户再次授权登录后，
+     * 则批量替换掉之前的key
+     */
+    public function grantFailLogin()
+    {
+        $device_code = get_sessionid();
+        $data = array(
+            'nickname'	  => '小城市'.rand(100,999),
+            'realname'	  => '小城市'.rand(100,999),
+            'mobile'      => "",
+            'pwd'         => encryptPassword(rand(10000, 99999)),
+            'createtime'  => time(),
+            'status'      => 1,
+            'istemplate'  => 1,
+            'experience'  => 0,
+            'openid'      => $device_code
+        );
+        mysqld_insert('member', $data);
+
+        $data['device_code'] = $device_code;
+        //set cache  小程序 不支持 cookie  sesion
+        $memcache  = new \Mcache();
+        $memcache->set($device_code,$data,3600*24*3);
+        ajaxReturnData(1,'登录成功',$data);
+    }
+
+
+    /**
      * 用于开发的时候调试 信息登录使用
      */
     public function pc_login()

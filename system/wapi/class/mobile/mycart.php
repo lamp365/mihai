@@ -72,6 +72,9 @@ class mycart extends base
         ajaxReturnData(1,'已经移除!',$cartlist);
     }
 
+    /**
+     * 逗号分隔多个id
+     */
     public function batdel()
     {
         $member = get_member_account();
@@ -80,7 +83,8 @@ class mycart extends base
         if(empty($_GP['ids'])){
             ajaxReturnData(0,'参数有误！');
         }else{
-            foreach($_GP['ids'] as $id){
+            $ids = explode(',',$_GP['ids']);
+            foreach($ids as $id){
                 mysqld_delete('shop_cart', array(
                     'session_id' => $openid,
                     'id' => $id
@@ -104,7 +108,7 @@ class mycart extends base
         $cartlist = $service->cartlist();
         ajaxReturnData(1,'已全部移除！',$cartlist);
     }
-    //所选择了哪些商品进行购买
+    //所选择了哪些商品进行购买  逗号分隔 多个id
     public function topay()
     {
         $_GP    = $this->request;

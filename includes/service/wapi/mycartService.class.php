@@ -225,6 +225,7 @@ class mycartService extends  \service\publicService
             $this->error = '类型参数不对！';
             return false;
         }
+        $cart_ids = explode(',',$cart_ids);
         foreach($cart_ids as $id){
             mysqld_update('shop_cart',array('to_pay'=>$type),array('id'=>$id,'session_id'=>$member['openid']));
         }

@@ -198,10 +198,11 @@ class wxpayService extends  \service\publicService
             $this->error = '收货地址不存在！';
             return false;
         }
-        //是否有选择优惠卷  $data['bonus'] = ['8_18','38_89'];
+        //是否有选择优惠卷  $data['bonus'] = '8_18,38_89';
         $bonus = array();
         if(!empty($data['bonus'])){
-            foreach($data['bonus'] as $one_item){
+            $bonus_list = explode(',',$data['bonus']);
+            foreach($bonus_list as $one_item){
                 $one_arr = explode('_',$one_item);
                 if(count($one_arr) == 2){
                     $bonus[$one_arr[0]] = $one_arr[1];

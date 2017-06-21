@@ -100,8 +100,8 @@ class coupon extends base{
         $pindex = max(1, intval($_GP['page']));
         $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
         $limit= ($pindex-1)*$psize;
-        $orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
-        
+        //$orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
+        $orderby = false;
         $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id",$orderby);
         if (empty($mycoupon)) ajaxReturnData(0,'暂无优惠券信息');
         $storeShopModel = new \model\store_shop_model();

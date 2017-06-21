@@ -29,7 +29,7 @@ class confirm extends base
      * 从结算页进行提交订单结算
      参数 array(
                  address_id  => 2
-                 bonus  => ['2_68','3_89']  //表示店铺2 优惠卷 68  店铺3优惠卷89
+                 bonus  => '2_68,3_89'  //表示店铺2 优惠卷 68  店铺3优惠卷89
      * )
      */
     public function topay()
