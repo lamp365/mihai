@@ -18,8 +18,10 @@ class coupon extends base{
         $couponList = array();
         foreach ($actStore as $key=>$v){
             $return = $couponService->getStoreCoupons($v['ac_shop'],$openid);
-            foreach ($return['couponList'] as $val){
-                $couponList[] = $val;
+            if ($return){
+                foreach ($return['couponList'] as $val){
+                    $couponList[] = $val;
+                }
             }
         }
         if (!empty($couponList)){
