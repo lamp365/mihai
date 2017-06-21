@@ -109,7 +109,7 @@ class mycart extends base
     {
         $_GP    = $this->request;
         $service  = new \service\wapi\mycartService();
-        $res = $service->topay($_GP['ids']);
+        $res = $service->topay($_GP['ids'],$_GP['type']);
         if(!$res){
             ajaxReturnData(0,$service->getError());
         }else{

@@ -46,6 +46,7 @@ class mycartService extends  \service\publicService
                 $dish['ac_dish_status']    = $act_dish['ac_dish_status'];
                 $dish['ac_dish_total']     = $act_dish['ac_dish_total'];
                 $dish['cart_id']           = $item['id'];
+                $dish['to_pay']            = $item['to_pay'];
 
 
                 if(!array_key_exists($item['sts_id'],$gooslist)){
@@ -56,7 +57,9 @@ class mycartService extends  \service\publicService
                     }
                 }
                 $gooslist[$item['sts_id']]['dishlist'][] = $dish;
-                $totalprice = $totalprice + $dish['time_price']*$dish['buy_num'];
+
+                if($item['to_pay'] == 1)   //计算已经打钩的物品
+                    $totalprice = $totalprice + $dish['time_price']*$dish['buy_num'];
            }
             $gooslist = array_values($gooslist);
         }
@@ -153,6 +156,7 @@ class mycartService extends  \service\publicService
                 'goodstype'     => 0,
                 'session_id'    => $member['openid'],
                 'sts_id'        => $dish['sts_id'],
+                'to_pay'        => 1,  //默认是打钩状态的
                 'total'         =>  $total
             );
             if($total > $find['ac_dish_total']){
@@ -206,22 +210,23 @@ class mycartService extends  \service\publicService
         return $data['total'];
     }
     /**
-     * 选择了哪些商品进行购买
+     * 选择了哪些商品进行购买 或者不买
      * @param $cart_ids
      * @return bool
      */
-    public function topay($cart_ids)
+    public function topay($cart_ids,$type)
     {
         $member  = get_member_account();
         if (empty($cart_ids)) {
             $this->error = '对不起你没有选择商品！';
             return false;
         }
-
-        //先全部置0
-        mysqld_update('shop_cart',array('to_pay'=>0),array('session_id'=>$member['openid']));
+        if(!in_array($type,array('0','1'))){
+            $this->error = '类型参数不对！';
+            return false;
+        }
         foreach($cart_ids as $id){
-            mysqld_update('shop_cart',array('to_pay'=>1),array('id'=>$id,'session_id'=>$member['openid']));
+            mysqld_update('shop_cart',array('to_pay'=>$type),array('id'=>$id,'session_id'=>$member['openid']));
         }
         return true;
     }

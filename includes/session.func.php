@@ -3,9 +3,9 @@
 session操作
 */
 
-function create_sessionid()
+function get_sessionid()
 {
-    return '_t' . date("mdHis") . rand(10000000, 99999999);
+    return '_t' . session_id();
 }
 
 function integration_session_account($loginid, $oldsessionid)
@@ -113,7 +113,7 @@ function get_session_account($useAccount = true)
         //临时的用户不要注册 因为 第二天找不到这个临时用户，但是微信不一样，微信openid是唯一的
         //临时的用户注册没有一点意义
        /* $sessionAccount = array(
-            'openid' => create_sessionid(),
+            'openid' => get_sessionid(),
             'unionid' => ''
         );
         $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;*/
