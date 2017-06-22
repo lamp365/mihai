@@ -29,6 +29,10 @@ function get_orders($where='', $pindex=1, $psize = 10) {
         	$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$ov['openid']."'");
             $ov['buy_name'] = $mem['realname'];
             $ov['buy_mobile'] = $mem['mobile'];
+            // 店铺信息
+            $shop = mysqld_select("SELECT a.*,b.free_dispatch as bfree,b.express_fee,b.limit_send FROM ".table('store_shop')." as a left join ".table('store_extend_info')." as b on a.sts_id=b.store_id WHERE a.sts_id=".$ov['sts_id']);
+            $ov['shop_name'] = $shop['sts_name'];
+            $ov['shop_avatar'] = $shop['sts_avatar'];
             $order_goods = mysqld_selectall("SELECT * FROM ".table('shop_order_goods')." WHERE orderid=".$ov['id']." ORDER BY createtime desc");
             $ov['goods'] = $order_goods;
             if (!empty($ov['goods'])) {
