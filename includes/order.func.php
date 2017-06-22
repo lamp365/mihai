@@ -17,7 +17,12 @@ function createOrdersns()
 
 // 获取多个订单
 function get_orders($where='', $pindex=1, $psize = 10) {
+	if (where=='') {
+		return false;
+	}
 	$result = mysqld_selectall("SELECT a.* FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE ".$where." GROUP BY a.id ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+	// 总记录数
+    // $total = mysqld_select("SELECT FOUND_ROWS() as total;");
     if (!empty($result)) {
         foreach ($result as $ok => &$ov) {
         	$ov['createtime'] = date('Y-m-d H:i:s', $ov['createtime']);
@@ -37,8 +42,20 @@ function get_orders($where='', $pindex=1, $psize = 10) {
     } else {
         return false;
     }
-
+    
     return $result;
+}
+
+// 获取订单数量
+function get_order_num($where='') {
+	if (where=='') {
+		return false;
+	}
+	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.* FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE ".$where." GROUP BY a.id ORDER BY a.createtime DESC LIMIT 1");
+	// 总记录数
+    $total = mysqld_select("SELECT FOUND_ROWS() as total;");
+
+    return $total['total'];
 }
 
 // 获取单个订单
