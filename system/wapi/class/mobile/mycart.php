@@ -14,7 +14,7 @@ class mycart extends base
     {
         parent::__construct();
         if(!checkIsLogin()){
-            ajaxReturnData(2,'请授权登录！');
+            ajaxReturnData(0,'请授权登录！');
         }
     }
 

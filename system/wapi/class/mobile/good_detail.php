@@ -26,7 +26,12 @@ class good_detail extends base {
 
     $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']);
     if (empty($activity_dish)) {
-       ajaxReturnData(0,'该商品不在限时购之内');
+      ajaxReturnData(0,'该商品不在限时购之内');
+    }
+
+    $shop = mysqld_select("SELECT a.*,b.free_dispatch as bfree,b.express_fee,b.limit_send FROM ".table('store_shop')." as a left join ".table('store_extend_info')." as b on a.sts_id=b.store_id WHERE a.sts_id=".$good['sts_id']);
+    if (empty($shop)) {
+      ajaxReturnData(0,'店铺信息获取失败');
     }
 
     // 获取主图
@@ -103,6 +108,7 @@ class good_detail extends base {
     // 品牌
     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
     $list['brand'] = $brand['brand'];
+    $list['brand_icon'] = $brand['icon'];
     // 国家  品牌没有对应国家  没有没有没有没有没有没有没有没有
     // $country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
     // $list['country'] = $country['name'];
@@ -134,6 +140,19 @@ class good_detail extends base {
     }
     // 商品状态(上架/下架)
     $list['status'] = $good['status'];
+    // 免邮价格
+    $list['free_dispatch'] = $shop['bfree'];
+    // 邮费
+    $list['express_fee'] = $shop['express_fee'];
+    // 最低起送金额
+    $list['limit_send'] = $shop['limit_send'];
+    // 店名
+    $list['shop_name'] = $shop['sts_name'];
+    // 店铺头像
+    $list['shop_avatar'] = $shop['sts_avatar'];
+    // 店铺等级
+    $list['shop_level'] = $shop['sts_shop_level'];
+
     // 详情图
     if ($is_contont == 'yes') {
       // 通用详情头尾 
@@ -169,6 +188,7 @@ class good_detail extends base {
 
     if (!empty($comments)) {
       foreach ($comments as $c_k => &$c_v) {
+        $c_v['mobile'] = substr_cut($c_v['mobile']);
         $c_img = mysqld_selectall("SELECT img FROM ".table('shop_comment_img')." WHERE comment_id=".$c_v['id']." ORDER BY id ASC LIMIT 5");
         foreach ($c_img as $cmv) {
           $comments[$c_k]['img'][] = $cmv['img'];

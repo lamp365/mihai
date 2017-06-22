@@ -17,7 +17,7 @@ class couponService extends \service\publicService
      * 获得店铺优惠券
      *   */
     public function getStoreCoupons($storeid,$openid){
-        if (empty($storeid)) return ;
+        if (empty($storeid)) return array();
         $mytime = time();
         $couponModel = new \model\store_coupon_model();
         $couponsList = $couponModel->getAllCoupon("`store_shop_id`={$storeid} and `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
@@ -54,6 +54,7 @@ class couponService extends \service\publicService
             );
             return $return;
         }
+        return array();
     }
     /**
      * 是否可以领取优惠券
