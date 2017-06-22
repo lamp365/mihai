@@ -19,22 +19,26 @@ class mycartService extends  \service\publicService
         if(!empty($cart_where)){
             $where .= " and {$cart_where}";
         }
+        //找出本次活动的场次
+        $active = getCurrentAct();
+
+        //找出购物车的商品
         $list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE  {$where}");
         $totalprice = 0;
         $gooslist   = $out_gooslist = array();
         if (! empty($list)) {
             //找出对应的商品 信息
             foreach($list as $item){
-                $sql = "select ac_dish_price,ac_dish_status,ac_dish_total from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']}";
+                $sql = "select ac_dish_price,ac_dish_status,ac_dish_total from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']} and ac_action_id={$active['ac_id']}";
                 $act_dish = mysqld_select($sql);
 
-                $field = 'id,title,thumb,sts_id';
+                $field = 'id,title,marketprice,thumb,sts_id';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
 
                 if(empty($dish) || empty($act_dish) || $act_dish['ac_dish_status'] == 0 || $act_dish['ac_dish_total'] == 0){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
-                    $dish['ac_dish_status']  = $act_dish['ac_dish_status'];
-                    $dish['ac_dish_total']   = $act_dish['ac_dish_total'];
+                    $dish['ac_dish_status']  = $act_dish['ac_dish_status'] ?: 0;
+                    $dish['ac_dish_total']   = $act_dish['ac_dish_total'] ?: 0;
                     $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
@@ -44,6 +48,7 @@ class mycartService extends  \service\publicService
                 $store = member_store_getById($item['sts_id'],'sts_name,sts_id,sts_shop_type');
 
                 $dish['time_price']        = FormatMoney($act_dish['ac_dish_price'],0);
+                $dish['marketprice']       = FormatMoney($dish['marketprice'],0);
                 $dish['buy_num']           = $item['total'];
                 $dish['ac_dish_status']    = $act_dish['ac_dish_status'];
                 $dish['ac_dish_total']     = $act_dish['ac_dish_total'];

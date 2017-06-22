@@ -104,6 +104,7 @@ class shopindex extends base{
             $temp['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
             $temp['ac_dish_total'] = $v['ac_dish_total'];
             $temp['ac_dish_sell_total'] = $v['ac_dish_sell_total'];
+            $temp['ac_shop_dish'] = $v['ac_shop_dish'];
             $data[] = $temp;
        }
        ajaxReturnData(1,'',$data);

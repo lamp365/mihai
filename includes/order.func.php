@@ -16,42 +16,30 @@ function createOrdersns()
 
 
 // 获取多个订单
-// function get_orders($array=array()) {
-//     if (!empty($array['where'])){
-//         $where = $array['where'];
-//     }
-//     if (!empty($array['limit'])){
-//         $limit = $array['limit'];
-//     }
-//     $list = mysqld_selectall("SELECT * FROM " . table('shop_order') . " WHERE $where ORDER BY id DESC LIMIT " .$limit, array() , 'id');
+function get_orders($where='', $pindex=1, $psize = 10) {
+	$result = mysqld_selectall("SELECT a.* FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE ".$where." GROUP BY a.id ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+    if (!empty($result)) {
+        foreach ($result as $ok => &$ov) {
+        	$ov['createtime'] = date('Y-m-d H:i:s', $ov['createtime']);
+        	$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$ov['openid']."'");
+            $ov['buy_name'] = $mem['realname'];
+            $ov['buy_mobile'] = $mem['mobile'];
+            $order_goods = mysqld_selectall("SELECT * FROM ".table('shop_order_goods')." WHERE orderid=".$ov['id']." ORDER BY createtime desc");
+            $ov['goods'] = $order_goods;
+            if (!empty($ov['goods'])) {
+                foreach ($ov['goods'] as &$odgsv) {
+                    $odgsv['good'] = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=".$odgsv['dishid']);
+                }
+                unset($odgsv);
+            }
+        }
+        unset($ov);
+    } else {
+        return false;
+    }
 
-//     if (!empty($list)) {
-//         foreach ($list as & $row) {
-//             $goods = mysqld_selectall("SELECT g.id, g.title, g.thumb, o.price as marketprice,o.total,o.optionid,g.productprice FROM " . table('shop_order_goods') . " o left join " . table('shop_goods') . " g on o.goodsid=g.id " . " WHERE o.orderid='{$row['id']}'");
-//             foreach ($goods as & $item) {
-//                 //属性
-//                 $option = mysqld_select("select title,marketprice,weight,stock from " . table("shop_goods_option") . " where id=:id limit 1", array(
-//                     ":id" => $item['optionid']
-//                 ));
-//                 if ($option) {
-//                     $item['title'] = "[" . $option['title'] . "]" . $item['title'];
-//                     $item['marketprice'] = $option['marketprice'];
-//                 }
-//             }
-//             unset($item);
-//             $goodsid = mysqld_selectall("SELECT goodsid,total FROM " . table('shop_order_goods') . " WHERE orderid = '{$row['id']}'", array() , 'goodsid');
-//             $row['goods'] = $goods;
-//             $row['total'] = $goodsid;
-//             $row['dispatch'] = mysqld_select("select id,dispatchname from " . table('shop_dispatch') . " where id=:id limit 1", array(
-//                 ":id" => $row['dispatch']
-//             ));
-//         }
-//     }else{
-//         return array();
-//     }
-
-//     return $list;
-// }
+    return $result;
+}
 
 // 获取单个订单
 function get_order($array=array()) {

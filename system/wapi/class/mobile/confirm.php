@@ -112,4 +112,5 @@ class confirm extends base
             mysqld_query($sql);
         }
     }
+
 }

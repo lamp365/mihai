@@ -89,6 +89,7 @@ class shop extends base{
         }
         //价格
         if ($minprice && $maxprice){
+            if ($maxprice < $minprice) ajaxReturnData(0,'抱歉，价格输入不正确');
             $where .= " AND a.ac_dish_price >= '$minprice' AND  a.ac_dish_price <= '$maxprice' ";
         }elseif ($minprice){
             $where .= " AND a.ac_dish_price >= '$minprice' ";
@@ -146,6 +147,7 @@ class shop extends base{
                 $sql = $sql1 ;
             }
         }
+        echo $sql;
         $list = mysqld_selectall($sql);
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         
@@ -160,5 +162,5 @@ class shop extends base{
             $list[$key]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
         }
         ajaxReturnData(1,'',$list);
-    }    
+    }
 }
