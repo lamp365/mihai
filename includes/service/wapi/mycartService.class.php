@@ -134,7 +134,7 @@ class mycartService extends  \service\publicService
     {
         $member = get_member_account();
 
-        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
+        $sql = "select ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
         $sql .= " where ac_shop_dish={$dishid}";
         $find = mysqld_select($sql);
         if (empty($find)) {
