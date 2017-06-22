@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>微信支付</title>
+</head>
+<body>
+<script>
+
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.invoke(
+				'getBrandWCPayRequest',{
+					'appId' 	: " <?php echo $result['appId'];?>",
+					'timeStamp' : "<?php echo $result['timeStamp'];?>",
+					'nonceStr'  : "<?php echo $result['nonceStr'];?>",
+					'package'   : "<?php echo $result['package'];?>",
+					'signType'  : "<?php echo $result['signType'];?>",
+					'paySign'   : "<?php echo $result['paySign'];?>"
+				}, function(res) {
+					if(res.err_msg == 'get_brand_wcpay_request:ok') {
+						location.search += '&isok=1';
+					} else {
+						alert('微信支付未完成');
+						history.go(-1);
+					}
+				}
+		);
+	});
+
+</script>
+</body>
+</html>
