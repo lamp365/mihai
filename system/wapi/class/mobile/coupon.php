@@ -12,8 +12,7 @@ class coupon extends base{
         $actListModel = new \model\activity_dish_model();
         $actStore = $actListModel->getAllActivtyDish(array('ac_action_id'=>$act_id),'ac_shop','ac_dish_id DESC','ac_shop');
         if(empty($actStore)) ajaxReturnData(0,'没有该活动');
-        $member = get_member_account();
-        $openid = $member['openid'];
+        $openid = checkIsLogin();
         $couponService = new \service\shopwap\couponService();
         $couponList = array();
         foreach ($actStore as $key=>$v){
@@ -44,8 +43,7 @@ class coupon extends base{
     }
     //领取优惠券
     public function getCoupon(){
-        $member = get_member_account();
-        $openid = $member['openid'];
+        $openid = checkIsLogin();
         if (empty($openid)) ajaxReturnData(0,'请先登入');
         $_GP = $this->request;
         $stsid = intval($_GP['sts_id']);
@@ -81,8 +79,7 @@ class coupon extends base{
     }
     //我的优惠券列表
     public function mycoupon(){
-        $member = get_member_account();
-        $openid = $member['openid'];
+        $openid = checkIsLogin();
         $_GP = $this->request;
         $type = intval(isset($_GP['type'])) ? intval($_GP['type']) : '0';//type 0表示未使用，1已使用，3已过期
         if (empty($openid)) ajaxReturnData(0,'请先登入');

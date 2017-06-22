@@ -10,21 +10,25 @@ class shop extends base{
      *   */
     public function shopList(){
         $_GP = $this->request;
-        $type = intval($_GP['type']);//类型
+        $type = intval(isset($_GP['type']))? intval($_GP['type']) : 3;//类型,1是一级栏目，2是二级栏目，3是关键词
         $id = intval($_GP['id']);//栏目id
-        if (empty($type) || empty($id)) ajaxReturnData(1,'参数错误');
+        if (empty($id)) ajaxReturnData(0,'参数错误');
+        if ($type == 3){
+            $keyword = $_GP['keyword'];//关键词
+            if (empty($keyword)) ajaxReturnData(0,'请填写关键词搜索');
+        }
         $jd = $_GP['longitude'];//经度
         $wd = $_GP['latitude'];//纬度
         
         //分页
         $pindex = max(1, intval($_GP['page']));
-        $psize = isset($_GP['limit']) ? $_GP['limit'] : 10;//默认每页4条数据
+        $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
         $limit= ($pindex-1)*$psize;
         
         //取出当前活动
         $actListModel = new \model\activity_list_model();
         $list = $actListModel->getCurrentAct();
-        if (empty($list)) ajaxReturnData(1,'暂时没有活动');
+        if (empty($list)) ajaxReturnData(0,'暂时没有活动');
         //取当前的时间区域
         $actAreaModel = new \model\activity_area_model();
         $areaList = $actAreaModel->getAllActArea(array('ac_list_id'=>$list['ac_area']));
@@ -43,13 +47,7 @@ class shop extends base{
         }
         
         //查询条件拼接
-        $where = " ac_action_id={$list['ac_id']} and ac_dish_status=1 ";
-        if ($type == 1){
-            $where .=" and ac_p1_id = '$id' ";
-        }else {
-            $where .=" and ac_p2_id = '$id' ";
-        }
-        
+        $where = " a.ac_action_id={$list['ac_id']} and a.ac_dish_status=1 ";
         if (empty($jd) || empty($wd)) {
             //高德地图根据ip获取城市
             $ip = getClientIP();
@@ -59,7 +57,7 @@ class shop extends base{
                 $cityCode = $info['adcode'];
             }
             if (empty($cityCode)) $cityCode = '350100';//如果未取到ip，则取福州
-            $where .=" and (ac_city='$cityCode' or ac_city=0) ";
+            $where .=" and (a.ac_city='$cityCode' or a.ac_city=0) ";
         }else{
             //高德接口获取区域id
             $return = json_decode(getCodeByLttAndLgt($jd,$wd),1);
@@ -73,30 +71,36 @@ class shop extends base{
         
             $ac_city = !empty($info) ? $info['region_code']:'';
             if (empty($ac_city) || empty($ac_city_area)) ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
-            $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+            $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
         }
-        
-        //sql拼接
-        $sql_base = "SELECT ac_dish_id,ac_action_id,ac_area_id,ac_shop_dish,ac_dish_price,ac_dish_total,ac_dish_sell_total";
+        if ($type == 1){
+            $where .=" and a.ac_p1_id = '$id' ";
+        }elseif($type == 2){
+            $where .=" and a.ac_p2_id = '$id' ";
+        }else if ($type == 3){
+            $where .=" AND LOCATE('$keyword',b.title) >0";
+        }
         if($areaid) {
-            $where1 = $where." and (ac_area_id = '$areaid' or ac_area_id=0) ";
+            $where1 = $where." and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
         }else{
-            $where1 = $where." and ac_area_id=0 ";
+            $where1 = $where." and a.ac_area_id=0 ";
         }
-        $sql1 = $sql_base." FROM ".table('activity_dish')." WHERE ".$where1;
+        //sql拼接
+        $sql_base = "SELECT a.ac_dish_id,a.ac_action_id,a.ac_area_id,a.ac_shop_dish,a.ac_dish_price,a.ac_dish_total,a.ac_dish_sell_total,b.title,b.thumb,b.marketprice";
+        $sql1 = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id WHERE ".$where1;
         
         //未开始的活动的id
-        if (!empty($areaidArr)) $areaidStr = to_sqls($areaidArr,'','ac_area_id');
+        if (!empty($areaidArr)) $areaidStr = to_sqls($areaidArr,'','a.ac_area_id');
         if ($areaidStr) {
             $where2 = $where." and $areaidStr ";
-            $sql2 = $sql_base." FROM ".table('activity_dish')." WHERE ".$where2;
+            $sql2 = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where2;
         }
         
         //排序
         $status = intval(isset($_GP['status'])) ? intval($_GP['status']) : 1;//1表示综合，2表示价格，3表示销量
         $orderby = 'order by ';
         if ($status == 1){
-            $orderby .= " ac_dish_id DESC ";
+            $orderby .= " a.ac_dish_id DESC ";
         }elseif ($status == 2){
             $price_type = isset($_GP['price_type']) ? $_GP['price_type'] : '1';
             if($price_type == 1){
@@ -104,9 +108,9 @@ class shop extends base{
             }else{
                 $price = 'desc';
             }
-            $orderby .= " ac_dish_price $price ";
+            $orderby .= " a.ac_dish_price $price ";
         }else {
-            $orderby .= " ac_dish_sell_total DESC ";
+            $orderby .= " a.ac_dish_sell_total DESC ";
         }
         $limit = " limit ".$limit." , ".$psize;
         $sql1 .= $orderby.$limit;
@@ -117,28 +121,16 @@ class shop extends base{
             $sql1 .= $orderby;
             $sql = $sql1 ;
         }
+        echo $sql;
         $list = mysqld_selectall($sql);
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         
         $shopDishModel = new \model\shop_dish_model();
-        foreach ($list as $v){
-            $goods = $shopDishModel->getOneShopDish(array('id'=>$v['ac_shop_dish']),'title,thumb,marketprice');
-            if(empty($goods)) continue;
-            $temp['title'] = $goods['title'];
-            $temp['thumb'] = $goods['thumb'];
-            $temp['marketprice'] = FormatMoney($goods['marketprice'],0);
-            $temp['ac_dish_id'] = $v['ac_dish_id'];
-            $temp['ac_action_id'] = $v['ac_action_id'];
-            $temp['ac_area_id'] = $v['ac_area_id'];
-            $temp['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
-            $temp['ac_dish_total'] = $v['ac_dish_total'];
-            $temp['ac_dish_sell_total'] = $v['ac_dish_sell_total'];
-            $temp['status'] = 0;
+        foreach ($list as $key=>$v){
             if ($v['ac_area_id'] == $areaid){
-                $temp['status'] = 1;
+                $list[$key]['status'] = 1;
             }
-            $data[] = $temp;
         }
-        ajaxReturnData(1,'',$data);
+        ajaxReturnData(1,'',$list);
     }    
 }
