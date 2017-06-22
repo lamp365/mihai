@@ -11,7 +11,7 @@ class shopindex extends base{
    {
        //取出活动列表，理论上是一个，但不排除有多个
        $actListModel = new \model\activity_list_model();
-       $list = $actListModel->getCurrentAct();
+       $list = getCurrentAct();
        if (empty($list)) ajaxReturnData(1,'暂时没有活动');
        $actAreaModel = new \model\activity_area_model();
        //取时间段

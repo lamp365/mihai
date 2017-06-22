@@ -85,20 +85,22 @@ class coupon extends base{
         if (empty($openid)) ajaxReturnData(0,'请先登入');
         $couponMemModel = new \model\store_coupon_member_model();
         $now = time();
+        $endtime = $now + 7*86400;
         $where .=" a.openid='$openid' and ";
+        
         if ($type == 0){
-            $where = "a.status=0 and '$now' < b.use_end_time";//未使用且没有过期
+            $where .= " a.status=0 and '$now' < b.use_end_time ";//未使用且没有过期
         }elseif ($type == 1){
-            $where = "a.status=1";
+            $where .= " a.status=1 and a.use_time <= '$endtime'";
         }else {
-            $where = "a.status=0 and '$now' > b.use_end_time";//未使用且已过期
+            $where .= " a.status=0 and '$now' > b.use_end_time and b.use_end_time <= '$endtime' ";//未使用且已过期
         }
         //分页取数据
-        $pindex = max(1, intval($_GP['page']));
-        $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
-        $limit= ($pindex-1)*$psize;
+        //$pindex = max(1, intval($_GP['page']));
+        //$psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
+        //$limit= ($pindex-1)*$psize;
         //$orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
-        $orderby = false;
+        $orderby = " a.scmid DESC ";
         $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id",$orderby);
         if (empty($mycoupon)) ajaxReturnData(0,'暂无优惠券信息');
         $storeShopModel = new \model\store_shop_model();

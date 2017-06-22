@@ -187,6 +187,7 @@ class wxpayService extends  \service\publicService
         $pay_ordersn     = array();
         $pay_total_money = 0;
         $pay_title       = '';
+        $stock_dishids   = array();  //存放需要操作库存的宝贝id
 
         if(empty($data['address_id'])){
             $this->error = '请选择对应的收货地址！';
@@ -307,6 +308,9 @@ class wxpayService extends  \service\publicService
                         //如果不成功  把提交给第三方的总额中去除该商品的价格
                         $pay_total_money = $pay_total_money -  $o_good['price'];
                     }
+
+                    //用于后续做库存操作，以上逻辑可复用，但是库存操作不能复用
+                    $stock_dishids[$one_dish['id']] = $one_dish['buy_num'];
                 }
             }
         }
@@ -317,6 +321,7 @@ class wxpayService extends  \service\publicService
             'pay_ordersn'     => $pay_ordersn,  //数组型的 订单号
             'pay_total_money' => $pay_total_money,
             'pay_title'       => $pay_title,
+            'stock_dishids'   => $stock_dishids,
         );
     }
 

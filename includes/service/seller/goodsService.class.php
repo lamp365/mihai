@@ -53,6 +53,7 @@ class goodsService extends \service\publicService
             'gid'          => $_GP['gid'],
             'store_p1'     => $_GP['store_p1'],
             'store_p2'     => $_GP['store_p2'],
+            'industry_p2_id'=> $meminfo['sts_category_p2_id'],
             'status'       => $_GP['status'],
             'title'        => $_GP['title'],
             'thumb'        => $thumb,    //缩略图等待

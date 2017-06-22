@@ -302,7 +302,7 @@ table {
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">是否支持7天包换</label>
+                    <label class="layui-form-label">7天包换</label>
                     <div class="layui-input-block">
                         <input type="radio" name="isreason" value="1" title="支持"  <?php if($product['isreason'] == 1){ echo "checked";} ?>> &nbsp;
                         <input type="radio" name="isreason" value="0" title="不支持"  <?php if($product['isreason'] == 0 ){ echo "checked";} ?>>

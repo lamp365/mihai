@@ -13,8 +13,7 @@ class category extends base{
            $data = $memcache->get('CATEGORY_ONE');
            if (!empty($data)) ajaxReturnData(1,'',$data);
        }
-       $actListModel = new \model\activity_list_model();
-       $list = $actListModel->getCurrentAct();
+       $list = getCurrentAct();
        if (empty($list)) ajaxReturnData(1,'暂时没有活动');
        $actAreaModel = new \model\activity_area_model();
        $actDishModel = new \model\activity_dish_model();

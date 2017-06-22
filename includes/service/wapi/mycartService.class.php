@@ -4,7 +4,9 @@ namespace service\wapi;
 class mycartService extends  \service\publicService
 {
     /**
-     * 购物车列表  不需要获取邮费等信息  但是清单列表页需要
+     * 购物车列表  不需要获取邮费等信息
+     * 但是清单列表页需要
+     * 会统计每个店铺总额 包括最后的总额 每个店铺下的产品
      * @param string $cart_where
      * @param int $get_express
      * @return array

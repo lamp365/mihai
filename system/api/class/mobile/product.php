@@ -1458,18 +1458,15 @@ class product extends base
     //分类导入产品
     public function batGroupDish(){
         $data = $this->request;
-        
-        //测试数据开始
-        $data = array(
-            'categoryOneIds'=>'701'
-        );
-        //测试数据结束
-
-        
-        if($data['categoryOneIds'] == ''){
-             ajaxReturnData(0,'关键参数不存在');
+        $parame['ids'] = $data['categoryOneIds'];
+        $res = $this->ShopCategory->batAddCategory($parame);
+        if(!$res){
+            ajaxReturnData(0,$this->ShopCategory->getError());
+        }else{
+            ajaxReturnData(1,'导入成功');
         }
-        
+
+        /**
         //获取分类信息
         $groupListData = $this->ShopSystemCategory->ShopCateIdsGroupList($data['categoryOneIds']);  //系统分类
         
@@ -1568,6 +1565,7 @@ class product extends base
         }
         
         ajaxReturnData(1,'导入成功');
+         * **/
     }
     
     //新增一个接口 dish_id gtype_id
