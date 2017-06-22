@@ -75,11 +75,11 @@ class good_detail extends base {
     // 简单描述
     $list['description'] = $good['description'];
     // 产品库价格
-    $list['productprice'] = (float)$good['productprice'];
+    $list['productprice'] = FormatMoney($good['productprice'],0);
     // 价格
-    $list['marketprice'] =(float)$good['marketprice'];
+    $list['marketprice'] =FormatMoney($good['marketprice'],0);
     // 限时购特价
-    $list['timeprice'] = empty($activity_dish['ac_dish_price'])?0:(float)$activity_dish['ac_dish_price'];
+    $list['timeprice'] = FormatMoney($activity_dish['ac_dish_price'],0);
     // 库存
     $list['total'] = $good['store_count'];
     // 展示图片
@@ -141,17 +141,17 @@ class good_detail extends base {
     // 商品状态(上架/下架)
     $list['status'] = $good['status'];
     // 免邮价格
-    $list['free_dispatch'] = $shop['bfree'];
+    $list['free_dispatch'] = FormatMoney($shop['bfree'],0);
     // 邮费
-    $list['express_fee'] = $shop['express_fee'];
+    $list['express_fee'] = FormatMoney($shop['express_fee'],0);
     // 最低起送金额
-    $list['limit_send'] = $shop['limit_send'];
+    $list['limit_send'] = FormatMoney($shop['limit_send'],0);
     // 店名
     $list['shop_name'] = $shop['sts_name'];
     // 店铺头像
     $list['shop_avatar'] = $shop['sts_avatar'];
     // 店铺等级
-    $list['shop_level'] = $shop['sts_shop_level'];
+    // $list['shop_level'] = $shop['sts_shop_level'];
 
     // 详情图
     if ($is_contont == 'yes') {

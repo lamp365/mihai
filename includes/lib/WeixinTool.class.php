@@ -216,10 +216,27 @@ class WeixinTool
 
     public function get_xcx_erweima($condition,$type)
     {
-        return array('errno'=>0,'message'=>'稍等一会就回来！');
         if(empty($condition) || empty($type)){
             return array('errno'=>0,'message'=>'参数不能为空！');
         }
+
+        if(in_array($_SERVER['HTTP_HOST'],array('www.sdudian.com','sdudian.com'))){
+            //以免测试环境跟线上环境 二维码发生覆盖
+            $dir     = 'xcxqrcode';
+            $picname = md5($condition).".png";
+        }else{
+            $dir     = 'xcxqrcode';
+            $picname = "dev_".md5($condition).".png";
+        }
+        $picfile = $dir."/".$picname;
+        $res     = aliyunOSS::doesObjectExist($picfile);
+        if($res){
+            //如果存在  直接拼接二维码地址
+            $erweima =  aliyunOSS::aliurl.'/'.$picfile;
+            return array('errno'=>1,'message'=>$erweima);
+        }
+
+        //否则的上传到阿里云
         $seting = globaSetting();
         $appid  = $seting['xcx_appid'];
         $secret = $seting['xcx_appsecret'];
@@ -239,7 +256,6 @@ class WeixinTool
         }
 
         $access_token = $token['access_token'];
-        $access_token = 'wvq5c-SOXGPxZvP0KVS_lT2ByAH55D_M-UNJSUL7rzjeKzICeH4hmY';
         if($type == 1){
             //只能是 $condition  跳转到某一个页面 不能带 ？参数  二维码数量有限
             $url = "https://api.weixin.qq.com/wxa/getwxacode?access_token=".$access_token;
@@ -267,13 +283,18 @@ class WeixinTool
             return array('errno'=>0,'message'=>$result['errmsg']);
         }
 
-        //将二进制流 写入本地图片
-        $picfile = WEB_ROOT."/logs/".time().uniqid().'.png';
-        file_put_contents($picfile,$data);
+        //将二进制流 写入本地图片  把参数MD5 后 作为图片名，传到阿里云，下次同一个参数的请求二维码，直接从阿里拿
+        $picfile = WEB_ROOT."/logs/".md5($condition).'.png';
+        $res     = file_put_contents($picfile,$data);
         //再上传到阿里上
-
-        if($type == 2){
-            //推广型二维码永久保存
+        if($res){
+            //传到阿里服务器
+            $info = aliyunOSS::putObject($picfile,$picname,$dir);
+            //上传到阿里后 可以删除了
+            @unlink($picfile);
+            return array('errno'=>1,'message'=>$info['oss-request-url']);
+        }else{
+            return array('errno'=>0,'message'=>'网络原因,二维码生成失败！');
         }
     }
 }
