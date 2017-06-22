@@ -143,7 +143,10 @@ class datareportService extends \service\publicService
         
         //转化率  成交订单数量 比去  访问量
         $vistedData = $this->storeShopVisted->bettenTime($s_time, $e_time);
-        $conversion = sprintf("%.2f",$pay_num/$vistedData['uv_sum']).'%';
+        if(empty($vistedData['uv_sum']))
+            $conversion = '0%';
+        else
+            $conversion = sprintf("%.2f",$pay_num/$vistedData['uv_sum']).'%';
 
         
         //$conversion = '4.5%';  // $pay_num/(某个时间段（beteen $s_time and $e_time）的UV)
