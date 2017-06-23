@@ -45,7 +45,7 @@ class address extends base{
         $member= get_member_account();
         $openid = $member['openid'];
         $shopAddressModel = new \model\shop_address_model();
-        $info = $shopAddressModel->getAllAddress(array('openid'=>$openid,'deleted'=>0),'realname,mobile,province,city,area,address,isdefault');
+        $info = $shopAddressModel->getAllAddress(array('openid'=>$openid,'deleted'=>0),'realname,mobile,province,city,area,address,isdefault,id');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
         ajaxReturnData(1,'',$info);
     }

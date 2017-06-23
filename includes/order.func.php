@@ -149,31 +149,31 @@ function update_order_status($id, $status,$dishinfo='') {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
     		// 释放库存减掉销量
-    		mysqld_query("UPDATE ".table('shop_dish')." SET `total`=total+".$ogv['total'].", `sales`=sales-".$ogv['total']." WHERE id=".$ogv['goodsid']);
+    		mysqld_query("UPDATE ".table('shop_dish')." SET `total`=total+".$ogv['total'].", `sales_num`=sales_num-".$ogv['total']." WHERE id=".$ogv['goodsid']);
     		// 如果已付款 订单有卖家openid，则扣除冻结佣金
 			//已经没有冻结资金了，只有确认收货后，直接把拥金记录余额中
     	}
     	// 如果有使用余额抵扣，退还余额
-		if (($order['has_balance'] == '1' AND $order['return_balance'] == '0') || $order['freeorder_price']>0) {
+		// if (($order['has_balance'] == '1' AND $order['return_balance'] == '0') || $order['freeorder_price']>0) {
 			
-			$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
+		// 	$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
 				
-			//该笔订单下单时间是在免单金额使用期内时
-			if(($mem['freeorder_gold_endtime']-7*24*3600) < $order['createtime'])
-			{
-				$memberData = array('freeorder_gold' => $order['freeorder_price']+$mem['freeorder_gold']);
+		// 	//该笔订单下单时间是在免单金额使用期内时
+		// 	if(($mem['freeorder_gold_endtime']-7*24*3600) < $order['createtime'])
+		// 	{
+		// 		$memberData = array('freeorder_gold' => $order['freeorder_price']+$mem['freeorder_gold']);
 				
-				//记录用户账单的免单金额收支情况
-				$remark = PayLogEnum::getLogTip('LOG_BACK_FEE_TIP');
-				insertMemberPaylog($mem['openid'], $order['freeorder_price'],$memberData['freeorder_gold'], 'addgold', $remark);
-			}
+		// 		//记录用户账单的免单金额收支情况
+		// 		$remark = PayLogEnum::getLogTip('LOG_BACK_FEE_TIP');
+		// 		insertMemberPaylog($mem['openid'], $order['freeorder_price'],$memberData['freeorder_gold'], 'addgold', $remark);
+		// 	}
 			
-			$memberData['gold'] = (float)$mem['gold']+(float)$order['balance_sprice'];
+		// 	$memberData['gold'] = (float)$mem['gold']+(float)$order['balance_sprice'];
 			
-			mysqld_update ('member',$memberData,array('openid' =>$order['openid']));
-			// 余额已退还设为1
-			mysqld_update('shop_order', array('return_balance' => 1), array('id'=> $id));
-		}
+		// 	mysqld_update ('member',$memberData,array('openid' =>$order['openid']));
+		// 	// 余额已退还设为1
+		// 	mysqld_update('shop_order', array('return_balance' => 1), array('id'=> $id));
+		// }
     	// 反还优惠券
     	mysqld_query("UPDATE ".table('bonus_user')." SET isuse=0 WHERE order_id=".$order['id']);
     	// 记录订单关闭时间
