@@ -22,7 +22,7 @@ class activityService extends \service\publicService
             if ($hottopic){
                 $hottopic = rtrim($hottopic,";");
                 $hottopic = explode(';', $hottopic);
-                if (count($hottopic) > 20){
+                if (count($hottopic) > 16){
                     $num = 20;
                 }else {
                     $num = count($hottopic);

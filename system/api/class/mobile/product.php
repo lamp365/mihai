@@ -1999,15 +1999,23 @@ class product extends base
                 if($today == $unitTime)
                 {
                     $hour_end = date('H',$vv['ac_area_time_end']);
-                    if($nowhour > $hour_str && $nowhour < $hour_end)
+                    if($nowhour >= $hour_str && $nowhour < $hour_end)
                     {
                         $time_list_arr[$kk]['isnow'] = 1;        //进行中
                     }
-                    elseif($nowhour > $hour_end && $hour_end > 0){
+                    elseif($nowhour >= $hour_end && $hour_end > 0){
                         $time_list_arr[$kk]['isnow'] = 2;        //已结束
                     }
                     elseif($nowhour < $hour_str){
                        $time_list_arr[$kk]['isnow']  = 0; 
+                    }
+                    else{
+                        //$nowhour > $hour_str && $nowhour < $hour_end
+                        echo $nowhour.'<br>';
+                        echo $hour_str.'<br>';
+                        echo $nowhour.'<br>';
+                        echo $hour_end.'<br>';
+                        //exit;
                     }
                 }
                 else{

@@ -36,7 +36,7 @@ class categoryService extends \service\publicService
 	    $return = $actDishModel->fetchall($sql);
         if (empty($return)) return '';
         foreach ($return as $val){
-            if (empty($val)) continue;
+            if (empty($val['id'])) continue;
             $temp['type'] = 1;
             $temp['id'] = $val['id'];
             $temp['name'] = $val['name'];
@@ -58,7 +58,7 @@ class categoryService extends \service\publicService
 	    $return = $actDishModel->fetchall($sql);
         if (empty($return)) return '';
         foreach ($return as $val){
-            if (empty($val)) continue;
+            if (empty($val['id'])) continue;
             $temp['type'] = 2;
             $temp['id'] = $val['id'];
             $temp['name'] = $val['name'];
@@ -79,7 +79,7 @@ class categoryService extends \service\publicService
 	    $return = $actDishModel->fetchall($sql);
         if (empty($return)) return '';
         foreach ($return as $val){
-            if (empty($val)) continue;
+            if (empty($val['id'])) continue;
             $temp['id'] = $val['id'];
             $temp['name'] = $val['name'];
             $data[] = $temp;
@@ -99,7 +99,7 @@ class categoryService extends \service\publicService
 	    $return = $actDishModel->fetchall($sql);
         if (empty($return)) return '';
         foreach ($return as $val){
-            if (empty($val)) continue;
+            if (empty($val['id'])) continue;
             $temp['type'] = 1;
             $temp['id'] = $val['id'];
             $temp['name'] = $val['name'];
@@ -121,7 +121,7 @@ class categoryService extends \service\publicService
 	    $return = $actDishModel->fetchall($sql);
         if (empty($return)) return '';
         foreach ($return as $val){
-            if (empty($val)) continue;
+            if (empty($val['id'])) continue;
             $temp['type'] = 2;
             $temp['id'] = $val['id'];
             $temp['name'] = $val['name'];

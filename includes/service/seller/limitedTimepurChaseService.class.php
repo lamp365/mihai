@@ -104,6 +104,14 @@ class limitedTimepurChaseService extends \service\publicService {
            //}
        }
        
+       //判断活动是否存在且未被禁用
+       $actiListInfo = $this->getActiInfo($rsdata['ac_action_id'],'ac_id');
+       $ac_id_data = intval($actiListInfo['ac_id']);
+       if($ac_id_data <= 0)
+       {
+           return -6;
+       }
+       
        //判断价格是否大于原产品促销价格 ac_dish_total
        $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice');
        $rsdata['ac_dish_price'] = FormatMoney($data['ac_dish_price']);
@@ -286,6 +294,17 @@ class limitedTimepurChaseService extends \service\publicService {
    public function getAreaDish($ac_action_id,$area_id,$field='*'){
        $sql = "select {$field} from {$this->table_dish} where ac_action_id={$ac_action_id} and area_id = {$area_id}";
        $rs  = mysqld_selectall($sql);
+       return $rs;
+   }
+   
+   //获取未被停止的活动
+   public function getActiInfo($ac_action_id,$fields='*'){
+       if($ac_action_id <= 0)
+       {
+           return -1;
+       }
+       $sql = "select {$fields} from {$this->table_list} where ac_id = {$ac_action_id} and ac_status = 1";
+       $rs  = mysqld_select($sql);
        return $rs;
    }
    
