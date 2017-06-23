@@ -24,7 +24,7 @@ class order extends base {
     if (empty($member['openid'])) {
       ajaxReturnData(0,'用户信息获取失败');
     }
-    $member['openid'] = '2017060510703';
+    // $member['openid'] = '2017060510703';
     $status = intval($_GP['order_status']);
     $pindex = max(1, intval($_GP['page']));
     $psize = intval($_GP['limit'] ? $_GP['limit'] : 20);
