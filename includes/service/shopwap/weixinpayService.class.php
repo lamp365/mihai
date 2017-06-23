@@ -101,16 +101,16 @@ class weixinpayService extends \service\publicService
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
         );
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') || $this->is_xcx) {
-//            $parameters['notify_url'] =  WEBSITE_ROOT . 'notify/weixin_notify.php';
-            $parameters['notify_url'] =  mobile_url('weixinpay',array('name'=>'shopwap','op'=>'notifyurl'));  //异步通知
+            $parameters['notify_url'] =  WEBSITE_ROOT . 'notify/weixin_notify.php';   //异步通知
+//            $parameters['notify_url'] =  mobile_url('weixinpay',array('name'=>'shopwap','op'=>'notifyurl'));  //异步通知
             $parameters['trade_type'] = 'JSAPI';
 
             $meminfo    = get_member_account();
             $weixinfans = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where openid='{$meminfo['openid']}'");
             $parameters['openid']     = $weixinfans['weixin_openid'];
         } else {
-//            $parameters = WEBSITE_ROOT . 'notify/weixin_native_notify.php';
-            $parameters['notify_url'] = mobile_url('weixinpay',array('name'=>'shopwap','op'=>'native_notify'));  //同步通知
+            $parameters['notify_url'] = WEBSITE_ROOT . 'notify/weixin_native_notify.php';  //同步通知
+//            $parameters['notify_url'] = mobile_url('weixinpay',array('name'=>'shopwap','op'=>'native_notify'));  //同步通知
             $parameters['product_id'] = $pay_ordersn;
             $parameters['trade_type'] = 'NATIVE';
         }
@@ -120,6 +120,7 @@ class weixinpayService extends \service\publicService
         $xmlData            = $this->arrayToXml($parameters);
         $postXmlSSLCurl     = $this->postXmlSSLCurl($xmlData,$url,60);
         $return             = $this->xmlToArray($postXmlSSLCurl);
+
         if($return['return_code'] == 'FAIL'){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');

@@ -20,7 +20,8 @@
 	//JSAPI接口中获取openid，审核后在公众平台开启开发模式后可查看
 		$_CMS['weixin_pay_appSecret']= $settings['weixin_appSecret'];
              
-
+	logRecord('真的优雅！','payError');
+die();
 
 	////存储微信的回调
 	 $xml = $GLOBALS['HTTP_RAW_POST_DATA'];	

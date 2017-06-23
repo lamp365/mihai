@@ -58,13 +58,14 @@ class confirm extends base
 
         $weixinpay = new \service\wapi\wxpayService($appid,$openid,$mch_id,$key);
         //插入订单的信息
-        $res_data = $weixinpay->insertOrder($_GP);
+      /*  $res_data = $weixinpay->insertOrder($_GP);
         if(!$res_data){
             ajaxReturnData(0,$weixinpay->getError());
         }
-        $this->limit_buy_stock($res_data['stock_dishids']);
+        $this->limit_buy_stock($res_data['stock_dishids']);*/
 
-        $return    = $weixinpay->pay($res_data['pay_ordersn'],$res_data['pay_total_money'],$res_data['pay_title']);
+//        $return    = $weixinpay->pay($res_data['pay_ordersn'],$res_data['pay_total_money'],$res_data['pay_title']);
+        $return    = $weixinpay->pay('sadsa234234353',0.01,'测试商品');
         if(!$return){
             ajaxReturnData(0,$weixinpay->getError());
         }else{

@@ -5,7 +5,7 @@ namespace service\shopwap;
 
 class alipayService extends \service\publicService
 {
-    private $alipay_config = [
+    private $alipay_config = array(
         'sign_type'     => 'MD5',
         'input_charset' => 'utf-8',
         'cacert'        => '',
@@ -14,7 +14,7 @@ class alipayService extends \service\publicService
         'service'       => 'create_direct_pay_by_user',
         'anti_phishing_key' => '',
         'exter_invoke_ip'   => '',
-    ];
+    );
 
     /**
      * 构造函数
@@ -40,7 +40,7 @@ class alipayService extends \service\publicService
      * @param type [] 接口参数
      * @return type []
      */
-    public function alipay($data = [])
+    public function alipay($data = array())
     {
         if(empty($data['subject'])){
             $this->error = '标题不能为空！';
@@ -55,11 +55,11 @@ class alipayService extends \service\publicService
             return false;
         }
         $config = $this->alipay_config;
-        $parameter = [
+        $parameter = array(
             "service"           => $config['service'],
             "partner"           => $config['partner'],
             "seller_id"         => $config['seller_id'],
-            "payment_type"      => $config['payment_type'],
+            "payment_type"      => 1,
             "notify_url"        => $data['notify_url'],
             "return_url"        => $data['return_url'],
             "anti_phishing_key" => $config['anti_phishing_key'],
@@ -67,10 +67,11 @@ class alipayService extends \service\publicService
             "out_trade_no"      => $data['out_trade_no'],  //订单号
             "subject"           => $data['subject'],       //标题
             "total_fee"         => $data['total_fee'],
+            "app_pay"	        => "Y",
             "body"              => $data['body'],
             "show_url"          => $data['show_url'],  //需要支付成功后 返回的地址
             "_input_charset"    => 'utf-8'
-        ];
+        );
         $alipaySubmit = new \AlipaySubmit($config);
         return $alipaySubmit->buildRequestForm($parameter, "get", "确认");
     }
@@ -85,8 +86,8 @@ class alipayService extends \service\publicService
         $alipayNotify = new \AlipayNotify($config); //计算得出通知验证结果
         if ($result = $alipayNotify->verifyNotify()) {
             //验签成功
-            if ($_GET('trade_status') == 'TRADE_FINISHED' || $_GET('trade_status') == 'TRADE_SUCCESS') {
-                $ordersn     = $_GET['out_trade_no'];
+            if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
+                $ordersn     = $_POST['out_trade_no'];
                 $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
                 //成功后的后续操作/**
                 // 支付完毕 处理账单 佣金提成，卖家所得，平台费率

@@ -14,9 +14,7 @@ class alipay extends \common\controller\basecontroller
      * @param string $ordersn 订单号
      */
     public function pay() {
-
-        $pay = new \service\shopwap\alipayService();
-        $result = $pay->alipay([
+        $pay_data = array(
 //            'notify_url'  => WEBSITE_ROOT.'notify/alipay_notify.php',      //服务器异步通知页面路径
             'notify_url'    => mobile_url('alipay',array('name'=>'shopwap','op'=>'notifyurl')),        //服务器异步通知页面路径
 //            'return_url'  => WEBSITE_ROOT.'notify/alipay_return_url.php', //页面跳转同步通知页面路径
@@ -26,7 +24,9 @@ class alipay extends \common\controller\basecontroller
             'total_fee'     => '0.01', //订单金额，单位为元
             'body'          => str_replace("'", '‘', '测试商品'),
             'show_url'      => WEBSITE_ROOT,  //商品展示地址 通过支付页面的表单进行传递
-        ]);
+        );
+        $pay = new \service\shopwap\alipayService();
+        $result = $pay->alipay($pay_data);
         if (!$result) {
             message($pay->getError());
         }
@@ -40,8 +40,6 @@ class alipay extends \common\controller\basecontroller
     {
         $pay = new \service\shopwap\alipayService();
         $result = $pay->notify_alipay();
-        logRecord('sadasdasdas','pay_noti');
-        die();
         if($result){
             ajaxReturnData(1,'支付成功','success');
         }else{

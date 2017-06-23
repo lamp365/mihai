@@ -35,7 +35,7 @@ class AlipayNotify {
             if (!empty($_POST["notify_id"])) {
                 $responseTxt = $this->getResponse($_POST["notify_id"]);
             }
-            if (preg_match("/true$/i", $responseTxt) && $isSign) {
+            if ((preg_match("/true$/i", $responseTxt) || $responseTxt == true) && $isSign) {
                 return true;
             } else {
                 return false;
@@ -55,7 +55,7 @@ class AlipayNotify {
             if (!empty($_GET["notify_id"])) {
                 $responseTxt = $this->getResponse($_GET["notify_id"]);
             }
-            if (preg_match("/true$/i", $responseTxt) && $isSign) {
+            if ((preg_match("/true$/i", $responseTxt) || $responseTxt == true) && $isSign) {
                 return true;
             } else {
                 return false;

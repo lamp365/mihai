@@ -17,12 +17,14 @@ class weixinpay extends \common\controller\basecontroller
         $pay_ordersn = 'sn54654864'.uniqid();
         $pay_money   = '1';
         $pay_title   = str_replace("'", '‘', '测试商品');
-        $pay = new \service\shopwap\weixinpayService();
-        $result = $pay->weixinpay([
+
+        $pay_data = array(
             'out_trade_no'  => $pay_ordersn, //订单号
             'total_fee'     => $pay_money, //订单金额，单位为分
             'body'          => $pay_title,
-        ]);
+        );
+        $pay = new \service\shopwap\weixinpayService();
+        $result = $pay->weixinpay($pay_data);
         if (!$result) {
             message($pay->getError());
         }
@@ -37,6 +39,8 @@ class weixinpay extends \common\controller\basecontroller
      */
     function notifyurl()
     {
+        logRecord('weixinnotiya','payError');
+        ppd('ssssss00');
         $pay = new \service\shopwap\weixinpayService();
         $result = $pay->notify_weixinpay();
         if($result){
@@ -51,7 +55,7 @@ class weixinpay extends \common\controller\basecontroller
      */
     function native_notify()
     {
-        logRecord('sdsdsds',333);
+        logRecord('weixinpayla','payError');
         ppd('ssssss00');
         $pay = new \service\shopwap\weixinpayService();
         $result = $pay->native_notify();
