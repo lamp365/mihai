@@ -2,8 +2,9 @@
 <html>
 	<head>
         <?php include page('seller_header');?>
-        <!--不做页面提交，用ajaxsubmit提交和控制回调-->
-        <script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/script/jquery.form.js"></script>
+            
+<!--不做页面提交，用ajaxsubmit提交和控制回调-->
+<script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/script/jquery.form.js"></script>
 	</head>
 	<body style="padding:10px;">
     	<blockquote class="layui-elem-quote">店铺信息</blockquote>
@@ -159,9 +160,18 @@
                             <tr>
                                 <td class="stop-table-td-1">详细地址</td>
                                 <!--这地方要百度地图展示-->
-                                <td><?php echo $storeInfo['sts_address'] ?></td>
+                                <td id="address_deti"><?php echo $storeInfo['sts_address'] ?></td>
                             </tr>
-
+                            
+                            <!--<tr>
+                                <td class="stop-table-td-1">地理位置</td>
+                                <td>
+                                    <div class="layui-input-block" id="container" style="width: 100%;height: 500px;position:relative"   ></div>
+                                </td>
+                            </tr>-->
+                            
+                            
+                            
                             <tr>
                                 <td class="stop-table-td-1">佣金</td>
                                 <td><?php echo $storeInfo['commision'] ?></td>
@@ -221,9 +231,24 @@
         </div>
         <?php include page('seller_footer');?>
 	</body>
+        <input type="hidden" value="<?php echo GD_KEY;?>" name="gdkey" id="gdkey">
+<!--加載高德地圖START -->
+<!--加載高德地圖END -->
 
 <script type="text/javascript">
-     var category = <?php echo json_encode($childrens) ?>;//    省市区JS
+/*
+$(function(){
+    var map;
+    var map = new AMap.Map('container', {
+        resizeEnable: true,
+        zoom:11
+    });
+
+})
+*/
+
+
+var category = <?php echo json_encode($childrens) ?>;//    省市区JS
      
 function chooseType(obj){
     var url = $(obj).data('url');

@@ -46,32 +46,30 @@ class confirm extends base
     public function topay()
     {
         $_GP =  $this->request;
-        $meminfo = get_member_account();
-        $setting = globaSetting();
-        $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
-        $configs = unserialize($payment['configs']);
-
-        $appid  = $setting['xcx_appid'];//小程序appid
-        $openid = $meminfo['weixin_openid'];  //个人要支付的openid
-        $mch_id = $configs['weixin_pay_mchId'];
-        $key    = $configs['weixin_pay_paySignKey'];
-
-        $weixinpay = new \service\wapi\wxpayService($appid,$openid,$mch_id,$key);
+        $weixinpay    = new \service\shopwap\weixinpayService(1);
+        $orderservice = new \service\shopwap\payorderService();
         //插入订单的信息
-      /*  $res_data = $weixinpay->insertOrder($_GP);
+        $res_data     = $orderservice->insertOrder($_GP);
         if(!$res_data){
-            ajaxReturnData(0,$weixinpay->getError());
+              ajaxReturnData(0,$weixinpay->getError());
         }
-        $this->limit_buy_stock($res_data['stock_dishids']);*/
+        //库存操作
+        $this->limit_buy_stock($res_data['stock_dishids']);
 
-//        $return    = $weixinpay->pay($res_data['pay_ordersn'],$res_data['pay_total_money'],$res_data['pay_title']);
-        $return    = $weixinpay->pay('sadsa234234353',0.01,'测试商品');
-        if(!$return){
+        $pay_data = array(
+            'out_trade_no'  => $res_data['pay_ordersn'], //订单号
+            'total_fee'     => $res_data['pay_total_money'], //订单金额，单位为分
+            'body'          => $res_data['pay_title'],
+        );
+
+        $result = $weixinpay->weixinpay($pay_data);
+        if (!$result) {
             ajaxReturnData(0,$weixinpay->getError());
         }else{
-            ajaxReturnData(1,'操作成功!',$return);
+            ajaxReturnData(1,'操作成功!',$result);
         }
     }
+
 
     /**
      * 从个人中心中继续完成支付   参数orderid
@@ -79,19 +77,16 @@ class confirm extends base
     public function payorder()
     {
         $_GP =  $this->request;
-        $meminfo = get_member_account();
-        $setting = globaSetting();
-        $payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
-        $configs = unserialize($payment['configs']);
-
-        $appid  = $setting['xcx_appid'];//小程序appid
-        $openid = $meminfo['weixin_openid'];  //个人要支付的openid
-        $mch_id = $configs['weixin_pay_mchId'];
-        $key    = $configs['weixin_pay_paySignKey'];
-
-        $weixinpay = new \service\wapi\wxpayService($appid,$openid,$mch_id,$key);
-        $res_data  = $weixinpay->getPayOrder($_GP['orderid']);
-        $return    = $weixinpay->pay($res_data['pay_ordersn'],$res_data['pay_total_money'],$res_data['pay_title']);
+        $weixinpay    = new \service\shopwap\weixinpayService(1);
+        $orderservice = new \service\shopwap\payorderService();
+        //获取要支付的订单
+        $res_data  = $orderservice->getPayOrder($_GP['orderid']);
+        $pay_data = array(
+            'out_trade_no'  => $res_data['pay_ordersn'], //订单号
+            'total_fee'     => $res_data['pay_total_money'], //订单金额，单位为分
+            'body'          => $res_data['pay_title'],
+        );
+        $return    = $weixinpay->weixinpay($pay_data);
         if(!$return){
             ajaxReturnData(0,$weixinpay->getError());
         }else{

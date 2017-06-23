@@ -5,13 +5,13 @@
 <script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/recouse/cropper/js/cropper.min.js"></script>
 <!--不做页面提交，用ajaxsubmit提交和控制回调-->
 <script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/recouse/cropper/js/main_no_sumbit.js"></script> 
-<script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/script/jquery.form.js"></script>
 <!--加載高德地圖START -->
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
 <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=202a9a4762b30ac29f750d7aa8c179e1&plugin=AMap.CitySearch"></script>
 <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=8ecaa654c1cb4291647a565c375cc5ae&plugin=AMap.Geocoder"></script>
 <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
 <!--加載高德地圖END -->
+<script type="text/javascript"  src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/script/jquery.form.js"></script>
 <style>
     .ncap-form-default {
         padding: 10px 0;

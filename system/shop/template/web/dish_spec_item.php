@@ -19,7 +19,7 @@
 
 	
 	
-     <img  width="50" height="50" onerror="nofind()"  src="<?php  if(empty($specitem['thumb'])){?><?php echo WEBSITE_ROOT;?>/assets/common/image/module-nopic-small.jpg<?php  }else{  echo $specitem['thumb']  }?>"/></div>
+     <img  width="50" height="50" onerror="nofind()"  src="<?php  if(empty($specitem['thumb'])){?><?php echo WEBSITE_ROOT;?>/assets/common/image/module-nopic-small.jpg<?php  }else{  echo $specitem['thumb'];  }?>"/></div>
      <span class="btn btn-file">
      <span class="fileupload-new">选择图片</span>
      <span class="fileupload-exists">更改</span>

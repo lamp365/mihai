@@ -13,7 +13,133 @@ class store_shop_manage extends basecontroller {
     //该参数必须定义，他已经接受了 get 与 post的值。尽量不要用get post
     //因为get post在init初始化的时候 对一些数据做过处理了 比如空值 或者后期可以加入对初始化时安全验证
     protected $info_status_text = array('2' => '审核中', '0' => '已认证', '1' => '填写资料中', 12=>'填写资料中','3' => '审核不通过');
+    
+    private $memberData;
+    private $shopPic;
+    private $ShopBrand;
+    private $goodsTypeGroup;
+    private $goodstype;
+    private $goods;
+    private $shopdish;
+    private $shopltc;
+    
+    function __construct() {
+        parent::__construct();
+        $this->memberData           = get_member_account();
+        $this->shopPic              = new \service\seller\ShopPicService();     //宝贝图片
+        $this->ShopBrand            = new \service\seller\ShopBrandService();     //品牌
+        $this->goodsTypeGroup       = new \service\seller\goodsTypeGroupService();    //分组操作对象
+        $this->goodstype            = new \service\seller\goodstypeService();    //规格操作对象
+        $this->goods                = new \service\seller\goodsService();     //
+        $this->shopdish             = new \service\seller\ShopDishService();
+        $this->shopltc              = new \service\seller\limitedTimepurChaseService();  //限时购
+        $this->industry             = new \service\shop\IndustryService();  //限时购
+        $this->shopcate             = new \service\seller\ShopCateService();  //限时购
+        $this->shopRegion           = new \service\seller\regionService();
+        $this->shopStore            = new \service\seller\shopStoreService();
+   }
+    
+    public function ltcExamineSuccess(){
+        $_GP = $this->request;
+        $psize = 15;
+        $pindex = max(1, intval($_GP["page"]));
+        $limit = ' limit ' . ($pindex - 1) * $psize . ',' . $psize;
 
+        $sql = "select * from ".table('activity_dish')." where ac_dish_status = 1";
+        
+        $list = mysqld_selectall($sql);
+        
+        foreach($list as $k=>$v){
+            //行业
+            $industry = $this->industry->getIndustryInfo($v['ac_in_id'],'gc_name');
+            $list[$k]['gc_name'] = $industry['gc_name'];
+            
+            //分类1
+            $cate1 = $this->shopcate->shopCategoryInfo($v['ac_p1_id'],'name');
+            $list[$k]['cate1_name'] = $cate1['name'];
+
+            //分类2
+            $cate2 = $this->shopcate->shopCategoryInfo($v['ac_p2_id'],'name');
+            $list[$k]['cate2_name'] = $cate2['name'];
+            
+            //城市
+            $city = $this->shopRegion->getRegionInfo($v['ac_city']);
+            $list[$k]['city'] = $city['region_name'];
+            
+            //城市区域
+            $city_area = $this->shopRegion->getRegionInfo($v['ac_city_area']);
+            $list[$k]['city_area'] = $city_area['region_name'];
+            
+            //宝贝名称
+            $dish = $this->shopdish->getDishInfo($v['ac_shop_dish']);
+            $list[$k]['dish_title'] = $dish['title'];
+            
+            //店铺名称
+            $storeShop = $this->shopStore->getStoreShopInfo($v['ac_shop']);
+            $list[$k]['store_shop'] = $storeShop['sts_name'];
+        }
+        
+        $total = mysqld_selectcolumn('SELECT COUNT(*) FROM '.table('activity_dish')." where ac_dish_status = 0");
+        $pager = pagination($total, $pindex, $psize);
+        include page('check_store/ltc_dish_list_success');
+    }
+    
+    
+    public function ltcExamine(){
+        $_GP = $this->request;
+        $psize = 15;
+        $pindex = max(1, intval($_GP["page"]));
+        $limit = ' limit ' . ($pindex - 1) * $psize . ',' . $psize;
+
+        $sql = "select * from ".table('activity_dish')." where ac_dish_status = 1";
+        
+        $list = mysqld_selectall($sql);
+        
+        foreach($list as $k=>$v){
+            //行业
+            $industry = $this->industry->getIndustryInfo($v['ac_in_id'],'gc_name');
+            $list[$k]['gc_name'] = $industry['gc_name'];
+            
+            //分类1
+            $cate1 = $this->shopcate->shopCategoryInfo($v['ac_p1_id'],'name');
+            $list[$k]['cate1_name'] = $cate1['name'];
+
+            //分类2
+            $cate2 = $this->shopcate->shopCategoryInfo($v['ac_p2_id'],'name');
+            $list[$k]['cate2_name'] = $cate2['name'];
+            
+            //城市
+            $city = $this->shopRegion->getRegionInfo($v['ac_city']);
+            $list[$k]['city'] = $city['region_name'];
+            
+            //城市区域
+            $city_area = $this->shopRegion->getRegionInfo($v['ac_city_area']);
+            $list[$k]['city_area'] = $city_area['region_name'];
+            
+            //宝贝名称
+            $dish = $this->shopdish->getDishInfo($v['ac_shop_dish']);
+            $list[$k]['dish_title'] = $dish['title'];
+            
+            //店铺名称
+            $storeShop = $this->shopStore->getStoreShopInfo($v['ac_shop']);
+            $list[$k]['store_shop'] = $storeShop['sts_name'];
+        }
+        
+        $total = mysqld_selectcolumn('SELECT COUNT(*) FROM '.table('activity_dish')." where ac_dish_status = 0");
+        $pager = pagination($total, $pindex, $psize);
+        include page('check_store/ltc_dish_list');
+    }
+    
+    //状态变更
+    public function changeStatus(){
+        $_GP = $this->request;
+        if($_GP['ac_dish_id'] <= 0)echo -1;
+        $dish_status = $this->shopltc->changeActivityDish($_GP['ac_dish_id'],$_GP['ac_dish_status']);
+        
+        echo 1;
+        exit;
+    }
+    
     public function index() {
         $_GP = $this->request;
         $storeType = array(1=>'交收商铺','2'=>'集团大客户','3'=>'合作客户');

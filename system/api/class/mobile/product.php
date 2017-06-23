@@ -1730,8 +1730,7 @@ class product extends base
         $data['dish'][1]['ac_dish_total'] = '10';
         $data['dish'][1]['ac_shop_dish']  = '693';  
         //测试数据结束
-         * 
-         */
+        */
         
         $successNum   = 0;
         $errorNum = 0;
@@ -1754,6 +1753,10 @@ class product extends base
                         break;
                     case -4:
                         //ajaxReturnData(4,'该产品不属于你');
+                        $errorNum = $errorNum + 1;
+                        break;
+                    case -6:
+                        //ajaxReturnData(6,'该产品不属于你');
                         $errorNum = $errorNum + 1;
                         break;
                     default :
@@ -1779,11 +1782,11 @@ class product extends base
         //测试数据开始
         $data['ac_p1_id']      = '190';
         $data['ac_p2_id']      = '191';
-        $data['ac_action_id']  = '3';
+        $data['ac_action_id']  = '5';
         $data['ac_area_id']    = '5';       //选填项
-        $data['ac_dish_price'] = '50';
-        $data['ac_dish_total'] = '10';
-        $data['ac_dish_id']    = '41';
+        $data['ac_dish_price'] = '35';
+        $data['ac_dish_total'] = '100';
+        $data['ac_dish_id']    = '50';
         //测试数据结束
         */
         
@@ -1807,6 +1810,9 @@ class product extends base
             case -5:
                 ajaxReturnData(5,'该活动宝贝不存在');
                 break;
+            case -6:
+                ajaxReturnData(6,'活动不存在或已停止');
+                break;
             default :
                 ajaxReturnData(0,'修改成功');
                 break;
@@ -1818,7 +1824,7 @@ class product extends base
         $data = $this->request;
         
         //测试数据开始
-        $data['ac_dish_id']    = '42';
+        //$data['ac_dish_id']    = '42';
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -1826,12 +1832,13 @@ class product extends base
         }
         
         $addActiDish = $this->ltcObj->delActivityDish($data['ac_dish_id']);
+        
         switch($addActiDish){
             case -5:
                 ajaxReturnData(5,'该活动宝贝不存在');
                 break;
             case -4:
-                ajaxReturnData(4,'该产品不属于该店铺');
+                ajaxReturnData(4,'该宝贝不属于该店铺');
                 break;
             default :
                 ajaxReturnData(0,'删除成功');

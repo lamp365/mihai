@@ -39,10 +39,12 @@ class weixinpay extends \common\controller\basecontroller
      */
     function notifyurl()
     {
-        logRecord('weixinnotiya','payError');
-        ppd('ssssss00');
-        $pay = new \service\shopwap\weixinpayService();
-        $result = $pay->notify_weixinpay();
+        $pay  = new \service\shopwap\weixinpayService();
+        $data = $pay->checkCallParame();
+        if(!$data){
+            ajaxReturnData(0,$pay->getError());
+        }
+        $result = $pay->notify_weixinpay($data);
         if($result){
             ajaxReturnData(1,'支付成功','success');
         }else{
@@ -55,10 +57,12 @@ class weixinpay extends \common\controller\basecontroller
      */
     function native_notify()
     {
-        logRecord('weixinpayla','payError');
-        ppd('ssssss00');
-        $pay = new \service\shopwap\weixinpayService();
-        $result = $pay->native_notify();
+        $pay  = new \service\shopwap\weixinpayService();
+        $data = $pay->checkCallParame();
+        if(!$data){
+            ajaxReturnData(0,$pay->getError());
+        }
+        $result = $pay->native_notify($data);
         if($result) {
             message('支付成功！',mobile_url('myorder',array('name'=>'shopwap')),'success');
         } else {

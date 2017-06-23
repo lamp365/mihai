@@ -50,6 +50,18 @@
           <option value="0" <?php if($_GP['status'] ==0 && $_GP['status']!=null){ echo "selected";} ?>>--已下架--</option>
       </select>
     </div>
+    
+    
+    <label class="layui-form-label">限时购</label>
+    <div class="layui-input-inline">
+      <select name="is_ltc" lay-filter="band">
+        <option value="0"   <?php if($_GP['is_ltc'] ==0){ echo "selected";} ?>>--查看所有--</option>
+          <option value="1" <?php if($_GP['is_ltc'] ==1){ echo "selected";} ?>>--参与--</option>
+          <option value="2" <?php if($_GP['is_ltc'] ==2){ echo "selected";} ?>>--不参与--</option>
+      </select>
+    </div>
+    
+    
     <div class="layui-inline">
         <button class="layui-btn" lay-submit="" lay-filter="demo1">搜索</button>
     </div>

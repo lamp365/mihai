@@ -1,3 +1,11 @@
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=<?PHP echo GD_KEY;?>&plugin=AMap.Geocoder"></script>
+<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/recouse/cropper/js/html5shiv.min.js"></script>
+<script src="<?php echo WEBSITE_ROOT;?>themes/default/__RESOURCE__/recouse/cropper/js/respond.min.js"></script>
+<![endif]-->
 <div class="alertModal-dialog" style="width:30%">
     <form action="<?php echo mobile_url('store_shop',array('op'=>'shop_edit_sub')); ?>" method="post" class="form-horizontal gtype_form " name="myform" id="myform">
     <input type="hidden" name="id" value="<?php  echo $_GP['id']; ?>">
@@ -108,6 +116,14 @@
             </div>
           </div>
         
+          
+          <div class="layui-form-item">
+            <label class="layui-form-label">地址定位</label>
+            <div class="layui-input-block">
+              <div class="layui-input-block" id="container1" style="width: 80%;height: 400px;position:relative"   >
+            </div>
+          </div>
+        
           <div class="layui-form-item">
             <label class="layui-form-label">佣金<font color="red"><b>*</b></font></label>
             <div class="layui-input-block">
@@ -122,8 +138,16 @@
     </div>
     </form>
 </div>
+
+
 <script>
  $(function(){
+    //var map;
+    var map = new AMap.Map('container1', {
+            resizeEnable: true,
+            zoom:11,
+            center: [116.397428, 39.90923]
+     });   
     $('#sts_locate_add_1').on('change',function(){
         var val = parseInt($(this).val());
         var weburl = "<?php echo mobile_url('store_shop',array('op'=>'childen_region')); ?>";

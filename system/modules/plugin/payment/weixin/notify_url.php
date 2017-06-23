@@ -7,7 +7,7 @@
  * 
  * 这里举例使用log文件形式记录回调信息。
 */
-logRecord('23423423','pay_error');die();
+
 	$payment = mysqld_select("SELECT * FROM " . table('payment') . " WHERE  enabled=1 and code='weixin' limit 1");
    $configs=unserialize($payment['configs']);
           

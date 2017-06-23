@@ -89,10 +89,10 @@ class limitedTimepurChaseService extends \service\publicService {
        
        //判断该产品是否属于该店铺
        $checkDish = $this->dishObj->checkStoreDish($rsdata['ac_shop_dish'], $this->memberData['store_sts_id']);
-       if($checkDish <= 0)
-       {
+       if($checkDish['id'] <= 0)
+        {
            return -4;
-       }
+        }
        
        //判断某个宝贝是否已参与了某个活动了 如果参与则不用再次加入
        $activity_dish_sql = "select ac_dish_id,ac_area_id from squdian_activity_dish where ac_shop_dish = {$rsdata['ac_shop_dish']} and ac_action_id = {$rsdata['ac_action_id']} $where";
@@ -158,7 +158,7 @@ class limitedTimepurChaseService extends \service\publicService {
             return -5;
         }
         $checkDish = $this->dishObj->checkStoreDish($dishid_rs['ac_shop_dish'], $this->memberData['store_sts_id']);
-        if($checkDish <= 0)
+        if($checkDish['id'] <= 0)
         {
            return -4;
         }
