@@ -14,12 +14,14 @@ class weixinpay extends \common\controller\basecontroller
      * @param string $ordersn 订单号
      */
     public function pay() {
-
+        $pay_ordersn = 'sn54654864'.uniqid();
+        $pay_money   = '1';
+        $pay_title   = str_replace("'", '‘', '测试商品');
         $pay = new \service\shopwap\weixinpayService();
         $result = $pay->weixinpay([
-            'out_trade_no'  => 'sn099239283879', //订单号
-            'total_fee'     => '1', //订单金额，单位为分
-            'body'          => str_replace("'", '‘', '测试商品'),
+            'out_trade_no'  => $pay_ordersn, //订单号
+            'total_fee'     => $pay_money, //订单金额，单位为分
+            'body'          => $pay_title,
         ]);
         if (!$result) {
             message($pay->getError());

@@ -3,6 +3,14 @@
 namespace wapi\controller;
 
 class order extends base {
+  
+  public function __construct()
+  {
+      parent::__construct();
+      if(!checkIsLogin()){
+          ajaxReturnData(0,'请授权登录！');
+      }
+  }
   // 订单列表
   public function my_order()
   {

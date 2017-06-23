@@ -29,19 +29,7 @@
 	return $result;
 }*/
 
-/**
- * 计算购物车件数
- * @param $openid:用户ID
- * @return array 商品信息数组，总价
- */
-function countCartProducts($openid)
-{
-    $openid = $openid ?: get_sessionid();
-	$sql = "SELECT count(id) FROM " . table('shop_cart');
-	$sql.= " WHERE session_id = '" . $openid . "' ";
-	$count = mysqld_selectcolumn($sql);
-	return intval($count);
-}
+
 
 /**
  * 更新购物车商品数量
@@ -201,7 +189,7 @@ function getCartTotal(){
 	$openid   = $member['openid'] ?: get_sessionid();
 	$cartotal = '';
 	if(!empty($openid))
-		$cartotal = mysqld_selectcolumn("select sum(total) from " . table('shop_cart') . " where session_id='" . $openid . "'");
+		$cartotal = mysqld_selectcolumn("select count(id) from " . table('shop_cart') . " where session_id='" . $openid . "'");
 
 	return empty($cartotal) ? 0 : $cartotal;
 }

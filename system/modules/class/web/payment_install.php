@@ -25,4 +25,5 @@
                   );
                     mysqld_update('payment',$data , array('code' => $code));
                 }
-$this->do_payment_config();
+
+                header("location:".web_url('payment_config',array('name'=>'modules','code'=>$code)));

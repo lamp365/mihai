@@ -181,14 +181,16 @@ class mycartService extends  \service\publicService
             $data = array('total' => $t_num);
             mysqld_update('shop_cart', $data, array('id' => $row['id']));
         }
-        return $data['total'];
+        //返回总的购物车物种
+        $carnum = getCartTotal();
+        return $carnum;
     }
 
     public function lijiBuyCart($dishid,$total)
     {
         $member = get_member_account();
 
-        $sql = "select ac_shop_dish,ac_dish_status from ".table('activity_dish');
+        $sql = "select ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
         $sql .= " where ac_shop_dish={$dishid}";
         $find = mysqld_select($sql);
         if (empty($find)) {

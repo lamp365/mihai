@@ -111,7 +111,7 @@
 	    	$list['category'] = $category['name'];
 			// 购物车商品数量
 			if (!empty($member)) {
-				$list['shoppingcart_num'] = countCartProducts($member['openid']);
+				$list['shoppingcart_num'] = getCartTotal();
 			}
 			// 是否收藏
 			if (!empty($member['openid'])) {

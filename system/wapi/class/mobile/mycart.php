@@ -41,7 +41,6 @@ class mycart extends base
         if(!$cartotal){
            ajaxReturnData(0,$service->getError());
         }
-
         ajaxReturnData(1,'操作成功！',$cartotal);
     }
 

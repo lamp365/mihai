@@ -89,7 +89,7 @@ switch ($operation) {
 		$member = get_member_account ( true, true );
 		
 		if (!empty($member) AND $member != 3) {
-			$result ['data'] ['cnt']= countCartProducts ( $member ['openid'] );
+			$result ['data'] ['cnt']= getCartTotal();
 			$result ['code'] 		= 1;
 		} else {
 			$result ['data'] ['cnt']= 0;
