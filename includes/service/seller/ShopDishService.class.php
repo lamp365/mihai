@@ -75,7 +75,6 @@ class ShopDishService extends \service\publicService {
             return false;
         }
         $sql = "select {$fields} from {$this->table} where id={$data['dish_id']}";
-
         $dishContent = mysqld_select($sql);
         
         return $dishContent;
@@ -295,6 +294,13 @@ class ShopDishService extends \service\publicService {
         $sql = "select count(1) as indexDishCount from {$this->table} where sts_id = {$this->memberData['store_sts_id']} and is_index = 1";
         $redata = mysqld_select($sql);
         return $redata;
+    }
+    
+    //判断某个宝贝是否属于某个商家
+    public function checkStoreDish($dish_id,$shop_id){
+        $sql = "select id from {$this->table} where sts_id = {$shop_id} and id = {$dish_id}";
+        $rs  = mysqld_select($sql);
+        return $rs;
     }
     
 } 

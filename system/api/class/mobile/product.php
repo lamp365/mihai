@@ -23,6 +23,8 @@ class product extends base
     private $data           = array();
     private $goods          = array();
     private $ShopSpec       = array();
+    private $ltcObj         = array();
+    private $shopCate       = array();
 
 
     public function __construct()
@@ -31,6 +33,7 @@ class product extends base
         
         parent::__construct();
         
+        $this->ShopCate             = new \service\seller\ShopCateService();        //系统分类操作对象
         $this->ShopCategory         = new \service\seller\ShopCategoryService();        //分类操作对象
         $this->ShopSystemCategory   = new \service\seller\ShopSystemCategoryService();     //
         $this->goodsTypeGroup       = new \service\seller\goodsTypeGroupService();    //分组操作对象
@@ -42,6 +45,7 @@ class product extends base
         $this->ShopSystemCategory   = new \service\seller\ShopSystemCategoryService();     //
         $this->goods                = new \service\seller\goodsService();     //
         $this->ShopSpec             = new \service\seller\ShopSpecService();     //
+        $this->ltcObj               = new \service\seller\limitedTimepurChaseService();
     }
     
     //创建店铺宝贝分类
@@ -1666,6 +1670,399 @@ class product extends base
         ajaxReturnData(1,'获取成功',$data);
     }
     
+    //获取系统分类
+    public function getSysCate(){
+        $data = $this->request;
+        //测试数据开始
+        //$data['parentid'] = 1;
+        //测试数据结束
+        
+        $redata = array();
+        $redata['category'] = $this->ShopCate->twoShopCategory($data['parentid'],'name,id');
+        ajaxReturnData(1,'获取成功',$redata);
+    }
     
+    public function getListInfo(){
+        $data = $this->request;
+        $redata = array();
+        $redata = $this->ltcObj->getListAll();
+        
+        ajaxReturnData(1,'获取成功',$redata);
+    }
+    
+    //通过区域Id获取对应的时间段
+    public function getAreaTime(){
+        $data = $this->request;
+        $redata = array();
+        
+        //测试数据开始
+        //$data['ac_area'] = 111111;
+        //测试数据结束
+        
+        if($data['ac_area'] <= 0)
+        {
+            ajaxReturnData(0,'必要参数不存在');
+        }
+        
+        $redata = $this->ltcObj->getAreaGroupList($data['ac_area']);
+        
+        ajaxReturnData(1,'获取成功',$redata);
+    }
+    
+    public function addLtc(){
+        $data = $this->request;
+        
+        /*
+        //测试数据开始
+        $data['dish'][0]['ac_p1_id']      = '1';
+        $data['dish'][0]['ac_p2_id']      = '2';
+        $data['dish'][0]['ac_action_id']  = '2';
+        $data['dish'][0]['ac_area_id']    = '2';       //选填项
+        $data['dish'][0]['ac_dish_price'] = '10';
+        $data['dish'][0]['ac_dish_total'] = '10';
+        $data['dish'][0]['ac_shop_dish']  = '688'; 
+         
+        $data['dish'][1]['ac_p1_id']      = '1';
+        $data['dish'][1]['ac_p2_id']      = '2';
+        $data['dish'][1]['ac_action_id']  = '2';
+        $data['dish'][1]['ac_area_id']    = '2';       //选填项
+        $data['dish'][1]['ac_dish_price'] = '10';
+        $data['dish'][1]['ac_dish_total'] = '10';
+        $data['dish'][1]['ac_shop_dish']  = '693';  
+        //测试数据结束
+         * 
+         */
+        
+        $successNum   = 0;
+        $errorNum = 0;
+        if(count($data['dish'])>0)
+        {
+            foreach($data['dish'] as $v){
+                if($v['ac_p1_id'] <= 0 || $v['ac_p2_id'] <= 0 || $v['ac_action_id'] <= 0 || $v['ac_dish_price'] <= 0 || $v['ac_dish_total'] <= 0 || $v['ac_shop_dish'] <= 0)
+                {
+                    ajaxReturnData(0,'必要参数不存在');
+                }
+                $addActiDish = $this->ltcObj->addActivityDish($v);
+                switch($addActiDish){
+                    case -1:
+                        //ajaxReturnData(1,'宝贝已参与');
+                        $errorNum = $errorNum + 1;
+                        break;
+                    case -2:
+                        //ajaxReturnData(2,'活动价格不得大于原价格');
+                        $errorNum = $errorNum + 1;
+                        break;
+                    case -4:
+                        //ajaxReturnData(4,'该产品不属于你');
+                        $errorNum = $errorNum + 1;
+                        break;
+                    default :
+                        $successNum = $successNum + 1;
+                       // ajaxReturnData(0,'参与成功');
+                        break;
+                }
+            }
+        }
+        else{
+            ajaxReturnData(0,'必要参数不存在');
+        }
+        if($successNum > 0)$msg  = "参与成功{$successNum}件宝贝。";
+        if($errorNum > 0)$msg .= "参与失败{$errorNum}件宝贝。";
+        ajaxReturnData(0,$msg);
+    }
+    
+    
+    public function editLtc(){
+        $data = $this->request;
+        
+        /*
+        //测试数据开始
+        $data['ac_p1_id']      = '190';
+        $data['ac_p2_id']      = '191';
+        $data['ac_action_id']  = '3';
+        $data['ac_area_id']    = '5';       //选填项
+        $data['ac_dish_price'] = '50';
+        $data['ac_dish_total'] = '10';
+        $data['ac_dish_id']    = '41';
+        //测试数据结束
+        */
+        
+        if($data['ac_p1_id'] <= 0 || $data['ac_p2_id'] <= 0 || $data['ac_action_id'] <= 0 || $data['ac_dish_price'] <= 0 || $data['ac_dish_total'] <= 0 || $data['ac_dish_id'] <= 0)
+        {
+            ajaxReturnData(0,'必要参数不存在');
+        }
+        
+        $addActiDish = $this->ltcObj->addActivityDish($data);
+        
+        switch($addActiDish){
+            case -1:
+                ajaxReturnData(1,'宝贝已参与');
+                break;
+            case -2:
+                ajaxReturnData(2,'活动价格不得大于原价格');
+                break;
+            case -4:
+                ajaxReturnData(4,'该产品不属于该店铺');
+                break;
+            case -5:
+                ajaxReturnData(5,'该活动宝贝不存在');
+                break;
+            default :
+                ajaxReturnData(0,'修改成功');
+                break;
+        }
+    }
+    
+    //删除限时购
+    public function delLtc(){
+        $data = $this->request;
+        
+        //测试数据开始
+        $data['ac_dish_id']    = '42';
+        //测试数据结束
+        if($data['ac_dish_id'] <= 0)
+        {
+            ajaxReturnData(0,'必要参数不存在');
+        }
+        
+        $addActiDish = $this->ltcObj->delActivityDish($data['ac_dish_id']);
+        switch($addActiDish){
+            case -5:
+                ajaxReturnData(5,'该活动宝贝不存在');
+                break;
+            case -4:
+                ajaxReturnData(4,'该产品不属于该店铺');
+                break;
+            default :
+                ajaxReturnData(0,'删除成功');
+                break;
+        }
+    }
+    
+    //进行中活动
+    public function underwayActi(){
+        $data = $this->request;
+        $redata = array();
+        
+        //获取当前的小时数 
+        $now_hour = intval(date('H',time()));
+        
+        //获取活动  活动获取的时间段
+        $dayActi = $this->ltcObj->getDayActivityArea('ac_id,b.ac_area_id');
+
+        //进行中的活动
+        if($dayActi['ac_id'] > 0)
+        {
+            //获取进行中的场次
+            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total');
+            $dish_ids = '';
+            foreach($redata['underwayActiDish'] as $v){
+                $dish_ids .= $v['ac_shop_dish'].',';
+            }
+            $dish_ids = rtrim($dish_ids,',');
+            
+            //获取对应的宝贝ID
+            $dishInfo = array();      
+            $dishData = array();         
+            $dishData = $this->shopdish->getDishs($dish_ids,'id,marketprice,title,thumb');
+            foreach($dishData as $v){
+                $dishInfo[$v['id']]['marketprice'] = FormatMoney($v['marketprice'],2);
+                $dishInfo[$v['id']]['title']       = $v['title'];
+                $dishInfo[$v['id']]['thumb']       = $v['thumb'];
+            }
+            
+            foreach($redata['underwayActiDish'] as $k=>$v){
+                if($v['ac_area_time_str'] <= 0){
+                    @$redata['underwayActiDish'][$k]['hour']        = 0;
+                }
+                else{
+                    @$redata['underwayActiDish'][$k]['hour']        = $now_hour;
+                }
+                
+                /*
+                //过滤掉已经过去的时段
+                if($redata['underwayActiDish'][$k]['hour'] > 0 && $now_hour > $redata['underwayActiDish'][$k]['hour']){
+                    unset($redata['underwayActiDish'][$k]);
+                    continue;
+                }
+                */
+                
+                @$redata['underwayActiDish'][$k]['marketprice'] = $dishInfo[$v['ac_shop_dish']]['marketprice'];
+                @$redata['underwayActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
+                @$redata['underwayActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
+                @$redata['underwayActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
+                unset($redata['underwayActiDish'][$k]['ac_area_time_str']);
+            }
+            
+        }
+        else{
+            $redata['underwayActiDish'] = array();
+        }
+        $redata['total'] = intval($redata['underwayActiDish']['total']);
+        unset($redata['underwayActiDish']['total']);
+        ajaxReturnData(0,'获取成功',$redata); 
+    }
+    
+    //活动预告Trailer
+    public function trailerActi(){
+        $data = $this->request;
+        $redata = array();
+        
+
+        //测试数据开始
+        //$data['ac_ids'] = 1;
+        //$data['ac_area_id'] = 0;
+        //测试数据结束
+
+        
+        //获取活动  活动获取的时间段
+        if($data['ac_ids'] != '')
+        {
+            $data['ac_ids'] = intval($data['ac_ids']);
+        }
+        else{
+            $data['ac_ids'] = '';
+            $dayActi = $this->ltcObj->getTrailerActivity('ac_id,ac_title');
+            foreach($dayActi as $v)
+            {
+                $data['ac_ids'] .= $v['ac_id'].',';
+            }
+            $data['ac_ids'] = rtrim($data['ac_ids'],',');
+        }
+        
+        //进行中的活动
+        if($data['ac_ids'] != '')
+        {
+            //获取进行中的场次
+            $redata['trailerActiDish'] = $this->ltcObj->getTrailerActiList($data);
+            
+             $dish_ids = '';
+            foreach($redata['trailerActiDish'] as $v){
+                $dish_ids .= $v['ac_shop_dish'].',';
+            }
+            $dish_ids = rtrim($dish_ids,',');
+            
+            //获取对应的宝贝ID
+            $dishInfo = array();      
+            $dishData = array();         
+            $dishData = $this->shopdish->getDishs($dish_ids,'id,marketprice,title,thumb');
+            foreach($dishData as $v){
+                $dishInfo[$v['id']]['marketprice'] = FormatMoney($v['marketprice'],2);
+                $dishInfo[$v['id']]['title']       = $v['title'];
+                $dishInfo[$v['id']]['thumb']       = $v['thumb'];
+            }
+            
+            foreach($redata['trailerActiDish'] as $k=>$v){
+                @$redata['trailerActiDish'][$k]['marketprice'] = $dishInfo[$v['ac_shop_dish']]['marketprice'];
+                @$redata['trailerActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
+                @$redata['trailerActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
+                @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
+                @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
+                unset($redata['trailerActiDish'][$k]['ac_area_time_str'],$redata['trailerActiDish'][$k]['ac_time_str']);
+            } 
+        }
+        else{
+            $redata['trailerActiDish'] = array();
+        }
+        
+        $redata['total'] = intval($redata['trailerActiDish']['total']);
+        unset($redata['trailerActiDish']['total']);
+        ajaxReturnData(0,'获取成功',$redata); 
+    }
+    
+    //获取活动时间列表
+    public function getTimeList(){
+        $data = $this->request;
+        $redata = array();
+         
+        $redata['timeList'] = $this->ltcObj->getTimeList();
+        
+        $today = strtotime(date('Y-m-d',time()));
+        $nowhour = date('H',time());   //当前的小时数
+
+        foreach($redata['timeList'] as $k=>$v){
+            $unitTime = 0;
+            $unitTime = strtotime($v['date']);
+            if($today > $unitTime)
+            {
+                unset($redata['timeList'][$k]);
+                continue;
+            }
+            //获取当天正在进行中的活动ID
+            $dayActi = $this->ltcObj->getDayActivity('ac_id,ac_area');
+
+            //获取每天的活动时间段列表
+            $days = $this->ltcObj->timeAreaList($dayActi['ac_id']);
+            $time_list_arr = array();
+            foreach($days as $kk=>$vv){
+                $hour_str = date('H',$vv['ac_area_time_str']);
+                if($today == $unitTime)
+                {
+                    $hour_end = date('H',$vv['ac_area_time_end']);
+                    if($nowhour > $hour_str && $nowhour < $hour_end)
+                    {
+                        $time_list_arr[$kk]['isnow'] = 1;        //进行中
+                    }
+                    elseif($nowhour > $hour_end && $hour_end > 0){
+                        $time_list_arr[$kk]['isnow'] = 2;        //已结束
+                    }
+                    elseif($nowhour < $hour_str){
+                       $time_list_arr[$kk]['isnow']  = 0; 
+                    }
+                }
+                else{
+                    $time_list_arr[$kk]['isnow']  = 0; 
+                }
+                $time_list_arr[$kk]['title'] = $hour_str.'点场'.' '.$vv['ac_title'];
+            }
+            
+            $redata['timeList'][$k]['datelist'] = $time_list_arr;
+        }
+        $redata['timeList'] = array_values($redata['timeList']);
+        
+        ajaxReturnData(0,'获取成功',$redata); 
+    }
+    
+    //获取活动宝贝信息
+    public function getLtcInfo(){
+        $data = $this->request;
+        $redata = array();
+        
+        //测试数据开始
+        //$data['ac_dish_id'] = 1;
+        //测试数据结束
+        if($data['ac_dish_id'] <= 0)
+        {
+            ajaxReturnData(0,'必要参数不存在');
+        }
+        $acti_dish = $this->ltcObj->getActivityDishInfo($data['ac_dish_id']);
+        if($acti_dish['ac_dish_id'] > 0)
+        {
+            //获取对应的宝贝信息
+            $dishInfo = array();      
+            $dishData = array();         
+            $data['dish_id'] = $acti_dish['ac_shop_dish'];
+            $dishData = $this->shopdish->getDishContent($data,'id,marketprice,title,thumb');
+            //分类
+            $oneCate = $this->ShopCate->shopCategoryInfo($acti_dish['ac_p1_id'],'name');
+            $twoCate = $this->ShopCate->shopCategoryInfo($acti_dish['ac_p2_id'],'name');
+
+            $redata['dish']['one_sys_cate']  = $oneCate['name']!=''?$oneCate['name']:'';
+            $redata['dish']['two_sys_cate']  = $twoCate['name']!=''?$twoCate['name']:'';
+            $redata['dish']['ac_dish_price'] = FormatMoney($acti_dish['ac_dish_price'],2);
+            $redata['dish']['ac_dish_total'] = $acti_dish['ac_dish_total'];
+
+            $redata['dish']['marketprice']   = FormatMoney($dishData['marketprice'],2);
+            $redata['dish']['title']         = $dishData['title'];
+            $redata['dish']['thumb']         = $dishData['thumb'];
+            //审核
+            $redata['dish']['ac_dish_status']       = $acti_dish['ac_dish_status'];
+            $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti'];      
+        }
+        else{
+            $redata['dish'] = array();
+        }
+        ajaxReturnData(0,'获取成功',$redata); 
+    }
     
 }

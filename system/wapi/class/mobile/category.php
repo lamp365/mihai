@@ -4,15 +4,15 @@
  */
 
 namespace wapi\controller;
-class category1 extends base{
+class category extends base{
     //取一级分类接口
     public function get_one()
    {
        //缓存一天，如果有数据则取缓存数据
        if(class_exists('Memcached')){
            $memcache = new \Mcache();
-           $return = $memcache->get('CATEGORY_ONE');
-           if (!empty($return)) ajaxReturnData(1,'',$return);
+           $data = $memcache->get('CATEGORY_ONE');
+           if (!empty($data)) ajaxReturnData(1,'',$data);
        }
        //判断行业数
        $list = getCurrentAct();
@@ -27,14 +27,14 @@ class category1 extends base{
        }else {
           $data = $catService->getP1CatName($ac_id);
        }
-       
+
        if (empty($data)) ajaxReturnData(0,'暂时没有栏目');
        //加入缓存
        if(class_exists('Memcached')){
            $memcache = new \Mcache();
-           $memcache->set('CATEGORY_ONE', $return,86400);
+           $memcache->set('CATEGORY_ONE', $data,86400);
        }
-       ajaxReturnData(1,'',$return);
+       ajaxReturnData(1,'',$data);
    }
    //根据一级分类id取二级分类
     public function get_two(){
