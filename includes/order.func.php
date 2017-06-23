@@ -149,7 +149,7 @@ function update_order_status($id, $status,$dishinfo='') {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
     		// 释放库存减掉销量
-    		mysqld_query("UPDATE ".table('shop_dish')." SET `total`=total+".$ogv['total'].", `sales_num`=sales_num-".$ogv['total']." WHERE id=".$ogv['goodsid']);
+    		mysqld_query("UPDATE ".table('shop_dish')." SET store_count=store_count+".$ogv['total'].", sales_num=sales_num-".$ogv['total']." WHERE id=".$ogv['dishid']);
     		// 如果已付款 订单有卖家openid，则扣除冻结佣金
 			//已经没有冻结资金了，只有确认收货后，直接把拥金记录余额中
     	}
@@ -1416,7 +1416,7 @@ function hasFinishGetOrder($orderid){
 	$res = mysqld_update('shop_order', array('status' => 3,'retag'=>$json_retag,'completetime'=>time()), array('id' => $orderid));
 	if($res){
 		//确认收获后 卖家得到佣金金额 买家收到积分  同时记录账单和APP消息推送
-		sureUserCommisionToMoney($orderGoodInfo,$order);
+		// sureUserCommisionToMoney($orderGoodInfo,$order);
 	}else{
 		return array('errno'=>'1002','message'=>'订单操作失敗！');
 	}

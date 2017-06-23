@@ -60,11 +60,14 @@ class order extends base {
   {
     $_GP = $this->request;
     $member = get_member_account(true, true);
+
+    // $member['openid'] = '2017060510703';
+
     if (empty($member['openid'])) {
       ajaxReturnData(0,'用户信息获取失败');
     }
     $order_id = intval($_GP['order_id']);
-    $op = intval($_GP['operation']);
+    $op = $_GP['operation'];
     if (empty($order_id)) {
       ajaxReturnData(0,'订单ID为空');
     }
@@ -80,7 +83,7 @@ class order extends base {
 
     if ($op == 'cancel') {
       // 取消订单
-      if ($order['status'] == 0) {
+      if ($order[0]['status'] == 0) {
         update_order_status($order_id, -1);
         ajaxReturnData(1,'订单取消成功');
       }else{
@@ -88,7 +91,7 @@ class order extends base {
       }
     }elseif ($op == 'notarize') {
       // 确认收货
-      if ($order['status'] == 2 AND isSureGetGoods($orderGoodInfo)) {
+      if ($order[0]['status'] == 2 AND isSureGetGoods($orderGoodInfo)) {
         update_order_status($order_id, 3);
         ajaxReturnData(1,'确认收货成功');
       }else{
@@ -96,8 +99,7 @@ class order extends base {
       }
     }elseif ($op == 'delete') {
       // 删除订单
-      if ($order['status'] == 3 or $order['status'] == -1) {
-        // update_order_status($order_id, 3);
+      if ($order[0]['status'] == 3 or $order[0]['status'] == -1) {
         mysqld_update('shop_order', array('deleted' => 1), array('id'=> $order_id));
         ajaxReturnData(1,'删除订单成功');
       }else{
