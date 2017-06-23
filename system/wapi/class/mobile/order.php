@@ -3,14 +3,19 @@
 namespace wapi\controller;
 
 class order extends base {
-  
+
   public function __construct()
   {
       parent::__construct();
       if(!checkIsLogin()){
           ajaxReturnData(0,'请授权登录！');
       }
+
+      // 超过15分钟的未付款订单将会自动关闭
+      $timeout = time()-900;
+      mysqld_query("UPDATE ".table('shop_order')." SET status=-1,closetime=".time()." WHERE ordertype=4 AND status=0 AND deleted=0 AND createtime<".$timeout);
   }
+
   // 订单列表
   public function my_order()
   {
@@ -19,7 +24,7 @@ class order extends base {
     if (empty($member['openid'])) {
       ajaxReturnData(0,'用户信息获取失败');
     }
-    // $member['openid'] = '2017060510703';
+    $member['openid'] = '2017060510703';
     $status = intval($_GP['order_status']);
     $pindex = max(1, intval($_GP['page']));
     $psize = intval($_GP['limit'] ? $_GP['limit'] : 20);
@@ -47,11 +52,7 @@ class order extends base {
     $result['total']['1'] = get_order_num("a.openid='".$member['openid']."' AND a.deleted=0 AND a.status=0");
     $result['total']['2'] = get_order_num("a.openid='".$member['openid']."' AND a.deleted=0 AND a.status=2");
     // dump($result);
-    if (empty($list)) {
-      ajaxReturnData(0,'订单列表为空');
-    }else{
-      ajaxReturnData(1,'获取成功',$result);
-    }
+    ajaxReturnData(1,'获取成功',$result);
   }
 
   // 订单操作

@@ -19,6 +19,12 @@ class region_model extends model
 	    if (empty($where)) return false;
 	    return $this->getOne($where,$param);
 	}
+	/**
+	 * 获得多条region表信息
+	 *   */
+	public function getAllRegion($where ,$param="*",$orderby = false){
+	    return $this->getAll($where,$param,$orderby);
+	}
     /**
      * 根据子code获取父code
      *   */

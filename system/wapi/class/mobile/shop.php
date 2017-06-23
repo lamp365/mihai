@@ -11,11 +11,12 @@ class shop extends base{
     public function shopList(){
         $_GP = $this->request;
         $type = intval(isset($_GP['type']))? intval($_GP['type']) : 3;//类型,1是一级栏目，2是二级栏目，3是关键词
-        $id = intval($_GP['id']);//栏目id
-        if (empty($id)) ajaxReturnData(0,'参数错误');
         if ($type == 3){
             $keyword = $_GP['keyword'];//关键词
             if (empty($keyword)) ajaxReturnData(0,'请填写关键词搜索');
+        }else{
+            $id = intval($_GP['id']);//栏目id
+            if (empty($id)) ajaxReturnData(0,'参数错误');
         }
         $jd = $_GP['longitude'];//经度
         $wd = $_GP['latitude'];//纬度
@@ -147,7 +148,6 @@ class shop extends base{
                 $sql = $sql1 ;
             }
         }
-        echo $sql;
         $list = mysqld_selectall($sql);
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         

@@ -15,7 +15,6 @@ class category extends base{
        }
        $list = getCurrentAct();
        if (empty($list)) ajaxReturnData(1,'暂时没有活动');
-       $actAreaModel = new \model\activity_area_model();
        $actDishModel = new \model\activity_dish_model();
        $return = $actDishModel->getAllActivtyDish(array('ac_action_id'=>$list['ac_id'],'ac_dish_status'=>1),"ac_dish_id,ac_in_id,ac_p1_id","ac_dish_id DESC");
        //判断行业数目

@@ -33,6 +33,8 @@ function get_orders($where='', $pindex=1, $psize = 10) {
             $shop = mysqld_select("SELECT a.*,b.free_dispatch as bfree,b.express_fee,b.limit_send FROM ".table('store_shop')." as a left join ".table('store_extend_info')." as b on a.sts_id=b.store_id WHERE a.sts_id=".$ov['sts_id']);
             $ov['shop_name'] = $shop['sts_name'];
             $ov['shop_avatar'] = $shop['sts_avatar'];
+            // 订单关闭时长（秒）
+            $ov['close_duration'] = 900;
             $order_goods = mysqld_selectall("SELECT * FROM ".table('shop_order_goods')." WHERE orderid=".$ov['id']." ORDER BY createtime desc");
             $ov['goods'] = $order_goods;
             if (!empty($ov['goods'])) {

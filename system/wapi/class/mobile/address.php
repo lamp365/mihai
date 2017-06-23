@@ -9,18 +9,32 @@ class address extends base{
     public function __construct()
     {
         parent::__construct();
-        if(!checkIsLogin()){
+        $this->openid = checkIsLogin();
+        if(!$this->openid){
             ajaxReturnData(0,'请授权登录！');
         }
+        
     }
     /**
      * 默认地址获取
      *   */
     public function getDefault(){
-        $member= get_member_account();
-        $openid = $member['openid'];
+        $openid = $this->openid;
         $shopAddressModel = new \model\shop_address_model();
         $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'isdefault'=>1,'deleted'=>0),'realname,mobile,province,city,area,address');
+        if (empty($info)) ajaxReturnData(1,'暂时无数据');
+        ajaxReturnData(1,'',$info);
+    }
+    /**
+     * 地址获取
+     *   */
+    public function getInfo(){
+        $openid = $this->openid;
+        $_GP = $this->request;
+        $id = intval($_GP['id']);
+        if (empty($id)) ajaxReturnData(0,'参数错误');
+        $shopAddressModel = new \model\shop_address_model();
+        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0),'realname,mobile,province,city,area,address,idnumber');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
         ajaxReturnData(1,'',$info);
     }
@@ -39,23 +53,22 @@ class address extends base{
      * 新增地址
      *   */
     public function addAddress(){
-        $member= get_member_account();
-        $openid = $member['openid'];
+        $openid = $this->openid;
         $_GP = $this->request;
-        extract($_GP);
-        if (empty($realname) || empty($mobile) || empty($province) || empty($city) || empty($area) || empty($address)) {
+        if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['province']) || empty($_GP['city']) || empty($_GP['address']) || empty($_GP['area'])) {
             ajaxReturnData('0','参数不完整');
         }
         mysqld_update('shop_address',array('isdefault'=>0),array('isdefault'=>1,'openid'=>$openid,'deleted'=>0));
         $array = array(
-            'realname'=>$realname,
-            'mobile'=>$mobile,
-            'province'=>$province,
-            'city'=>$city,
-            'area'=>$area,
-            'address'=>$address,
-            'openid'=>$openid,
-            'isdefault'=>1
+            'realname'  =>$_GP['realname'],
+            'mobile'    =>$_GP['mobile'],
+            'province'  =>$_GP['province'],
+            'city'      =>$_GP['city'],
+            'area'      =>$_GP['area'],
+            'address'   =>$_GP['address'],
+            'openid'    =>$openid,
+            'isdefault' =>1,
+            'idnumber'  =>$_GP['idnumber'],
         );
         mysqld_insert('shop_address',$array);
         if (mysqld_insertid()) ajaxReturnData('1','添加成功');
@@ -64,24 +77,34 @@ class address extends base{
      * 更新地址
      *   */
     public function updateAddress(){
-        $member= get_member_account();
-        $openid = $member['openid'];
+        $openid = $this->openid;
         $_GP = $this->request;
-        extract($_GP);
-        if (empty($id) || empty($realname) || empty($mobile) || empty($province) || empty($city) || empty($area) || empty($address)) {
+        $id = intval($_GP['id']);
+          if (empty($id) || empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['province']) || empty($_GP['city']) || empty($_GP['address']) || empty($_GP['area'])) {
             ajaxReturnData('0','参数不完整');
         }
         mysqld_update('shop_address',array('isdefault'=>0),array('isdefault'=>1,'openid'=>$openid,'deleted'=>0));
         $array = array(
-            'realname'=>$realname,
-            'mobile'=>$mobile,
-            'province'=>$province,
-            'city'=>$city,
-            'area'=>$area,
-            'address'=>$address,
-            'isdefault'=>1
+            'realname'  =>$_GP['realname'],
+            'mobile'    =>$_GP['mobile'],
+            'province'  =>$_GP['province'],
+            'city'      =>$_GP['city'],
+            'area'      =>$_GP['area'],
+            'address'   =>$_GP['address'],
+            'idnumber'  =>$_GP['idnumber'],
+            'isdefault' =>1
         );
         mysqld_update('shop_address',$array,array('id'=>$id,'openid'=>$openid,'deleted'=>0));
         ajaxReturnData('1','修改成功');
+    }
+    /**
+     * 获取省、市、区的接口
+     *   */
+    public function getAddressInfo(){
+        $_GP = $this->request;
+        $pid = intval($_GP['pid']) ? intval($_GP['pid']) : 1;//默认是省
+        $regionModel = new \model\region_model();
+        $return = $regionModel->getAllRegion(array('parent_id'=>$pid),'region_id,region_code,region_name,parent_id');
+        ajaxReturnData('1','',$return);
     }
 }
