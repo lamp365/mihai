@@ -163,4 +163,15 @@ class shop extends base{
         }
         ajaxReturnData(1,'',$list);
     }
+    /**
+     * 热搜词
+     *   */
+    public function gethot(){
+        $_GP = $this->request;
+        $catid = intval($_GP['catid']);
+        $actService = new \service\wapi\activityService();
+        $info = $actService->gethot($catid);
+        if (empty($info)) ajaxReturnData('1','暂无数据');
+        ajaxReturnData('1','',$info);
+    }
 }

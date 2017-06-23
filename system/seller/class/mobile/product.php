@@ -801,7 +801,11 @@ class product extends base
                 message("提交成功",$url,'success');
             }
             else{
-                message("提交失败",$url,'error');
+                if ($addActiDish == -1){
+                    message("抱歉，限时购价格不能高于当前促销价格",$url,'error');
+                }else{
+                    message("提交失败",$url,'error');
+                }
             }
         }
         

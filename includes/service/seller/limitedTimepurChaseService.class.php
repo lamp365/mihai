@@ -72,7 +72,6 @@ class limitedTimepurChaseService extends \service\publicService {
        {
             return -1;
        }
-       
        //获取城市code,城市区域code
        $storeShopInfo                = $this->storeObj->getStoreShop('sts_city,sts_region');
        $rsdata['ac_city']            = $storeShopInfo['sts_city'];
@@ -80,20 +79,21 @@ class limitedTimepurChaseService extends \service\publicService {
        $rsdata['ac_in_id']           = $this->memberData['sts_category_p1_id'];
        $rsdata['ac_shop']            = $this->memberData['store_sts_id'];
        $rsdata['ac_dish_status']     = 0;
-
-       if($rsdata['ac_dish_id'] > 0)
+       if(isset($rsdata['ac_dish_id']) && $rsdata['ac_dish_id'] > 0)
        {
            mysqld_update('activity_dish',$rsdata,array('ac_dish_id'=>$rsdata['ac_dish_id']));
            return 1;
+           
        }
+       
        else{
             mysqld_insert('activity_dish',$rsdata);
             $acti_id = mysqld_insertid();    //获取上一次插入的ID 
             if($acti_id > 0)
             {
                 //更新对应的宝贝表
-                $upsql = "update squdian_shop_dish set ac_dish_id = {$acti_id} where id = {$rsdata['ac_shop_dish']}";
-                $upStatus = mysqld_query($upsql);
+                /* $upsql = "update squdian_shop_dish set ac_dish_id = {$acti_id} where id = {$rsdata['ac_shop_dish']}";
+                $upStatus = mysqld_query($upsql); */
                 return 1;
             }
             else{
