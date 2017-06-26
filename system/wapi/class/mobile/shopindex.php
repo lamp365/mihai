@@ -28,8 +28,10 @@ class shopindex extends base{
        
        //判断该区域是否有商品
        $_GP = $this->request;
-       $jd = $_GP['longitude'];//经度
-       $wd = $_GP['latitude'];//纬度
+       //$jd = $_GP['longitude'];//经度
+       //$wd = $_GP['latitude'];//纬度
+       $jd = '';
+       $wd = '';
        $where = "ac_action_id={$list['ac_id']} and ac_dish_status=1 ";
        if (empty($jd) || empty($wd)){
            $cityCode = getCityidByIp();

@@ -1771,7 +1771,7 @@ class product extends base
         }
         if($successNum > 0)$msg  = "参与成功{$successNum}件宝贝。";
         if($errorNum > 0)$msg .= "参与失败{$errorNum}件宝贝。";
-        ajaxReturnData(0,$msg);
+        ajaxReturnData(1,$msg);
     }
     
     
@@ -1799,22 +1799,22 @@ class product extends base
         
         switch($addActiDish){
             case -1:
-                ajaxReturnData(1,'宝贝已参与');
+                ajaxReturnData(0,'宝贝已参与');
                 break;
             case -2:
-                ajaxReturnData(2,'活动价格不得大于原价格');
+                ajaxReturnData(0,'活动价格不得大于原价格');
                 break;
             case -4:
-                ajaxReturnData(4,'该产品不属于该店铺');
+                ajaxReturnData(0,'该产品不属于该店铺');
                 break;
             case -5:
-                ajaxReturnData(5,'该活动宝贝不存在');
+                ajaxReturnData(0,'该活动宝贝不存在');
                 break;
             case -6:
-                ajaxReturnData(6,'活动不存在或已停止');
+                ajaxReturnData(0,'活动不存在或已停止');
                 break;
             default :
-                ajaxReturnData(0,'修改成功');
+                ajaxReturnData(1,'修改成功');
                 break;
         }
     }
@@ -1835,13 +1835,13 @@ class product extends base
         
         switch($addActiDish){
             case -5:
-                ajaxReturnData(5,'该活动宝贝不存在');
+                ajaxReturnData(0,'该活动宝贝不存在');
                 break;
             case -4:
-                ajaxReturnData(4,'该宝贝不属于该店铺');
+                ajaxReturnData(0,'该宝贝不属于该店铺');
                 break;
             default :
-                ajaxReturnData(0,'删除成功');
+                ajaxReturnData(1,'删除成功');
                 break;
         }
     }
@@ -1908,7 +1908,7 @@ class product extends base
         }
         $redata['total'] = intval($redata['underwayActiDish']['total']);
         unset($redata['underwayActiDish']['total']);
-        ajaxReturnData(0,'获取成功',$redata); 
+        ajaxReturnData(1,'获取成功',$redata); 
     }
     
     //活动预告Trailer
@@ -1982,7 +1982,7 @@ class product extends base
         
         $redata['total'] = intval($redata['trailerActiDish']['total']);
         unset($redata['trailerActiDish']['total']);
-        ajaxReturnData(0,'获取成功',$redata); 
+        ajaxReturnData(1,'获取成功',$redata); 
     }
     
     //获取活动时间列表
@@ -2043,7 +2043,7 @@ class product extends base
         }
         $redata['timeList'] = array_values($redata['timeList']);
         
-        ajaxReturnData(0,'获取成功',$redata); 
+        ajaxReturnData(1,'获取成功',$redata); 
     }
     
     //获取活动宝贝信息
@@ -2085,7 +2085,7 @@ class product extends base
         else{
             $redata['dish'] = array();
         }
-        ajaxReturnData(0,'获取成功',$redata); 
+        ajaxReturnData(1,'获取成功',$redata); 
     }
     
     //进行中的场次和下一场的场次
@@ -2115,7 +2115,7 @@ class product extends base
             $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
             $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
         }
-        ajaxReturnData(0,'获取成功',$redata); 
+        ajaxReturnData(1,'获取成功',$redata); 
     }
     
 }
