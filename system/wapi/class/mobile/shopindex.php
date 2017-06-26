@@ -35,11 +35,11 @@ class shopindex extends base{
            $cityCode = getCityidByIp();
            $where .=" and (ac_city='$cityCode' or ac_city=0)";
        }else{
-           $return = getAreaid($jd,$wd);
-           if (empty($return)) ajaxReturnData(0,'参数错误');
-           if ($return['status'] == 0) ajaxReturnData(0,$return['mes']);
-           $ac_city = $return['ac_city'];
-           $ac_city_area = $return['ac_city_area'];
+           $jdwd = getAreaid($jd,$wd);
+           if (empty($jdwd)) ajaxReturnData(0,'参数错误');
+           if ($jdwd['status'] == 0) ajaxReturnData(0,$jdwd['mes']);
+           $ac_city = $jdwd['ac_city'];
+           $ac_city_area = $jdwd['ac_city_area'];
            $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
        }
        $actDishModel = new \model\activity_dish_model();

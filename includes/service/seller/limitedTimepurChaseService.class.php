@@ -203,7 +203,16 @@ class limitedTimepurChaseService extends \service\publicService {
    public function getDayActivityArea($fields='*'){
        $dayTime = strtotime(date('Y-m-d'));
        $now_hour = date('H',time());
-       $sql = "SELECT {$fields} FROM {$this->table_list} AS a left JOIN {$this->table_area} AS b ON a.ac_area = b.ac_list_id WHERE a.ac_time_str <= {$dayTime}  AND FROM_UNIXTIME(b.ac_area_time_str, '%H') <= {$now_hour} and FROM_UNIXTIME(b.ac_area_time_end, '%H') > {$now_hour}  ORDER BY FROM_UNIXTIME(b.ac_area_time_str, '%H') desc LIMIT 1";
+       $sql = "SELECT {$fields} FROM {$this->table_list} AS a left JOIN {$this->table_area} AS b ON a.ac_area = b.ac_list_id WHERE a.ac_time_str <= {$dayTime}  AND FROM_UNIXTIME(b.ac_area_time_str, '%H') <= {$now_hour} and (FROM_UNIXTIME(b.ac_area_time_end, '%H') > {$now_hour} or FROM_UNIXTIME(b.ac_area_time_end, '%H') = 0)  ORDER BY FROM_UNIXTIME(b.ac_area_time_str, '%H') desc LIMIT 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //获取明天进行的第一场
+   public function getTomorrowActivityArea($fields='*'){
+       $dayTime = strtotime(date('Y-m-d'))+86400;
+       $now_hour = date('H',time());
+       $sql = "SELECT {$fields} FROM {$this->table_list} AS a left JOIN {$this->table_area} AS b ON a.ac_area = b.ac_list_id WHERE a.ac_time_str >= {$dayTime} ORDER BY FROM_UNIXTIME(b.ac_area_time_str, '%H') asc LIMIT 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }
