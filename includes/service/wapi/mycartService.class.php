@@ -281,4 +281,24 @@ class mycartService extends  \service\publicService
         }
         return true;
     }
+
+    /**
+     * 从购物车中的店铺 得到对应的行业，如果有一个行业属于全球购的，那么本次结算页需要地址中带有身份证
+     * @param $sts_id_arr
+     * @return int
+     */
+    public function checkCarStoreIsNeedIdenty($sts_id_arr)
+    {
+        if(empty($sts_id_arr))  return 0;
+
+        $need_identy = 0;
+        foreach($sts_id_arr as $sts_id){
+            $store = member_store_getById($sts_id,'sts_category_p1_id');
+            if($store['sts_category_p1_id'] == 1){
+                //行业1表示全球购，，全球购的商品，需要身份证
+                $need_identy =1;
+            }
+        }
+        return $need_identy;
+    }
 }

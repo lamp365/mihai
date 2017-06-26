@@ -28,9 +28,22 @@ class confirm extends base
        $service  = new \service\wapi\mycartService();
        $cart_where = "to_pay=1";
        $cartlist   = $service->cartlist($cart_where,1);
+
+       //根据购物车中的商品 获取店铺 查看是否店铺属于全球购，是的话，需要身份证
+       $sts_id_arr = array();
+       foreach($cartlist['goodslist'] as $catone){
+           $sts_id_arr[] = $catone['sts_id'];
+       }
+       $need_identy = $service->checkCarStoreIsNeedIdenty($sts_id_arr);
+
        //获取优惠卷和默认地址
        $defaultAddress   =   mysqld_select("SELECT * FROM " . table('shop_address') . " WHERE openid ='{$memInfo['openid']}'  and isdefault =1 and  deleted = 0 ");
+       if($need_identy == 1 && empty($defaultAddress['idnumber'])){
+           //如果本次默认收货地址  没有身份证 但是有全球购的产品，就不给默认收货地址
+           $defaultAddress = array();
+       }
        $cartlist['default_address'] = $defaultAddress;
+       $cartlist['need_identy']     = $need_identy;
        //去除过期商品对象，在清单结算页 不需要
        unset($cartlist['out_gooslist']);
        ajaxReturnData(1,'请求成功',$cartlist);
