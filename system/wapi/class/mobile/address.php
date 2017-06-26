@@ -21,8 +21,13 @@ class address extends base{
     public function getDefault(){
         $openid = $this->openid;
         $shopAddressModel = new \model\shop_address_model();
-        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'isdefault'=>1,'deleted'=>0),'realname,mobile,province,city,area,address');
+        //$_GP = $this->request;
+        //$need_identity = isset($_GP['need_identity']) ? intval($_GP['need_identity']) : 0;
+        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'isdefault'=>1,'deleted'=>0),'realname,mobile,province,city,area,address,idnumber');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
+        /* if ($need_identity){
+            if (empty($info['idnumber'])) ajaxReturnData(1,'没有填写身份证');
+        }    */     
         ajaxReturnData(1,'',$info);
     }
     /**
@@ -45,7 +50,7 @@ class address extends base{
         $member= get_member_account();
         $openid = $member['openid'];
         $shopAddressModel = new \model\shop_address_model();
-        $info = $shopAddressModel->getAllAddress(array('openid'=>$openid,'deleted'=>0),'realname,mobile,province,city,area,address,isdefault,id');
+        $info = $shopAddressModel->getAllAddress(array('openid'=>$openid,'deleted'=>0),'realname,mobile,province,city,area,address,isdefault,id,idnumber');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
         ajaxReturnData(1,'',$info);
     }

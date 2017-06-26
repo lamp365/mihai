@@ -74,7 +74,19 @@ class shop extends base{
         }elseif($type == 2){
             $where .=" and a.ac_p2_id = '$id' ";
         }else if ($type == 3){
-            $where .=" AND LOCATE('$keyword',b.title) >0";
+            if (function_exists('scws_new') ){
+                $word = get_word($keyword);
+                if ( !empty($word) && is_array($word) ){
+                    foreach ($word as $word_value ) {
+                        $keys[] = " b.title like '%".$word_value."%' ";
+                    }
+                    	
+                    $keys = implode(' or ' , $keys);
+                    $where .= ' and ('.$keys.')';
+                }
+            }else {
+                //$where .=" AND LOCATE('$keyword',b.title) >0";
+            }
         }
         //价格
         if ($minprice && $maxprice){

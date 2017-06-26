@@ -206,6 +206,73 @@ class good_detail extends base {
   // 提交商品评论
   public function add_comment()
   {
-    # code...
+    $_GP = $this->request;
+    $result = array();
+    // 订单ID
+    $order_id = intval($_GP['order_id']);
+    // 评论内容
+    $comment = $_GP['comment'];
+    // dishID
+    $dish_id = intval($_GP['dish_id']);
+    // 系统ID（1pc，2wap，3安卓，4ios）
+    $system = intval($_GP['system_id']);
+    // 评价ID（1好评，2差评）
+    $type = intval($_GP['type']);
+    // 物流评分
+    $wl_rate = (float)$_GP['wl_rate'];
+    // 服务分
+    $fw_rate = (float)$_GP['fw_rate'];
+    // 产品评分
+    $cp_rate = (float)$_GP['cp_rate'];
+    // 店铺ID
+    $sts_id = intval($_GP['sts_id']);
+
+    if (empty($order_id) or empty($comment) or empty($dish_id) or empty($sts_id)) {
+      ajaxReturnData(0,'必填项不可为空');
+    }
+
+    $order = get_orders("a.deleted=0 AND a.id=".$order_id);
+    if (empty($order[0])) {
+      ajaxReturnData(0,'订单查询失败');
+    }
+
+    $order_good = mysqld_select("SELECT iscomment FROM ".table('shop_order_goods')." WHERE orderid=".$order_id." AND dishid=".$dish_id);
+    if ($order_good['iscomment'] == '1') {
+      ajaxReturnData(0,'该商品已评论过');
+    }
+
+    // 评论信息
+    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'comment' => $comment, 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id, 'system' => $system, 'type' => $type);
+    mysqld_insert('shop_goods_comment', $d);
+    $comment_id = mysqld_insertid();
+
+    // 设置is_comment
+    mysqld_query("UPDATE ".table('shop_order_goods')." SET iscomment=1 WHERE orderid=".$order_id." AND dishid=".$dish_id);
+
+    // 评论图片上传
+    for ($i=1; $i < 6; $i++) { 
+      $this->upload_imgs($i, $comment_id);
+    }
+
+    ajaxReturnData(1,'评论成功');
+  }
+
+  function upload_imgs($num, $commentid) {
+    if (!empty($_FILES['img'.$num])) {
+      if ($_FILES['img'.$num]['error']==0) {
+        $upload = file_upload($_FILES['img'.$num]);
+        //出错时
+        if (is_error($upload)) {
+          ajaxReturnData(0,$upload['message']);
+          exit;
+        }else{
+          $m = array('comment_id' => $commentid, 'img' => $upload['path']);
+          mysqld_insert('shop_comment_img', $m);
+        }
+      }else{
+        ajaxReturnData(0,"图片".$num."上传失败。");
+        exit;
+      }
+    }
   }
 }
