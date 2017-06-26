@@ -102,15 +102,16 @@ function weixinPayData($out_trade_no,$body,$total_fee)
 }
 
 /**
- * 获取推广价    返回分为单位
+ * 获取商品对应的提成的收入价格 商家所得佣金和商家约定给推广员的提成   返回分为单位
  * @param $dishid
  * @param $sts_id
- * @param $price
+ * @param $price  传进来的price单位是元  商品的价格
  * @param $sts_shop_type
+ * @param $earn_rate  商家给子用户的 提成比例
  * @return int|string
  */
-function getPromotPrice($dishid,$sts_id,$price,$sts_shop_type){
-	$promot_price = 0;   //推广价
+function getStoreAndMemberEarnPrice($dishid,$sts_id,$price,$sts_shop_type,$earn_rate){
+	$promot_price = 0;   //提成收入价
 	//获取商品 得到佣金比例或者推广价
 	$this_dish = mysqld_select("select commision,promot_price from ".table('shop_dish')." where id={$dishid}");
 	if($sts_shop_type == 5){
@@ -118,21 +119,32 @@ function getPromotPrice($dishid,$sts_id,$price,$sts_shop_type){
 		if(empty($this_dish['promot_price'])){
 			//用店铺的默认 佣金来处理
 			$store_info   = mysqld_select("select commision from ".table('store_extend_info')." where store_id={$sts_id}");
-			$promot_price = number_format(($store_info['commision']/100)*$price,2);  //单位是元
+			$promot_price = number_format(($store_info['commision']/100)*$price,2);  //单位是元  得到的佣金提成
 			$promot_price = FormatMoney($promot_price,1);     //转为分
 		}else{
-			$promot_price = $this_dish['promot_price'];      //从库里面取出来的是分
+			$promot_price = FormatMoney($price,0) - $this_dish['promot_price'];      //从库里面取出来的是分
 		}
 	}else{
 		if(empty($this_dish['commision'])){
 			//用店铺的默认 佣金来处理
 			$store_info   = mysqld_select("select commision from ".table('store_extend_info')." where store_id={$sts_id}");
-			$promot_price = number_format(($store_info['commision']/100)*$price,2);  //单位是元
+			$promot_price = number_format(($store_info['commision']/100)*$price,2);  //单位是元  得到的佣金提成
 			$promot_price = FormatMoney($promot_price,1);     //转为分
 		}else{
-			$promot_price = number_format(($this_dish['commision']/100)*$price,2);  //单位是元
+			$promot_price = number_format(($this_dish['commision']/100)*$price,2);  //单位是元  得到的佣金提成
 			$promot_price = FormatMoney($promot_price,1);     //转为分
 		}
 	}
-	return $promot_price;
+
+	$store_earn_price  = $promot_price; //单位分，店铺所得的佣金
+	$member_earn_price = 0;
+	if(!empty($store_earn_price) && !empty($earn_rate)){
+		//推广用户所得的 提成
+		$member_earn_price = intval(($earn_rate/100)*$store_earn_price);  //如0.15*1000 == 150 分 即1.5元
+	}
+	//返回提成收入  单位分
+	return array(
+		'store_earn_price'  => $store_earn_price,
+		'member_earn_price' => $member_earn_price,
+	);
 }

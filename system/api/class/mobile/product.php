@@ -1855,8 +1855,9 @@ class product extends base
         $now_hour = intval(date('H',time()));
         
         //获取活动  活动获取的时间段
-        $dayActi = $this->ltcObj->getDayActivityArea('ac_id,b.ac_area_id');
-
+        $dayActi = $this->ltcObj->getDayActivityArea('ac_id,b.ac_area_id,ac_title');
+        $redata['ac_title'] = $dayActi['ac_title'];
+        
         //进行中的活动
         if($dayActi['ac_id'] > 0)
         {
@@ -1914,7 +1915,7 @@ class product extends base
     public function trailerActi(){
         $data = $this->request;
         $redata = array();
-        
+        $actiTitle = array();
 
         //测试数据开始
         //$data['ac_ids'] = 1;
@@ -1926,6 +1927,9 @@ class product extends base
         if($data['ac_ids'] != '')
         {
             $data['ac_ids'] = intval($data['ac_ids']);
+            
+            //
+            $actiTitle[$data['ac_ids']] = $this->ltcObj->getActiInfo($data['ac_ids'],'ac_title');
         }
         else{
             $data['ac_ids'] = '';
@@ -1933,10 +1937,11 @@ class product extends base
             foreach($dayActi as $v)
             {
                 $data['ac_ids'] .= $v['ac_id'].',';
+                $actiTitle[$v['ac_id']]     = $v['ac_title'];
             }
             $data['ac_ids'] = rtrim($data['ac_ids'],',');
         }
-        
+
         //进行中的活动
         if($data['ac_ids'] != '')
         {
@@ -1959,12 +1964,15 @@ class product extends base
                 $dishInfo[$v['id']]['thumb']       = $v['thumb'];
             }
             
+            
+            
             foreach($redata['trailerActiDish'] as $k=>$v){
                 @$redata['trailerActiDish'][$k]['marketprice'] = $dishInfo[$v['ac_shop_dish']]['marketprice'];
                 @$redata['trailerActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
                 @$redata['trailerActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
                 @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
                 @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
+                @$redata['trailerActiDish'][$k]['ac_title']    = $actiTitle[$v['ac_id']]; 
                 unset($redata['trailerActiDish'][$k]['ac_area_time_str'],$redata['trailerActiDish'][$k]['ac_time_str']);
             } 
         }
@@ -2077,6 +2085,28 @@ class product extends base
         else{
             $redata['dish'] = array();
         }
+        ajaxReturnData(0,'获取成功',$redata); 
+    }
+    
+    //进行中的场次和下一场的场次
+    public function screeningsNowNext(){
+        $data = $this->request;
+        $redata = array();
+        //跨天的时候 例凌晨00 点 和的第二天
+        
+        //获取今天执行中的活动
+        $dayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title');
+        $redata['ac_title'] = $dayActi['ac_title']!=''?$dayActi['ac_title']:'';
+        
+        $nowAreaArr = $this->ltcObj->getNowArea($dayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nowhour');
+        
+        $redata['now_hour'] = $nowAreaArr['nowhour'].'点场';
+        
+        
+        $nextAreaArr = $this->ltcObj->getNextArea($dayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
+        
+        $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
+        
         ajaxReturnData(0,'获取成功',$redata); 
     }
     

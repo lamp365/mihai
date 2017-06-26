@@ -107,6 +107,35 @@ function getCodeByIP($ip){
     $url .="key=$key&ip=$ip";
     return http_get($url);
 }
+//根据经纬度获取区域id
+function getAreaid($jd,$wd){
+    if (empty($jd) || empty($wd)) return '';
+     //高德接口获取区域id
+    $return = json_decode(getCodeByLttAndLgt($jd,$wd),1);
+    if ($return['status'] == 0) return array('status'=>0,'mes'=>'抱歉，获取地里位置信息失败，请刷新一下');
+        //ajaxReturnData(0,'抱歉，获取地里位置信息失败，请刷新一下');
+    $ac_city_area = isset($return['regeocode']['addressComponent']['adcode'])?$return['regeocode']['addressComponent']['adcode']:'';
+    //取市id
+    $regionModel = new \model\region_model();
+    $info = $regionModel->getPCodeByCCode($ac_city_area);
+    $ac_city = !empty($info) ? $info['region_code']:'';
+    if (empty($ac_city) || empty($ac_city_area)) return array('status'=>0,'mes'=>'抱歉，不存在这个地区，请重新刷新一下');
+        //ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
+    return array('status'=>1,'ac_city'=>$ac_city,'ac_city_area'=>$ac_city_area);
+    //$where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+}
+//通过ip取区域id
+function getCityidByIp(){
+    $ip = getClientIP();
+    //高德地图通过ip取城市
+    $info = getCodeByIP($ip);
+    if ($info){
+        $info = json_decode($info,1);
+        $cityCode = $info['adcode'];
+    }
+    if (empty($cityCode)) return '350100';//如果未取到ip，则取福州
+    return $cityCode;
+}
 
 
 

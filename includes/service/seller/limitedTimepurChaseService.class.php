@@ -14,7 +14,8 @@ class limitedTimepurChaseService extends \service\publicService {
     private $table_list;
     private $dishObj;           //时间戳
     private $nowtime;           //时间戳
-        
+    private $nowHour;           //当前小时
+            
     function __construct() {
        parent::__construct();
        $this->memberData   = get_member_account();
@@ -24,6 +25,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $this->nowtime      = time();
        $this->dishObj      = new ShopDishService();
        $this->storeObj     = new shopStoreService();
+       $this->nowHour      = date('H',time());
    }
    
    //获取时间区间列表
@@ -213,7 +215,7 @@ class limitedTimepurChaseService extends \service\publicService {
        if($data['ac_action_id'] > 0){
            $where = " and ac_action_id = {$data['ac_action_id']}";
        }
-       $sql = "select $fields from {$this->table_list} where ac_time_end <= {$dayTime}";
+       $sql = "select $fields from {$this->table_list} where ac_time_end >= {$dayTime}";
        $rs  = mysqld_selectall($sql);
        return $rs;
    }
@@ -236,8 +238,8 @@ class limitedTimepurChaseService extends \service\publicService {
         return $dishList;
    }
    
-   //弃用
-   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total',$shop=1){
+   //
+   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id',$shop=1){
        $data['page'] = max(1, intval($data['page']));
        $data['limit'] = $data['limit']>0?$data['limit']:10; 
        $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
@@ -248,7 +250,8 @@ class limitedTimepurChaseService extends \service\publicService {
            $where2 .= " and a.ac_area_id = {$data['ac_area_id']}";
        }
        if($shop > 0)$where .= " and ac_shop = {$this->memberData['store_sts_id']}";
-       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where 1 {$where2} order by ac_time_str asc,b.ac_area_time_str asc {$limit}";
+       //$this->nowHour
+       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where (FROM_UNIXTIME(b.ac_area_time_str,'%H') >= {$this->nowHour} or a.ac_area_id = 0)  {$where2} order by ac_time_str asc,b.ac_area_time_str asc {$limit}";
        $dishList  = mysqld_selectall($sql);
        
         $dishList['total'] = mysqld_select("select count(0) as total from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id");
@@ -304,6 +307,22 @@ class limitedTimepurChaseService extends \service\publicService {
            return -1;
        }
        $sql = "select {$fields} from {$this->table_list} where ac_id = {$ac_action_id} and ac_status = 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //获取进行中的小时数
+   public function getNowArea($ac_area_id,$fields='*'){
+       $ac_area_id = intval($ac_area_id);
+       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') >= {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //获取下一场进行中的小时数
+   public function getNextArea($ac_area_id,$fields='*'){
+       $ac_area_id = intval($ac_area_id);
+       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') > {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }

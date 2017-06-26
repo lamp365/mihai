@@ -231,27 +231,29 @@ function paySuccessProcess($ordersn,$setting)
 	//有实付金额（这里从数据库取出来的单位是分）  记录用户支付的账单
 	if($order['price']>0)
 	{
-		//增加账单记录  扣除一笔资金
+		//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
 		$mark = LANG('LOG_SHOPBUY_TIP','paylog');
-		member_gold($order['openid'],$order['price'],'-1',$mark,false,$order['id']);
+		member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
 
-		//商家所得去除费率  录入一笔冻结资金
+		//商家所得去除费率  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
 		$pay_rate    = $setting['pay_rate']/100;
-		$store_money = number_format($order['price'] - $pay_rate*$order['price'],2);  //单位是分
+		$store_money = intval($order['price'] - $pay_rate*$order['price']);  //单位是分
 		$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
 		store_freeze_gold($order['sts_id'],$store_money,1,$mark);
 	}
 
-	//推荐人得到一笔冻结的推广佣金
-	if(!empty($order['recommend_openid'])){
-		$recommend_price = 0;
-		$order_goods = mysqld_selectall("select price,promot_price,total from ".table('shop_order_goods')." where orderid={$order['id']}");
-		foreach($order_goods as $good){
-			$recommend_price += ($good['price']-$good['promot_price']) * $good['total'];   //单位是分
-		}
-		$friend_member =  member_get($order['openid'],'nickname');
-		$remark = Lang('LOG_BUYORDER_TIP','paylog',$friend_member['nickname']);
-		member_commisiongold($order['recommend_openid'],$order['openid'],$recommend_price,3,$order['id'],$remark);
+	//推荐人所属的店铺 得到一笔冻结的推广佣金    退款要扣掉  完成收货要变成余额
+	if(!empty($order['recommend_sts_id']) && !empty($order['store_earn_price'])){
+		$earn_price = $order['store_earn_price']; //单位分
+		$remark     = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
+		store_commisiongold($order['recommend_sts_id'],$order['recommend_openid'],$earn_price,3,$order['id'],$remark);
+	}
+	//推荐人得到跟店铺 所承诺的 提成收入   退款要扣掉  完成收货要变成未结算
+	if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
+		$earn_price  = $order['member_earn_price']; //单位分
+		$remark      = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
+		//注意该方法的使用  推荐人要加入佣金，第一个参数是 推荐人的openid
+		member_commisiongold($order['recommend_openid'],$order['openid'],$earn_price,3,$order['id'],$remark);
 	}
 }
 
@@ -1421,4 +1423,28 @@ function hasFinishGetOrder($orderid){
 		return array('errno'=>'1002','message'=>'订单操作失敗！');
 	}
 	return array('errno'=>'200','message'=>'订单操作成功！');
+}
+
+/**
+ * 根据用户openid获取推荐人的openid
+ * 以及推荐人从属的店铺id
+ * @param $openid
+ * @return array
+ */
+function getRecommendOpenidAndStsid($openid){
+	//获取推荐人openid
+	$recommend        = mysqld_select("select p_openid from ".table('member_blong_relation')." where m_openid='{$openid}' and type=2");
+	$recommend_openid = $recommend['p_openid'] ?: 0;
+	//根据推荐人的openidz找到该用户从属的 店铺id
+	$recommend_sts_id = $earn_rate = 0;
+	if(!empty($recommend_openid)){
+		$recommend_sts    = mysqld_select("select sts_id,earn_rate from ".table('member_store_relation')." where openid='{$recommend_openid}'");
+		$recommend_sts_id = $recommend_sts['sts_id'];
+		$earn_rate		  = $recommend_sts['earn_rate'];
+	}
+	return array(
+		'recommend_openid' => $recommend_openid,
+		'recommend_sts_id' => $recommend_sts_id,
+		'earn_rate' 	   => $earn_rate,
+	);
 }

@@ -57,27 +57,15 @@ class shop extends base{
         //区域和城市id
         if (empty($jd) || empty($wd)) {
             //高德地图根据ip获取城市
-            $ip = getClientIP();
-            $info = getCodeByIP($ip);
-            if ($info){
-                $info = json_decode($info,1);
-                $cityCode = $info['adcode'];
-            }
-            if (empty($cityCode)) $cityCode = '350100';//如果未取到ip，则取福州
+            $cityCode = getCityidByIp();
             $where .=" and (a.ac_city='$cityCode' or a.ac_city=0) ";
         }else{
             //高德接口获取区域id
-            $return = json_decode(getCodeByLttAndLgt($jd,$wd),1);
-            if ($return['status'] == 0) ajaxReturnData(0,'抱歉，获取地里位置信息失败，请刷新一下');
-            $ac_city_area = isset($return['regeocode']['addressComponent']['adcode'])?$return['regeocode']['addressComponent']['adcode']:'';
-            $actDishModel = new \model\activity_dish_model();
-        
-            //取市id
-            $regionModel = new \model\region_model();
-            $info = $regionModel->getPCodeByCCode($ac_city_area);
-        
-            $ac_city = !empty($info) ? $info['region_code']:'';
-            if (empty($ac_city) || empty($ac_city_area)) ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
+            $return = getAreaid($jd,$wd);
+           if (empty($return)) ajaxReturnData(0,'参数错误');
+           if ($return['status'] == 0) ajaxReturnData(0,$return['mes']);
+           $ac_city = $return['ac_city'];
+           $ac_city_area = $return['ac_city_area'];
             $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
         }
         //栏目或者关键词
@@ -97,26 +85,6 @@ class shop extends base{
         }elseif ($maxprice) {
             $where .= " AND a.ac_dish_price <= '$maxprice' ";
         }
-        
-        
-        //排序
-        $status = intval(isset($_GP['status'])) ? intval($_GP['status']) : 1;//1表示综合，2表示价格，3表示销量
-        $orderby = 'order by ';
-        if ($status == 1){
-            $orderby .= " a.ac_dish_id DESC ";
-        }elseif ($status == 2){
-            $price_type = isset($_GP['price_type']) ? $_GP['price_type'] : '1';
-            if($price_type == 1){
-                $price = 'asc';
-            }else{
-                $price = 'desc';
-            }
-            $orderby .= " a.ac_dish_price $price ";
-        }else {
-            $orderby .= " a.ac_dish_sell_total DESC ";
-        }
-        $limit = " limit ".$limit." , ".$psize;
-        
         $sql_base = "SELECT a.ac_dish_id,a.ac_action_id,a.ac_area_id,a.ac_shop_dish,a.ac_dish_price,a.ac_dish_total,a.ac_dish_sell_total,b.title,b.thumb,b.marketprice";
         
         //搜索的时间区域和自动筛选出来
@@ -124,7 +92,7 @@ class shop extends base{
             $timearea = explode(",",$timearea);
             $timeareaStr = to_sqls($timearea,'','a.ac_area_id');
             $where3 = $where." and $timeareaStr ";
-            $sql = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where3.$orderby.$limit;
+            $sql = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where3;
         }else{
             if($areaid) {
                 $where1 = $where." and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
@@ -140,14 +108,32 @@ class shop extends base{
                 $where2 = $where." and $areaidStr ";
                 $sql2 = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where2;
             }
-            $sql1 .= $orderby;
+            //$sql1 .= $orderby;
             if ($sql2){
-                $sql2 .= $orderby;
-                $sql = "SELECT * FROM ($sql1) as t1 UNION SELECT * FROM ($sql2) as t2 $limit";
+                //$sql2 .= $orderby;
+                $sql = "SELECT * FROM ($sql1) as t1 UNION SELECT * FROM ($sql2) as t2";
             }else{
                 $sql = $sql1 ;
             }
         }
+        //排序
+        $status = intval(isset($_GP['status'])) ? intval($_GP['status']) : 1;//1表示综合，2表示价格，3表示销量
+        $orderby = ' order by ';
+        if ($status == 1){
+            $orderby .= " ac_dish_id DESC ";
+        }elseif ($status == 2){
+            $price_type = $_GP['price_type'] ? $_GP['price_type'] : '1';
+            if($price_type == 1){
+                $price = ' asc ';
+            }else{
+                $price = ' desc ';
+            }
+            $orderby .= " ac_dish_price $price ";
+        }else {
+            $orderby .= " ac_dish_sell_total DESC ";
+        }
+        $limit = " limit ".$limit." , ".$psize;
+        $sql .= $orderby.$limit;
         $list = mysqld_selectall($sql);
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         

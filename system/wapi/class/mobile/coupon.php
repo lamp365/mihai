@@ -9,9 +9,11 @@ class coupon extends base{
         $GP = $this->request;
         $act_id = intval($GP['ac_id']);//活动id
         if (empty($act_id)) ajaxReturnData(0,'参数错误');
+        //获取活动店铺
         $actListModel = new \model\activity_dish_model();
         $actStore = $actListModel->getAllActivtyDish(array('ac_action_id'=>$act_id),'ac_shop','ac_dish_id DESC','ac_shop');
         if(empty($actStore)) ajaxReturnData(0,'没有该活动');
+        
         $openid = checkIsLogin();
         $couponService = new \service\shopwap\couponService();
         $couponList = array();
@@ -38,7 +40,7 @@ class coupon extends base{
             }
             ajaxReturnData(1,'',$data);
         }else{
-            ajaxReturnData(0,'没有优惠券');
+            ajaxReturnData(1,'没有优惠券');
         }
     }
     //领取优惠券
@@ -102,7 +104,7 @@ class coupon extends base{
         //$orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
         $orderby = " a.scmid DESC ";
         $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id",$orderby);
-        if (empty($mycoupon)) ajaxReturnData(0,'暂无优惠券信息');
+        if (empty($mycoupon)) ajaxReturnData(1,'暂无优惠券信息');
         $storeShopModel = new \model\store_shop_model();
         foreach ($mycoupon as $key=>$v){
             $temp['coupon_name'] = $v['coupon_name'];

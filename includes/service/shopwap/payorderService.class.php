@@ -52,12 +52,16 @@ class payorderService extends  \service\publicService
             return false;
         }
 
-        //获取推荐人openid  没有的话为空
-        $recommend = mysqld_select("select p_openid from ".table('member_blong_relation')." where m_openid='{$openid}' and type=2");
+        //获取推荐人openid 以及推荐人从属的店铺  没有返回空
+        $recommend = getRecommendOpenidAndStsid($openid);
         $recommend_openid = $recommend['p_openid'];
+        $recommend_sts_id = $recommend['recommend_sts_id'];
+        $earn_rate        = $recommend['earn_rate']; //商家约定给子账户 推广员的提成
 
         foreach($goodslist as $item){
-            $ordersns = 'SN'.date('Ymd') . random(6, 1);
+            $total_store_earn_price  = 0;  //一笔订单的总提成
+            $total_member_earn_price = 0;  //一笔订单的总提成
+            $ordersns    = 'SN'.date('Ymd') . random(6, 1);
             $randomorder = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE  ordersn=:ordersn limit 1", array(':ordersn' =>$ordersns));
             if(!empty($randomorder['ordersn'])) {
                 $ordersns= 'SN'.date('Ymd') . random(6, 1);
@@ -90,6 +94,7 @@ class payorderService extends  \service\publicService
             $order_data = array();
             $order_data['sts_id']           = $item['sts_id'];
             $order_data['openid']           = $openid;
+            $order_data['recommend_sts_id'] = $recommend_sts_id;
             $order_data['recommend_openid'] = $recommend_openid;
             $order_data['ordersn']          = $ordersns;
             $order_data['ordertype']        = 4;                        //限时购
@@ -123,16 +128,18 @@ class payorderService extends  \service\publicService
                 $dishlist = $item['dishlist'];
                 foreach($dishlist as $one_dish){
                     $pay_title    = str_replace('&','',$one_dish['title']);  //去除带有 & 的字符
-                    //获取推广价
-                    $promot_price = getPromotPrice($one_dish['id'],$item['sts_id'],$one_dish['time_price'],$item['sts_shop_type']);
+                    //获取商品对应的提成的收入价格 商家所得佣金和商家约定给推广员的提成   返回分为单位
+                    $earn_price = getStoreAndMemberEarnPrice($one_dish['id'],$item['sts_id'],$one_dish['time_price'],$item['sts_shop_type'],$earn_rate);
+                    $store_earn_price  = $earn_price['store_earn_price'];
+                    $member_earn_price = $earn_price['member_earn_price'];
                     $o_good = array();
                     $o_good['orderid']               = $orderid;
                     $o_good['sts_id']                = $item['sts_id'];
                     $o_good['dishid']                = $one_dish['id'];
-                    $o_good['recommend_openid']      = $recommend_openid;
                     $o_good['shop_type']             = 4;
                     $o_good['price']                 = FormatMoney($one_dish['time_price'],1);  //商品单价 转为分
-                    $o_good['promot_price']          = $promot_price;   //单位 分
+                    $o_good['store_earn_price']      = $store_earn_price;   //单个商品 提成 单位 分
+                    $o_good['member_earn_price']     = $member_earn_price;   //单个商品 提成 单位 分
                     $o_good['total']                 = $one_dish['buy_num'];
                     $o_good['createtime']            = time();
                     $res2 = mysqld_insert('shop_order_goods',$o_good);
@@ -141,9 +148,17 @@ class payorderService extends  \service\publicService
                         $pay_total_money = $pay_total_money -  $o_good['price'];
                     }
 
+                    //单个商品提成乘以个数
+                    $total_store_earn_price  += $store_earn_price*$o_good['total'];
+                    $total_member_earn_price += $member_earn_price*$o_good['total'];
                     //用于后续做库存操作，以上逻辑可复用，但是库存操作不能复用
                     $stock_dishids[$one_dish['id']] = $one_dish['buy_num'];
                 }
+                //跟新该笔订单的总提成
+                mysqld_update('shop_order',array(
+                    'store_earn_price' => $total_store_earn_price,
+                    'member_earn_price'=> $total_member_earn_price
+                ),array('id'=>$orderid));
             }
         }
 

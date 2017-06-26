@@ -299,6 +299,54 @@ function store_freeze_gold($sts_id, $fee, $type, $remark,$update=1)
     return false;
 }
 
+/**
+ * 记录店铺得到的佣金 更新店铺冻结金额   只对金额操作
+ * @param $sts_id
+ * @param $friend_openid   子账户openid
+ * @param $fee    金额单位是分
+ * @param $type  3 佣金收入  -3佣金扣除
+ * @param $remark
+ * @return bool
+ */
+function store_commisiongold($sts_id, $friend_openid,$fee, $type, $orderid='',$remark='')
+{
+    $add_arr = array('3');
+    $use_arr = array('-3');
+    $store   = member_store_getById($sts_id,'freeze_money');
+
+    if (! empty($store)) {
+        if (! is_numeric($fee)) {
+            return false;
+        }
+        if (!in_array($type,$add_arr) && !in_array($type,$use_arr) ) {
+            return false;
+        }else if(in_array($type,$use_arr)){
+            //金额为负
+            $fee = -1*$fee;
+        }
+        $data = array(
+            'remark' => $remark,
+            'type'   => $type,
+            'fee'    => $fee,
+            'account_fee'   => $store['freeze_money'] + $fee,
+            'createtime'    => TIMESTAMP,
+            'sts_id'        => $sts_id,
+            'friend_openid' => $friend_openid,
+            'orderid'       => $orderid,
+        );
+        //以免扣掉时为负数
+        $freeze_money  = max(0,$store['freeze_money'] + $fee);
+        mysqld_insert('member_paylog', $data);
+        $pid = mysqld_insertid();
+        mysqld_update('store_shop', array( 'freeze_money' => $freeze_money), array(
+            'sts_id' => $sts_id
+        ));
+        return $pid;
+    }
+    return false;
+}
+
+
 
 /**
  * 获取paylog 的 icon

@@ -10,39 +10,49 @@ class shopindex extends base{
    public function active_area()
    {
        //取出活动列表，理论上是一个，但不排除有多个
-       $actListModel = new \model\activity_list_model();
        $list = getCurrentAct();
        if (empty($list)) ajaxReturnData(1,'暂时没有活动');
-       $actAreaModel = new \model\activity_area_model();
+       
        //取时间段
-       $activty_area = $actAreaModel->getAll(array('ac_list_id'=>$list['ac_area']));
-       if (empty($activty_area)) ajaxReturnData(0,'没有设置时间段');
-       foreach ($activty_area as $key=>$val){
-           $startDate = date("Y:m:d")." ".date('H:i:s',$val['ac_area_time_str']);
-           $endDate = date("Y:m:d")." ".date('H:i:s',$val['ac_area_time_end']);
-           $starttime = strtotime($startDate);
-           $endtime = strtotime($endDate);
-           if ($endtime <= time()) continue;
-           $temp['ac_area_id'] = $val['ac_area_id'];
-           $temp['ac_area_time_str'] = date("H:i",$val['ac_area_time_str']);
-           $temp['ac_area_time_end'] = date("H:i",$val['ac_area_time_end']);
-           $temp['status'] = 0;
-           if (time() >= $starttime && time() <= $endtime){
-               $temp['status'] = 1;
-               $temp['section'] = $endtime-time();
-           }else{
-               $temp['section'] = $starttime-time();
-           }
-           $tempAll[] = $temp;
+       $actService = new \service\wapi\activityService();
+       $_GP = $this->request;
+       $type = intval($_GP['type']) ? intval($_GP['type']) : 0;
+       if ($type == 1){
+           $return = $actService->getActAreaNoExp($list['ac_area']);
+       }else{
+           $return = $actService->getActAreaNoExp($list['ac_area'],5);
        }
-       if (count($tempAll) > 5){
-           for ($i=0;$i<5;$i++){
-               $trueAll[$i] = $tempAll[$i];
-           }
-       }else {
-           $trueAll = $tempAll;
+       if (empty($return)){
+           ajaxReturnData(1,'对不起，没有设置时间区域');
        }
-       $data['detail'] = $trueAll;
+       
+       //判断该区域是否有商品
+       $_GP = $this->request;
+       $jd = $_GP['longitude'];//经度
+       $wd = $_GP['latitude'];//纬度
+       $where = "ac_action_id={$list['ac_id']} and ac_dish_status=1 ";
+       if (empty($jd) || empty($wd)){
+           $cityCode = getCityidByIp();
+           $where .=" and (ac_city='$cityCode' or ac_city=0)";
+       }else{
+           $return = getAreaid($jd,$wd);
+           if (empty($return)) ajaxReturnData(0,'参数错误');
+           if ($return['status'] == 0) ajaxReturnData(0,$return['mes']);
+           $ac_city = $return['ac_city'];
+           $ac_city_area = $return['ac_city_area'];
+           $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+       }
+       $actDishModel = new \model\activity_dish_model();
+       foreach ($return as $key=>$val){
+           $where1 = $where." and (ac_area_id = {$val['ac_area_id']} or ac_area_id=0) ";
+           $info = $actDishModel->getAllActivtyDish($where1,'ac_dish_id');
+           if (empty($info)) {
+               unset($return[$key]);
+               continue;
+           }
+           $res[]= $val;
+       }
+       $data['detail'] = $res;
        $data['ac_id'] = $list['ac_id'];
        ajaxReturnData(1,'',$data);
    }
@@ -57,7 +67,18 @@ class shopindex extends base{
        $wd = $_GP['latitude'];//纬度
        $where = " ac_action_id = '$ac_list_id' and ac_dish_status=1 and (ac_area_id = '$ac_area_id' or ac_area_id=0) ";
        
-       if (empty($jd) || empty($wd)) {//根据ip取城市
+       if (empty($jd) || empty($wd)){
+           $cityCode = getCityidByIp();
+           $where .=" and (ac_city='$cityCode' or ac_city=0)";
+       }else{
+           $return = getAreaid($jd,$wd);
+           if (empty($return)) ajaxReturnData(0,'参数错误');
+           if ($return['status'] == 0) ajaxReturnData(0,$return['mes']);
+           $ac_city = $return['ac_city'];
+           $ac_city_area = $return['ac_city_area'];
+           $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+       }
+       /* if (empty($jd) || empty($wd)) {//根据ip取城市
            $ip = getClientIP();
            $info = getCodeByIP($ip);
            if ($info){
@@ -77,7 +98,7 @@ class shopindex extends base{
            $ac_city = !empty($info) ? $info['region_code']:'';
            if (empty($ac_city) || empty($ac_city_area)) ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
            $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
-       }
+       } */
        
        //分页取数据
        $pindex = max(1, intval($_GP['page']));
