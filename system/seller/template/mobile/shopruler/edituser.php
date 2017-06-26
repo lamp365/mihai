@@ -12,6 +12,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-sm-3 control-label">佣金设置</label>
+            <div class="col-sm-9">
+                <input type="text" name="earn_rate" placeholder="佣金设置单位%" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $the_user['earn_rate'];?>">
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-sm-3 control-label">修改属组</label>
             <div class="col-sm-9">
                 <select name="group_id" id="" class="form-control">

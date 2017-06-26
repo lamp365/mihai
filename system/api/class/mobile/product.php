@@ -29,7 +29,7 @@ class product extends base
 
     public function __construct()
     {
-        error_reporting(E_ERROR);
+        //error_reporting(E_ERROR);
         
         parent::__construct();
         
@@ -2095,18 +2095,26 @@ class product extends base
         //跨天的时候 例凌晨00 点 和的第二天
         
         //获取今天执行中的活动
-        $dayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title');
-        $redata['ac_title'] = $dayActi['ac_title']!=''?$dayActi['ac_title']:'';
-        
-        $nowAreaArr = $this->ltcObj->getNowArea($dayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nowhour');
-        
+        //获取进行中的活动
+        $nowDayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title,FROM_UNIXTIME(b.ac_area_time_end, "%H") as endTime');
+        $redata['now_ac_title'] = $nowDayActi['ac_title']!=''?$nowDayActi['ac_title']:'';
+        $nowAreaArr = $this->ltcObj->getNowArea($nowDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nowhour');
         $redata['now_hour'] = $nowAreaArr['nowhour'].'点场';
-        
-        
-        $nextAreaArr = $this->ltcObj->getNextArea($dayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
-        
-        $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
-        
+
+        //获取将要进行中的活动
+        if($nowDayActi['endTime'] > 0)
+        {
+            $nextDayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title');
+            $redata['next_ac_title'] = $nowDayActi['ac_title']!=''?$nowDayActi['ac_title']:'';
+            $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
+            $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
+        }
+        else{
+            $nextDayActi = $this->ltcObj->getTomorrowActivityArea('a.ac_area,ac_title');
+            $redata['next_ac_title'] = $nextDayActi['ac_title']!=''?$nextDayActi['ac_title']:'';
+            $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
+            $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
+        }
         ajaxReturnData(0,'获取成功',$redata); 
     }
     

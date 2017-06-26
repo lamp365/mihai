@@ -248,6 +248,7 @@ class shoprulerService extends \service\publicService
             $memInfo  = mysqld_select("select * from ".table('member')." where mobile={$_GP['mobile']}");
         }
         //往 member_store_relation插入一条记录 用户可以登录管理该店铺
+       
         $insert_store = $this->inster_store_relation($memInfo);
         if(!$insert_store){
             return false;
@@ -256,6 +257,7 @@ class shoprulerService extends \service\publicService
         $usercache = get_member_account();
         $relation = array(
           'group_id'      => $_GP['group_id'],
+          'earn_rate'     => $_GP['earn_rate'],
           'sts_id'        => $usercache['store_sts_id'],
           'openid'        => $memInfo['openid'],
           'createtime'    => time(),
@@ -287,7 +289,7 @@ class shoprulerService extends \service\publicService
             'openid'       => $memInfo['openid'],
             'parent_openid'=> $top_member['sts_openid'],
             'createtime'   => time(),
-            'is_default'   => $is_default,
+            'is_default'   => $is_default
         );
         mysqld_insert('member_store_relation',$store_data);
         if(mysqld_insertid()){

@@ -117,7 +117,7 @@ class shopruler extends base
 
         //验证完毕后 在提交修改数据
         if(!empty($_GP['is_edit'])){
-            mysqld_update('seller_rule_relation',array('group_id'=>$_GP['group_id']),array('id'=>$_GP['id']));
+            mysqld_update('seller_rule_relation',array('group_id'=>$_GP['group_id'],'earn_rate'=>$_GP['earn_rate']),array('id'=>$_GP['id']));
             message('操作成功！',refresh(),'success');
         }
 
@@ -125,7 +125,10 @@ class shopruler extends base
         //获取分组
         $sql_field   = 'group_id,group_name,sts_id,description,createtime';
         $sellergroup = $rulerservice->getSellerGroup($sql_field);
-
+        
+        //获取佣金比例
+        
+        
         include page('shopruler/edituser');
     }
     /**
@@ -201,4 +204,7 @@ class shopruler extends base
             message($rulerservice->getError(),refresh(),'success');
         }
     }
+    
+    //通过用户ID获取对应的佣金信息
+    
 }

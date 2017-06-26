@@ -32,6 +32,12 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">佣金设置</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="earn_rate" placeholder="佣金设置单位%" autocomplete="off" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">角色分组</label>
             <div class="layui-input-inline">
                 <select name="group_id" lay-verify="required">

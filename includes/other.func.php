@@ -616,3 +616,11 @@ function count_days($date_time,$now_time){
     $now_new  = mktime(12, 0, 0, $now_dt['mon'], $now_dt['mday'], $now_dt['year']);
     return round(abs($date_new-$now_new)/86400);
 }
+/*删除memcached缓存  */
+    function deleteMemCache($key){
+        if (empty($key)) return '';
+        if(class_exists('Memcached')){
+            $memcache = new \Mcache();
+            $data = $memcache->delete($key);
+        }
+    }

@@ -9,11 +9,12 @@ class category extends base{
     public function get_one()
    {
        //缓存一天，如果有数据则取缓存数据
-       if(class_exists('Memcached')){
+       /* if(class_exists('Memcached')){
+           deleteMemCache('CATEGORY_ONE');
            $memcache = new \Mcache();
            $data = $memcache->get('CATEGORY_ONE');
            if (!empty($data)) ajaxReturnData(1,'',$data);
-       }
+       } */
        //判断行业数
        $list = getCurrentAct();
        if (empty($list)) ajaxReturnData(0,'暂时没有活动');

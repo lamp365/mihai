@@ -113,7 +113,7 @@ class shopindex extends base{
        $shopDishModel = new \model\shop_dish_model();
        $data = array();
        foreach ($list as $key=>$v){
-            $goods = $shopDishModel->getOneShopDish(array('id'=>$v['ac_shop_dish']),'title,thumb,marketprice');
+            $goods = $shopDishModel->getOneShopDish(array('id'=>$v['ac_shop_dish'],'status'=>1),'title,thumb,marketprice');
             if(empty($goods)) continue;
             $temp['title'] = $goods['title'];
             $temp['thumb'] = $goods['thumb'];

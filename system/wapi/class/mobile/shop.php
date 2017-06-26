@@ -53,7 +53,7 @@ class shop extends base{
         }
         
         //查询条件拼接
-        $where = " a.ac_action_id={$list['ac_id']} and a.ac_dish_status=1 ";
+        $where = " a.ac_action_id={$list['ac_id']} and a.ac_dish_status=1 and b.status=1 ";
         //区域和城市id
         if (empty($jd) || empty($wd)) {
             //高德地图根据ip获取城市
@@ -147,6 +147,7 @@ class shop extends base{
         $limit = " limit ".$limit." , ".$psize;
         $sql .= $orderby.$limit;
         $list = mysqld_selectall($sql);
+
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         
         $shopDishModel = new \model\shop_dish_model();
