@@ -248,7 +248,7 @@ function paySuccessProcess($ordersn,$setting)
 		$remark     = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
 		store_commisiongold($order['recommend_sts_id'],$order['recommend_openid'],$earn_price,3,$order['id'],$remark);
 	}
-	//推荐人得到跟店铺 所承诺的 提成收入   退款要扣掉  完成收货要变成未结算
+	//推荐人得到跟店铺 所承诺的 提成收入 冻结收入   退款要扣掉  完成收货要变成未结算
 	if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
 		$earn_price  = $order['member_earn_price']; //单位分
 		$remark      = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
@@ -1438,9 +1438,9 @@ function getRecommendOpenidAndStsid($openid){
 	//根据推荐人的openidz找到该用户从属的 店铺id
 	$recommend_sts_id = $earn_rate = 0;
 	if(!empty($recommend_openid)){
-		$recommend_sts    = mysqld_select("select sts_id,earn_rate from ".table('member_store_relation')." where openid='{$recommend_openid}'");
-		$recommend_sts_id = $recommend_sts['sts_id'];
-		$earn_rate		  = $recommend_sts['earn_rate'];
+		$recommend_sts    = mysqld_select("select sts_id,earn_rate from ".table('seller_rule_relation')." where openid='{$recommend_openid}'");
+		$recommend_sts_id = $recommend_sts['sts_id'] ?: 0;
+		$earn_rate		  = $recommend_sts['earn_rate'] ?: 0;
 	}
 	return array(
 		'recommend_openid' => $recommend_openid,

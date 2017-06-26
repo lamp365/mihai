@@ -26,9 +26,11 @@ class goodsService extends \service\publicService
             return false;
         }
         
-        
-        
         $meminfo = get_member_account();
+        
+        $is_direct = $this->dishIsDirectly();  //商品是否是分销商品，出自自营店铺的
+        $_GP['is_direct'] = $is_direct;
+        
         // 店铺id/分类1_分类2/年月/xxxxxxxx.jpg
         $alidir  = $meminfo['store_sts_id'].'/'.$_GP['store_p1'].'_'.$_GP['store_p2'].'/'.date("Ym");
         $thumb = $_GP['thumb']!=''?$_GP['thumb']:$_GP['xcimg'][0];
@@ -48,7 +50,7 @@ class goodsService extends \service\publicService
             $is_contentimg = 1;
         }
         @$contentArr['content'] = $contentArr['content']!=''?$contentArr['content']:'';
-
+        
         $data = array(
             'gid'          => $_GP['gid'],
             'store_p1'     => $_GP['store_p1'],
@@ -74,6 +76,7 @@ class goodsService extends \service\publicService
             'activity_type'=> intval($_GP['activity_type']),
             'is_index'     => intval($_GP['is_index']),
             'sts_id'       => $meminfo['store_sts_id'],
+            'is_direct'    => intval($_GP['is_direct']),
             'is_contentimg'=> $is_contentimg
         );
         if(empty($_GP['dish_id'])){
@@ -468,5 +471,16 @@ class goodsService extends \service\publicService
         $data = mysqld_select($sql);
         return $data;
     }
+    
+    //判断店铺是否是自营店，是的话，返回1 表示商品属于分销
+    public function dishIsDirectly(){
+        $memberinfo = get_member_account();
+        $data = member_store_getById($memberinfo['store_sts_id'],'sts_shop_type');
+        if($data['sts_shop_type'] == 5){
+            return 1;
+        }else{
+            return 0;
+        }
+    } 
     
 }

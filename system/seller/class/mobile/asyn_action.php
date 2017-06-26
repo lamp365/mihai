@@ -41,6 +41,13 @@ class asyn_action extends \common\controller\basecontroller
             $dishIds[] = $item['gid'];
         }
 
+        $get_store = member_store_getById($_GP['sts_id'],'sts_shop_type');
+        if($get_store['sts_shop_type'] == 5){
+            $is_direct =  1;
+        }else{
+            $is_direct =  0;
+        }
+
         foreach($allGoods as $good){
             if(in_array($good['id'],$dishIds)){
                 continue;
@@ -67,6 +74,7 @@ class asyn_action extends \common\controller\basecontroller
             $goodsData['createtime']   = time();
             $goodsData['updatetime']   = time();
             $goodsData['brand']        = $good['brand'];
+            $goodsData['is_direct']    = $is_direct;
             $goodsData['is_contentimg']= empty($contPic)? 0 : 1;
             mysqld_insert('shop_dish',$goodsData);
             if($lastid = mysqld_insertid()){
