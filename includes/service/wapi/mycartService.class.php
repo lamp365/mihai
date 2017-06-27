@@ -155,7 +155,7 @@ class mycartService extends  \service\publicService
             ':session_id' =>  $member['openid'],
             ':goodsid'    =>  $dishid
         ));
-        ppd($dish);
+
         if (empty($row)) {
             // 不存在
             $data = array(
