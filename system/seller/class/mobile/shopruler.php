@@ -16,6 +16,7 @@ class shopruler extends base
         $_GP = $this->request;
         $rulerservice = new \service\seller\shoprulerService();
         $userlist = $rulerservice->getUserlist();
+        
         include page('shopruler/userlist');
     }
 

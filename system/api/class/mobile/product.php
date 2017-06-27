@@ -1856,13 +1856,13 @@ class product extends base
         
         //获取活动  活动获取的时间段
         $dayActi = $this->ltcObj->getDayActivityArea('ac_id,b.ac_area_id,ac_title');
-        $redata['ac_title'] = $dayActi['ac_title'];
+        //$redata['ac_title'] = $dayActi['ac_title'];
         
         //进行中的活动
         if($dayActi['ac_id'] > 0)
         {
             //获取进行中的场次
-            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total');
+            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id');
             $dish_ids = '';
             foreach($redata['underwayActiDish'] as $v){
                 $dish_ids .= $v['ac_shop_dish'].',';
@@ -1899,6 +1899,15 @@ class product extends base
                 @$redata['underwayActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
                 @$redata['underwayActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
                 @$redata['underwayActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
+                @$redata['underwayActiDish'][$k]['ac_title'] = $dayActi['ac_title'].' '.$now_hour.'点场';
+                
+                //获取一级二级分类ID
+                $p1 = array();
+                $p1 = $this->ShopCate->shopCategoryInfo($v['ac_p1_id'],'name');
+                @$redata['underwayActiDish'][$k]['one_sys_cate']   = $p1['name'];
+                $p2 = array();
+                $p2 = $this->ShopCate->shopCategoryInfo($v['ac_p2_id'],'name');
+                @$redata['underwayActiDish'][$k]['two_sys_cate']   = $p2['name'];
                 unset($redata['underwayActiDish'][$k]['ac_area_time_str']);
             }
             
@@ -1941,7 +1950,7 @@ class product extends base
             }
             $data['ac_ids'] = rtrim($data['ac_ids'],',');
         }
-
+        
         //进行中的活动
         if($data['ac_ids'] != '')
         {
@@ -1973,6 +1982,15 @@ class product extends base
                 @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
                 @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
                 @$redata['trailerActiDish'][$k]['ac_title']    = $actiTitle[$v['ac_id']]; 
+                
+                //获取一级二级分类ID
+                $p1 = array();
+                $p1 = $this->ShopCate->shopCategoryInfo($v['ac_p1_id'],'name');
+                @$redata['trailerActiDish'][$k]['one_sys_cate']   = $p1['name'];
+                $p2 = array();
+                $p2 = $this->ShopCate->shopCategoryInfo($v['ac_p2_id'],'name');
+                @$redata['trailerActiDish'][$k]['two_sys_cate']   = $p2['name'];
+                
                 unset($redata['trailerActiDish'][$k]['ac_area_time_str'],$redata['trailerActiDish'][$k]['ac_time_str']);
             } 
         }
@@ -2052,7 +2070,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_dish_id'] = 1;
+        $data['ac_dish_id'] = 53;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -2080,7 +2098,15 @@ class product extends base
             $redata['dish']['thumb']         = $dishData['thumb'];
             //审核
             $redata['dish']['ac_dish_status']       = $acti_dish['ac_dish_status'];
-            $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti'];      
+            $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti']!=''?$acti_dish['ac_dish_deti']:'';     
+            
+            //获取参与的活动和时段信息 ac_action_id ac_area_id
+            $listInfo = $this->ltcObj->getActiInfo($acti_dish['ac_action_id'],'ac_title',0);
+            //$areaInfo = $this->ltcObj->getAreaInfo($acti_dish['ac_area_id'],'ac_area_title');
+            
+            $redata['dish']['ac_title'] = $listInfo['ac_title'];
+            
+            
         }
         else{
             $redata['dish'] = array();

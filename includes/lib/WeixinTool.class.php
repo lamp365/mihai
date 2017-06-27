@@ -214,6 +214,15 @@ class WeixinTool
         return $data;
     }
 
+    /**
+     * 获取小程序二维码
+     * type 1 只能是 $condition  跳转到某一个页面 不能带 ？参数  二维码数量有限
+     * type 2 可以带入场景值 默认进入到首页  $condition 【用户member中的openid】就是对应的场景值  适合做推广型扫码 绑定用户上下级  数量无限
+     * type 3 只能是 $condition  跳转到某一个页面 可以带 ？参数  二维码数量有限
+     * @param $condition
+     * @param $type
+     * @return array
+     */
     public function get_xcx_erweima($condition,$type)
     {
         if(empty($condition) || empty($type)){

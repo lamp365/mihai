@@ -137,7 +137,7 @@ function get_order($array=array()) {
 }
 
 // 修改订单状态
-function update_order_status($id, $status,$dishinfo='') {
+function update_order_status($id, $status) {
     if (empty($id) or empty($status)) {
         return false;
     }
@@ -149,6 +149,10 @@ function update_order_status($id, $status,$dishinfo='') {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
     		// 释放库存减掉销量
+			if($ogv['shop_type'] == 4){
+				//操作限时购的库存
+
+			}
     		mysqld_query("UPDATE ".table('shop_dish')." SET store_count=store_count+".$ogv['total'].", sales_num=sales_num-".$ogv['total']." WHERE id=".$ogv['dishid']);
     		// 如果已付款 订单有卖家openid，则扣除冻结佣金
 			//已经没有冻结资金了，只有确认收货后，直接把拥金记录余额中
@@ -187,24 +191,6 @@ function update_order_status($id, $status,$dishinfo='') {
 			return false;
 		}
 		//不要再次执行最底下的update
-
-    }elseif ($status == -2) {
-    	// 团购失败 退款
-		foreach ($order_goods as $ogv) {
-			if ($order['status'] == 1) {
-				// 如果已付款 修改退款状态
-				// 反还优惠券
-    			mysqld_query("UPDATE ".table('bonus_user')." SET isuse=0 WHERE order_id=".$id);
-				mysqld_query("UPDATE ".table('shop_order_goods')." SET status=2,type=3 WHERE orderid=".$id);
-				//记录售后日志
-				group_buy_aftersale($ogv,$order);
-			}else{
-				//未付款的直接关闭
-				mysqld_update("shop_order",array('closetime'=>time(),'status'=>-1) ,array('id'=>$id));
-			}
-    	}
-    	// 不执行下面的更新
-		return true;
 
     }
     $data = array('status' => $status);

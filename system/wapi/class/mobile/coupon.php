@@ -103,11 +103,13 @@ class coupon extends base{
         //$limit= ($pindex-1)*$psize;
         //$orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
         $orderby = " a.scmid DESC ";
-        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id",$orderby);
+        $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id,b.usage_mode",$orderby);
         if (empty($mycoupon)) ajaxReturnData(1,'暂无优惠券信息');
         $storeShopModel = new \model\store_shop_model();
         foreach ($mycoupon as $key=>$v){
             $temp['coupon_name'] = $v['coupon_name'];
+            $temp['scid'] = $v['scid'];
+            $temp['usage_mode'] = $v['usage_mode'];
             $temp['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
             $temp['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
             $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['store_shop_id']),'sts_name');

@@ -36,8 +36,8 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //通过listID 获取对应的listid
-   public function getAreaList($ac_id){
-       $sql = "select ac_area from {$this->table_list} where ac_id = {$ac_id}";
+   public function getAreaList($ac_id,$fields='ac_area'){
+       $sql = "select {$fields} from {$this->table_list} where ac_id = {$ac_id}";
        $rs = mysqld_select($sql);
        return $rs['ac_area'];
    }
@@ -248,7 +248,7 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //
-   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id',$shop=1){
+   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id,,ac_p1_id,ac_p2_id',$shop=1){
        $data['page'] = max(1, intval($data['page']));
        $data['limit'] = $data['limit']>0?$data['limit']:10; 
        $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
@@ -310,12 +310,17 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //获取未被停止的活动
-   public function getActiInfo($ac_action_id,$fields='*'){
+   public function getActiInfo($ac_action_id,$fields='*',$isstatus=1){
+       $where = '';
        if($ac_action_id <= 0)
        {
            return -1;
        }
-       $sql = "select {$fields} from {$this->table_list} where ac_id = {$ac_action_id} and ac_status = 1";
+       if($isstatus > 0)
+       {
+           $where = ' and ac_status = 1';
+       }
+       $sql = "select {$fields} from {$this->table_list} where ac_id = {$ac_action_id} {$where}";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -323,7 +328,7 @@ class limitedTimepurChaseService extends \service\publicService {
    //获取进行中的小时数
    public function getNowArea($ac_area_id,$fields='*'){
        $ac_area_id = intval($ac_area_id);
-       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') >= {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
+       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') > {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -332,6 +337,14 @@ class limitedTimepurChaseService extends \service\publicService {
    public function getNextArea($ac_area_id,$fields='*'){
        $ac_area_id = intval($ac_area_id);
        $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') > {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //通过区域ID获取对应信息
+   public function getAreaInfo($ac_area_id,$fields='*'){
+       //squdian_activity_area
+       $sql = "select {$fields} from {$this->table_area} where ac_area_id = {$ac_area_id}";
        $rs  = mysqld_select($sql);
        return $rs;
    }

@@ -5,6 +5,18 @@
 
 namespace wapi\controller;
 class shop extends base{
+    public function ccc(){
+        $store = mysqld_selectall("select * from ".table('store_shop'));
+        foreach($store as $one){
+            $sts_id = $one['sts_id'];
+            $find   = mysqld_select("select * from ".table('store_extend_info')." where store_id={$sts_id}");
+            if(empty($find)){
+                //插入商铺的扩展信息表
+                mysqld_insert('store_extend_info',array('store_id'=>$sts_id,'createtime'=>time()));
+            }
+        }
+    }
+
     /**
      * 商品列表页
      *   */

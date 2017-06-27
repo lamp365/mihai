@@ -12,6 +12,7 @@ class order extends base {
       }
 
       // 超过15分钟的未付款订单将会自动关闭
+      //取消订单后 要释放库存 需要封装一个方法
       $timeout = time()-900;
       mysqld_query("UPDATE ".table('shop_order')." SET status=-1,closetime=".time()." WHERE ordertype=4 AND status=0 AND deleted=0 AND createtime<".$timeout);
   }

@@ -122,4 +122,15 @@ class confirm extends base
         }
     }
 
+    public function surepay()
+    {
+        $_GP =  $this->request;
+        $ordersn = $_GP['ordersn'];
+        if(empty($ordersn)){
+            ajaxReturnData(0,'参数有误！');
+        }
+        $set     = globaSetting();
+        paySuccessProcess($ordersn,$set);
+        ajaxReturnData(1,'已确认支付！');
+    }
 }

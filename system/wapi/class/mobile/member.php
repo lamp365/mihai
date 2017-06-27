@@ -30,4 +30,24 @@ class member extends base
             ajaxReturnData(1,$result['message']);
         }
     }
+
+    public function bindRelation()
+    {
+        $_GP = $this->request;
+        $member = get_member_account();
+        $openid   = $member['openid'];
+        $p_openid = $_GP['openid'];
+        if(!empty($r_openid) && !empty($openid)){
+            //如果存在过不用插入
+            $find = mysqld_select("select id from ".table('member_blong_relation')." where p_opend='{$p_openid}' and m_openid='{$openid}'");
+            if(empty($find)){
+                $insted_data['p_openid']   = $p_openid;
+                $insted_data['m_openid']   = $openid;
+                $insted_data['createtime'] = time();
+                $insted_data['type']       = 2;
+                mysqld_insert('member_blong_relation',$insted_data);
+            }
+        }
+        ajaxReturnData(1,'操作成功');
+    }
 }
