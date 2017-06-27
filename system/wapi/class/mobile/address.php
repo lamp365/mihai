@@ -25,6 +25,9 @@ class address extends base{
         //$need_identity = isset($_GP['need_identity']) ? intval($_GP['need_identity']) : 0;
         $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'isdefault'=>1,'deleted'=>0),'realname,mobile,province,city,area,address,idnumber');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
+        if ($info['mobile']){
+            $info['mobile'] = substr_replace($info['mobile'],'****',3,4);
+        }
         /* if ($need_identity){
             if (empty($info['idnumber'])) ajaxReturnData(1,'没有填写身份证');
         }    */     
@@ -39,7 +42,7 @@ class address extends base{
         $id = intval($_GP['id']);
         if (empty($id)) ajaxReturnData(0,'参数错误');
         $shopAddressModel = new \model\shop_address_model();
-        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0),'id,realname,mobile,province,city,area,address,idnumber');
+        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0));
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
         ajaxReturnData(1,'',$info);
     }
@@ -61,9 +64,10 @@ class address extends base{
         $openid = $this->openid;
         $_GP = $this->request;
         $id = $_GP['id'];
-        if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['province']) || empty($_GP['city']) || empty($_GP['address']) || empty($_GP['area'])) {
+        if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['province']) || empty($_GP['city']) || empty($_GP['address']) || empty($_GP['area']) || empty($_GP['province_id']) || empty($_GP['city_id']) || empty($_GP['area_id'])) {
             ajaxReturnData('0','参数不完整');
         }
+        if (!isTelNumber($_GP['mobile'])) ajaxReturnData('0','请填写正确的手机号码');
         mysqld_update('shop_address',array('isdefault'=>0),array('isdefault'=>1,'openid'=>$openid,'deleted'=>0));
         $array = array(
             'realname'  =>$_GP['realname'],
@@ -75,6 +79,9 @@ class address extends base{
             'openid'    =>$openid,
             'isdefault' =>1,
             'idnumber'  =>$_GP['idnumber'],
+            'province_id'  =>$_GP['province_id'],
+            'city_id'  =>$_GP['city_id'],
+            'area_id'  =>$_GP['area_id'],
         );
         if ($id){
             $shopAddressModel = new \model\shop_address_model();
@@ -87,30 +94,7 @@ class address extends base{
             if (mysqld_insertid()) ajaxReturnData('1','添加成功');
         }
     }
-    /**
-     * 更新地址
-     *   */
-    public function updateAddress(){
-        $openid = $this->openid;
-        $_GP = $this->request;
-        $id = intval($_GP['id']);
-          if (empty($id) || empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['province']) || empty($_GP['city']) || empty($_GP['address']) || empty($_GP['area'])) {
-            ajaxReturnData('0','参数不完整');
-        }
-        mysqld_update('shop_address',array('isdefault'=>0),array('isdefault'=>1,'openid'=>$openid,'deleted'=>0));
-        $array = array(
-            'realname'  =>$_GP['realname'],
-            'mobile'    =>$_GP['mobile'],
-            'province'  =>$_GP['province'],
-            'city'      =>$_GP['city'],
-            'area'      =>$_GP['area'],
-            'address'   =>$_GP['address'],
-            'idnumber'  =>$_GP['idnumber'],
-            'isdefault' =>1
-        );
-        mysqld_update('shop_address',$array,array('id'=>$id,'openid'=>$openid,'deleted'=>0));
-        ajaxReturnData('1','修改成功');
-    }
+  
     /**
      * 获取省、市、区的接口
      *   */
@@ -130,5 +114,20 @@ class address extends base{
         if (empty($id)) ajaxReturnData('0','参数错误，删除失败');
         mysqld_delete('shop_address',array('id'=>$id));
         ajaxReturnData('1','删除成功');
+    }
+    /**
+     * 设置默认地址
+     *   */
+    public function setDefault(){
+        $openid = $this->openid;
+        $_GP = $this->request;
+        $id = intval($_GP['id']);
+        if (empty($id)) ajaxReturnData('0','参数错误');
+        $shopAddressModel = new \model\shop_address_model();
+        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0),'id');
+        if (empty($info)) ajaxReturnData('0','参数id错误');
+        mysqld_update('shop_address',array('isdefault'=>0),array('isdefault'=>1,'openid'=>$openid));
+        mysqld_update('shop_address',array('isdefault'=>1),array('isdefault'=>0,'openid'=>$openid,'deleted'=>0,'id'=>$id));
+        ajaxReturnData('1','设置成功');
     }
 }

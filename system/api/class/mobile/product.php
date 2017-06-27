@@ -29,7 +29,7 @@ class product extends base
 
     public function __construct()
     {
-        //error_reporting(E_ERROR);
+        error_reporting(E_ERROR);
         
         parent::__construct();
         
@@ -1862,7 +1862,7 @@ class product extends base
         if($dayActi['ac_id'] > 0)
         {
             //获取进行中的场次
-            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id');
+            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id,ac_area_time_str');
             $dish_ids = '';
             foreach($redata['underwayActiDish'] as $v){
                 $dish_ids .= $v['ac_shop_dish'].',';
@@ -1884,7 +1884,7 @@ class product extends base
                     @$redata['underwayActiDish'][$k]['hour']        = 0;
                 }
                 else{
-                    @$redata['underwayActiDish'][$k]['hour']        = $now_hour;
+                    @$redata['underwayActiDish'][$k]['hour']        = date('H',$v['ac_area_time_str']);
                 }
                 
                 /*
@@ -1899,7 +1899,8 @@ class product extends base
                 @$redata['underwayActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
                 @$redata['underwayActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
                 @$redata['underwayActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
-                @$redata['underwayActiDish'][$k]['ac_title'] = $dayActi['ac_title'].' '.$now_hour.'点场';
+                @$redata['underwayActiDish'][$k]['ac_title'] = $dayActi['ac_title'];
+                @$redata['underwayActiDish'][$k]['area'] = date('H',$v['ac_area_time_str']);
                 
                 //获取一级二级分类ID
                 $p1 = array();
@@ -1967,10 +1968,13 @@ class product extends base
             $dishInfo = array();      
             $dishData = array();         
             $dishData = $this->shopdish->getDishs($dish_ids,'id,marketprice,title,thumb');
-            foreach($dishData as $v){
-                $dishInfo[$v['id']]['marketprice'] = FormatMoney($v['marketprice'],2);
-                $dishInfo[$v['id']]['title']       = $v['title'];
-                $dishInfo[$v['id']]['thumb']       = $v['thumb'];
+            if($dishData != '')
+            {
+                foreach($dishData as $v){
+                    $dishInfo[$v['id']]['marketprice'] = FormatMoney($v['marketprice'],2);
+                    $dishInfo[$v['id']]['title']       = $v['title'];
+                    $dishInfo[$v['id']]['thumb']       = $v['thumb'];
+                }
             }
             
             
@@ -2070,7 +2074,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        $data['ac_dish_id'] = 53;
+        //$data['ac_dish_id'] = 53;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -2106,6 +2110,9 @@ class product extends base
             
             $redata['dish']['ac_title'] = $listInfo['ac_title'];
             
+            $redata['dish']['ac_dish_sell_total'] = $acti_dish['ac_dish_sell_total'];
+            $redata['dish']['ac_dish_id'] = $acti_dish['ac_dish_id'];
+            
             
         }
         else{
@@ -2125,7 +2132,7 @@ class product extends base
         $nowDayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title,FROM_UNIXTIME(b.ac_area_time_end, "%H") as endTime');
         $redata['now_ac_title'] = $nowDayActi['ac_title']!=''?$nowDayActi['ac_title']:'';
         $nowAreaArr = $this->ltcObj->getNowArea($nowDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nowhour');
-        $redata['now_hour'] = $nowAreaArr['nowhour'].'点场';
+        $redata['now_hour'] = $nowAreaArr['nowhour']!==null?$nowAreaArr['nowhour'].'点场':'';
 
         //获取将要进行中的活动
         if($nowDayActi['endTime'] > 0)
@@ -2133,15 +2140,50 @@ class product extends base
             $nextDayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title');
             $redata['next_ac_title'] = $nowDayActi['ac_title']!=''?$nowDayActi['ac_title']:'';
             $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
-            $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
+            $redata['next_hour'] = $nextAreaArr['nexthour']!==null?$nextAreaArr['nexthour'].'点场':'';
         }
         else{
             $nextDayActi = $this->ltcObj->getTomorrowActivityArea('a.ac_area,ac_title');
             $redata['next_ac_title'] = $nextDayActi['ac_title']!=''?$nextDayActi['ac_title']:'';
             $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
-            $redata['next_hour'] = $nextAreaArr['nexthour'].'点场';
+            $redata['next_hour'] = $nextAreaArr['nexthour']!==null?$nextAreaArr['nexthour'].'点场':'';
         }
         ajaxReturnData(1,'获取成功',$redata); 
     }
+    
+    //筛选 获取下一场进行中的活动 以及各自对应的时段
+    public function getActiSearch(){
+        $data = $this->request;
+        $redata = array();
+        
+        $redata['allList'] = $this->ltcObj->getAllList('ac_area,ac_title');
+
+        if($redata['allList'] != '')
+        {
+            $listArr = array();;
+            foreach($redata['allList'] as $k=>$v){
+                $listArr[] = $v['ac_area'];
+            }
+            $listArr = array_unique($listArr); 
+            $listIds = implode(',', $listArr);
+
+            $areaInfo = $this->ltcObj->getAllArea($listIds);
+            $areaData = array();
+            foreach($areaInfo as $v){
+                $areaData[$v['ac_list_id']][] = $v;
+            }
+
+            foreach($redata['allList'] as $k=>$v){
+                $redata['allList'][$k]['areaList'] = $areaData[$v['ac_area']];
+            }
+        }
+        else{
+            $redata['allList'] = array();
+        }
+        
+        ajaxReturnData(1,'获取成功',$redata); 
+    }
+    
+    
     
 }

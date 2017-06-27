@@ -15,6 +15,7 @@ class limitedTimepurChaseService extends \service\publicService {
     private $dishObj;           //时间戳
     private $nowtime;           //时间戳
     private $nowHour;           //当前小时
+    private $nowDay;           //当日0点时间戳
             
     function __construct() {
        parent::__construct();
@@ -26,6 +27,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $this->dishObj      = new ShopDishService();
        $this->storeObj     = new shopStoreService();
        $this->nowHour      = date('H',time());
+       $this->nowDay       = strtotime(date('Y-m-d',time()));
    }
    
    //获取时间区间列表
@@ -348,6 +350,21 @@ class limitedTimepurChaseService extends \service\publicService {
        $rs  = mysqld_select($sql);
        return $rs;
    }
+   
+   //获取未过期的所有活动
+   public function getAllList($fields='*'){
+       $sql = "select {$fields} from {$this->table_list} where ac_time_end >= {$this->nowDay} and ac_status = 1";   //$this->nowDay
+       $rs  = mysqld_selectall($sql);
+       return $rs;
+   }
+   
+   //通过区域码获取对应的时段信息
+   public function getAllArea($ac_list_id,$fields='*'){
+        $sql = "select {$fields} from {$this->table_area} where ac_list_id in ({$ac_list_id})";   //$this->nowDay
+        $rs  = mysqld_selectall($sql);
+        return $rs;
+   }
+   
    
 } 
 ?>

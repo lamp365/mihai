@@ -617,10 +617,23 @@ function count_days($date_time,$now_time){
     return round(abs($date_new-$now_new)/86400);
 }
 /*删除memcached缓存  */
-    function deleteMemCache($key){
-        if (empty($key)) return '';
-        if(class_exists('Memcached')){
-            $memcache = new \Mcache();
-            $data = $memcache->delete($key);
-        }
+function deleteMemCache($key){
+    if (empty($key)) return '';
+    if(class_exists('Memcached')){
+        $memcache = new \Mcache();
+        $data = $memcache->delete($key);
     }
+}
+/**
+ * 验证是否是手机号码
+ *
+ * @param string $phone 待验证的号码
+ * @return boolean 如果验证失败返回false,验证成功返回true
+ */
+function isTelNumber($phone) {
+    if (strlen ( $phone ) != 11 || ! preg_match ( '/^1[3|4|5|7|8][0-9]\d{4,8}$/', $phone )) {
+        return false;
+    } else {
+        return true;
+    }
+}
