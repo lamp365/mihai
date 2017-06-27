@@ -30,8 +30,6 @@ class shopindex extends base{
        $_GP = $this->request;
        $jd = $_GP['longitude'];//经度
        $wd = $_GP['latitude'];//纬度
-       //$jd = '';
-       //$wd = '';
        $where = "ac_action_id={$list['ac_id']} and ac_dish_status=1 ";
        if (empty($jd) || empty($wd)){
            $cityCode = getCityidByIp();
@@ -39,10 +37,14 @@ class shopindex extends base{
        }else{
            $jdwd = getAreaid($jd,$wd);
            if (empty($jdwd)) ajaxReturnData(0,'参数错误');
-           if ($jdwd['status'] == 0) ajaxReturnData(0,$jdwd['mes']);
-           $ac_city = $jdwd['ac_city'];
-           $ac_city_area = $jdwd['ac_city_area'];
-           $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+           if ($jdwd['status'] == 0) {
+               $cityCode = $jdwd['ac_city'];
+               $where .=" and (ac_city='$cityCode' or ac_city=0)";
+           }else{
+               $ac_city = $jdwd['ac_city'];
+               $ac_city_area = $jdwd['ac_city_area'];
+               $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+           }
        }
        $actDishModel = new \model\activity_dish_model();
        foreach ($return as $key=>$val){
@@ -75,10 +77,15 @@ class shopindex extends base{
        }else{
            $return = getAreaid($jd,$wd);
            if (empty($return)) ajaxReturnData(0,'参数错误');
-           if ($return['status'] == 0) ajaxReturnData(0,$return['mes']);
-           $ac_city = $return['ac_city'];
-           $ac_city_area = $return['ac_city_area'];
-           $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+           if ($return['status'] == 0) {
+               $cityCode = $return['ac_city'];
+               $where .=" and (ac_city='$cityCode' or ac_city=0)";
+           }else {
+               $ac_city = $return['ac_city'];
+               $ac_city_area = $return['ac_city_area'];
+               $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' ,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+           }
+           
        }
        
        //分页取数据

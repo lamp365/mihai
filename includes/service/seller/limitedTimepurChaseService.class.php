@@ -353,7 +353,7 @@ class limitedTimepurChaseService extends \service\publicService {
    
    //获取未过期的所有活动
    public function getAllList($fields='*'){
-       $sql = "select {$fields} from {$this->table_list} where ac_time_end >= {$this->nowDay} and ac_status = 1";   //$this->nowDay
+       $sql = "select {$fields} from {$this->table_list} as a left join {$this->table_dish} as b on a.ac_id = b.ac_action_id where ac_time_end >= {$this->nowDay} and ac_status = 1 and ac_shop = {$this->memberData['store_sts_id']}";   //$this->nowDay
        $rs  = mysqld_selectall($sql);
        return $rs;
    }
