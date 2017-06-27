@@ -62,7 +62,7 @@ class Activity {
 			$time_end = $timezone + $secons;
             $timezone = $time_end + 1;
 		    $area_data = array(
-				 'ac_area_title'       => $time,
+				 'ac_area_title'       => date('H:i:s', $time_str)."-".date('H:i:s', $time_end),
                  'ac_area_time_str'   => $time_str,
 				 'ac_area_time_end'  => $time_end,
 				 'ac_list_id'          =>  $area_id
