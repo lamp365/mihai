@@ -1438,3 +1438,32 @@ function getRecommendOpenidAndStsid($openid){
 		'earn_rate' 	   => $earn_rate,
 	);
 }
+
+/**
+ * 库存操作
+ * @param $dishid
+ * @param $buy_num
+ * @param $action_id
+ * @param $type  1 表示卖出扣掉库存  2表示 关闭 等 库存回放回去
+ */
+function operateStoreCount($dishid,$buy_num,$action_id,$type){
+	if($type == 1){
+		$sql1 = "update ".table('shop_dish')." set store_count=store_count-{$buy_num},sales_num=sales_num+{$buy_num}";
+		$sql1.= " where id={$dishid}";
+		mysqld_query($sql1);
+		if($action_id){
+			$sql = "update ".table('activity_dish')." set ac_dish_total=ac_dish_total-{$buy_num},ac_dish_sell_total=ac_dish_sell_total+{$buy_num}";
+			$sql .= " where ac_shop_dish={$dishid} and ac_action_id={$action_id}";
+			mysqld_query($sql);
+		}
+	}else if($type == 2){
+		$sql1 = "update ".table('shop_dish')." set store_count=store_count+{$buy_num},sales_num=sales_num-{$buy_num}";
+		$sql1.= " where id={$dishid}";
+		mysqld_query($sql1);
+		if($action_id){
+			$sql = "update ".table('activity_dish')." set ac_dish_total=ac_dish_total+{$buy_num},ac_dish_sell_total=ac_dish_sell_total-{$buy_num}";
+			$sql .= " where ac_shop_dish={$dishid} and ac_action_id={$action_id}";
+			mysqld_query($sql);
+		}
+	}
+}

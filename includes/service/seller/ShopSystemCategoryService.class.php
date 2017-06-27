@@ -110,9 +110,13 @@ class ShopSystemCategoryService extends \service\publicService
        foreach($two as $k=>$v){
            $data['oneCategory'][$v['parentid']]['twoCategory'][] = $v;
        }
-       
-       $data['oneCategory'] = array_values($data['oneCategory']);
-
+       if($data['oneCategory'] != '')
+       {
+        $data['oneCategory'] = array_values($data['oneCategory']);
+       }
+       else{
+           $data['oneCategory'] =  array();
+       }
        return $data;
    }
    

@@ -1284,7 +1284,7 @@ class product extends base
          $redata['store_member'] = $member['store_sts_name'];
          
          //获取店铺分类
-         $cate_list = $data = $this->ShopCategory->getShopCategoryTree();
+         $cate_list = $this->ShopCategory->getShopCategoryTree();
          
          $oneids = '';
          $twoids = '';
@@ -1332,6 +1332,10 @@ class product extends base
             }
          }
          
+         if($cate_list['oneCategory'] == '')
+         {
+             $cate_list['oneCategory'] = array();
+         }
          //系统分类
          $cate_list['systemGroup'] = $this->ShopSystemCategory->ShopCateGroupListTwo();
 
@@ -1678,7 +1682,13 @@ class product extends base
         //测试数据结束
         
         $redata = array();
-        $redata['category'] = $this->ShopCate->twoShopCategory($data['parentid'],'name,id');
+        //一级分类
+        $redata['systemGroup']['oneCategory'] = $this->ShopCate->twoShopCategory($data['parentid'],'name as cat_name,id');
+        
+        foreach($redata['systemGroup']['oneCategory'] as $k=>$v){
+            $redata['systemGroup']['oneCategory'][$k]['twoCategory'] = $this->ShopCate->twoShopCategory($v['id'],'name as cat_name,id');
+        }
+        
         ajaxReturnData(1,'获取成功',$redata);
     }
     
@@ -2073,7 +2083,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_dish_id'] = 53;
+        //$data['ac_dish_id'] = 58;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -2086,7 +2096,7 @@ class product extends base
             $dishInfo = array();      
             $dishData = array();         
             $data['dish_id'] = $acti_dish['ac_shop_dish'];
-            $dishData = $this->shopdish->getDishContent($data,'id,marketprice,title,thumb');
+            $dishData = $this->shopdish->getDishContent($data,'id,marketprice,title,thumb,store_count');
             //分类
             $oneCate = $this->ShopCate->shopCategoryInfo($acti_dish['ac_p1_id'],'name');
             $twoCate = $this->ShopCate->shopCategoryInfo($acti_dish['ac_p2_id'],'name');
@@ -2099,6 +2109,7 @@ class product extends base
             $redata['dish']['marketprice']   = FormatMoney($dishData['marketprice'],2);
             $redata['dish']['title']         = $dishData['title'];
             $redata['dish']['thumb']         = $dishData['thumb'];
+            $redata['dish']['store_count']         = $dishData['store_count'];
             //审核
             $redata['dish']['ac_dish_status']       = $acti_dish['ac_dish_status'];
             $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti']!=''?$acti_dish['ac_dish_deti']:'';     
@@ -2114,7 +2125,7 @@ class product extends base
             $redata['dish']['ac_action_id'] = $acti_dish['ac_action_id']; //活动ID
             $redata['dish']['ac_p1_id'] = $acti_dish['ac_p1_id']; //一级分类ID
             $redata['dish']['ac_p2_id'] = $acti_dish['ac_p2_id']; //二级分类ID
-            $redata['dish']['area'] = intval(date('H',$areaInfo['ac_area_title']));
+            $redata['dish']['area'] = intval(date('H',$areaInfo['ac_area_time_str']))>0?intval(date('H',$areaInfo['ac_area_time_str'])).'点场':'全天场';
             $redata['dish']['ac_area_id'] = $acti_dish['ac_area_id'];
             
         }

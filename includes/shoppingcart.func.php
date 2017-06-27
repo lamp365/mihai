@@ -30,7 +30,7 @@ function checkDishIsActive($dishid,$store_count){
 		//那么看看时间开始了么
 		if($active['ac_time_str'] < time()){
 			//有活动，那么判断该商品是不是属于限时购商品
-			$sql = "select ac_dish_id,ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
+			$sql = "select ac_dish_id,ac_shop_dish,ac_dish_status,ac_dish_total,ac_dish_price,ac_action_id from ".table('activity_dish');
 			$sql .= " where ac_action_id={$active['ac_id']} and ac_shop_dish={$dishid}";
 			$find = mysqld_select($sql);
 			if (!empty($find)) {

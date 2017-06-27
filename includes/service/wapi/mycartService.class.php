@@ -32,10 +32,29 @@ class mycartService extends  \service\publicService
                 $sql = "select ac_dish_price,ac_dish_status,ac_dish_total from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']} and ac_action_id={$active['ac_id']}";
                 $act_dish = mysqld_select($sql);
 
-                $field = 'id,title,marketprice,thumb,sts_id';
+                $field = 'id,title,marketprice,thumb,sts_id,store_count';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
+                $store_count = $dish['store_count'];
+                $time_price  = $dish['marketprice'];
+                $action_id   = 0;
 
-                if(empty($dish) || empty($act_dish) || $act_dish['ac_dish_status'] == 0 || $act_dish['ac_dish_total'] == 0){
+                if(empty($dish) || $dish['status'] ==0){
+                    $dish['ac_dish_status']  =  0;
+                    $dish['ac_dish_total']   =  0;
+                    $dish['cart_id']         =  $item['id'];
+                    $out_gooslist[]          = $dish;
+                    continue;
+                }
+
+                //判断商品是否属于活动中的商品
+                $active = checkDishIsActive($dish['id'],$dish['store_count']);
+                if(!empty($active)){
+                    $store_count = $active['ac_dish_total'];
+                    $time_price  = $active['ac_dish_price'];
+                    $action_id   = $active['ac_action_id'];
+                }
+
+                if($action_id && ($active['ac_dish_status'] == 0 || $active['ac_dish_total'] == 0)){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
                     $dish['ac_dish_status']  = $act_dish['ac_dish_status'] ?: 0;
                     $dish['ac_dish_total']   = $act_dish['ac_dish_total'] ?: 0;
@@ -47,13 +66,14 @@ class mycartService extends  \service\publicService
 
                 $store = member_store_getById($item['sts_id'],'sts_name,sts_id,sts_shop_type');
 
-                $dish['time_price']        = FormatMoney($act_dish['ac_dish_price'],0);
+                $dish['time_price']        = FormatMoney($time_price,0);
                 $dish['marketprice']       = FormatMoney($dish['marketprice'],0);
                 $dish['buy_num']           = $item['total'];
                 $dish['ac_dish_status']    = $act_dish['ac_dish_status'];
                 $dish['ac_dish_total']     = $act_dish['ac_dish_total'];
                 $dish['cart_id']           = $item['id'];
                 $dish['to_pay']            = $item['to_pay'];
+                $dish['action_id']         = $action_id;
 
 
                 if(!array_key_exists($item['sts_id'],$gooslist)){

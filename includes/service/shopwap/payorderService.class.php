@@ -19,7 +19,6 @@ class payorderService extends  \service\publicService
         $pay_ordersn     = array();
         $pay_total_money = 0;
         $pay_title       = '';
-        $stock_dishids   = array();  //存放需要操作库存的宝贝id
 
         if(empty($data['address_id'])){
             $this->error = '请选择对应的收货地址！';
@@ -97,7 +96,7 @@ class payorderService extends  \service\publicService
             $order_data['recommend_sts_id'] = $recommend_sts_id;
             $order_data['recommend_openid'] = $recommend_openid;
             $order_data['ordersn']          = $ordersns;
-            $order_data['ordertype']        = 4;                        //限时购
+            $order_data['ordertype']        = 0;                        //限时购
             $order_data['price']            = $price - $bonus_price;    //需要支付的总金额
             $order_data['goodsprice']       = $goodsprice;              //商品价格
             $order_data['dispatchprice']    = $express_fee;             //运费
@@ -125,7 +124,8 @@ class payorderService extends  \service\publicService
                 if(!empty($bonus_id))
                     mysqld_update('store_coupon_member',array('status'=>1),array('scmid'=>$bonus_id));
 
-                $dishlist = $item['dishlist'];
+                $dishlist    = $item['dishlist'];
+                $is_action   = 0;
                 foreach($dishlist as $one_dish){
                     $pay_title    = str_replace('&','',$one_dish['title']);  //去除带有 & 的字符
                     //获取商品对应的提成的收入价格 商家所得佣金和商家约定给推广员的提成   返回分为单位
@@ -136,7 +136,8 @@ class payorderService extends  \service\publicService
                     $o_good['orderid']               = $orderid;
                     $o_good['sts_id']                = $item['sts_id'];
                     $o_good['dishid']                = $one_dish['id'];
-                    $o_good['shop_type']             = 4;
+                    $o_good['action_id']             = $one_dish['action_id'];
+                    $o_good['shop_type']             = empty($one_dish['action_id']) ? 0 : 4;
                     $o_good['price']                 = FormatMoney($one_dish['time_price'],1);  //商品单价 转为分
                     $o_good['store_earn_price']      = $store_earn_price;   //单个商品 提成 单位 分
                     $o_good['member_earn_price']     = $member_earn_price;   //单个商品 提成 单位 分
@@ -146,19 +147,29 @@ class payorderService extends  \service\publicService
                     if(!$res2){
                         //如果不成功  把提交给第三方的总额中去除该商品的价格
                         $pay_total_money = $pay_total_money -  $o_good['price'];
+                    }else{
+                        if($one_dish['action_id']){
+                            $is_action = 1;
+                        }
+                        //单个商品提成乘以个数
+                        $total_store_earn_price  += $store_earn_price*$o_good['total'];
+                        $total_member_earn_price += $member_earn_price*$o_good['total'];
+                        //库存的操作减掉 卖出数量加1
+                        operateStoreCount($one_dish['id'],$one_dish['buy_num'],$one_dish['action_id'],1);
                     }
 
-                    //单个商品提成乘以个数
-                    $total_store_earn_price  += $store_earn_price*$o_good['total'];
-                    $total_member_earn_price += $member_earn_price*$o_good['total'];
-                    //用于后续做库存操作，以上逻辑可复用，但是库存操作不能复用
-                    $stock_dishids[$one_dish['id']] = $one_dish['buy_num'];
                 }
+
                 //跟新该笔订单的总提成
-                mysqld_update('shop_order',array(
+                $order_update = array(
                     'store_earn_price' => $total_store_earn_price,
                     'member_earn_price'=> $total_member_earn_price
-                ),array('id'=>$orderid));
+                );
+                //有一个是限时购的 该订单表示限时购订单
+                if($is_action){
+                    $order_update['ordertype'] = 4;
+                }
+                mysqld_update('shop_order',$order_update,array('id'=>$orderid));
             }
         }
 
@@ -167,8 +178,7 @@ class payorderService extends  \service\publicService
         return array(
             'pay_ordersn'     => $pay_ordersn,  //数组型的 订单号
             'pay_total_money' => $pay_total_money,
-            'pay_title'       => $pay_title,
-            'stock_dishids'   => $stock_dishids,
+            'pay_title'       => $pay_title
         );
     }
 
