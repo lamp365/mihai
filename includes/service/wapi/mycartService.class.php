@@ -155,7 +155,7 @@ class mycartService extends  \service\publicService
             ':session_id' =>  $member['openid'],
             ':goodsid'    =>  $dishid
         ));
-
+        ppd($dish);
         if (empty($row)) {
             // 不存在
             $data = array(
@@ -171,7 +171,6 @@ class mycartService extends  \service\publicService
                 return false;
             }
             mysqld_insert('shop_cart', $data);
-            ajaxReturnData(0,$data);
         } else {
             // 累加最多限制购买数量
             $t_num = $total + $row['total'];
