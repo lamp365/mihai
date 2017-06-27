@@ -728,12 +728,38 @@
                                         </a></li>
                                         ";
                                 }
-
                             ?>
                         </ul>
                     </li>
                 <?php }?>
+                <?php if (checkAdmin() ||in_array("action-config",$menurule)) { ?>
+                    <li class="yingxiao">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-gift"></i>
+                            <span class="menu-text"> 活动管理 </span>
 
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+                            <?php
+                                foreach($parentMenuList[MenuEnum::ACTION_MANGE] as $row){
+                                    $zi = "活动管理 - > {$row['moddescription']}";
+                                    if(empty($row['modop'])){
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
+                                    }else{
+                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
+                                    }
+                                    echo "
+                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
+                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
+                                        </a></li>
+                                        ";
+                                }
+                            ?>
+                        </ul>
+                    </li>
+                <?php }?>
                 <?php if (checkAdmin() ||in_array("shop-config",$menurule)) { ?>
 
                     <li class="jichu">

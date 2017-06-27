@@ -38,7 +38,8 @@ class mycartService extends  \service\publicService
                 $time_price  = $dish['marketprice'];
                 $status      = $dish['status'];
                 $action_id   = 0;
-                if(empty($dish) || $dish['status'] ==0){
+
+                if(empty($dish) || $store_count ==0 || $store_count == 0){
                     $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
@@ -50,13 +51,13 @@ class mycartService extends  \service\publicService
                     $store_count = $active['ac_dish_total'] ?: 0;
                     $time_price  = $active['ac_dish_price'] ?: 0;
                     $status      = $active['ac_dish_status'] ?: 0;
-                    $action_id   = $active['ac_action_id'];
+                    $action_id   = $active['ac_action_id'] ?: 0;
                 }
-                if($action_id && ($active['ac_dish_status'] == 0 || $active['ac_dish_total'] == 0)){
+
+                $dish['store_count'] = $store_count;
+                $dish['status']      = $status;
+                if( $store_count ==0 || $store_count == 0){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
-                    $dish['ac_dish_status']  = $act_dish['ac_dish_status'] ?: 0;
-                    $dish['ac_dish_total']   = $act_dish['ac_dish_total'] ?: 0;
-                    $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
                 }
@@ -67,8 +68,6 @@ class mycartService extends  \service\publicService
                 $dish['time_price']        = FormatMoney($time_price,0);
                 $dish['marketprice']       = FormatMoney($dish['marketprice'],0);
                 $dish['buy_num']           = $item['total'];
-                $dish['ac_dish_status']    = $act_dish['ac_dish_status'];
-                $dish['ac_dish_total']     = $act_dish['ac_dish_total'];
                 $dish['cart_id']           = $item['id'];
                 $dish['to_pay']            = $item['to_pay'];
                 $dish['action_id']         = $action_id;
