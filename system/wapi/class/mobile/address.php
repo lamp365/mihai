@@ -112,4 +112,14 @@ class address extends base{
         $return = $regionModel->getAllRegion(array('parent_id'=>$pid),'region_id,region_code,region_name,parent_id');
         ajaxReturnData('1','',$return);
     }
+    /**
+     * 删除地址
+     *   */
+    public function delAddress(){
+        $_GP = $this->request;
+        $id = intval($_GP['id']);
+        if (empty($id)) ajaxReturnData('0','参数错误，删除失败');
+        mysqld_delete('shop_address',array('id'=>$id));
+        ajaxReturnData('1','删除成功');
+    }
 }
