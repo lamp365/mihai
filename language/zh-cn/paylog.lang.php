@@ -34,6 +34,6 @@ return array(
     //购买店铺等级
     'LOG_BUY_SHOP_LEVEL_REMARK'=> '购买店铺等级',
 
-    //商家的账单信息
+    //商家的账单信息  推广员得到的提成记录   店铺得到的佣金记录
     'LOG_SHOPBUY_TIP_SELLER'   => '商品收入',
 );

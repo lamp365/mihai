@@ -31,7 +31,8 @@ function LANG($name_key = '',$module = 'common',$replace = '') {
     $default_lang = 'zh-cn';
     $module       = $module ?: 'common';
     //先加载公用语言包 先写死zh-cn，以后做多国可以用cookie来对应其他国家的文件夹
-    $_lang = include_once  WEB_ROOT . '/language/'.$default_lang.'/'.$module.'.lang.php';
+    $file_url =  WEB_ROOT . '/language/'.$default_lang.'/'.$module.'.lang.php';
+    $_lang = include $file_url;
     if (isset($_lang[$name_key])) {
         if(empty($replace))
             return $_lang[$name_key];
