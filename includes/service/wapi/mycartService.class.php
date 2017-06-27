@@ -146,7 +146,6 @@ class mycartService extends  \service\publicService
         }
 
         $dish   = mysqld_select("select id,sts_id,deleted,status from ".table('shop_dish')." where id={$dishid}");
-
         if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
             $this->error = '该商品不存在！';
             return false;

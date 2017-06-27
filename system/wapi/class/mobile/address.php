@@ -39,7 +39,7 @@ class address extends base{
         $id = intval($_GP['id']);
         if (empty($id)) ajaxReturnData(0,'参数错误');
         $shopAddressModel = new \model\shop_address_model();
-        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0),'realname,mobile,province,city,area,address,idnumber');
+        $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0),'id,realname,mobile,province,city,area,address,idnumber');
         if (empty($info)) ajaxReturnData(1,'暂时无数据');
         ajaxReturnData(1,'',$info);
     }
@@ -55,11 +55,12 @@ class address extends base{
         ajaxReturnData(1,'',$info);
     }
     /**
-     * 新增地址
+     * 新增/编辑地址
      *   */
     public function addAddress(){
         $openid = $this->openid;
         $_GP = $this->request;
+        $id = $_GP['id'];
         if (empty($_GP['realname']) || empty($_GP['mobile']) || empty($_GP['province']) || empty($_GP['city']) || empty($_GP['address']) || empty($_GP['area'])) {
             ajaxReturnData('0','参数不完整');
         }
@@ -75,8 +76,16 @@ class address extends base{
             'isdefault' =>1,
             'idnumber'  =>$_GP['idnumber'],
         );
-        mysqld_insert('shop_address',$array);
-        if (mysqld_insertid()) ajaxReturnData('1','添加成功');
+        if ($id){
+            $shopAddressModel = new \model\shop_address_model();
+            $info = $shopAddressModel->getOneAddress(array('openid'=>$openid,'id'=>$id,'deleted'=>0),'id');
+            if (empty($info)) ajaxReturnData('0','参数id错误');
+            mysqld_update('shop_address',$array,array('id'=>$id,'openid'=>$openid,'deleted'=>0));
+            ajaxReturnData('1','修改成功');
+        }else{
+            mysqld_insert('shop_address',$array);
+            if (mysqld_insertid()) ajaxReturnData('1','添加成功');
+        }
     }
     /**
      * 更新地址
