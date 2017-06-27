@@ -1862,7 +1862,7 @@ class product extends base
         if($dayActi['ac_id'] > 0)
         {
             //获取进行中的场次
-            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id,ac_area_time_str');
+            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id');
             $dish_ids = '';
             foreach($redata['underwayActiDish'] as $v){
                 $dish_ids .= $v['ac_shop_dish'].',';
@@ -1878,8 +1878,8 @@ class product extends base
                 $dishInfo[$v['id']]['title']       = $v['title'];
                 $dishInfo[$v['id']]['thumb']       = $v['thumb'];
             }
-            
             foreach($redata['underwayActiDish'] as $k=>$v){
+                $v['ac_area_time_str'] = intval($v['ac_area_time_str']);
                 if($v['ac_area_time_str'] <= 0){
                     @$redata['underwayActiDish'][$k]['hour']        = 0;
                 }
@@ -1900,7 +1900,7 @@ class product extends base
                 @$redata['underwayActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
                 @$redata['underwayActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
                 @$redata['underwayActiDish'][$k]['ac_title'] = $dayActi['ac_title'];
-                @$redata['underwayActiDish'][$k]['area'] = date('H',$v['ac_area_time_str']);
+                @$redata['underwayActiDish'][$k]['area'] = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])).'点场':'全天场';
                 
                 //获取一级二级分类ID
                 $p1 = array();
@@ -1976,9 +1976,6 @@ class product extends base
                     $dishInfo[$v['id']]['thumb']       = $v['thumb'];
                 }
             }
-            
-            
-            
             foreach($redata['trailerActiDish'] as $k=>$v){
                 @$redata['trailerActiDish'][$k]['marketprice'] = $dishInfo[$v['ac_shop_dish']]['marketprice'];
                 @$redata['trailerActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
@@ -1986,6 +1983,8 @@ class product extends base
                 @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
                 @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
                 @$redata['trailerActiDish'][$k]['ac_title']    = $actiTitle[$v['ac_id']]; 
+                
+                @$redata['trailerActiDish'][$k]['area']    = $redata['trailerActiDish'][$k]['hour']>0?$redata['trailerActiDish'][$k]['hour'].'点场':'全天场'; 
                 
                 //获取一级二级分类ID
                 $p1 = array();
@@ -2106,13 +2105,17 @@ class product extends base
             
             //获取参与的活动和时段信息 ac_action_id ac_area_id
             $listInfo = $this->ltcObj->getActiInfo($acti_dish['ac_action_id'],'ac_title',0);
-            //$areaInfo = $this->ltcObj->getAreaInfo($acti_dish['ac_area_id'],'ac_area_title');
+            $areaInfo = $this->ltcObj->getAreaInfo($acti_dish['ac_area_id'],'ac_area_title,ac_area_time_str');
             
             $redata['dish']['ac_title'] = $listInfo['ac_title'];
             
             $redata['dish']['ac_dish_sell_total'] = $acti_dish['ac_dish_sell_total'];
             $redata['dish']['ac_dish_id'] = $acti_dish['ac_dish_id'];
-            
+            $redata['dish']['ac_action_id'] = $acti_dish['ac_action_id']; //活动ID
+            $redata['dish']['ac_p1_id'] = $acti_dish['ac_p1_id']; //一级分类ID
+            $redata['dish']['ac_p2_id'] = $acti_dish['ac_p2_id']; //二级分类ID
+            $redata['dish']['area'] = intval(date('H',$areaInfo['ac_area_title']));
+            $redata['dish']['ac_area_id'] = $acti_dish['ac_area_id'];
             
         }
         else{
@@ -2133,21 +2136,23 @@ class product extends base
         $redata['now_ac_title'] = $nowDayActi['ac_title']!=''?$nowDayActi['ac_title']:'';
         $nowAreaArr = $this->ltcObj->getNowArea($nowDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nowhour');
         $redata['now_hour'] = $nowAreaArr['nowhour']!==null?$nowAreaArr['nowhour'].'点场':'';
-
-        //获取将要进行中的活动
+        
+        //获取将要进行中的活动 $nowDayActi['endTime'];
         if($nowDayActi['endTime'] > 0)
         {
             $nextDayActi = $this->ltcObj->getDayActivityArea('a.ac_area,ac_title');
             $redata['next_ac_title'] = $nowDayActi['ac_title']!=''?$nowDayActi['ac_title']:'';
-            $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
+            
+            $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],$nowDayActi['endTime'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
             $redata['next_hour'] = $nextAreaArr['nexthour']!==null?$nextAreaArr['nexthour'].'点场':'';
         }
         else{
             $nextDayActi = $this->ltcObj->getTomorrowActivityArea('a.ac_area,ac_title');
             $redata['next_ac_title'] = $nextDayActi['ac_title']!=''?$nextDayActi['ac_title']:'';
-            $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
+            $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],0,'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
             $redata['next_hour'] = $nextAreaArr['nexthour']!==null?$nextAreaArr['nexthour'].'点场':'';
         }
+        
         ajaxReturnData(1,'获取成功',$redata); 
     }
     
@@ -2156,7 +2161,7 @@ class product extends base
         $data = $this->request;
         $redata = array();
         
-        $redata['allList'] = $this->ltcObj->getAllList('ac_area,ac_title');
+        $redata['allList'] = $this->ltcObj->getAllList('ac_area,ac_title,ac_id');
 
         if($redata['allList'] != '')
         {
@@ -2167,8 +2172,12 @@ class product extends base
             $listArr = array_unique($listArr); 
             $listIds = implode(',', $listArr);
 
-            $areaInfo = $this->ltcObj->getAllArea($listIds);
+            $areaInfo = $this->ltcObj->getAllArea($listIds,'ac_area_id,ac_area_time_str,ac_list_id');
             $areaData = array();
+            foreach($areaInfo as $k=>$v){
+                $areaInfo[$k]['ac_area_time_str'] = intval(date('H',$areaInfo[$k]['ac_area_time_str'])).'点场';
+            }
+            
             foreach($areaInfo as $v){
                 $areaData[$v['ac_list_id']][] = $v;
             }

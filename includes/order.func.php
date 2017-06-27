@@ -205,8 +205,12 @@ function update_order_status($id, $status) {
  */
 function paySuccessProcess($ordersn,$setting)
 {
-	$order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
+	$meminfo = get_member_account();
+	$order   = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
 	if(empty($order['id'])) {
+		return '';
+	}
+	if($order['openid'] != $meminfo['openid']){
 		return '';
 	}
 	if($order['status'] !=0 ) {

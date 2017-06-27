@@ -242,7 +242,7 @@ class limitedTimepurChaseService extends \service\publicService {
        //$sql = "SELECT {$fields} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_area} AS b ON a.ac_area_id = b.ac_area_id where $where ORDER BY FROM_UNIXTIME(b.ac_area_time_str,'%H:%i:%s') ASC {$limit}";
        $sql = "SELECT {$fields} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_area} AS b ON a.ac_area_id = b.ac_area_id where $where ORDER BY b.ac_area_time_str ASC {$limit}";
        $dishList  = mysqld_selectall($sql);
-
+       
         $dishList['total'] = mysqld_select("SELECT count(0) as total FROM {$this->table_dish} AS a LEFT JOIN {$this->table_area} AS b ON a.ac_area_id = b.ac_area_id where $where");
         $dishList['total'] = intval($dishList['total']['total']);
         unset($dishList['total']['total']);
@@ -250,7 +250,7 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //
-   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id,,ac_p1_id,ac_p2_id',$shop=1){
+   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id',$shop=1){
        $data['page'] = max(1, intval($data['page']));
        $data['limit'] = $data['limit']>0?$data['limit']:10; 
        $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
@@ -336,9 +336,9 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //获取下一场进行中的小时数
-   public function getNextArea($ac_area_id,$fields='*'){
+   public function getNextArea($ac_area_id,$end_time,$fields='*'){
        $ac_area_id = intval($ac_area_id);
-       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') > {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
+       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_str,'%H') >= {$end_time} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -360,7 +360,7 @@ class limitedTimepurChaseService extends \service\publicService {
    
    //通过区域码获取对应的时段信息
    public function getAllArea($ac_list_id,$fields='*'){
-        $sql = "select {$fields} from {$this->table_area} where ac_list_id in ({$ac_list_id})";   //$this->nowDay
+        $sql = "select {$fields} from {$this->table_area} where ac_list_id in ({$ac_list_id}) and ac_area_status = 1";   //$this->nowDay
         $rs  = mysqld_selectall($sql);
         return $rs;
    }

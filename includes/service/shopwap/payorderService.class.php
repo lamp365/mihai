@@ -54,7 +54,7 @@ class payorderService extends  \service\publicService
 
         //获取推荐人openid 以及推荐人从属的店铺  没有返回空
         $recommend = getRecommendOpenidAndStsid($openid);
-        $recommend_openid = $recommend['p_openid'];
+        $recommend_openid = $recommend['recommend_openid'];
         $recommend_sts_id = $recommend['recommend_sts_id'];
         $earn_rate        = $recommend['earn_rate']; //商家约定给子账户 推广员的提成
 

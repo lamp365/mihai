@@ -133,23 +133,23 @@ class mycartService extends  \service\publicService
     public function addCart($dishid,$total)
     {
         $member = get_member_account();
-
-        $sql = "select ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
-        $sql .= " where ac_shop_dish={$dishid}";
-        $find = mysqld_select($sql);
-        if (empty($find)) {
-            $this->error = '抱歉，该商品已不存在！';
-            return false;
-        }else if($find['ac_dish_status'] == 0){
-            $this->error = '请等待上架！';
-            return false;
-        }
-
-        $dish   = mysqld_select("select id,sts_id,deleted,status from ".table('shop_dish')." where id={$dishid}");
+        $dish   = mysqld_select("select id,sts_id,deleted,status,store_count from ".table('shop_dish')." where id={$dishid}");
         if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
             $this->error = '该商品不存在！';
             return false;
         }
+        //库存
+        $store_count = $dish['store_count'];
+        //判断商品是否属于活动中的商品
+        $active = checkDishIsActive($dishid,$store_count);
+        if(!empty($active)){
+            $store_count = $active['ac_dish_total'];
+            if($active['ac_dish_status'] == 0){
+                $this->error = '请等待上架！';
+                return false;
+            }
+        }
+
 
         $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid ", array(
             ':session_id' =>  $member['openid'],
@@ -166,16 +166,17 @@ class mycartService extends  \service\publicService
                 'to_pay'        => 1,  //默认是打钩状态的
                 'total'         =>  $total
             );
-            if($total > $find['ac_dish_total']){
-                $this->error = "库存剩下{$find['ac_dish_total']}个！";
+            if($total > $store_count){
+                $this->error = "库存剩下{$store_count}个！";
                 return false;
             }
             mysqld_insert('shop_cart', $data);
+            ajaxReturnData(0,$data);
         } else {
             // 累加最多限制购买数量
             $t_num = $total + $row['total'];
-            if($t_num > $find['ac_dish_total']){
-                $this->error = "库存剩下{$find['ac_dish_total']}个！";
+            if($t_num > $store_count){
+                $this->error = "库存剩下{$store_count}个！";
                 return false;
             }
             $data = array('total' => $t_num);
@@ -190,21 +191,21 @@ class mycartService extends  \service\publicService
     {
         $member = get_member_account();
 
-        $sql = "select ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
-        $sql .= " where ac_shop_dish={$dishid}";
-        $find = mysqld_select($sql);
-        if (empty($find)) {
-            $this->error = '抱歉，该商品已不存在！';
-            return false;
-        }else if($find['ac_dish_status'] == 0){
-            $this->error = '请等待上架！';
-            return false;
-        }
-
         $dish   = mysqld_select("select id,sts_id,deleted,status from ".table('shop_dish')." where id={$dishid}");
         if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
             $this->error = '该商品不存在！';
             return false;
+        }
+        //库存
+        $store_count = $dish['store_count'];
+        //判断商品是否属于活动中的商品
+        $active = checkDishIsActive($dishid,$store_count);
+        if(!empty($active)){
+            $store_count = $active['ac_dish_total'];
+            if($active['ac_dish_status'] == 0){
+                $this->error = '请等待上架！';
+                return false;
+            }
         }
 
        //移除掉改用去其他商品的打钩状态
@@ -219,8 +220,8 @@ class mycartService extends  \service\publicService
             'to_pay'        => 1,  //当前立即购买的设置打钩状态的
             'total'         =>  $total
         );
-        if($total > $find['ac_dish_total']){
-            $this->error = "库存剩下{$find['ac_dish_total']}个！";
+        if($total > $store_count){
+            $this->error = "库存剩下{$store_count}个！";
             return false;
         }
         mysqld_insert('shop_cart', $data);

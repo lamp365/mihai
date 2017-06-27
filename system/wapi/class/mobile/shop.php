@@ -5,18 +5,6 @@
 
 namespace wapi\controller;
 class shop extends base{
-    public function ccc(){
-        $store = mysqld_selectall("select * from ".table('store_shop'));
-        foreach($store as $one){
-            $sts_id = $one['sts_id'];
-            $find   = mysqld_select("select * from ".table('store_extend_info')." where store_id={$sts_id}");
-            if(empty($find)){
-                //插入商铺的扩展信息表
-                mysqld_insert('store_extend_info',array('store_id'=>$sts_id,'createtime'=>time()));
-            }
-        }
-    }
-
     /**
      * 商品列表页
      *   */
@@ -113,9 +101,15 @@ class shop extends base{
         
         //搜索的时间区域和自动筛选出来
         if (!empty($timearea)){
-            $timearea = explode(",",$timearea);
-            $timeareaStr = to_sqls($timearea,'','a.ac_area_id');
-            $where3 = $where." and $timeareaStr ";
+            $timeareaArr = explode(",",$timearea);
+            $timeareaArr[0] = '0';
+            foreach ($timeareaArr as $v){
+                $timeWhere[] = " a.ac_area_id='$v' ";
+            }
+            $timearea = implode(' or ' , $timeWhere);
+            $where .= ' and ('.$timearea.')';
+            //$timeareaStr = to_sqls($timearea,'','a.ac_area_id');
+            $where3 = $where.' and ('.$timearea.') ';
             $sql = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where3;
         }else{
             if($areaid) {

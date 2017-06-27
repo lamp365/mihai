@@ -17,6 +17,9 @@ function getCouponByPriceOnpay($sts_id,$totalprice,$dishid_arr){
 
     //去除时间还没开始的 或者已经过期的
     foreach($bonus as $key => $item){
+        //金额转为元
+        $item['coupon_amount']       = FormatMoney($item['coupon_amount'],0);
+        $item['amount_of_condition'] = FormatMoney($item['amount_of_condition'],0);
         if(time() < $item['use_start_time'] || time() > $item['use_end_time']){
             unset($bonus[$key]);
             continue;

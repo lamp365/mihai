@@ -26,13 +26,14 @@ class MenuEnum {
     const APP_MANGE          	= '261';      //app管理
     const ROLE_MANGE            = '270';      //权限管理
     const SHANGPU               = '280';      //商铺管理
-
+    const ACTION_MANGE          = '160';     //活动管理
 
     public static $getMenuEnumValues = array(
         self::TUAN_GOU_MANGE        => '换购管理',
         self::SHOP_SALE_MANGE       => '出售中的宝贝',
         self::PRODUCT_MANGE         => '产品库管理',
         self::IMG_MANGE             => '图片管理',
+		self::ACTION_MANGE          => '活动管理',
         self::ORDER_MANGE           => '订单管理',
         self::DATA_REPORT_MANGE     => '数据报表',
         self::YUN_GOU_MANGE         => '一元云购',
@@ -62,6 +63,7 @@ class MenuEnum {
         self::GEXING_MANGE          => 'shop-set',
         self::MEMBER_MANGE          => 'member-list',
         self::YINGXIAO_MANGE        => 'bonus-bonus',
+		self::ACTION_MANGE          => 'action-config',
         self::SHOP_MANGE            => 'shop-config',
         self::TEMPLATE_MANGE        => 'template-set',
         self::WECHAT_MANGE          => 'weixin-weixin',
