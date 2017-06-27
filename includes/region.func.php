@@ -109,20 +109,45 @@ function getCodeByIP($ip){
 }
 //根据经纬度获取区域id
 function getAreaid($jd,$wd){
+    return array(
+        'status'=>1,
+        'ac_city'=>'350100',
+        'ac_city_area'=>'350102'
+    
+    );
+    $openid = get_member_account();
+    $key = $openid."_LOCATION";
+    //缓存1小时，如果有数据则取缓存数据
+     if(class_exists('Memcached')){
+         $memcache = new \Mcache();
+         $data = $memcache->get($key);
+         if (!empty($data)) return $data;
+     }
+     
     if (empty($jd) || empty($wd)) return '';
      //高德接口获取区域id
     $return = json_decode(getCodeByLttAndLgt($jd,$wd),1);
     if ($return['status'] == 0) return array('status'=>0,'mes'=>'抱歉，获取地里位置信息失败，请刷新一下');
-        //ajaxReturnData(0,'抱歉，获取地里位置信息失败，请刷新一下');
     $ac_city_area = isset($return['regeocode']['addressComponent']['adcode'])?$return['regeocode']['addressComponent']['adcode']:'';
+    
     //取市id
     $regionModel = new \model\region_model();
     $info = $regionModel->getPCodeByCCode($ac_city_area);
     $ac_city = !empty($info) ? $info['region_code']:'';
+    
     if (empty($ac_city) || empty($ac_city_area)) return array('status'=>0,'mes'=>'抱歉，不存在这个地区，请重新刷新一下');
-        //ajaxReturnData(0,'抱歉，不存在这个地区，请重新刷新一下');
-    return array('status'=>1,'ac_city'=>$ac_city,'ac_city_area'=>$ac_city_area);
-    //$where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+    $data = array(
+        'status'=>1,
+        'ac_city'=>$ac_city,
+        'ac_city_area'=>$ac_city_area
+    
+    );
+    //加入缓存
+    if(class_exists('Memcached')){
+        $memcache = new \Mcache();
+        $memcache->set($key, $data,3600);
+    }
+    return $data;
 }
 //通过ip取区域id
 function getCityidByIp(){
