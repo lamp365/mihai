@@ -32,12 +32,11 @@ class mycartService extends  \service\publicService
                 $sql = "select ac_dish_price,ac_dish_status,ac_dish_total from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']} and ac_action_id={$active['ac_id']}";
                 $act_dish = mysqld_select($sql);
 
-                $field = 'id,title,marketprice,thumb,sts_id,store_count';
+                $field = 'id,title,marketprice,thumb,sts_id,store_count,status';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
                 $store_count = $dish['store_count'];
                 $time_price  = $dish['marketprice'];
                 $action_id   = 0;
-
                 if(empty($dish) || $dish['status'] ==0){
                     $dish['ac_dish_status']  =  0;
                     $dish['ac_dish_total']   =  0;
@@ -53,7 +52,6 @@ class mycartService extends  \service\publicService
                     $time_price  = $active['ac_dish_price'];
                     $action_id   = $active['ac_action_id'];
                 }
-
                 if($action_id && ($active['ac_dish_status'] == 0 || $active['ac_dish_total'] == 0)){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
                     $dish['ac_dish_status']  = $act_dish['ac_dish_status'] ?: 0;
