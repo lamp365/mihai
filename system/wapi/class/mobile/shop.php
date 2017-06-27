@@ -63,10 +63,14 @@ class shop extends base{
             //高德接口获取区域id
             $return = getAreaid($jd,$wd);
            if (empty($return)) ajaxReturnData(0,'参数错误');
-           if ($return['status'] == 0) ajaxReturnData(0,$return['mes']);
-           $ac_city = $return['ac_city'];
-           $ac_city_area = $return['ac_city_area'];
-            $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
+           if ($return['status'] == 0) {
+               $cityCode = $return['ac_city'];
+               $where .=" and (a.ac_city='$cityCode' or a.ac_city=0) ";
+           }else {
+               $ac_city = $return['ac_city'];
+               $ac_city_area = $return['ac_city_area'];
+               $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
+           }
         }
         //栏目或者关键词
         if ($type == 1){
