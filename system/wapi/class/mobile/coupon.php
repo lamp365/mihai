@@ -93,10 +93,27 @@ class coupon extends base{
         if ($type == 0){
             $where .= " a.status=0 and '$now' < b.use_end_time ";//未使用且没有过期
         }elseif ($type == 1){
-            $where .= " a.status=1 and a.use_time <= '$endtime'";
+            $where .= " a.status=1 and a.use_time <= '$endtime' ";
         }else {
             $where .= " a.status=0 and '$now' > b.use_end_time and b.use_end_time <= '$endtime' ";//未使用且已过期
         }
+        //未使用的数量
+        $noUse = 0;
+        $wsyData = $couponMemModel->getAllMyCoupon("a.status=0 and '$now' < b.use_end_time ", 'a.scmid');
+        if ($wsyData) $noUse = count($wsyData);
+        //已使用的数量
+        $isUse = 0;
+        $ysyData = $couponMemModel->getAllMyCoupon("a.status=1 and a.use_time <= '$endtime' ", 'a.scmid');
+        if ($ysyData) $isUse = count($ysyData);
+        //未使用已过期的数量
+        $overdue = 0;
+        $overdueData = $couponMemModel->getAllMyCoupon("a.status=0 and '$now' > b.use_end_time and b.use_end_time <= '$endtime' ", 'a.scmid');
+        if ($overdueData) $overdue = count($overdueData);
+        $total = array(
+            'noUse'=>$noUse,
+            'isUse'=>$isUse,
+            'overdue'=>$overdue,
+        );
         //分页取数据
         //$pindex = max(1, intval($_GP['page']));
         //$psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
@@ -118,7 +135,8 @@ class coupon extends base{
             $temp['use_end_time'] = date("Y-m-d",$v['use_end_time']);
             $data[] = $temp; 
         }
-        ajaxReturnData(1,'',$data);
+        $return = array('data'=>$data,'total'=>$total);
+        ajaxReturnData(1,'',$return);
     }
 }
 ?>

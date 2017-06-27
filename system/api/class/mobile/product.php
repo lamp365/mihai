@@ -1695,7 +1695,7 @@ class product extends base
     public function getListInfo(){
         $data = $this->request;
         $redata = array();
-        $redata = $this->ltcObj->getListAll();
+        $redata['actionList'] = $this->ltcObj->getListAll();
         
         ajaxReturnData(1,'获取成功',$redata);
     }
@@ -1706,7 +1706,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_area'] = 111111;
+        //$data['ac_area'] = 2 ;
         //测试数据结束
         
         if($data['ac_area'] <= 0)
@@ -1714,7 +1714,7 @@ class product extends base
             ajaxReturnData(0,'必要参数不存在');
         }
         
-        $redata = $this->ltcObj->getAreaGroupList($data['ac_area']);
+        $redata['area'] = $this->ltcObj->getAreaGroupList($data['ac_area']);
         
         ajaxReturnData(1,'获取成功',$redata);
     }
@@ -2109,7 +2109,7 @@ class product extends base
             $redata['dish']['marketprice']   = FormatMoney($dishData['marketprice'],2);
             $redata['dish']['title']         = $dishData['title'];
             $redata['dish']['thumb']         = $dishData['thumb'];
-            $redata['dish']['store_count']         = $dishData['store_count'];
+            $redata['dish']['store_count']   = $dishData['store_count'];
             //审核
             $redata['dish']['ac_dish_status']       = $acti_dish['ac_dish_status'];
             $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti']!=''?$acti_dish['ac_dish_deti']:'';     
