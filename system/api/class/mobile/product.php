@@ -2109,7 +2109,7 @@ class product extends base
             $redata['dish']['marketprice']   = FormatMoney($dishData['marketprice'],2);
             $redata['dish']['title']         = $dishData['title'];
             $redata['dish']['thumb']         = $dishData['thumb'];
-            $redata['dish']['store_count']         = $dishData['store_count'];
+            $redata['dish']['store_count']   = $dishData['store_count'];
             //审核
             $redata['dish']['ac_dish_status']       = $acti_dish['ac_dish_status'];
             $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti']!=''?$acti_dish['ac_dish_deti']:'';     

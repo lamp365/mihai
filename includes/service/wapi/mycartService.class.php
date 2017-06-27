@@ -36,10 +36,9 @@ class mycartService extends  \service\publicService
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
                 $store_count = $dish['store_count'];
                 $time_price  = $dish['marketprice'];
+                $status      = $dish['status'];
                 $action_id   = 0;
                 if(empty($dish) || $dish['status'] ==0){
-                    $dish['ac_dish_status']  =  0;
-                    $dish['ac_dish_total']   =  0;
                     $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
@@ -48,8 +47,9 @@ class mycartService extends  \service\publicService
                 //判断商品是否属于活动中的商品
                 $active = checkDishIsActive($dish['id'],$dish['store_count']);
                 if(!empty($active)){
-                    $store_count = $active['ac_dish_total'];
-                    $time_price  = $active['ac_dish_price'];
+                    $store_count = $active['ac_dish_total'] ?: 0;
+                    $time_price  = $active['ac_dish_price'] ?: 0;
+                    $status      = $active['ac_dish_status'] ?: 0;
                     $action_id   = $active['ac_action_id'];
                 }
                 if($action_id && ($active['ac_dish_status'] == 0 || $active['ac_dish_total'] == 0)){

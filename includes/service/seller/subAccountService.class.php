@@ -29,7 +29,7 @@ class subAccountService extends \service\publicService {
    
    //获取用户总收益
    public function getTotalIncome($openid){
-       $sql = "SELECT sum(account_fee) as account_fee FROM {$this->table_member_paylog} where openid = {$openid}";
+       $sql = "SELECT sum(account_fee) as account_fee FROM {$this->table_member_paylog} where openid = {$openid} and (type = 3 or type = -3)";
        $data  = mysqld_select($sql);
        return $data['account_fee'];
    }

@@ -34,13 +34,18 @@ class subaccount extends base
     public function subaccountInfo(){
         $data   = $this->request;
         $redata = array();
-        ppd($this->memberInfo);
         $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($this->memberInfo['openid'],'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar');
+        
+        $redata['memberInfo']['gold'] = FormatMoney($redata['memberInfo']['gold'],2);
+        $redata['memberInfo']['freeze_gold'] = FormatMoney($redata['memberInfo']['freeze_gold'],2);
+        $redata['memberInfo']['wait_glod'] = FormatMoney($redata['memberInfo']['wait_glod'],2);
+        $redata['memberInfo']['outgold'] = FormatMoney($redata['memberInfo']['outgold'],2);
         
         $result = $this->weixin->get_xcx_erweima($this->memberInfo['openid'],2);
         
         //获取总收益
         $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($this->memberInfo['openid']);
+        $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
         $redata['memberInfo']['qrcode'] = $result['message'];
         
