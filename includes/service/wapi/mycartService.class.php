@@ -29,9 +29,6 @@ class mycartService extends  \service\publicService
         if (! empty($list)) {
             //找出对应的商品 信息
             foreach($list as $item){
-                $sql = "select ac_dish_price,ac_dish_status,ac_dish_total from ".table('activity_dish')." where ac_shop_dish={$item['goodsid']} and ac_action_id={$active['ac_id']}";
-                $act_dish = mysqld_select($sql);
-
                 $field = 'id,title,marketprice,thumb,sts_id,store_count,status';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
                 $store_count = $dish['store_count'];
@@ -56,6 +53,7 @@ class mycartService extends  \service\publicService
 
                 $dish['store_count'] = $store_count;
                 $dish['status']      = $status;
+
                 if( $store_count ==0 || $store_count == 0){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
                     $out_gooslist[]          = $dish;

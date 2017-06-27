@@ -66,8 +66,6 @@ class confirm extends base
         if(!$res_data){
               ajaxReturnData(0,$weixinpay->getError());
         }
-        //库存操作
-        $this->limit_buy_stock($res_data['stock_dishids']);
 
         $pay_data = array(
             'out_trade_no'  => $res_data['pay_ordersn'], //订单号
@@ -107,20 +105,7 @@ class confirm extends base
         }
     }
 
-    /**
-     * 插入订单后限时购的 商品对应库存操作
-     */
-    public function limit_buy_stock($stock_dishids)
-    {
-        if(empty($stock_dishids)) return '';
-        $active = getCurrentAct();
-        $ac_id  = $active['ac_id'];
-        foreach($stock_dishids as $dishid => $buy_num){
-            $sql = "update ".table('activity_dish')." set ac_dish_total=ac_dish_total-{$buy_num},ac_dish_sell_total=ac_dish_sell_total+{$buy_num}";
-            $sql .= " where ac_shop_dish={$dishid} and ac_action_id={$ac_id}";
-            mysqld_query($sql);
-        }
-    }
+
 
     public function surepay()
     {

@@ -57,6 +57,7 @@ class payorderService extends  \service\publicService
         $recommend_sts_id = $recommend['recommend_sts_id'];
         $earn_rate        = $recommend['earn_rate']; //商家约定给子账户 推广员的提成
 
+        //开始遍历购物车的数据 写入到订单
         foreach($goodslist as $item){
             $total_store_earn_price  = 0;  //一笔订单的总提成
             $total_member_earn_price = 0;  //一笔订单的总提成
@@ -96,7 +97,7 @@ class payorderService extends  \service\publicService
             $order_data['recommend_sts_id'] = $recommend_sts_id;
             $order_data['recommend_openid'] = $recommend_openid;
             $order_data['ordersn']          = $ordersns;
-            $order_data['ordertype']        = 0;                        //限时购
+            $order_data['ordertype']        = 0;                        //普通订单
             $order_data['price']            = $price - $bonus_price;    //需要支付的总金额
             $order_data['goodsprice']       = $goodsprice;              //商品价格
             $order_data['dispatchprice']    = $express_fee;             //运费
