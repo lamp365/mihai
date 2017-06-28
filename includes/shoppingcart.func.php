@@ -37,6 +37,7 @@ function checkDishIsActive($dishid,$store_count){
 				//校验一下活动表的库存跟dish表的库存
 				if($store_count < $find['ac_dish_total']){
 					mysqld_update('activity_dish',array('ac_dish_total'=>$store_count),array('ac_dish_id'=>$find['ac_dish_id']));
+					$find['ac_dish_total'] = $store_count;
 				}
 			}
 		}

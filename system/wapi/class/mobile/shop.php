@@ -167,6 +167,8 @@ class shop extends base{
             }else{
                 $list[$key]['status'] = 0;
             }
+            $list[$key]['flag'] = 0;
+            if ($v['ac_dish_total'] > 0) $list[$key]['flag'] = 1 ;
             $list[$key]['marketprice'] = FormatMoney($v['marketprice'],0);
             $list[$key]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
         }

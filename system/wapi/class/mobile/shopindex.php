@@ -112,6 +112,8 @@ class shopindex extends base{
             $temp['ac_shop'] = $v['ac_shop'];
             $temp['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
             $temp['ac_dish_total'] = $v['ac_dish_total'];
+            $temp['flag'] = 1;
+            if ($temp['ac_dish_total'] == 0) $temp['flag'] = 0;
             $temp['ac_dish_sell_total'] = $v['ac_dish_sell_total'];
             $temp['ac_shop_dish'] = $v['ac_shop_dish'];
             $data[] = $temp;

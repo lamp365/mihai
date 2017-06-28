@@ -16,7 +16,6 @@ class ShopDishService extends \service\publicService {
        $this->memberData   = get_member_account();
        $this->table        = table('shop_dish');
        $this->table_price  = table('dish_spec_price');
-       
    }
    
    //获取dish列表

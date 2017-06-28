@@ -1763,20 +1763,20 @@ class product extends base
                 }
                 $addActiDish = $this->ltcObj->addActivityDish($v);
                 switch($addActiDish){
-                    case -1:
-                        //ajaxReturnData(1,'宝贝已参与');
-                        $errorNum = $errorNum + 1;
-                        break;
                     case -2:
-                        //ajaxReturnData(2,'活动价格不得大于原价格');
+                        //ajaxReturnData(-2,'活动价格不得大于原价格');
                         $errorNum = $errorNum + 1;
                         break;
                     case -4:
-                        //ajaxReturnData(4,'该产品不属于你');
+                        //ajaxReturnData(-4,'该产品不属于你');
                         $errorNum = $errorNum + 1;
                         break;
                     case -6:
-                        //ajaxReturnData(6,'该产品不属于你');
+                        //ajaxReturnData(-6,'活动是否存在且未被禁用');
+                        $errorNum = $errorNum + 1;
+                        break;
+                    case -7:
+                        //ajaxReturnData(-7,'库存不得大于原库存');
                         $errorNum = $errorNum + 1;
                         break;
                     default :
@@ -1791,13 +1791,24 @@ class product extends base
         }
         if($successNum > 0)$msg  = "参与成功{$successNum}件宝贝。";
         if($errorNum > 0)$msg .= "参与失败{$errorNum}件宝贝。";
-        ajaxReturnData(1,$msg);
+        if($errorNum > 0 && $successNum > 0)
+        {
+            ajaxReturnData(4,$msg);
+        }
+        elseif($errorNum > 0 && $successNum == 0){
+            ajaxReturnData(0,$msg);
+        }
+        elseif($errorNum == 0 && $successNum > 0){
+            ajaxReturnData(1,$msg);
+        }
+        else{
+            ajaxReturnData(-1,$msg);
+        }
     }
     
     
     public function editLtc(){
         $data = $this->request;
-        
         /*
         //测试数据开始
         $data['ac_p1_id']      = '190';
@@ -2093,7 +2104,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_dish_id'] = 58;
+        //$data['ac_dish_id'] = 85;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -2134,8 +2145,7 @@ class product extends base
             $redata['dish']['ac_dish_id'] = $acti_dish['ac_dish_id'];
             $redata['dish']['ac_action_id'] = $acti_dish['ac_action_id']; //活动ID
             $redata['dish']['ac_p1_id'] = $acti_dish['ac_p1_id']; //一级分类ID
-            $redata['dish']['ac_p2_id'] = $acti_dish['ac_p2_id']; //二级分类ID
-            $redata['dish']['area'] = intval(date('H',$areaInfo['ac_area_time_str']))>0?intval(date('H',$areaInfo['ac_area_time_str'])).'点场':'全天场';
+            $redata['dish']['area'] = $areaInfo['ac_area_time_str']>0?intval(date('H',$areaInfo['ac_area_time_str'])).'点场':'全天场';
             $redata['dish']['ac_area_id'] = $acti_dish['ac_area_id'];
             
         }

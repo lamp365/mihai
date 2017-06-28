@@ -117,11 +117,17 @@ class limitedTimepurChaseService extends \service\publicService {
        }
        
        //判断价格是否大于原产品促销价格 ac_dish_total
-       $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice');
+       $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice,store_count');
        $rsdata['ac_dish_price'] = FormatMoney($data['ac_dish_price']);
        if($rsdata['ac_dish_price'] > $dishInfo['marketprice'])
        {
             return -2;
+       }
+       
+       //库存不得大于原库存
+       if($rsdata['ac_dish_total'] > $dishInfo['store_count'])
+       {
+           return -7;
        }
        
        //获取城市code,城市区域code
@@ -250,7 +256,7 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //
-   public function getTrailerActiList($data,$fields='ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id',$shop=1){
+   public function getTrailerActiList($data,$fields='ac_dish_status,ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id,ac_dish_status',$shop=1){
        $data['page'] = max(1, intval($data['page']));
        $data['limit'] = $data['limit']>0?$data['limit']:10; 
        $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
@@ -365,6 +371,16 @@ class limitedTimepurChaseService extends \service\publicService {
         return $rs;
    }
    
+   //获取店铺参与过限时购
+   public function getShopAddDishId($ac_action_id=0,$ac_area_id=0,$fields='*'){
+        if($ac_action_id <= 0)
+        {
+            return '';
+        }
+        $sql = "select {$fields} from {$this->table_dish} where ac_action_id = {$ac_action_id} and ac_area_id = {$ac_area_id} and ac_shop = {$this->memberData['store_sts_id']}";
+        $rs  = mysqld_selectall($sql);
+        return $rs;
+   }
    
 } 
 ?>

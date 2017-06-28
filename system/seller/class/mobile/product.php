@@ -333,7 +333,8 @@ class product extends base
                 $list[$k]['isnewc']       = $v['isnew']==0?1:0;
                 $list[$k]['isrecommandc'] = $v['isrecommand']==0?1:0;
                 $list[$k]['isstatusc']    = $v['status']==0?1:0;
-                //判断已参与限时购活动
+                //判断已参与限时购活动 有的话，返回数组，没有返回空数组
+                $list[$k]['active_info']  = getDishIsOnActive($list['id'],$list['store_count']);
                 
             }
             
