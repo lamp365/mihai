@@ -777,12 +777,10 @@ class product extends base
     public function searchDish(){
         $data = $this->request;
         
-        /*
         //测试数据开始
         $data['key']  = '美';
         $data['page'] = '1';
         //测试数据结束
-         */
         
         if($data['key'] == '')
         {

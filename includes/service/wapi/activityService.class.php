@@ -36,26 +36,42 @@ class activityService extends \service\publicService
         return $data;
     }
     /**
-     * 取一个活动当天的所有时间段
+     * 取一个活动未过期的时间段
      * @param $ac_list_id 区域码
+     * @param $flag 为空则取当天的未过期，不为空则取第二天的
      */
-    public function getActArea($ac_list_id){
+    public function getActArea($ac_list_id,$flag=''){
         $actAreaModel = new \model\activity_area_model();
         //取时间段
         $activty_area = $actAreaModel->getAllActArea(array('ac_list_id'=>$ac_list_id));
         if (empty($activty_area)) return '';
+        if (empty($flag)){
+            $mydate = date("Y:m:d");
+        }else {
+            $mydate = date("Y-m-d",strtotime("+1 day"));
+        }
         foreach ($activty_area as $key=>$val){
-            $startDate = date("Y:m:d")." ".date('H:i:s',$val['ac_area_time_str']);
-            $endDate = date("Y:m:d")." ".date('H:i:s',$val['ac_area_time_end']);
-            $temp['starttime'] = strtotime($startDate);
-            $temp['endtime'] = strtotime($endDate);
+            $startDate = $mydate." ".date('H:i:s',$val['ac_area_time_str']);
+            $endDate = $mydate." ".date('H:i:s',$val['ac_area_time_end']);
+            $starttime = strtotime($startDate);
+            $endtime = strtotime($endDate);
+            if ($endtime <= time()) continue;//过期的筛选出
             $temp['ac_area_id'] = $val['ac_area_id'];
+            $temp['ac_area_time_str'] = date("H:i",$starttime);
+            $temp['ac_area_time_end'] = date("H:i",$endtime);
+            $temp['status'] = 0;
+            if (time() >= $starttime && time() <= $endtime){
+                $temp['status'] = 1;
+                $temp['section'] = $endtime-time();
+            }else{
+                $temp['section'] = $starttime-time();
+            }
             $data[] = $temp;
         }
         return $data;
     }
     /**
-     * 取当前活动的当天的未过期的时间段
+     * 取当前活动的未过期的时间段
      * @param $ac_list_id 区域码
      * @num 取的个数
      *   */
@@ -63,30 +79,24 @@ class activityService extends \service\publicService
         if (empty($ac_list_id)) return '';
         $list = $this->getActArea($ac_list_id);
         if($list){
-            foreach ($list as $v){
-                if ($v['endtime'] <= time()) continue;//过期的筛选出
-                $temp['ac_area_id'] = $v['ac_area_id'];
-                $temp['ac_area_time_str'] = date("H:i",$v['starttime']);
-                $temp['ac_area_time_end'] = date("H:i",$v['endtime']);
-                $temp['status'] = 0;
-                if (time() >= $v['starttime'] && time() <= $v['endtime']){
-                    $temp['status'] = 1;
-                    $temp['section'] = $v['endtime']-time();
-                }else{
-                    $temp['section'] = $v['starttime']-time();
-                }
-                $data[] = $temp;
-            }
-            if ($num == 0) return $data;
+            if ($num == 0) return $list;
             
-            if (count($data) > $num){
+            if (count($list) > $num){
                 for ($i=0;$i<$num;$i++){
-                    $return[$i] = $data[$i];
+                    $return[$i] = $list[$i];
                 }
             }else {
-                $return = $data;
+                $other = $num - count($list);
+                $moreData = $this->getActArea($ac_list_id,1);
+                if ($moreData){
+                    for ($i=0;$i<$other;$i++){
+                        $return1[$i] = $moreData[$i];
+                    }
+                }
+                $return = array_merge($list,$return1);
             }
             return $return;
-        }
+        } 
+                
     }
 }

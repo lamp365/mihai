@@ -35,15 +35,20 @@ class subAccountService extends \service\publicService {
    }
   
    //
-   public function getProfitList($openid,$fields='*'){
+   public function getProfitList($openid,$data,$fields='*'){
        $data['page'] = max(1, intval($data['page']));
        $data['limit'] = $data['limit']>0?$data['limit']:10; 
        $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
        
        $sql = "SELECT {$fields} FROM {$this->table_member_paylog} where openid = {$openid} and (type = 3 or type = -3) order by createtime desc {$limit}";
-       $rs  = mysqld_select($sql);
+       $rs  = mysqld_selectall($sql);
        return $rs;
    }
    
+   public function getMemberInfos($openids,$fields){
+       $sql = "select {$fields} from {$this->table_member} where openid in ({$openids})";
+       $rs = mysqld_selectall($sql);
+       return $rs;
+   }
 } 
 ?>

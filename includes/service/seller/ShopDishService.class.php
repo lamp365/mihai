@@ -57,8 +57,13 @@ class ShopDishService extends \service\publicService {
    
     //搜索宝贝
     public function searchDish($data=array(),$fields='*'){
-        $sql = "select {$fields} from {$this->table} where sts_id = {$this->memberData['store_sts_id']} and title like '%{$data['key']}%' limit {$data['page']},{$data['limit']}";
-
+        $where = '';
+        if($data['status'] !== null)
+        {
+            $data['status'] = intval($data['status']);
+            $where = " and status = {$data['status']}";
+        }
+        $sql = "select {$fields} from {$this->table} where sts_id = {$this->memberData['store_sts_id']} and title like '%{$data['key']}%' {$where} limit {$data['page']},{$data['limit']}";
         $redata = mysqld_selectall($sql);
         foreach($redata as $k=>$v){
             $redata[$k]['marketprice']  = FormatMoney($v['marketprice'],2);

@@ -217,7 +217,7 @@ function paySuccessProcess($ordersn,$setting)
 		return '';
 	}
 	//更新订单为支付
-//	mysqld_update('shop_order', array('status'=>1,'paytime'=>time()), array('id' =>  $order['id']));
+	mysqld_update('shop_order', array('status'=>1,'paytime'=>time()), array('id' =>  $order['id']));
 	//有实付金额（这里从数据库取出来的单位是分）  记录用户支付的账单
 	if($order['price']>0)
 	{
