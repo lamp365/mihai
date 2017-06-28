@@ -190,7 +190,7 @@ class payorderService extends  \service\publicService
             $this->error = '参数有误！';
             return false;
         }
-        $order = mysqld_select("select ordersn,price,status from ".table('shop_order')." where id={$orderid} and openid='{$memInfo['openid']}'");
+        $order = mysqld_select("select id,ordersn,price,status from ".table('shop_order')." where id={$orderid} and openid='{$memInfo['openid']}'");
         if(empty($order)){
             $this->error = '订单不存在！';
             return false;
@@ -200,7 +200,7 @@ class payorderService extends  \service\publicService
             return false;
         }
 
-        $o_sql   = "select d.title from ".table('shop_order_goods')." as g left join ".table('shop_dish')." as h";
+        $o_sql   = "select h.title from ".table('shop_order_goods')." as g left join ".table('shop_dish')." as h";
         $o_sql  .= " on g.dishid=h.id where g.orderid={$order['id']}";
         $o_goods = mysqld_select($o_sql);
         $pay_title = str_replace('&','',$o_goods['title']);
