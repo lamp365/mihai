@@ -148,15 +148,7 @@ function update_order_status($id, $status) {
     if ($status == -1) {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
-    		$activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$ogv['dishid']);
-    		// 释放库存减掉销量
-			// if($ogv['shop_type'] == 4){
-			// 	//操作限时购的库存
-			// 	operateStoreCount($ogv['dishid'],$ogv['total'],$activity_dish['ac_action_id'],2);
-			// }
-			operateStoreCount($ogv['dishid'],$ogv['total'],$activity_dish['ac_action_id'],2);
-    		// 如果已付款 订单有卖家openid，则扣除冻结佣金
-			//已经没有冻结资金了，只有确认收货后，直接把拥金记录余额中
+    		operateStoreCount($ogv['dishid'],$ogv['total'],$ogv['action_id'],2);
     	}
     	// 反还优惠券
     	if (!empty($order['hasbonus'])) {
@@ -167,13 +159,6 @@ function update_order_status($id, $status) {
     }elseif ($status == 3) {
     	// 确认收货
     	mysqld_query("UPDATE ".table('shop_order')." SET status=3,completetime=".time()." WHERE id=".$id);
-		// $data = hasFinishGetOrder($id);
-		// if($data['errno'] == 200){
-		// 	return true;
-		// }else{
-		// 	return false;
-		// }
-		//有实付金额（这里从数据库取出来的单位是分）  记录用户支付的账单
 		if($order['price']>0)
 		{
 			//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝

@@ -791,7 +791,7 @@ class product extends base
             $_GP = $this->request;
             
             $ltcObj = new \service\seller\limitedTimepurChaseService();
-            $addActiDish = $ltcObj->addActivityDish($_GP);
+            $addActiDish = $ltcObj->addActivityDish1($_GP);
             
             $url = mobile_url('product',array('op'=>'productlist'));
             if($addActiDish && $addActiDish['status'] == 1)

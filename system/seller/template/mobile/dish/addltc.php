@@ -186,10 +186,8 @@ layui.use('form', function(){
             return false;
 		}
 		var ac_dish_total = $("#ac_dish_total").val();
-    	if((/^(\+|-)?\d+$/.test(ac_dish_total)) && ac_dish_total > 0){  
-	        return true;  
-	    }else{  
-	    	layer.alert('请输入有效库存');  
+    	if(!((/^(\+|-)?\d+$/.test(ac_dish_total)) && ac_dish_total > 0)){  
+    		layer.alert('请输入有效库存');  
 	        return false;  
 	    }
     });  

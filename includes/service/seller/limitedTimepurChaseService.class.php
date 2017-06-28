@@ -156,7 +156,90 @@ class limitedTimepurChaseService extends \service\publicService {
             }
        }
    }
+   public function addActivityDish1($data){
+       $rsdata = array();
+       $rsdata['ac_action_id']  = $data['ac_action_id'];
+       $rsdata['ac_area_id']    = intval($data['ac_area_id'])>0?intval($data['ac_area_id']):0;
+       $rsdata['ac_p1_id']      = $data['ac_p1_id'];
+       $rsdata['ac_p2_id']      = $data['ac_p2_id'];
+       $rsdata['ac_dish_total'] = $data['ac_dish_total'];
+       $rsdata['ac_dish_id']    = $data['ac_dish_id'];
+       $rsdata['ac_dish_price'] = FormatMoney($data['ac_dish_price']);
+       if($rsdata['ac_dish_id'] <= 0)
+       {//添加
+           $rsdata['ac_shop_dish']  = $data['ac_shop_dish'];
+           //判断某个宝贝是否已参与了某个活动了 如果参与则不用再次加入
+           $activity_dish_rs = getDishIsOnActive($rsdata['ac_shop_dish']);
+           if(!empty($activity_dish_rs))
+           {
+               return array('status'=>-1,'mes'=>'宝贝已经加入限时购活动中');
+           }
+       }
+       else{//编辑
+           //获取dishid
+            $dishid_sql = "select * from ".table('activity_dish')." where ac_dish_id = {$rsdata['ac_dish_id']}";
+            $dishid_rs  = mysqld_select($dishid_sql);
+            $rsdata['ac_shop_dish']  = $dishid_rs['ac_shop_dish'];
+            if($rsdata['ac_shop_dish'] <= 0)
+            {
+                return -5;
+            }
+            if ($rsdata['ac_p1_id']==$dishid_rs['ac_p1_id'] && $rsdata['ac_p2_id']==$dishid_rs['ac_p2_id'] && $rsdata['ac_action_id']==$dishid_rs['ac_action_id'] && $rsdata['ac_area_id']==$dishid_rs['ac_area_id'] && $rsdata['ac_dish_total']==$dishid_rs['ac_dish_total'] && $rsdata['ac_dish_price']==$dishid_rs['ac_dish_price'])
+            {
+                return array('status'=>1,'mes'=>'未修改');
+            }
    
+           $where = '';
+           $where .= " and ac_dish_id != {$rsdata['ac_dish_id']}";
+       }
+        
+       //判断该产品是否属于该店铺
+       $checkDish = $this->dishObj->checkStoreDish($rsdata['ac_shop_dish'], $this->memberData['store_sts_id']);
+       if($checkDish['id'] <= 0)
+       {
+           return array('status'=>-4,'mes'=>'系统错误');
+       }
+        
+       //判断价格是否大于原产品促销价格 ac_dish_total
+       $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice,store_count');
+       $rsdata['ac_dish_price'] = FormatMoney($data['ac_dish_price']);
+       if($rsdata['ac_dish_price'] > $dishInfo['marketprice'])
+       {
+           return array('status'=>-2,'mes'=>'限时购价格不能高于当前活动价格');
+       }
+        
+       //库存不得大于原库存
+       if($rsdata['ac_dish_total'] > $dishInfo['store_count'])
+       {
+           return array('status'=>-7,'mes'=>'库存不能大于当前库存');
+       }
+        
+       //获取城市code,城市区域code
+       $storeShopInfo                = $this->storeObj->getStoreShop('sts_city,sts_region');
+       $rsdata['ac_city']            = $storeShopInfo['sts_city'];
+       $rsdata['ac_city_area']       = $storeShopInfo['sts_region'];
+       $rsdata['ac_in_id']           = $this->memberData['sts_category_p1_id'];
+       $rsdata['ac_shop']            = $this->memberData['store_sts_id'];
+       $rsdata['ac_dish_status']     = 0;
+   
+       if($rsdata['ac_dish_id'] > 0)
+       {
+           mysqld_update('activity_dish',$rsdata,array('ac_dish_id'=>$rsdata['ac_dish_id']));
+           return array('status'=>1,'mes'=>'更新成功');
+       }
+       else{
+           mysqld_insert('activity_dish',$rsdata);
+           $acti_id = mysqld_insertid();    //获取上一次插入的ID
+           if($acti_id > 0)
+           {
+               return array('status'=>1,'mes'=>'添加成功');
+           }
+           else{
+               //插入失败
+               return array('status'=>-3,'mes'=>'系统错误');
+           }
+       }
+   }
    //删除
     public function delActivityDish($ac_dish_id){
         //判断该产品是否属于该店铺

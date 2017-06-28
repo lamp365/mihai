@@ -97,6 +97,31 @@ class activityService extends \service\publicService
             }
             return $return;
         } 
-                
+    }
+    /**
+     * 取当前活动的当前时间的区域
+     *   */
+    public function getCurrentArea(){
+        $list = getCurrentAct();
+        if (!empty($list)) $ac_area = $list['ac_area'];
+        if (empty($ac_area)) return '';
+        $actAreaModel = new \model\activity_area_model();
+        //取时间段
+        $activty_area = $actAreaModel->getAllActArea(array('ac_list_id'=>$ac_area));
+        if (empty($activty_area)) return '';
+        if (empty($flag)){
+            $mydate = date("Y:m:d");
+        }else {
+            $mydate = date("Y-m-d",strtotime("+1 day"));
+        }
+        foreach ($activty_area as $v){
+            $startDate = $mydate." ".date('H:i:s',$v['ac_area_time_str']);
+            $endDate = $mydate." ".date('H:i:s',$v['ac_area_time_end']);
+            $starttime = strtotime($startDate);
+            $endtime = strtotime($endDate);
+            if (time() >= $starttime && time() <= $endtime){
+                return $v['ac_area_id'];
+            }
+        }
     }
 }

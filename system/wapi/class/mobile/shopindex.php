@@ -69,43 +69,49 @@ class shopindex extends base{
        if (empty($ac_list_id) || empty($ac_area_id)) ajaxReturnData(0,'参数错误');
        $jd = $_GP['longitude'];//经度
        $wd = $_GP['latitude'];//纬度
-       $where = " ac_action_id = '$ac_list_id' and ac_dish_status=1 and (ac_area_id = '$ac_area_id' or ac_area_id=0) ";
+       $where = " a.ac_action_id = '$ac_list_id' and a.ac_dish_status=1 and (a.ac_area_id = '$ac_area_id' or a.ac_area_id=0) ";
        
        if (empty($jd) || empty($wd)){
            $cityCode = getCityidByIp();
-           $where .=" and (ac_city='$cityCode' or ac_city=0)";
+           $where .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
        }else{
            $return = getAreaid($jd,$wd);
            if (empty($return)) ajaxReturnData(0,'参数错误');
            if ($return['status'] == 0) {
                $cityCode = $return['ac_city'];
-               $where .=" and (ac_city='$cityCode' or ac_city=0)";
+               $where .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
            }else {
                $ac_city = $return['ac_city'];
                $ac_city_area = $return['ac_city_area'];
-               $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' ,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
+               $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' ,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
            }
-           
        }
+       //获得当前时间的区域id
+       $activityService = new \service\wapi\activityService();
+       $currentId = $activityService->getCurrentArea();
        
+       $sql = "SELECT a.*,b.title,b.thumb,b.marketprice from ".table('activity_dish')." as a left join ".table('shop_dish')." as b on a.ac_shop_dish = b.id where ";
+       $sql .= $where;
+       if ($currentId && ($currentId != $ac_area_id)){
+           $sql .= " and a.ac_dish_total > 0";
+       }
        //分页取数据
        $pindex = max(1, intval($_GP['page']));
        $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
        $limit= ($pindex-1)*$psize;
-       $orderby = " ac_dish_id DESC LIMIT ".$limit.",".$psize;
-       $actDishModel = new \model\activity_dish_model();
-       $list = $actDishModel->getAllActivtyDish($where,"*",$orderby);
-       if (empty($list)) ajaxReturnData(1,'暂无商品信息');
-
+       $orderby = " order by a.ac_dish_id DESC LIMIT ".$limit.",".$psize;
+       $sql .=$orderby;
+       $list = mysqld_selectall($sql);
+       if (empty($list)) ajaxReturnData(1,'暂无商品');
        //shop_dish表取商品详情
-       $shopDishModel = new \model\shop_dish_model();
        $data = array();
        foreach ($list as $key=>$v){
-            $goods = $shopDishModel->getOneShopDish(array('id'=>$v['ac_shop_dish'],'status'=>1),'title,thumb,marketprice');
-            if(empty($goods)) continue;
-            $temp['title'] = $goods['title'];
-            $temp['thumb'] = $goods['thumb'];
-            $temp['marketprice'] = FormatMoney($goods['marketprice'],0);
+            if ($currentId && ($currentId != $ac_area_id)){
+                if ($v['ac_dish_total'] == 0) continue;
+            }
+            $temp['title'] = $v['title'];
+            $temp['thumb'] = $v['thumb'];
+            $temp['marketprice'] = FormatMoney($v['marketprice'],0);
             $temp['ac_dish_id'] = $v['ac_dish_id'];
             $temp['ac_action_id'] = $v['ac_action_id'];
             $temp['ac_area_id'] = $v['ac_area_id'];

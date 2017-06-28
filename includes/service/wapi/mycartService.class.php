@@ -92,11 +92,12 @@ class mycartService extends  \service\publicService
             $totalprice = $this->countStorePriceAndBonus($totalprice,$gooslist);
         }
 
-        return array(
+        $redata = array(
             'goodslist'     => $gooslist,
             'out_gooslist'  => $out_gooslist,
-            'totalprice'    => number_format($totalprice,2)
+            'totalprice'    => round($totalprice,2)
         );
+        return $redata;
     }
 
     /**
@@ -132,10 +133,10 @@ class mycartService extends  \service\publicService
             if($total_dish_price >= $free_dispatch){
                 //商品价格  没有超过 满邮的条件   总价加上运费
                 $totalprice +=  $express_fee;
-                $item['totalprice'] = number_format($total_dish_price + $express_fee,2);
+                $item['totalprice'] = round($total_dish_price + $express_fee,2);
                 $item['send_free']  = 1;
             }else{
-                $item['totalprice'] = number_format($total_dish_price,2);
+                $item['totalprice'] = round($total_dish_price,2);
             }
             //根据店铺以及价格来选出 结算的时候 可以使用的优惠卷
             $item['bonuslist'] = getCouponByPriceOnPay($item['sts_id'],$total_dish_price,$dishid_arr);
