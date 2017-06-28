@@ -269,7 +269,7 @@ class limitedTimepurChaseService extends \service\publicService {
        }
        if($shop > 0)$where .= " and ac_shop = {$this->memberData['store_sts_id']}";
        //$this->nowHour
-       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where (FROM_UNIXTIME(b.ac_area_time_str,'%H') >= {$this->nowHour} or a.ac_area_id = 0)  {$where2} order by ac_time_str asc,b.ac_area_time_str asc {$limit}";
+       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where (FROM_UNIXTIME(b.ac_area_time_str,'%H') > {$this->nowHour} or a.ac_area_id = 0)  {$where2} order by ac_time_str asc,b.ac_area_time_str asc {$limit}";
        $dishList  = mysqld_selectall($sql);
        
         $dishList['total'] = mysqld_select("select count(0) as total from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id");

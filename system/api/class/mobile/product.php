@@ -2136,7 +2136,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_dish_id'] = 85;
+        $data['ac_dish_id'] = 90;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -2177,6 +2177,7 @@ class product extends base
             $redata['dish']['ac_dish_id'] = $acti_dish['ac_dish_id'];
             $redata['dish']['ac_action_id'] = $acti_dish['ac_action_id']; //活动ID
             $redata['dish']['ac_p1_id'] = $acti_dish['ac_p1_id']; //一级分类ID
+            $redata['dish']['ac_p2_id'] = $acti_dish['ac_p2_id']; //一级分类ID
             $redata['dish']['area'] = $areaInfo['ac_area_time_str']>0?intval(date('H',$areaInfo['ac_area_time_str'])).'点场':'全天场';
             $redata['dish']['ac_area_id'] = $acti_dish['ac_area_id'];
             

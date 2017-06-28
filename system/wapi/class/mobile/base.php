@@ -33,7 +33,7 @@ class base extends \common\controller\basecontroller
             //登陆操作 没有设备号  小程序中的设备号是服务端在登录通信后生成的
             return '';
         }
-        if($_GET['do'] == 'shopindex' && $_GET['op'] == 'active_area'){
+        if($_GET['do'] == 'shopindex' && $_GET['name'] == 'wapi'){
             return '';
         }
         $fromURL= $_SERVER['HTTP_REFERER'];
