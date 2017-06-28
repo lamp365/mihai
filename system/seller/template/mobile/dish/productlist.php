@@ -93,6 +93,8 @@
                 <tr>
                   <th width="80">商品图片</th>
                   <th>商品名称</th>
+                  <th>商品价格</th>
+                  <th>库存</th>
                   <th>佣金</th>
                   <th>新品</th>
                   <th>推荐</th>
@@ -107,6 +109,8 @@
                 <tr>
                     <td class="product-img"><img src="<?php echo download_pic($v['thumb'],150);?>"></td>
                   <td><?php echo $v['title'];?></td>
+                  <td><?php echo FormatMoney($v['marketprice'],0);?></td>
+                  <td><?php echo $v['store_count'];?></td>
                   <td><?php 
                         echo ($v['marketprice']/100)*($v['commision']/100);
                       ?>元</td>
@@ -144,16 +148,16 @@
                       <?php } ?>
                       <input type="hidden" name="isstatus_<?php echo $v['id'];?>" id="isstatus_<?php echo $v['id'];?>" value="<?php echo $v['isstatusc'];?>" >
                       <?php
-                        if($v['ac_dish_id'] <= 0)
+                        if(empty($v['active_info']) && $v['status'] == 1)
                         {
                       ?>
                       <div class="layui-btn layui-btn-small layui-btn-warm addltc" data-id="<?php echo $v['id'];?>">参与限时购</div>
                       <?php
                         }
-                        else{
+                        elseif ($v['status'] == 1){
                       ?>
-                      <div class="layui-btn layui-btn-small layui-btn-warm editltc" data-id="<?php echo $v['ac_dish_id'];?>">编辑限时购</div>
-                      <div class="layui-btn layui-btn-small layui-btn-warm delltc" data-id="<?php echo $v['ac_dish_id'];?>">限时购下架</div>
+                      <div class="layui-btn layui-btn-small layui-btn-warm editltc" data-id="<?php echo $v['active_info']['ac_dish_id'];?>">编辑限时购</div>
+                      <div class="layui-btn layui-btn-small layui-btn-warm delltc" data-id="<?php echo $v['active_info']['ac_dish_id'];?>">限时购下架</div>
                       <?php
                         }
                       ?>
@@ -224,21 +228,43 @@ layui.use(['laypage', 'layer','form','element'], function(){
         },"json");
     });
   });
-  /*
-   var retuurl = '/seller/product/sales_page.html';
-    laypage({
-      cont: 'demo1'
-      ,pages: $('#total').val() //总页数
-      ,groups: 5 //连续显示分页数
-      ,jump: function (obj, first) {//触发分页后的回调
-          //console.log(obj.curr);
-            $.post(retuurl,{'page':obj.curr},function(data){
-                  
-            },"json");
-            
-      }
-    });
-    */
+  //加入限时购
+  $('.addltc').on('click',function(){
+      var idval = $(this).attr('data-id');
+      var url= '<?php echo mobile_url('product',array('op'=>'addLtc')) ?>';
+      $.ajaxLoad(url,{id:idval},function(){
+          $('#alterModal').modal('show');
+      });
+  });
+  //编辑限时购
+  $('.editltc').on('click',function(){
+      
+      var idval = $(this).attr('data-id');
+      var url= '<?php echo mobile_url('product',array('op'=>'addLtc')) ?>';
+      $.ajaxLoad(url,{ac_dish_id:idval},function(){
+          $('#alterModal').modal('show');
+      });
+  });
+  
+  //删除限时购
+  $('.delltc').on('click',function(){
+      var idval = $(this).attr('data-id');
+      var url= '<?php echo mobile_url('product',array('op'=>'delLtc')) ?>';
+      $.post(url,{'ac_dish_id':idval},function(redata){
+          if(redata == 1){
+        	  layer.open({
+        		  content: '下架成功',
+        		  time:5000,
+    	  		  end: function () {
+      	  			location.reload();//刷新
+            	  }
+        		});
+          }else{
+        	  layer.msg('下架失败');
+          }
+      },"json");
+      
+  });
 });
 
 function changeIsNew(id){
@@ -305,35 +331,6 @@ function changeSort(id,data){
         //location.reload();
     },"json");
 }
-
-$(function(){
-    $('.addltc').on('click',function(){
-        var idval = $(this).attr('data-id');
-        var url= '<?php echo mobile_url('product',array('op'=>'addLtc')) ?>';
-        $.ajaxLoad(url,{id:idval},function(){
-            $('#alterModal').modal('show');
-        });
-    });
-    
-    $('.editltc').on('click',function(){
-        var idval = $(this).attr('data-id');
-        var url= '<?php echo mobile_url('product',array('op'=>'addLtc')) ?>';
-        $.ajaxLoad(url,{ac_dish_id:idval},function(){
-            $('#alterModal').modal('show');
-        });
-    });
-    
-    
-    $('.delltc').on('click',function(){
-        var idval = $(this).attr('data-id');
-        var url= '<?php echo mobile_url('product',array('op'=>'delLtc')) ?>';
-        $.post(url,{'ac_dish_id':idval},function(redata){
-            location.reload();
-        },"json");
-        
-    });
-    
-})
 </script>
 
 </body>
