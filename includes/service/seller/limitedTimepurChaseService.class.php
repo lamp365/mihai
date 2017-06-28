@@ -345,7 +345,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $data['limit'] = $data['limit']>0?$data['limit']:10; 
        $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
        $where  = '';
-       $where .= "ac_action_id in ({$data['ac_ids']})";
+       $where .= "ac_action_id = {$data['ac_ids']}";
        $where2 = '';
        if($data['ac_area_id'] !== null){
            $where2 .= " and a.ac_area_id = {$data['ac_area_id']}";

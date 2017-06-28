@@ -46,8 +46,14 @@ class shopindex extends base{
                $where .= " and IF(ac_city='$ac_city',ac_city_area='$ac_city_area' OR ac_city_area=0,IF(ac_city_area=0,ac_city=0,ac_city_area='$ac_city_area'))";
            }
        }
+       //获得当前时间的区域id
+       $currentId = $actService->getCurrentArea();
+       
        $actDishModel = new \model\activity_dish_model();
        foreach ($return as $key=>$val){
+           if ($currentId && ($currentId != $val['ac_area_id'])){
+               $where .= " and ac_dish_total > 0 ";
+           }
            $where1 = $where." and (ac_area_id = {$val['ac_area_id']} or ac_area_id=0) ";
            $info = $actDishModel->getAllActivtyDish($where1,'ac_dish_id');
            if (empty($info)) {
@@ -106,9 +112,6 @@ class shopindex extends base{
        //shop_dish表取商品详情
        $data = array();
        foreach ($list as $key=>$v){
-            if ($currentId && ($currentId != $ac_area_id)){
-                if ($v['ac_dish_total'] == 0) continue;
-            }
             $temp['title'] = $v['title'];
             $temp['thumb'] = $v['thumb'];
             $temp['marketprice'] = FormatMoney($v['marketprice'],0);

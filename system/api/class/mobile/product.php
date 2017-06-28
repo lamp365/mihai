@@ -2006,6 +2006,87 @@ class product extends base
         }
         else{
             $data['ac_ids'] = '';
+            $dayActi = $this->ltcObj->getDayActivity('ac_id,ac_title');
+            $data['ac_ids'] = $dayActi['ac_id'];
+        }
+        
+        //进行中的活动
+        if($data['ac_ids'] != '')
+        {
+            //获取进行中的场次
+            $redata['trailerActiDish'] = $this->ltcObj->getTrailerActiList($data);
+            
+             $dish_ids = '';
+            foreach($redata['trailerActiDish'] as $v){
+                $dish_ids .= $v['ac_shop_dish'].',';
+            }
+            $dish_ids = rtrim($dish_ids,',');
+            
+            //获取对应的宝贝ID
+            $dishInfo = array();      
+            $dishData = array();         
+            $dishData = $this->shopdish->getDishs($dish_ids,'id,marketprice,title,thumb');
+            if($dishData != '')
+            {
+                foreach($dishData as $v){
+                    $dishInfo[$v['id']]['marketprice'] = FormatMoney($v['marketprice'],2);
+                    $dishInfo[$v['id']]['title']       = $v['title'];
+                    $dishInfo[$v['id']]['thumb']       = $v['thumb'];
+                }
+            }
+            foreach($redata['trailerActiDish'] as $k=>$v){
+                @$redata['trailerActiDish'][$k]['marketprice'] = $dishInfo[$v['ac_shop_dish']]['marketprice'];
+                @$redata['trailerActiDish'][$k]['title']       = $dishInfo[$v['ac_shop_dish']]['title'];
+                @$redata['trailerActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
+                @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
+                @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
+                @$redata['trailerActiDish'][$k]['ac_title']    = $is_get_acids > 0?$actiTitle[$v['ac_id']]['ac_title']:$dayActi['ac_title']; 
+                
+                @$redata['trailerActiDish'][$k]['area']    = $redata['trailerActiDish'][$k]['hour']>0?$redata['trailerActiDish'][$k]['hour'].'点场':'全天场'; 
+                
+                //获取一级二级分类ID
+                $p1 = array();
+                $p1 = $this->ShopCate->shopCategoryInfo($v['ac_p1_id'],'name');
+                @$redata['trailerActiDish'][$k]['one_sys_cate']   = $p1['name'];
+                $p2 = array();
+                $p2 = $this->ShopCate->shopCategoryInfo($v['ac_p2_id'],'name');
+                @$redata['trailerActiDish'][$k]['two_sys_cate']   = $p2['name'];
+                
+                unset($redata['trailerActiDish'][$k]['ac_area_time_str'],$redata['trailerActiDish'][$k]['ac_time_str']);
+            } 
+        }
+        else{
+            $redata['trailerActiDish'] = array();
+        }
+        
+        $redata['total'] = intval($redata['trailerActiDish']['total']);
+        unset($redata['trailerActiDish']['total']);
+        ajaxReturnData(1,'获取成功',$redata); 
+    }
+    
+    
+    public function trailerActiInfo(){
+        $data = $this->request;
+        $redata = array();
+        $actiTitle = array();
+
+        //测试数据开始
+        //$data['ac_ids'] = 1;
+        //$data['ac_area_id'] = 0;
+        //测试数据结束
+
+        
+        //获取活动  活动获取的时间段
+        if($data['ac_ids'] != '')
+        {
+            $data['ac_ids'] = intval($data['ac_ids']);
+            
+            //
+            $actiTitle[$data['ac_ids']] = $this->ltcObj->getActiInfo($data['ac_ids'],'ac_title');
+            $is_get_acids = 1;
+        }
+        else{
+            $data['ac_ids'] = '';
             $dayActi = $this->ltcObj->getTrailerActivity('ac_id,ac_title');
             foreach($dayActi as $v)
             {
@@ -2136,7 +2217,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        $data['ac_dish_id'] = 90;
+        //$data['ac_dish_id'] = 90;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
