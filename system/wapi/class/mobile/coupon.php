@@ -99,15 +99,15 @@ class coupon extends base{
         }
         //未使用的数量
         $noUse = 0;
-        $wsyData = $couponMemModel->getAllMyCoupon("a.status=0 and '$now' < b.use_end_time ", 'a.scmid');
+        $wsyData = $couponMemModel->getAllMyCoupon("a.openid='$openid' and a.status=0 and '$now' < b.use_end_time ", 'a.scmid');
         if ($wsyData) $noUse = count($wsyData);
         //已使用的数量
         $isUse = 0;
-        $ysyData = $couponMemModel->getAllMyCoupon("a.status=1 and a.use_time <= '$endtime' ", 'a.scmid');
+        $ysyData = $couponMemModel->getAllMyCoupon("a.openid='$openid' and a.status=1 and a.use_time <= '$endtime' ", 'a.scmid');
         if ($ysyData) $isUse = count($ysyData);
         //未使用已过期的数量
         $overdue = 0;
-        $overdueData = $couponMemModel->getAllMyCoupon("a.status=0 and '$now' > b.use_end_time and b.use_end_time <= '$endtime' ", 'a.scmid');
+        $overdueData = $couponMemModel->getAllMyCoupon("a.openid='$openid' and a.status=0 and '$now' > b.use_end_time and b.use_end_time <= '$endtime' ", 'a.scmid');
         if ($overdueData) $overdue = count($overdueData);
         $total = array(
             'noUse'=>$noUse,

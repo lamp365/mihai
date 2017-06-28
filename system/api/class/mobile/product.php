@@ -1706,7 +1706,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_area'] = 2 ;
+        $data['ac_area'] = 2 ;
         //测试数据结束
         
         if($data['ac_area'] <= 0)
@@ -1715,7 +1715,19 @@ class product extends base
         }
         
         $redata['area'] = $this->ltcObj->getAreaGroupList($data['ac_area']);
+        foreach($redata['area'] as $k=>$v){
+            $redata['area'][$k]['area'] = intval(date('H',$v['ac_area_time_str'])).'点场';
+        }
         
+        $areaArr['ac_area_id'] = '0';
+        $areaArr['ac_area_title'] = '0';
+        $areaArr['ac_area_time_str'] = '0';
+        $areaArr['ac_area_time_end'] = '0';
+        $areaArr['ac_list_id'] = '0';
+        $areaArr['ac_area_status'] = '1';
+        $areaArr['area'] = '全天场';
+        //$redata['area'] = array_values($redata['area']);
+        array_unshift($redata['area'],$areaArr);
         ajaxReturnData(1,'获取成功',$redata);
     }
     

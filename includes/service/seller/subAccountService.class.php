@@ -33,6 +33,17 @@ class subAccountService extends \service\publicService {
        $data  = mysqld_select($sql);
        return $data['account_fee'];
    }
-    
+  
+   //
+   public function getProfitList($openid,$fields='*'){
+       $data['page'] = max(1, intval($data['page']));
+       $data['limit'] = $data['limit']>0?$data['limit']:10; 
+       $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+       
+       $sql = "SELECT {$fields} FROM {$this->table_member_paylog} where openid = {$openid} and (type = 3 or type = -3) order by createtime desc {$limit}";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
 } 
 ?>

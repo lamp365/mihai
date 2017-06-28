@@ -52,5 +52,15 @@ class subaccount extends base
         ajaxReturnData(1,'获取成功',$redata);
     }
     
+    //子账户收入列表
+    public function subaccountList(){
+        $data   = $this->request;
+        $redata = array();
+        
+        $subaccountList = $this->subAccountObj->getProfitList($this->memberInfo['openid']);
+        
+        
+    }
+    
 }
 ?>
