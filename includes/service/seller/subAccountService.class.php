@@ -17,6 +17,7 @@ class subAccountService extends \service\publicService {
        $this->table_member_store_relation        = table('member_store_relation');
        $this->table_member  = table('member');
        $this->table_member_paylog = table('member_paylog');
+       $this->table_commission_settlement_paylog = table('commission_settlement_paylog');
        
    }
    
@@ -50,5 +51,18 @@ class subAccountService extends \service\publicService {
        $rs = mysqld_selectall($sql);
        return $rs;
    }
+   
+   //获取结算列表
+   public function getCspList($openid,$data,$fields='*',$type=1){
+       $data['page'] = max(1, intval($data['page']));
+       $data['limit'] = $data['limit']>0?$data['limit']:10; 
+       $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+       
+      $sql = "select {$fields} from {$this->table_commission_settlement_paylog} where type = {$type} and payee_openid = {$openid} order by createtime desc {$limit}";
+      echo $sql;exit;
+      $rs  = mysqld_selectall($sql);
+      return $rs;
+   }
+   
 } 
 ?>

@@ -668,12 +668,18 @@ class product extends base
         
         public function changeDishStatus(){
             $_GP = $this->request;
-            
+            $dishid = intval($_GP['dish_id']);
+            $status = intval($_GP['status']);
+            if (empty($dishid)) ajaxReturnData(0,'更新失败');
             $dishStatus = new \service\seller\ShopDishService();
-            $dishStatus->changeDishStatus($_GP);
+            $flag = $dishStatus->changeDishStatus(array('dish_id'=>$dishid,'status'=>$status));
             $data = array();
             $data = intval($_GP['status']);
-            ajaxReturnData(1,'更新成功',$data);
+            if ($flag == -1){
+                ajaxReturnData(0,'抱歉，您存在已上线限时购的商品，不能下架',$data);
+            }else{
+                ajaxReturnData(1,'更新成功',$data);
+            }
         }
         
         public function deleteImg(){
@@ -790,7 +796,7 @@ class product extends base
             $url = mobile_url('product',array('op'=>'productlist'));
             if($addActiDish && $addActiDish['status'] == 1)
             {
-                message("提交成功",$url,'success');
+                message($addActiDish['mes'],$url,'success');
             }
             else{
                 message($addActiDish['mes'],$url,'error');

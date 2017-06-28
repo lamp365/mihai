@@ -107,6 +107,7 @@ class subaccount extends base
         $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
         //结算列表
+        $cspListData = $this->subAccountObj->getCspList($this->memberInfo['openid'],$data);
         
         ajaxReturnData(1,'获取成功',$redata);
     }

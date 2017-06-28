@@ -148,53 +148,59 @@ function update_order_status($id, $status) {
     if ($status == -1) {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
+    		$activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$ogv['dishid']);
     		// 释放库存减掉销量
-			if($ogv['shop_type'] == 4){
-				//操作限时购的库存
-
-			}
-    		mysqld_query("UPDATE ".table('shop_dish')." SET store_count=store_count+".$ogv['total'].", sales_num=sales_num-".$ogv['total']." WHERE id=".$ogv['dishid']);
+			// if($ogv['shop_type'] == 4){
+			// 	//操作限时购的库存
+			// 	operateStoreCount($ogv['dishid'],$ogv['total'],$activity_dish['ac_action_id'],2);
+			// }
+			operateStoreCount($ogv['dishid'],$ogv['total'],$activity_dish['ac_action_id'],2);
     		// 如果已付款 订单有卖家openid，则扣除冻结佣金
 			//已经没有冻结资金了，只有确认收货后，直接把拥金记录余额中
     	}
-    	// 如果有使用余额抵扣，退还余额
-		// if (($order['has_balance'] == '1' AND $order['return_balance'] == '0') || $order['freeorder_price']>0) {
-			
-		// 	$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$order['openid']."'");
-				
-		// 	//该笔订单下单时间是在免单金额使用期内时
-		// 	if(($mem['freeorder_gold_endtime']-7*24*3600) < $order['createtime'])
-		// 	{
-		// 		$memberData = array('freeorder_gold' => $order['freeorder_price']+$mem['freeorder_gold']);
-				
-		// 		//记录用户账单的免单金额收支情况
-		// 		$remark = PayLogEnum::getLogTip('LOG_BACK_FEE_TIP');
-		// 		insertMemberPaylog($mem['openid'], $order['freeorder_price'],$memberData['freeorder_gold'], 'addgold', $remark);
-		// 	}
-			
-		// 	$memberData['gold'] = (float)$mem['gold']+(float)$order['balance_sprice'];
-			
-		// 	mysqld_update ('member',$memberData,array('openid' =>$order['openid']));
-		// 	// 余额已退还设为1
-		// 	mysqld_update('shop_order', array('return_balance' => 1), array('id'=> $id));
-		// }
     	// 反还优惠券
-    	mysqld_query("UPDATE ".table('bonus_user')." SET isuse=0 WHERE order_id=".$order['id']);
+    	if (!empty($order['hasbonus'])) {
+    		mysqld_query("UPDATE ".table('store_coupon_member')." SET status=0 WHERE scmid=".$order['hasbonus']);
+    	}
     	// 记录订单关闭时间
-    	mysqld_query("UPDATE ".table('shop_order')." SET closetime=".time()." WHERE id=".$id);
+    	mysqld_query("UPDATE ".table('shop_order')." SET status=-1,closetime=".time()." WHERE id=".$id);
     }elseif ($status == 3) {
     	// 确认收货
-		$data = hasFinishGetOrder($id);
-		if($data['errno'] == 200){
-			return true;
-		}else{
-			return false;
-		}
-		//不要再次执行最底下的update
+    	mysqld_query("UPDATE ".table('shop_order')." SET status=3,completetime=".time()." WHERE id=".$id);
+		// $data = hasFinishGetOrder($id);
+		// if($data['errno'] == 200){
+		// 	return true;
+		// }else{
+		// 	return false;
+		// }
+		//有实付金额（这里从数据库取出来的单位是分）  记录用户支付的账单
+		if($order['price']>0)
+		{
+			//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
+			$mark = LANG('LOG_SHOPBUY_TIP','paylog');
+			member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
 
+			//商家所得去除费率  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
+			$pay_rate    = $setting['pay_rate']/100;
+			$store_money = intval($order['price'] - $pay_rate*$order['price']);  //单位是分
+			$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
+			store_freeze_gold($order['sts_id'],$store_money,1,$mark);
+		}
+
+		//推荐人所属的店铺 得到一笔冻结的推广佣金    退款要扣掉  完成收货要变成余额
+		if(!empty($order['recommend_sts_id']) && !empty($order['store_earn_price'])){
+			$earn_price = $order['store_earn_price']; //单位分
+			$remark     = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
+			store_commisiongold($order['recommend_sts_id'],$order['recommend_openid'],$earn_price,3,$order['id'],$remark);
+		}
+		//推荐人得到跟店铺 所承诺的 提成收入 冻结收入   退款要扣掉  完成收货要变成未结算
+		if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
+			$earn_price  = $order['member_earn_price']; //单位分
+			$remark      = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
+			//注意该方法的使用  推荐人要加入佣金，第一个参数是 推荐人的openid
+			member_commisiongold($order['recommend_openid'],$order['openid'],$earn_price,3,$order['id'],$remark);
+		}
     }
-    $data = array('status' => $status);
-    mysqld_update('shop_order', $data, array('id'=> $id));
 }
 
 /**

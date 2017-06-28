@@ -152,6 +152,22 @@ class good_detail extends base {
     $list['shop_avatar'] = $shop['sts_avatar'];
     // 店铺等级
     // $list['shop_level'] = $shop['sts_shop_level'];
+    // 时段促销时间
+    if ($activity_dish['ac_area_id'] == '0') {
+      // 全天时段
+      $list['in_area'] = 0;
+      $area = mysqld_select("SELECT * FROM ".table('activity_area')." WHERE ac_id=".$activity_dish['ac_action_id']);
+      $list['ac_str_time'] = $area['ac_time_str'];
+      $list['ac_end_time'] = $area['ac_time_end'];
+      $list['ac_status'] = $area['ac_status'];
+    }else{
+      // 具体时段
+      $list['in_area'] = 1;
+      $area = mysqld_select("SELECT * FROM ".table('activity_area')." WHERE ac_area_id=".$activity_dish['ac_area_id']);
+      $list['ac_str_time'] = $area['ac_area_time_str'];
+      $list['ac_end_time'] = $area['ac_area_time_end'];
+      $list['ac_status'] = $area['ac_area_status'];
+    }
 
     // 详情图
     if ($is_contont == 'yes') {

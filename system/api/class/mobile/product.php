@@ -798,7 +798,7 @@ class product extends base
         if($data['is_lts'] > 0)
         {
             $data['ac_action_id'] = intval($data['ac_action_id']);
-            $ltcDish = $this->ltcObj->getShopAddDishId($data['ac_action_id']);
+            $ltcDish = $this->ltcObj->getShopAddDishId($data['ac_action_id'],$data['ac_area_id']);
             $data['ltcDishIds'] = '';
             foreach($ltcDish as $v){
                     $data['ltcDishIds'] .= $v['ac_shop_dish'].',';
@@ -904,14 +904,13 @@ class product extends base
         if($data['is_lts'] > 0)
         {
             $data['ac_action_id'] = intval($data['ac_action_id']);
-            $ltcDish = $this->ltcObj->getShopAddDishId($data['ac_action_id']);
+            $ltcDish = $this->ltcObj->getShopAddDishId($data['ac_action_id'],$data['ac_area_id']);
             $data['ltcDishIds'] = '';
             foreach($ltcDish as $v){
                 $data['ltcDishIds'] .= $v['ac_shop_dish'].',';
             }
             $data['ltcDishIds'] = rtrim($data['ltcDishIds'], ',');
         }
-        
         $reData['dish']  = $this->shopdish->getDishPage($data,'title,marketprice,sales_num,store_count,id,thumb,status');
         
         $reData['total'] = $reData['dish']['total'];
@@ -1789,7 +1788,12 @@ class product extends base
                     ajaxReturnData(0,'必要参数不存在');
                 }
                 $addActiDish = $this->ltcObj->addActivityDish($v);
+
                 switch($addActiDish){
+                     case -1:
+                        //ajaxReturnData(-2,'活动价格不得大于原价格');
+                        $errorNum = $errorNum + 1;
+                        break;
                     case -2:
                         //ajaxReturnData(-2,'活动价格不得大于原价格');
                         $errorNum = $errorNum + 1;

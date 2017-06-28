@@ -100,7 +100,7 @@
           <div class="layui-form-item">
             <label class="layui-form-label">审核状态</label>
             <div class="layui-input-block">
-                <font color="red"><?php if ($ltcInfo['status'] == 1){echo "审核成功";}else {echo "正在审核";}?></font>
+                <font color="red"><?php if ($ltcInfo['ac_dish_status'] == 1){echo "审核成功";}elseif ($ltcInfo['ac_dish_status'] == 2) {echo "审核失败";}else{echo "正在审核";}?></font>
             </div>
           </div>
           <span>注意：已参加限时购的商品编辑后需要重新审核，请谨慎修改</span>

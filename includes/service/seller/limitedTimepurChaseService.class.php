@@ -74,23 +74,17 @@ class limitedTimepurChaseService extends \service\publicService {
        $rsdata['ac_dish_total'] = $data['ac_dish_total'];
        $rsdata['ac_dish_id']    = $data['ac_dish_id'];
        if($rsdata['ac_dish_id'] <= 0)
-       {//添加
+       {
             $rsdata['ac_shop_dish']  = $data['ac_shop_dish']; 
-            //判断某个宝贝是否已参与了某个活动了 如果参与则不用再次加入
-            $activity_dish_rs = getDishIsOnActive($rsdata['ac_shop_dish']);
-            if(!empty($activity_dish_rs))
-            {
-                return array('status'=>-1,'mes'=>'宝贝已经加入限时购活动中');
-            }
        }
-       else{//编辑
+       else{
             //获取dishid
             $dishid_sql = "select ac_shop_dish from squdian_activity_dish where ac_dish_id = {$rsdata['ac_dish_id']}";
             $dishid_rs  = mysqld_select($dishid_sql);
             $rsdata['ac_shop_dish']  = $dishid_rs['ac_shop_dish'];
             if($rsdata['ac_shop_dish'] <= 0)
             {
-                return array('status'=>-5,'mes'=>'系统错误');
+                return -5;
             }
             
             $where = '';
@@ -101,21 +95,39 @@ class limitedTimepurChaseService extends \service\publicService {
        $checkDish = $this->dishObj->checkStoreDish($rsdata['ac_shop_dish'], $this->memberData['store_sts_id']);
        if($checkDish['id'] <= 0)
         {
-           return array('status'=>-4,'mes'=>'系统错误');
+           return -4;
         }
+       
+       //判断某个宝贝是否已参与了某个活动了 如果参与则不用再次加入
+       $activity_dish_sql = "select ac_dish_id,ac_area_id from squdian_activity_dish where ac_shop_dish = {$rsdata['ac_shop_dish']} and ac_action_id = {$rsdata['ac_action_id']} and ac_shop = {$this->memberData['store_sts_id']} $where";
+       $activity_dish_rs  = mysqld_select($activity_dish_sql);
+       if($activity_dish_rs['ac_dish_id'] > 0)
+       {
+           //if($activity_dish_rs['ac_area_id'] == 0 || $activity_dish_rs['ac_area_id'] == $rsdata['ac_area_id']){
+             return -1;
+           //}
+       }
+       
+       //判断活动是否存在且未被禁用
+       $actiListInfo = $this->getActiInfo($rsdata['ac_action_id'],'ac_id');
+       $ac_id_data = intval($actiListInfo['ac_id']);
+       if($ac_id_data <= 0)
+       {
+           return -6;
+       }
        
        //判断价格是否大于原产品促销价格 ac_dish_total
        $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice,store_count');
        $rsdata['ac_dish_price'] = FormatMoney($data['ac_dish_price']);
        if($rsdata['ac_dish_price'] > $dishInfo['marketprice'])
        {
-            return array('status'=>-2,'mes'=>'限时购价格不能高于当前活动价格');
+            return -2;
        }
        
        //库存不得大于原库存
        if($rsdata['ac_dish_total'] > $dishInfo['store_count'])
        {
-           return array('status'=>-7,'mes'=>'库存不能大于当前库存');
+           return -7;
        }
        
        //获取城市code,城市区域code
@@ -129,18 +141,18 @@ class limitedTimepurChaseService extends \service\publicService {
        if($rsdata['ac_dish_id'] > 0)
        {
            mysqld_update('activity_dish',$rsdata,array('ac_dish_id'=>$rsdata['ac_dish_id']));
-           return array('status'=>1,'mes'=>'更新成功');
+           return 1;
        }
        else{
             mysqld_insert('activity_dish',$rsdata);
             $acti_id = mysqld_insertid();    //获取上一次插入的ID 
             if($acti_id > 0)
             {
-                return array('status'=>1,'mes'=>'添加成功');
+                return 1;
             }
             else{
                 //插入失败
-                return array('status'=>-3,'mes'=>'系统错误');
+                return -3;
             }
        }
    }
@@ -190,7 +202,7 @@ class limitedTimepurChaseService extends \service\publicService {
    //获取今天在进行中的活动
    public function getDayActivity($fields='*'){
        $dayTime = strtotime(date('Y-m-d'));
-       $sql = "select $fields from {$this->table_list} where ac_time_str <= {$dayTime} and ac_status = 1";
+       $sql = "select $fields from {$this->table_list} where ac_time_str <= {$dayTime} and ac_status = 1 order by ac_time_end desc";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -238,6 +250,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $dishList  = mysqld_selectall($sql);
        
         $dishList['total'] = mysqld_select("SELECT count(0) as total FROM {$this->table_dish} AS a LEFT JOIN {$this->table_area} AS b ON a.ac_area_id = b.ac_area_id where $where");
+        //
         $dishList['total'] = intval($dishList['total']['total']);
         unset($dishList['total']['total']);
         return $dishList;
@@ -377,7 +390,7 @@ class limitedTimepurChaseService extends \service\publicService {
         {
             return '';
         }
-        $sql = "select ac_shop_dish from {$this->table_dish} where ac_action_id = {$ac_action_id} and (ac_area_id = {$ac_area_id} and ac_area_id = 0) and ac_shop = {$this->memberData['store_sts_id']}";
+        $sql = "select ac_shop_dish from {$this->table_dish} where ac_action_id = {$ac_action_id} and ac_shop = {$this->memberData['store_sts_id']}";
         $rs  = mysqld_selectall($sql);
         return $rs;
    }

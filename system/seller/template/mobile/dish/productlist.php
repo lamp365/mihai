@@ -254,7 +254,6 @@ layui.use(['laypage', 'layer','form','element'], function(){
           if(redata == 1){
         	  layer.open({
         		  content: '下架成功',
-        		  time:5000,
     	  		  end: function () {
       	  			location.reload();//刷新
             	  }
@@ -310,17 +309,18 @@ function isStatus(id){
     var data = $('#isstatus_'+id).val();
     var weburl = "<?php echo mobile_url('product',array('op'=>'changeDishStatus')); ?>";
     $.post(weburl,{'dish_id':id,'status':data},function(redata){
-        if(data == 1)
-        {
-            $("#isstatusobj_"+id).attr("class","layui-btn layui-btn-small layui-btn-danger");
-            $('#isstatusobj_'+id).html('设置下架');
-            $('#isstatus_'+id).val(0);
-        }
-        else{
-            $("#isstatusobj_"+id).attr("class","layui-btn layui-btn-small layui-btn-warm");
-            $('#isstatusobj_'+id).html('设置上架');
-            $('#isstatus_'+id).val(1);
-        }
+        if(redata.errno == 1){
+        	layer.open({
+        		  content: redata.message,
+      	  		  end: function () {
+      	  			location.reload();//刷新
+            	  }
+        		});
+            }else{
+            	layer.open({
+            		  content: redata.message,
+            		});
+            }
     },"json");  
 }
 

@@ -242,6 +242,8 @@ class ShopDishService extends \service\publicService {
     public function changeDishStatus($data){
         $id     = intval($data['dish_id']);
         $status = intval($data['status']);
+        $info = getDishIsOnActive($id);
+        if ($info) return -1;
         $sql    = "update {$this->table} set status = {$status} where id = {$id}";
         $redata = mysqld_query($sql);
         return $redata;
