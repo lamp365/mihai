@@ -81,7 +81,7 @@ class activityService extends \service\publicService
         if($list){
             if ($num == 0) return $list;
             
-            if (count($list) > $num){
+            if (count($list) >= $num){
                 for ($i=0;$i<$num;$i++){
                     $return[$i] = $list[$i];
                 }

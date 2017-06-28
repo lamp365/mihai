@@ -777,10 +777,14 @@ class product extends base
     public function searchDish(){
         $data = $this->request;
         
+        /*
         //测试数据开始
         $data['key']  = '美';
         $data['page'] = '1';
+        $data['is_lts'] = '1';
+        $data['ac_action_id'] = '1';
         //测试数据结束
+         */
         
         if($data['key'] == '')
         {
@@ -791,6 +795,16 @@ class product extends base
         $data['page'] = ($data['page'] - 1) * $data['limit'];
         $data['limit'] = $data['limit']>0?$data['limit']:10;
         
+        if($data['is_lts'] > 0)
+        {
+            $data['ac_action_id'] = intval($data['ac_action_id']);
+            $ltcDish = $this->ltcObj->getShopAddDishId($data['ac_action_id']);
+            $data['ltcDishIds'] = '';
+            foreach($ltcDish as $v){
+                    $data['ltcDishIds'] .= $v['ac_shop_dish'].',';
+            }
+            $data['ltcDishIds'] = rtrim($data['ltcDishIds'], ',');
+        }
         
         $dishData = $this->shopdish->searchDish($data,'title,marketprice,sales_num,store_count,id,thumb,status');
         $reData['total'] = $dishData['total'];
@@ -869,21 +883,34 @@ class product extends base
         $data = $this->request;
         
         $reData = array();
+        
+        /*
         //测试数据开始
-        /*http://local.otoshop.com:801/api/product/dishListPage.html?data={"store_p1":1,"store_p2":2}
-        $_GP = array(
+        //http://local.otoshop.com:801/api/product/dishListPage.html?data={"store_p1":1,"store_p2":2}
+        $data = array(
             'sales_num'      => 'asc',
             'store_count'    => 'desc',
-            'marketprice_less'    => 100,
-            'marketprice_many'    => 1000
+            'is_lts'        => 1,
+            'ac_action_id'        => 2,
         );
-         * 
-         */
         //价格区间
         //测试数据结束 
+        */ 
+        
         $data['page'] = max(1, intval($data['page']));
         $data['page'] = ($data['page'] - 1) * $data['limit'];
         $data['limit'] = $data['limit']>0?$data['limit']:10;
+
+        if($data['is_lts'] > 0)
+        {
+            $data['ac_action_id'] = intval($data['ac_action_id']);
+            $ltcDish = $this->ltcObj->getShopAddDishId($data['ac_action_id']);
+            $data['ltcDishIds'] = '';
+            foreach($ltcDish as $v){
+                $data['ltcDishIds'] .= $v['ac_shop_dish'].',';
+            }
+            $data['ltcDishIds'] = rtrim($data['ltcDishIds'], ',');
+        }
         
         $reData['dish']  = $this->shopdish->getDishPage($data,'title,marketprice,sales_num,store_count,id,thumb,status');
         
@@ -1893,7 +1920,7 @@ class product extends base
         if($dayActi['ac_id'] > 0)
         {
             //获取进行中的场次
-            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id');
+            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id,ac_dish_status');
             $dish_ids = '';
             foreach($redata['underwayActiDish'] as $v){
                 $dish_ids .= $v['ac_shop_dish'].',';

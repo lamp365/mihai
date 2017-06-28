@@ -372,12 +372,12 @@ class limitedTimepurChaseService extends \service\publicService {
    }
    
    //获取店铺参与过限时购
-   public function getShopAddDishId($ac_action_id=0,$ac_area_id=0,$fields='*'){
+   public function getShopAddDishId($ac_action_id=0,$ac_area_id=0){
         if($ac_action_id <= 0)
         {
             return '';
         }
-        $sql = "select {$fields} from {$this->table_dish} where ac_action_id = {$ac_action_id} and ac_area_id = {$ac_area_id} and ac_shop = {$this->memberData['store_sts_id']}";
+        $sql = "select ac_shop_dish from {$this->table_dish} where ac_action_id = {$ac_action_id} and (ac_area_id = {$ac_area_id} and ac_area_id = 0) and ac_shop = {$this->memberData['store_sts_id']}";
         $rs  = mysqld_selectall($sql);
         return $rs;
    }

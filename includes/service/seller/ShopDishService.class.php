@@ -62,6 +62,12 @@ class ShopDishService extends \service\publicService {
             $data['status'] = intval($data['status']);
             $where = " and status = {$data['status']}";
         }
+        
+        if($data['is_lts'] != '' && $data['ltcDishIds'] != '')
+        {
+            $where .= " and id not in ({$data['ltcDishIds']})";
+        }
+        
         $sql = "select {$fields} from {$this->table} where sts_id = {$this->memberData['store_sts_id']} and title like '%{$data['key']}%' {$where} limit {$data['page']},{$data['limit']}";
         $redata = mysqld_selectall($sql);
         foreach($redata as $k=>$v){
@@ -107,6 +113,11 @@ class ShopDishService extends \service\publicService {
         if($_GP['brands_id'] != '')
         {
             $wheres .= " and brands_id in ({$_GP['brands_id']})";
+        }
+        
+        if($_GP['is_lts'] != '' && $_GP['ltcDishIds'] != '')
+        {
+            $wheres .= " and id not in ({$_GP['ltcDishIds']})";
         }
         
         if(isset($_GP['status'])){
