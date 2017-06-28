@@ -334,10 +334,13 @@ class product extends base
                 $list[$k]['isrecommandc'] = $v['isrecommand']==0?1:0;
                 $list[$k]['isstatusc']    = $v['status']==0?1:0;
                 //判断已参与限时购活动 有的话，返回数组，没有返回空数组
-                $list[$k]['active_info']  = getDishIsOnActive($list['id'],$list['store_count']);
+                $active_info  = getDishIsOnActive($v['id']);
                 
+                if (!empty($active_info)){//同步库存
+                    synchroscope_store_count($v['store_count'],$active_info['ac_dish_total'],$active_info['ac_dish_id']);
+                }
+                $list[$k]['active_info'] = $active_info;
             }
-            
             $total = mysqld_selectcolumn('SELECT COUNT(id) FROM ' . table('shop_dish') . " WHERE sts_id = {$memberData['store_sts_id']}  {$condition}");
             
             $pager = pagination($total, $pindex, $psize);
@@ -732,9 +735,8 @@ class product extends base
                 $ltcInfo    = $ltcObj->getLtcDish($ac_dish_id);
                 $ac_dish_id = $ltcInfo['ac_dish_id'];
                 $dish_id    = $ltcInfo['ac_shop_dish'];
-                $ltcInfo['ac_dish_price'] = FormatMoney($ltcInfo['ac_dish_price'],2);
+                $ltcInfo['ac_dish_price'] = FormatMoney($ltcInfo['ac_dish_price'],0);
                 
-                //
                 $sysCate = new \service\seller\ShopCateService();
                 $twoCategory = $sysCate->twoShopCategory($ltcInfo['ac_p1_id']);  
                 
@@ -745,19 +747,8 @@ class product extends base
 
                 $activGroup = $ltcObj->getAreaGroupList($actiData);
                 
-                /*
-                $areaGroup = $ltcObj->getAreaGroupList($ltcInfo['ac_area_id']);
-                $time_html = '';
-                foreach($areaGroup as $v){
-                    $time_html .= '开始时段:'.date('H:i:s',$v['ac_area_time_str']);
-                    $time_html .= '结束时段:'.date('H:i:s',$v['ac_area_time_end']).'<br>';
-                }
-                $ltcInfo['time_html'] = $time_html;
-                 * 
-                 */
             }
             //获取当前正在进行的活动
-            $nowTime = time();
             
             $areaGroup = $ltcObj->getAreaGroup();
             $areaList  = $ltcObj->getListAll();
@@ -797,16 +788,12 @@ class product extends base
             $addActiDish = $ltcObj->addActivityDish($_GP);
             
             $url = mobile_url('product',array('op'=>'productlist'));
-            if($addActiDish > 0)
+            if($addActiDish && $addActiDish['status'] == 1)
             {
                 message("提交成功",$url,'success');
             }
             else{
-                if ($addActiDish == -1){
-                    message("抱歉，限时购价格不能高于当前促销价格",$url,'error');
-                }else{
-                    message("提交失败",$url,'error');
-                }
+                message($addActiDish['mes'],$url,'error');
             }
         }
         
@@ -845,10 +832,11 @@ class product extends base
         //ajaxReturnData(1,'删除成功');
         public function delLtc(){
             $_GP = $this->request;
-
+            $ac_dish_id = intval($_GP['ac_dish_id']);
+            if (empty($ac_dish_id)) echo 0;
             $ltcObj = new \service\seller\limitedTimepurChaseService();
-            $addActiDish = $ltcObj->delActivityDish($_GP['ac_dish_id']);
-            
+            $addActiDish = $ltcObj->delActivityDish($ac_dish_id);
+            $url = mobile_url('product',array('op'=>'productlist'));
             echo 1;
             exit;
         }

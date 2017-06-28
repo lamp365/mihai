@@ -96,6 +96,15 @@
                 <input type="text" name="ac_dish_total" required   autocomplete="off" class="layui-input" id="ac_dish_total"  value="<?php echo $ltcInfo['ac_dish_total'];?>">
             </div>
           </div>
+          <?php if ($ac_dish_id > 0){?>
+          <div class="layui-form-item">
+            <label class="layui-form-label">审核状态</label>
+            <div class="layui-input-block">
+                <font color="red"><?php if ($ltcInfo['status'] == 1){echo "审核成功";}else {echo "正在审核";}?></font>
+            </div>
+          </div>
+          <span>注意：已参加限时购的商品编辑后需要重新审核，请谨慎修改</span>
+          <?php }?>
         
     </div>
     <div class="modal-footer">
@@ -171,7 +180,24 @@ layui.use('form', function(){
             layer.alert('请选择活动ID');
             return false;
         }
+        var ac_dish_price = $("#ac_dish_price").val();
+		if(pricecheck(ac_dish_price)){
+			layer.alert('请输入有效金额');
+            return false;
+		}
+		var ac_dish_total = $("#ac_dish_total").val();
+    	if((/^(\+|-)?\d+$/.test(ac_dish_total)) && ac_dish_total > 0){  
+	        return true;  
+	    }else{  
+	    	layer.alert('请输入有效库存');  
+	        return false;  
+	    }
     });  
-    
+    function pricecheck(price){
+        var fix_amountTest=/^(([1-9]\d*)|\d)(\.\d{1,2})?$/;
+        if(fix_amountTest.test(price)==false){
+            return true;
+           }
+        }
 });
 </script>

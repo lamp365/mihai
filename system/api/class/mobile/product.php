@@ -1998,6 +1998,7 @@ class product extends base
             
             //
             $actiTitle[$data['ac_ids']] = $this->ltcObj->getActiInfo($data['ac_ids'],'ac_title');
+            $is_get_acids = 1;
         }
         else{
             $data['ac_ids'] = '';
@@ -2040,7 +2041,7 @@ class product extends base
                 @$redata['trailerActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
                 @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
                 @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
-                @$redata['trailerActiDish'][$k]['ac_title']    = $actiTitle[$v['ac_id']]; 
+                @$redata['trailerActiDish'][$k]['ac_title']    = $is_get_acids > 0?$actiTitle[$v['ac_id']]['ac_title']:$actiTitle[$v['ac_id']]; 
                 
                 @$redata['trailerActiDish'][$k]['area']    = $redata['trailerActiDish'][$k]['hour']>0?$redata['trailerActiDish'][$k]['hour'].'点场':'全天场'; 
                 
@@ -2219,9 +2220,16 @@ class product extends base
         $data = $this->request;
         $redata = array();
         
-        $redata['allList'] = $this->ltcObj->getAllList('ac_area,ac_title,ac_id');
+        //获取商铺参与的活动ID
+        $actiData = $this->ltcObj->getAllShopAcid('distinct(ac_action_id) as ac_action_id');
+        $actiIds = '';
+        foreach($actiData as $v){
+            $actiIds .= $v['ac_action_id'].',';
+        }
+        $actiIds = rtrim($actiIds,',');
 
-        if($redata['allList'] != '')
+        $redata['allList'] = $this->ltcObj->getAllList($actiIds,'ac_area,ac_title,ac_id');
+        if($redata['allList'] != '' && $actiIds != '')
         {
             $listArr = array();;
             foreach($redata['allList'] as $k=>$v){
@@ -2233,7 +2241,7 @@ class product extends base
             $areaInfo = $this->ltcObj->getAllArea($listIds,'ac_area_id,ac_area_time_str,ac_list_id');
             $areaData = array();
             foreach($areaInfo as $k=>$v){
-                $areaInfo[$k]['ac_area_time_str'] = intval(date('H',$areaInfo[$k]['ac_area_time_str'])).'点场';
+                $areaInfo[$k]['area'] = intval(date('H',$areaInfo[$k]['ac_area_time_str'])).'点场';
             }
             
             foreach($areaInfo as $v){
@@ -2243,6 +2251,7 @@ class product extends base
             foreach($redata['allList'] as $k=>$v){
                 $redata['allList'][$k]['areaList'] = $areaData[$v['ac_area']];
             }
+            
         }
         else{
             $redata['allList'] = array();
