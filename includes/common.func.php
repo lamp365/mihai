@@ -45,14 +45,14 @@ function LANG($name_key = '',$module = 'common',$replace = '') {
 
 //金额格式化  存入数据库的时候 type 1 分   页面展示的时候 type 0 元
 function FormatMoney($money,$type=1){
-    if(empty($money)) return sprintf("%.2f",0);
+    if(empty($money)) return 0.00;
     if($type == 1)
     {
         $money = $money * 100;
     }
     else
     {
-        $money = sprintf("%.2f",$money/100);
+        $money = round($money/100,2);
     }
     return $money;
 }

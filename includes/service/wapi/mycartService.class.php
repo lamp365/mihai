@@ -92,11 +92,12 @@ class mycartService extends  \service\publicService
             $totalprice = $this->countStorePriceAndBonus($totalprice,$gooslist);
         }
 
-        return array(
+        $redata = array(
             'goodslist'     => $gooslist,
             'out_gooslist'  => $out_gooslist,
-            'totalprice'    => number_format($totalprice,2)
+            'totalprice'    => round($totalprice,2)
         );
+        return $redata;
     }
 
     /**
