@@ -112,11 +112,11 @@ function getAreaid($jd,$wd){
     $openid = get_member_account();
     $key = $openid."_LOCATION";
     //缓存1小时，如果有数据则取缓存数据
-     if(class_exists('Memcached')){
+     /* if(class_exists('Memcached')){
          $memcache = new \Mcache();
          $data = $memcache->get($key);
          if (!empty($data)) return $data;
-     }
+     } */
      
     if (empty($jd) || empty($wd)) return '';
      //高德接口获取区域id
