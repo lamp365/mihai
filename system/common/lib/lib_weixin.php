@@ -103,7 +103,7 @@ function weixin_send_custom_message($from_user, $msg)
 
     http_post($url, $post);
 }
-
+/**
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
     $weixinthirdlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='weixin'");
 
@@ -326,3 +326,5 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
         }
     }
 }
+ *
+  **/
