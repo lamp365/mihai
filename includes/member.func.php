@@ -452,7 +452,7 @@ function isSelfAgent($str,$uid){
 function checkIsLogin(){
     //微信端 如果从 get_member_account 中获取 得到的openid就是weixin_openid
     //还不能判断就是登陆了
-    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') && $_GET['name'] != 'wapi') {
         //微信端存的 key 是 MOBILE_SESSION_ACCOUNT  登录后存的key 是 MOBILE_ACCOUNT
         if (! empty($_SESSION[MOBILE_ACCOUNT])) {
             return $_SESSION[MOBILE_ACCOUNT]['openid'];

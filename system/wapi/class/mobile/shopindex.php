@@ -51,10 +51,11 @@ class shopindex extends base{
        
        $actDishModel = new \model\activity_dish_model();
        foreach ($return as $key=>$val){
+           $whereSql = $where;
            if ($currentId && ($currentId != $val['ac_area_id'])){
-               $where .= " and ac_dish_total > 0 ";
+               $whereSql .= " and ac_dish_total > 0 ";
            }
-           $where1 = $where." and (ac_area_id = {$val['ac_area_id']} or ac_area_id=0) ";
+           $where1 = $whereSql." and (ac_area_id = {$val['ac_area_id']} or ac_area_id=0) ";
            $info = $actDishModel->getAllActivtyDish($where1,'ac_dish_id');
            if (empty($info)) {
                unset($return[$key]);
@@ -62,6 +63,7 @@ class shopindex extends base{
            }
            $res[]= $val;
        }
+       if (empty($res)) ajaxReturnData(0,'暂无数据');
        $data['detail'] = $res;
        $data['ac_id'] = $list['ac_id'];
        ajaxReturnData(1,'',$data);
