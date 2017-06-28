@@ -17,7 +17,7 @@ class subaccount extends base
 
     public function __construct()
     {
-        error_reporting(E_ERROR);
+        //error_reporting(E_ERROR);
         
         $this->memberInfo       = get_member_account();
         $this->subAccountObj    = new \service\seller\subAccountService();
@@ -27,7 +27,7 @@ class subaccount extends base
     }
     
     public function index(){
-        
+
     }
     
     //子账户信息
@@ -56,10 +56,31 @@ class subaccount extends base
     public function subaccountList(){
         $data   = $this->request;
         $redata = array();
+        $subaccountList = $this->subAccountObj->getProfitList($this->memberInfo['openid'],$data,'fee,friend_openid,createtime');
         
-        $subaccountList = $this->subAccountObj->getProfitList($this->memberInfo['openid']);
+        //
+        $friend_openids = '';
+        foreach($subaccountList as $v){
+            $friend_openids .= '"'.$v['friend_openid'].'",';
+        }
+        $friend_openids = rtrim($friend_openids,',');
         
+        //获取用户信息
+        $memberData = $this->subAccountObj->getMemberInfos($friend_openids, '*');
+        $memberArr = array();
+        foreach($memberData as $v){
+            $memberArr[$v['openid']]['realname'] = $v['realname'];
+            $memberArr[$v['openid']]['avatar']   = $v['avatar'];
+        }
         
+        foreach($subaccountList as $k=>$v){
+            $subaccountList[$k]['realname'] = $memberArr[$v['friend_openid']]['realname'];
+            $subaccountList[$k]['avatar']   = $memberArr[$v['friend_openid']]['avatar'];
+            
+            $subaccountList[$k]['createtime'] = date('Y-m-d H:i:s',$v['createtime']);
+        }
+        
+        ppd($subaccountList);
     }
     
 }

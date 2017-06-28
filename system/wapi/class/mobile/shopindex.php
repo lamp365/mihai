@@ -116,6 +116,7 @@ class shopindex extends base{
             $temp['ac_shop_dish'] = $v['ac_shop_dish'];
             $data[] = $temp;
        }
+       if (empty($data)) ajaxReturnData(1,'暂无商品');
        ajaxReturnData(1,'',$data);
    }
 }
