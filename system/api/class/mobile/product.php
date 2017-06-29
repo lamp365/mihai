@@ -1840,6 +1840,7 @@ class product extends base
     
     public function editLtc(){
         $data = $this->request;
+        
         /*
         //测试数据开始
         $data['ac_p1_id']      = '190';
@@ -1847,8 +1848,8 @@ class product extends base
         $data['ac_action_id']  = '5';
         $data['ac_area_id']    = '5';       //选填项
         $data['ac_dish_price'] = '35';
-        $data['ac_dish_total'] = '100';
-        $data['ac_dish_id']    = '50';
+        $data['ac_dish_total'] = '80';
+        $data['ac_dish_id']    = '1';
         //测试数据结束
         */
         
@@ -1884,6 +1885,9 @@ class product extends base
                 break;
             case -6:
                 ajaxReturnData(0,'活动不存在或已停止');
+                break;
+            case -7:
+                ajaxReturnData(0,'库存不得大于原库存');
                 break;
             default :
                 ajaxReturnData(1,'修改成功');
@@ -2193,13 +2197,13 @@ class product extends base
                     $hour_end = date('H',$vv['ac_area_time_end']);
                     if($nowhour >= $hour_str && $nowhour < $hour_end)
                     {
-                        $time_list_arr[$kk]['isnow'] = 1;        //进行中
+                        $time_list_arr[$kk]['isnow'] = 1;        //已结束
                     }
                     elseif($nowhour >= $hour_end && $hour_end > 0){
-                        $time_list_arr[$kk]['isnow'] = 2;        //已结束
+                        $time_list_arr[$kk]['isnow'] = 2;        //进行中
                     }
                     elseif($nowhour < $hour_str){
-                       $time_list_arr[$kk]['isnow']  = 0; 
+                       $time_list_arr[$kk]['isnow']  = 0;       //未开始
                     }
                     else{
                         //$nowhour > $hour_str && $nowhour < $hour_end

@@ -168,6 +168,21 @@ class good_detail extends base {
       $list['ac_end_time'] = $area['ac_area_time_end'];
       $list['ac_status'] = $area['ac_area_status'];
     }
+    // 限时购库存
+    $list['ac_total'] = $activity_dish['ac_dish_total'];
+    // 当前时间
+    $list['now_time'] = time();
+    // 活动状态
+    if ($list['ac_str_time'] > time()) {
+      // 活动未开始
+      $list['ac_type'] = 0;
+    }elseif ($list['ac_str_time'] <= time() AND $list['ac_end_time'] >= time()) {
+      // 活动进行中
+      $list['ac_type'] = 1;
+    }elseif ($list['ac_end_time'] < time()) {
+      // 活动结束
+      $list['ac_type'] = 2;
+    }
 
     // 详情图
     if ($is_contont == 'yes') {
@@ -265,9 +280,13 @@ class good_detail extends base {
     // 设置is_comment
     mysqld_query("UPDATE ".table('shop_order_goods')." SET iscomment=1 WHERE orderid=".$order_id." AND dishid=".$dish_id);
 
-    // 评论图片上传
+    // 评论图片保存
     for ($i=1; $i < 6; $i++) { 
-      $this->upload_imgs($i, $comment_id);
+      if (!empty($_GP['img'.$i])) {
+        $m = array('comment_id' => $comment_id, 'img' => $_GP['img'.$i]);
+        mysqld_insert('shop_comment_img', $m);
+      }
+      // $this->upload_imgs($i, $comment_id);
     }
 
     ajaxReturnData(1,'评论成功');

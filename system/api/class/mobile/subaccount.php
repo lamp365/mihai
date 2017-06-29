@@ -119,6 +119,12 @@ class subaccount extends base
     public function distributionCate(){
         $dishData = $this->shopDish->distributionListDish($data, 'store_p1,store_p2',1);
         
+        $cateArr = array();
+        foreach($dishData as $v)
+        {
+            $cateArr[$v['store_p1']]
+        }
+        
         $store_p2_str = '';
         foreach($dishData as $v){
             $store_p2_str .= $v['store_p2'].',';
