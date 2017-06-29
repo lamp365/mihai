@@ -2002,13 +2002,15 @@ class product extends base
             
             //
             $actiTitle[$data['ac_ids']] = $this->ltcObj->getActiInfo($data['ac_ids'],'ac_title');
-            $is_get_acids = 1;
+            $data['is_get_acids'] = 1;
         }
         else{
             $data['ac_ids'] = '';
             $dayActi = $this->ltcObj->getDayActivity('ac_id,ac_title');
             $data['ac_ids'] = $dayActi['ac_id'];
+            $data['is_get_acids'] = 0;
         }
+        
         
         //进行中的活动
         if($data['ac_ids'] != '')
@@ -2040,7 +2042,7 @@ class product extends base
                 @$redata['trailerActiDish'][$k]['thumb']       = $dishInfo[$v['ac_shop_dish']]['thumb'];
                 @$redata['trailerActiDish'][$k]['hour']        = $v['ac_area_time_str']>0?intval(date('H',$v['ac_area_time_str'])):0;
                 @$redata['trailerActiDish'][$k]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],2);
-                @$redata['trailerActiDish'][$k]['ac_title']    = $is_get_acids > 0?$actiTitle[$v['ac_id']]['ac_title']:$dayActi['ac_title']; 
+                @$redata['trailerActiDish'][$k]['ac_title']    = $data['is_get_acids'] > 0?$actiTitle[$v['ac_id']]['ac_title']:$dayActi['ac_title']; 
                 
                 @$redata['trailerActiDish'][$k]['area']    = $redata['trailerActiDish'][$k]['hour']>0?$redata['trailerActiDish'][$k]['hour'].'点场':'全天场'; 
                 

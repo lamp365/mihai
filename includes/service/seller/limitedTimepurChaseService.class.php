@@ -351,8 +351,38 @@ class limitedTimepurChaseService extends \service\publicService {
            $where2 .= " and a.ac_area_id = {$data['ac_area_id']}";
        }
        if($shop > 0)$where .= " and ac_shop = {$this->memberData['store_sts_id']}";
+       if($data['is_get_acids'] <= 0)
+       {
+           $where2 .= " and (FROM_UNIXTIME(b.ac_area_time_str,'%H') > {$this->nowHour} or a.ac_area_id = 0)";
+       }
        //$this->nowHour
-       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where (FROM_UNIXTIME(b.ac_area_time_str,'%H') > {$this->nowHour} or a.ac_area_id = 0)  {$where2} order by ac_time_str asc,b.ac_area_time_str asc {$limit}";
+       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where 1 {$where2} order by b.ac_area_time_str asc {$limit}";
+       $dishList  = mysqld_selectall($sql);
+       
+        $dishList['total'] = mysqld_select("select count(0) as total from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id");
+        $dishList['total'] = intval($dishList['total']['total']);
+        unset($dishList['total']['total']);
+        return $dishList;
+   }
+   
+   //原
+    public function getTrailerActiListInfo($data,$fields='ac_dish_status,ac_dish_id,a.ac_area_id,ac_shop_dish,b.ac_area_time_str,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id',$fields1='ac_dish_id,a.ac_area_id,ac_shop_dish,ac_time_str,ac_dish_price,ac_dish_total,ac_id,ac_p1_id,ac_p2_id,ac_dish_status',$shop=1){
+       $data['page'] = max(1, intval($data['page']));
+       $data['limit'] = $data['limit']>0?$data['limit']:10; 
+       $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+       $where  = '';
+       $where .= "ac_action_id = {$data['ac_ids']}";
+       $where2 = '';
+       if($data['ac_area_id'] !== null){
+           $where2 .= " and a.ac_area_id = {$data['ac_area_id']}";
+       }
+       if($shop > 0)$where .= " and ac_shop = {$this->memberData['store_sts_id']}";
+       if($data['is_get_acids'] <= 0)
+       {
+           $where2 .= " and (FROM_UNIXTIME(b.ac_area_time_str,'%H') > {$this->nowHour} or a.ac_area_id = 0)";
+       }
+       //$this->nowHour
+       $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where 1 {$where2} order by ac_time_str asc,b.ac_area_time_str asc {$limit}";
        $dishList  = mysqld_selectall($sql);
        
         $dishList['total'] = mysqld_select("select count(0) as total from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id");

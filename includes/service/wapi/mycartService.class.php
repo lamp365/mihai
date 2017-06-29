@@ -19,8 +19,6 @@ class mycartService extends  \service\publicService
         if(!empty($cart_where)){
             $where .= " and {$cart_where}";
         }
-        //找出本次活动的场次
-        $active = getCurrentAct();
 
         //找出购物车的商品
         $list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE  {$where}");
@@ -36,7 +34,7 @@ class mycartService extends  \service\publicService
                 $status      = $dish['status'];
                 $action_id   = 0;
 
-                if(empty($dish) || $store_count ==0 || $store_count == 0){
+                if(empty($dish) || $store_count ==0 || $status == 0){
                     $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
@@ -54,7 +52,7 @@ class mycartService extends  \service\publicService
                 $dish['store_count'] = $store_count;
                 $dish['status']      = $status;
 
-                if( $store_count ==0 || $store_count == 0){
+                if( $store_count ==0 || $status == 0){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
                     $out_gooslist[]          = $dish;
                     continue;
@@ -206,7 +204,7 @@ class mycartService extends  \service\publicService
     {
         $member = get_member_account();
 
-        $dish   = mysqld_select("select id,sts_id,deleted,status from ".table('shop_dish')." where id={$dishid}");
+        $dish   = mysqld_select("select id,sts_id,deleted,status,store_count from ".table('shop_dish')." where id={$dishid}");
         if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
             $this->error = '该商品不存在！';
             return false;

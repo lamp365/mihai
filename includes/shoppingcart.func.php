@@ -2,17 +2,34 @@
 //购物车的公共函数文件
 
 /**
- * 获取购物车的种类数目
+ * 获取购物车的种类数目 只获取有效中的产品数量
  * @return bool|int|string
  */
 function getCartTotal(){
 	$member   = get_member_account(false);
 	$openid   = $member['openid'] ?: get_sessionid();
-	$cartotal = '';
-	if(!empty($openid))
-		$cartotal = mysqld_selectcolumn("select count(id) from " . table('shop_cart') . " where session_id='" . $openid . "'");
 
-	return empty($cartotal) ? 0 : $cartotal;
+	$list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE  session_id='{$openid}'");
+	foreach($list as $key => $item){
+		$field = 'id,title,marketprice,thumb,sts_id,store_count,status';
+		$dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
+
+		if(empty($dish) || $dish['store_count'] ==0 || $dish['status'] == 0){
+			unset($list[$key]);
+			continue;
+		}
+
+		//判断商品是否属于活动中的商品
+		$active = checkDishIsActive($dish['id'],$dish['store_count']);
+		if(!empty($active) && ($active['ac_dish_total'] == 0 || $active['ac_dish_status'] == 0)){
+			unset($list[$key]);
+			continue;
+		}
+	}
+
+	$cartotal = count($list);
+
+	return intval($cartotal);
 }
 
 /**
