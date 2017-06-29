@@ -54,12 +54,10 @@ class subAccountService extends \service\publicService {
    
    //获取结算列表
    public function getCspList($openid,$data,$fields='*',$type=1){
-       $data['page'] = max(1, intval($data['page']));
-       $data['limit'] = $data['limit']>0?$data['limit']:10; 
-       $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
-       
-      $sql = "select {$fields} from {$this->table_commission_settlement_paylog} where type = {$type} and payee_openid = {$openid} order by createtime desc {$limit}";
-      echo $sql;exit;
+      $data['page'] = max(1, intval($data['page']));
+      $data['limit'] = $data['limit']>0?$data['limit']:10; 
+      $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+      $sql = "select {$fields} from {$this->table_commission_settlement_paylog} where type = {$type} and payee_openid = '{$openid}' order by createtime desc {$limit}";
       $rs  = mysqld_selectall($sql);
       return $rs;
    }

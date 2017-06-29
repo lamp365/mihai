@@ -12,8 +12,10 @@ use api\controller;
 
 class subaccount extends base
 {
-    private $memberInfo   = array();
-    private $subAccountObj   = array();
+    private $memberInfo     = array();
+    private $subAccountObj  = array();
+    private $weixin         = array();
+    private $shopDish       = array();
 
     public function __construct()
     {
@@ -22,6 +24,7 @@ class subaccount extends base
         $this->memberInfo       = get_member_account();
         $this->subAccountObj    = new \service\seller\subAccountService();
         $this->weixin           = new \WeixinTool();
+        $this->shopDish         = new \service\seller\ShopDishService();
         parent::__construct();
         
     }
@@ -107,9 +110,33 @@ class subaccount extends base
         $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
         //结算列表
-        $cspListData = $this->subAccountObj->getCspList($this->memberInfo['openid'],$data);
+        $redata['memberInfo']['cspList'] = $this->subAccountObj->getCspList($this->memberInfo['openid'],$data,'createtime,fee,remark');
         
         ajaxReturnData(1,'获取成功',$redata);
+    }
+    
+    //获取分销商品分类列表
+    public function distributionCate(){
+        $dishData = $this->shopDish->distributionListDish($data, 'store_p1,store_p2',1);
+        
+        $store_p2_str = '';
+        foreach($dishData as $v){
+            $store_p2_str .= $v['store_p2'].',';
+        }
+        $store_p2_str = rtrim($store_p2_str,',');
+        
+        
+    }
+    
+    //分销商品
+    public function distributionDish(){
+        $data   = $this->request;
+        $redata = array();
+        
+        //$this->shopDish
+        $dishData = $this->shopDish->distributionListDish($data, 'thumb,title,store_count,marketprice,promot_price');
+        
+        
     }
     
 }

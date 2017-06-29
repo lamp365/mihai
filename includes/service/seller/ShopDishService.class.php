@@ -63,6 +63,11 @@ class ShopDishService extends \service\publicService {
             $where = " and status = {$data['status']}";
         }
         
+        if($data['is_lts'] != '')
+        {
+            $where .= " and status = 1 and store_count > 0";
+        }
+        
         if($data['is_lts'] != '' && $data['ltcDishIds'] != '')
         {
             $where .= " and id not in ({$data['ltcDishIds']})";
@@ -113,6 +118,11 @@ class ShopDishService extends \service\publicService {
         if($_GP['brands_id'] != '')
         {
             $wheres .= " and brands_id in ({$_GP['brands_id']})";
+        }
+        
+        if($data['is_lts'] != '')
+        {
+            $where .= " and status = 1 and store_count > 0";
         }
         
         if($_GP['is_lts'] != '' && $_GP['ltcDishIds'] != '')
@@ -317,6 +327,24 @@ class ShopDishService extends \service\publicService {
     public function checkStoreDish($dish_id,$shop_id){
         $sql = "select id from {$this->table} where sts_id = {$shop_id} and id = {$dish_id}";
         $rs  = mysqld_select($sql);
+        return $rs;
+    }
+    
+    //分销商品列表
+    public function distributionListDish($data,$fields='*',$isAll=0){
+        $data['page'] = max(1, intval($data['page']));
+        $data['limit'] = $data['limit']>0?$data['limit']:10; 
+        if($isAll <= 0)
+        {
+            $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+        }
+        else{
+            $limit = '';
+        }
+        $where = 'is_direct = 1';
+        $order = ' order by createtime desc';
+        $sql   = "select {$fields} from {$this->table} where {$where} {$order} {$limit}";
+        $rs    = mysqld_selectall($sql);
         return $rs;
     }
     

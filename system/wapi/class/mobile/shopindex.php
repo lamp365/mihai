@@ -110,7 +110,9 @@ class shopindex extends base{
        }else {
            $return = array_slice($area,0,5,true);
        }
-       ajaxReturnData('1','',$return);
+       $data['detail'] = $return;
+       $data['ac_id'] = $list['ac_id'];
+       ajaxReturnData('1','',$data);
    }
    //根据活动区间返回活动商品
    public function active_dish()
