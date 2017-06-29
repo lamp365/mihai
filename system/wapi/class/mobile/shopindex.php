@@ -79,9 +79,9 @@ class shopindex extends base{
        }
        //判断该区域是否有商品
        $_GP = $this->request;
+       logg("接收：".var_export($_GP,1),"jieshou");
        $jd = $_GP['longitude'];//经度
        $wd = $_GP['latitude'];//纬度
-       logRecord("area:".var_export($area,1),"shopindex");
        if (empty($area)) ajaxReturnData('1','暂无分配时间区域');
        
        foreach ($area as $key=>$val){
@@ -91,28 +91,37 @@ class shopindex extends base{
                continue;
            }
        }
-       logRecord("newarea:".var_export($area,1),"shopindex");
+       logg("返回1：".var_export($area,1),"fanhui");
        if (empty($area)) ajaxReturnData('1','暂无数据');
        $return =array();
        if (empty($area)) $area = array();
-       if (count($area) < 5 ){
-           $tmdate = date("Y-m-d",strtotime("+1 day"));
-           $area1 = $actService->getActArea($list['ac_area'],$tmdate);
-           foreach ($area1 as $key=>$val){
-               $flag = $actService->checkIsGoods($list['ac_id'], $val['ac_area_id'],$jd,$wd);
-               if (!$flag) {
-                   unset($area1[$key]);
-                   continue;
+       $type = intval($_GP['type']) ? intval($_GP['type']) : 0;
+       if ($type == 1){
+           $data['detail'] = $area;
+           $data['ac_id'] = $list['ac_id'];
+           ajaxReturnData('1','',$data);
+       }else{
+           if (count($area) < 5 ){
+               $tmdate = date("Y-m-d",strtotime("+1 day"));
+               $area1 = $actService->getActArea($list['ac_area'],$tmdate);
+               foreach ($area1 as $key=>$val){
+                   $flag = $actService->checkIsGoods($list['ac_id'], $val['ac_area_id'],$jd,$wd);
+                   if (!$flag) {
+                       unset($area1[$key]);
+                       continue;
+                   }
                }
+               if (!empty($area1)) $area = array_merge($area,$area1);
+               $return = array_slice($area,0,5,true);
+           }else {
+               $return = array_slice($area,0,5,true);
            }
-           if (!empty($area1)) $area = array_merge($area,$area1);
-           $return = array_slice($area,0,5,true);
-       }else {
-           $return = array_slice($area,0,5,true);
+           logg("返回2：".var_export($return,1),"fanhui");
+           $data['detail'] = $return;
+           $data['ac_id'] = $list['ac_id'];
+           //logg("返回：".var_export($data,1),"fanhui");
+           ajaxReturnData('1','',$data);
        }
-       $data['detail'] = $return;
-       $data['ac_id'] = $list['ac_id'];
-       ajaxReturnData('1','',$data);
    }
    //根据活动区间返回活动商品
    public function active_dish()

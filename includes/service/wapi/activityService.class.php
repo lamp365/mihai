@@ -135,7 +135,7 @@ class activityService extends \service\publicService
         if (empty($ac_id) || empty($areaid)) return false;
         //获得当前时间的区域id
         $currentId = $this->getCurrentArea();
-        
+        if (!$currentId) return false;
         $sql = "SELECT count(*) as num from ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b on a.ac_shop_dish=b.id where ";
         $sql .= " a.ac_action_id='$ac_id' and a.ac_dish_status=1 ";
         if (empty($jd) || empty($wd)){
@@ -143,7 +143,7 @@ class activityService extends \service\publicService
             $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
         }else{
             $jdwd = getAreaid($jd,$wd);
-            if (empty($jdwd)) ajaxReturnData(0,'参数错误');
+            if (empty($jdwd)) return false;
             if ($jdwd['status'] == 0) {
                 $cityCode = $jdwd['ac_city'];
                 $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
@@ -154,10 +154,9 @@ class activityService extends \service\publicService
             }
         }
         $sql .= " and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
-        if ($currentId && ($currentId != $areaid)){
+        if ($currentId != $areaid){
             $sql .= " and a.ac_dish_total > 0 ";
         }
-        logRecord("checkIsGoods:".$sql,"shopindexsql");
         $info = mysqld_select($sql);
         //没有商品
         if ($info && $info['num'] > 0 ) {

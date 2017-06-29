@@ -17,8 +17,6 @@ class good_detail extends base {
     }
 
     $good = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=$dish_id");
-    // dump($good);
-    // return;
 
     if (empty($good)) {
       ajaxReturnData(0,'商品查询失败');
@@ -50,22 +48,8 @@ class good_detail extends base {
       // 获取详情图
       $contents = explode(",",$goods_piclist['contentpicurl']);
     }
-    // foreach ($contents as $cv) {
-    //   echo '<img src="'.$cv.'" class="img-ks-lazyload"/>';
-    // }
-    // dump($piclist);
-    // dump($contents);
-
-    // 获取仓库信息
-    // $depot = mysqld_select("SELECT name FROM " . table('dish_list') . "  WHERE id=:depotid", array(':depotid' => $good['pcate']));
-
+    
     $list = array();
-    // 当前是否已登陆      没有没有没有没有没有没有没有没有没有没有不用判断，，用户一定是登录状态的，没有登录在base父类中已经告知app
-    // if (empty($member['openid'])) {
-    //   $list['login'] = 0;
-    // }else{
-    //   $list['login'] = 1;
-    // }
     // 商品ID 
     $list['id'] = $good['id'];
     // 销量
@@ -84,19 +68,6 @@ class good_detail extends base {
     $list['total']   = $activity_dish['ac_dish_total'];
     // 展示图片
     $list['piclist'] = $piclist;
-    // 仓库
-    // if (!empty($depot)) {
-    //   $list['depot'] = $depot['name'];
-    // }else{
-    //   $list['depot'] = null;
-    // }
-    // $use_tax = get_tax($good['taxid']);
-    // 税率
-    // if (!empty($use_tax)) {
-    //   $list['tax'] = $use_tax['tax'];
-    // }else{
-    //   $list['tax'] = null;
-    // }
     // type
     $list['type'] = $good['type'];
     // timestart
@@ -109,10 +80,6 @@ class good_detail extends base {
     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
     $list['brand'] = $brand['brand'];
     $list['brand_icon'] = $brand['icon'];
-    // 国家  品牌没有对应国家  没有没有没有没有没有没有没有没有
-    // $country = mysqld_select("SELECT * FROM ".table('shop_country')." WHERE id=".$brand['country_id']);
-    // $list['country'] = $country['name'];
-    // $list['country_icon'] = download_pic($country['icon']);
     // 分类名
     $category_p1 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p1_id']);
     $list['category_p1'] = $category_p1['name'];
@@ -153,10 +120,10 @@ class good_detail extends base {
     // 店铺等级
     // $list['shop_level'] = $shop['sts_shop_level'];
     // 时段促销时间
-    if ($activity_dish['ac_area_id'] == '0') {
+    if ($activity_dish['ac_area_id'] == 0) {
       // 全天时段
       $list['in_area'] = 0;
-      $area = mysqld_select("SELECT * FROM ".table('activity_area')." WHERE ac_id=".$activity_dish['ac_action_id']);
+      $area = mysqld_select("SELECT * FROM ".table('activity_list')." WHERE ac_id=".$activity_dish['ac_action_id']);
       $list['ac_str_time'] = $area['ac_time_str'];
       $list['ac_end_time'] = $area['ac_time_end'];
       $list['ac_status'] = $area['ac_status'];

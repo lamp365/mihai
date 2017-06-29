@@ -25,7 +25,7 @@ function get_orders($where='', $pindex=1, $psize = 10) {
     // $total = mysqld_select("SELECT FOUND_ROWS() as total;");
     if (!empty($result)) {
         foreach ($result as $ok => &$ov) {
-        	$ov['createtime'] = date('Y-m-d H:i:s', $ov['createtime']);
+        	// $ov['createtime'] = date('Y-m-d H:i:s', $ov['createtime']);
         	$mem = mysqld_select("SELECT * FROM ".table('member')." WHERE openid='".$ov['openid']."'");
             $ov['buy_name'] = $mem['realname'];
             $ov['buy_mobile'] = $mem['mobile'];

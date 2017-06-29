@@ -258,6 +258,19 @@ function logRecord($logMsg,$logFile) {
     }
 }
 
+
+/**
+ * 记录日志
+ *
+ * @param $logMsg 日志信息
+ * @param $logFile 日志文件
+ *
+ */
+function logg($logMsg,$logFile) {
+    file_put_contents(WEB_ROOT.'/logs/'.$logFile, $logMsg);
+}
+
+
 /**
  * @param string $type
  * @return int
