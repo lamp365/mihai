@@ -1851,8 +1851,22 @@ class product extends base
         $data['ac_dish_id']    = '50';
         //测试数据结束
         */
+        /*
+        {"ac_dish_status_color":{},"ac_title":"test2","title":"ORIGINS\U60a6\U6728\U4e4b\U6e90\U590d\U5408\U77ff\U7269\U7ef4\U4ed6\U547d\U6ecb\U517b\U591c\U95f4\U4fee\U62a4\U665a\U971c30ml\U4fee\U590d\U808c\U80a4\U6c34\U6da6\U5145\U76c8","screeningsPreIndex":0,"ac_p1_id":301,"one_sys_cate":"\U7537\U6027\U8425\U517b","ac_p2_id":302,"categoryPreIndex":0,"ac_dish_deti":"","ac_dish_total":0,"timesPreIndex":0,"marketprice":79,"ac_dish_status":1,"ac_dish_sell_total":0,"thumb":"http:\\/\\/odozak4lg.bkt.clouddn.com\\/2016121415335850f5c74e929.jpg","categoryFormatStr":"\U7537\U6027\U8425\U517b \U589e\U5927\U5ef6\U65f6","area":"\U5168\U5929\U573a","ac_dish_id":"55","two_sys_cate":"\U589e\U5927\U5ef6\U65f6","ac_area_id":"1","ac_action_id":"2","ac_dish_status_str":"\U5df2\U5ba1\U6838","ac_dish_price":20}
+
+         *          */
         
-        if($data['ac_p1_id'] <= 0 || $data['ac_p2_id'] <= 0 || $data['ac_action_id'] <= 0 || $data['ac_dish_price'] <= 0 || $data['ac_dish_total'] <= 0 || $data['ac_dish_id'] <= 0)
+        if($data['ac_dish_price'] <= 0)
+        {
+            ajaxReturnData(0,'限时购价格不能为0');
+        }
+        
+        if($data['ac_dish_total'] <= 0)
+        {
+            ajaxReturnData(0,'库存不能为0');
+        }
+        
+        if($data['ac_p1_id'] <= 0 || $data['ac_p2_id'] <= 0 || $data['ac_action_id'] <= 0 || $data['ac_dish_id'] <= 0)
         {
             ajaxReturnData(0,'必要参数不存在');
         }

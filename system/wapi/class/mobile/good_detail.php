@@ -81,7 +81,7 @@ class good_detail extends base {
     // 限时购特价
     $list['timeprice'] = FormatMoney($activity_dish['ac_dish_price'],0);
     // 库存
-    $list['total'] = $good['store_count'];
+    $list['total']   = $activity_dish['ac_dish_total'];
     // 展示图片
     $list['piclist'] = $piclist;
     // 仓库
