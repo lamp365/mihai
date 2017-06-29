@@ -7,7 +7,7 @@
 namespace api\controller;
 use api\controller;
 
-class fileupload extends homebase{
+class fileupload extends \common\controller\basecontroller{
 
     /**
      * //seller模块上传图片,可以根据具体业务再拓展代码  不需要继承base

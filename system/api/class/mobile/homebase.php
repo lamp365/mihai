@@ -13,6 +13,6 @@ class homebase extends \common\controller\basecontroller
     {
         parent::__construct();
         //检验数据签名校验
-        $this->checkAppSign();
+        parent::checkAppSign();
     }
 }
