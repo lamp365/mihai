@@ -137,7 +137,7 @@ class activityService extends \service\publicService
         $currentId = $this->getCurrentArea();
         if (!$currentId) return false;
         $sql = "SELECT count(*) as num from ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b on a.ac_shop_dish=b.id where ";
-        $sql .= " a.ac_action_id='$ac_id' and a.ac_dish_status=1 ";
+        $sql .= " a.ac_action_id='$ac_id' and a.ac_dish_status=1 and b.status=1 ";
         if (empty($jd) || empty($wd)){
             $cityCode = getCityidByIp();
             $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
@@ -157,7 +157,9 @@ class activityService extends \service\publicService
         if ($currentId != $areaid){
             $sql .= " and a.ac_dish_total > 0 ";
         }
+        logg($sql,"log1");
         $info = mysqld_select($sql);
+        logg(var_export($info,1),"log2");
         //没有商品
         if ($info && $info['num'] > 0 ) {
             return true;

@@ -80,8 +80,8 @@ class shopindex extends base{
        //判断该区域是否有商品
        $_GP = $this->request;
        logg("接收：".var_export($_GP,1),"jieshou");
-       $jd = $_GP['longitude'];//经度
-       $wd = $_GP['latitude'];//纬度
+       $jd = isset($_GP['longitude']) ? $_GP['longitude'] : '';//经度
+       $wd = isset($_GP['latitude']) ? $_GP['latitude'] : '';//纬度
        if (empty($area)) ajaxReturnData('1','暂无分配时间区域');
        
        foreach ($area as $key=>$val){
@@ -91,7 +91,7 @@ class shopindex extends base{
                continue;
            }
        }
-       logg("返回1：".var_export($area,1),"fanhui");
+       logg("返回1：".var_export($area,1),"fanhui1");
        if (empty($area)) ajaxReturnData('1','暂无数据');
        $return =array();
        if (empty($area)) $area = array();
@@ -116,7 +116,7 @@ class shopindex extends base{
            }else {
                $return = array_slice($area,0,5,true);
            }
-           logg("返回2：".var_export($return,1),"fanhui");
+           logg("返回2：".var_export($return,1),"fanhui2");
            $data['detail'] = $return;
            $data['ac_id'] = $list['ac_id'];
            //logg("返回：".var_export($data,1),"fanhui");

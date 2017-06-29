@@ -957,7 +957,7 @@ class product extends base
         //goodstype分类
         if($data['getGroup'] > 0){
             $reData['systemGroup'] = $this->ShopSystemCategory->ShopCateGroupListTwo();
-            
+ 
             $onesysids = '';
             $twosysids = '';
            foreach($reData['systemGroup']['oneCategory'] as $v)
@@ -1362,7 +1362,6 @@ class product extends base
          }
          //系统分类
          $cate_list['systemGroup'] = $this->ShopSystemCategory->ShopCateGroupListTwo();
-
          $onesysids = '';
          $twosysids = '';
         foreach($cate_list['systemGroup']['oneCategory'] as $v)
@@ -2197,10 +2196,10 @@ class product extends base
                     $hour_end = date('H',$vv['ac_area_time_end']);
                     if($nowhour >= $hour_str && $nowhour < $hour_end)
                     {
-                        $time_list_arr[$kk]['isnow'] = 1;        //已结束
+                        $time_list_arr[$kk]['isnow'] = 2;        //已结束
                     }
                     elseif($nowhour >= $hour_end && $hour_end > 0){
-                        $time_list_arr[$kk]['isnow'] = 2;        //进行中
+                        $time_list_arr[$kk]['isnow'] = 1;        //进行中
                     }
                     elseif($nowhour < $hour_str){
                        $time_list_arr[$kk]['isnow']  = 0;       //未开始

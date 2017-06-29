@@ -103,13 +103,13 @@ class ShopSystemCategoryService extends \service\publicService
            $ids .=$v['id'] .',';
        }
        $ids = rtrim($ids,',');
-
+       
        $sql_two = "SELECT id,name as cat_name,parentid FROM ".$this->table." where parentid in ({$ids})";
        $two  = mysqld_selectall($sql_two);
-       
        foreach($two as $k=>$v){
            $data['oneCategory'][$v['parentid']]['twoCategory'][] = $v;
        }
+
        if($data['oneCategory'] != '')
        {
         $data['oneCategory'] = array_values($data['oneCategory']);
@@ -117,6 +117,7 @@ class ShopSystemCategoryService extends \service\publicService
        else{
            $data['oneCategory'] =  array();
        }
+ 
        return $data;
    }
    

@@ -269,7 +269,13 @@ function logRecord($logMsg,$logFile) {
 function logg($logMsg,$logFile) {
     file_put_contents(WEB_ROOT.'/logs/'.$logFile, $logMsg);
 }
+function loggs($logMsg,$logFile) {
 
+    if(WRITE_LOG)
+    {
+        error_log(date('H:i:s',time())." | {$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile);
+    }
+}
 
 /**
  * @param string $type

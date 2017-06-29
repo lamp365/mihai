@@ -158,10 +158,13 @@ function getCityidByIp(){
     $ip = getClientIP();
     //高德地图通过ip取城市
     $info = getCodeByIP($ip);
+    $cityCode = '';
     if ($info){
         $info = json_decode($info,1);
         $cityCode = $info['adcode'];
     }
+    logg($ip, "ip");
+    logg(var_export($info,1), "info");
     if (empty($cityCode)) return '350100';//如果未取到ip，则取福州
     return $cityCode;
 }
