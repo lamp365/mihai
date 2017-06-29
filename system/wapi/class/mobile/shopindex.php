@@ -6,7 +6,7 @@
 namespace wapi\controller;
 class shopindex extends base{
 
-    //返回活动区间接口
+    /* //返回活动区间接口
    public function active_area()
    {
        //取出活动列表，理论上是一个，但不排除有多个
@@ -67,6 +67,50 @@ class shopindex extends base{
        $data['detail'] = $res;
        $data['ac_id'] = $list['ac_id'];
        ajaxReturnData(1,'',$data);
+   } */
+    public function active_area(){
+       //取出活动列表，理论上是一个，但不排除有多个
+       $list = getCurrentAct();
+       if (empty($list)) ajaxReturnData(1,'暂时没有活动');
+       $actService = new \service\wapi\activityService();
+       $area = $actService->getActArea($list['ac_area']);
+       if (empty($area)){
+           ajaxReturnData(1,'对不起，没有设置时间区域');
+       }
+       //判断该区域是否有商品
+       $_GP = $this->request;
+       $jd = $_GP['longitude'];//经度
+       $wd = $_GP['latitude'];//纬度
+       logRecord("area:".var_export($area,1),"shopindex");
+       if (empty($area)) ajaxReturnData('1','暂无分配时间区域');
+       
+       foreach ($area as $key=>$val){
+           $flag = $actService->checkIsGoods($list['ac_id'], $val['ac_area_id'],$jd,$wd);
+           if (!$flag) {
+               unset($area[$key]);
+               continue;
+           }
+       }
+       logRecord("newarea:".var_export($area,1),"shopindex");
+       if (empty($area)) ajaxReturnData('1','暂无数据');
+       $return =array();
+       if (empty($area)) $area = array();
+       if (count($area) < 5 ){
+           $tmdate = date("Y-m-d",strtotime("+1 day"));
+           $area1 = $actService->getActArea($list['ac_area'],$tmdate);
+           foreach ($area1 as $key=>$val){
+               $flag = $actService->checkIsGoods($list['ac_id'], $val['ac_area_id'],$jd,$wd);
+               if (!$flag) {
+                   unset($area1[$key]);
+                   continue;
+               }
+           }
+           if (!empty($area1)) $area = array_merge($area,$area1);
+           $return = array_slice($area,0,5,true);
+       }else {
+           $return = array_slice($area,0,5,true);
+       }
+       ajaxReturnData('1','',$return);
    }
    //根据活动区间返回活动商品
    public function active_dish()

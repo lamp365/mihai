@@ -111,7 +111,7 @@ function getCodeByIP($ip){
 function getAreaid($jd,$wd){
     $openid = get_member_account();
     $key = $openid."_LOCATION";
-    //缓存1小时，如果有数据则取缓存数据
+    //缓存5分钟，如果有数据则取缓存数据
      if(class_exists('Memcached')){
          $memcache = new \Mcache();
          $data = $memcache->get($key);
@@ -126,7 +126,6 @@ function getAreaid($jd,$wd){
             'status'=>0,
             'ac_city'=>'350100',
         );
-        //return array('status'=>0,'mes'=>'抱歉，获取地里位置信息失败，请刷新一下');
     }
     $ac_city_area = isset($return['regeocode']['addressComponent']['adcode'])?$return['regeocode']['addressComponent']['adcode']:'';
     
@@ -140,7 +139,6 @@ function getAreaid($jd,$wd){
             'status'=>0,
             'ac_city'=>'350100',
         );
-        //return array('status'=>0,'mes'=>'抱歉，不存在这个地区，请重新刷新一下');
     }
     $data = array(
         'status'=>1,

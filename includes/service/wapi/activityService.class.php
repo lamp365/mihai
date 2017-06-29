@@ -75,7 +75,7 @@ class activityService extends \service\publicService
      * @param $ac_list_id 区域码
      * @num 取的个数
      *   */
-    public function getActAreaNoExp($ac_list_id,$num = 0){
+    /* public function getActAreaNoExp($ac_list_id,$num = 0){
         if (empty($ac_list_id)) return '';
         $list = $this->getActArea($ac_list_id);
         if($list){
@@ -97,7 +97,7 @@ class activityService extends \service\publicService
             }
             return $return;
         } 
-    }
+    } */
     /**
      * 取当前活动的当前时间的区域
      *   */
@@ -122,6 +122,46 @@ class activityService extends \service\publicService
             if (time() >= $starttime && time() <= $endtime){
                 return $v['ac_area_id'];
             }
+        }
+    }
+   /**
+    * 根据时间区域id，判断该时间区域是否有商品
+    * @param $ac_id 活动id
+    * @param $areaid 区域id
+    * @param jd 经度
+    * @param wd 纬度 
+    *   */
+    public function checkIsGoods($ac_id,$areaid,$jd='',$wd=''){
+        if (empty($ac_id) || empty($areaid)) return false;
+        //获得当前时间的区域id
+        $currentId = $this->getCurrentArea();
+        
+        $sql = "SELECT count(*) as num from ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b on a.ac_shop_dish=b.id where ";
+        $sql .= " a.ac_action_id='$ac_id' and a.ac_dish_status=1 ";
+        if (empty($jd) || empty($wd)){
+            $cityCode = getCityidByIp();
+            $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
+        }else{
+            $jdwd = getAreaid($jd,$wd);
+            if (empty($jdwd)) ajaxReturnData(0,'参数错误');
+            if ($jdwd['status'] == 0) {
+                $cityCode = $jdwd['ac_city'];
+                $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
+            }else{
+                $ac_city = $jdwd['ac_city'];
+                $ac_city_area = $jdwd['ac_city_area'];
+                $sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
+            }
+        }
+        $sql .= " and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
+        if ($currentId && ($currentId != $areaid)){
+            $sql .= " and a.ac_dish_total > 0 ";
+        }
+        logRecord("checkIsGoods:".$sql,"shopindexsql");
+        $info = mysqld_select($sql);
+        //没有商品
+        if ($info && $info['num'] > 0 ) {
+            return true;
         }
     }
 }
