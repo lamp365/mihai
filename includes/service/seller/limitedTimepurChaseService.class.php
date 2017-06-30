@@ -28,6 +28,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $this->storeObj     = new shopStoreService();
        $this->nowHour      = date('H',time());
        $this->nowDay       = strtotime(date('Y-m-d',time()));
+       $this->memberObj    = new memberService();
    }
    
    //获取时间区间列表
@@ -132,8 +133,27 @@ class limitedTimepurChaseService extends \service\publicService {
        
        //获取城市code,城市区域code
        $storeShopInfo                = $this->storeObj->getStoreShop('sts_city,sts_region');
-       $rsdata['ac_city']            = $storeShopInfo['sts_city'];
-       $rsdata['ac_city_area']       = $storeShopInfo['sts_region'];
+       
+       //获取用户等级 sts_shop_level
+       $memberLevel = member_store_getById($this->memberData['store_sts_id'],'sts_shop_level');
+       //通过店铺等级获取对应的等级层次
+       $level = $this->memberObj->getLevelShopInfo($memberLevel['sts_shop_level'],'level_type');
+       
+       if($level['level_type'] == 3)
+       {
+           $rsdata['ac_city']            = 0;
+           $rsdata['ac_city_area']       = 0;
+       }
+       elseif($level['level_type'] == 2){
+           $rsdata['ac_city']            = $storeShopInfo['sts_city'];
+           $rsdata['ac_city_area']       = 0;
+       }
+       else{
+            $rsdata['ac_city']            = $storeShopInfo['sts_city'];
+            $rsdata['ac_city_area']       = $storeShopInfo['sts_region'];
+       }
+       
+       
        $rsdata['ac_in_id']           = $this->memberData['sts_category_p1_id'];
        $rsdata['ac_shop']            = $this->memberData['store_sts_id'];
        $rsdata['ac_dish_status']     = 0;
@@ -508,5 +528,20 @@ class limitedTimepurChaseService extends \service\publicService {
         return $rs;
    }
    
+   //进行中的活动
+   public function nowAction($fields='*'){
+       $dataTime = time();
+       $sql = "select {$fields} from {$this->table_list} where ac_time_end >= {$dataTime} order by ac_time_end asc limit 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //下一场活动
+   public function nextAction($endTime,$fields='*'){
+       $dataTime = time();
+       $sql = "select {$fields} from {$this->table_list} where ac_time_str > {$endTime} order by ac_time_str asc limit 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
 } 
 ?>

@@ -131,8 +131,8 @@ class good_detail extends base {
       // 具体时段
       $list['in_area'] = 1;
       $area = mysqld_select("SELECT * FROM ".table('activity_area')." WHERE ac_area_id=".$activity_dish['ac_area_id']);
-      $list['ac_str_time'] = $area['ac_area_time_str'];
-      $list['ac_end_time'] = $area['ac_area_time_end'];
+      $list['ac_str_time'] = getTodayTimeByActtime($area['ac_area_time_str']);
+      $list['ac_end_time'] = getTodayTimeByActtime($area['ac_area_time_end']);
       $list['ac_status'] = $area['ac_area_status'];
     }
     // 限时购库存

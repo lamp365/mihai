@@ -10,6 +10,9 @@ class memberService extends \service\publicService {
        $this->member        = table('member');
        $this->memberBlongRelation  = table('member_blong_relation');
        $this->shopOrder         = table('shop_order');
+       $this->storeShopLevel         = table('store_shop_level');
+       
+       //
    }
    
    public function getMemberLists($data){
@@ -120,6 +123,12 @@ class memberService extends \service\publicService {
         $redata['pager'] = $pager;
        
         return $redata;
+   }
+   
+   public function getLevelShopInfo($rank_level,$fields='*'){
+       $sql = "select {$fields} from {$this->storeShopLevel} where rank_level = {$rank_level} limit 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
    }
    
 }

@@ -452,8 +452,12 @@ class goodsService extends \service\publicService
     //根据分类一级和二级分类id获取宝贝信息
     public function getPcontent($_GP,$fields='*'){
         $data = array();
-
-        $sql  = "select {$fields} from ".table('shop_goods')." where ccate = {$_GP['store_p2']}";
+        $where = '';
+        if($_GP['store_p2'] > 0)
+        {
+            $where = "where ccate = {$_GP['store_p2']}";
+        }
+        $sql  = "select {$fields} from ".table('shop_goods')." {$where}";
         $data = mysqld_selectall($sql);
         
         foreach($data as $k=>$v){

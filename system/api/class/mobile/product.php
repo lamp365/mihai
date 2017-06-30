@@ -1775,7 +1775,6 @@ class product extends base
     
     public function addLtc(){
         $data = $this->request;
-        
         /*
         //测试数据开始
         $data['dish'][0]['ac_p1_id']      = '1';
@@ -1806,7 +1805,6 @@ class product extends base
                     ajaxReturnData(0,'必要参数不存在');
                 }
                 $addActiDish = $this->ltcObj->addActivityDish($v);
-
                 switch($addActiDish){
                      case -1:
                         //ajaxReturnData(-2,'活动价格不得大于原价格');
@@ -2307,6 +2305,26 @@ class product extends base
     public function screeningsNowNext(){
         $data = $this->request;
         $redata = array();
+        
+        //进行中的活动
+        $nowDayActi = $this->ltcObj->nowAction('ac_title,ac_time_end');
+        $redata['now_ac_title'] = $nowDayActi['ac_title'];
+        $redata['now_hour']     = date('Y-m-d',$nowDayActi['ac_time_end']).'结束';
+        $endTime = $nowDayActi['ac_time_end']>0?$nowDayActi['ac_time_end']:time();
+
+        //下一场活动
+        $nextDayActi = $this->ltcObj->nextAction($endTime,'ac_title,ac_time_str');
+        if($nextDayActi['ac_title'] != '')
+        {
+            $redata['next_ac_title'] = $nextDayActi['ac_title'];
+            $redata['next_hour']     = date('Y-m-d',$nextDayActi['ac_time_str']).'开始';
+        }
+        else{
+            $redata['next_ac_title'] = '';
+            $redata['next_hour']     = 0;
+        }
+        
+        /*
         //跨天的时候 例凌晨00 点 和的第二天
         
         //获取今天执行中的活动
@@ -2331,7 +2349,7 @@ class product extends base
             $nextAreaArr = $this->ltcObj->getNextArea($nextDayActi['ac_area'],0,'FROM_UNIXTIME(ac_area_time_str, "%H") as nexthour');
             $redata['next_hour'] = $nextAreaArr['nexthour']!==null?$nextAreaArr['nexthour'].'点场':'';
         }
-        
+        */
         ajaxReturnData(1,'获取成功',$redata); 
     }
     
