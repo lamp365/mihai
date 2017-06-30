@@ -22,10 +22,12 @@ class good_detail extends base {
       ajaxReturnData(0,'商品查询失败');
     }
 
-    $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']);
-    if (empty($activity_dish)) {
-      ajaxReturnData(0,'该商品不在限时购之内');
-    }
+    // 现在进行中的活动
+    $now_ac = getCurrentAct();
+    $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']." AND ac_action_id=".$now_ac['ac_id']);
+    // if (empty($activity_dish)) {
+    //   ajaxReturnData(0,'该商品不在限时购之内');
+    // }
 
     $shop = mysqld_select("SELECT a.*,b.free_dispatch as bfree,b.express_fee,b.limit_send FROM ".table('store_shop')." as a left join ".table('store_extend_info')." as b on a.sts_id=b.store_id WHERE a.sts_id=".$good['sts_id']);
     if (empty($shop)) {
@@ -62,10 +64,8 @@ class good_detail extends base {
     $list['productprice'] = FormatMoney($good['productprice'],0);
     // 价格
     $list['marketprice'] =FormatMoney($good['marketprice'],0);
-    // 限时购特价
-    $list['timeprice'] = FormatMoney($activity_dish['ac_dish_price'],0);
     // 库存
-    $list['total']   = $activity_dish['ac_dish_total'];
+    $list['total']   = $good['store_count'];
     // 展示图片
     $list['piclist'] = $piclist;
     // type
@@ -80,11 +80,6 @@ class good_detail extends base {
     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
     $list['brand'] = $brand['brand'];
     $list['brand_icon'] = $brand['icon'];
-    // 分类名
-    $category_p1 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p1_id']);
-    $list['category_p1'] = $category_p1['name'];
-    $category_p2 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p2_id']);
-    $list['category_p2'] = $category_p2['name'];
     // 购物车商品数量
     if (!empty($member)) {
       $list['shoppingcart_num'] = getCartTotal();
@@ -119,46 +114,81 @@ class good_detail extends base {
     $list['shop_avatar'] = $shop['sts_avatar'];
     // 店铺等级
     // $list['shop_level'] = $shop['sts_shop_level'];
-    // 时段促销时间
-    if ($activity_dish['ac_area_id'] == 0) {
-      // 全天时段
-      $list['in_area'] = 0;
-      $area = mysqld_select("SELECT * FROM ".table('activity_list')." WHERE ac_id=".$activity_dish['ac_action_id']);
-      $list['ac_str_time'] = $area['ac_time_str'];
-      $list['ac_end_time'] = $area['ac_time_end'];
-      $list['ac_status'] = $area['ac_status'];
+    if (!empty($activity_dish)) {
+      // 当前为活动商品
+      $list['activity'] = 1;
+      // 分类名
+      $category_p1 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p1_id']);
+      $list['category_p1'] = $category_p1['name'];
+      $category_p2 = mysqld_select("SELECT name FROM ".table('shop_category')." WHERE id=".$activity_dish['ac_p2_id']);
+      $list['category_p2'] = $category_p2['name'];
+      // 限时购特价
+      $list['timeprice'] = FormatMoney($activity_dish['ac_dish_price'],0);
+      // 时段促销时间
+      if ($activity_dish['ac_area_id'] == 0) {
+        // 全天时段
+        $list['in_area'] = 0;
+        $area = mysqld_select("SELECT * FROM ".table('activity_list')." WHERE ac_id=".$activity_dish['ac_action_id']);
+        $list['ac_str_time'] = $area['ac_time_str'];
+        $list['ac_end_time'] = $area['ac_time_end'];
+        $list['ac_status'] = $area['ac_status'];
+      }else{
+        // 具体时段
+        $list['in_area'] = 1;
+        $area = mysqld_select("SELECT * FROM ".table('activity_area')." WHERE ac_area_id=".$activity_dish['ac_area_id']);
+        $list['ac_str_time'] = getTodayTimeByActtime($area['ac_area_time_str']);
+        $list['ac_end_time'] = getTodayTimeByActtime($area['ac_area_time_end']);
+        $list['ac_status'] = $area['ac_area_status'];
+      }
+      // 限时购库存
+      $list['ac_total'] = $activity_dish['ac_dish_total'];
+      // 当前时间
+      $list['now_time'] = time();
+      // 活动状态
+      if ($list['ac_str_time'] > time()) {
+        // 活动未开始
+        $list['ac_type'] = 0;
+      }elseif ($list['ac_str_time'] <= time() AND $list['ac_end_time'] >= time()) {
+        // 活动进行中
+        $list['ac_type'] = 1;
+      }elseif ($list['ac_end_time'] < time()) {
+        // 活动结束
+        $list['ac_type'] = 2;
+      }
     }else{
-      // 具体时段
-      $list['in_area'] = 1;
-      $area = mysqld_select("SELECT * FROM ".table('activity_area')." WHERE ac_area_id=".$activity_dish['ac_area_id']);
-      $list['ac_str_time'] = getTodayTimeByActtime($area['ac_area_time_str']);
-      $list['ac_end_time'] = getTodayTimeByActtime($area['ac_area_time_end']);
-      $list['ac_status'] = $area['ac_area_status'];
-    }
-    // 限时购库存
-    $list['ac_total'] = $activity_dish['ac_dish_total'];
-    // 当前时间
-    $list['now_time'] = time();
-    // 活动状态
-    if ($list['ac_str_time'] > time()) {
-      // 活动未开始
-      $list['ac_type'] = 0;
-    }elseif ($list['ac_str_time'] <= time() AND $list['ac_end_time'] >= time()) {
-      // 活动进行中
-      $list['ac_type'] = 1;
-    }elseif ($list['ac_end_time'] < time()) {
+      // 当前不为活动商品
+      $list['activity'] = 0;
+      // 分类名
+      $category_p1 = mysqld_select("SELECT name FROM ".table('store_shop_category')." WHERE id=".$good['store_p1']);
+      $list['category_p1'] = $category_p1['name'];
+      $category_p2 = mysqld_select("SELECT name FROM ".table('store_shop_category')." WHERE id=".$good['store_p2']);
+      $list['category_p2'] = $category_p2['name'];
+      // 限时购特价
+      $list['timeprice'] = $list['marketprice'];
+      // 限时购库存
+      $list['ac_total'] = 0;
       // 活动结束
       $list['ac_type'] = 2;
+      $list['ac_status'] = 0;
     }
 
     // 详情图
     if ($is_contont == 'yes') {
       // 通用详情头尾 
-      $head = mysqld_select("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=1 and is_default =1");
-      $foot = mysqld_select("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=2 and is_default =1");
-      $list['content_head'] = $head;
-      $list['content_foot'] = $foot;
-      $list['content'] = $contents;
+      $head = mysqld_select("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=1 and is_default=1");
+      $foot = mysqld_select("SELECT picurl FROM ".table('shop_dish_commontop')." WHERE sts_id=".$good['sts_id']." AND position=2 and is_default=1");
+      $list['content_head'] = array();
+      $list['content_foot'] = array();
+      $list['content'] = array();
+      if (!empty($head)) {
+        $list['content_head'][] = $head;
+      }
+      if (!empty($foot)) {
+        $list['content_foot'][] = $foot;
+      }
+      if (!empty($contents)) {
+        $list['content'] = $contents;
+      }
     }
 
     // dump($list);
@@ -213,7 +243,7 @@ class good_detail extends base {
     // dishID
     $dish_id = intval($_GP['dish_id']);
     // 系统ID（1pc，2wap，3安卓，4ios）
-    $system = intval($_GP['system_id']);
+    // $system = intval($_GP['system_id']);
     // 评价ID（1好评，2差评）
     $type = intval($_GP['type']);
     // 物流评分
@@ -240,7 +270,8 @@ class good_detail extends base {
     }
 
     // 评论信息
-    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'comment' => $comment, 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id, 'system' => $system, 'type' => $type);
+    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'comment' => $comment, 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id, 'type' => $type);
+    $d['system'] = getSystemType();
     mysqld_insert('shop_goods_comment', $d);
     $comment_id = mysqld_insertid();
 

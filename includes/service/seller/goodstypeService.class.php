@@ -666,7 +666,6 @@ class goodstypeService extends \service\publicService
         $redata = array();
 
         $sql  = "select {$fields} from ".table('goods_type')." where id = {$data['gtype_id']}";
-
         $redata = mysqld_select($sql);
         return $redata;
     }

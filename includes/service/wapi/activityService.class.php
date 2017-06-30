@@ -122,6 +122,7 @@ class activityService extends \service\publicService
             }else{
                 $ac_city = $jdwd['ac_city'];
                 $ac_city_area = $jdwd['ac_city_area'];
+                //$sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
                 $sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0)";
             }
         }

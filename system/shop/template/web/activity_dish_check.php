@@ -65,6 +65,7 @@
 	}
 </style>
 <h3 class="header smaller lighter blue">宝贝审核</h3> 
+<!--增加的操作-->
 <form action=""  class="form-horizontal" method="post">
 	<table class="table table-striped table-bordered table-hover" style="display:none;">
 			<tbody>
@@ -117,8 +118,8 @@
 				</tr>
 			</tbody>
 		</table>
-		</form>
-	<table class="table table-striped table-bordered table-hover">
+</form>
+<table class="table table-striped table-bordered table-hover">
   <tr>
     <th class="text-center" >
     	<input type="checkbox" onclick="selectAll()" id="selectAll"/>
@@ -127,17 +128,15 @@
 	<th class="text-center">产品图片</th>
     <th class="text-center" width="300">产品名称</th>
 	<th class="text-center" >条形码</th>
-	<th class="text-center">市场价格</th>
 	<th class="text-center">销售价格</th>
     <th class="text-center">活动价格</th>
 	<th class="text-center">活动库存</th>
-    <th class="text-center">操作</th>
   </tr>
 
 		<?php if(is_array($au_list)) { foreach($au_list as $item) { ?>
 				<tr>
 				 	<td style="text-align:center;" class="dish-id">
-				 		<input type="checkbox" class="dishvalue" name="disvalue[]" value="<?php  echo $item['id'];?>"/>
+				 		<input type="checkbox" class="dishvalue" name="disvalue[]" value="<?php  echo $item['ac_dish_id'];?>"/>
 				 		<?php  echo $item['id'];?>				 			
 				 	</td>
 					<td style="text-align:center;"><img src="<?php echo $item['thumb']; ?>" height="38" width="38" /></td>
@@ -145,75 +144,35 @@
                 		<?php  echo $item['title'];?>
                 	</td>
 					<td style="text-align:center;"><?php  echo $item['goodssn']; ?> </td>
-					<td style="text-align:center;" ><?php  echo $item['marketprice'] / 100 ;?></td>
 					<td style="text-align:center;" ><?php  echo $item['timeprice'] / 100 ;?></td>
 					<td style="text-align:center;" class="wholesale-td"><?php  echo $item['ac_dish_price'] / 100 ;?></td>
 					<td style="text-align:center;" class="product-stock">
 						<span><?php  echo $item['ac_dish_total'];?></span>
 					</td>											
-					<td style="text-align:center;">
-					<a class="btn btn-xs btn-info" target="_blank" href="<?php echo WEBSITE_ROOT.mobile_url('detail',array('name'=>'shopwap','id'=>$item['id']));?>" style="display:none;"><i class="icon-eye-open"></i>&nbsp;查&nbsp;看&nbsp;</a>&nbsp;&nbsp;
-				    <a  class="btn btn-xs btn-info" href="<?php  echo web_url('activity', array('id' => $item['ac_dish_id'],'op'=>'dish', 'value' => '1'))?>"  onclick="return confirm('此操作不可恢复，确认审核通过？');return false;"><i class="icon-edit"></i>&nbsp;通&nbsp;过&nbsp;</a>&nbsp;&nbsp;
-					<a  class="btn btn-xs btn-info" href="<?php  echo web_url('activity', array('id' => $item['ac_dish_id'],'op'=>'dish', 'value' => '2'))?>" onclick="return confirm('此操作不可恢复，确认拒绝通过？');return false;"><i class="icon-edit"></i>&nbsp;拒&nbsp;绝&nbsp;</a>
-					</td>
 				</tr>
-				<?php  } } ?>
+		<?php  } } ?>
  	
-		</table>
-		<input type="hidden" class="vip-number" value="<?php echo count($vip_list); ?>">
-		<input type="hidden" name="" class="ajax-id" value="">
-		<div class='modal fade wholesale-modal' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true'>  
-			<div class='modal-dialog modal-lg'>
-				<div class='modal-content'>
-					<div class='modal-header'> 
-						<button type='button' class='close' data-dismiss='modal'>
-							<span aria-hidden='true'>&times;</span>
-							<span class='sr-only'>Close</span>
-						</button>
-						<h4 class='modal-title' id='myModalLabel'>批发价格修改</h4>
-					</div>
-					<div class='modal-body'>
-						<div class="vip-form-area">
-							<div class="form-group form-inline vip-form">
-					 	   		<label class="col-sm-3 control-label no-padding-left" >会员价格：</label>
-					 	   		<div class="col-sm-7 set-vip-price">
-									  <select  class="form-control set-select">
-									  		<option value="-1">--请选择--</option>
-									  </select>
-				                      <div class="input-group col-sm-3">
-				                       <span class="input-group-addon">$</span>
-									   <input type="text"  class="form-control vip_price" value="" placeholder="请输入价格"/>
-									  </div>
-								</div>
-								<div class="col-sm-2">
-									<a href="javascript:void(0);" class="btn btn-danger remove_vip" >移除</a>
-								</div>
-					 	   </div>
-				 	   </div>
-				 	   <div class="form-group">
-				 	   		<label class="col-sm-3 control-label no-padding-left" ></label>
-				 	   		<div class="col-sm-9">
-								<a href="javascript:void(0)" class="btn btn-primary addvip" name="button"><i class="icon-plus"></i>添加会员</a>
-							</div>
+</table>
 
-				 	   </div>
-					</div>
-					<div class="modal-footer">
-						<div class='vip-form-desc'>currency属性用来控制价格符号，1代表￥，2代表$,描述描述</div>
-				        <button type="button" class="btn btn-primary btn-save">保存</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--增加的操作-->
-		<?php if ( !empty( $list_op )  ){ ?>
-		<select style="display: block;margin-right:10px;margin-top:10px;width: 150px; height:34px; line-height:28px; padding:2px 0" name="" id="option" onchange="fetchOption()">
-		    <?php foreach ( $list_op as $key=>$list_op_value ){ ?>
-			<option value="<?php echo $list_op_value; ?>"><?php echo $key; ?></option>
-			<?php } ?>
-		</select>
+<?php if ( !empty( $list_op )  ){ ?>
+<div class="form-group">
+<select name="" id="option" onchange="fetchOption()">
+         <option value="-1">批量操作</option>
+		 <?php foreach ( $list_op as $key=>$list_op_value ){ ?>
+	     <option value="<?php echo $list_op_value; ?>"><?php echo $key; ?></option>
 		<?php } ?>
-		<?php  echo $pager;?>
+</select>
+<?php if ( is_array( $au_reason ) && !empty( $au_reason) ){  ?>
+<select name="" id="reason" style="display:none;" onchange="auOption()">
+      <option value="-1">请选择原因</option>
+      <?php foreach ($au_reason as $reason_value ){ ?>
+            <option value="<?php echo $reason_value; ?>"><?php echo $reason_value; ?></option>
+	  <?php } ?>
+</select>
+<?php } ?>
+</div>
+<?php } ?>
+<?php  echo $pager;?>
 <script language="javascript">
    var area = <?php  echo json_encode($children)?>;
    function fetchChildarea(cid) {
@@ -260,16 +219,37 @@
  //操作方法
   function fetchOption(){
 	if ( $("#option").val() == -1){
+		$('#reason').hide();
 		return;
 	}
- 	//选中了哪些宝贝,将他们的value存进数组list
+	if ( $("#option").val() == 2)
+	{
+         $('#reason').show();
+	}else{
+		 $('#reason').hide();
+		 auOption();  
+	}
+ }
+ // 审核操作
+ function auOption(){
+	if ( $("#option").val() == 2 && $("#reason").val() == -1)
+	{
+		return;
+	}
+	if ($("#option").val() == 2)
+	{
+		var reason = $("#reason").val();
+	}else{
+        var reason = '';
+	}
+    //选中了哪些宝贝,将他们的value存进数组list
  	var list=[];
  	$("input[name = 'disvalue[]']:checked").each(function(){ 		
  		list.push(this.value);
  	})
- 	if(confirm("确定"+$(":selected","#option")[0].innerHTML+"选中的宝贝？")){ 		
-		$.post('', {'id' : list,'op':'ajax','todo':$("#option").val()}, function(s) {
-			  window.location.reload();
+ 	if(confirm("确定"+$(":selected","#option")[0].innerHTML+"选中的宝贝？")){	
+		$.post('', {'id' : list,'value':$("#option").val(),'reason':reason}, function(s) {
+		    window.location.reload();
 		});
  	}
  }
@@ -281,188 +261,5 @@
 		$(".dishvalue").prop("checked",false);
 	}
  }
- function modify(){
- 	 //修改标题操作
-	$(".modify-icon").on("click",function(){
-		var titleVal = $(this).siblings(".product-title-a").text();
-	 	$(this).siblings(".modify-title").show().focus();
-	 	$(this).siblings(".modify-title").val(titleVal);
-	});
-	$(".modify-title").blur(function(){
-		var id = $(this).attr("ajax-title-id");
-		var title = $(this).val();
-		var this_title = $(this);
-		$.post("",{op:'ajax_title',ajax_id:id,ajax_title:title},function(data){
-			if( data.errno == 200 ){
-				this_title.siblings(".product-title-a").text(data.message);
-				$(this).hide();
-			}else{
-				alert(data.message);
-				$(this).hide();
-			}
-		},"json");
-		$(this).hide();
-	});
-	//修改库存操作
-	$(".product-stock span").on("click",function(){
-		var stockVal = $(this).text();
-		$(this).siblings(".modify-stock").show().focus();
-		$(this).siblings(".modify-stock").val(stockVal);
-	});
-	$(".modify-stock").blur(function(){
-		var id = $(this).attr("ajax-stock-id");
-		var stock = parseInt($(this).val());
-		var stock_this = $(this);
-		var regEx = /^[0-9]*$/;
-		if( !regEx.test(stock) ){
-			alert("请输出入正确的库存");
-		}else{
-			$.post("",{op:'ajax_total',ajax_id:id,ajax_stock:stock},function(data){
-				if( data.errno == 200){
-					stock_this.siblings("span").text(data.message);
-					$(this).hide();
-				}else{
-					alert(data.message);
-					$(this).hide();
-				}
-			},"json");
-		}
-		$(this).hide();
-	});
-
-	//获取批发价格下拉列表
-	$(".wholesale-cogs").on("click",function(){
-		$(".wholesale-modal").modal();
-		var id = $(this).attr("ajax-vip-price-id");
-		$(".ajax-id").val(id);
-		var option_html = "";
-		var get_html = "";
-		var currency_tap = "$";
-		$(".set-select").html("");
-		$.post("",{op:'ajax_get_vip',ajax_id:id},function(data){
-			if( data.errno==200 ){
-				//currency属性用来控制价格符号，1代表￥，2代表$
-				$.each(data.message.vip_list,function(n,value){
-					option_html += "<option currency="+1+" value="+value.id+">"+value.name+"</option>"
-				});
-				$(".vip-form-area").html("");
-				if( data.message.vip_data!="" ){
-					$.each(data.message.vip_data,function(data_n,data_value){
-						if( data_value.currency ==1 ){
-							currency_tap = '￥';
-						}else if(data_value.currency ==2){
-							currency_tap = '$';
-						}
-						get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
-								"<select  class='form-control set-select' onchange='changeFun(this)' v2='"+data_value.v2+"'></select><div class='input-group col-sm-3'><span class='input-group-addon'>"+currency_tap+"</span>"+
-								"<input type='text'  class='form-control vip_price' value='"+data_value.vip_price+"' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
-								"class='btn btn-danger remove_vip' >移除</a></div></div>";						
-					});
-					$(".vip-form-area").html(get_html);
-				}else{
-					get_html += "<div class='form-group form-inline vip-form'><label class='col-sm-3 control-label no-padding-left' >会员价格：</label><div class='col-sm-7 set-vip-price'> "+
-								"<select  class='form-control set-select' vid='' onchange='changeFun(this)'></select><div class='input-group col-sm-3'><span class='input-group-addon'>"+currency_tap+"</span>"+
-								"<input type='text'  class='form-control vip_price' value='' placeholder='请输入价格'/></div></div><div class='col-sm-2'><a href='javascript:void(0);' "+
-								"class='btn btn-danger remove_vip' >移除</a></div></div>";
-					$(".vip-form-area").html(get_html);
-				}
-				$(".set-select").append("<option value='-1'>--请选择--</option>"+option_html);
-				$(".set-select option").each(function(idnex,ele){
-					if( $(ele).val() == $(ele).parent(".set-select").attr("v2")){
-						$(ele).prop("selected","selected");
-					}
-				});
-			}else{
-				alert(data.message);
-			}
-		},"json");
-	});
-	//保存批发价格
-	$(".btn-save").on("click",function(){
-		var ajax_vip_data = {};
-		var select_val = "";
-		var input_val = "";
-		var id = $(".ajax-id").val();
-		var save_get_html = "";
-		$(".vip-form").each(function(index,ele){
-			select_val = parseInt($(ele).find(".set-select").val());
-			input_val = $(ele).find(".vip_price").val();
-			ajax_vip_data[select_val] = input_val;
-		})
-		$.post("",{op:'ajax_set_vip',ajax_id:id,ajax_vip_data:ajax_vip_data},function(data){
-			if( data.errno==200 ){
-				$.post("",{op:'ajax_get_vip',ajax_id:id},function(data){
-					if( data.errno == 200 ){
-						$(".wholesale-div").html();
-						$.each(data.message.vip_data,function(data_i,data_val){
-							$.each(data.message.vip_list,function(list_i,list_val){
-								if( data_val.v2 == list_val.id ){
-									save_get_html += "<li><div class='wholesale' >"+list_val.name+"：<span class='wholesale-price'>"+data_val.vip_price+"</span></div></li>";
-								}else{
-									return;
-								}
-							});
-						});
-						$(".wholesale-div[ajax_id="+id+"]").html(save_get_html);
-					}else{
-						alert(data.message);
-					}
-				},'json');
-			}else{
-				alert(data.message);
-			}
-		},'json')
-		$(".wholesale-modal").modal('hide');
-	});
-
-	//会员价格
-	var vipNum = parseInt($(".vip-number").val());
-	var vip_i = 1 ;
-	$(".addvip").on("click",function(){
-		var addHtml = $(".vip-form:last").clone();
-		if ( vip_i < vipNum){
-			vip_i++;
-			$(".vip-form:last").after(addHtml);
-			$(".vip-form:last").find(".no-padding-left").text("");
-			$(".vip-form:last").find(".vip_price").val("");
-		}
-	});
-	$("body").on("click",".remove_vip",function(){
-		var vipLength = $(".vip-form").length;
-		if( vipLength == 1 ){
-			$(".set-select").val(-1);
-			$(".vip_price").val("");
-			return false;
-		}else{
-			vip_i--;
-			$(this).parents(".vip-form").remove();
-		}
-		$(".vip-form:first").find(".no-padding-left").text(" 会员价格：");
-	});
-
-	$("body").on("blur",".vip_price",function(){
-		var regEx = /^(([1-9]\d*)|\d)(\.\d{1,2})?$/;
-		if( !regEx.test($(this).val()) ){
-			var price = parseFloat($(this).val());
-			if ( isNaN(price) )
-			{
-				price = 0;
-			}
-			$(this).val(price);
-		}
-	});
- }
-modify();
-
-//批发价格修改下拉框值变化，修改对应的货币符号
-
-function changeFun(obj){
-	var currency_val = $(".set-select option:selected").attr("currency");
-	if( currency_val ==1 ){
-		$(obj).siblings('.input-group').find(".input-group-addon").text("￥");
-	}else if( currency_val ==2 ){
-		$(obj).siblings('.input-group').find(".input-group-addon").text("$");
-	}
-}
 </script>
 <?php  include page('footer');?>

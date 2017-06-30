@@ -95,7 +95,7 @@ class coupon extends base{
         if ($type == 0){
             $where .= " a.status=0 and '$now' < b.use_end_time ";//未使用且没有过期
         }elseif ($type == 1){
-            $where .= " a.status=1 and a.use_time <= '$endtime' ";
+            $where .= " a.status=1 and (a.use_time <= '$endtime' OR a.use_time is NULL) ";
         }else {
             $where .= " a.status=0 and '$now' > b.use_end_time and b.use_end_time <= '$endtime' ";//未使用且已过期
         }
@@ -105,7 +105,7 @@ class coupon extends base{
         if ($wsyData) $noUse = count($wsyData);
         //已使用的数量
         $isUse = 0;
-        $ysyData = $couponMemModel->getAllMyCoupon("a.openid='$openid' and a.status=1 and a.use_time <= '$endtime' ", 'a.scmid');
+        $ysyData = $couponMemModel->getAllMyCoupon("a.openid='$openid' and a.status=1 and (a.use_time <= '$endtime' OR a.use_time is NULL) ", 'a.scmid');
         if ($ysyData) $isUse = count($ysyData);
         //未使用已过期的数量
         $overdue = 0;
@@ -123,21 +123,25 @@ class coupon extends base{
         //$orderby = " a.scmid DESC LIMIT ".$limit.",".$psize;
         $orderby = " a.scmid DESC ";
         $mycoupon = $couponMemModel->getAllMyCoupon($where,"a.scmid,a.scid,a.status,b.coupon_amount,b.amount_of_condition,b.create_time,b.coupon_name,b.use_end_time,b.use_start_time,b.store_shop_id,b.usage_mode",$orderby);
-        if (empty($mycoupon)) ajaxReturnData(1,'暂无优惠券信息');
-        $storeShopModel = new \model\store_shop_model();
-        foreach ($mycoupon as $key=>$v){
-            $temp['coupon_name'] = $v['coupon_name'];
-            $temp['scid'] = $v['scid'];
-            $temp['usage_mode'] = $v['usage_mode'];
-            $temp['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
-            $temp['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
-            $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['store_shop_id']),'sts_name');
-            $temp['sts_name'] = $store['sts_name'];
-            $temp['use_start_time'] = date("Y-m-d",$v['use_start_time']);
-            $temp['use_end_time'] = date("Y-m-d",$v['use_end_time']);
-            $data[] = $temp; 
+        $data = array();
+        if (!empty($mycoupon)){
+            $storeShopModel = new \model\store_shop_model();
+            foreach ($mycoupon as $key=>$v){
+                $temp['coupon_name'] = $v['coupon_name'];
+                $temp['scid'] = $v['scid'];
+                $temp['usage_mode'] = $v['usage_mode'];
+                $temp['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
+                $temp['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
+                $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['store_shop_id']),'sts_name');
+                $temp['sts_name'] = $store['sts_name'];
+                $temp['use_start_time'] = date("Y-m-d",$v['use_start_time']);
+                $temp['use_end_time'] = date("Y-m-d",$v['use_end_time']);
+                $data[] = $temp;
+            }
         }
+        
         $return = array('data'=>$data,'total'=>$total);
+        
         ajaxReturnData(1,'',$return);
     }
 }

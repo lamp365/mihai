@@ -152,7 +152,7 @@ function update_order_status($id, $status) {
     	}
     	// 反还优惠券
     	if (!empty($order['hasbonus'])) {
-    		mysqld_query("UPDATE ".table('store_coupon_member')." SET status=0 WHERE scmid=".$order['hasbonus']);
+    		mysqld_query("UPDATE ".table('store_coupon_member')." SET status=0,use_time =0 WHERE scmid=".$order['hasbonus']);
     	}
     	// 记录订单关闭时间
     	mysqld_query("UPDATE ".table('shop_order')." SET status=-1,closetime=".time()." WHERE id=".$id);

@@ -151,8 +151,12 @@ class mycartService extends  \service\publicService
     {
         $member = get_member_account();
         $dish   = mysqld_select("select id,sts_id,deleted,status,store_count from ".table('shop_dish')." where id={$dishid}");
-        if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
+        if(empty($dishid) || $dish['deleted'] == 1){
             $this->error = '该商品不存在！';
+            return false;
+        }
+        if( $dish['status'] == 0){
+            $this->error = '请等待商品上架！';
             return false;
         }
         //库存
@@ -208,8 +212,12 @@ class mycartService extends  \service\publicService
         $member = get_member_account();
 
         $dish   = mysqld_select("select id,sts_id,deleted,status,store_count from ".table('shop_dish')." where id={$dishid}");
-        if(empty($dishid) || $dish['deleted'] == 1 || $dish['status'] == 0){
+        if(empty($dishid) || $dish['deleted'] == 1){
             $this->error = '该商品不存在！';
+            return false;
+        }
+        if($dish['status'] == 0){
+            $this->error = '请等待商品上架！';
             return false;
         }
         //库存

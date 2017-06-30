@@ -531,7 +531,7 @@ class limitedTimepurChaseService extends \service\publicService {
    //进行中的活动
    public function nowAction($fields='*'){
        $dataTime = time();
-       $sql = "select {$fields} from {$this->table_list} where ac_time_end >= {$dataTime} order by ac_time_end asc limit 1";
+       $sql = "select {$fields} from {$this->table_list} where ac_time_str <= {$dataTime} and ac_time_end >= {$dataTime} and ac_status = 1 order by ac_time_end asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -539,7 +539,7 @@ class limitedTimepurChaseService extends \service\publicService {
    //下一场活动
    public function nextAction($endTime,$fields='*'){
        $dataTime = time();
-       $sql = "select {$fields} from {$this->table_list} where ac_time_str > {$endTime} order by ac_time_str asc limit 1";
+       $sql = "select {$fields} from {$this->table_list} where ac_time_str >= {$endTime} and ac_status = 1 order by ac_time_str asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }

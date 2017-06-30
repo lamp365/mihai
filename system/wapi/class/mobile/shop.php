@@ -69,6 +69,7 @@ class shop extends base{
            }else {
                $ac_city = $return['ac_city'];
                $ac_city_area = $return['ac_city_area'];
+               //$where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
                $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0)";
            }
         }
@@ -101,7 +102,7 @@ class shop extends base{
         }elseif ($maxprice) {
             $where .= " AND a.ac_dish_price <= '$maxprice' ";
         }
-        $sql_base = "SELECT a.ac_dish_id,a.ac_action_id,a.ac_area_id,a.ac_shop_dish,a.ac_dish_price,a.ac_dish_total,a.ac_dish_sell_total,a.ac_shop,b.title,b.thumb,b.marketprice";
+        $sql_base = "SELECT a.*,b.title,b.thumb,b.marketprice";
         
         //搜索的时间区域和自动筛选出来
         if (!empty($timearea)){
@@ -161,6 +162,7 @@ class shop extends base{
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         
         $storeShopModel = new \model\store_shop_model();
+        $regionM = new \model\region_model();
         foreach ($list as $key=>$v){
             if ($v['ac_area_id'] == $areaid){
                 $list[$key]['status'] = 1;
@@ -172,7 +174,16 @@ class shop extends base{
             $list[$key]['marketprice'] = FormatMoney($v['marketprice'],0);
             $list[$key]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
             $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['ac_shop']),'sts_id,sts_name,sts_avatar');
-           $list[$key]['storeInfo'] = $store;
+            $list[$key]['storeInfo'] = $store;
+            if ($v['ac_city'] == 0){
+                $list[$key]['peisong'] = "全国";
+            }elseif ($v['ac_city_area'] == 0){
+                $qu = $regionM->getOneRegion(array('region_code'=>$v['ac_city']),'region_name');
+                if ($qu) $list[$key]['peisong'] = $qu['region_name'];
+            }else{
+                $qu = $regionM->getOneRegion(array('region_code'=>$v['ac_city_area']),'region_name');
+                if ($qu) $list[$key]['peisong'] = $qu['region_name'];
+            }
         }
         ajaxReturnData(1,'',$list);
     }

@@ -36,16 +36,35 @@ if ( $_GP['op'] == 'list' ){
 	if ( !empty($_GP['ac_list']) ){
          $act->actId = $_GP['ac_list'];
 	}
+	$list_op = array(
+         '批量审核通过' =>1,
+		 '批量审核失败' =>2
+	);
 	$in_list = $act->findIndustry();
 	$category = $act->findCategory();
 	$au_list = $act->getAuDish();
+	$au_reason = $act->getAuReason();
 	if ( !empty($_GP['id']) && !empty($_GP['value']) ){
-        $data = array( 'id'=>$_GP['id'], 'ac_dish_status'=>$_GP['value'] );
-        $result = $act->setAuDish($data);
-		if ($result){
-            message('操作成功', 'refresh', 'success');
+		if ( !is_array($_GP['id']) ){
+            $data = array( 'id'=>$_GP['id'], 'ac_dish_status'=>$_GP['value'] );
+			if ( $_GP['value'] == 2 ){
+                 $act->reason = $_GP['reason'];
+			}
+			$result = $act->setAuDish($data);
+			if ($result){
+                message('操作成功', 'refresh', 'success');
+			}else{
+				message( $act->errno, '' , 'error' );
+			}
 		}else{
-            message( $act->errno, '' , 'error' );
+             foreach( $_GP['id'] as $auId ){
+                  $data = array( 'id'=>$auId, 'ac_dish_status'=>$_GP['value'] );
+				  if ( $_GP['value'] == 2 ){
+                       $act->reason = $_GP['reason'];
+				  }
+				  $result = $act->setAuDish($data);
+			 }
+			 exit;
 		}
 	}
 	$pager = $act->pagination;

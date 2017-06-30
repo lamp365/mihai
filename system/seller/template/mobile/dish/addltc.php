@@ -9,7 +9,9 @@
             <label class="layui-form-label">系统分类<font color="red"><b>*</b></font></label>
              <div class="layui-input-inline" >
                 <select name="ac_p1_id" lay-verify="required" lay-filter="ac_p1_id" id="ac_p1_id">
+                    <?php if (!$ac_dish_id && !empty($oneCatArr)){?><option value="<?php echo $oneCatArr['id'];?>"><?php echo $oneCatArr['name'];?></option><?php }elseif (!$ac_dish_id){?>
                     <option value="0">请选择</option>
+                    <?php }?>
                     <?php
                       foreach($oneCate as $v){
                     ?>
@@ -21,7 +23,15 @@
             </div>
             
             <div class="layui-input-inline" id="twoCateDiv">
-               <?php
+            <?php if (!$ac_dish_id && !empty($twoCatArr)){
+                        echo '<select name="ac_p2_id" lay-filter="ac_p2_id">';
+                        foreach($twoCatArr as $v){
+                ?>
+                    <option value="<?php echo $v['id'];?>" <?php if($product['store_p1'] == $v['id']){echo 'selected';}?>><?php echo $v['name'];?></option>
+                <?php
+                        echo '</select>';
+                      }
+                }else{
                     if($ac_dish_id > 0){
                       if(count($twoCategory) > 0)
                       {
@@ -34,6 +44,7 @@
                         echo '</select>';
                       }
                     }
+                }
                 ?>
             </div>
             
@@ -45,11 +56,10 @@
             <label class="layui-form-label">活动ID<font color="red"><b>*</b></font></label>
             <div class="layui-input-block">
                 <select name="ac_action_id" lay-verify="required" lay-filter="ac_action_id" id="ac_action_id">
-                    <option value="0">请选择</option>
                     <?php
                       foreach($areaList as $v){
                     ?>
-                    <option value="<?php echo $v['ac_id'];?>" <?php if($ltcInfo['ac_action_id'] == $v['ac_id']){echo 'selected';}?>><?php echo $v['ac_title'];?></option>
+                    <option value="<?php echo $v['ac_id'];?>" <?php if($ac_dish_id>0 && $ltcInfo['ac_action_id'] == $v['ac_id']){echo 'selected';}elseif ($v['ac_id']==$currentAct['ac_id']){echo 'selected';}?>><?php echo $v['ac_title'];?></option>
                     <?php
                       }
                     ?>
@@ -86,14 +96,14 @@
           <div class="layui-form-item">
             <label class="layui-form-label">价格<font color="red"><b>*</b></font></label>
             <div class="layui-input-block">
-                <input type="text" name="ac_dish_price"  required  autocomplete="off" class="layui-input" id="ac_dish_price" value="<?php echo $ltcInfo['ac_dish_price'];?>">
+                <input type="text" name="ac_dish_price"  required  autocomplete="off" class="layui-input" id="ac_dish_price" value="<?php if ($ac_dish_id > 0){echo $ltcInfo['ac_dish_price'];}else{echo FormatMoney($product['marketprice'],0);}?>" >
             </div>
           </div>
         
           <div class="layui-form-item">
             <label class="layui-form-label">库存<font color="red"><b>*</b></font></label>
             <div class="layui-input-block">
-                <input type="text" name="ac_dish_total" required   autocomplete="off" class="layui-input" id="ac_dish_total"  value="<?php echo $ltcInfo['ac_dish_total'];?>">
+                <input type="text" name="ac_dish_total" required   autocomplete="off" class="layui-input" id="ac_dish_total"  value="<?php if ($ac_dish_id > 0){echo $ltcInfo['ac_dish_total'];}else{echo $product['store_count'];}?>">
             </div>
           </div>
           <?php if ($ac_dish_id > 0){?>

@@ -79,7 +79,7 @@
                   <td><?php echo $v['coupon_amount'];?></td>
                   <td><?php echo $v['amount_of_condition'];?></td>
                   <td><?php echo $v['release_quantity'];?></td>
-                  <td><?php echo $v['create_time'];?></td>
+                  <td><?php echo $v['inventory'];?></td>
                   <td><?php echo $v['receive_start_time'];?>~<?php echo $v['receive_end_time'];?></td>
                   <td><?php echo $v['use_start_time'];?>~<?php echo $v['use_end_time'];?></td>
                   <td>

@@ -7,6 +7,7 @@ class Activity {
    public   $page;
    public   $psize;
    public   $limie;
+   public   $reason;
    public   $errno;
    public   $pagination;
    private  $model;
@@ -15,8 +16,21 @@ class Activity {
 	   $this->setPage();
 	   $this->model = new ActModel($this);
    }
+   public function getReason(){
+       if ( !empty( $this->reason ) ){
+            return $this->reason;
+	   }else{
+            return '未标记原因';
+	   }
+   }
    public function getActListData(){
        return $this->actListData;
+   }
+   public function getAuReason(){
+       $reason = array(
+            '商品信息资料不全', '商品图片信息不全', '商品价格不符合特卖要求', '商品标题信息有问题'
+	   );
+	   return $reason;
    }
    public function setPage($page = 1){
        $this->page = max(1, $page);

@@ -37,6 +37,17 @@ class ActModel{
 			 unset( $data['id'] );
 			 mysqld_update('activity_dish', $data, array('ac_dish_id'=>$id) );
 		 }
+		 if ( isset($data['ac_dish_status']) && $data['ac_dish_status'] == 2) {
+			 $reason = $this->act->getReason();
+             $data = array(
+                  'au_dish_id' => $id,
+				  'au_time'    => time(),
+				  'au_reason' => $reason,
+				  'au_status'  => 2
+			 );
+			 print_r($data);
+			 mysqld_insert('activity_aulist', $data);
+		 }
 		 return true;
 	 }
 	 private function setModel(){

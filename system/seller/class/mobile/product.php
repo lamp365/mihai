@@ -733,6 +733,7 @@ class product extends base
             $_GP = $this->request;
             $ltcObj = new \service\seller\limitedTimepurChaseService();
             
+            $url = mobile_url('product',array('op'=>'productlist'));
             $dish_id    = intval($_GP['id']);
             $ac_dish_id = intval($_GP['ac_dish_id']);
             
@@ -753,6 +754,20 @@ class product extends base
 
                 $activGroup = $ltcObj->getAreaGroupList($actiData);
                 
+            }else{
+                //取商品信息
+                $shopDishM = new \model\shop_dish_model();
+                $product = $shopDishM->getOneShopDish(array('id'=>$dish_id),'store_p1,store_p2,marketprice,store_count');
+                if (!empty($product)){
+                    //根据栏目id取出栏目名称
+                    $shopCatM = new \model\shop_category_model();
+                    $oneCatArr = $shopCatM->getOneShopCategory(array('id'=>$product['store_p1']),'id,name,parentid');
+                    if (!empty($oneCatArr)){
+                        $twoCatArr = $shopCatM->getAllShopCategory(array('parentid'=>$oneCatArr['id']),'id,name');
+                    }
+                }
+                //取当前活动
+                $currentAct = getCurrentAct();
             }
             //获取当前正在进行的活动
             

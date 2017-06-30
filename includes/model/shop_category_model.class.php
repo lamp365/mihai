@@ -19,5 +19,11 @@ class shop_category_model extends model
 	    if (empty($where)) return false;
 	    return $this->getOne($where,$param);
 	}
-    
+	/**
+	 * 获得多条shop_category表信息
+	 *   */
+	public function getAllShopCategory($where = array(),$param="*"){
+	    if (empty($where)) return false;
+	    return $this->getAll($where,$param);
+	}
 }

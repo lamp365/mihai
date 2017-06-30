@@ -80,7 +80,7 @@ class payorderService extends  \service\publicService
             }
 
             //优惠卷
-            $bonus_id    = $bonus['sts_id'];
+            $bonus_id    = $bonus[$item['sts_id']];
             $bonus_price = 0;
             if(array_key_exists($item['sts_id'],$bonus)){
                 //从库里面取出来的 价格是分
@@ -123,7 +123,7 @@ class payorderService extends  \service\publicService
                 $pay_total_money = $pay_total_money + $order_data['price'];  //单位是分
                 //更新优惠卷为已经使用
                 if(!empty($bonus_id))
-                    mysqld_update('store_coupon_member',array('status'=>1),array('scmid'=>$bonus_id));
+                    mysqld_update('store_coupon_member',array('status'=>1,'use_time'=>time()),array('scmid'=>$bonus_id));
 
                 $dishlist    = $item['dishlist'];
                 $is_action   = 0;

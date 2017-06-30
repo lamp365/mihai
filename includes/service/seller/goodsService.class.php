@@ -51,6 +51,15 @@ class goodsService extends \service\publicService
         }
         @$contentArr['content'] = $contentArr['content']!=''?$contentArr['content']:'';
         
+        if($_GP['gid'] > 0)
+        {
+            //查询对应的系统一级二级分类
+            $sql_cate_goods = "select pcate,ccate from ".table('shop_goods')." where id = {$_GP['gid']}";
+            $rs_cate_goods  = mysqld_select($sql_cate_goods);
+            $_GP['pcate'] = $rs_cate_goods['pcate'];
+            $_GP['ccate'] = $rs_cate_goods['ccate'];
+        }
+        
         $data = array(
             'gid'          => $_GP['gid'],
             'store_p1'     => $_GP['store_p1'],
@@ -73,6 +82,8 @@ class goodsService extends \service\publicService
             'isreason'     => $_GP['isreason'],
             'qr_code'      => $_GP['qr_code'],
             'brand'        => $_GP['brand'],
+            'pcate'        => $_GP['pcate'],
+            'ccate'        => $_GP['ccate'],
             'activity_type'=> intval($_GP['activity_type']),
             'is_index'     => intval($_GP['is_index']),
             'sts_id'       => $meminfo['store_sts_id'],

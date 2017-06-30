@@ -68,7 +68,7 @@ class shopindex extends base{
        if (empty($ac_list_id) || empty($ac_area_id)) ajaxReturnData(0,'参数错误');
        $jd = $_GP['longitude'];//经度
        $wd = $_GP['latitude'];//纬度
-       $where = " a.ac_action_id = '$ac_list_id' and a.ac_dish_status=1 and (a.ac_area_id = '$ac_area_id' or a.ac_area_id=0) ";
+       $where = " a.ac_action_id = '$ac_list_id' and a.ac_dish_status=1 and b.status=1 and (a.ac_area_id = '$ac_area_id' or a.ac_area_id=0) ";
        
        if (empty($jd) || empty($wd)){
            $cityCode = getCityidByIp();
@@ -82,7 +82,7 @@ class shopindex extends base{
            }else {
                $ac_city = $return['ac_city'];
                $ac_city_area = $return['ac_city_area'];
-               //IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area')
+               //$where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
                $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,a.ac_city=0)";
            }
        }
@@ -106,6 +106,7 @@ class shopindex extends base{
        //shop_dish表取商品详情
        $data = array();
        $storeShopModel = new \model\store_shop_model();
+       $regionM = new \model\region_model();
        foreach ($list as $key=>$v){
             $temp['title'] = $v['title'];
             $temp['thumb'] = $v['thumb'];
@@ -122,6 +123,16 @@ class shopindex extends base{
             if ($temp['ac_dish_total'] == 0) $temp['flag'] = 0;
             $temp['ac_dish_sell_total'] = $v['ac_dish_sell_total'];
             $temp['ac_shop_dish'] = $v['ac_shop_dish'];
+            $temp['peisong'] = '';
+            if ($v['ac_city'] == 0){
+                $temp['peisong'] = "全国";
+            }elseif ($v['ac_city_area'] == 0){
+                $qu = $regionM->getOneRegion(array('region_code'=>$v['ac_city']),'region_name');
+                if ($qu) $temp['peisong'] = $qu['region_name'];
+            }else{
+                $qu = $regionM->getOneRegion(array('region_code'=>$v['ac_city_area']),'region_name');
+                if ($qu) $temp['peisong'] = $qu['region_name'];
+            }
             $data[] = $temp;
        }
        if (empty($data)) ajaxReturnData(1,'暂无商品');

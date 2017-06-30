@@ -93,6 +93,8 @@ class shopbonus extends base
         //获取全部宝贝
         $dishData = $this->shopDishService->getDishAll('id,title');
         
+        $styleCss = 'none';
+        
         include page('shopbonus/addcoupon');
     }
     

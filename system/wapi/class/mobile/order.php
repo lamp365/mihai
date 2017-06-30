@@ -133,6 +133,21 @@ class order extends base {
     if (empty($order)) {
       ajaxReturnData(0,'订单获取失败');
     }
+    if (!empty($order['hasbonus'])) {
+      $bouns_mem = mysqld_select("SELECT * FROM ".table('store_coupon_member')." WHERE scmid=".$order['hasbonus']);
+      if (!empty($bouns_mem)) {
+        $bouns = mysqld_select("SELECT * FROM ".table('store_coupon')." WHERE scid=".$bouns_mem['scid']);
+        if (!empty($bouns)) {
+          $order['bouns_gold'] = $bouns['coupon_amount'];
+        }else{
+          $order['bouns_gold'] = 0;
+        }
+      }else{
+        $order['bouns_gold'] = 0;
+      }
+    }else{
+      $order['bouns_gold'] = 0;
+    }
     ajaxReturnData(1,'订单获取成功',$order);
   }
 }

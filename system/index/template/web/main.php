@@ -1028,9 +1028,16 @@
                	</ul>			
                 <iframe  marginheight="0" marginwidth="0" width="100%" style="margin-top: 20px" frameborder="0" onload="reinitIframe()" scrolling="no"  name="main" id="main" src="<?php  echo create_url('site', array('name' => 'index','do' => 'center'))?>"></iframe>               
                 <script type="text/javascript" language="javascript">
+
                     function reinitIframe(){
                         var iframeHeight = $("#main").contents().find("html").height();
-                        $("#main").height(iframeHeight);
+                        var windowHeight = $(window).height()-200;
+                        if(iframeHeight<windowHeight){
+                            $("#main").height(windowHeight);
+                        }else{
+                            $("#main").height(iframeHeight);
+                        }
+                        
                     }
                     window.setInterval(reinitIframe,200);
                 </script>

@@ -122,7 +122,7 @@ class ShopDishService extends \service\publicService {
         
         if($data['is_lts'] != '')
         {
-            $where .= " and status = 1 and store_count > 0";
+            $wheres .= " and status = 1 and store_count > 0";
         }
         
         if($_GP['is_lts'] != '' && $_GP['ltcDishIds'] != '')
@@ -152,6 +152,7 @@ class ShopDishService extends \service\publicService {
         
         $limit = " LIMIT " . ($_GP['page'] - 1) * $_GP['limit'] . ',' . $_GP['limit'];
         $sql = "select {$fields} from {$this->table} where sts_id = {$this->memberData['store_sts_id']} {$wheres} {$order} {$limit}";
+
         $dishList = mysqld_selectall($sql);
         
         foreach($dishList as $k=>$v){
@@ -169,8 +170,13 @@ class ShopDishService extends \service\publicService {
     //根据分类一级和二级分类id获取宝贝信息
     public function getPcontent($_GP,$fields='*'){
         $data = array();
+        $where = '';
 
-        $sql  = "select {$fields} from {$this->table} where store_p2 = {$_GP['store_p2']}";
+        if($_GP['store_p2'] > 0)
+        {
+            $where .= "where store_p2={$_GP['store_p2']}";
+        }
+        $sql  = "select {$fields} from {$this->table} {$where}";
         $data = mysqld_selectall($sql);
         return $data;
     }

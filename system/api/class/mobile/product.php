@@ -897,10 +897,6 @@ class product extends base
         //测试数据结束 
         */ 
         
-        $data['page'] = max(1, intval($data['page']));
-        $data['page'] = ($data['page'] - 1) * $data['limit'];
-        $data['limit'] = $data['limit']>0?$data['limit']:10;
-
         if($data['is_lts'] > 0)
         {
             $data['ac_action_id'] = intval($data['ac_action_id']);
@@ -1062,7 +1058,6 @@ class product extends base
             }
         }
         $brand_ids = rtrim($brand_ids,',');
-        
         //品牌
         if($brand_ids != '')
         {
@@ -1946,15 +1941,21 @@ class product extends base
         //获取当前的小时数 
         $now_hour = intval(date('H',time()));
         
-        //获取活动  活动获取的时间段
+        //获取活动
+        $nowAction = $this->ltcObj->nowAction('ac_id');
+        
+        //获取当前进行中的时间段
         $dayActi = $this->ltcObj->getDayActivityArea('ac_id,b.ac_area_id,ac_title');
         //$redata['ac_title'] = $dayActi['ac_title'];
+        
+        $data['ac_id'] = $nowAction['ac_id'];
+        $data['ac_area_id'] = $dayActi['ac_area_id'];
         
         //进行中的活动
         if($dayActi['ac_id'] > 0)
         {
             //获取进行中的场次
-            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($dayActi,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id,ac_dish_status');
+            $redata['underwayActiDish'] = $this->ltcObj->getUnderwayActiList($data,'ac_dish_id,ac_area_time_str,a.ac_shop_dish,ac_dish_price,ac_dish_total,ac_p1_id,ac_p2_id,ac_dish_status');
             $dish_ids = '';
             foreach($redata['underwayActiDish'] as $v){
                 $dish_ids .= $v['ac_shop_dish'].',';
@@ -2036,7 +2037,7 @@ class product extends base
         }
         else{
             $data['ac_ids'] = '';
-            $dayActi = $this->ltcObj->getDayActivity('ac_id,ac_title');
+            $dayActi = $this->ltcObj->nowAction('ac_id,ac_title');
             $data['ac_ids'] = $dayActi['ac_id'];
             $data['is_get_acids'] = 0;
         }
@@ -2201,7 +2202,7 @@ class product extends base
                 continue;
             }
             //获取当天正在进行中的活动ID
-            $dayActi = $this->ltcObj->getDayActivity('ac_id,ac_area');
+            $dayActi = $this->ltcObj->nowAction('ac_id,ac_area');
 
             //获取每天的活动时间段列表
             $days = $this->ltcObj->timeAreaList($dayActi['ac_id']);
@@ -2309,7 +2310,7 @@ class product extends base
         //进行中的活动
         $nowDayActi = $this->ltcObj->nowAction('ac_title,ac_time_end');
         $redata['now_ac_title'] = $nowDayActi['ac_title'];
-        $redata['now_hour']     = date('Y-m-d',$nowDayActi['ac_time_end']).'结束';
+        $redata['now_hour']     = date('Y-m-d',$nowDayActi['ac_time_end']).' 结束';
         $endTime = $nowDayActi['ac_time_end']>0?$nowDayActi['ac_time_end']:time();
 
         //下一场活动
@@ -2317,7 +2318,7 @@ class product extends base
         if($nextDayActi['ac_title'] != '')
         {
             $redata['next_ac_title'] = $nextDayActi['ac_title'];
-            $redata['next_hour']     = date('Y-m-d',$nextDayActi['ac_time_str']).'开始';
+            $redata['next_hour']     = date('Y-m-d',$nextDayActi['ac_time_str']).' 开始';
         }
         else{
             $redata['next_ac_title'] = '';
@@ -2382,13 +2383,25 @@ class product extends base
                 $areaInfo[$k]['area'] = intval(date('H',$areaInfo[$k]['ac_area_time_str'])).'点场';
             }
             
-            foreach($areaInfo as $v){
+            foreach($areaInfo as $k=>$v){
                 $areaData[$v['ac_list_id']][] = $v;
             }
+            
+            
 
             foreach($redata['allList'] as $k=>$v){
+                
+                $areaArrQt = array();
+                $areaArrQt['ac_area_id'] = '0';
+                $areaArrQt['ac_area_time_str'] = '0';
+                $areaArrQt['ac_list_id'] = 2;
+                $areaArrQt['area'] = '全天场';
+                array_unshift($areaData[$v['ac_area']],$areaArrQt);
+                
                 $redata['allList'][$k]['areaList'] = $areaData[$v['ac_area']];
             }
+            
+            
             
         }
         else{
