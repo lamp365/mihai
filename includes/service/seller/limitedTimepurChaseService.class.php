@@ -284,7 +284,7 @@ class limitedTimepurChaseService extends \service\publicService {
    
    //获取今天在进行中的活动
    public function getDayActivity($fields='*'){
-       $dayTime = strtotime(date('Y-m-d'));
+       $dayTime = strtotime(date('Y-m-d H:i:s'));
        $sql = "select $fields from {$this->table_list} where ac_time_str <= {$dayTime} and ac_status = 1 order by ac_time_end desc";
        $rs  = mysqld_select($sql);
        return $rs;
@@ -292,9 +292,9 @@ class limitedTimepurChaseService extends \service\publicService {
    
    //获取当前时段在进行中的活动
    public function getDayActivityArea($fields='*'){
-       $dayTime = strtotime(date('Y-m-d'));
+       $dayTime = strtotime(date('Y-m-d H:i:s'));
        $now_hour = date('H',time());
-       $sql = "SELECT {$fields} FROM {$this->table_list} AS a left JOIN {$this->table_area} AS b ON a.ac_area = b.ac_list_id WHERE a.ac_time_str <= {$dayTime} and ac_time_end >= {$dayTime} and ac_status = 1 AND FROM_UNIXTIME(b.ac_area_time_str, '%H') <= {$now_hour} and (FROM_UNIXTIME(b.ac_area_time_end, '%H') > {$now_hour} or FROM_UNIXTIME(b.ac_area_time_end, '%H') = 0) and b.ac_area_status = 1  ORDER BY FROM_UNIXTIME(b.ac_area_time_str, '%H') desc LIMIT 1";
+       $sql = "SELECT {$fields} FROM {$this->table_list} AS a left JOIN {$this->table_area} AS b ON a.ac_area = b.ac_list_id WHERE a.ac_time_str <= {$dayTime} and ac_time_end >= {$dayTime} and ac_status = 1 AND FROM_UNIXTIME(b.ac_area_time_str, '%H') <= {$now_hour} and FROM_UNIXTIME(b.ac_area_time_end, '%H') >= {$now_hour} and b.ac_area_status = 1  ORDER BY FROM_UNIXTIME(b.ac_area_time_str, '%H') desc LIMIT 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -310,7 +310,7 @@ class limitedTimepurChaseService extends \service\publicService {
    
    //获取即将进行的活动
    public function getTrailerActivity($fields='*'){
-       $dayTime = strtotime(date('Y-m-d'));
+       $dayTime = strtotime(date('Y-m-d H:i:s'));
        $where = '';
        if($data['ac_action_id'] > 0){
            $where = " and ac_action_id = {$data['ac_action_id']}";
@@ -353,7 +353,7 @@ class limitedTimepurChaseService extends \service\publicService {
        if($shop > 0)$where .= " and ac_shop = {$this->memberData['store_sts_id']}";
        if($data['is_get_acids'] <= 0)
        {
-           $where2 .= " and (FROM_UNIXTIME(b.ac_area_time_str,'%H') > {$this->nowHour} or a.ac_area_id = 0)";
+           $where2 .= " and (FROM_UNIXTIME(b.ac_area_time_str,'%H') > {$this->nowHour})";
        }
        //$this->nowHour
        $sql = "select {$fields} from (SELECT {$fields1} FROM {$this->table_dish} AS a LEFT JOIN {$this->table_list} AS b ON a.ac_action_id = b.ac_id WHERE {$where}) as a LEFT JOIN {$this->table_area} as b on a.ac_area_id = b.ac_area_id where 1 {$where2} order by b.ac_area_time_str asc {$limit}";
@@ -450,7 +450,7 @@ class limitedTimepurChaseService extends \service\publicService {
    //获取进行中的小时数
    public function getNowArea($ac_area_id,$fields='*'){
        $ac_area_id = intval($ac_area_id);
-       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') > {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
+       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_end,'%H') >= {$this->nowHour} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }
@@ -458,7 +458,7 @@ class limitedTimepurChaseService extends \service\publicService {
    //获取下一场进行中的小时数
    public function getNextArea($ac_area_id,$end_time,$fields='*'){
        $ac_area_id = intval($ac_area_id);
-       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_str,'%H') >= {$end_time} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
+       $sql = "select {$fields} from {$this->table_area} where ac_list_id = {$ac_area_id} and FROM_UNIXTIME(ac_area_time_str,'%H') > {$end_time} order by FROM_UNIXTIME(ac_area_time_end,'%H') asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }

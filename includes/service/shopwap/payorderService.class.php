@@ -84,7 +84,7 @@ class payorderService extends  \service\publicService
             $bonus_price = 0;
             if(array_key_exists($item['sts_id'],$bonus)){
                 //从库里面取出来的 价格是分
-                $bonus_price  = getCouponByMemidOnPay($bonus['sts_id'],$item['sts_id'],$item['dishlist'],'coupon_amount');
+                $bonus_price  = getCouponByMemidOnPay($bonus[$item['sts_id']],$item['sts_id'],$item['dishlist'],'coupon_amount');
                 if(empty($bonus_price)){
                     $bonus_id    = 0;
                     $bonus_price = 0;
@@ -102,7 +102,7 @@ class payorderService extends  \service\publicService
             $order_data['goodsprice']       = $goodsprice;              //商品价格
             $order_data['dispatchprice']    = $express_fee;             //运费
             $order_data['status']           = 0;    //状态未付款
-            $order_data['source']           = get_mobile_type();    //设备来源
+            $order_data['source']           = get_mobile_type(1);    //设备来源
             $order_data['sendtype']         = 0;    //快递发货
             $order_data['paytype']          = 2;    //在线付款
             $order_data['paytypecode']      = 1;    //微信支付
@@ -140,8 +140,8 @@ class payorderService extends  \service\publicService
                     $o_good['action_id']             = $one_dish['action_id'];
                     $o_good['shop_type']             = empty($one_dish['action_id']) ? 0 : 4;
                     $o_good['price']                 = FormatMoney($one_dish['time_price'],1);  //商品单价 转为分
-                    $o_good['store_earn_price']      = $store_earn_price;   //单个商品 提成 单位 分
-                    $o_good['member_earn_price']     = $member_earn_price;   //单个商品 提成 单位 分
+                    $o_good['store_earn_price']      = empty($recommend_sts_id) ? 0 : $store_earn_price;   //单个商品 提成 单位 分
+                    $o_good['member_earn_price']     = empty($recommend_openid) ? 0 : $member_earn_price;   //单个商品 提成 单位 分
                     $o_good['total']                 = $one_dish['buy_num'];
                     $o_good['createtime']            = time();
                     $res2 = mysqld_insert('shop_order_goods',$o_good);

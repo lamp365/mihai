@@ -71,34 +71,6 @@ class activityService extends \service\publicService
         return $data;
     }
     /**
-     * 取当前活动的未过期的时间段
-     * @param $ac_list_id 区域码
-     * @num 取的个数
-     *   */
-    /* public function getActAreaNoExp($ac_list_id,$num = 0){
-        if (empty($ac_list_id)) return '';
-        $list = $this->getActArea($ac_list_id);
-        if($list){
-            if ($num == 0) return $list;
-            
-            if (count($list) >= $num){
-                for ($i=0;$i<$num;$i++){
-                    $return[$i] = $list[$i];
-                }
-            }else {
-                $other = $num - count($list);
-                $moreData = $this->getActArea($ac_list_id,1);
-                if ($moreData){
-                    for ($i=0;$i<$other;$i++){
-                        $return1[$i] = $moreData[$i];
-                    }
-                }
-                $return = array_merge($list,$return1);
-            }
-            return $return;
-        } 
-    } */
-    /**
      * 取当前活动的当前时间的区域
      *   */
     public function getCurrentArea(){
@@ -150,16 +122,14 @@ class activityService extends \service\publicService
             }else{
                 $ac_city = $jdwd['ac_city'];
                 $ac_city_area = $jdwd['ac_city_area'];
-                $sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
+                $sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0)";
             }
         }
         $sql .= " and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
         if ($currentId != $areaid){
             $sql .= " and a.ac_dish_total > 0 ";
         }
-        logg($sql,"log1");
         $info = mysqld_select($sql);
-        logg(var_export($info,1),"log2");
         //没有商品
         if ($info && $info['num'] > 0 ) {
             return true;

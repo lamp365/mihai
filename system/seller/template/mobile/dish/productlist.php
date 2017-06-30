@@ -254,6 +254,7 @@ layui.use(['laypage', 'layer','form','element'], function(){
           if(redata == 1){
         	  layer.open({
         		  content: '下架成功',
+              offset: ['28%', '40%'],
     	  		  end: function () {
       	  			location.reload();//刷新
             	  }
@@ -312,6 +313,7 @@ function isStatus(id){
         if(redata.errno == 1){
         	layer.open({
         		  content: redata.message,
+              offset: ['28%', '40%'],
       	  		  end: function () {
       	  			location.reload();//刷新
             	  }
@@ -319,6 +321,7 @@ function isStatus(id){
             }else{
             	layer.open({
             		  content: redata.message,
+                  offset: ['28%', '40%']
             		});
             }
     },"json");  

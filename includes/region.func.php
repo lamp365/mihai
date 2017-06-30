@@ -163,11 +163,20 @@ function getCityidByIp(){
         $info = json_decode($info,1);
         $cityCode = $info['adcode'];
     }
-    logg($ip, "ip");
-    logg(var_export($info,1), "info");
-    if (empty($cityCode)) return '350100';//如果未取到ip，则取福州
+    $defaultCity = '350100';
+    if (empty($cityCode)) return $defaultCity;//如果未取到ip，则取福州
+    //判断code是省还是市
+    $regionModel = new \model\region_model();
+    $info = $regionModel->getOneRegion(array('region_code'=>$cityCode));
+    if (empty($info)) return $defaultCity;
+    if ($info['parent_id'] == 1){//取默认城市
+        $info1 = $regionModel->getOneRegion(array('parent_id'=>$info['region_id'],'region_is_default_qu'=>1));
+        if (empty($info1)) return $defaultCity;
+        $cityCode = $info1['region_code'];
+    }
     return $cityCode;
 }
+
 
 
 

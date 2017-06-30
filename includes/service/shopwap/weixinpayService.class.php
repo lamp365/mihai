@@ -243,14 +243,14 @@ class weixinpayService extends \service\publicService
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
-            $this->error = "支付异步错误---{$array_data['return_msg']}";
+            $this->error = "支付异步错误1---{$array_data['return_msg']}";
             return false;
         }
         elseif($array_data["result_code"] == "FAIL"){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
-            $this->error = "支付异步错误---{$array_data['return_msg']}";
+            $this->error = "支付异步错误2---{$array_data['return_msg']}";
             return false;
         } else{
             // 订单号
@@ -276,14 +276,14 @@ class weixinpayService extends \service\publicService
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
-            $this->error = "支付异步错误---{$array_data['return_msg']}";
+            $this->error = "支付异步错误3---{$array_data['return_msg']}";
             return false;
         }
         elseif($array_data["result_code"] == "FAIL"){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
-            $this->error = "支付异步错误---{$array_data['return_msg']}";
+            $this->error = "支付异步错误4---{$array_data['return_msg']}";
             return false;
         } else{
             // 订单号
@@ -302,7 +302,6 @@ class weixinpayService extends \service\publicService
 
     public function checkCallParame()
     {
-        logRecord('chenggdddd3333','payError');
         ////微信的回调
         $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
         $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
@@ -330,7 +329,6 @@ class weixinpayService extends \service\publicService
             $this->error = '支付异步签名验证失败';
             return false;
         }
-        logRecord('chenggdddd','payError');
         return $array_data;
     }
 }

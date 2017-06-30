@@ -7,8 +7,10 @@ class coupon extends base{
     //优惠券列表
     public function couponList(){
         $GP = $this->request;
-        $act_id = intval($GP['ac_id']);//活动id
-        if (empty($act_id)) ajaxReturnData(0,'参数错误');
+        /* $act_id = intval($GP['ac_id']);//活动id
+        if (empty($act_id)) ajaxReturnData(0,'参数错误');*/
+        $list = getCurrentAct(); 
+        $act_id = $list['ac_id'];
         //获取活动店铺
         $actListModel = new \model\activity_dish_model();
         $actStore = $actListModel->getAllActivtyDish(array('ac_action_id'=>$act_id),'ac_shop','ac_dish_id DESC','ac_shop');

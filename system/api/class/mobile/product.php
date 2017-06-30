@@ -1387,7 +1387,7 @@ class product extends base
          {
              $oneSysData[$v['pcate']] = $v['total'];
          }
-         
+
          foreach($totalTwoSysData as $v)
          {
              $twoSysData[$v['ccate']] = $v['total'];
@@ -1401,13 +1401,32 @@ class product extends base
             {
                foreach($v['twoCategory'] as $kk=>$vv){
                    $cate_list['systemGroup']['oneCategory'][$k]['twoCategory'][$kk]['dishtotal'] = intval($twoSysData[$vv['id']]);
+                   if($cate_list['systemGroup']['oneCategory'][$k]['twoCategory'][$kk]['dishtotal'] == 0)
+                   {
+                       unset($cate_list['systemGroup']['oneCategory'][$k]['twoCategory'][$kk]);
+                   }
                }
             }   
+            
+            if($cate_list['systemGroup']['oneCategory'][$k]['dishtotal'] == 0)
+            {
+                unset($cate_list['systemGroup']['oneCategory'][$k]);
+            }
+            
+            
          }
          if(count($cate_list['systemGroup']['oneCategory']) <= 0)
          {
-            //$cate_list['systemGroup']['oneCategory'] = array();
+            $cate_list['systemGroup']['oneCategory'] = array();
          }
+         else{
+             $cate_list['systemGroup']['oneCategory'] = array_values($cate_list['systemGroup']['oneCategory']);
+             foreach($cate_list['systemGroup']['oneCategory'] as $k=>$v)
+             {
+                 $cate_list['systemGroup']['oneCategory'][$k]['twoCategory'] = array_values($cate_list['systemGroup']['oneCategory'][$k]['twoCategory']);
+             }
+         }
+         
          ajaxReturnData(1,'列表获取成功',$cate_list);
     }
     
@@ -1729,7 +1748,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        $data['ac_area'] = 2 ;
+        //$data['ac_area'] = 2 ;
         //测试数据结束
         
         if($data['ac_area'] <= 0)

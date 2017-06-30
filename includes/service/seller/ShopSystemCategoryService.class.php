@@ -78,7 +78,10 @@ class ShopSystemCategoryService extends \service\publicService
    public function ShopCateGroupListTwo($fields='id,name as cat_name,parentid'){
        $data = array();
        $two_data = array();
-
+       
+       $where = '';
+       
+       /*
        //显示已经导入过得分类id
        $sql_member = 'select p_ccate,p_ccate2 from '.$this->table_store_shop_category." where store_shop_id = {$this->memberData['store_sts_id']} and p_ccate2 = 0 and p_ccate > 0";
        $rs_member = mysqld_selectall($sql_member);
@@ -88,11 +91,11 @@ class ShopSystemCategoryService extends \service\publicService
        }
        $pCcte2Str = rtrim($pCcte2Str,',');
        
-       $where = '';
        if($pCcte2Str != '')
        {
            $where .= " and id not in ({$pCcte2Str})";
        }
+       */
 
        $sql = "SELECT {$fields} FROM ".$this->table." where parentid = 0 and industry_p2_id = {$this->memberData['sts_category_p2_id']} {$where}";
        $one  = mysqld_selectall($sql);
@@ -112,7 +115,7 @@ class ShopSystemCategoryService extends \service\publicService
 
        if($data['oneCategory'] != '')
        {
-        $data['oneCategory'] = array_values($data['oneCategory']);
+            $data['oneCategory'] = array_values($data['oneCategory']);
        }
        else{
            $data['oneCategory'] =  array();
@@ -134,13 +137,41 @@ class ShopSystemCategoryService extends \service\publicService
     }
     
     public function count_category_one_goods($ids){
-       $sql = "select count(0) as total,pcate from ".$this->table_goods." where pcate in ({$ids}) GROUP BY pcate";
+        $where = '';
+        
+        $sql_gids = "select gid from ".table('shop_dish')." where sts_id = {$this->memberData['store_sts_id']} and gid > 0";
+        $rs_gids  = mysqld_selectall($sql_gids);
+        $gidStr = '';
+        foreach($rs_gids as $v){
+            $gidStr .= $v['gid'].',';
+        }
+        $gidStr = rtrim($gidStr,',');
+        if($gidStr != '')
+        {
+            $where .= " and id not in ($gidStr)";
+        }
+        
+       $sql = "select count(0) as total,pcate from ".$this->table_goods." where pcate in ({$ids}) {$where} GROUP BY pcate";
        $rs = mysqld_selectAll($sql);
        return $rs;
     }
     
     public function count_category_two_goods($ids){
-       $sql = "select count(0) as total,ccate from ".$this->table_goods." where ccate in ({$ids}) GROUP BY ccate";
+        $where = '';
+        
+        $sql_gids = "select gid from ".table('shop_dish')." where sts_id = {$this->memberData['store_sts_id']} and gid > 0";
+        $rs_gids  = mysqld_selectall($sql_gids);
+        $gidStr = '';
+        foreach($rs_gids as $v){
+            $gidStr .= $v['gid'].',';
+        }
+        $gidStr = rtrim($gidStr,',');
+        if($gidStr != '')
+        {
+            $where .= " and id not in ($gidStr)";
+        }
+        
+       $sql = "select count(0) as total,ccate from ".$this->table_goods." where ccate in ({$ids}) {$where} GROUP BY ccate";
        $rs = mysqld_selectAll($sql);
        return $rs;
     }

@@ -6,6 +6,7 @@
 namespace wapi\controller;
 class address extends base{
 
+    public $openid = '';
     public function __construct()
     {
         parent::__construct();

@@ -213,7 +213,7 @@ class accountService extends \service\publicService
         
         //获取昨天和今天
         $sql_today = "select pv_count,uv_count from squdian_store_shop_visted where zero_time = '{$beginToday}' and sts_id = {$sts_id}";
-        $rs_today = mysqld_select($sql);
+        $rs_today = mysqld_select($sql_today);
         
         $sql_yesterday = "select pv_count,uv_count from squdian_store_shop_visted where zero_time = '{$beginYesterday}' and sts_id = {$sts_id}";
         $rs_yesterday = mysqld_select($sql_yesterday);

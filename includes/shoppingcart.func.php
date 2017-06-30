@@ -44,10 +44,10 @@ function checkDishIsActive($dishid,$store_count){
 	$active = getCurrentAct();
 	$find   = array();
 	if(!empty($active)){
-		//那么看看时间开始了么
+		//那么看看本次活动时间开始了么
 		if($active['ac_time_str'] < time()){
 			//有活动，那么判断该商品是不是属于限时购商品
-			$sql = "select ac_dish_id,ac_shop_dish,ac_dish_status,ac_dish_total,ac_dish_price,ac_action_id from ".table('activity_dish');
+			$sql = "select ac_dish_id,ac_shop_dish,ac_dish_status,ac_dish_total,ac_dish_price,ac_action_id,ac_area_id from ".table('activity_dish');
 			$sql .= " where ac_action_id={$active['ac_id']} and ac_shop_dish={$dishid}";
 			$find = mysqld_select($sql);
 			if (!empty($find)) {
@@ -56,9 +56,38 @@ function checkDishIsActive($dishid,$store_count){
 					mysqld_update('activity_dish',array('ac_dish_total'=>$store_count),array('ac_dish_id'=>$find['ac_dish_id']));
 					$find['ac_dish_total'] = $store_count;
 				}
+				//根据 ac_action_id 获取 在该场活动中的 哪个区间时间段
+				if($find['ac_area_id'] != 0){
+					$findArea = mysqld_select("select ac_area_time_str,ac_area_time_end from ".table('activity_area')." where ac_area_id={$find['ac_area_id']}");
+					if(empty($findArea)){
+						$find = array();
+					}else{
+						$start_time = getTodayTimeByActtime($findArea['ac_area_time_str']);
+						$end_time   = getTodayTimeByActtime($findArea['ac_area_time_end']);
+						if(time()>$end_time || time()<$start_time){
+							//已经过时间了，或者还没开始
+							$find = array();
+						}
+					}
+				}
 			}
 		}
 	}
 	return $find;
+}
+
+/**
+ * 获取活动商品所属的 活动时间 对应到今天的时间
+ * @param $time
+ * @return int
+ */
+function getTodayTimeByActtime($time){
+	//那天的凌晨时间
+	$that_zero  = strtotime(date("Y-m-d",$time));
+	//今天的凌晨时间
+	$today_zero = strtotime(date("Y-m-d",time()));
+	//今天的活动时刻
+	$todaytime = $today_zero+($time-$that_zero);
+	return $todaytime;
 }
 ?>

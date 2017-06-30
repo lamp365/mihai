@@ -44,7 +44,7 @@ class mycartService extends  \service\publicService
                 $active = checkDishIsActive($dish['id'],$dish['store_count']);
                 if(!empty($active)){
                     $store_count = $active['ac_dish_total'] ?: 0;
-                    $time_price  = $active['ac_dish_price'] ?: 0;
+                    $time_price  = $active['ac_dish_price'] ?: $dish['marketprice'];
                     $status      = $active['ac_dish_status'] ?: 0;
                     $action_id   = $active['ac_action_id'] ?: 0;
                 }
@@ -54,6 +54,7 @@ class mycartService extends  \service\publicService
 
                 if( $store_count ==0 || $status == 0){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
+                    $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
                 }
@@ -128,13 +129,15 @@ class mycartService extends  \service\publicService
                 $total_dish_price += $one['time_price']*$one['buy_num'];
                 $dishid_arr[]     =  $one['id'];
             }
-            if($total_dish_price >= $free_dispatch){
-                //商品价格  没有超过 满邮的条件   总价加上运费
-                $totalprice +=  $express_fee;
-                $item['totalprice'] = round($total_dish_price + $express_fee,2);
+            if($free_dispatch !=0 && $total_dish_price >= $free_dispatch){
+                //商品价格  超过 满邮的条件   免邮
+                $item['totalprice'] = round($total_dish_price,2);
                 $item['send_free']  = 1;
             }else{
-                $item['totalprice'] = round($total_dish_price,2);
+                //没有满邮，加上运费
+                $totalprice +=  $express_fee;
+                $item['totalprice'] = round($total_dish_price + $express_fee,2);
+                $item['send_free']  = 0;
             }
             //根据店铺以及价格来选出 结算的时候 可以使用的优惠卷
             $item['bonuslist'] = getCouponByPriceOnPay($item['sts_id'],$total_dish_price,$dishid_arr);

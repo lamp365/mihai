@@ -120,4 +120,34 @@ class login extends base {
         }
         ajaxReturnData(1,'成功',$mem_info);
     }
+
+    /**
+     * 通过扫码后 得到推荐人的openid,进行绑定用户的关系
+     */
+    public function bindRelation()
+    {
+        $_GP = $this->request;
+        $member = get_member_account();
+        $openid   = $member['openid'];
+        $p_openid = $_GP['openid'];
+        if(!empty($r_openid) && !empty($openid)){
+            //如果存在过不用插入
+            $find = mysqld_select("select id from ".table('member_blong_relation')." where p_opend='{$p_openid}' and m_openid='{$openid}'");
+            if(empty($find)){
+                //找出推荐人的所属店铺
+                $p_member = member_get($p_openid);
+                $p_store  = member_store_get($p_member,'sts_id');
+                $insted_data['p_sid']      = $p_store['sts_id'];
+                $insted_data['p_openid']   = $p_openid;
+                $insted_data['m_openid']   = $openid;
+                $insted_data['createtime'] = time();
+                $insted_data['type']       = 2;
+                mysqld_insert('member_blong_relation',$insted_data);
+            }
+            ajaxReturnData(1,'操作成功！');
+        }else{
+            ajaxReturnData(0,'参数有误！');
+        }
+
+    }
 }

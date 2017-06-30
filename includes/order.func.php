@@ -196,12 +196,8 @@ function update_order_status($id, $status) {
  */
 function paySuccessProcess($ordersn,$setting)
 {
-	$meminfo = get_member_account();
 	$order   = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
 	if(empty($order['id'])) {
-		return '';
-	}
-	if($order['openid'] != $meminfo['openid']){
 		return '';
 	}
 	if($order['status'] !=0 ) {
@@ -1409,19 +1405,27 @@ function hasFinishGetOrder($orderid){
 /**
  * 根据用户openid获取推荐人的openid
  * 以及推荐人从属的店铺id
+ * 有种情况就是 可能该推广员已经不做了。被移除了，之前的客户全部归属店铺
  * @param $openid
  * @return array
  */
 function getRecommendOpenidAndStsid($openid){
-	//获取推荐人openid
-	$recommend        = mysqld_select("select p_openid from ".table('member_blong_relation')." where m_openid='{$openid}' and type=2");
+	//获取推荐人openid  从属店铺id
+	$recommend        = mysqld_select("select p_openid,p_sid from ".table('member_blong_relation')." where m_openid='{$openid}' and type=2");
 	$recommend_openid = $recommend['p_openid'] ?: 0;
-	//根据推荐人的openidz找到该用户从属的 店铺id
-	$recommend_sts_id = $earn_rate = 0;
+	$recommend_sts_id = $recommend['p_sid'] ?: 0;
+
+	//根据推荐人的openidz 再次找到该用户当前管理的 店铺id  判断是否已经换店铺了
+	$earn_rate = 0;
 	if(!empty($recommend_openid)){
 		$recommend_sts    = mysqld_select("select sts_id,earn_rate from ".table('seller_rule_relation')." where openid='{$recommend_openid}'");
-		$recommend_sts_id = $recommend_sts['sts_id'] ?: 0;
-		$earn_rate		  = $recommend_sts['earn_rate'] ?: 0;
+		if($recommend_sts['sts_id'] == $recommend_sts_id){
+			//该推荐人 就属于在该店铺工作
+			$earn_rate  = $recommend_sts['earn_rate'] ?: 0;
+		}else{
+			//该推荐人 已经不再该店铺工作了
+			$recommend_openid = 0;
+		}
 	}
 	return array(
 		'recommend_openid' => $recommend_openid,

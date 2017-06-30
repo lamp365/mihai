@@ -254,7 +254,7 @@ function logRecord($logMsg,$logFile) {
 
     if(WRITE_LOG)
     {
-        error_log(date('H:i:s',time())." | {$logMsg}\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
+        error_log(date('H:i:s',time())." | {$logMsg}<br/>\r\n", 3, WEB_ROOT.'/logs/'.$logFile.date('Y-m-d'));
     }
 }
 

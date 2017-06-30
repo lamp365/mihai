@@ -69,7 +69,7 @@ class shop extends base{
            }else {
                $ac_city = $return['ac_city'];
                $ac_city_area = $return['ac_city_area'];
-               $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
+               $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0)";
            }
         }
         //栏目或者关键词
@@ -101,7 +101,7 @@ class shop extends base{
         }elseif ($maxprice) {
             $where .= " AND a.ac_dish_price <= '$maxprice' ";
         }
-        $sql_base = "SELECT a.ac_dish_id,a.ac_action_id,a.ac_area_id,a.ac_shop_dish,a.ac_dish_price,a.ac_dish_total,a.ac_dish_sell_total,b.title,b.thumb,b.marketprice";
+        $sql_base = "SELECT a.ac_dish_id,a.ac_action_id,a.ac_area_id,a.ac_shop_dish,a.ac_dish_price,a.ac_dish_total,a.ac_dish_sell_total,a.ac_shop,b.title,b.thumb,b.marketprice";
         
         //搜索的时间区域和自动筛选出来
         if (!empty($timearea)){
@@ -160,7 +160,7 @@ class shop extends base{
 
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         
-        $shopDishModel = new \model\shop_dish_model();
+        $storeShopModel = new \model\store_shop_model();
         foreach ($list as $key=>$v){
             if ($v['ac_area_id'] == $areaid){
                 $list[$key]['status'] = 1;
@@ -171,6 +171,8 @@ class shop extends base{
             if ($v['ac_dish_total'] > 0) $list[$key]['flag'] = 1 ;
             $list[$key]['marketprice'] = FormatMoney($v['marketprice'],0);
             $list[$key]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
+            $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['ac_shop']),'sts_id,sts_name,sts_avatar');
+           $list[$key]['storeInfo'] = $store;
         }
         ajaxReturnData(1,'',$list);
     }
