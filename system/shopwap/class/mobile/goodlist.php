@@ -1,6 +1,6 @@
 <?php			
 		$pindex = max(1, intval($_GP["page"]));
-		$carttotal = $this->getCartTotal();
+		$carttotal = getCartTotal();
 		$psize =  20;
 		$condition = '';
 	    $op = $_GP['op'];

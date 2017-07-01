@@ -82,7 +82,7 @@ class good_detail extends base {
     $list['brand_icon'] = download_pic($brand['icon']);
     // 购物车商品数量
     if (!empty($member)) {
-      $list['shoppingcart_num'] = getCartTotal();
+      $list['shoppingcart_num'] = getCartTotal(2);
     }
     // 是否收藏
     if (!empty($member['openid'])) {

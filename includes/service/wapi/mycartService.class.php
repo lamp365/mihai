@@ -198,15 +198,13 @@ class mycartService extends  \service\publicService
         } else {
             // 累加最多限制购买数量
             $t_num = $total + $row['total'];
-            if($t_num > $store_count){
-                $this->error = "库存剩下{$store_count}个！";
-                return false;
+            if($t_num <= $store_count){
+                $data = array('total' => $t_num);
+                mysqld_update('shop_cart', $data, array('id' => $row['id']));
             }
-            $data = array('total' => $t_num);
-            mysqld_update('shop_cart', $data, array('id' => $row['id']));
         }
-        //返回总的购物车物种
-        $carnum = getCartTotal();
+        //返回总的购物车物物品总数量
+        $carnum = getCartTotal(2);
         return $carnum;
     }
 
@@ -235,24 +233,35 @@ class mycartService extends  \service\publicService
             }
         }
 
-       //移除掉改用去其他商品的打钩状态
-        mysqld_update("shop_cart",array('to_pay'=>0),array('session_id'=>$member['openid']));
-
-        // 不存在
-        $data = array(
-            'goodsid'       => $dishid,
-            'goodstype'     => 0,
-            'session_id'    => $member['openid'],
-            'sts_id'        => $dish['sts_id'],
-            'to_pay'        => 1,  //当前立即购买的设置打钩状态的
-            'total'         =>  $total
-        );
         if($total > $store_count){
             $this->error = "库存剩下{$store_count}个！";
             return false;
         }
-        mysqld_insert('shop_cart', $data);
-        return $data['total'];
+
+        //移除掉所有商品的打钩状态
+        mysqld_update("shop_cart",array('to_pay'=>0),array('session_id'=>$member['openid']));
+
+        $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid ", array(
+            ':session_id' =>  $member['openid'],
+            ':goodsid'    =>  $dishid
+        ));
+
+        if(empty($row)){
+            // 不存在
+            $data = array(
+                'goodsid'       => $dishid,
+                'goodstype'     => 0,
+                'session_id'    => $member['openid'],
+                'sts_id'        => $dish['sts_id'],
+                'to_pay'        => 1,  //当前立即购买的设置打钩状态的
+                'total'         =>  $total
+            );
+            mysqld_insert('shop_cart', $data);
+        }else{
+            $u_data = array('total' => $total,'to_pay'=>1);
+            mysqld_update('shop_cart', $u_data, array('id' => $row['id']));
+        }
+        return $total;
     }
 
     public function updateCart($cart_id,$num)
