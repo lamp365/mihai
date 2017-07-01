@@ -79,7 +79,7 @@ class good_detail extends base {
     // 品牌
     $brand = mysqld_select("SELECT * FROM ".table('shop_brand')." WHERE id=".$good['brand']);
     $list['brand'] = $brand['brand'];
-    $list['brand_icon'] = $brand['icon'];
+    $list['brand_icon'] = download_pic($brand['icon']);
     // 购物车商品数量
     if (!empty($member)) {
       $list['shoppingcart_num'] = getCartTotal();
@@ -153,7 +153,14 @@ class good_detail extends base {
         $list['ac_type'] = 1;
       }elseif ($list['ac_end_time'] < time()) {
         // 活动结束
-        $list['ac_type'] = 2;
+        if ($list['in_area'] == 0) {
+          $list['ac_type'] = 2;
+        }else{
+          $list['ac_type'] = 0;
+          $list['ac_str_time'] += 86400;
+          $list['ac_end_time'] += 86400;
+        }
+        
       }
     }else{
       // 当前不为活动商品
@@ -245,7 +252,7 @@ class good_detail extends base {
     // 系统ID（1pc，2wap，3安卓，4ios）
     // $system = intval($_GP['system_id']);
     // 评价ID（1好评，2差评）
-    $type = intval($_GP['type']);
+    // $type = intval($_GP['type']);
     // 物流评分
     $wl_rate = (float)$_GP['wl_rate'];
     // 服务分
@@ -270,7 +277,7 @@ class good_detail extends base {
     }
 
     // 评论信息
-    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'comment' => $comment, 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id, 'type' => $type);
+    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'comment' => $comment, 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id);
     $d['system'] = getSystemType();
     mysqld_insert('shop_goods_comment', $d);
     $comment_id = mysqld_insertid();

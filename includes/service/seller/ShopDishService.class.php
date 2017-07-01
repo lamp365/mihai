@@ -117,15 +117,14 @@ class ShopDishService extends \service\publicService {
         
         if($_GP['brands_id'] != '')
         {
-            $wheres .= " and brands_id in ({$_GP['brands_id']})";
+            $wheres .= " and brand in ({$_GP['brands_id']})";
         }
-        
-        if($data['is_lts'] != '')
+        if($_GP['is_lts'] >  0)
         {
             $wheres .= " and status = 1 and store_count > 0";
         }
         
-        if($_GP['is_lts'] != '' && $_GP['ltcDishIds'] != '')
+        if($_GP['is_lts'] > 0 && $_GP['ltcDishIds'] != '')
         {
             $wheres .= " and id not in ({$_GP['ltcDishIds']})";
         }

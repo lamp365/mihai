@@ -29,9 +29,9 @@ class product_bat extends base
     {
         $_GP = $this->request;
         $reData['systemGroup'] = $this->ShopSystemCategory->ShopCateGroupListTwo();
-
         $onesysids = '';
         $twosysids = '';
+
        foreach($reData['systemGroup']['oneCategory'] as $v)
         {
             $onesysids .= $v['id'].',';
@@ -45,7 +45,6 @@ class product_bat extends base
         
         $onesysids = rtrim($onesysids,',');
         $twosysids = rtrim($twosysids,',');
-
         $totalOneSysData = array();
         $totalTwoSysData = array();
         $totalOneSysData = $this->ShopSystemCategory->count_category_one_goods($onesysids);

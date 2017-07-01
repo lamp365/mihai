@@ -27,7 +27,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $this->dishObj      = new ShopDishService();
        $this->storeObj     = new shopStoreService();
        $this->nowHour      = date('H',time());
-       $this->nowDay       = strtotime(date('Y-m-d',time()));
+       $this->nowDay       = strtotime(date('Y-m-d H:i:s',time()));
        $this->memberObj    = new memberService();
    }
    

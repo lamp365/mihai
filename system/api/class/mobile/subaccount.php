@@ -122,7 +122,7 @@ class subaccount extends base
         $cateArr = array();
         foreach($dishData as $v)
         {
-            $cateArr[$v['store_p1']]
+            //$cateArr[$v['store_p1']]
         }
         
         $store_p2_str = '';

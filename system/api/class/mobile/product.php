@@ -42,7 +42,6 @@ class product extends base
         $this->goodService          = new \service\seller\goodsService();
         $this->shopPic              = new \service\seller\ShopPicService();     //宝贝图片
         $this->shopBrand            = new \service\seller\ShopBrandService();     //品牌
-        $this->ShopSystemCategory   = new \service\seller\ShopSystemCategoryService();     //
         $this->goods                = new \service\seller\goodsService();     //
         $this->ShopSpec             = new \service\seller\ShopSpecService();     //
         $this->ltcObj               = new \service\seller\limitedTimepurChaseService();
