@@ -158,11 +158,13 @@ class payorderService extends  \service\publicService
                         if($one_dish['action_id']){
                             $is_action = 1;
                         }
-                        //单个商品提成乘以个数
-                        $total_store_earn_price  += $store_earn_price*$o_good['total'];
-                        $total_member_earn_price += $member_earn_price*$o_good['total'];
+                        //单个商品提成乘以个数  有推荐人才操作
+                        $recommend_sts_id && $total_store_earn_price  += $store_earn_price*$o_good['total'];
+                        $recommend_openid && $total_member_earn_price += $member_earn_price*$o_good['total'];
                         //库存的操作减掉 卖出数量加1
                         operateStoreCount($one_dish['id'],$one_dish['buy_num'],$one_dish['action_id'],1);
+                        //标记该商品的历史卖出的最低价格
+                        compareDsihHistoryPrice($one_dish['id'],$one_dish['history_lower_prcie'],$one_dish['time_price']);
                     }
 
                 }

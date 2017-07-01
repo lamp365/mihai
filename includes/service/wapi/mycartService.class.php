@@ -6,6 +6,7 @@ class mycartService extends  \service\publicService
     /**
      * 购物车列表  不需要获取邮费等信息
      * 但是清单列表页需要
+     * 修改的时候注意，购物车与清单结算 都会调用这个方法
      * 会统计每个店铺总额 包括最后的总额 每个店铺下的产品
      * @param string $cart_where
      * @param int $get_express
@@ -27,7 +28,7 @@ class mycartService extends  \service\publicService
         if (! empty($list)) {
             //找出对应的商品 信息
             foreach($list as $item){
-                $field = 'id,title,marketprice,thumb,sts_id,store_count,status';
+                $field = 'id,title,marketprice,history_lower_prcie,thumb,sts_id,store_count,status,isreason';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
                 $store_count = $dish['store_count'];
                 $time_price  = $dish['marketprice'];
@@ -64,6 +65,7 @@ class mycartService extends  \service\publicService
 
                 $dish['time_price']        = FormatMoney($time_price,0);
                 $dish['marketprice']       = FormatMoney($dish['marketprice'],0);
+                $dish['history_lower_prcie']= FormatMoney($dish['history_lower_prcie'],0);
                 $dish['buy_num']           = $item['total'];
                 $dish['cart_id']           = $item['id'];
                 $dish['to_pay']            = $item['to_pay'];
@@ -77,6 +79,7 @@ class mycartService extends  \service\publicService
                         $this->get_express_fee($item['sts_id'],$gooslist);
                     }
                 }
+                //将产品并入到数组中去
                 $gooslist[$item['sts_id']]['dishlist'][] = $dish;
 
                 if($item['to_pay'] == 1)   //计算已经打钩的物品

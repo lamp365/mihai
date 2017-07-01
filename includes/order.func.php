@@ -1463,3 +1463,16 @@ function operateStoreCount($dishid,$buy_num,$action_id,$type){
 		}
 	}
 }
+
+/**
+ * 每次下单对比售卖的价格是否是历史最低，是的话，跟新历史最低价格
+ * @param $dishid
+ * @param $lower_price  传进来 是分
+ * @param $time_price  传进来是分
+ */
+function compareDsihHistoryPrice($dishid,$lower_price,$time_price){
+	if($lower_price == 0 || $time_price < $lower_price){
+		$time_price = FormatMoney($time_price,1);  //转为分
+		mysqld_update('shop_dish',array('history_lower_prcie'=>$time_price),array('id'=>$dishid));
+	}
+}
