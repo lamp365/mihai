@@ -5,11 +5,11 @@ namespace service\shopwap;
 
 class weixinpayService extends \service\publicService
 {
-    private $alipay_config = [
+    private $alipay_config = array(
         'appid'         => '',
         'mch_id'        => '',
         'key'           => '',
-    ];
+    );
 
     private $is_xcx     = 0;
     /**
@@ -38,7 +38,7 @@ class weixinpayService extends \service\publicService
      * @param type [] 接口参数
      * @return type []
      */
-    public function weixinpay($data = [])
+    public function weixinpay($data = array())
     {
         if(empty($data['body'])){
             $this->error = '标题不能为空！';
@@ -101,16 +101,16 @@ class weixinpayService extends \service\publicService
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
         );
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') || $this->is_xcx) {
-//            $parameters['notify_url'] =  WEBSITE_ROOT . 'notify/weixin_notify.php';
-            $parameters['notify_url'] =  mobile_url('weixinpay',array('name'=>'shopwap','op'=>'notifyurl'));  //异步通知
+            $parameters['notify_url'] =  WEBSITE_ROOT . 'notify/weixin_notify.php';   //异步通知
+//            $parameters['notify_url'] =  mobile_url('weixinpay',array('name'=>'shopwap','op'=>'notifyurl'));  //异步通知
             $parameters['trade_type'] = 'JSAPI';
 
             $meminfo    = get_member_account();
             $weixinfans = mysqld_select("select weixin_openid from ".table('weixin_wxfans')." where openid='{$meminfo['openid']}'");
             $parameters['openid']     = $weixinfans['weixin_openid'];
         } else {
-//            $parameters = WEBSITE_ROOT . 'notify/weixin_native_notify.php';
-            $parameters['notify_url'] = mobile_url('weixinpay',array('name'=>'shopwap','op'=>'native_notify'));  //同步通知
+            $parameters['notify_url'] = WEBSITE_ROOT . 'notify/weixin_native_notify.php';  //同步通知
+//            $parameters['notify_url'] = mobile_url('weixinpay',array('name'=>'shopwap','op'=>'native_notify'));  //同步通知
             $parameters['product_id'] = $pay_ordersn;
             $parameters['trade_type'] = 'NATIVE';
         }
@@ -120,6 +120,7 @@ class weixinpayService extends \service\publicService
         $xmlData            = $this->arrayToXml($parameters);
         $postXmlSSLCurl     = $this->postXmlSSLCurl($xmlData,$url,60);
         $return             = $this->xmlToArray($postXmlSSLCurl);
+
         if($return['return_code'] == 'FAIL'){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
@@ -236,100 +237,98 @@ class weixinpayService extends \service\publicService
      * 异步回调
      * @return string
      */
-    public function notify_weixinpay()
+    public function notify_weixinpay($array_data)
     {
-        $config       = $this->alipay_config;
-        $alipayNotify = new \AlipayNotify($config); //计算得出通知验证结果
-        if ($result = $alipayNotify->verifyNotify()) {
-            //验签成功
-            if ($_GET('trade_status') == 'TRADE_FINISHED' || $_GET('trade_status') == 'TRADE_SUCCESS') {
-                $ordersn     = $_GET['out_trade_no'];
-                $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
-                //成功后的后续操作/**
-                // 支付完毕 处理账单 佣金提成，卖家所得，平台费率
-                $settings = globaSetting();
-                foreach($ordersn_arr as $ordersn){
-                    paySuccessProcess($ordersn,$settings);
-                }
-                return true;
-            }else{
-                $member  = get_member_account();
-                $memInfo = member_get($member['openid'],'mobile');
-                logRecord("{$memInfo['mobile']}用户支付业务错误",'payError');
-                $this->error = '业务错误';
-                return false;
-            }
-        }else{
-            //验证失败  记录日志
+        if ($array_data["return_code"] == "FAIL") {
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
-            logRecord("{$memInfo['mobile']}用户支付异步签名验证失败",'payError');
-            $this->error = '支付失败';
+            logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
+            $this->error = "支付异步错误1---{$array_data['return_msg']}";
             return false;
         }
+        elseif($array_data["result_code"] == "FAIL"){
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
+            $this->error = "支付异步错误2---{$array_data['return_msg']}";
+            return false;
+        } else{
+            // 订单号
+            $ordersn     = $array_data['out_trade_no'];
+            $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
+            $settings    = globaSetting();
+            /**
+             * 支付完毕 处理账单 佣金提成，卖家所得，平台费率
+             */
+            foreach($ordersn_arr as $ordersn){
+                paySuccessProcess($ordersn,$settings);
+            }
+        }
+        return true;
     }
 
     /**
      * 同步回调  返回的数据
-     *Array
-    (
-    [mod] => mobile
-    [name] => shopwap
-    [do] => alipay
-    [op] => returnurl
-    [body] => 测试商品
-    [buyer_email] => 791845283@qq.com
-    [buyer_id] => 2088802661101009
-    [exterface] => create_direct_pay_by_user
-    [is_success] => T
-    [notify_id] => RqPnCoPT3K9%2Fvwbh3InYwe9UQaecKY9y3krILMLAzIFwEVVFOIAEcfZx4sSZwAlhKQTA
-    [notify_time] => 2017-06-22 17:27:33
-    [notify_type] => trade_status_sync
-    [out_trade_no] => sn099239283879
-    [payment_type] => 1
-    [seller_email] => 33413434@qq.com
-    [seller_id] => 2088321009666241
-    [subject] => sn099239283879
-    [total_fee] => 0.01
-    [trade_no] => 2017062221001004000219681644
-    [trade_status] => TRADE_SUCCESS
-    [sign] => 280e4387a81f3e7cd2f28aa0f4203a12
-    [sign_type] => MD5
-    )
      */
-    public function native_notify()
+    public function native_notify($array_data)
     {
-        $config = $this->alipay_config;
-        $alipayNotify  = new \AlipayNotify($config); //计算得出通知验证结果
-        $verify_result = $alipayNotify->verifyReturn();
-        if ($verify_result) {
-            //验证成功
-            if ($_GET['trade_status'] == 'TRADE_FINISHED' || $_GET['trade_status'] == 'TRADE_SUCCESS') {
-                $ordersn     = $_GET['out_trade_no'];
-                $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
-                //成功后的后续操作/**
-                // 支付完毕 处理账单 佣金提成，卖家所得，平台费率
-                $settings = globaSetting();
-                foreach($ordersn_arr as $ordersn){
-                    paySuccessProcess($ordersn,$settings);
-                }
-                return true;
-            } else {
-                $member  = get_member_account();
-                $memInfo = member_get($member['openid'],'mobile');
-                logRecord("{$memInfo['mobile']}用户支付业务错误",'payError');
-                $this->error = '业务错误';
-                return false;
+        if ($array_data["return_code"] == "FAIL") {
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
+            $this->error = "支付异步错误3---{$array_data['return_msg']}";
+            return false;
+        }
+        elseif($array_data["result_code"] == "FAIL"){
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户支付异步错误---{$array_data['return_msg']}",'payError');
+            $this->error = "支付异步错误4---{$array_data['return_msg']}";
+            return false;
+        } else{
+            // 订单号
+            $ordersn     = $array_data['out_trade_no'];
+            $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
+            $settings    = globaSetting();
+            /**
+             * 支付完毕 处理账单 佣金提成，卖家所得，平台费率
+             */
+            foreach($ordersn_arr as $ordersn){
+                paySuccessProcess($ordersn,$settings);
             }
-        } else {
-            //验证失败  记录日志
+        }
+        return true;
+    }
+
+    public function checkCallParame()
+    {
+        ////微信的回调
+        $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        if (empty($array_data)) {
+            $member  = get_member_account();
+            $memInfo = member_get($member['openid'],'mobile');
+            logRecord("{$memInfo['mobile']}用户微信支付异步回调没有数据接收",'payError');
+            $this->error = '用户微信支付异步回调没有数据接收';
+            return false;
+        }
+        ksort($array_data, SORT_STRING);
+        $string1 = '';
+        foreach($array_data as $k => $v) {
+            if($v != '' && $k != 'sign') {
+                $string1 .= "{$k}={$v}&";
+            }
+        }
+        $signkey = $this->alipay_config['key'];
+        $sign = strtoupper(md5($string1 . "key={$signkey}"));
+
+        if($sign != $array_data['sign']) {
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
             logRecord("{$memInfo['mobile']}用户支付异步签名验证失败",'payError');
-            $this->error = '支付失败';
+            $this->error = '支付异步签名验证失败';
             return false;
         }
+        return $array_data;
     }
-
-
 }

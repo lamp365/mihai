@@ -14,13 +14,17 @@ class weixinpay extends \common\controller\basecontroller
      * @param string $ordersn 订单号
      */
     public function pay() {
+        $pay_ordersn = 'sn54654864'.uniqid();
+        $pay_money   = '1';
+        $pay_title   = str_replace("'", '‘', '测试商品');
 
+        $pay_data = array(
+            'out_trade_no'  => $pay_ordersn, //订单号
+            'total_fee'     => $pay_money, //订单金额，单位为分
+            'body'          => $pay_title,
+        );
         $pay = new \service\shopwap\weixinpayService();
-        $result = $pay->weixinpay([
-            'out_trade_no'  => 'sn099239283879', //订单号
-            'total_fee'     => '1', //订单金额，单位为分
-            'body'          => str_replace("'", '‘', '测试商品'),
-        ]);
+        $result = $pay->weixinpay($pay_data);
         if (!$result) {
             message($pay->getError());
         }
@@ -35,8 +39,12 @@ class weixinpay extends \common\controller\basecontroller
      */
     function notifyurl()
     {
-        $pay = new \service\shopwap\weixinpayService();
-        $result = $pay->notify_weixinpay();
+        $pay  = new \service\shopwap\weixinpayService();
+        $data = $pay->checkCallParame();
+        if(!$data){
+            ajaxReturnData(0,$pay->getError());
+        }
+        $result = $pay->notify_weixinpay($data);
         if($result){
             ajaxReturnData(1,'支付成功','success');
         }else{
@@ -49,10 +57,12 @@ class weixinpay extends \common\controller\basecontroller
      */
     function native_notify()
     {
-        logRecord('sdsdsds',333);
-        ppd('ssssss00');
-        $pay = new \service\shopwap\weixinpayService();
-        $result = $pay->native_notify();
+        $pay  = new \service\shopwap\weixinpayService();
+        $data = $pay->checkCallParame();
+        if(!$data){
+            ajaxReturnData(0,$pay->getError());
+        }
+        $result = $pay->native_notify($data);
         if($result) {
             message('支付成功！',mobile_url('myorder',array('name'=>'shopwap')),'success');
         } else {
