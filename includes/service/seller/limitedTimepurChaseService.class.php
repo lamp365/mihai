@@ -118,9 +118,16 @@ class limitedTimepurChaseService extends \service\publicService {
        }
        
        //判断价格是否大于原产品促销价格 ac_dish_total
-       $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice,store_count');
+       $dishInfo = $this->dishObj->getDishInfo($rsdata['ac_shop_dish'],'marketprice,store_count,history_lower_prcie');
        $rsdata['ac_dish_price'] = FormatMoney($data['ac_dish_price']);
-       if($rsdata['ac_dish_price'] > $dishInfo['marketprice'])
+       if($dishInfo['history_lower_prcie'] <= 0)
+       {
+           $sour_price = $dishInfo['marketprice'];
+       }
+       else{
+           $sour_price = $dishInfo['history_lower_prcie'];
+       }
+       if($rsdata['ac_dish_price'] > $sour_price)
        {
             return -2;
        }
@@ -414,13 +421,14 @@ class limitedTimepurChaseService extends \service\publicService {
    //获取某个时间段的日期列表
    public function getTimeList(){
        $end_time = $this->nowtime + (86400*15);
-       $sql_start = 'select ac_time_str from '.$this->table_list.' where ac_time_end >= UNIX_TIMESTAMP(NOW()) order by ac_time_str asc limit 1';
+       $sql_start = 'select ac_time_str from '.$this->table_list.' where ac_time_str <= UNIX_TIMESTAMP(NOW()) and ac_time_end >= UNIX_TIMESTAMP(NOW()) order by ac_time_str asc limit 1';
        $rs_start  = mysqld_select($sql_start);
-       
-       $sql_end = 'select ac_time_end from '.$this->table_list.' where ac_time_end between UNIX_TIMESTAMP(NOW()) and '.$end_time.' order by ac_time_end desc limit 1';
+       $rs_start['ac_time_str'] = $rs_start['ac_time_str'] > 0?$rs_start['ac_time_str']:time();
+       $sql_end = 'select ac_time_end from '.$this->table_list.' where ac_time_str between UNIX_TIMESTAMP(NOW()) and '.$end_time.' order by ac_time_end desc limit 1';
        $rs_end  = mysqld_select($sql_end);
 
-       $timeNum = ($rs_end['ac_time_end'] - $rs_start['ac_time_str'])/86400;
+       $timeNum = ceil(($rs_end['ac_time_end'] - $rs_start['ac_time_str'])/86400);
+       $timeNum = $timeNum<=15?$timeNum:14;
        $time_arr = array();
        for($i=0;$i<=$timeNum;$i++){
            $timeDau = $rs_start['ac_time_str'] + ($i*86400);
@@ -532,6 +540,13 @@ class limitedTimepurChaseService extends \service\publicService {
    public function nowAction($fields='*'){
        $dataTime = time();
        $sql = "select {$fields} from {$this->table_list} where ac_time_str <= {$dataTime} and ac_time_end >= {$dataTime} and ac_status = 1 order by ac_time_end asc limit 1";
+       $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //获取某天在执行中的活动
+   public function dayAction($dateTime,$fields='*'){
+       $sql = "select {$fields} from {$this->table_list} where ac_time_str <= {$dateTime} and ac_time_end >= {$dateTime} and ac_status = 1 order by ac_time_end asc limit 1";
        $rs  = mysqld_select($sql);
        return $rs;
    }

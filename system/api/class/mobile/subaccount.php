@@ -118,7 +118,7 @@ class subaccount extends base
     //获取分销商品分类列表
     public function distributionCate(){
         $dishData = $this->shopDish->distributionListDish($data, 'store_p1,store_p2',1);
-        
+
         $cateArr = array();
         foreach($dishData as $v)
         {
@@ -131,16 +131,6 @@ class subaccount extends base
         }
         $store_p2_str = rtrim($store_p2_str,',');
         
-        
-    }
-    
-    //分销商品
-    public function distributionDish(){
-        $data   = $this->request;
-        $redata = array();
-        
-        //$this->shopDish
-        $dishData = $this->shopDish->distributionListDish($data, 'thumb,title,store_count,marketprice,promot_price');
         
         
     }

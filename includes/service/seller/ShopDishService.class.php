@@ -151,7 +151,6 @@ class ShopDishService extends \service\publicService {
         
         $limit = " LIMIT " . ($_GP['page'] - 1) * $_GP['limit'] . ',' . $_GP['limit'];
         $sql = "select {$fields} from {$this->table} where sts_id = {$this->memberData['store_sts_id']} {$wheres} {$order} {$limit}";
-
         $dishList = mysqld_selectall($sql);
         
         foreach($dishList as $k=>$v){

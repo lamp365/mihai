@@ -32,7 +32,7 @@ function get_storeCategoryGroup(){
     $redata = array('oneCate'=>array(),'twoCate'=>array());
     $memInfo = get_member_account();
 
-    $allCategoryData = mysqld_selectall('select id,name as cat_name,pid as parentid,store_shop_id,status from '.table('store_shop_category').'  where store_shop_id = '.$memInfo['store_sts_id'].' and status = 1 order by sort asc');
+    $allCategoryData = mysqld_selectall('select id,name as cat_name,pid as parentid,store_shop_id,status,p_ccate,p_ccate2 from '.table('store_shop_category').'  where store_shop_id = '.$memInfo['store_sts_id'].' and status = 1 order by sort asc');
     foreach($allCategoryData as $item){
         if($item['parentid'] == 0){
             $redata['oneCate'][] = $item;

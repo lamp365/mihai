@@ -289,7 +289,9 @@ class ShopCategoryService extends \service\publicService {
     //批量添加分类
     public function batAddCategory($the_data)
     {
-        $memInfo = get_member_account();
+        $memInfo              = get_member_account();
+        $shopSystemCategory   = new ShopSystemCategoryService();
+        
         if($the_data['ids'] == ''){
             $this->error = '请选择分类！';
             return false;
@@ -326,10 +328,17 @@ class ShopCategoryService extends \service\publicService {
                 $insertData1['pid']      = 0;
                 $insertData1['p_ccate']  = $sys_firstCate['id'];
                 $store_p1 = $this->do_addCate($insertData1);
-                if(!$store_p1)  return false;
+                if(!$store_p1)  continue;
             }
 
             foreach($sys_secondCate as $son_cate){
+                $proCount = array();
+                $proCount = $shopSystemCategory->getTwoSysCateTotal($memInfo['store_sts_id'],$son_cate['id']);
+                if($proCount['twototal'] == 0)
+                {
+                    continue;
+                }
+                
                 $sys_p2     = $son_cate['id'];
                 $store_p2   = 0;
                 $secondCateName = $son_cate['name'];
@@ -347,8 +356,9 @@ class ShopCategoryService extends \service\publicService {
                     $insertData2['p_ccate']  = $son_cate['id'];
                     $insertData2['p_ccate2'] = $son_cate['parentid'];
                     $store_p2 = $this->do_addCate($insertData2);
-                    if(!$store_p2)  return false;
+                    if(!$store_p2)  continue;
                 }
+                
 
                 //异步操作分类下对应商品的添加 根据系统分类$sys_p1 $sys_p2获取对应的商品 。
                 //再导入到dish表中，按照 store_p1 store_p2 。
@@ -364,7 +374,6 @@ class ShopCategoryService extends \service\publicService {
                 //$url = mobile_url('asyn_action',array('op'=>'batAddCategory'));
                 //asyn_doRequest($url,$parame);
             }
-
         }
 
         return true;

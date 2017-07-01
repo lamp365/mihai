@@ -705,7 +705,7 @@ class product extends base
 
        $redata = array();
        //测试数据开始
-       //$data['dish_id'] = 256;
+       $data['dish_id'] = 256;
        //测试数据结束
        if($data['dish_id'] <= 0)
        {
@@ -717,6 +717,7 @@ class product extends base
         $dishData['store_p2_name'] = $this->ShopCategory->getShopCategoryName($dishData['store_p2']);
         $dishData['marketprice']   = FormatMoney($dishData['marketprice'], 2);
         $dishData['productprice']  = FormatMoney($dishData['productprice'], 2);
+        $dishData['history_lower_prcie']  = FormatMoney($dishData['history_lower_prcie'], 2);
 
         $picData                   = $this->shopPic->getDishPic($data['dish_id']);
         
@@ -805,7 +806,7 @@ class product extends base
             $data['ltcDishIds'] = rtrim($data['ltcDishIds'], ',');
         }
         
-        $dishData = $this->shopdish->searchDish($data,'title,marketprice,sales_num,store_count,id,thumb,status');
+        $dishData = $this->shopdish->searchDish($data,'title,marketprice,sales_num,store_count,id,thumb,status,history_lower_prcie');
         $reData['total'] = $dishData['total'];
         unset($dishData['total']);
         $reData['dish'] = $dishData;
@@ -906,7 +907,7 @@ class product extends base
             }
             $data['ltcDishIds'] = rtrim($data['ltcDishIds'], ',');
         }
-        $reData['dish']  = $this->shopdish->getDishPage($data,'title,marketprice,sales_num,store_count,id,thumb,status');
+        $reData['dish']  = $this->shopdish->getDishPage($data,'title,marketprice,sales_num,store_count,id,thumb,status,history_lower_prcie');
         
         $reData['total'] = $reData['dish']['total'];
         unset($reData['dish']['total']);
@@ -2188,7 +2189,7 @@ class product extends base
         $redata = array();
          
         $redata['timeList'] = $this->ltcObj->getTimeList();
-        
+
         $today = strtotime(date('Y-m-d',time()));
         $nowhour = date('H',time());   //当前的小时数
 
@@ -2200,8 +2201,13 @@ class product extends base
                 unset($redata['timeList'][$k]);
                 continue;
             }
+            if($today == $unitTime)
+            {
+                $unitTime = strtotime(date('Y-m-d H:i:s'));
+            }
+            
             //获取当天正在进行中的活动ID
-            $dayActi = $this->ltcObj->nowAction('ac_id,ac_area');
+            $dayActi = $this->ltcObj->dayAction($unitTime,'ac_id,ac_area');
 
             //获取每天的活动时间段列表
             $days = $this->ltcObj->timeAreaList($dayActi['ac_id']);

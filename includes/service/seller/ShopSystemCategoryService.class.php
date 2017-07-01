@@ -27,6 +27,7 @@ class ShopSystemCategoryService extends \service\publicService
        $this->table      = table('shop_category');
        $this->table_goods           = table('shop_goods');
        $this->table_store_shop_category      = table('store_shop_category');
+       $this->table_dish           = table('shop_dish');
    }
    
    public function ShopCateGroupList($fields='id,name,parentid'){
@@ -115,7 +116,6 @@ class ShopSystemCategoryService extends \service\publicService
        foreach($two as $k=>$v){
            $data['oneCategory'][$v['parentid']]['twoCategory'][] = $v;
        }
-
        if($data['oneCategory'] != '')
        {
             $data['oneCategory'] = array_values($data['oneCategory']);
@@ -178,5 +178,37 @@ class ShopSystemCategoryService extends \service\publicService
        $rs = mysqld_selectAll($sql);
        return $rs;
     }
+    
+    //统计未导入的一级系统分类产品数量
+    public function getOneSysCateTotal($store_sts_id,$pcate){
+        //$this->table_dish
+        $sql = "select count(0) as onetotal from squdian_shop_category as a left join squdian_shop_goods as b on a.id = b.ccate where a.id = {$pcate} and b.id not in(select gid from squdian_shop_dish where pcate = {$pcate} and sts_id = {$store_sts_id})";
+        $rs = mysqld_select($sql);
+        return $rs;
+    }
+    
+    //统计未导入的二级系统分类产品数量
+    public function getTwoSysCateTotal($store_sts_id,$ccate){
+        //$this->table_dish
+        $sql = "select count(0) as twototal from squdian_shop_category as a left join squdian_shop_goods as b on a.id = b.ccate where a.id = {$ccate} and b.id not in(select gid from squdian_shop_dish where ccate = {$ccate} and sts_id = {$store_sts_id})";
+        $rs = mysqld_select($sql);
+        return $rs;
+    }
+    
+    //通过ID获取对应信息
+    public function getSysOneInfo($store_sts_id,$pcate,$fields='id'){
+        $sql = "select {$fields} from {$this->table_dish} where sts_id = {$store_sts_id} and pcate = {$pcate}";
+        $rs = mysqld_select($sql);
+        return $rs;
+    }
+    
+    //通过ID获取对应信息
+    public function getSysTwoInfo($store_sts_id,$ccate,$fields='id'){
+        $sql = "select {$fields} from {$this->table_dish} where sts_id = {$store_sts_id} and ccate = {$ccate}";
+        $rs = mysqld_select($sql);
+        return $rs;
+    }
+    
+    
     
 }

@@ -1,7 +1,11 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: 刘建凡
+ * Date: 2017/07/01
+ * Time: 09:15
+ **/
 namespace service\shopwap;
-
 
 class weixinAuthService extends \service\publicService
 {

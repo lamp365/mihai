@@ -4,6 +4,6 @@
 // +----------------------------------------------------------------------
 // | Copyright (c) 2015 http://www.squdian.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: 小物社区 <QQ:119006873> <http://www.squdian.com>
+// | Author: 小物社区 <QQ:119006873> <http://www.squdian.com>  已经处理掉 请看 weixinAuthService.clss.php
 // +----------------------------------------------------------------------
 defined('SYSTEM_IN') or exit('Access Denied');
