@@ -490,8 +490,7 @@ function point(){
         });     
     });
  </script>
-					<link href="__RESOURCE__/recouse/css/flexslider.css"
-						rel="stylesheet" type="text/css" />
+					<link href="__RESOURCE__/recouse/css/flexslider.css" rel="stylesheet" type="text/css" />
 
 					<div id="viewport" class="viewport">
 					<div class="crumbs f-cb">
@@ -568,9 +567,6 @@ function point(){
 								<span style="margin-left: 5px;float: left;"><!--@php echo $brand['name']; @--></span>
 								<span class="split" style="float: left;margin: 0 5px;">|</span>
 								<a class="brand" target="_blank" href="<!--@php  echo mobile_url('goodlist', array('bid'=>$goods['brand']))@-->" style="float: left;"><!--@php echo $brand['brand']; @--></a>
-								<!--分类-->
-								<img src="__RESOURCE__/recouse/images/classify.png" style="margin:3px 5px 0 20px"/>
-								<!--@php  echo getGoodsCategory($goods['p1']);@-->
 					    	</span>
                         </dt>
 						<p class="pro-name">
@@ -674,7 +670,7 @@ function point(){
 					<!--@php  } @-->
                         <p class="jx-pricem" style="padding-left: 10px;margin:8px 0 0 0;font-size:12px;clear:both;">
 								参考价 : 
-								<strong style="padding-left: 5px; color: #BEBEBE" id="productprice">￥ <!--@php  echo $goods['productprice'];@--></strong>
+								<strong style="padding-left: 5px; color: #BEBEBE" id="productprice">￥ <font class="show_productprice"><!--@php  echo $goods['productprice'];@--></font></strong>
 						</p>
 						<p class="jx-price" style="margin-left:0;clear:both;padding-left: 10px;font-size:12px;">
 						        <!--@php if ( $istime == 1 or $istime ==2 ){ @-->
@@ -682,12 +678,11 @@ function point(){
 								<!--@php }else{ @-->
 							促销价 :
 								<!--@php } @-->			
-								<strong style="padding-left: 5px;font-size:26px;color:#d22046;font-weight:bold;"
-									id="marketprice">￥ <!--@php echo $goods['marketprice'];@-->  
+								<strong style="padding-left: 5px;font-size:26px;color:#d22046;font-weight:bold;" id="marketprice">￥ <b class="show_marketprice"><!--@php echo $goods['marketprice'];@--></b>
 								</strong>
 								<span style="height: 35px;display: inline-block;overflow: hidden;">
 									<span class="goods-discount" >
-										<!--@php echo number_format(($goods['marketprice'] / $goods['productprice'] ) * 10,1);@-->折
+										<font class="show_dazhe"><!--@php echo number_format(($goods['marketprice'] / $goods['productprice'] ) * 10,1);@--></font>折
 									</span>						
 								</span>
 								
@@ -696,12 +691,12 @@ function point(){
 						<!--@php if ( $istime == 3 ){ @-->
 						<p style="clear: both;padding-left: 10px;font-size:12px;">
 							活动价：
-							<strong style="padding-left: 5px; color: #BEBEBE;font-weight: normal;" id="productprice">￥ <!--@php echo $goods['timeprice']; @--></strong>
+							<strong style="padding-left: 5px; color: #BEBEBE;font-weight: normal;" id="no_timeprice">￥ <!--@php echo $goods['timeprice']; @--></strong>
 						</p>
 						<!--@php } @-->
 						</div>
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
-							<p class="name">运 费:</p>	
+							<p class="name">运费：</p>
 							<span style="position: relative;display: inline-block;">
 							 <!--@php if ( $goods['issendfree'] == 1 ){ @-->
 								此商品商家免邮
@@ -719,72 +714,41 @@ function point(){
 							</span>
 						</div>
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
-							<p class="name">服 务:</p> &nbsp;本商品由&nbsp;<u><!--@php echo $depot['name'];@--></u> 发货
+							<p class="name">服务：</p>本商品由&nbsp;<u><!--@php echo $depot['name'];@--></u> 发货
 						</div>
-						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;">
 
+						<!--规格项-->
+						<!--@php if(!empty($goods['spec_info'])){ @-->
+						<div class="goods_number clearfix" style="margin-left:10px;padding-top: 10px;line-height:29px;">
+							<hr/>
 						</div>
+						<!--@php foreach($goods['spec_info'] as $the_spec => $spec_one){ @-->
+						<div class="goods_number clearfix" style="margin-left:10px;margin-top:10px;line-height:29px;">
+							<p class="name"><!--@php echo $the_spec; @-->：</p> &nbsp;
+							<ul class="spec_list">
+								<!--@php foreach($spec_one as $key => $spec_item_one){ @-->
+								<li class="spec_item<!--@php if($key==0){ echo ' spec_active';} @-->" data-item_id="<!--@php echo $spec_item_one['id']; @-->"><!--@php echo $spec_item_one['item_name']; @--></li>
+								<!--@php } @-->
+							</ul>
+						</div>
+						<!--@php } @-->
+						<!--@php } @-->
+						<input type="hidden" id="spec_key" name="spec_key" value="0" />
+
+
 						<div class="goods_number clearfix" style="margin-left:10px;line-height:29px;margin-top: 15px;">
-							<p class="name">数 量:</p> <div class="addForm" style="width:auto;height:auto;">
+							<p class="name">数量：</p> <div class="addForm" style="width:auto;height:auto;">
 								<input type="button" value="-" class="btn" onClick="chgNum(-1);" style="float:left;"/>
-								<input type="text" id="total" name="number" value="1"
-									class="text" style="float:left;padding: 6px 12px;"/> 
-								<input type="button" value="+" class="btn"
-									onClick="chgNum(1);" style="float:left;" />
-							</div> &nbsp;&nbsp;&nbsp;( 库存：<!--@php echo $goods['total'];@--> ) 				
+								<input type="text" id="total" name="number" value="1" class="text" style="float:left;padding: 6px 12px;"/>
+								<input type="button" value="+" class="btn" onClick="chgNum(1);" style="float:left;" />
+							</div> &nbsp;&nbsp;&nbsp;( 库存：<span class="dish_total"><!--@php echo $goods['total'];@--></span> )
 						</div>
 					<div class="btn_wrap btn_wrap_fixed" id="btnTools" style="margin-left:10px;margin-top: 15px;">
-						<input type="hidden" id="favoriteId" value="" />
-						<!-- <a class="btn_fav" href="javascript:void(0);" id="collect-link"><i></i></a>    -->
 						<div class="btn_col" style="padding-top: 5px;">
-							<a class="btn btn-danger" href="javascript:;" id="addTocar"
-								onclick='addtocart();' style="background: #d22046;border: solid 2px #d22046;font-size: 16px;">加入购物车</a>
-							<a class="btn btn-primary"
-								href="javascript:;" onclick='buy();' style="border:solid 2px #d22046;color: #d22046;background: rgb(255,237,237);font-size: 16px;">立即购买</a>
+							<a class="btn btn-danger" href="javascript:;" id="addTocar" onclick='addtocart();' style="background: #d22046;border: solid 2px #d22046;font-size: 16px;">加入购物车</a>
+							<a class="btn btn-primary" href="javascript:;" onclick='buy();' style="border:solid 2px #d22046;color: #d22046;background: rgb(255,237,237);font-size: 16px;">立即购买</a>
 						</div>		
 					</div>
-					
-					<form action="javascript:addToCart(6)" method="post"
-						name="ECS_FORMBUY" id="ECS_FORMBUY">
-						<!--@php  if($goods['hasoption']==1) { @-->
-						<!--@php  if(is_array($specs)) { foreach($specs as $spec) { @-->
-						<input type='hidden' name="optionid[]"
-							class='optionid optionid_<!--@php  echo $spec['id'];@-->'
-						value="" title="
-				<!--@php  echo $spec['title'];@-->
-						">
-						<div id='option_group' class='detail-group'
-							style="margin-top: 10px;">
-
-							<div class="detail-group">
-
-								<span style='float: left; margin-left: 15px; padding: 0'>
-									<!--@php  echo $spec['title'];@--> :
-								</span> <span style="float: left; margin-left: 8px;"
-									class='options options_<!--@php  echo $spec['id'];@-->'
-									specid='<!--@php  echo $spec['id'];@-->'> <!--@php  if(is_array($spec['items'])) { foreach($spec['items'] as $o) { @-->
-
-									<!--@php  if(empty($o['thumb'])) { @--> <span
-									class="property option option_<!--@php  echo $spec['id'];@-->"
-									specid='<!--@php  echo $spec['id'];@-->' oid="<!--@php  echo $o['id'];@-->"
-										sel='false'><!--@php  echo $o['title'];@--></span> <!--@php  } else { @-->
-									<span
-									class="propertyimg optionimg option_img_<!--@php  echo $spec['id'];@--> "
-									oid="<!--@php  echo $o['id'];@-->"
-									specid='<!--@php  echo $spec['id'];@-->' sel='false'><img
-										src="<!--@php echo WEBSITE_ROOT;@-->/attachment/<!--@php  echo $_W['attachurl'].$o['thumb']@-->"
-										width='50' height='70' /></span> <!--@php  } @--> <!--@php  } } @-->
-								</span>
-							</div>
-						</div>
-						<!--@php  } } @-->
-						<!--@php  } @-->
-					</form>
-
-
-					<input type="hidden" id="optionid" name="optionid" value="" />
-
-
 				</div>
 
 
@@ -807,9 +771,6 @@ function point(){
 					<script>
 
 						$(function () {
-							//contact float
-
-
 							$("#collect-link").on("click", function () {
 								$("#collect-tip").show();
 							})
@@ -868,7 +829,7 @@ function point(){
 			 </div>
 		</div>
 		<!--@php } @-->
-		<div class="viewport" style="margin-top:10px;">
+		<div class="viewport" style="margin-top:10px;margin-bottom: 10px;">
 		    <div class="webinfo">
                   <div class="detail-service-item">
                          <p class="detail-service-title">任何问题请联系</p>
@@ -1014,7 +975,7 @@ function point(){
 		</div>
 		
 </div>
-			<!--商品详情和评价 End  -->
+<!--商品详情和评价 End  -->
 <div class="shade"></div>
 <div class="wx_code_area">
 	<p class="shade-close">&times</p>
@@ -1025,142 +986,59 @@ function point(){
 
 
 
-	<script type="text/javascript">
-        var addto_cart_success = "该商品已添加到购物车。";
-        var goods_id = 6;
-        var goodsattr_style = 1;
-        var goodsId = 6;
-        var now_time = 1415650474;
-        onload = function () {
-            //changePrice();
-            try {
-                onload_leftTime();
-            }
-            catch (e) {
-            }
-        }
-    </script>
-		<script src="__RESOURCE__/recouse/js/zepto.min.js"
-			type="text/javascript"></script>
-<script>
+<script type="text/javascript">
 
-     function checkInfo(){
-        var mobile = $('#mobile').val();
-		if (!mobile) {
-			alert('请输入您的手机号码！');
-			return false;
-		}
-		if (mobile.search(/^([0-9]{11})?$/) == -1) {
-			alert('请输入正确的手机号码！');
-			return false;
-		}
-		if (!$('#name').val()) {
-			alert('请输入用户名');
-			return false;
-		}
-		if ($('#prices').val())
-		{
-		    var price = $('#prices').val();
-		}else{
-           var price = '';
-		}
-		var infos = {
-            mobiles:mobile,
-			AJAX:'post',
-			price:price,
-			names:$('#name').val()
-		};
-		var url = "<!--@php echo mobile_url('detail', array('id' => $goods['id'],'op'=>$op))@-->";
-		$.post(url, infos, function(s,status){
-           if (s == 1)
-           {
-		       var success = "<!--@php echo mobile_url('success')@-->";
-			   window.location.href = success;
-           }else{
-               alert(s);
-		   }
-		});
-	 }
-</script>
-		<script type="text/javascript">
-    var options=<!--@php  echo json_encode($options)@-->;
-    var specs=<!--@php  echo json_encode($specs)@-->;
-    var hasoption = <!--@php echo $goods['hasoption']=='1'?'true':'false'@-->;
-    
-
-        
-         $(".option,.optionimg").click(function() {   
-             var specid = $(this).attr("specid");
-             var oid = $(this).attr("oid");
-            $(".optionid_"+specid).val(oid);
-         
-            $(".options_" + specid + "  span").removeClass("current").attr("sel", "false");
-            $(this).addClass("current").attr("sel", "true");
-            var optionid = "";
-            var stock =0;
-            var marketprice = 0;
-            var productprice = 0;
-             var ret = option_selected();
-  
-            if(ret.no==''){
-                var len = options.length;
-                for(var i=0;i<len;i++) {
-                    var o = options[i];
-                  
-                    var ids = ret.all.join("_");
-                   
-                    if( o.specs==ids){
-                        optionid = o.id;
-                        stock = o.stock;
-                        marketprice = o.marketprice;
-                        productprice = o.productprice;
-                        break;
-                    }
-                    
-                }
-               $("#optionid").val(optionid); 
-            
-               <!--@php  if($stock!=-1) { @-->
-              	$("#goodstotail").html(stock); 
-              	<!--@php  } @-->
-                $("#marketprice").html(marketprice);
-                 
-                 
-                $("#productprice").html(productprice);
-                if(productprice<=0){
-                    $("#productpricecontainer").hide();
-                }
-                else{
-                    $("#productpricecontainer").show();
-                }
-            }
-        });
-        
- 
-        
-Zepto(function($){
-   var $nav = $('.global-nav'), $btnLogo = $('.global-nav__operate-wrap');
-   //点击箭头，显示隐藏导航
-   $btnLogo.on('click',function(){
-     if($btnLogo.parent().hasClass('global-nav--current')){
-       navHide();
-     }else{
-       navShow();
-     }
-   });
-   var navShow = function(){
-     $nav.addClass('global-nav--current');
-   }
-   var navHide = function(){
-     $nav.removeClass('global-nav--current');
-   }
-   
-   $(window).on("scroll", function() {
-		if($nav.hasClass('global-nav--current')){
-			navHide();
+var spec_price = '<!--@php  echo $goods["spec_price"];@-->';
+$(function(){
+	count_spec_price(spec_price);
+});
+function count_spec_price(spec_price){
+	if(spec_price == ''){
+		return '';
+	}
+	spec_price = JSON.parse(spec_price);
+	if($(".spec_list").length < 0){
+		return '';
+	}
+	var spec_key = [];
+	$(".spec_item").each(function(index,ele){
+		if($(ele).hasClass('spec_active')){
+			var item_id = $(ele).data('item_id');
+			spec_key.push(item_id);
 		}
 	});
-})
+	if(spec_key.length > 0){
+		spec_key.sort(function (x,y) {
+			return x-y;
+		});
+	}
+	spec_key_val   = spec_key.join("_");
+	spec_key_k     = "spec_"+spec_key_val;
+	var this_spec_price = spec_price[spec_key_k];
+	if(this_spec_price == undefined || this_spec_price.length<0){
+		return '';
+	}
+
+	var marketprice  = parseFloat(this_spec_price.marketprice).toFixed(2);
+	var productprice = parseFloat(this_spec_price.productprice).toFixed(2);
+	var dish_total  = this_spec_price.total;
+
+	$("#spec_key").val(spec_key_val);
+	$(".dish_total").html(dish_total);
+	$(".show_marketprice").html(marketprice);
+	$(".show_productprice").html(productprice);
+	var dazhe        = (marketprice/productprice)*10;
+	dazhe            = parseFloat(dazhe).toFixed(1);
+//	console.log(marketprice,productprice,dazhe);
+	$(".show_dazhe").html(dazhe);
+}
+
+$(".spec_item").click(function(){
+	$(this).closest('.spec_list').find(".spec_item").removeClass('spec_active');
+	$(this).addClass('spec_active');
+	count_spec_price(spec_price);
+});
+
 
 function get_search_box(){
 	try{
@@ -1169,9 +1047,8 @@ function get_search_box(){
 		document.getElementById('keywordfoot').focus();
  	}
 }
-</script>
-<script language='javascript'>
-    function tip(msg,autoClose){
+
+function tip(msg,autoClose){
      var div = $("#poptip");
      var content =$("#poptip_content");
      if(div.length<=0){
@@ -1194,11 +1071,8 @@ function tip_close(){
      $("#poptip").fadeOut(1000);
      $("#poptip_content").fadeOut(1000);
 }
-</script>
 
-<script type="text/javascript">
 //立即购买
-var hasoption = <!--@php echo $goods['hasoption']=='1'?'true':'false'@-->;
 function buy(){
         var ret = option_selected();
         if(ret.no!=''){
@@ -1226,19 +1100,19 @@ function buy(){
 }
 //添加到购物车
 function addtocart(){
-        var ret = option_selected();
-        if(ret.no!=''){
-           tip("请选择" + ret.no + "!",true);
+        var spec_key = $("#spec_key").val();
+		if(spec_price != '' && spec_key == ''){
+           tip("请选择规格！",true);
             return;
         }
-        var total = $("#total").val();
-        if(total>parseInt($("#goodstotail").html()))
-        {
-        	tip("最多只能购买" + parseInt($("#goodstotail").html()) + "件!",true);
+        var buy_num   = $("#total").val();
+		var dish_total = $("#dish_total").val();
+        if(parseInt(buy_num) >parseInt(dish_total)) {
+        	tip("最多只能购买" + parseInt(dish_total) + "件!",true);
             return;
         }  	
-        var url = '<!--@php  echo mobile_url('mycart',array('op'=>'add','id'=>$goods['id']),true);@-->' +"&optionid=" + $("#optionid").val() + "&total=" + total;
-        $.getJSON(url, function(s){
+        var url = "<!--@php  echo mobile_url('mycart',array('op'=>'add','id'=>$goods['id']));@-->";
+        $.post(url,{buy_num:buy_num,spec_key:spec_key},function(data){
         if(s.result==0){
             tip("只能购买 " + s.maxbuy + " 件!");
 			tip_close();
@@ -1259,24 +1133,7 @@ function addtocart(){
 
 }
 
-function option_selected(){
-   
-     var ret= {
-         no: "",
-         all: []
-     };
-    if(!hasoption){
-        return ret;
-    }
-            $(".optionid").each(function(){
-                ret.all.push($(this).val());
-                if($(this).val()==''){
-                    ret.no = $(this).attr("title");
-                    return false;
-                }
-     })
-     return ret;
-}
+
 
 $("#evalue a").click(function(){
 	if($(this).closest(".hd").hasClass("tit_fix"))
@@ -1388,13 +1245,13 @@ $(".share-list a").hover(function(){
 
 		}
 
-	})
+	});
 
 
 	
 	$(function(){
 		prenext();				
-	})
+	});
 	//上一页下一页显示隐藏
 	function prenext(){		
 		var current_page = $("#current_comment").val();
@@ -1421,7 +1278,7 @@ $(".share-list a").hover(function(){
 			var page = $(this).text();			
 			AJAX(page);
 		}			
-	})
+	});
 	//上一页
 	function toPre(){
 		var current_page = $("#current_comment").val();			

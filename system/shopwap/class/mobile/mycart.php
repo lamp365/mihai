@@ -47,7 +47,7 @@ if ($op == 'add') {
         message($result, '', 'ajax');
     }
 
-	$carttotal = $this->getCartTotal($goodsid);
+	$carttotal = getCartTotal(2);
     $goodsOptionStock = 0;
     $goodsOptionStock = $goods['total'];
 	$goodsOptionStock = $goodsOptionStock - $count['nums'];
@@ -90,7 +90,7 @@ if ($op == 'add') {
         ));
     }
     // 返回数据
-    $carttotal = $this->getCartTotal();
+    $carttotal = getCartTotal(2);
     $result = array(
         'result' => 1,
         'total' => $carttotal

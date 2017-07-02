@@ -726,6 +726,10 @@ function fillform()
 		alert('请设置促销价！');
 		return false;
 	}
+	if($("#productprice").val() < $("#marketprice").val()){
+		alert('促销价不能大于市场价！');
+		return false;
+	}
 	if($("#total").val() == 0){
 		alert('请设置库存！');
 		return false;
@@ -760,6 +764,21 @@ function fillform()
 	}
 	if($(".set_total").val() == ''){
 		alert('规格中的库存不能为空！');
+		return false;
+	}
+
+	var is_lager = false;
+	$("#goods_spec_table2 tr").each(function(index,ele){
+		if(index != 0){
+			var m_price = $(ele).find('.set_marketprice').val();
+			var p_price = $(ele).find('.set_productprice').val();
+			if(m_price > p_price){
+				is_lager = true;
+			}
+		}
+	});
+	if(is_lager){
+		alert('规格中的促销价不能大于市场价！');
 		return false;
 	}
 	return true;

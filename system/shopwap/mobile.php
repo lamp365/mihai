@@ -9,18 +9,7 @@ class shopwapAddons extends BjSystemModule
             exit('控制器不存在');
 		}
 	}
-    public function getCartTotal($goodid='')
-    {
-		if (!empty($goodid) ){
-            $where = ' goodsid = '.$goodid.' and ';
-		}else{
-            $where = '';
-		}
-        $member = get_member_account(false);
-        $openid = $member['openid']?:session_id();
-        $cartotal = mysqld_selectcolumn("select count(id) from " . table('shop_cart') . " where $where session_id='" . $openid . "'");
-        return empty($cartotal) ? 0 : $cartotal;
-    }
+
 
     public function setOrderCredit($openid, $id, $minus = true, $remark = '')
     {

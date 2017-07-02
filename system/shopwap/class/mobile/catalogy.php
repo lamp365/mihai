@@ -8,7 +8,7 @@ foreach ($category as $index => $row) {
     }
 }
 
-$carttotal = $this->getCartTotal();
+$carttotal = getCartTotal(2);
 
 $catid = intval($_GP['pcate']);
 $list ='';

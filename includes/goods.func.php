@@ -36,13 +36,14 @@ function get_goods($array=array()){
 	}
 	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS {$field} FROM " . table($tables) . " as a ".$where.$order.$limit);
 	foreach ( $result as $key=>$val){
+		$brand = array();
 		 if (!empty($val['brand'])){
 		     $brand = mysqld_select("SELECT a.brand, b.* FROM ".table('shop_brand')." as a LEFT JOIN ".table('shop_country')." as b on a.country_id = b.id WHERE a.id=".$val['brand']);
 		 }
 		 $result[$key]['brands'] = $brand;
 		 $result[$key]['img']    =  $val['thumb'];  //dish表中的图片
 		 $result[$key]['small']  = download_pic($val['thumb'],'400','400',2);
-		 $val['marketprice']     = get_limit_price($val);
+		 $val['marketprice']     = get_limit_price($val,$val['marketprice']);
 		 $result[$key]['desc']   = $val['description'];
 	}
 	
@@ -78,12 +79,48 @@ function get_good($array=array()){
 	{
 		$result['img']         = $result['thumb'];
 		$result['small']       = download_pic($result['thumb'],'400','400',2);
-		$result['marketprice'] = get_limit_price($result);
+		$result['marketprice'] = get_limit_price($result,$result['marketprice']);
+		$result['spec_info']   = array();
+		$result['spec_price']  = '';
 	}
-	else{
-		return false;
+	//查找规格项
+	if(!empty($result['gtype_id'])){
+		$result['spec_info']  = get_dish_spec($result['id']);
+		$result['spec_price'] = json_encode(get_dish_spec_price($result,$result['id']));
 	}
 	return $result;
+}
+
+function get_dish_spec($dishid){
+	$dishid        = intval($dishid);
+	$spec_item_key = mysqld_select("select GROUP_CONCAT(`spec_key` SEPARATOR '_') as item_id  from ".table('dish_spec_price')." where dish_id={$dishid}");
+	if(empty($spec_item_key)){
+		return array();
+	}
+	$spec_item_key_arr = explode('_',$spec_item_key['item_id']);
+	$spec_item_key_arr = array_unique($spec_item_key_arr);
+	$spec_item_key     = implode(',',$spec_item_key_arr);
+
+	$spec_sql  = "SELECT a.spec_name,b.* FROM ".table('goodstype_spec')." AS a INNER JOIN ".table('goodstype_spec_item')." AS b ";
+	$spec_sql .= " ON a.spec_id = b.spec_id WHERE b.status=1 and b.id IN({$spec_item_key}) ORDER BY b.id";
+	$spec_list = mysqld_selectall($spec_sql);
+
+	$result_spec_list = array();
+	foreach ($spec_list as $key => $val) {
+		$result_spec_list[$val['spec_name']][] = $val;
+	}
+	return $result_spec_list;
+}
+function get_dish_spec_price($result,$dishid){
+	$dishid    = intval($dishid);
+	$spec_info = mysqld_selectall("select spec_key,marketprice,productprice,total from ".table('dish_spec_price')." where dish_id={$dishid}");
+	$result_spec_info = array();
+	foreach($spec_info as $item){
+		$item['marketprice'] = get_limit_price($result,$item['marketprice']);
+		$spec_key            = 'spec_'.$item['spec_key'];
+		$result_spec_info[$spec_key] = $item;
+	}
+	return $result_spec_info;
 }
 
 // 监察库存
@@ -375,7 +412,7 @@ function get_limits($num=4){
      $limit_goods = get_goods($datas);
 	 return $limit_goods;
 }
-function get_limit_price($goods=array()){
+function get_limit_price($goods=array(),$yuan_price){
 	   $istime = 0;
        if ($goods['istime'] == 1 && $goods['type'] != 0) {
 			$istime = 1;
@@ -389,15 +426,12 @@ function get_limit_price($goods=array()){
 	  if ( $istime == 1 ){
            return $goods['timeprice'];
 	  }else{
-           return $goods['marketprice'];
+           return $yuan_price;
 	  }
 }
 
 
 function get_spec_price($spec_key,$dishdata,$showWeb =0){
-	if(empty($spec_key))  return $dishdata;
-	$dish_id = $dishdata['id'];
-	$spec_info = mysqld_select("select * from ".table('dish_spec_price')." where dish_id={$dish_id} and spec_key='{$spec_key}'");
 	if(empty($spec_key)){
 		if($showWeb){
 			return false;
@@ -405,12 +439,14 @@ function get_spec_price($spec_key,$dishdata,$showWeb =0){
 			return $dishdata;
 		}
 	}else{
+		$dish_id = $dishdata['id'];
+		$spec_info = mysqld_select("select * from ".table('dish_spec_price')." where dish_id={$dish_id} and spec_key='{$spec_key}'");
 		$dishdata['spec_key']      = $spec_key;
 		$dishdata['key_name']      = $spec_info['key_name'];
 		$dishdata['total']         = $spec_info['total'];
 		$dishdata['productprice']  = $spec_info['productprice'];
 		$dishdata['marketprice']   = $spec_info['marketprice'];
-		$dishdata['marketprice']   = get_limit_price($dishdata);
+		$dishdata['marketprice']   = get_limit_price($dishdata,$spec_info['marketprice']);
 		return $dishdata;
 	}
 }

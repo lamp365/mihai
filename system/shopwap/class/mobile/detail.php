@@ -65,7 +65,7 @@
 	    $brand = mysqld_select("SELECT a.brand,a.country_id,b.name,b.id,b.icon FROM ".table("shop_brand")." as a LEFT JOIN ".table("shop_country"). " as b on a.country_id = b.id WHERE a.id = ".$goods['brand']);
 	   // 获取评论 订单评论时用的是goods表中的id   详情页面的$_gp['id']是dish表中的id
 	    $comments = array();
-	    $comments = mysqld_selectall("SELECT * FROM " . table('shop_goods_comment') . "  WHERE dishid={$goods['gid']} ORDER BY istop desc, createtime desc limit ". ($pindex - 1) * $psize . ',' . $psize);
+	    $comments = mysqld_selectall("SELECT * FROM " . table('shop_goods_comment') . "  WHERE dishid={$goods['id']} ORDER BY istop desc, createtime desc limit ". ($pindex - 1) * $psize . ',' . $psize);
 		$pager    = '';
 	   if(!empty($comments)){
 		   $pager =  get_dishs_comment($comments);
