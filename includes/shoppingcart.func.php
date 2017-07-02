@@ -14,10 +14,10 @@ function getCartTotal($type = 1){
 
 	$list   = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE  session_id='{$openid}'");
 	foreach($list as $key => $item){
-		$field = 'id,title,marketprice,thumb,sts_id,store_count,status';
+		$field = 'id,title,marketprice,thumb,total,status';
 		$dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
 
-		if(empty($dish) || $dish['store_count'] ==0 || $dish['status'] == 0){
+		if(empty($dish) || $dish['total'] ==0 || $dish['status'] == 0){
 			unset($list[$key]);
 			continue;
 		}

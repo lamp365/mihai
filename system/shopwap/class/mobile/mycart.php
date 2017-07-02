@@ -1,178 +1,155 @@
 <?php
-$member = get_member_account(false);
-$openid = $member['openid'] ?: get_sessionid();
-$op = $_GP['op'];
-if ($op == 'token'){
-	 // type -1,正常类型  0，新增团  >0 参与的团购队伍ID
-    //团购商品 时间还没开始的 不能开团
-//    isCanGoupBuy($_GP['type'],$_GP['id']);
-     $goods = array(
-             'id'      =>$_GP['id'],
-			 'total'   =>$_GP['total'],
-		     'type'    =>isset($_GP['type'])?$_GP['type']:-1,
-			 'spec_key'=>$_GP['spec_key'],
-     );
-    $table= array(
-        'table'=>'shop_dish',
-        'where' => 'a.id = '.$_GP['id']
-    );
-    $goods_shop = get_good($table);
-    if (empty($goods_shop)) {
-        $result = array('result' => 1002,'message'=>'抱歉，该商品不存在或是已经被删除！');
-        die(json_encode($result));
+/**
+* Created by PhpStorm.
+* User: 刘建凡
+* Date: 2017/4/20
+* Time: 18:39
+*/
+
+namespace shopwap\controller;
+
+class mycart extends \common\controller\basecontroller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        if(!checkIsLogin()){
+            ajaxReturnData(0,'请您先登录！');
+        }
     }
 
-
-	 $cookie = new LtCookie();
-	 $cookie->setCookie('goods',$goods,time()+3600*2);  //暂时2个小时
-	 $result = array(
-            'result' => 0
-     );
-     die(json_encode($result));
-     exit();
-}
-if ($op == 'add') {
-    $goodsid = intval($_GP['id']);
-    $total = intval($_GP['total']);
-    $total = empty($total) ? 1 : $total;
-	// 选项
-    $spec_key = $_GP['spec_key'] ?: 0;
-	$table= array(
-         'table'=>'shop_dish',
-	     'where' => 'a.id = '.$goodsid
-    );
-    $goods = get_good($table);
-    if (empty($goods)) {
-        $result['message'] = '抱歉，该商品不存在或是已经被删除！';
-        message($result, '', 'ajax');
+    public function index()
+    {
+        $_GP =  $this->request;
+        $service  = new \service\shopwap\mycartService();
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'请求成功',$cartlist);
     }
 
-	$carttotal = getCartTotal(2);
-    $goodsOptionStock = 0;
-    $goodsOptionStock = $goods['total'];
-	$goodsOptionStock = $goodsOptionStock - $count['nums'];
+    public function addCart()
+    {
+        $_GP =  $this->request;
+        $dishid  = intval($_GP['id']);
+        if(empty($dishid)){
+            ajaxReturnData(0,'参数有误！');
+        }
+        $spec_key   = $_GP['spec_key'];
+        $total      = intval($_GP['buy_num']);
+        $total      = empty($total) ? 1 : $total;
 
-    if ($goodsOptionStock < ($total+$carttotal) && $goodsOptionStock != - 1) {
-        $result = array(
-            'result' => 0,
-            'maxbuy' => $goodsOptionStock
-        );
-        die(json_encode($result));
-        exit();
+        $service  = new \service\shopwap\mycartService();
+        $cartotal = $service->addCart($dishid,$spec_key,$total);
+        if(!$cartotal){
+            ajaxReturnData(0,$service->getError());
+        }
+        ajaxReturnData(1,'操作成功！',$cartotal);
     }
 
-    $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid  and spec_key=:spec_key", array(
-        ':session_id' =>  $openid,
-        ':goodsid'    =>  $goodsid,
-        ':spec_key'   =>  $spec_key,
-    ));
+    public function updateCart()
+    {
+        $_GP    =  $this->request;
 
-    if ($row == false) {
-        // 不存在
-        $data = array(
-            'goodsid'       => $goodsid,
-            'goodstype'     => $goods['type'],
-            'session_id'    => $openid,
-            'total'         =>  $total,
-            'spec_key'      =>  $spec_key
-        );
-        mysqld_insert('shop_cart', $data);
-    } else {
-        // 累加最多限制购买数量
-        $t = $total + $row['total'];
-        // 存在
-        $data = array(
-            'total'       => $t,
-            'spec_key'    => $spec_key
-        );
-        mysqld_update('shop_cart', $data, array(
-            'id' => $row['id']
+        $id  = intval($_GP['id']);
+        $num = intval($_GP['buy_num']);
+        if(empty($id) || empty($num) || $num<0){
+            ajaxReturnData(0,'参数有误！');
+        }
+        $service  = new \service\shopwap\mycartService();
+        $cartotal = $service->updateCart($id,$num);
+        if(!$cartotal){
+            ajaxReturnData(0,$service->getError());
+        }
+
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'操作成功',$cartlist);
+    }
+
+    public function del()
+    {
+        $member = get_member_account();
+        $openid = $member['openid'];
+        $_GP = $this->request;
+        $id  = intval($_GP['id']);
+        mysqld_delete('shop_cart', array(
+            'session_id' => $openid,
+            'id' => $id
         ));
+
+        $service  = new \service\shopwap\mycartService();
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'已经移除!',$cartlist);
     }
-    // 返回数据
-    $carttotal = getCartTotal(2);
-    $result = array(
-        'result' => 1,
-        'total' => $carttotal
-    );
-    die(json_encode($result));
-} else if ($op == 'clear') {
+
+    /**
+     * 逗号分隔多个id
+     */
+    public function batdel()
+    {
+        $member = get_member_account();
+        $openid = $member['openid'];
+        $_GP = $this->request;
+        if(empty($_GP['ids'])){
+            ajaxReturnData(0,'参数有误！');
+        }else{
+            $ids = explode(',',$_GP['ids']);
+            foreach($ids as $id){
+                mysqld_delete('shop_cart', array(
+                    'session_id' => $openid,
+                    'id' => $id
+                ));
+            }
+
+            $service  = new \service\shopwap\mycartService();
+            $cartlist = $service->cartlist();
+            ajaxReturnData(1,'删除成功！',$cartlist);
+        }
+    }
+
+    public function clean()
+    {
+        $member = get_member_account();
+        $openid = $member['openid'];
         mysqld_delete('shop_cart', array(
             'session_id' => $openid
         ));
-		$cookie = new LtCookie();
-        $cookie->delCookie('choose_cart');
-        die(json_encode(array(
-            "result" => 1
-        )));
-    } else if ($op == 'remove') {
-            $id = intval($_GP['id']);
-            mysqld_delete('shop_cart', array(
-                'session_id' => $openid,
-                'id' => $id
-            ));
-            die(json_encode(array(
-                "result" => 1,
-                "cartid" => $id
-            )));
-    } else if($op == 'delbat') {
-           if(empty($_GP['ids'])){
-               die(showAjaxMess(1002,'参数有误！'));
-           }else{
-               foreach($_GP['ids'] as $id){
-                   mysqld_delete('shop_cart', array(
-                       'session_id' => $openid,
-                       'id' => $id
-                   ));
-               }
-               die(showAjaxMess(200,'删除成功!'));
-           }
-    }else if ($op == 'update') {
-                $id = intval($_GP['id']);
-                $num = intval($_GP['num']);
-                mysqld_query("update " . table('shop_cart') . " set total=$num where id=:id", array(
-                    ":id" => $id
-                ));
-                die(json_encode(array(
-                    "result" => 1
-                )));
-    } else if($op == 'choose_cart'){  //在购物车中选择部分商品购买
-        if(empty($_GP['cart_ids'])){
-            message('对不起你没有选择商品',refresh(),'error');
-           die(showAjaxMess(1002,''));
-        }else{
-            $cookie = new LtCookie();
-            $cookie->delCookie('choose_cart');
-            $cookie->setCookie('choose_cart',$_GP['cart_ids']);
-            $url = mobile_url('confirm',array('op'=>'cart'));
-            header("location: " .$url);
-        }
-    }else {
-                $list = array();
-                if(!empty($openid)){
-                    $list = mysqld_selectall("SELECT * FROM " . table('shop_cart') . " WHERE   session_id = '" . $openid . "'");
-                }
+        $service  = new \service\shopwap\mycartService();
+        $cartlist = $service->cartlist();
+        ajaxReturnData(1,'已全部移除！',$cartlist);
+    }
 
-                $totalprice = 0;
-                if (! empty($list)) {
-                    foreach ($list as $key=>&$item) {
-						$goods = get_good(array(
-							 'table'=>'shop_dish',
-							 'where' => 'a.id='. $item['goodsid']
-						));
-						if ($goods['status'] == 0 ){
-                              mysqld_delete('shop_cart', array('session_id' => $openid, 'goodsid' => $item['goodsid']));
-							  unset($list[$key]);
-							  continue;
-						}
-                        // 属性
-						$goods['small'] = download_pic($goods['imgs'], 100,100);
-                        $item['goods'] = $goods;
-                        $item['totalprice'] = (floatval($goods['marketprice']) * intval($item['total']));
-                        $totalprice += $item['totalprice'];
-                    }
-                    unset($item);
-                }
-				$jp_goods = empty($goods['p1']) ? array() : cs_goods($goods['p1'], 1, 4, 10);
-                include themePage('cart');
-            }
+    /**
+     * 立即购买的时候，先调用该方法添加到购物车中
+     */
+    public function lijiBuy()
+    {
+        $_GP =  $this->request;
+        $dishid     = intval($_GP['id']);
+        $spec_key   = $_GP['spec_key'];
+        if(empty($dishid)){
+            ajaxReturnData(0,'参数有误！');
+        }
+        $total   = intval($_GP['buy_num']);
+        $total   = empty($total) ? 1 : $total;
+
+        $service  = new \service\shopwap\mycartService();
+        $cartotal = $service->lijiBuyCart($dishid,$spec_key,$total);
+        if(!$cartotal){
+            ajaxReturnData(0,$service->getError());
+        }
+
+        ajaxReturnData(1,'操作成功！',$cartotal);
+    }
+
+    //所选择了哪些商品进行购买  逗号分隔 多个id
+    public function topay()
+    {
+        $_GP    = $this->request;
+        $service  = new \service\shopwap\mycartService();
+        $res = $service->topay($_GP['ids'],$_GP['type']);
+        if(!$res){
+            ajaxReturnData(0,$service->getError());
+        }else{
+            ajaxReturnData(1,'操作成功！');
+        }
+    }
+}

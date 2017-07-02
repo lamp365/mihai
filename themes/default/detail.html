@@ -752,36 +752,7 @@ function point(){
 				</div>
 
 
-				
 
-				<div class="card card-list" style="width:1140px;margin:0 auto;*display: none;">
-
-					<div id="buy_lay"></div>
-					<div id="buy_lay_frm">
-						<div class="frm">
-							<div class="tips">商品已添加到购物车！</div>
-							<div class="btns">
-								<input id="btn_continue" class="btn" type="button" value=" 再逛会 " />
-								<input id="btn_check" class="btn" type="button" value=" 去结算 " />
-							</div>
-						</div>
-					</div>
-
-                  
-					<script>
-
-						$(function () {
-							$("#collect-link").on("click", function () {
-								$("#collect-tip").show();
-							})
-							$("#a-know").on("click", function () {
-								$("#collect-tip").hide();
-							})
-
-						})
-                   </script>
-
-				</div>
 				<div class="shopinfo">
                      <div id="cshopBox" class="proinfo-side">
                           <div id="seeAgainTile" class="customer-rec">
@@ -1063,7 +1034,6 @@ function tip(msg,autoClose){
         setTimeout(function(){
             content.fadeOut(500);
             div.fadeOut(500);
-
         },1000);
      }
 }
@@ -1074,63 +1044,49 @@ function tip_close(){
 
 //立即购买
 function buy(){
-        var ret = option_selected();
-        if(ret.no!=''){
-           tip("请选择" + ret.no + "!",true);
-            return;
-        }
-         var total = $("#total").val();
-           <!--@php  if($stock!=-1) { @-->
-          if(total>parseInt($("#goodstotail").html()))
-        {
-        	tip("最多只能购买" + parseInt($("#goodstotail").html()) + "件!",true);
-            return;
-        	
-        }
-      <!--@php  } @-->
-     var total = $("#total").val();
-	 var url  = "<!--@php  echo mobile_url('mycart',array('id'=>$goods['id'],'op'=>'token'),true);@-->"+"&optionid=" + $("#optionid").val() + "&total=" + total;
-	 $.getJSON(url, function(s){
-	      if (s.result == 0)
-	      {
+	var spec_key = $("#spec_key").val();
+	if(spec_price != '' && spec_key == ''){
+		tip("请选择规格！",true);
+		return;
+	}
+	var buy_num   = $("#total").val();
+	var dish_total = $("#dish_total").val();
+	if(parseInt(buy_num) >parseInt(dish_total)) {
+		tip("最多只能购买" + parseInt(dish_total) + "件!",true);
+		return;
+	}
+	var url = "<!--@php  echo mobile_url('mycart',array('op'=>'lijiBuy','id'=>$goods['id']));@-->";
+	 $.post(url,{buy_num:buy_num,spec_key:spec_key},function(data){
+	      if (data.errno == 1) {
 		      var success = "<!--@php echo mobile_url('confirm')@-->";
 			  window.location.href = success;
-	      }
-	 });   
+	      }else{
+			  tip(data.message,1);
+		  }
+	 },'json');
 }
 //添加到购物车
 function addtocart(){
-        var spec_key = $("#spec_key").val();
-		if(spec_price != '' && spec_key == ''){
-           tip("请选择规格！",true);
-            return;
-        }
-        var buy_num   = $("#total").val();
-		var dish_total = $("#dish_total").val();
-        if(parseInt(buy_num) >parseInt(dish_total)) {
-        	tip("最多只能购买" + parseInt(dish_total) + "件!",true);
-            return;
-        }  	
-        var url = "<!--@php  echo mobile_url('mycart',array('op'=>'add','id'=>$goods['id']));@-->";
-        $.post(url,{buy_num:buy_num,spec_key:spec_key},function(data){
-        if(s.result==0){
-            tip("只能购买 " + s.maxbuy + " 件!");
-			tip_close();
-        }else{
-           
-		    tip("已加入购物车!");
-			tip_close();
-			$('#popone').html(s.total);
-			setTimeout(function(){
-				$('.fix_gundon .to_gowuche .carnum').html(s.total);
-			},1000)
-			
-          // $('#globalId').css({'width':'22px', 'height':'16px', 'line-height':'16px'}).html(s.total).animate({'width':'15px', 'height':'16px', 'line-height':'20px'}, 'slow');
-         //  $('#carId').css({'width':'22px', 'height':'16px', 'line-height':'16px'}).html(s.total).animate({'width':'15px', 'height':'16px', 'line-height':'20px'}, 'slow');
-       }
-        });
-       
-
+	var spec_key = $("#spec_key").val();
+	if(spec_price != '' && spec_key == ''){
+	   tip("请选择规格！",true);
+		return;
+	}
+	var buy_num   = $("#total").val();
+	var dish_total = $("#dish_total").val();
+	if(parseInt(buy_num) >parseInt(dish_total)) {
+		tip("最多只能购买" + parseInt(dish_total) + "件!",true);
+		return;
+	}
+	var url = "<!--@php  echo mobile_url('mycart',array('op'=>'addCart','id'=>$goods['id']));@-->";
+	$.post(url,{buy_num:buy_num,spec_key:spec_key},function(data){
+		if(data.errno == 0){
+			tip(data.message,1);
+		}else{
+			tip("已加入购物车!",1);
+			$('.fix_gundon .to_gowuche .carnum').html(data.data);
+	   }
+	},'json');
 }
 
 
