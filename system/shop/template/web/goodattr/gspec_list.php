@@ -125,6 +125,7 @@
 
     function add_new_sepcitem(obj){
         var item_name = $(obj).val();
+        item_name = $.trim(item_name);
         if(item_name == '' || item_name == null){
             return false;
         }

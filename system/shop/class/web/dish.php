@@ -540,6 +540,7 @@ class dish extends \common\controller\basecontroller
         if (empty($reply)) {
             $reply = NULL;
         }
+        $re = '';
         if (!empty($id)) {
             $re = mysqld_update("shop_goods_comment",array('reply'=>$reply),array('id'=>$id));
         }
@@ -549,6 +550,16 @@ class dish extends \common\controller\basecontroller
             message("回复失败，不能回复重复的内容！",refresh(),'error');
         }
 
+    }
+
+    public function ajax_dishstatus()
+    {
+        $_GP = $this->request;
+        if(empty($_GP['dishid'])){
+            die(showAjaxMess(1002,'参数有误'));
+        }
+        mysqld_update('shop_dish',array('status'=>$_GP['status']),array('id'=>$_GP['dishid']));
+        die(showAjaxMess(200,'操作成功！'));
     }
 }
 

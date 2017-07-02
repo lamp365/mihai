@@ -173,9 +173,9 @@
 
 					<td style="text-align:center;">
 						<?php  if($item['status']) { ?>
-						<span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-success" style="cursor:pointer;">已上架</span>
+						<span data-status='0' onclick="setDishStatus(this,<?php  echo $item['id'];?>)" class="label label-success" style="cursor:pointer;">已上架</span>
 						<?php  } else { ?>
-						<span data='<?php  echo $item['status'];?>' onclick="setProperty1(this,<?php  echo $item['id'];?>,'status')" class="label label-danger" style="cursor:pointer;">已下架</span>
+						<span data-status='1' onclick="setDishStatus(this,<?php  echo $item['id'];?>)" class="label label-danger" style="cursor:pointer;">已下架</span>
 						<?php  } ?>
 
 					</td>
@@ -265,5 +265,28 @@
  }
 modify();
 
+function setDishStatus(obj,dishid){
+	var url = "<?php  echo web_url('dish', array('op' => 'ajax_dishstatus'))?>";
+	var status = $(obj).data('status');
+	$.post(url,{dishid:dishid,status:status},function(data){
+		if(data.errno == 200){
+			if(status == 0){
+				//设置下架的
+				$(obj).removeClass('label-success');
+				$(obj).addClass('label-danger');
+				$(obj).data('status',1);  //修改为1  下次就是要上架
+				$(obj).html('已下架');
+			}else{
+				//设置上架的
+				$(obj).removeClass('label-danger');
+				$(obj).addClass('label-success');
+				$(obj).data('status',0);  //修改为1  下次就是要下架
+				$(obj).html('已上架');
+			}
+		}else{
+			alert(data.message);
+		}
+	},'json');
+}
 </script>
 <?php  include page('footer');?>

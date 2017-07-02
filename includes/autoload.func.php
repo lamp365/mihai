@@ -4,7 +4,6 @@ function  hinrcAutoload($className) {
     $className = $className;
     $classArr  = explode('\\',$className);
 
-
     if(count($classArr) == 2){
         //service  实例化是  new \service\test()   new \model\test();
         $filePath = WEB_ROOT."/includes/{$classArr[0]}/{$classArr[1]}.class.php";

@@ -74,8 +74,8 @@ function set_sms_code($telphone='',$app=0,$type=''){
     if ( !empty($telphone) and preg_match("/^1[34578]{1}\d{9}$/",$telphone) ){
         $code = get_code();
 		switch ( $type ){
-			case 3:			//用户关联订单验证短信模板
-				$template = 'SMS_52440048';
+			case 4:			//空包感谢回馈
+				$template = 'SMS_75880042';
 				break;
 			case 2:			//更换手机号码用的短信模板
 				$template = 'SMS_35035487';
@@ -83,8 +83,8 @@ function set_sms_code($telphone='',$app=0,$type=''){
             case 1:
 				$template = 'SMS_13756412';
 				break;
-			default:
-				$template = 'SMS_13756414';
+			default:      //用户注册短信
+				$template = 'SMS_75880042';
 				break;
 		}
 		if (file_exists(WEB_ROOT . '/includes/TopSdk.php')) {
@@ -172,6 +172,22 @@ function send_warring_sms($telphone,$code){
 		$req->setSmsTemplateCode("SMS_25215215");
 		$resp = $c->execute($req);
 		return $resp;
+}
+
+function send_kongbao_sms($telphone,$money){
+	require WEB_ROOT . '/includes/TopSdk.php';
+	$c = new TopClient;
+	$c->appkey = '23499623';
+	$c->secretKey = 'e2a5c71e4eca9cc7e4d6141ce5c5f0b4';
+	$req = new AlibabaAliqinFcSmsNumSendRequest;
+	$req->setSmsType("normal");
+	$req->setSmsFreeSignName("空包网");
+	$req->setSmsParam("{\"money\":\"{$money}\"}");
+	$req->setRecNum("$telphone");
+	$req->setSmsTemplateCode("SMS_75880042");
+	$resp = $c->execute($req);
+	ppd($resp);
+	return $resp;
 }
 
 /**
