@@ -23,7 +23,8 @@ class mycart extends \common\controller\basecontroller
         $_GP =  $this->request;
         $service  = new \service\shopwap\mycartService();
         $cartlist = $service->cartlist();
-        ajaxReturnData(1,'请求成功',$cartlist);
+//        ppd($cartlist);
+        include themePage('cart');
     }
 
     public function addCart()

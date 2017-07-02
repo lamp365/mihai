@@ -50,7 +50,7 @@ function get_goods($array=array()){
 	return $result;
 }
 // 得到一个产品
-function get_good($array=array()){
+function get_good($array=array(),$is_detail = 0){
     if ( empty($array['table']) ){
          return array();
 	}else{
@@ -84,7 +84,7 @@ function get_good($array=array()){
 		$result['spec_price']  = '';
 	}
 	//查找规格项
-	if(!empty($result['gtype_id'])){
+	if(!empty($result['gtype_id']) && $is_detail){
 		$result['spec_info']  = get_dish_spec($result['id']);
 		$result['spec_price'] = json_encode(get_dish_spec_price($result,$result['id']));
 	}

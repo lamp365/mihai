@@ -26,7 +26,7 @@
                   'table'=>'shop_dish',
 	              'where' => 'a.id = '.$goodsid
               );
-              $goods = get_good($table);
+              $goods = get_good($table,1);
 			  $comments = mysqld_selectall("SELECT * FROM " . table('shop_goods_comment') . "  WHERE dishid={$goods['id']} ORDER BY istop desc, createtime desc limit ". ($pindex - 1) * $psize . ',' . $psize);
 			  //获取评论对应的图片
 			   if (!empty($comments)) {
@@ -44,7 +44,7 @@
 			  break;
 		}
 
-        $goods = get_good($table);
+        $goods = get_good($table,1);
 		if (empty($goods)) {
 			message('抱歉，商品不存在或是已经被删除！');
 		}

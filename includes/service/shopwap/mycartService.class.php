@@ -28,125 +28,148 @@ class mycartService extends  \service\publicService
         if (! empty($list)) {
             //找出对应的商品 信息
             foreach($list as $item){
-                $field = 'id,title,marketprice,history_lower_prcie,thumb,sts_id,store_count,status,isreason';
-                $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
-                $store_count = $dish['store_count'];
-                $time_price  = $dish['marketprice'];
-                $status      = $dish['status'];
-                $action_id   = 0;
+                $dish  = mysqld_select("select * from ".table('shop_dish')." where id={$item['goodsid']}");
+                $dish['marketprice']   = get_limit_price($dish,$dish['marketprice']);
+                $dish['spec_key']      = '';
+                $dish['spec_key_name'] = '';
+                $dish['cart_id']       = $item['id'];
+                $dish['buy_num']       = $item['total'];
+                $dish['to_pay']        = $item['to_pay'];
 
-                if(empty($dish) || $store_count ==0 || $status == 0){
-                    $dish['cart_id']         =  $item['id'];
-                    $out_gooslist[]          = $dish;
-                    continue;
-                }
-
-                //判断商品是否属于活动中的商品
-                $active = checkDishIsActive($dish['id'],$dish['store_count']);
-                if(!empty($active)){
-                    $store_count = $active['ac_dish_total'] ?: 0;
-                    $time_price  = $active['ac_dish_price'] ?: $dish['marketprice'];
-                    $status      = $active['ac_dish_status'] ?: 0;
-                    $action_id   = $active['ac_action_id'] ?: 0;
-                }
-
-                $dish['store_count'] = $store_count;
-                $dish['status']      = $status;
-
-                if( $store_count ==0 || $status == 0){
-                    //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
-                    $dish['cart_id']         =  $item['id'];
-                    $out_gooslist[]          = $dish;
-                    continue;
-                }
-
-
-                $store = member_store_getById($item['sts_id'],'sts_name,sts_id,sts_shop_type');
-
-                $dish['time_price']        = FormatMoney($time_price,0);
-                $dish['marketprice']       = FormatMoney($dish['marketprice'],0);
-                $dish['history_lower_prcie']= FormatMoney($dish['history_lower_prcie'],0);
-                $dish['buy_num']           = $item['total'];
-                $dish['cart_id']           = $item['id'];
-                $dish['to_pay']            = $item['to_pay'];
-                $dish['action_id']         = $action_id;
-
-
-                if(!array_key_exists($item['sts_id'],$gooslist)){
-                    $gooslist[$item['sts_id']]   = $store;
-                    //获取店铺的运费，免邮等信息
-                    if($get_express){
-                        $this->get_express_fee($item['sts_id'],$gooslist);
+                //从规格项中找到对应的库存
+                if($item['spec_key']){
+                    $spec_info = mysqld_select("select * from ".table('dish_spec_price')." where dish_id={$item['goodsid']} and spec_key='{$item['spec_key']}'");
+                    if(!empty($spec_info)){
+                        $dish['total']         = $spec_info['total'];
+                        $dish['marketprice']   = get_limit_price($dish,$spec_info['marketprice']);
+                        $dish['spec_key']      = $spec_info['spec_key'];
+                        $dish['spec_key_name'] = $spec_info['key_name'];
                     }
                 }
+
+                if(empty($dish) || $dish['total'] ==0 || $dish['status'] == 0){
+                    //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
+                    $out_gooslist[]          = $dish;
+                    continue;
+                }
+
                 //将产品并入到数组中去
-                $gooslist[$item['sts_id']]['dishlist'][] = $dish;
+                $gooslist[] = $dish;
 
                 if($item['to_pay'] == 1)   //计算已经打钩的物品
-                    $totalprice = $totalprice + $dish['time_price']*$dish['buy_num'];
+                    $totalprice = $totalprice + $dish['marketprice']*$dish['buy_num'];
            }
             $gooslist = array_values($gooslist);
         }
 
-
-        //计算总的价格 加入店铺邮费 以及判断是否给予免邮费  以及判断是否可以使用的优惠卷
+        //获取运费，以及免邮等信息
+        $express_fee = $free_dispatch = 0;
         if($get_express){
-            $totalprice = $this->countStorePriceAndBonus($totalprice,$gooslist);
+            $get_express_arr = $this->get_express_fee($gooslist);
+            $express_fee     = $get_express_arr['express_fee'];    //运费
+            $free_dispatch   = $get_express_arr['free_dispatch'];  //免邮条件
+        }
+        //总价扣掉运费
+        $totalprice -= $express_fee;
+
+        //根据中总的价格判断是否可以使用的优惠卷
+        $bonuslist = array();
+        if($get_express){
+            $bonuslist = $this->countCanUseBonusByPrice($totalprice,$gooslist);
         }
 
         $redata = array(
-            'goodslist'     => $gooslist,
-            'out_gooslist'  => $out_gooslist,
-            'totalprice'    => round($totalprice,2)
+            'goodslist'      => $gooslist,
+            'out_gooslist'   => $out_gooslist,
+            'totalprice'     => round($totalprice,2),
+            'express_fee'    => round($express_fee,2),
+            'free_dispatch'  => round($free_dispatch,2),
+            'bonuslist'     => $bonuslist,
         );
         return $redata;
     }
 
     /**
-     * 获取店铺邮费 和免邮的金额
+     * 获取店铺最大的邮费 和免邮的金额
      * @param $sts_id
      * @param $gooslist
      */
-    public function get_express_fee($sts_id,&$gooslist)
+    public function get_express_fee($gooslist)
     {
-        $expressInfo   = mysqld_select("select free_dispatch,express_fee from ".table('store_extend_info')." where store_id={$sts_id}");
-        $free_dispatch = $expressInfo['free_dispatch'];  //免邮
-        $express_fee   = $expressInfo['express_fee'];    //运费
-        $gooslist[$sts_id]['free_dispatch'] = FormatMoney($free_dispatch,0);
-        $gooslist[$sts_id]['express_fee']   = FormatMoney($express_fee,0);
-        $gooslist[$sts_id]['send_free']     = 0;
-        $gooslist[$sts_id]['totalprice']    = 0;
+        $express_fee  = 0;  //运费
+        $dish_price   = 0;
+        foreach($gooslist as $one_list){
+            $dish_price += $one_list['marketprice'];
+            if($one_list['issendfree']){
+                continue;
+            }
+            if(empty($one_list['transport_id'])){
+                continue;
+            }
+            $yunfei = mysqld_select("select displayorder from ".table('dish_list')." where id={$one_list['transport_id']}");
+            if(empty($yunfei)){
+                continue;
+            }
+            $express_fee = max($express_fee,$yunfei['displayorder']);
+        }
 
+        //找到促销的免邮费用
+        $time = time();
+        $pormot = mysqld_select("select condition from ".table('shop_pormotions')." where promoteType=1 and endtime>{$time} and starttime<{$time}");
+        $free_dispatch = floatval($pormot['condition']);  //免邮条件
+        if($dish_price >= $free_dispatch){
+            $express_fee = 0;
+        }
+        return array(
+            'express_fee'    => $express_fee,
+            'free_dispatch'  => $free_dispatch,
+        );
     }
 
-    public function countStorePriceAndBonus($totalprice,&$gooslist)
+    public function countCanUseBonusByPrice($totalprice,$goodslist)
     {
-        if(empty($gooslist))  return $totalprice;
-        foreach($gooslist as &$item){
-            $free_dispatch = $item['free_dispatch'];  //满多少免邮  单位元
-            $express_fee   = $item['express_fee'];    //运费       单位元
-            $dish_arr      = $item['dishlist'];
-            $total_dish_price = 0;
-            $dishid_arr       = array();
-            foreach($dish_arr as $one){
-                $total_dish_price += $one['time_price']*$one['buy_num'];
-                $dishid_arr[]     =  $one['id'];
-            }
-            if($free_dispatch !=0 && $total_dish_price >= $free_dispatch){
-                //商品价格  超过 满邮的条件   免邮
-                $item['totalprice'] = round($total_dish_price,2);
-                $item['send_free']  = 1;
-            }else{
-                //没有满邮，加上运费
-                $totalprice +=  $express_fee;
-                $item['totalprice'] = round($total_dish_price + $express_fee,2);
-                $item['send_free']  = 0;
-            }
-            //根据店铺以及价格来选出 结算的时候 可以使用的优惠卷
-            $item['bonuslist'] = getCouponByPriceOnPay($item['sts_id'],$total_dish_price,$dishid_arr);
+        if(empty($gooslist))  return array();
+        $meminfo    = get_member_account();
+        $openid     = $meminfo['openid'];
 
+        $bonus_sql = "select u.*,b.type_money,b.min_goods_amount,b.send_type,b.use_start_date.b.use_end_date from ".table('bonus_user')." as u left join ".table('bonus_type')." as b";
+        $bonus_sql.= " on u.bonus_type_id=b.type_id where u.openid='{$openid}' and u.isuse=0  and b.min_goods_amount <= '{$totalprice}'";
+        $bonus  = mysqld_selectall($bonus_sql);
+
+        //去除时间还没开始的 或者已经过期的
+        foreach($bonus as $key => &$item){
+            //金额转为元
+            if(time() < $item['use_start_date'] || time() > $item['use_end_date']){
+                unset($bonus[$key]);
+                continue;
+            }
+            //如果优惠卷针对的是单品，则判断是否在购买的列表中
+            if($item['send_type'] == 1 ){
+                $bonus_good_ids = array();
+                $bonus_good     = mysqld_selectall("select good_id from ".table('bonus_good')." where bonus_type_id={$item['bonus_type_id']}");
+                foreach($bonus_good as $one_bon){
+                    $bonus_good_ids[] = $one_bon['good_id'];
+                }
+
+                $can_use_bonus = false;
+                foreach($goodslist as $one_goodslist){
+                    $dish_id = $one_goodslist['id'];
+                    if(in_array($dish_id,$bonus_good_ids)){
+                        $can_use_bonus = true;
+                    }
+                }
+                if($can_use_bonus == false){
+                    unset($bonus[$key]);
+                    continue;
+                }
+            }
         }
-        return $totalprice;
+
+        if(empty($bonus)){
+            return array();
+        }else{
+            return $bonus;
+        }
     }
 
 

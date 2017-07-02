@@ -68,13 +68,13 @@
 </style>
 
 <div class="shopcart-main">
-<div style='text-align:center;padding:70px 0 70px 0; <!--@php  if(count($list)>0) { @-->display:none<!--@php  } @-->' id='cartempty'>
+<div style="text-align:center;padding:70px 0 70px 0; <!--@php  if(!empty($cartlist['goodslist'])) { @-->display:none<!--@php  } @-->" id='cartempty'>
     <img src="__RESOURCE__/mobile/images/icon_cart_empty.png" /><br/><br/>
     <span style='color:#adadad'>您的购物车空空如也，赶紧去
     	<a href="index.php">选购</a>
     	吧~~</span>
 </div>
-<!--@php if (is_array($list) && !empty($list)){ @-->
+<!--@php if (!empty($cartlist['goodslist'])){ @-->
 <div class="shopcart-all">
         <div class="list-head clearfix">
             <label class="col col-label checked"><img src="__RESOURCE__/recouse/images/cart_check.png"></label>
@@ -87,61 +87,63 @@
         </div>
 
     <form action="<!--@php  echo mobile_url('mycart',array('op'=>'choose_cart'));@-->" method="post" name="cartform">
-	<!--@php foreach($list as $item) {@-->
-	<!--@php  $price += $item['totalprice'];@-->
-        
-    <!--@php  $goods = $item['goods']@-->
-        <span id="stock_<!--@php  echo $item['id'];@-->" style='display:none'><!--@php  echo $goods['total'];@--></span>
-        <div class="shopcart-item" id="item_<!--@php  echo $item['id'];@-->">
+	<!--@php foreach($cartlist['goodslist'] as $goods) {@-->
+        <div class="shopcart-item" id="item_<!--@php  echo $goods['cart_id'];@-->">
+
+            <!--@php if($goods['to_pay']){  @-->
             <label class="col col-label choose_all checked"><img src="__RESOURCE__/recouse/images/cart_check.png"></label>
-            <input type="checkbox" class="hide_checkbox" checked name="cart_ids[]" value="<!--@php  echo $item['id'];@-->" style="display: none">
-        <div class="col col-img">
-			<a href="<!--@php  echo mobile_url('detail', array('id' => $goods['id'],'op'=>'dish'))@-->" target="_blank">
-				<img data-original="<!--@php  echo $goods['small'];@-->" class="lazy" src="images/loading.gif">
-			</a>
-			
-		</div>
-        <div class="col col-name"> 
-        	<div class="name" style="text-align: center;">
-        		<a href="<!--@php  echo mobile_url('detail', array('id' => $goods['id'],'op'=>'dish'))@-->" target="_blank">
-        			<!--@php  echo $goods['title'];@-->
-        		</a>
-        	
-        	</div> 
-        </div>
-		<div class="col col-price"> <span class="price" ><!--@php  echo $goods['marketprice'];@--> 元</span></div>
-	    <div class="price" style="font-size:12px;"><span id="singleprice_<!--@php  echo $item['id'];@-->" style="display:none;"><!--@php  echo $goods['marketprice'];@--></span></div>
-		<div class="col col-num">	
-			<div class="input-group"style="width: 93px;height: 23px;margin: 0 auto;border: solid 1px gainsboro;">
-				<span class="input-group-btn">
-					<button class="btn btn-default btn-sm" type="button" onclick="reduceNum(<!--@php  echo $item['id'];@-->)" style="height: 23px;width: 23px;border: none;">－</button>
-				</span>
-				<input type="tel" class="form-control input-sm pricetotal goodsnum" style="border: none;width: 48px;height:22px;line-height: 20px;margin: 0px -5px;margin-top: -3px;" value="<!--@php  echo $item['total'];@-->" price="<!--@php  echo $goods['marketprice'];@-->" pricetotal="<!--@php  echo $item['totalprice'];@-->" id="goodsnum_<!--@php  echo $item['id'];@-->" cartid='<!--@php  echo $item['id'];@-->'  maxbuy="<!--@php  echo $goods['total'];@-->" />
-				<span class="input-group-btn">
-					<button class="btn btn-default btn-sm" type="button" onclick="addNum(<!--@php  echo $item['id'];@-->,<!--@php  echo $goods['total'];@-->)" style="border: none;height: 23px;width: 23px;">＋</button>
-				</span>
-			</div>
-		</div>
-		<div class="col col-total"><span class='singletotalprice' id="goodsprice_<!--@php  echo $item['id'];@-->"><!--@php  echo $item['totalprice'];@--></span> 元</div>
-		<div class="col col-action">
-			<a href="javascript:;" onclick="removeCart(<!--@php  echo $item['id'];@-->)" class="shopcart-item-remove" style="width: 43px\9;">
-				<i class="icon-remove"></i>
-				 删除
-			</a>
-		</div>
-	</div>
+            <input type="checkbox" class="hide_checkbox" checked name="cart_ids[]" value="<!--@php  echo $goods['cart_id'];@-->" style="display: none">
+            <!--@php }else{ @-->
+            <label class="col col-label choose_all"><img src="__RESOURCE__/recouse/images/cart_circle.png"></label>
+            <input type="checkbox" class="hide_checkbox"  name="cart_ids[]" value="<!--@php  echo $goods['cart_id'];@-->" style="display: none">
+            <!--@php } @-->
+
+            <div class="col col-img">
+                <a href="<!--@php  echo mobile_url('detail', array('id' => $goods['id'],'op'=>'dish'))@-->" target="_blank">
+                    <img data-original="<!--@php  echo download_pic($goods['thumb'],150,150,2);@-->" class="lazy" src="images/loading.gif">
+                </a>
+            </div>
+            <div class="col col-name">
+                <div class="name" style="text-align: center;">
+                    <a href="<!--@php  echo mobile_url('detail', array('id' => $goods['id'],'op'=>'dish'))@-->" target="_blank">
+                        <!--@php  echo $goods['title'];@-->
+                    </a>
+
+                </div>
+            </div>
+		    <div class="col col-price"> <span class="price" ><!--@php  echo $goods['marketprice'];@--> 元</span></div>
+
+            <div class="col col-num">
+                <div class="input-group"style="width: 93px;height: 23px;margin: 0 auto;border: solid 1px gainsboro;">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm" type="button" onclick="reduceNum(<!--@php  echo $goods['cart_id'];@-->)" style="height: 23px;width: 23px;border: none;">－</button>
+                    </span>
+                    <input type="tel" class="form-control input-sm pricetotal goodsnum" style="border: none;width: 48px;height:22px;line-height: 20px;margin: 0px -5px;margin-top: -3px;" value="<!--@php  echo $goods['buy_num'];@-->" price="<!--@php  echo $goods['marketprice'];@-->"  id="goodsnum_<!--@php  echo $goods['id'];@-->" cartid="<!--@php  echo $goods['cart_id'];@-->"  maxbuy="<!--@php  echo $goods['total'];@-->" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm" type="button" onclick="addNum(<!--@php  echo $goods['cart_id'];@-->,<!--@php  echo $goods['total'];@-->)" style="border: none;height: 23px;width: 23px;">＋</button>
+                    </span>
+                </div>
+            </div>
+		    <div class="col col-total"><span class='singletotalprice' id="goodsprice_<!--@php  echo $goods['id'];@-->"><!--@php  echo round($goods['marketprice']*$goods['buy_num'],2);@--></span> 元</div>
+            <div class="col col-action">
+                <a href="javascript:;" onclick="removeCart(<!--@php  echo $goods['cart_id'];@-->)" class="shopcart-item-remove" style="width: 43px\9;">
+                    <i class="icon-remove"></i>
+                     删除
+                </a>
+            </div>
+	    </div>
                    
           <!--@php  $n++;@-->
-	<!--@php  } @-->
+    <!--@php  } @-->
 </form>
 
 </div>
 
-<div id='cartfooter' class="shopcart-footer" <!--@php  if(count($list)<=0) { @-->style='display:none'<!--@php  } else { @--> style='margin-bottom: 49px;'  <!--@php  } @-->'>
+<div id='cartfooter' class="shopcart-footer" <!--@php  if(empty($cartlist['goodslist'])) { @-->style='display:none'<!--@php  } else { @--> style='margin-bottom: 49px;'  <!--@php  } @-->'>
 	<span class="pull-left">
 		合计(不含运费和税率)：
 		<span id="pricetotal">			
-		<!--@php  echo number_format($price,2,'.','');@-->
+		<!--@php  echo number_format($cartlist['totalprice'],2,'.','');@-->
 		</span> 元
 	</span>
 	<a href="javascript:;" class="btn btn-success pull-right" style="background: #E0312E;color: white;padding: 0px 10px;font-size: 16px;border-radius: 5px;" id="liji_jiesuan">立即结算</a>
