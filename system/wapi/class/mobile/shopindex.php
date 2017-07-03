@@ -55,6 +55,7 @@ class shopindex extends base{
            }
            $data['detail'] = $return;
            $data['ac_id'] = $list['ac_id'];
+           $data['ac_title'] = $list['ac_title'];
            ajaxReturnData('1','',$data);
        }
    }
@@ -70,22 +71,10 @@ class shopindex extends base{
        $wd = $_GP['latitude'];//纬度
        $where = " a.ac_action_id = '$ac_list_id' and a.ac_dish_status=1 and b.status=1 and (a.ac_area_id = '$ac_area_id' or a.ac_area_id=0) ";
        
-       if (empty($jd) || empty($wd)){
-           $cityCode = getCityidByIp();
-           $where .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
-       }else{
-           $return = getAreaid($jd,$wd);
-           if (empty($return)) ajaxReturnData(0,'参数错误');
-           if ($return['status'] == 0) {
-               $cityCode = $return['ac_city'];
-               $where .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
-           }else {
-               $ac_city = $return['ac_city'];
-               $ac_city_area = $return['ac_city_area'];
-               //$where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
-               $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,a.ac_city=0)";
-           }
-       }
+        $sql_where = get_area_condition_sql($jd,$wd);
+        if ($sql_where){
+            $where .= $sql_where;
+        }
        //获得当前时间的区域id
        $activityService = new \service\wapi\activityService();
        $currentId = $activityService->getCurrentArea();
@@ -103,6 +92,7 @@ class shopindex extends base{
        $orderby = " order by a.ac_dish_id DESC LIMIT ".$limit.",".$psize;
        $sql .=$orderby;
        $list = mysqld_selectall($sql);
+       logRecord($sql, 'shopindexDishSql');
        if (empty($list)) ajaxReturnData(1,'暂无商品');
        //shop_dish表取商品详情
        $data = array();

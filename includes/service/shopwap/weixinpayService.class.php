@@ -85,12 +85,12 @@ class weixinpayService extends \service\publicService
 
     public function unifiedorder($data)
     {
-        $pay_ordersn = $data['out_trade_no'];
+        $pay_orderid = $data['out_trade_no'];
         $body        = $data['body'];
         $total_fee   = $data['total_fee'];
         //微信接口
-        if(is_array($pay_ordersn)){  //如果有多条订单的话  用下划线分隔
-            $pay_ordersn = implode('_',$pay_ordersn);
+        if(is_array($pay_orderid)){  //如果有多条订单的话  用下划线分隔
+            $pay_orderid = implode('_',$pay_orderid);
         }
 
         $config = $this->alipay_config;
@@ -101,7 +101,7 @@ class weixinpayService extends \service\publicService
             'mch_id'    => $config['mch_id'],//商户号
             'nonce_str' => make_nonceStr(),//随机字符串()
             'body'      => $body,//商品描述
-            'out_trade_no'     => $pay_ordersn,  //商户订单号  如果有多条订单的话  用下划线分隔
+            'out_trade_no'     => $pay_orderid,  //商户订单号  如果有多条订单id的话  用下划线分隔
             'total_fee'        => $total_fee,//总金额 单位 分
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
         );
@@ -259,14 +259,14 @@ class weixinpayService extends \service\publicService
             return false;
         } else{
             // 订单号
-            $ordersn     = $array_data['out_trade_no'];
-            $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
+            $orderid     = $array_data['out_trade_no'];
+            $orderid_arr = explode('_',$orderid);   //多商家导致，可能有多个订单号
             $settings    = globaSetting();
             /**
              * 支付完毕 处理账单 佣金提成，卖家所得，平台费率
              */
-            foreach($ordersn_arr as $ordersn){
-                paySuccessProcess($ordersn,$settings);
+            foreach($orderid_arr as $orderid){
+                paySuccessProcess($orderid,$settings);
             }
         }
         return true;

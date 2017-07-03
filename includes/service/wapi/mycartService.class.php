@@ -180,29 +180,51 @@ class mycartService extends  \service\publicService
             ':goodsid'    =>  $dishid
         ));
 
+        $buy_num = $total;
+        $total   = $total + intval($row['total']);
+        if($total > $store_count){
+            $this->error = "该产品库存剩下{$store_count}件！";
+            return false;
+        }
+        //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
+        if($store_count <= 30){
+            $can_max_buy = 1;
+        }else{
+            $can_max_buy = floor($store_count*0.1);
+        }
+        if($total > $can_max_buy){
+            $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
+            return false;
+        }
+
         if (empty($row)) {
             // 不存在
             $data = array(
                 'goodsid'       => $dishid,
+                'ac_dish_id'    => intval($active['ac_dish_id']),
                 'goodstype'     => 0,
                 'session_id'    => $member['openid'],
                 'sts_id'        => $dish['sts_id'],
                 'to_pay'        => 1,  //默认是打钩状态的
-                'total'         =>  $total
+                'total'         => $total
             );
-            if($total > $store_count){
-                $this->error = "库存剩下{$store_count}个！";
+            mysqld_insert('shop_cart', $data);
+            if(mysqld_insertid()){
+                //更新购物车的最新时间
+                update_cart_record_time();
+            }else{
+                $this->error = '添加失败，请稍后操作！';
                 return false;
             }
-            mysqld_insert('shop_cart', $data);
         } else {
-            // 累加最多限制购买数量
-            $t_num = $total + $row['total'];
-            if($t_num <= $store_count){
-                $data = array('total' => $t_num);
-                mysqld_update('shop_cart', $data, array('id' => $row['id']));
-            }
+            $data = array('total' => $total,'ac_dish_id' => intval($active['ac_dish_id']));
+            mysqld_update('shop_cart', $data, array('id' => $row['id']));
         }
+
+        //库存的操作减掉 卖出数量加1
+        $ac_action_id = intval($active['ac_action_id']);
+        operateStoreCount($dishid,$buy_num,$ac_action_id,1);
+
         //返回总的购物车物物品总数量
         $carnum = getCartTotal(2);
         return $carnum;

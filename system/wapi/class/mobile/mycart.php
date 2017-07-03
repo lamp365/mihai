@@ -13,6 +13,7 @@ class mycart extends base
     public function __construct()
     {
         parent::__construct();
+        check_shop_cart_time();
         if(!checkIsLogin()){
             ajaxReturnData(0,'请授权登录！');
         }

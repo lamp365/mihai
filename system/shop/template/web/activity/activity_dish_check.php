@@ -64,7 +64,7 @@
 		padding: 5px 0 5px 10px;
 	}
 </style>
-<h3 class="header smaller lighter blue">宝贝审核</h3> 
+<h3 class="header smaller lighter blue">宝贝审核</h3>
 <!--增加的操作-->
 <form action=""  class="form-horizontal" method="post">
 	<table class="table table-striped table-bordered table-hover" style="display:none;">
@@ -131,6 +131,7 @@
 	<th class="text-center">销售价格</th>
     <th class="text-center">活动价格</th>
 	<th class="text-center">活动库存</th>
+	<th class="text-center">时间区间</th>
   </tr>
 
 		<?php if(is_array($au_list)) { foreach($au_list as $item) { ?>
@@ -148,7 +149,10 @@
 					<td style="text-align:center;" class="wholesale-td"><?php  echo $item['ac_dish_price'] / 100 ;?></td>
 					<td style="text-align:center;" class="product-stock">
 						<span><?php  echo $item['ac_dish_total'];?></span>
-					</td>											
+					</td>
+					<td style="text-align:center;">
+						<?php echo getAreaTitleByAreaid($item['ac_action_id']); ?>
+					</td>
 				</tr>
 		<?php  } } ?>
  	

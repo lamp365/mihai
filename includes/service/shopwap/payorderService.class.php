@@ -22,7 +22,7 @@ class payorderService extends  \service\publicService
     {
         $memInfo  = get_member_account();
         $openid   = $memInfo['openid'];
-        $pay_ordersn     = array();
+        $pay_orderid     = array();
         $pay_total_money = 0;
         $pay_title       = '';
 
@@ -72,7 +72,6 @@ class payorderService extends  \service\publicService
             if(!empty($randomorder['ordersn'])) {
                 $ordersns= 'SN'.date('Ymd') . random(6, 1);
             }
-            $pay_ordersn[] = $ordersns;
 
             $price      = FormatMoney($item['totalprice'],1);  //转为分入库  总金额
             if($item['send_free'] == 1){
@@ -126,6 +125,9 @@ class payorderService extends  \service\publicService
             mysqld_insert('shop_order',$order_data);
             $orderid = mysqld_insertid();
             if($orderid){
+                //存入订单id
+                $pay_orderid[] = $orderid;
+
                 $pay_total_money = $pay_total_money + $order_data['price'];  //单位是分
                 //更新优惠卷为已经使用
                 if(!empty($bonus_id))
@@ -161,8 +163,8 @@ class payorderService extends  \service\publicService
                         //单个商品提成乘以个数  有推荐人才操作
                         $recommend_sts_id && $total_store_earn_price  += $store_earn_price*$o_good['total'];
                         $recommend_openid && $total_member_earn_price += $member_earn_price*$o_good['total'];
-                        //库存的操作减掉 卖出数量加1
-                        operateStoreCount($one_dish['id'],$one_dish['buy_num'],$one_dish['action_id'],1);
+                        //库存的操作减掉 卖出数量加1  业务变化了 变成 加入购物车就扣库存
+//                        operateStoreCount($one_dish['id'],$one_dish['buy_num'],$one_dish['action_id'],1);
                         //标记该商品的历史卖出的最低价格
                         compareDsihHistoryPrice($one_dish['id'],$one_dish['history_lower_prcie'],$one_dish['time_price']);
                     }
@@ -185,7 +187,7 @@ class payorderService extends  \service\publicService
         //移除购物车
         mysqld_delete("shop_cart",array('session_id'=>$openid,'to_pay'=>1));
         return array(
-            'pay_ordersn'     => $pay_ordersn,  //数组型的 订单号
+            'pay_orderid'     => $pay_orderid,  //数组型的 订单号
             'pay_total_money' => $pay_total_money,
             'pay_title'       => $pay_title
         );
@@ -214,7 +216,7 @@ class payorderService extends  \service\publicService
         $pay_title = str_replace('&','',$o_goods['title']);
 
         return array(
-            'pay_ordersn'     => $order['ordersn'],   //单个订单号
+            'pay_orderid'     => $order['id'],   //单个订单号
             'pay_total_money' => $order['price'],
             'pay_title'       => $pay_title,
         );

@@ -69,13 +69,13 @@ function getDishIsOnActive($dishid){
          if (empty($data)) {//第一次加入缓存
              $insert[] = $catId1;
              $memcache->set($key,$insert);
-             $memcache->set($key,$mytime);
+             $memcache->set($key_time,$mytime);
          }elseif (in_array($catId1, $data)){//id已经在缓存中了，还缓存毛线
              
          }else{//缓存中有数据了，则追加
              $data[] = $catId1;
-             $memcache->set($key,$insert);
-             $memcache->set($key,$mytime);
+             $memcache->set($key,$data);
+             $memcache->set($key_time,$mytime);
          }
      }
      //return $mytime;
@@ -99,13 +99,13 @@ function getDishIsOnActive($dishid){
          if (empty($data)) {//第一次加入缓存
              $insert[] = $catid2;
              $memcache->set($key,$insert);
-             $memcache->set($key,time());
+             $memcache->set($key_time,$mytime);
          }elseif (in_array($catid2, $data)){//id已经在缓存中了，还缓存毛线
              
          }else{//缓存中有数据了，则追加
              $data[] = $catid2;
-             $memcache->set($key,$insert);
-             $memcache->set($key,time());
+             $memcache->set($key,$data);
+             $memcache->set($key_time,$mytime);
          }
      }
      //return $mytime;
@@ -163,6 +163,7 @@ function getDishIsOnActive($dishid){
          $memcache = new \Mcache();
          $data = $memcache->get($key);
          $datatime = $memcache->get($key_time);
+         logRecord(var_export($data), 'cat1byins');
          return array('data'=>$data,'datatime'=>$datatime);
      }
  }
@@ -195,6 +196,7 @@ function getDishIsOnActive($dishid){
          $memcache = new \Mcache();
          $data = $memcache->get($key);
          $datatime = $memcache->get($key_time);
+         logRecord(var_export($data), 'cat2bycat1');
          return array('data'=>$data,'datatime'=>$datatime);
      }
  }
@@ -211,4 +213,36 @@ function getDishIsOnActive($dishid){
          return $memcache->get($key);
      }
  }
+ /**
+  * 根据经纬度查询的sql条件封装
+  * @param $jd 经度
+  * @param $wd 纬度
+  * return string
+  *   */
+ function get_area_condition_sql($jd,$wd){
+     if (empty($jd) || empty($wd)){
+         $cityCode = getCityidByIp();
+         $sql =" and (a.ac_city='$cityCode' or a.ac_city=0) ";
+     }else{
+         $jdwd = getAreaid($jd,$wd);
+         if (empty($jdwd)) return false;
+         if ($jdwd['status'] == 0) {//取默认城市
+             $cityCode = $jdwd['ac_city'];
+             $sql =" and (a.ac_city='$cityCode' or a.ac_city=0) ";
+         }else{
+             $ac_city = $jdwd['ac_city'];
+             $ac_city_area = $jdwd['ac_city_area'];
+             //$sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
+             $sql = " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0) ";
+         }
+     }
+     return $sql;
+ }
+
+function getAreaTitleByAreaid($ac_area_id){
+    $ac_area_id = intval($ac_area_id);
+    $sql  = "select ac_area_title from ".table('activity_area')." where ac_area_id={$ac_area_id}";
+    $area = mysqld_select($sql);
+    return $area['ac_area_title'];
+}
 ?>

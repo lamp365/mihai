@@ -36,7 +36,7 @@ class confirm extends base
        }
        $need_identy = $service->checkCarStoreIsNeedIdenty($sts_id_arr);
 
-       //获取优惠卷和默认地址
+       //获取默认地址
        $defaultAddress   =   mysqld_select("SELECT * FROM " . table('shop_address') . " WHERE openid ='{$memInfo['openid']}'  and isdefault =1 and  deleted = 0 ");
        if($need_identy == 1 && empty($defaultAddress['idnumber'])){
            //如果本次默认收货地址  没有身份证 但是有全球购的产品，就不给默认收货地址
@@ -70,15 +70,15 @@ class confirm extends base
         if($res_data['pay_total_money'] == 0){
             //不用发起微信支付 用户支付金额为0  直接程序完成支付
             $seting = globaSetting();
-            foreach($res_data['pay_ordersn'] as $ordersn){
-                paySuccessProcess($ordersn,$seting);
+            foreach($res_data['pay_orderid'] as $orderid){
+                paySuccessProcess($orderid,$seting);
             }
             //告诉前端不用向微信发起支付
             ajaxReturnData(1,'操作成功!',array('nopay'=>1));
         }
 
         $pay_data = array(
-            'out_trade_no'  => $res_data['pay_ordersn'], //订单号
+            'out_trade_no'  => $res_data['pay_orderid'], //订单号
             'total_fee'     => $res_data['pay_total_money'], //订单金额，单位为分
             'body'          => $res_data['pay_title'],
         );
@@ -102,7 +102,7 @@ class confirm extends base
         //获取要支付的订单
         $res_data  = $orderservice->getPayOrder($_GP['orderid']);
         $pay_data = array(
-            'out_trade_no'  => $res_data['pay_ordersn'], //订单号
+            'out_trade_no'  => $res_data['pay_orderid'], //订单号
             'total_fee'     => $res_data['pay_total_money'], //订单金额，单位为分
             'body'          => $res_data['pay_title'],
         );
@@ -115,16 +115,19 @@ class confirm extends base
     }
 
 
-
+    /**
+     * 临时使用 完成订单支付，上线后，去掉该接口，只是为了开发
+     * 金额可以不用分来支付，测试通道支付来完成支付
+     */
     public function surepay()
     {
         $_GP =  $this->request;
-        $ordersn = $_GP['ordersn'];
-        if(empty($ordersn)){
+        $orderid = $_GP['orderid'];
+        if(empty($orderid)){
             ajaxReturnData(0,'参数有误！');
         }
         $set     = globaSetting();
-        paySuccessProcess($ordersn,$set);
+        paySuccessProcess($orderid,$set);
         ajaxReturnData(1,'已确认支付！');
     }
 }

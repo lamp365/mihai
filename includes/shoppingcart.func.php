@@ -106,4 +106,50 @@ function getTodayTimeByActtime($time){
 	$todaytime = $today_zero+($time-$that_zero);
 	return $todaytime;
 }
+
+/**
+ * 更新购物车的最新加入时间
+ * @return string
+ */
+function update_cart_record_time(){
+	$member = get_member_account();
+	if(empty($member)){
+		return '';
+	}
+	$find = mysqld_select("select last_time from ".table('shop_cart_record')." where session_id='{$member['openid']}'");
+	if($find){
+		mysqld_update('shop_cart_record',array('last_time'=>time()),array('session_id'=>$member['openid']));
+	}else{
+		$in_data['session_id'] = $member['openid'];
+		$in_data['last_time']  = time();
+		$in_data['createtime'] =time();
+		mysqld_insert('shop_cart_record',$in_data);
+	}
+}
+
+/**
+ * 检测购物车是否已经过了20分钟
+ * 过了时间 释放库存，并删除购物车
+ */
+function check_shop_cart_time(){
+	$time = time()-20*60;
+	$cart_record = mysqld_selectall("select id,session_id from ".table('shop_cart_record')." where last_time<{$time}");
+	foreach($cart_record as $item){
+		//超时了 进行清除购物车 释放库存
+		$cart_list = mysqld_selectall("select id,goodsid,total,ac_dish_id from ".table('shop_cart')." where session_id='{$item['session_id']}'");
+		foreach($cart_list as $list){
+			$ac_action_id = 0;
+			if(!empty($list['ac_dish_id'])){
+				$action_info  = mysqld_select("select ac_action_id from ".table('activity_dish')." where ac_dish_id={$list['ac_dish_id']}");
+				$ac_action_id = intval($action_info['ac_action_id']);
+			}
+			//库存放回去
+			operateStoreCount($list['goodsid'],$list['total'],$ac_action_id,2);
+			//删掉该购物车
+			mysqld_delete('shop_cart',array('id'=>$list['id']));
+		}
+		//删除掉 购物车时间的记录
+		mysqld_delete('shop_cart_record',array('id'=>$item['id']));
+	}
+}
 ?>

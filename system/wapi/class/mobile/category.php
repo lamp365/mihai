@@ -22,11 +22,16 @@ class category extends base{
        $catService = new \service\wapi\categoryService();
        $insNum = $catService->checkInsNum($ac_id);
        
+       //判断该区域是否有商品
+       $_GP = $this->request;
+       $jd = isset($_GP['longitude']) ? $_GP['longitude'] : '';//经度
+       $wd = isset($_GP['latitude']) ? $_GP['latitude'] : '';//纬度
+       
        //获取一级栏目数据
        if ($insNum >= 2){
-           $data = $catService->getActInsName($ac_id);
+           $data = $catService->getActInsName($ac_id,$jd,$wd);
        }else {
-          $data = $catService->getP1CatName($ac_id);
+           $data = $catService->getP1CatName($ac_id,$jd,$wd);
        }
 
        if (empty($data)) ajaxReturnData(0,'暂时没有栏目');
@@ -44,10 +49,18 @@ class category extends base{
         $id = intval($_GP['id']);//栏目id
         if (empty($id) || empty($type)) ajaxReturnData(0,'参数错误');
         $catService = new \service\wapi\categoryService();
+        //判断该区域是否有商品
+        $jd = isset($_GP['longitude']) ? $_GP['longitude'] : '';//经度
+        $wd = isset($_GP['latitude']) ? $_GP['latitude'] : '';//纬度
+        
+        $list = getCurrentAct();
+        if (empty($list)) ajaxReturnData(0,'暂时没有活动');
+        $ac_id = $list['ac_id'];
+        
         if ($type == 1){
-            $data = $catService->getCat1NameByActIns($id);
+            $data = $catService->getCat1NameByActIns($id,$jd,$wd,$ac_id);
         }else{
-            $data = $catService->getCat2NameByActP1Cat($id);
+            $data = $catService->getCat2NameByActP1Cat($id,$jd,$wd,$ac_id);
         }
         
         if (empty($data)) ajaxReturnData(0,'暂时没有栏目');

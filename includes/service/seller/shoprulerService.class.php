@@ -366,7 +366,7 @@ class shoprulerService extends \service\publicService
                     $top_member = mysqld_select("select sts_openid from ".table('store_shop')." where sts_id={$member['store_sts_id']}");
                     //查找要添加的该手机号 法人openid
                     $compare_member = mysqld_select("select parent_openid from ".table('member_store_relation')." where openid='{$mem['openid']}'");
-                    if($top_member['sts_openid'] != $compare_member['parent_openid']){
+                    if($top_member['sts_openid'] == $compare_member['parent_openid']){
                         //该手机号  已经是其他法人店铺的管理员
                         $this->error = '该手机号已是其他法人店铺的管理员';
                         return false;

@@ -110,22 +110,13 @@ class activityService extends \service\publicService
         if (!$currentId) return false;
         $sql = "SELECT count(*) as num from ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b on a.ac_shop_dish=b.id where ";
         $sql .= " a.ac_action_id='$ac_id' and a.ac_dish_status=1 and b.status=1 ";
-        if (empty($jd) || empty($wd)){
-            $cityCode = getCityidByIp();
-            $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
-        }else{
-            $jdwd = getAreaid($jd,$wd);
-            if (empty($jdwd)) return false;
-            if ($jdwd['status'] == 0) {
-                $cityCode = $jdwd['ac_city'];
-                $sql .=" and (a.ac_city='$cityCode' or a.ac_city=0)";
-            }else{
-                $ac_city = $jdwd['ac_city'];
-                $ac_city_area = $jdwd['ac_city_area'];
-                //$sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
-                $sql .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0)";
-            }
+        
+        //经纬度区域筛选
+        $sql_where = get_area_condition_sql($jd,$wd);
+        if ($sql_where){
+            $sql .= $sql_where;
         }
+        
         $sql .= " and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
         if ($currentId != $areaid){
             $sql .= " and a.ac_dish_total > 0 ";

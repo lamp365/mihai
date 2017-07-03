@@ -25,8 +25,9 @@
           <td class="text-center"><?php echo $item['ac_shop_num']; ?></td>
           <td class="text-center"><?php echo  $item['ac_time_info'];?></td>
           <td class="text-center">
-                   <a class="btn btn-xs btn-info"  href="<?php  echo web_url('activity', array('name' => 'shop','op'=>'add','id'=>$item['ac_id']))?>"><i class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;</a> 
-				   <?php if ( $item['status'] != 2 ) { ?>
+                   <a class="btn btn-xs btn-info"  href="<?php  echo web_url('activity', array('name' => 'shop','op'=>'add','id'=>$item['ac_id']))?>"><i class="icon-edit"></i>&nbsp;修&nbsp;改&nbsp;</a>
+			  		<a class="btn btn-xs btn-success" href="<?php echo web_url('activity',array('op'=>'showdish','ac_id'=>$item['ac_id'])); ?>">查看列表</a>
+			      <?php if ( $item['status'] != 2 ) { ?>
                    <a class="btn btn-xs btn-info" onclick="return confirm('此操作不可恢复，确认删除？');return false;"  href="<?php  echo web_url('activity', array('name' => 'shop','op'=>'delete','id'=>$item['ac_id']))?>"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
 				   <?php } ?>
 				   </td>

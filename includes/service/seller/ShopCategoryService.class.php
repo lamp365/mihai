@@ -233,7 +233,6 @@ class ShopCategoryService extends \service\publicService {
     public function getShopCategoryTree(){
         $redata = array();
         $memInfo = get_member_account();
-
         $oneCategoryData = mysqld_selectall('select id,name as cat_name,pid,pid as parentid,store_shop_id,status from '.table('store_shop_category').'  where store_shop_id = '.$memInfo['store_sts_id'].' and status = 1 order by sort asc');
         $list = $cate_ids = array();
         shopCategoryTree2($list,$oneCategoryData,0,$cate_ids);

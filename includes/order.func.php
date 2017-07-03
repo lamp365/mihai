@@ -39,10 +39,19 @@ function get_orders($where='', $pindex=1, $psize = 10) {
             $order_goods = mysqld_selectall("SELECT * FROM ".table('shop_order_goods')." WHERE orderid=".$ov['id']." ORDER BY createtime desc");
             $ov['goods'] = $order_goods;
             if (!empty($ov['goods'])) {
+            	$is_com = 1;
                 foreach ($ov['goods'] as &$odgsv) {
+                	if ($odgsv['iscomment'] == 0 OR $odgsv['iscomment'] == '0') {
+                		$is_com = 0;
+                	}
                     $odgsv['good'] = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=".$odgsv['dishid']);
                 }
                 unset($odgsv);
+                if ($is_com == 0) {
+                	$ov['order_comment'] = 0;
+                }else{
+                	$ov['order_comment'] = 1;
+                }
             }
         }
         unset($ov);
@@ -55,7 +64,7 @@ function get_orders($where='', $pindex=1, $psize = 10) {
 
 // 获取订单数量
 function get_order_num($where='') {
-	if (where=='') {
+	if ($where=='') {
 		return false;
 	}
 	$result = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.* FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE ".$where." GROUP BY a.id ORDER BY a.createtime DESC LIMIT 1");
@@ -207,9 +216,9 @@ function update_order_status($id, $status) {
  * 费率是总支付中抽的 那么去除费率后，剩下的就是 商家所得
  * 商家会自行看到佣金提成，会自己打款给推广用户
  */
-function paySuccessProcess($ordersn,$setting)
+function paySuccessProcess($orderid,$setting)
 {
-	$order   = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE ordersn=:ordersn", array(':ordersn'=>$ordersn));
+	$order   = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id=:orderid", array(':orderid'=>$orderid));
 	if(empty($order['id'])) {
 		return '';
 	}
@@ -1417,7 +1426,7 @@ function hasFinishGetOrder($orderid){
 
 /**
  * 根据用户openid获取推荐人的openid
- * 以及推荐人从属的店铺id
+ * 以及推荐人从属的店铺id 以及店铺给子账户的提成比例
  * 有种情况就是 可能该推广员已经不做了。被移除了，之前的客户全部归属店铺
  * @param $openid
  * @return array

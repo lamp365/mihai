@@ -55,23 +55,9 @@ class shop extends base{
         //查询条件拼接
         $where = " a.ac_action_id={$list['ac_id']} and a.ac_dish_status=1 and b.status=1 ";
         //区域和城市id
-        if (empty($jd) || empty($wd)) {
-            //高德地图根据ip获取城市
-            $cityCode = getCityidByIp();
-            $where .=" and (a.ac_city='$cityCode' or a.ac_city=0) ";
-        }else{
-            //高德接口获取区域id
-            $return = getAreaid($jd,$wd);
-           if (empty($return)) ajaxReturnData(0,'参数错误');
-           if ($return['status'] == 0) {
-               $cityCode = $return['ac_city'];
-               $where .=" and (a.ac_city='$cityCode' or a.ac_city=0) ";
-           }else {
-               $ac_city = $return['ac_city'];
-               $ac_city_area = $return['ac_city_area'];
-               //$where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' or a.ac_city_area=0,IF(a.ac_city_area=0,a.ac_city=0,a.ac_city_area='$ac_city_area'))";
-               $where .= " and IF(a.ac_city='$ac_city',a.ac_city_area='$ac_city_area' OR a.ac_city_area=0,a.ac_city=0)";
-           }
+        $sql_where = get_area_condition_sql($jd,$wd);
+        if ($sql_where){
+            $where .= $sql_where;
         }
         //栏目或者关键词
         if ($type == 1){

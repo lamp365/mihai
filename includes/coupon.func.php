@@ -47,7 +47,7 @@ function getCouponByPriceOnpay($sts_id,$totalprice,$dishid_arr){
     if(empty($bonus)){
         return array();
     }else{
-        return $bonus;
+        return array_values($bonus);
     }
 }
 

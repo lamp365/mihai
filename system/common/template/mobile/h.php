@@ -1,9 +1,14 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied'); ?>
 <?php
-$h_member = get_member_account();
+$h_openid = checkIsLogin();
 //查看该法人 是否有正在申请的店铺
-$onChaekStore = mysqld_select("select * from ".table('store_shop_apply')." where sts_openid='{$h_member['openid']}'");
-$onCheckStore = mysqld_select("select * from ".table('store_shop')." where sts_openid='{$h_member['openid']}'");
+$onChaekStore = $onCheckStore = $h_member = array();
+if(!empty($h_openid)){
+    $onChaekStore = mysqld_select("select * from ".table('store_shop_apply')." where sts_openid='{$h_openid}'");
+    $onCheckStore = mysqld_select("select * from ".table('store_shop')." where sts_openid='{$h_openid}'");
+    $h_member     = update_member_info();
+}
+
 $cfg  =  globaSetting();
 if(!empty($h_member['store_sts_id'])){
     //之前已经成功申请过店铺

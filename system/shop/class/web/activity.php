@@ -3,7 +3,7 @@ $act = new Activity();
 isset( $_GP['page'] ) && $act->setPage($_GP['page']);
 if ( $_GP['op'] == 'list' ){
     $act_list = $act->getAct();
-    include page("activity_list");
+    include page("activity/activity_list");
 }else if ( $_GP['op'] == 'add' ){
 	if ( !empty($_GP['id']) ){
 		$pro = $act->getAct($_GP['id']);
@@ -30,7 +30,7 @@ if ( $_GP['op'] == 'list' ){
              message('操作成功', 'refresh', 'success');
 		}
 	}
-    include page("activity");
+    include page("activity/activity");
 }else if ( $_GP['op'] == 'dish' ){
 	$act_list = $act->getAct();
 	if ( !empty($_GP['ac_list']) ){
@@ -68,14 +68,24 @@ if ( $_GP['op'] == 'list' ){
 		}
 	}
 	$pager = $act->pagination;
-    include page("activity_dish_check");
+    include page("activity/activity_dish_check");
 }else if ( $_GP['op'] == 'area_list' ){
     $area_list = $act->findArea();
-    include page("activity_area_list");
+    include page("activity/activity_area_list");
 }else if ( $_GP['op'] == 'area' ){
 	if ( !empty($_GP['ac_status']) && checksubmit('submit') ){
          $act->setDiffArea($_GP['ac_status']);
 	}
     $area = $act->findDiffArea();
-    include page("activity_area");
+    include page("activity/activity_area");
+}else if($_GP['op'] == 'showdish'){
+	if(empty($_GP['ac_id'])){
+		message('参数有误！');
+	}
+	$page   = max(1, $_GP['page']);
+	$psize  = 25;
+	$au_list = mysqld_selectall("SELECT a.*,b.* FROM ".table('activity_dish')." as a left join ".table('shop_dish')." as b on a.ac_shop_dish = b.id WHERE a.ac_dish_status = 1 and a.ac_action_id={$_GP['ac_id']} limit ".($page - 1) * $psize . ',' . $psize);
+	$total   = mysqld_selectcolumn("SELECT count(a.ac_dish_id) FROM ".table('activity_dish')." as a left join ".table('shop_dish')." as b on a.ac_shop_dish = b.id WHERE a.ac_dish_status = 1 and a.ac_action_id={$_GP['ac_id']}");
+	$pager   = pagination($total, $page, $psize);
+	include page("activity/activity_dish_check");
 }
