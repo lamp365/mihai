@@ -47,7 +47,7 @@ class ShopBonusService extends \service\publicService {
     }
     
     //获取店铺优惠券列表
-    public function couponList($pindex,$psize,$wheres='',$fieldstr='scid,payment,coupon_amount,amount_of_condition,release_quantity,create_time,store_category_idone,store_category_idtwo,store_shop_id,usage_mode,receive_start_time,receive_end_time,use_start_time,use_end_time,coupon_name',$order='ORDER BY use_end_time asc'){
+    public function couponList($pindex,$psize,$wheres='',$fieldstr='scid,payment,coupon_amount,amount_of_condition,release_quantity,create_time,store_category_idone,store_category_idtwo,store_shop_id,usage_mode,receive_start_time,receive_end_time,use_start_time,use_end_time,coupon_name,inventory',$order='ORDER BY use_end_time asc'){
         $result          = array();
         $store_where     = " where store_shop_id = {$this->memberData['store_sts_id']} {$wheres} ";
         $sql = "SELECT {$fieldstr} FROM " . $this->table_c  . $store_where;
@@ -127,9 +127,18 @@ class ShopBonusService extends \service\publicService {
     public function editCoupon($id,$nums){
         $where = '';
         $where .= " where scid = {$id}";
-        $sql = "update" . $this->table_c ." set release_quantity = release_quantity - {$nums}".$where;
+        $sql = "update" . $this->table_c ." set release_quantity = release_quantity - {$nums},inventory = inventory + {$nums}".$where;
         $queryStatus = mysqld_query($sql);
         return $queryStatus;
+    }
+    
+    //更新领取数量
+    //统计优惠券使用数量
+    public function countUseCoupon($scid){
+        $where = '';
+        $sql = "select count(0) as total from {$this->table_c} where scid = {$scid} and status > 0";
+        $rs  = mysqld_select($sql);
+        return $rs['total'];
     }
     
 }

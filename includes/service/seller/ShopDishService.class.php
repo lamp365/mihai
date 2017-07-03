@@ -129,6 +129,15 @@ class ShopDishService extends \service\publicService {
             $wheres .= " and id not in ({$_GP['ltcDishIds']})";
         }
         
+        if($_GP['is_distribution'] > 0)
+        {
+            $wheres .= " and is_direct = 1";
+        }
+        else{
+            $where .= " and sts_id = {$this->memberData['store_sts_id']}";
+        }
+       
+        
         if(isset($_GP['status'])){
             if($_GP['status'] < 2)
             {
@@ -145,19 +154,37 @@ class ShopDishService extends \service\publicService {
         elseif($_GP['store_count'] != ''){
             $order = "order by store_count {$_GP['store_count']}";
         }
-        else{
+        elseif($_GP['promot_price'] != ''){
+             $order = "order by promot_price {$_GP['promot_price']}";
+        }else{
             $order = 'order by createtime desc,sort asc';
         }
         
         $limit = " LIMIT " . ($_GP['page'] - 1) * $_GP['limit'] . ',' . $_GP['limit'];
-        $sql = "select {$fields} from {$this->table} where sts_id = {$this->memberData['store_sts_id']} {$wheres} {$order} {$limit}";
+        $sql = "select {$fields} from {$this->table} where 1 {$wheres} {$order} {$limit}";
         $dishList = mysqld_selectall($sql);
         
         foreach($dishList as $k=>$v){
             $dishList[$k]['marketprice']  = FormatMoney($v['marketprice'],2);
+            if($_GP['is_distribution'] > 0)
+            {
+                //squdian_store_extend_info
+                if($v['promot_price'] > 0)
+                {
+                    $distribution_commision = $v['marketprice'] - $v['promot_price'];
+                    $dishList[$k]['distribution_commision'] = FormatMoney($distribution_commision,2);
+                }
+                else{
+                    //squdian_store_extend_info
+                    $sql = "select commision from squdian_store_extend_info where store_id = {$v['sts_id']}";
+                    $rs  = mysqld_select($sql);
+                    $distribution_commision = ($rs['commision']/100)*$v['marketprice'];
+                    $dishList[$k]['distribution_commision'] = FormatMoney($distribution_commision,2);
+                }
+            }
         }
         
-        $dishList['total'] = mysqld_select("select count(0) as total from {$this->table} where sts_id = {$this->memberData['store_sts_id']} {$wheres}");
+        $dishList['total'] = mysqld_select("select count(0) as total from {$this->table} where 1 {$wheres}");
         
         $dishList['total'] = intval($dishList['total']['total']);
         
@@ -338,6 +365,18 @@ class ShopDishService extends \service\publicService {
     public function distributionListDish($data,$fields='*',$isAll=0){
         $data['page'] = max(1, intval($data['page']));
         $data['limit'] = $data['limit']>0?$data['limit']:10; 
+        $where = array();
+        if($_GP['store_p1'] > 0){
+            $where .= " and store_p1 = {$_GP['store_p1']}";
+        }
+        
+        if($_GP['store_p2'] > 0){
+            $where .= " and store_p2 = {$_GP['store_p2']}";
+        }
+        
+        $where = 'is_direct = 1';
+        
+        
         if($isAll <= 0)
         {
             $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
@@ -345,7 +384,7 @@ class ShopDishService extends \service\publicService {
         else{
             $limit = '';
         }
-        $where = 'is_direct = 1';
+        
         $order = ' order by createtime desc';
         $sql   = "select {$fields} from {$this->table} where {$where} {$order} {$limit}";
         $rs    = mysqld_selectall($sql);

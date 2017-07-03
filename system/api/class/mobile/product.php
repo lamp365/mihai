@@ -705,7 +705,7 @@ class product extends base
 
        $redata = array();
        //测试数据开始
-       $data['dish_id'] = 256;
+       //$data['dish_id'] = 256;
        //测试数据结束
        if($data['dish_id'] <= 0)
        {
@@ -890,12 +890,11 @@ class product extends base
         $data = array(
             'sales_num'      => 'asc',
             'store_count'    => 'desc',
-            'is_lts'        => 1,
-            'ac_action_id'        => 2,
+            'is_distribution' => 1
         );
         //价格区间
         //测试数据结束 
-        */ 
+        */
         
         if($data['is_lts'] > 0)
         {

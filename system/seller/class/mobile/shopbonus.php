@@ -20,7 +20,6 @@ class shopbonus extends base
     public function index()
     {
         $_GP = $this->request;
-        
         $pindex = max(1, intval($_GP['page']));
         $psize = 10;
         
@@ -230,14 +229,14 @@ class shopbonus extends base
         
         if($_GP['id'] <= 0)
         {
-            ajaxReturnData(4,'必要参数不存在','');
+            ajaxReturnData(4,'必要参数不存在',mobile_url('shopbonus',array('op'=>'index')));
         }
         
         //判断手机号是否存在
-        $isMobile = isMobileMember($_GP['mobile']);
+        $isMobile = member_get_bymobile($_GP['mobile']);
         if($isMobile['mobile'] == '')
         {
-            ajaxReturnData(3,'手机号对应用户不存在','');
+            ajaxReturnData(3,'手机号对应用户不存在,请确认',mobile_url('shopbonus',array('op'=>'grantCoupon','id'=>"{$_GP['id']}")));
         }
         
         //判断优惠券是否足够发放
@@ -245,7 +244,7 @@ class shopbonus extends base
         
         if($couponData['release_quantity'] <= $_GP['grantnums'])
         {
-            ajaxReturnData(2,'优惠券发放失败,库存不足','');
+            ajaxReturnData(2,'优惠券发放失败,库存不足',mobile_url('shopbonus',array('op'=>'grantCoupon','id'=>"{$_GP['id']}")));
         }
         
         for($i=0;$i<$_GP['grantnums'];$i++)

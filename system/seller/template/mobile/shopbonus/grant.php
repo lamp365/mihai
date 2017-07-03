@@ -82,7 +82,8 @@
                     title: '提示'
                     ,content: data.message
                     ,yes: function(index){
-                        location.href = data.data[0];
+                        //location.href = data.data[0];
+                        location.href = data.data;
                     }
                 });
             }

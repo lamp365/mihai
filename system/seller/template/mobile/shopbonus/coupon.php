@@ -62,7 +62,7 @@
                   <th>优惠券金额</th>
                   <th>最小金额</th>
                   <th>发放数量</th>
-                  <th>使用数量</th>
+                  <th>被领取数量</th>
                   <th>发放时间</th>
                   <th>使用时间</th>
                   <th>操作</th>
@@ -79,7 +79,7 @@
                   <td><?php echo $v['coupon_amount'];?></td>
                   <td><?php echo $v['amount_of_condition'];?></td>
                   <td><?php echo $v['release_quantity'];?></td>
-                  <td><?php echo $v['inventory'];?></td>
+                  <td><?php echo intval($v['inventory']);?></td>
                   <td><?php echo $v['receive_start_time'];?>~<?php echo $v['receive_end_time'];?></td>
                   <td><?php echo $v['use_start_time'];?>~<?php echo $v['use_end_time'];?></td>
                   <td>

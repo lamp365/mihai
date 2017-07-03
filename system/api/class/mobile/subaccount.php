@@ -16,6 +16,7 @@ class subaccount extends base
     private $subAccountObj  = array();
     private $weixin         = array();
     private $shopDish       = array();
+    private $shopCate       = array();
 
     public function __construct()
     {
@@ -25,6 +26,7 @@ class subaccount extends base
         $this->subAccountObj    = new \service\seller\subAccountService();
         $this->weixin           = new \WeixinTool();
         $this->shopDish         = new \service\seller\ShopDishService();
+        $this->shopCate         = new \service\seller\ShopStoreCategoryService();
         parent::__construct();
         
     }
@@ -117,23 +119,44 @@ class subaccount extends base
     
     //获取分销商品分类列表
     public function distributionCate(){
-        $dishData = $this->shopDish->distributionListDish($data, 'store_p1,store_p2',1);
+        $data   = $this->request;
+        $redata = array();
+        
+        $dishOneData = $this->shopDish->distributionListDish($data, 'DISTINCT(store_p1)',1);
+        
+        $dishTwoData = $this->shopDish->distributionListDish($data, 'DISTINCT(store_p2),store_p1',1);
 
-        $cateArr = array();
-        foreach($dishData as $v)
+        if($dishTwoData != '')
         {
-            //$cateArr[$v['store_p1']]
-        }
+            $store_p1_str = '';
+            foreach($dishOneData as $v){
+                $store_p1_str .= $v['store_p1'].',';
+            }
+            $store_p1_str = rtrim($store_p1_str,',');
+            $oneCate = $this->shopCate->getStoreShopCategory($store_p1_str,'id,name');
+            foreach($oneCate as $k=>$v){
+                $redata[$v['id']] = $v;
+            }
+            
+            $store_p2_str = '';
+            foreach($dishTwoData as $v){
+                $store_p2_str .= $v['store_p2'].',';
+            }
+            $store_p2_str = rtrim($store_p2_str,',');
+            $twoCate = $this->shopCate->getStoreShopCategory($store_p2_str,'id,name,pid');
+
+            foreach($twoCate as $k=>$v){
+                $redata[$v['pid']]['twocate'][] = $v;
+            }
+            $redata = array_values($redata);
+        }   
         
-        $store_p2_str = '';
-        foreach($dishData as $v){
-            $store_p2_str .= $v['store_p2'].',';
-        }
-        $store_p2_str = rtrim($store_p2_str,',');
-        
-        
-        
+        ajaxReturnData(1,'获取成功',$redata);
     }
+    
+    //获取列表内容
+    
+    
     
 }
 ?>
