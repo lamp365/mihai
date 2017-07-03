@@ -134,7 +134,7 @@ class ShopDishService extends \service\publicService {
             $wheres .= " and is_direct = 1";
         }
         else{
-            $where .= " and sts_id = {$this->memberData['store_sts_id']}";
+            $wheres .= " and sts_id = {$this->memberData['store_sts_id']}";
         }
        
         

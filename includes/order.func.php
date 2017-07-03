@@ -162,29 +162,41 @@ function update_order_status($id, $status) {
     	mysqld_query("UPDATE ".table('shop_order')." SET status=3,completetime=".time()." WHERE id=".$id);
 		if($order['price']>0)
 		{
-			//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
-			$mark = LANG('LOG_SHOPBUY_TIP','paylog');
-			member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
-
+			$setting = globaSetting();
 			//商家所得去除费率  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
 			$pay_rate    = $setting['pay_rate']/100;
 			$store_money = intval($order['price'] - $pay_rate*$order['price']);  //单位是分
-			$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
-			store_freeze_gold($order['sts_id'],$store_money,1,$mark);
+			$store = member_store_getById($order['sts_id'],'freeze_money,recharge_money');
+			$freeze_money    = max(0,$store['freeze_money'] - $store_money);  //冻结扣除
+			$recharge_money  = $store['recharge_money'] + $store_money;       //余额添加
+			mysqld_update('store_shop', array(
+				'freeze_money'   => $freeze_money,
+				'recharge_money' => $recharge_money
+			), array('sts_id' => $order['sts_id']));
 		}
 
 		//推荐人所属的店铺 得到一笔冻结的推广佣金    退款要扣掉  完成收货要变成余额
 		if(!empty($order['recommend_sts_id']) && !empty($order['store_earn_price'])){
 			$earn_price = $order['store_earn_price']; //单位分
-			$remark     = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
-			store_commisiongold($order['recommend_sts_id'],$order['recommend_openid'],$earn_price,3,$order['id'],$remark);
+			$store = member_store_getById($order['recommend_sts_id'],'freeze_money,recharge_money');
+        	$freeze_money    = max(0,$store['freeze_money'] - $earn_price);  //冻结扣除
+			$recharge_money  = $store['recharge_money'] + $earn_price;       //余额添加
+        	mysqld_update('store_shop', array(
+				'freeze_money'   => $freeze_money,
+				'recharge_money' => $recharge_money
+			), array('sts_id' => $order['recommend_sts_id']));
 		}
 		//推荐人得到跟店铺 所承诺的 提成收入 冻结收入   退款要扣掉  完成收货要变成未结算
 		if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
 			$earn_price  = $order['member_earn_price']; //单位分
-			$remark      = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
-			//注意该方法的使用  推荐人要加入佣金，第一个参数是 推荐人的openid
-			member_commisiongold($order['recommend_openid'],$order['openid'],$earn_price,3,$order['id'],$remark);
+			$member = member_get($order['recommend_openid'],'freeze_gold,wait_glod');
+			//以免扣掉时为负数
+        	$freeze_gold  = max(0,$member['freeze_gold'] - $earn_price);  //冻结扣除
+        	$wait_glod    = $member['wait_glod'] + $earn_price;           //未结算添加
+        	mysqld_update('member', array(
+				'freeze_gold' => $freeze_gold,
+				'wait_glod'   => $wait_glod,
+			), array('openid' => $order['recommend_openid']));
 		}
     }
 }

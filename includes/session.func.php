@@ -112,33 +112,11 @@ function get_session_account($useAccount = true)
     } else {
         //临时的用户不要注册 因为 第二天找不到这个临时用户，但是微信不一样，微信openid是唯一的
         //临时的用户注册没有一点意义
-       /* $sessionAccount = array(
+        $sessionAccount = array(
             'openid' => get_sessionid(),
             'unionid' => ''
         );
-        $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;*/
-    }
-    
-    if ($useAccount && ! empty($sessionAccount)) {
-        $member = mysqld_select("SELECT * FROM " . table('member') . " where openid=:openid and istemplate=1 ", array(
-            ':openid' => $sessionAccount['openid']
-        ));
-        if (empty($member['openid'])) {
-            $wx_info   = get_weixininfo_from_regist();
-            $data = array(
-                'nickname'	  => $wx_info['name'],
-                'realname'	  => $wx_info['name'],
-                'avatar'	  => $wx_info['face'],
-                'mobile' => "",
-                'pwd' => encryptPassword(rand(10000, 99999)),
-                'createtime' => time(),
-                'status' => 1,
-                'istemplate' => 1,
-                'experience' => 0,
-                'openid' => $sessionAccount['openid']
-            );
-            mysqld_insert('member', $data);
-        }
+        $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
     }
     return $sessionAccount;
 }

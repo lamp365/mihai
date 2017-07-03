@@ -95,6 +95,7 @@ class shopindex extends base{
        if ($currentId && ($currentId != $ac_area_id)){
            $sql .= " and a.ac_dish_total > 0";
        }
+
        //分页取数据
        $pindex = max(1, intval($_GP['page']));
        $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据

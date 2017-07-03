@@ -229,7 +229,7 @@ class WeixinTool
             return array('errno'=>0,'message'=>'参数不能为空！');
         }
 
-        if(in_array($_SERVER['HTTP_HOST'],array('www.sdudian.com','sdudian.com'))){
+        if(in_array($_SERVER['HTTP_HOST'],array('www.squdian.com','squdian.com'))){
             //以免测试环境跟线上环境 二维码发生覆盖
             $dir     = 'xcxqrcode';
             $picname = md5($condition).".png";

@@ -262,7 +262,7 @@ class good_detail extends base {
     // 店铺ID
     $sts_id = intval($_GP['sts_id']);
 
-    if (empty($order_id) or empty($comment) or empty($dish_id) or empty($sts_id)) {
+    if (empty($order_id) or empty($dish_id) or empty($sts_id)) {
       ajaxReturnData(0,'必填项不可为空');
     }
 
@@ -277,7 +277,10 @@ class good_detail extends base {
     }
 
     // 评论信息
-    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'comment' => $comment, 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id);
+    $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id);
+    if (!empty(comment)) {
+      $d['comment'] = $comment;
+    }
     $d['system'] = getSystemType();
     mysqld_insert('shop_goods_comment', $d);
     $comment_id = mysqld_insertid();

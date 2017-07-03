@@ -24,6 +24,7 @@ class ShopBonusService extends \service\publicService {
     public function addCoupon($data){
         $insertData = array();
         
+        $insertData['coupon_img']          = $data['coupon_img'];
         $insertData['coupon_name']          = $data['coupon_name'];
         $insertData['payment']              = $data['payment'];
         $insertData['usage_mode']           = $data['usage_mode'];
@@ -72,6 +73,7 @@ class ShopBonusService extends \service\publicService {
     public function upCoupon($data,$id){
         $upData = array();
         
+        $upData['coupon_img']           = $data['coupon_img'];
         $upData['coupon_name']          = $data['coupon_name'];
         $upData['payment']              = $data['payment'];
         $upData['usage_mode']           = $data['usage_mode'];

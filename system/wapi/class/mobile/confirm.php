@@ -67,12 +67,21 @@ class confirm extends base
               ajaxReturnData(0,$weixinpay->getError());
         }
 
+        if($res_data['pay_total_money'] == 0){
+            //不用发起微信支付 用户支付金额为0  直接程序完成支付
+            $seting = globaSetting();
+            foreach($res_data['pay_ordersn'] as $ordersn){
+                paySuccessProcess($ordersn,$seting);
+            }
+            //告诉前端不用向微信发起支付
+            ajaxReturnData(1,'操作成功!',array('nopay'=>1));
+        }
+
         $pay_data = array(
             'out_trade_no'  => $res_data['pay_ordersn'], //订单号
             'total_fee'     => $res_data['pay_total_money'], //订单金额，单位为分
             'body'          => $res_data['pay_title'],
         );
-
         $result = $weixinpay->weixinpay($pay_data);
         if (!$result) {
             ajaxReturnData(0,$weixinpay->getError());

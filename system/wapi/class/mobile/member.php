@@ -21,7 +21,7 @@ class member extends base
      */
     public function get_qrcode()
     {
-        $member = get_member_account();
+        $member =  get_member_account();
         $weixin = new \WeixinTool();
         $result = $weixin->get_xcx_erweima($member['openid'],2);
         if($result['errno'] == 0){

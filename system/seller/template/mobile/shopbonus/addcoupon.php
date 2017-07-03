@@ -16,6 +16,9 @@
         white-space: nowrap;
         text-overflow:ellipsis;
     }
+    .layui-upload-button{
+        position: absolute;    top: 81px;    left: 42.5px;    opacity: 0.8;
+    }
 </style>
 </head>
 <body  style="padding:10px;">
@@ -134,7 +137,17 @@
                 <input type="text" name="coupon_name" placeholder="请输入优惠券名称" autocomplete="off" class="layui-input" lay-verify="required" id='coupon_name' value="<?php echo $coupon['coupon_name'];?>">
             </div>
         </div>
-        
+            
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片上传</label>
+            <div class="layui-input-inline" style="position:relative;">
+                
+                <img id="coupon_img_show" name="coupon_img_show" src="<?php echo $coupon['coupon_img'];?>" style="width: 200px; height: 200px; border-radius: 100%;">
+                <input type="file" name="file" class="layui-upload-file" id="file" >
+                <input type="hidden" value="<?php echo $coupon['coupon_img'];?>" id="coupon_img" name="coupon_img" >
+            </div>
+        </div>
+                
         <div class="layui-form-item">
             <label class="layui-form-label">优惠券金额</label>
             <div class="layui-input-inline" >
@@ -160,7 +173,6 @@
             <label class="layui-form-label">用户领取限制</label>
             <div class="layui-input-inline" >
              <input type="text" name="get_limit" id="get_limit" placeholder="0表示无限制" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['get_limit'];?>">
-                
             </div>
         </div>
         
@@ -204,9 +216,22 @@
 </div>
 <?php include page('seller_footer');?>
 <script>
-    layui.use(['form', 'laydate'], function(){
+    layui.use(['form', 'laydate','upload'], function(){
         var form = layui.form();
         var laydate = layui.laydate;
+        
+        layui.upload({
+            //upload_name
+            url: '/api/fileupload/index.html'
+            ,elem:"#file"
+            ,method:'post'
+            ,success: function(res){
+              layui.jquery('#coupon_img').val(res.data['pic_url']);
+              layui.jquery('#coupon_img_show').attr('src',res.data['pic_url']);
+            }
+        });      
+      
+        
         
         //layui.selMeltiple(layui.jquery);
         
@@ -382,6 +407,7 @@
             'oneCategory':layui.jquery('#oneCategory').val(),
             'twoCategory':layui.jquery('#twoCategory').val(),
             'get_limit':layui.jquery('#get_limit').val(),
+            'coupon_img':layui.jquery('#coupon_img').val(),
             'store_shop_dishid_enter':select_data_json
         }
         if( form_data_json.use_end_time < form_data_json.receive_start_time || form_data_json.use_start_time < form_data_json.receive_start_time){
