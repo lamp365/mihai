@@ -175,8 +175,11 @@ class subaccount extends base
         $redata['memberInfo']['total'] = $rsTotalData['countnum'];
         $i = 0;
         foreach($rsData as $k=>$v){
-            $redata['memberInfo']['memberData'][$i]           = $this->subAccountObj->getMemberinfo($v['openid'],'wait_glod');
+            $redata['memberInfo']['memberData'][$i]           = $this->subAccountObj->getMemberinfo($v['openid'],'wait_glod,nickname,realname,avatar');
             $redata['memberInfo']['memberData'][$i]['openid']     = $v['openid'];
+            $redata['memberInfo']['memberData'][$i]['nickname']     = $redata['memberInfo']['memberData'][$i]['nickname'];
+            $redata['memberInfo']['memberData'][$i]['realname']     = $redata['memberInfo']['memberData'][$i]['realname'];
+            $redata['memberInfo']['memberData'][$i]['avatar']     = $redata['memberInfo']['memberData'][$i]['avatar'];
 
             //获取总收益
             $redata['memberInfo']['memberData'][$i]['account_fee'] = $this->subAccountObj->getTotalIncome($v['openid']);

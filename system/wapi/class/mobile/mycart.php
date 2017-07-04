@@ -66,16 +66,10 @@ class mycart extends base
 
     public function del()
     {
-        $member = get_member_account();
-        $openid = $member['openid'];
         $_GP = $this->request;
         $id  = intval($_GP['id']);
-        mysqld_delete('shop_cart', array(
-            'session_id' => $openid,
-            'id' => $id
-        ));
-
         $service  = new \service\wapi\mycartService();
+        $res      = $service->delcart($id);
         $cartlist = $service->cartlist();
         ajaxReturnData(1,'已经移除!',$cartlist);
     }
@@ -91,15 +85,12 @@ class mycart extends base
         if(empty($_GP['ids'])){
             ajaxReturnData(0,'参数有误！');
         }else{
+            $service  = new \service\wapi\mycartService();
             $ids = explode(',',$_GP['ids']);
             foreach($ids as $id){
-                mysqld_delete('shop_cart', array(
-                    'session_id' => $openid,
-                    'id' => $id
-                ));
+                $res  = $service->delcart($id);
             }
 
-            $service  = new \service\wapi\mycartService();
             $cartlist = $service->cartlist();
             ajaxReturnData(1,'删除成功！',$cartlist);
         }
@@ -109,10 +100,11 @@ class mycart extends base
     {
         $member = get_member_account();
         $openid = $member['openid'];
-        mysqld_delete('shop_cart', array(
-            'session_id' => $openid
-        ));
-        $service  = new \service\wapi\mycartService();
+        $service   = new \service\wapi\mycartService();
+        $cart_info = mysqld_selectall("select * from ".table('shop_cart')." where session_id='{$openid}'");
+        foreach($cart_info as $item){
+            $res  = $service->delcart($item['id']);
+        }
         $cartlist = $service->cartlist();
         ajaxReturnData(1,'已全部移除！',$cartlist);
     }

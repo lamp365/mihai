@@ -173,7 +173,7 @@ class mycartService extends  \service\publicService
         }
 
 
-        $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid ", array(
+        $row = mysqld_select("SELECT id,total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid ", array(
             ':session_id' =>  $member['openid'],
             ':goodsid'    =>  $dishid
         ));
@@ -258,6 +258,17 @@ class mycartService extends  \service\publicService
             return false;
         }
 
+        //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
+        if($store_count <= 30){
+            $can_max_buy = 1;
+        }else{
+            $can_max_buy = floor($store_count*0.1);
+        }
+        if($total > $can_max_buy){
+            $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
+            return false;
+        }
+
         //移除掉所有商品的打钩状态
         mysqld_update("shop_cart",array('to_pay'=>0),array('session_id'=>$member['openid']));
 
@@ -285,7 +296,12 @@ class mycartService extends  \service\publicService
         return $total;
     }
 
-    public function updateCart($cart_id,$num)
+    /**
+     * @param $cart_id
+     * @param $num  为更新所要购买的数量
+     * @return bool
+     */
+    public function updateCart($cart_id,$buy_num)
     {
         $member = get_member_account();
 
@@ -295,28 +311,70 @@ class mycartService extends  \service\publicService
             return false;
         }
 
-        $sql = "select ac_shop_dish,ac_dish_status,ac_dish_total from ".table('activity_dish');
-        $sql .= " where ac_shop_dish={$cart['goodsid']}";
-        $find = mysqld_select($sql);
-        if (empty($find)) {
-            $this->error = '抱歉，该商品已不存在！';
+        $dish   = mysqld_select("select id,sts_id,deleted,status,store_count from ".table('shop_dish')." where id={$cart['goodsid']}");
+        if(empty($dish) || $dish['deleted'] == 1){
+            $this->error = '该商品不存在！';
             return false;
-        }else if($find['ac_dish_status'] == 0){
-            $this->error = '请等待上架！';
+        }
+        //库存
+        $store_count = $dish['store_count'];
+        //判断商品是否属于活动中的商品
+        $active = checkDishIsActive($cart['goodsid'],$store_count);
+        if(!empty($active)){
+            $store_count = $active['ac_dish_total'];
+            if($active['ac_dish_status'] == 0){
+                $this->error = '请等待上架！';
+                return false;
+            }
+        }
+
+        if($buy_num > $store_count){
+            $this->error = "库存剩下{$store_count}个！";
+            return false;
+        }
+        //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
+        if($store_count <= 30){
+            $can_max_buy = 1;
+        }else{
+            $can_max_buy = floor($store_count*0.1);
+        }
+        if($buy_num > $can_max_buy){
+            $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
             return false;
         }
 
-        // 累加最多限制购买数量
-        $t_num = $num + $find['total'];
-        if($t_num > $find['ac_dish_total']){
-            $this->error = "库存剩下{$find['ac_dish_total']}个！";
-            return false;
-        }
-        $data = array('total' => $t_num);
+        $data = array('total' => $buy_num,'ac_dish_id' => intval($active['ac_dish_id']));
         mysqld_update('shop_cart', $data, array('id' => $cart_id));
 
+        //库存的操作减掉 卖出数量加1
+        $ac_dish_id = intval($active['ac_dish_id']);
+        $up_num     = abs($buy_num-$cart['total']);  //数量是添加还是减少
+        $up_num !=0 &&  operateStoreCount($dish['id'],$up_num,$ac_dish_id,1);   //等于0的时候不执行
         return $data['total'];
     }
+
+    /**
+     * 删除单个物品
+     * @param $carid
+     * @return bool|string
+     */
+    public function delcart($carid)
+    {
+        $member = get_member_account();
+        $openid = $member['openid'];
+        $cart_info = mysqld_select("select * from ".table('shop_cart')." where id={$carid}");
+        if(empty($cart_info)){
+            return '';
+        }
+        mysqld_delete('shop_cart', array(
+            'session_id' => $openid,
+            'id' => $carid
+        ));
+        //释放库存
+        operateStoreCount($cart_info['goodsid'],$cart_info['total'],$cart_info['ac_dish_id'],2);
+        return true;
+    }
+
     /**
      * 选择了哪些商品进行购买 或者不买
      * @param $cart_ids
