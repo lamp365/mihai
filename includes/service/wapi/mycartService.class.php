@@ -33,7 +33,6 @@ class mycartService extends  \service\publicService
                 $store_count = $dish['store_count'];
                 $time_price  = $dish['marketprice'];
                 $status      = $dish['status'];
-                $action_id   = 0;
 
                 if(empty($dish) || $store_count ==0 || $status == 0){
                     $dish['cart_id']         =  $item['id'];
@@ -47,7 +46,6 @@ class mycartService extends  \service\publicService
                     $store_count = $active['ac_dish_total'] ?: 0;
                     $time_price  = $active['ac_dish_price'] ?: $dish['marketprice'];
                     $status      = $active['ac_dish_status'] ?: 0;
-                    $action_id   = $active['ac_action_id'] ?: 0;
                 }
 
                 $dish['store_count'] = $store_count;
@@ -69,7 +67,7 @@ class mycartService extends  \service\publicService
                 $dish['buy_num']           = $item['total'];
                 $dish['cart_id']           = $item['id'];
                 $dish['to_pay']            = $item['to_pay'];
-                $dish['action_id']         = $action_id;
+                $dish['ac_dish_id']        = intval($active['ac_dish_id']);
 
 
                 if(!array_key_exists($item['sts_id'],$gooslist)){
@@ -112,8 +110,8 @@ class mycartService extends  \service\publicService
         $expressInfo   = mysqld_select("select free_dispatch,express_fee from ".table('store_extend_info')." where store_id={$sts_id}");
         $free_dispatch = $expressInfo['free_dispatch'];  //免邮
         $express_fee   = $expressInfo['express_fee'];    //运费
-        $gooslist[$sts_id]['free_dispatch'] = FormatMoney($free_dispatch,0);
-        $gooslist[$sts_id]['express_fee']   = FormatMoney($express_fee,0);
+        $gooslist[$sts_id]['free_dispatch'] = FormatMoney($free_dispatch,0); //单位元
+        $gooslist[$sts_id]['express_fee']   = FormatMoney($express_fee,0);  //单位元
         $gooslist[$sts_id]['send_free']     = 0;
         $gooslist[$sts_id]['totalprice']    = 0;
 
@@ -222,8 +220,8 @@ class mycartService extends  \service\publicService
         }
 
         //库存的操作减掉 卖出数量加1
-        $ac_action_id = intval($active['ac_action_id']);
-        operateStoreCount($dishid,$buy_num,$ac_action_id,1);
+        $ac_dish_id = intval($active['ac_dish_id']);
+        operateStoreCount($dishid,$buy_num,$ac_dish_id,1);
 
         //返回总的购物车物物品总数量
         $carnum = getCartTotal(2);
@@ -272,6 +270,7 @@ class mycartService extends  \service\publicService
             // 不存在
             $data = array(
                 'goodsid'       => $dishid,
+                'ac_dish_id'    => intval($active['ac_dish_id']),
                 'goodstype'     => 0,
                 'session_id'    => $member['openid'],
                 'sts_id'        => $dish['sts_id'],
@@ -280,7 +279,7 @@ class mycartService extends  \service\publicService
             );
             mysqld_insert('shop_cart', $data);
         }else{
-            $u_data = array('total' => $total,'to_pay'=>1);
+            $u_data = array('total' => $total,'to_pay'=>1,'ac_dish_id'=> intval($active['ac_dish_id']));
             mysqld_update('shop_cart', $u_data, array('id' => $row['id']));
         }
         return $total;

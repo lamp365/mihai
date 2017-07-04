@@ -80,8 +80,8 @@ class subaccount extends base
         }
         
         foreach($subaccountList as $k=>$v){
-            $subaccountList[$k]['nickname'] = $memberArr[$v['friend_openid']]['nickname'];
-            $subaccountList[$k]['avatar']   = $memberArr[$v['friend_openid']]['avatar'];
+            $subaccountList[$k]['nickname'] = $memberArr[$v['friend_openid']]['nickname']!=''?$memberArr[$v['friend_openid']]['nickname']:'';
+            $subaccountList[$k]['avatar']   = $memberArr[$v['friend_openid']]['avatar']!=''?$memberArr[$v['friend_openid']]['avatar']:'';
             
             $subaccountList[$k]['createtime'] = date('Y-m-d H:i:s',$v['createtime']);
             
@@ -135,7 +135,7 @@ class subaccount extends base
             $store_p1_str = rtrim($store_p1_str,',');
             $oneCate = $this->shopCate->getStoreShopCategory($store_p1_str,'id,name');
             foreach($oneCate as $k=>$v){
-                $redata[$v['id']] = $v;
+                $redata['distributionCate'][$v['id']] = $v;
             }
             
             $store_p2_str = '';
@@ -146,15 +146,70 @@ class subaccount extends base
             $twoCate = $this->shopCate->getStoreShopCategory($store_p2_str,'id,name,pid');
 
             foreach($twoCate as $k=>$v){
-                $redata[$v['pid']]['twocate'][] = $v;
+                $redata['distributionCate'][$v['pid']]['twocate'][] = $v;
             }
-            $redata = array_values($redata);
+            $redata['distributionCate'] = array_values($redata['distributionCate']);
         }   
         
         ajaxReturnData(1,'获取成功',$redata);
     }
     
-    //获取列表内容
+    //Merchant 
+    public function subAccountAdmin(){
+        $data   = $this->request;
+        $redata = array();
+        $redata['memberInfo']           = $this->subAccountObj->getMemberinfo($this->memberInfo['openid'],'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar');
+        $redata['memberInfo']['gold']   = FormatMoney($redata['memberInfo']['gold'],2);
+        $redata['memberInfo']['freeze_gold'] = FormatMoney($redata['memberInfo']['freeze_gold'],2);
+        $redata['memberInfo']['wait_glod']   = FormatMoney($redata['memberInfo']['wait_glod'],2);
+        $redata['memberInfo']['outgold']     = FormatMoney($redata['memberInfo']['outgold'],2);
+        
+        //获取总收益
+        $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($this->memberInfo['openid']);
+        $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
+        
+        //判断下属用户
+        $rsData = $this->subAccountObj->getParentIdAccount($data,$this->memberInfo['openid']);
+
+        $rsTotalData = $this->subAccountObj->getParentIdAccountCount($this->memberInfo['openid'],'count(0) as countnum');
+        $redata['memberInfo']['total'] = $rsTotalData['countnum'];
+        $i = 0;
+        foreach($rsData as $k=>$v){
+            $redata['memberInfo']['memberData'][$i]           = $this->subAccountObj->getMemberinfo($v['openid'],'wait_glod');
+            $redata['memberInfo']['memberData'][$i]['openid']     = $v['openid'];
+
+            //获取总收益
+            $redata['memberInfo']['memberData'][$i]['account_fee'] = $this->subAccountObj->getTotalIncome($v['openid']);
+            $redata['memberInfo']['memberData'][$i]['account_fee'] = FormatMoney($redata['memberInfo']['memberData'][$i]['account_fee'],2);
+            
+            //统计所属用户数
+            $memberCount = array();
+            $memberCount = $this->subAccountObj->getChildrenCount($openid, $sts_id,'count(0) as total');
+            $redata['memberInfo']['memberData'][$i]['memberTotal'] = intval($memberCount['total']);
+            
+            $i++;
+        }
+        
+        ajaxReturnData(1,'获取成功',$redata);
+    }
+    
+    //变更用户状态
+    public function upMemberStatus(){
+        $data   = $this->request;
+        $redata = array();
+        if($data['openid'] == ''){
+             ajaxReturnData(0,'必要参数不存在');
+        }
+        $data['is_sub_status'] = intval($data['is_sub_status']);
+        //判断该子账户是否属于该店家
+        $isCheck = $this->subAccountObj->getMemberStoreRelation($data['openid'],$this->memberInfo['store_sts_id']);
+        if($isCheck['id'] <= 0)
+        {
+            ajaxReturnData(0,'该用户不是您的子账户');
+        }
+        $upStatus = $this->subAccountObj->upMemberSubStatus($data['openid'],$data['is_sub_status']);
+        ajaxReturnData(1,'更新成功',$upStatus);
+    }
     
     
     

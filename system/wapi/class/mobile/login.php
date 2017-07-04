@@ -109,6 +109,10 @@ class login extends base {
      */
     public function pc_login()
     {
+        $file  = WEB_ROOT."/logs/cart_file.txt";
+        $file2 = WEB_ROOT."/logs/order_file.txt";
+        file_put_contents($file,1);
+        file_put_contents($file2,1);
         $_GP = $this->request;
         if(empty($_GP['mobile']) || empty($_GP['pwd'])){
             ajaxReturnData(0,'账户和密码不能为空！');

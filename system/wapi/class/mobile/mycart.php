@@ -148,7 +148,8 @@ class mycart extends base
         if(!$res){
             ajaxReturnData(0,$service->getError());
         }else{
-            ajaxReturnData(1,'操作成功！');
+            ajaxReturnData(1,'操作成功！',array('topay'=>$_GP['type']));
         }
     }
+
 }

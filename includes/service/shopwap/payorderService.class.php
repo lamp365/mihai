@@ -145,8 +145,8 @@ class payorderService extends  \service\publicService
                     $o_good['orderid']               = $orderid;
                     $o_good['sts_id']                = $item['sts_id'];
                     $o_good['dishid']                = $one_dish['id'];
-                    $o_good['action_id']             = $one_dish['action_id'];
-                    $o_good['shop_type']             = empty($one_dish['action_id']) ? 0 : 4;
+                    $o_good['ac_dish_id']            = $one_dish['ac_dish_id'];
+                    $o_good['shop_type']             = empty($one_dish['ac_dish_id']) ? 0 : 4;
                     $o_good['price']                 = FormatMoney($one_dish['time_price'],1);  //商品单价 转为分
                     $o_good['store_earn_price']      = empty($recommend_sts_id) ? 0 : $store_earn_price;   //单个商品 提成 单位 分
                     $o_good['member_earn_price']     = empty($recommend_openid) ? 0 : $member_earn_price;   //单个商品 提成 单位 分
@@ -157,14 +157,15 @@ class payorderService extends  \service\publicService
                         //如果不成功  把提交给第三方的总额中去除该商品的价格
                         $pay_total_money = $pay_total_money -  $o_good['price'];
                     }else{
-                        if($one_dish['action_id']){
+                        if($one_dish['ac_dish_id']){
+                            //有一个商品 是活动商品那么 该笔订单就视为 活动订单
                             $is_action = 1;
                         }
                         //单个商品提成乘以个数  有推荐人才操作
                         $recommend_sts_id && $total_store_earn_price  += $store_earn_price*$o_good['total'];
                         $recommend_openid && $total_member_earn_price += $member_earn_price*$o_good['total'];
                         //库存的操作减掉 卖出数量加1  业务变化了 变成 加入购物车就扣库存
-//                        operateStoreCount($one_dish['id'],$one_dish['buy_num'],$one_dish['action_id'],1);
+//                        operateStoreCount($one_dish['id'],$one_dish['buy_num'],$one_dish['ac_dish_id'],1);
                         //标记该商品的历史卖出的最低价格
                         compareDsihHistoryPrice($one_dish['id'],$one_dish['history_lower_prcie'],$one_dish['time_price']);
                     }

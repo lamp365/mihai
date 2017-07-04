@@ -158,7 +158,7 @@ function update_order_status($id, $status) {
     if ($status == -1) {
     	// 取消订单
     	foreach ($order_goods as $ogv) {
-    		operateStoreCount($ogv['dishid'],$ogv['total'],$ogv['action_id'],2);
+    		operateStoreCount($ogv['dishid'],$ogv['total'],$ogv['ac_dish_id'],2);
     	}
     	// 反还优惠券
     	if (!empty($order['hasbonus'])) {
@@ -1101,79 +1101,6 @@ function showDrawOrderStatue($order){
 		return $stat;
 	}
 }
-/**
- * @param $order_goods
- * @param $order
- * @conetent 确认收获后 卖家得到佣金金额 买家收到积分  同时记录账单和APP消息推送
- */
-function sureUserCommisionToMoney($order_goods,$order){
-	$arr          = array(-1,-2,0); //这些状态才是发货出去的，用戶能操作确认收貨
-	$list         = array();
-	$time         = date('Y-m-d H:i:s',$order['createtime']);
-	$total_credit = $total_yongjin = $crited_val = 0;
-
-	$member_info  = member_get($order['openid']);
-	$crited_ratio = bankSetting('com_credit');
-
-	foreach($order_goods as $row){
-		if(in_array($row['status'],$arr)){
-			if(!empty($member_info['recommend_openid'])){
-				//有推荐人
-				$total_yongjin += $row['commision'];     //佣金
-				$crited_val    += ceil($crited_ratio*$row['price']);   //奖励积分
-			}
-
-			if(!empty($row['credit']))
-				$total_credit += $row['credit'];
-
-			$list[] = $row;
-		}
-
-	}
-
-	//收货成功，买家得到积分   并记录账单
-	 if ($total_credit != 0) {
-	 	member_credit($order['openid'], $total_credit, 'addcredit', PayLogEnum::getLogTip('LOG_SHOPBUY_CREDIT_TIP'));
-	 }
-
-	//卖家收到佣金 以及卖家佣金积分   并且推送消息
-	$title = '';
-	if(!empty($member_info['recommend_openid'])){
-		$name   = getNameByMemberInfo($member_info);
-		//记录paylog
-		$remark = PayLogEnum::getLogTip('LOG_BUYORDER_TIP',$name);
-		member_commisiongold($member_info['recommend_openid'],$order['openid'],$total_yongjin,'addgold_byorder',$order['ordersn'],$remark);
-		//同时还要给用户 对应的佣金所得积分
-		member_credit($member_info['recommend_openid'],$crited_val,'addcredit',PayLogEnum::getLogTip('LOG_BACK_CREDIT_RATIO_TIP',$name));
-
-		//给卖家APP推送消息  不给推荐人推送
-		/*$dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$list[0]['goodsid']}");
-		$title    = $dishInfo['title'];
-		$num      = count($list);
-
-		$msg = "你的佣金{$total_yongjin}已到账
-订单编号：{$order['ordersn']}
-购买商品：{$title}等{$num}件商品
-支付金额：{$order['price']}元
-实际收入：{$total_yongjin}元
-下单时间：{$time}";
-		pushOrderImMessage(IM_WEALTH_FROM_USER,$member_info['recommend_openid'],$msg);*/
-
-	}
-
-
-	//给买家推送APP消息
-	if(empty($title)){
-		$dishInfo = mysqld_select( "SELECT title FROM " . table ( 'shop_dish' )." WHERE id = {$order_goods[0]['goodsid']}");
-		$title = $dishInfo['title'];
-	}
-	$num = count($order_goods);
-	$msg  = "客官，你的订单已经确认收货~~
-订单编号:{$order['ordersn']}
-购买商品:{$title}等{$num}件商品
-下单时间:{$time}";
-	pushOrderImMessage(IM_ORDER_FROM_USER,$order['openid'],$msg);
-}
 
 /**
  * @param $form
@@ -1228,35 +1155,40 @@ function group_buy_aftersale($orderGoodInfo,$orderInfo){
  * @param 
  * @param 
  * 自动处理订单列表数据
- *一般商品 和 今日特价 72小时自动关闭，团购秒杀关闭是在活动结束时关闭，不在这里处理
+ *一般商品 和 今日特价 72小时自动关闭，
+ * 活动商品 15分钟 自动关闭
  * 为方便操作，如果不填写$openid 则全表订单同时处理
  */
-function order_auto_close($openid = ''){
-	$res = '';
-	if(class_exists('Memcached')) {
-		$memcache = new Mcache();
-//		$res = $memcache->get('order_auto_close');
-	}
-	if($res){
-		//说明3小时之前更新过一次，不用再次更新
+function order_auto_close(){
+	//尽量处理当前有请求了，其他请求不用再挤进来操作
+	$file = WEB_ROOT."/logs/order_file.txt";
+	if(!file_exists($file)){
 		return '';
 	}
+	//删掉 不让其他请求 一起来操作，当前操作过一次就行了
+	unlink($file);
 	$normal = 72 * 60 * 60;
-	$where = ' (ordertype = 0 or ordertype=3) and status = 0 and createtime <= '.(time()-$normal);
-	$sql   = "select id from ".table('shop_order')." where {$where}";
+	$where = ' status = 0 and ordertype !=4 and createtime <= '.(time()-$normal);
+	$sql   = "select id,ordertype from ".table('shop_order')." where {$where}";
 	$data  = mysqld_selectall($sql);
+
+	$active = 15*60;
+	$where2 = ' status = 0 and ordertype =4 and createtime <= '.(time()-$active);
+	$sql2   = "select id,ordertype from ".table('shop_order')." where {$where2}";
+	$data2  = mysqld_selectall($sql2);
 	if($data){
 		//每条每条 进行关闭，并退回优惠卷和余额
 		foreach($data as $orderid){
 			update_order_status($orderid['id'],-1);
 		}
-
-		//如果查出来有数据  则记录缓存，这里不用每次查询更新，可每3小时更新一次
-		if(class_exists('Memcached')) {
-			$memcache2 = new Mcache();
-			$memcache2->set('order_auto_close','yes',3600*3);
+	}
+	if($data2){
+		//每条每条 进行关闭，并退回优惠卷和余额
+		foreach($data2 as $orderid2){
+			update_order_status($orderid2['id'],-1);
 		}
 	}
+	file_put_contents($file,'请不要删除该文件，用于订单整站更新，防止并发处理');
 }
 
 /**
@@ -1460,26 +1392,26 @@ function getRecommendOpenidAndStsid($openid){
  * 库存操作
  * @param $dishid
  * @param $buy_num
- * @param $action_id
+ * @param $ac_dish_id
  * @param $type  1 表示卖出扣掉库存  2表示 关闭 等 库存回放回去
  */
-function operateStoreCount($dishid,$buy_num,$action_id,$type){
+function operateStoreCount($dishid,$buy_num,$ac_dish_id,$type){
 	if($type == 1){
 		$sql1 = "update ".table('shop_dish')." set store_count=store_count-{$buy_num},sales_num=sales_num+{$buy_num}";
 		$sql1.= " where id={$dishid}";
 		mysqld_query($sql1);
-		if($action_id){
+		if($ac_dish_id){
 			$sql = "update ".table('activity_dish')." set ac_dish_total=ac_dish_total-{$buy_num},ac_dish_sell_total=ac_dish_sell_total+{$buy_num}";
-			$sql .= " where ac_shop_dish={$dishid} and ac_action_id={$action_id}";
+			$sql .= " where ac_dish_id={$ac_dish_id}";
 			mysqld_query($sql);
 		}
 	}else if($type == 2){
 		$sql1 = "update ".table('shop_dish')." set store_count=store_count+{$buy_num},sales_num=sales_num-{$buy_num}";
 		$sql1.= " where id={$dishid}";
 		mysqld_query($sql1);
-		if($action_id){
+		if($ac_dish_id){
 			$sql = "update ".table('activity_dish')." set ac_dish_total=ac_dish_total+{$buy_num},ac_dish_sell_total=ac_dish_sell_total-{$buy_num}";
-			$sql .= " where ac_shop_dish={$dishid} and ac_action_id={$action_id}";
+			$sql .= " where ac_dish_id={$ac_dish_id}";
 			mysqld_query($sql);
 		}
 	}

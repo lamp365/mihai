@@ -8,7 +8,7 @@
  * @return bool|int|string
  */
 function getCartTotal($type = 1){
-	$member   = get_member_account(false);
+	$member   = get_member_account();
 	$openid   = $member['openid'] ?: get_sessionid();
 	$cartotal = 0;
 
@@ -132,6 +132,13 @@ function update_cart_record_time(){
  * 过了时间 释放库存，并删除购物车
  */
 function check_shop_cart_time(){
+	//尽量处理当前有请求了，其他请求不用再挤进来操作
+	$file = WEB_ROOT."/logs/cart_file.txt";
+	if(!file_exists($file)){
+		return '';
+	}
+	//删掉 不让其他请求 一起来操作，当前操作过一次就行了
+	unlink($file);
 	$time = time()-20*60;
 	$cart_record = mysqld_selectall("select id,session_id from ".table('shop_cart_record')." where last_time<{$time}");
 	foreach($cart_record as $item){
@@ -151,5 +158,6 @@ function check_shop_cart_time(){
 		//删除掉 购物车时间的记录
 		mysqld_delete('shop_cart_record',array('id'=>$item['id']));
 	}
+	file_put_contents($file,'请不要删除该文件，用于购物车整站更新，防止并发处理');
 }
 ?>

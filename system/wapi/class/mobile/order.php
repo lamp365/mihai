@@ -11,14 +11,8 @@ class order extends base {
           ajaxReturnData(0,'请授权登录！');
       }
 
-      // 超过15分钟的未付款订单将会自动关闭
-      //取消订单后 要（释放库存 方法:operateStoreCount  释放优惠卷:表 store_coupon_member）
-      // 需要封装一个方法用于关闭订单的调用  通过参数 订单类型 以及 过期时间  进行业务操作
-      $timeout = time()-900;
-      $c_orders = mysqld_selectall("SELECT * FROM ".table('shop_order')." WHERE ordertype=4 AND status=0 AND deleted=0 AND createtime<".$timeout);
-      foreach ($c_orders as $c_value) {
-        update_order_status($c_value['id'], -1);
-      }
+      //未付款订单将会自动关闭
+      order_auto_close();
   }
 
   // 订单列表

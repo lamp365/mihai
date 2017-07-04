@@ -184,4 +184,22 @@ class shop extends base{
         if (empty($info)) ajaxReturnData('1','暂无数据');
         ajaxReturnData('1','',$info);
     }
+
+    /**
+     * 获取购物车最新的时间
+     * 不放入购物车模块，因为购物车模块必选先授权登录
+     */
+    public function getcarttime()
+    {
+        check_shop_cart_time();
+        $_GP      = $this->request;
+        $meminfo  = get_member_account();
+        $cart_num = getCartTotal(2);
+        $last_time = 0;
+        if(!empty($cart_num)){
+            $cart_info = mysqld_select("select last_time from ".table('shop_cart_record')." where session_id='{$meminfo['openid']}'");
+            $last_time = $cart_info['last_time'] ?: 0;
+        }
+        ajaxReturnData(1,'请求成功',array('cart_num'=>$cart_num,'last_time'=>$last_time));
+    }
 }

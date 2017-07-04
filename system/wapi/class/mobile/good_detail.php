@@ -97,8 +97,12 @@ class good_detail extends base {
       }else{
         $list['is_collection'] = 0;
       }
+      // 最后加入购物车时间
+      $last_car = mysqld_select("SELECT last_time FROM ".table('shop_cart_record')." WHERE session_id='".$member['openid']."'");
+      $list['last_car_time'] = $last_car['last_time'];
     }else{
       $list['is_collection'] = 0;
+      $list['last_car_time'] = NULL;
     }
     // 商品状态(上架/下架)
     $list['status'] = $good['status'];
@@ -179,6 +183,11 @@ class good_detail extends base {
       $list['ac_status'] = 0;
     }
 
+    // 代表评论
+    $news_com = $this->get_ones_comment($good['id']);
+    $list['com_top'] = $news_com['com'];
+    $list['com_total'] = $news_com['total'];
+
     // 详情图
     if ($is_contont == 'yes') {
       // 通用详情头尾 
@@ -214,10 +223,25 @@ class good_detail extends base {
     }
     $pindex = max(1, intval($_GP['page']));
     $psize = intval($_GP['limit'] ? $_GP['limit'] : 20);
+    $status = intval($_GP['cm_sts'] ? $_GP['cm_sts'] : 0);
+    $where = '';
+    if ($status == 1) {
+      // 好评
+      $where = " AND (a.wl_rate+a.fw_rate+a.cp_rate)>10";
+    }elseif ($status == 2) {
+      // 中评
+      $where = " AND (a.wl_rate+a.fw_rate+a.cp_rate)>5 AND (a.wl_rate+a.fw_rate+a.cp_rate)<=10";
+    }elseif ($status == 3) {
+      // 差评
+      $where = " AND (a.wl_rate+a.fw_rate+a.cp_rate)<=5";
+    }
 
     $good = mysqld_select("SELECT * FROM ".table('shop_dish')." WHERE id=$dish_id");
+    if (empty($good)) {
+      ajaxReturnData(0,'商品信息获取失败');
+    }
 
-    $comments = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.openid, b.realname, b.nickname, b.avatar, b.mobile, b.member_description FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid WHERE a.dishid=".$good['id']." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
+    $comments = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.openid, b.realname, b.nickname, b.avatar, b.mobile, b.member_description FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid WHERE a.dishid=".$good['id'].$where." ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
     // 总记录数
     $total = mysqld_select("SELECT FOUND_ROWS() as total;");
 
@@ -237,68 +261,6 @@ class good_detail extends base {
     ajaxReturnData(1,'获取成功',$result);
     exit;
   }
-
-  // 提交商品评论
-  // public function add_comment()
-  // {
-  //   $_GP = $this->request;
-  //   $result = array();
-  //   // 订单ID
-  //   $order_id = intval($_GP['order_id']);
-  //   // 评论内容
-  //   $comment = $_GP['comment'];
-  //   // dishID
-  //   $dish_id = intval($_GP['dish_id']);
-  //   // 系统ID（1pc，2wap，3安卓，4ios）
-  //   // $system = intval($_GP['system_id']);
-  //   // 评价ID（1好评，2差评）
-  //   // $type = intval($_GP['type']);
-  //   // 物流评分
-  //   $wl_rate = (float)$_GP['wl_rate'];
-  //   // 服务分
-  //   $fw_rate = (float)$_GP['fw_rate'];
-  //   // 产品评分
-  //   $cp_rate = (float)$_GP['cp_rate'];
-  //   // 店铺ID
-  //   $sts_id = intval($_GP['sts_id']);
-
-  //   if (empty($order_id) or empty($dish_id) or empty($sts_id)) {
-  //     ajaxReturnData(0,'必填项不可为空');
-  //   }
-
-  //   $order = get_orders("a.deleted=0 AND a.id=".$order_id);
-  //   if (empty($order[0])) {
-  //     ajaxReturnData(0,'订单查询失败');
-  //   }
-
-  //   $order_good = mysqld_select("SELECT iscomment FROM ".table('shop_order_goods')." WHERE orderid=".$order_id." AND dishid=".$dish_id);
-  //   if ($order_good['iscomment'] == '1') {
-  //     ajaxReturnData(0,'该商品已评论过');
-  //   }
-
-  //   // 评论信息
-  //   $d = array('createtime' => time(), 'orderid' => $order_id, 'ordersn' => $order[0]['ordersn'], 'openid' => $order[0]['openid'], 'wl_rate' => $wl_rate, 'fw_rate' => $fw_rate, 'cp_rate' => $cp_rate, 'dishid' => $dish_id, 'sts_id' => $sts_id);
-  //   if (!empty($comment)) {
-  //     $d['comment'] = $comment;
-  //   }
-  //   $d['system'] = getSystemType();
-  //   mysqld_insert('shop_goods_comment', $d);
-  //   $comment_id = mysqld_insertid();
-
-  //   // 设置is_comment
-  //   mysqld_query("UPDATE ".table('shop_order_goods')." SET iscomment=1 WHERE orderid=".$order_id." AND dishid=".$dish_id);
-
-  //   // 评论图片保存
-  //   for ($i=1; $i < 6; $i++) { 
-  //     if (!empty($_GP['img'.$i])) {
-  //       $m = array('comment_id' => $comment_id, 'img' => $_GP['img'.$i]);
-  //       mysqld_insert('shop_comment_img', $m);
-  //     }
-  //     // $this->upload_imgs($i, $comment_id);
-  //   }
-
-  //   ajaxReturnData(1,'评论成功');
-  // }
 
   // 提交商品评论
   public function add_comment()
@@ -416,5 +378,30 @@ class good_detail extends base {
         exit;
       }
     }
+  }
+
+  // 获取一个商品的代表评论
+  function get_ones_comment($dishid) {
+    $result = array();
+    $comment = mysqld_select("SELECT a.*, b.openid, b.realname, b.nickname, b.avatar, b.mobile, b.member_description,c.img FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid LEFT JOIN ".table('shop_comment_img')." as c on a.id=c.comment_id WHERE a.dishid=".$dishid." ORDER BY c.img DESC, (a.wl_rate+a.fw_rate+a.cp_rate) DESC, a.createtime DESC");
+    
+    $comment['mobile'] = substr_cut($comment['mobile']);
+    $c_img = mysqld_selectall("SELECT img FROM ".table('shop_comment_img')." WHERE comment_id=".$comment['id']." ORDER BY id ASC LIMIT 5");
+    $comment['img'] = array();
+    if (!empty($c_img)) {
+      foreach ($c_img as $cmv) {
+        $comment['img'][] = $cmv['img'];
+      }
+    }
+
+    // 总数
+    $comments = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.* FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid WHERE a.dishid=".$dishid." ORDER BY a.createtime DESC LIMIT 1");
+    // 总记录数
+    $total = mysqld_select("SELECT FOUND_ROWS() as total;");
+
+    $result['com'] = $comment;
+    $result['total'] = $total['total'];
+
+    return $result;
   }
 }
