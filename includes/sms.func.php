@@ -139,40 +139,6 @@ function send_sms($telphone,$code,$template='SMS_13756414'){
 		$resp = $c->execute($req);
 		return $resp;
 }
-function send_warring($id){
-	   if ( empty($id) ){
-           return false;
-	   }
-	   if( !strstr($_SERVER['HTTP_HOST'] , 'hinrc')){
-           return false;
-	   }
-	   $telphone = '18649713342';
-       if (file_exists(WEB_ROOT . '/includes/TopSdk.php')) {
-              require WEB_ROOT . '/includes/TopSdk.php';
-			  $respObject = send_warring_sms($telphone,$id);
-			  //如果发送失败
-			  if (isset($respObject->code))
-			  {
-			  	return false;
-			  }
-			  else{
-			  	return $id;
-			  }
-        }	
-}
-function send_warring_sms($telphone,$code){
-        $c = new TopClient;					
-        $c->appkey = '23444674';
-		$c->secretKey = 'ccca8b6f6ffb7de45f73972254f4c1cb';
-		$req = new AlibabaAliqinFcSmsNumSendRequest;
-		$req->setSmsType("normal");
-	    $req->setSmsFreeSignName("觅海环球购");
-		$req->setSmsParam("{\"product\":\"{$code}\"}");
-		$req->setRecNum("$telphone");
-		$req->setSmsTemplateCode("SMS_25215215");
-		$resp = $c->execute($req);
-		return $resp;
-}
 
 function send_kongbao_sms($telphone,$money){
 	require WEB_ROOT . '/includes/TopSdk.php';
@@ -190,29 +156,21 @@ function send_kongbao_sms($telphone,$money){
 	return $resp;
 }
 
-/**
- * 短信验证码验证
- *
- * @param $verify 验证码
- * @param $telephone 手机号码
- *
- * @return boolean
- */
-function checkSmsCode($verify,$telephone) {
 
-	//验证码未过期
-	if(isset($_SESSION['api']['sms_code_expired']) && $_SESSION['api']['sms_code_expired']>time())
-	{
-		//验证码是否正确
-		if (isset($_SESSION['api'][$telephone]) && strtolower ( $_SESSION['api'][$telephone] ) == strtolower ( $verify )) {
-
-			return true;
-		}
-	}
-	else{
-		unset ( $_SESSION['api'][$telephone] );
-		unset ( $_SESSION['api']['sms_code_expired'] );
-	}
-
-	return false;
+function send_tips_sms($telphone,$money){
+	require WEB_ROOT . '/includes/TopSdk.php';
+	$c = new TopClient;
+	$c->appkey = '23499623';
+	$c->secretKey = 'e2a5c71e4eca9cc7e4d6141ce5c5f0b4';
+	$req = new AlibabaAliqinFcSmsNumSendRequest;
+	$req->setSmsType("normal");
+	$req->setSmsFreeSignName("空包网");
+	$req->setSmsParam("{\"money\":\"{$money}\"}");
+	$req->setRecNum("$telphone");
+	$req->setSmsTemplateCode("SMS_75790126");
+	$resp = $c->execute($req);
+	ppd($resp);
+	return $resp;
 }
+
+

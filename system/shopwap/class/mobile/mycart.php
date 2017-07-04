@@ -8,13 +8,14 @@
 
 namespace shopwap\controller;
 
-class mycart extends \common\controller\basecontroller
+class mycart extends \shopwap\controller\base
 {
     public function __construct()
     {
         parent::__construct();
         if(!checkIsLogin()){
-            ajaxReturnData(0,'请您先登录！');
+            tosaveloginfrom();
+            message('请您先登录',mobile_url('login'),'error');
         }
     }
 
@@ -61,8 +62,7 @@ class mycart extends \common\controller\basecontroller
             ajaxReturnData(0,$service->getError());
         }
 
-        $cartlist = $service->cartlist();
-        ajaxReturnData(1,'操作成功',$cartlist);
+        ajaxReturnData(1,'操作成功');
     }
 
     public function del()
@@ -76,9 +76,7 @@ class mycart extends \common\controller\basecontroller
             'id' => $id
         ));
 
-        $service  = new \service\shopwap\mycartService();
-        $cartlist = $service->cartlist();
-        ajaxReturnData(1,'已经移除!',$cartlist);
+        ajaxReturnData(1,'已经移除!');
     }
 
     /**
@@ -99,10 +97,7 @@ class mycart extends \common\controller\basecontroller
                     'id' => $id
                 ));
             }
-
-            $service  = new \service\shopwap\mycartService();
-            $cartlist = $service->cartlist();
-            ajaxReturnData(1,'删除成功！',$cartlist);
+            ajaxReturnData(1,'删除成功！');
         }
     }
 
@@ -113,9 +108,7 @@ class mycart extends \common\controller\basecontroller
         mysqld_delete('shop_cart', array(
             'session_id' => $openid
         ));
-        $service  = new \service\shopwap\mycartService();
-        $cartlist = $service->cartlist();
-        ajaxReturnData(1,'已全部移除！',$cartlist);
+        ajaxReturnData(1,'已全部移除！');
     }
 
     /**

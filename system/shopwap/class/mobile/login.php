@@ -9,15 +9,15 @@
 namespace shopwap\controller;
 use  shopwap\controller;
 
-class login{
+class login extends \shopwap\controller\base{
 
     //这个值等价于$_GP
     public $request = '';
 
     public function __construct()
     {
-        $is_login = is_login_account();
-        if ( $is_login ){
+        parent::__construct();
+        if ( checkIsLogin() ){
             header("location:" . to_member_loginfromurl());
         }
 
