@@ -14,12 +14,14 @@
 	
 	<script type="text/javascript" src="__RESOURCE__/mobile/script/bootstrap.min.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/script/angular.min.js"></script>
+    <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/js/beAlert.js"></script>
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/recouse/css/font-awesome.min.css" />
 	<link type="text/css" rel="stylesheet" href="__RESOURCE__/mobile/style/common.mobile.css">
 	<link href="__RESOURCE__/recouse/css/bjcommon.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="__RESOURCE__/script/cascade.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/mobile/script/jquery.touchwipe.js"></script>
 	<script type="text/javascript" src="__RESOURCE__/mobile/script/swipe.js"></script>
+    <link href="<?php echo RESOURCE_ROOT;?>addons/common/beAlert/css/BeAlert.css" type="text/css" rel="stylesheet" />
 </head>
 
 <body style="padding-top:0px; ">
@@ -71,7 +73,7 @@
 <div style="text-align:center;padding:70px 0 70px 0; <!--@php  if(!empty($cartlist['goodslist'])) { @-->display:none<!--@php  } @-->" id='cartempty'>
     <img src="__RESOURCE__/mobile/images/icon_cart_empty.png" /><br/><br/>
     <span style='color:#adadad'>您的购物车空空如也，赶紧去
-    	<a href="index.php">选购</a>
+    	<a href="/index.php">选购</a>
     	吧~~</span>
 </div>
 <!--@php if (!empty($cartlist['goodslist'])){ @-->
@@ -86,7 +88,7 @@
             <div class="col col-action">操作</div>
         </div>
 
-    <form action="<!--@php  echo mobile_url('mycart',array('op'=>'choose_cart'));@-->" method="post" name="cartform">
+
 	<!--@php foreach($cartlist['goodslist'] as $goods) {@-->
         <div class="shopcart-item" id="item_<!--@php  echo $goods['cart_id'];@-->">
 
@@ -135,7 +137,6 @@
                    
           <!--@php  $n++;@-->
     <!--@php  } @-->
-</form>
 
 </div>
 
@@ -267,6 +268,7 @@ function clearCart(){
                 if(data.errno == 1){
                     $("#cartempty").show();
                     $("#cartfooter").hide();
+                    $("#shopcart-all").hide();
                     //更新总价
                     canculate();
                     //更新购物车数量
@@ -290,11 +292,12 @@ function removeCart(id){
                     if($(".shopcart-item").length<=0){
                         $("#cartempty").show();
                         $("#cartfooter").hide();
-                        //更新总价
-                        canculate();
-                        //更新购物车数量
-                        updateCartNum();
+                        $("#shopcart-all").hide();
                     }
+                    //更新总价
+                    canculate();
+                    //更新购物车数量
+                    updateCartNum();
                 }else{
                     alert(data.message);
                 }
@@ -369,9 +372,8 @@ function canculate(){
     total=total.toFixed(2);
     $("#pricetotal").html(total);
 }
-</script>
-<script language='javascript'>
-    function tip(msg,autoClose){
+
+function tip(msg,autoClose){
      var div = $("#poptip");
      var content =$("#poptip_content");
      if(div.length<=0){
@@ -396,18 +398,26 @@ function tip_close(){
 }
 
 $("#liji_jiesuan").click(function(){
-    var ok = false;
-    $('.col-label').each(function(){
-        if($(this).hasClass("checked")){
-            ok = true;
+    var ids = '';
+    $(".shopcart-item").each(function(){
+        if($(this).find('.choose_all').hasClass("checked")){
+            var id = $(this).find("input[type='checkbox']").val();
+            ids = ids + id+',';
         }
-    })
-    if(ok){
-        $("form[name='cartform']").submit();
-    }else{
-        tip('请选择商品！',1);
+    });
+    if(ids == ''){
+        alert("请选择要结算的商品！");
+        return '';
     }
-
+    ids = ids.substring(0,ids.length-1);
+    var url  = "<!--@php  echo mobile_url('mycart', array('op'=>'topay'));@-->";
+    $.post(url,{ids:ids},function(data){
+        if(data.errno == 1){
+            window.location.href = "<?php echo mobile_url('confirm');?>";
+        }else{
+            alert(data.message);
+        }
+    });
 })
 </script>
 </body>

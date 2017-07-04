@@ -69,8 +69,8 @@ class mycartService extends  \service\publicService
             $express_fee     = $get_express_arr['express_fee'];    //运费
             $free_dispatch   = $get_express_arr['free_dispatch'];  //免邮条件
         }
-        //总价扣掉运费
-        $totalprice -= $express_fee;
+        //总价加上运费
+        $totalprice += $express_fee;
 
         //根据中总的价格判断是否可以使用的优惠卷
         $bonuslist = array();
@@ -115,7 +115,7 @@ class mycartService extends  \service\publicService
 
         //找到促销的免邮费用
         $time = time();
-        $pormot = mysqld_select("select condition from ".table('shop_pormotions')." where promoteType=1 and endtime>{$time} and starttime<{$time}");
+        $pormot = mysqld_select("select * from ".table('shop_pormotions')." where promoteType=1 and endtime>{$time} and starttime<{$time}");
         $free_dispatch = floatval($pormot['condition']);  //免邮条件
         if($dish_price >= $free_dispatch){
             $express_fee = 0;
@@ -321,20 +321,19 @@ class mycartService extends  \service\publicService
      * @param $cart_ids
      * @return bool
      */
-    public function topay($cart_ids,$type)
+    public function topay($cart_ids)
     {
         $member  = get_member_account();
         if (empty($cart_ids)) {
             $this->error = '对不起你没有选择商品！';
             return false;
         }
-        if(!in_array($type,array('0','1'))){
-            $this->error = '类型参数不对！';
-            return false;
-        }
+        //先把其他的全部设置为 0
+        mysqld_update('shop_cart',array('to_pay'=>0),array('session_id'=>$member['openid']));
+
         $cart_ids = explode(',',$cart_ids);
         foreach($cart_ids as $id){
-            mysqld_update('shop_cart',array('to_pay'=>$type),array('id'=>$id,'session_id'=>$member['openid']));
+            mysqld_update('shop_cart',array('to_pay'=>1),array('id'=>$id,'session_id'=>$member['openid']));
         }
         return true;
     }

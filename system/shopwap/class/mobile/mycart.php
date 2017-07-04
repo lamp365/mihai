@@ -36,7 +36,7 @@ class mycart extends \shopwap\controller\base
             ajaxReturnData(0,'参数有误！');
         }
         $spec_key   = $_GP['spec_key'];
-        $total      = intval($_GP['buy_num']);
+        $total      = max(1,intval($_GP['buy_num']));
         $total      = empty($total) ? 1 : $total;
 
         $service  = new \service\shopwap\mycartService();
@@ -52,7 +52,7 @@ class mycart extends \shopwap\controller\base
         $_GP    =  $this->request;
 
         $id  = intval($_GP['id']);
-        $num = intval($_GP['buy_num']);
+        $num = max(1,intval($_GP['buy_num']));
         if(empty($id) || empty($num) || $num<0){
             ajaxReturnData(0,'参数有误！');
         }
@@ -122,7 +122,7 @@ class mycart extends \shopwap\controller\base
         if(empty($dishid)){
             ajaxReturnData(0,'参数有误！');
         }
-        $total   = intval($_GP['buy_num']);
+        $total   = max(1,intval($_GP['buy_num']));
         $total   = empty($total) ? 1 : $total;
 
         $service  = new \service\shopwap\mycartService();
@@ -139,7 +139,7 @@ class mycart extends \shopwap\controller\base
     {
         $_GP    = $this->request;
         $service  = new \service\shopwap\mycartService();
-        $res = $service->topay($_GP['ids'],$_GP['type']);
+        $res = $service->topay($_GP['ids']);
         if(!$res){
             ajaxReturnData(0,$service->getError());
         }else{

@@ -29,7 +29,6 @@ class confirm extends \shopwap\controller\base
 		$service  = new \service\shopwap\mycartService();
 		$cart_where = "to_pay=1";
 		$cartlist   = $service->cartlist($cart_where,1);
-
 		//根据购物车中的商品 获取店铺 查看是否店铺属于全球购，是的话，需要身份证
 		$sts_id_arr = array();
 		foreach($cartlist['goodslist'] as $catone){
