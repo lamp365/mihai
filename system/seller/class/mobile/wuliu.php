@@ -31,17 +31,13 @@ class wuliu extends base
     public function freePrice(){
         $member = get_member_account();
         $_GP    = $this->request;
-        $status = intval($_GP['status']);//区分物流配置或者免邮设置的tab
         $type = $_GP['type'];
         if ($type == 'add'){
             $inset_data = array(
                 'free_dispatch' => FormatMoney($_GP['free_dispatch'],1),
                 'express_fee'   => FormatMoney($_GP['express_fee'],1),
-                'limit_send'    => FormatMoney($_GP['limit_send'],1),
             );
-            if($_GP['free_dispatch'] < $_GP['limit_send']){
-                message('免邮配置不能比最低配送大');
-            }
+
             $return = mysqld_update('store_extend_info',$inset_data,array('store_id'=>$member['store_sts_id']));
             if ($return) message('邮费设置成功!',refresh(),'success');
         }

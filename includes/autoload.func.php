@@ -32,7 +32,6 @@ function  hinrcAutoload($className) {
     }else{
         $filePath = WEB_ROOT."/includes/lib/{$className}.class.php";
     }
-
     if (is_readable($filePath)) {
         require_once($filePath);
     }

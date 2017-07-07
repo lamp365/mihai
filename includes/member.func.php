@@ -141,7 +141,7 @@ function get_member_account($create_weixin_account = true,$mustLogin = false)
     }
     if (empty($_SESSION[MOBILE_ACCOUNT])) {
         //如果是APP端请求
-        if($_GET['name']=='api' && is_mobile_request())
+        if($_GET['name']=='api')
         {
             if (!extension_loaded('Memcached')) {
                 ajaxReturnData('0','Memcached未启动，请检查！');

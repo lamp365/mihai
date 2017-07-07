@@ -28,7 +28,7 @@ class mycartService extends  \service\publicService
         if (! empty($list)) {
             //找出对应的商品 信息
             foreach($list as $item){
-                $field = 'id,title,marketprice,history_lower_prcie,thumb,sts_id,store_count,status,isreason';
+                $field = 'id,title,marketprice,history_lower_prcie,thumb,sts_id,store_count,status,isreason,store_p1,store_p2';
                 $dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
                 $store_count = $dish['store_count'];
                 $time_price  = $dish['marketprice'];
@@ -128,7 +128,9 @@ class mycartService extends  \service\publicService
             $dishid_arr       = array();
             foreach($dish_arr as $one){
                 $total_dish_price += $one['time_price']*$one['buy_num'];
-                $dishid_arr[]     =  $one['id'];
+                $dishid_arr['id'][]         =  $one['id'];
+                $dishid_arr['store_p1'][]   =  $one['store_p1'];
+                $dishid_arr['store_p2'][]   =  $one['store_p2'];
             }
             if($free_dispatch !=0 && $total_dish_price >= $free_dispatch){
                 //商品价格  超过 满邮的条件   免邮
@@ -289,10 +291,20 @@ class mycartService extends  \service\publicService
                 'total'         =>  $total
             );
             mysqld_insert('shop_cart', $data);
+            if(mysqld_insertid()){
+                //更新购物车的最新时间
+                update_cart_record_time();
+            }else{
+                $this->error = '添加失败，请稍后操作！';
+                return false;
+            }
         }else{
             $u_data = array('total' => $total,'to_pay'=>1,'ac_dish_id'=> intval($active['ac_dish_id']));
             mysqld_update('shop_cart', $u_data, array('id' => $row['id']));
         }
+        //库存的操作减掉 卖出数量加1
+        $ac_dish_id = intval($active['ac_dish_id']);
+        operateStoreCount($dishid,$total,$ac_dish_id,1);
         return $total;
     }
 
@@ -348,8 +360,15 @@ class mycartService extends  \service\publicService
 
         //库存的操作减掉 卖出数量加1
         $ac_dish_id = intval($active['ac_dish_id']);
-        $up_num     = abs($buy_num-$cart['total']);  //数量是添加还是减少
-        $up_num !=0 &&  operateStoreCount($dish['id'],$up_num,$ac_dish_id,1);   //等于0的时候不执行
+        $up_num     = $buy_num-$cart['total'];  //数量是添加还是减少
+        if($up_num > 0){
+            //添加的 扣掉库存
+            operateStoreCount($dish['id'],$up_num,$ac_dish_id,1);
+        }else if($up_num < 0){
+            //减少的 去掉库存
+            $up_num = abs($up_num);
+            operateStoreCount($dish['id'],$up_num,$ac_dish_id,2);
+        }
         return $data['total'];
     }
 
@@ -370,6 +389,11 @@ class mycartService extends  \service\publicService
             'session_id' => $openid,
             'id' => $carid
         ));
+        $find = mysqld_select("select id from ".table('shop_cart')." where session_id='{$openid}'");
+        if(empty($find)){
+            //购物车都删除掉了，则清空掉购买最后时间记录
+            mysqld_delete('shop_cart_record',array('session_id' => $openid));
+        }
         //释放库存
         operateStoreCount($cart_info['goodsid'],$cart_info['total'],$cart_info['ac_dish_id'],2);
         return true;

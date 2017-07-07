@@ -19,7 +19,7 @@ class subAccountService extends \service\publicService {
        $this->table_member_paylog = table('member_paylog');
        $this->table_commission_settlement_paylog = table('commission_settlement_paylog');
        $this->table_member_blong_relation        = table('member_blong_relation');
-       
+       $this->table_seller_rule_relation        = table('seller_rule_relation');
    }
    
    //获取dish列表
@@ -44,6 +44,11 @@ class subAccountService extends \service\publicService {
        
        $sql = "SELECT {$fields} FROM {$this->table_member_paylog} where openid = '{$openid}' and (type = 3 or type = -3) order by createtime desc {$limit}";
        $rs  = mysqld_selectall($sql);
+       
+       $sql_total = "SELECT count(0) as total FROM {$this->table_member_paylog} where openid = '{$openid}' and (type = 3 or type = -3)";
+       $rs_total  = mysqld_select($sql_total);
+       $rs['total'] = $rs_total['total'];
+       
        return $rs;
    }
    
@@ -59,8 +64,12 @@ class subAccountService extends \service\publicService {
       $data['limit'] = $data['limit']>0?$data['limit']:10; 
       $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
       $sql = "select {$fields} from {$this->table_commission_settlement_paylog} where type = {$type} and payee_openid = '{$openid}' order by createtime desc {$limit}";
-
       $rs  = mysqld_selectall($sql);
+      
+      $sql_total = "select count(0) as total from {$this->table_commission_settlement_paylog} where type = {$type} and payee_openid = '{$openid}'";
+      $rs_total  = mysqld_select($sql_total);
+      $rs['total'] = intval($rs_total['total']);
+      
       return $rs;
    }
    
@@ -98,11 +107,55 @@ class subAccountService extends \service\publicService {
        return $rs;
    }
    
-   public function getMemberStoreRelation($openid,$stsid,$fields='id'){
+   public function getMemberStoreRelation($openid,$stsid,$fields='id',$parentOpenid){
+       $where = '';
+       if($parentOpenid != '')
+       {
+           $where .= " and parent_openid = {$parentOpenid}";
+       }
        $sql = "select {$fields} from {$this->table_member_store_relation} where openid = '{$openid}' and sts_id = {$stsid}";
        $rs  = mysqld_select($sql);
        return $rs;
    }
+   
+   //更新用户金额
+   public function upPaymentMemberInfos($openid,$gold){
+       $sql = "update {$this->table_member} set gold = gold - {$gold} where openid = '{$openid}'";
+       $rs = mysqld_query($sql);
+       return $rs;
+   }
+   
+   //更新用户金额
+   public function upReceivablesMemberInfos($openid,$gold){
+       $sql = "update {$this->table_member} set gold = gold + {$gold},wait_glod = wait_glod - {$gold} where openid = '{$openid}'";
+       $rs = mysqld_query($sql);
+       return $rs;
+   }
+   
+   public function addPayLog($data){
+        //$this->table_commission_settlement_paylog
+        $insertData = array();
+
+        $insertData['payer_openid']         = $data['payer_openid'];
+        $insertData['payee_openid']         = $data['payee_openid'];
+        $insertData['fee']                  = FormatMoney($data['fee']);
+        $insertData['sts_id']               = $data['payment'];
+        $insertData['create_time']          = time();
+        $insertData['type']                 = 1;
+        $insertData['account_fee']          = $data['account_fee'];
+        $insertData['remark']               = $data['remark'];
+        mysqld_insert('commission_settlement_paylog', $insertData);
+        $id =  mysqld_insertid();
+        return $id;
+   }
+   
+   //判断某个手机是否绑定过某个店铺
+   public function checkShop($openid,$fields='*'){
+      $sql = "select {$fields} from {$this->table_member_store_relation} where openid = '{$openid}'";
+      $rs  = mysqld_select($sql);
+      return $rs; 
+   }
+   
    
 } 
 ?>

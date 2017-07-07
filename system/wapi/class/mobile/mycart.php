@@ -34,7 +34,7 @@ class mycart extends base
         if(empty($dishid)){
             ajaxReturnData(0,'请选择商品');
         }
-        $total   = intval($_GP['buy_num']);
+        $total   = max(1,intval($_GP['buy_num']));
         $total   = empty($total) ? 1 : $total;
 
         $service  = new \service\wapi\mycartService();
@@ -50,7 +50,7 @@ class mycart extends base
         $_GP    =  $this->request;
 
         $id  = intval($_GP['id']);
-        $num = intval($_GP['buy_num']);
+        $num = max(1,intval($_GP['buy_num']));
         if(empty($id) || empty($num) || $num<0){
             ajaxReturnData(0,'参数有误！');
         }
@@ -119,7 +119,7 @@ class mycart extends base
         if(empty($dishid)){
             ajaxReturnData(0,'请选择商品');
         }
-        $total   = intval($_GP['buy_num']);
+        $total   = max(1,intval($_GP['buy_num']));
         $total   = empty($total) ? 1 : $total;
 
         $service  = new \service\wapi\mycartService();

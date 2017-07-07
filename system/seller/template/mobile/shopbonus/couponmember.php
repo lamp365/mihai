@@ -4,7 +4,7 @@
 
 <body style="padding:10px;">
 <!--商品搜索区域-->
-<form class="layui-form layui-form-pane" action="<?php echo mobile_url('shopbonus',array('op'=>'couponmember','id'=>$v['scid'])); ?>" method="post">
+<form class="layui-form layui-form-pane" action="<?php echo mobile_url('shopbonus',array('op'=>'couponmember','id'=>$_GP['id'])); ?>" method="post">
   <div class="layui-form-item">
       
   </div>
@@ -42,15 +42,6 @@
                   <th>使用时间</th>
                   <th>订单号</th>
                   <th>订单金额</th>
-                  <th>订单时间</th>
-                  <?php
-                      if($oneCoupon['usage_mode'] == 3)
-                      {
-                    ?>
-                  <th>宝贝名称</th>
-                  <?php
-                      }
-                    ?>
                   <th>优惠券状态</th>
                 </tr> 
               </thead>
@@ -63,17 +54,8 @@
                   <td><?php echo $v['mobile'];?></td>
                   <td><?php echo $v['receive_time'];?></td>
                   <td><?php echo $v['use_time'];?></td>
-                  <td><?php echo $v['order_number'];?></td>
-                  <td><?php echo $v['order_money'];?></td>
-                  <td><?php echo $v['order_time'];?></td>
-                    <?php
-                      if($oneCoupon['usage_mode'] == 3)
-                      {
-                    ?>
-                        <td><?php echo $v['dish_name'];?></td>
-                    <?php
-                      }
-                    ?>
+                  <td><?php echo $v['ordersn'];?></td>
+                  <td><?php echo $v['order_price'];?></td>
                   <td><?php echo $v['status'];?></td>
                 </tr>
               <?php

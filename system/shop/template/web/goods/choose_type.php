@@ -46,7 +46,7 @@
 	<table class="table table-striped table-bordered table-hover goods-list-table">
 			<tbody >
 				<tr>
-					<td>
+					<td style="padding-left: 310px;">
 						<li>
                                                     <select name="industry_p1_id" id="industry_p1_id" class="" style="margin-right:10px;width: 150px; height:30px; line-height:28px; padding:2px 0" >
                                                         <option value="">请选择一级行业分类</option>
@@ -134,6 +134,10 @@
 		var p2 = $(".child-type").find(".li-check").attr('p2');
 		var industry_p1_id = $("#industry_p1_id").val();
 		var industry_p2_id = $("#industry_p2_id").val();
+		if(industry_p1_id == null || industry_p1_id == '' || industry_p2_id == null || industry_p2_id == ''){
+			alert("请选择行业");
+			return false;
+		}
 		if(p1 == null || p1 == '' || p2 == null || p2 == ''){
 			alert("请选择分类");
 			return false;

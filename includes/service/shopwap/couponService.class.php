@@ -46,7 +46,6 @@ class couponService extends \service\publicService
                     $list[$key]['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
                 }
             }
-            
             $return = array(
                'couponList' => $list, 
                'coupon_amount' => floor(FormatMoney($coupon_amount,0)), 

@@ -151,7 +151,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">优惠券金额</label>
             <div class="layui-input-inline" >
-                <input type="text" name="coupon_amount" id="coupon_amount"  placeholder="请输入优惠券面值" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['coupon_amount'];?>">
+                <input type="number" name="coupon_amount" id="coupon_amount"  placeholder="请输入优惠券面值" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['coupon_amount'];?>">
             </div>
         </div>
         
@@ -159,20 +159,20 @@
         <div class="layui-form-item">
             <label class="layui-form-label">消费金额</label>
             <div class="layui-input-inline" >
-                <input type="text" name="amount_of_condition" id="amount_of_condition" placeholder="请输入消费金额" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['amount_of_condition'];?>">
+                <input type="number" name="amount_of_condition" id="amount_of_condition" placeholder="请输入消费金额" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['amount_of_condition'];?>">
             </div>
         </div>
         
         <div class="layui-form-item">
             <label class="layui-form-label">优惠券总量</label>
             <div class="layui-input-inline" >
-                <input type="text" name="release_quantity" id="release_quantity" placeholder="请输入发放数量" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['release_quantity'];?>">
+                <input type="number" name="release_quantity" id="release_quantity" placeholder="请输入发放数量" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['release_quantity'];?>">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">用户领取限制</label>
             <div class="layui-input-inline" >
-             <input type="text" name="get_limit" id="get_limit" placeholder="0表示无限制" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['get_limit'];?>">
+             <input type="number" name="get_limit" id="get_limit" placeholder="0表示无限制" autocomplete="off" class="layui-input" lay-verify="required" value="<?php echo $coupon['get_limit'];?>">
             </div>
         </div>
         
@@ -374,7 +374,7 @@
         var coupon_amount = parseFloat(layui.jquery('#coupon_amount').val());
         var amount_of_condition = parseFloat(layui.jquery('#amount_of_condition').val());
         var form_data_json = {};
-        var select_data_json = {};
+        var select_data_dish = '';
         var i = 0
         if(coupon_amount > amount_of_condition)
         {
@@ -388,11 +388,13 @@
         
         i = 0;
         layui.jquery("#store_shop_dishid_enter option").each(function() {
-            select_data_json[i] = layui.jquery(this).attr("value");
+            select_data_dish= select_data_dish + layui.jquery(this).attr("value") +',';
             i = i + 1;
         });
-        
-        var form_data_json = {
+        if(select_data_dish != ''){
+            select_data_dish = select_data_dish.substring(0,select_data_dish.length-1);
+        }
+        form_data_json = {
             'id':layui.jquery('#id').val(),
             'coupon_name':layui.jquery('#coupon_name').val(),
             'payment':layui.jquery('#payment').val(),
@@ -408,26 +410,16 @@
             'twoCategory':layui.jquery('#twoCategory').val(),
             'get_limit':layui.jquery('#get_limit').val(),
             'coupon_img':layui.jquery('#coupon_img').val(),
-            'store_shop_dishid_enter':select_data_json
-        }
+            'store_shop_dishid':select_data_dish
+        };
         if( form_data_json.use_end_time < form_data_json.receive_start_time || form_data_json.use_start_time < form_data_json.receive_start_time){
             layer.alert("可使用时间不能小于可领取时间");
             return false
         }
-        if(layui.jquery('#types').val() == 'update')
-        {
-            var url = "<?php echo mobile_url('shopbonus',array('op'=>'upcouponsub')); ?>";
-        }
-        else{
-            var url = "<?php echo mobile_url('shopbonus',array('op'=>'addcouponsub')); ?>";
-        }
+        var url = "<?php echo mobile_url('shopbonus',array('op'=>'addcoupon')); ?>";
         
         layui.jquery.post(url,form_data_json,function(data){
             if(data.errno == 1){
-                //倒计时120秒
-                layui.jquery(obj).prop('disabled',true);
-            }else{
-                console.log(data);
                 layer.open({
                     title: '提示'
                     ,content: data.message
@@ -435,59 +427,16 @@
                         location.href = data.data;
                     }
                 });
+            }else{
+                layer.open({
+                    title: '提示'
+                    ,content: data.message
+                });
             }
             return false;
         });
     });
-    
-    function mobile_isreget(mobile){
-        if(mobile.length == 11 && !isNaN(mobile)){
-            var url = "<?php echo mobile_url('shopruler',array('op'=>'checkmobile')); ?>";
-            $.post(url,{'mobile':mobile},function(data){
-               if(data.errno ==1 ){
-                   if(data.data.code == 1002){
-                       //手机号本就不存在
-                       $(".userpwd").show();
-                   }else if(data.data.code == 1004){
-                       //手机号已经存在
-                       $(".userpwd").hide();
-                   }
-                   return true;
-               }else{
-                   $('.mobile').val('');
-                   layer.open({
-                       title: '提示'
-                       ,content: data.message
-                   });
-                   return false;
-               }
-            },'json');
-        }else{
-            layer.open({
-                title: '提示'
-                ,content: '手机格式不对！'
-            });
-            return false;
-        }
-    }
 
-    function send_phonecode(obj){
-        var mobile = $('.mobile').val();
-        if(mobile_isreget(mobile)){
-            var url = "<?php echo mobile_url('shopruler',array('op'=>'adduser_code')); ?>";
-            $.post(url,{'mobile':mobile},function(data){
-                if(data.errno == 1){
-                    //倒计时120秒
-                    $(obj).prop('disabled',true);
-                }else{
-                    layer.open({
-                        title: '提示'
-                        ,content: data.message
-                    });
-                }
-            });
-        }
-    }
 </script>
 </body>
 </html>

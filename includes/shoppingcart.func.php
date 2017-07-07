@@ -122,7 +122,7 @@ function update_cart_record_time(){
 	}else{
 		$in_data['session_id'] = $member['openid'];
 		$in_data['last_time']  = time();
-		$in_data['createtime'] =time();
+		$in_data['createtime'] = time();
 		mysqld_insert('shop_cart_record',$in_data);
 	}
 }

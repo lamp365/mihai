@@ -414,35 +414,6 @@
             </div><!-- #sidebar-shortcuts -->
           
             <ul class="nav nav-list">
-                <?php if (checkAdmin() || in_array("shop-mess",$menurule)) { ?>
-                    <li class="shangpin">
-                        <!-- 导航第一级 -->
-                        <a href="#" class="dropdown-toggle">
-                            <i class="icon-random"></i>
-                            <span class="menu-text"> 换购管理</span>
-
-                            <b class="arrow icon-angle-down"></b>
-                        </a>
-                        <ul class="submenu">
-                            <?php
-                                foreach($parentMenuList[MenuEnum::TUAN_GOU_MANGE] as $row){
-                                    $zi = "换购管理 - > {$row['moddescription']}";
-                                    if(empty($row['modop'])){
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
-                                    }else{
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
-                                    }
-                                    echo "
-                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
-                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
-                                        </a></li>
-                                        ";
-                                }
-                            ?>
-
-                        </ul>
-                    </li>
-                <?php }?>
 
                 <?php if (checkAdmin() ||in_array("shop-dish",$menurule)) { ?>
                     <li class="shangpin">
@@ -613,33 +584,7 @@
                         <?php }  }}   ?>
 
 
-                <?php if (checkAdmin() ||in_array("shop-taxrate",$menurule)) { ?>
-                    <li class="yingxiao">
-                        <!-- 导航第一级 -->
-                        <a href="#" class="dropdown-toggle">
-                            <i class="icon-money"></i>
-                            <span class="menu-text"> 税率管理</span>
-                            <b class="arrow icon-angle-down"></b>
-                        </a>
-                        <ul class="submenu">
-                            <?php
-                                foreach($parentMenuList[MenuEnum::TAXS_MANGE] as $row){
-                                    $zi = "税率管理 - > {$row['moddescription']}";
-                                    if(empty($row['modop'])){
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo']));
-                                    }else{
-                                        $url = create_url('site', array('name' => $row['modname'],'do' => $row['moddo'],'op'=>$row['modop']));
-                                    }
-                                    echo "
-                                        <li><a href='".$url."' target='main' onclick=\"navtoggle('{$zi}')\">
-                                            <i class='icon-double-angle-right'></i>{$row['moddescription']}
-                                        </a></li>
-                                        ";
-                                }
-                            ?>
-                        </ul>
-                    </li>
-                <?php }?>
+              
 
                 <?php if (checkAdmin() ||in_array("shop-set",$menurule)) { ?>
                     <li class="jichu">

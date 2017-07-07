@@ -63,10 +63,51 @@
 	.wholesale-div li{
 		padding: 5px 0 5px 10px;
 	}
+	.hide{
+		display: none;
+	}
 </style>
 <h3 class="header smaller lighter blue">宝贝审核</h3>
 <!--增加的操作-->
 <form action=""  class="form-horizontal" method="post">
+	
+	<table class="table table-striped table-bordered table-hover">
+		<tbody>
+			<tr class="shop-list-tr">
+				<td>
+					<li>
+						<select class="industry1" onchange="industry1(this)">
+							<option value="1">行业一1</option>
+							<option value="2">行业一2</option>
+							<option value="3">行业一3</option>
+							<option value="4">行业一4</option>
+						</select>
+						<select class="industry2 hide" onchange="industry2()">
+							<option value="1">行业二1</option>
+							<option value="2">行业二2</option>
+							<option value="3">行业二3</option>
+							<option value="4">行业二4</option>
+						</select>
+						<select class="category1 hide" onchange="category1()">
+							<option value="1">分类一1</option>
+							<option value="2">分类一2</option>
+							<option value="3">分类一3</option>
+							<option value="4">分类一4</option>
+						</select>
+						<select class="category2 hide" onchange="category2()">
+							<option value="1">分类二1</option>
+							<option value="2">分类二2</option>
+							<option value="3">分类二3</option>
+							<option value="4">分类二4</option>
+						</select>
+					</li>
+					<li>
+						<button class="btn btn-primary btn-sm" ><i class="icon-search icon-large"></i> 搜索</button>
+					</li>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<table class="table table-striped table-bordered table-hover" style="display:none;">
 			<tbody>
 				<tr class="shop-list-tr">
@@ -125,12 +166,14 @@
     	<input type="checkbox" onclick="selectAll()" id="selectAll"/>
     	宝贝ID
     </th>
-	<th class="text-center">产品图片</th>
+	  <th class="text-center">店铺名称</th>
+	  <th class="text-center">产品图片</th>
     <th class="text-center" width="300">产品名称</th>
 	<th class="text-center" >条形码</th>
 	<th class="text-center">销售价格</th>
     <th class="text-center">活动价格</th>
 	<th class="text-center">活动库存</th>
+	<th class="text-center">卖出件数</th>
 	<th class="text-center">时间区间</th>
   </tr>
 
@@ -138,8 +181,11 @@
 				<tr>
 				 	<td style="text-align:center;" class="dish-id">
 				 		<input type="checkbox" class="dishvalue" name="disvalue[]" value="<?php  echo $item['ac_dish_id'];?>"/>
-				 		<?php  echo $item['id'];?>				 			
+				 		<?php  echo $item['id'].'-'.$item['ac_dish_id'];?>
 				 	</td>
+					<td style="text-align:center;">
+						<?php $the_store = member_store_getById($item['ac_shop'],'sts_name'); echo $the_store['sts_name']; ?>
+					</td>
 					<td style="text-align:center;"><img src="<?php echo $item['thumb']; ?>" height="38" width="38" /></td>
                 	<td style="text-align:left;" class="product-title">
                 		<?php  echo $item['title'];?>
@@ -149,6 +195,9 @@
 					<td style="text-align:center;" class="wholesale-td"><?php  echo $item['ac_dish_price'] / 100 ;?></td>
 					<td style="text-align:center;" class="product-stock">
 						<span><?php  echo $item['ac_dish_total'];?></span>
+					</td>
+					<td style="text-align:center;">
+						<span><?php  echo $item['ac_dish_sell_total'];?></span>
 					</td>
 					<td style="text-align:center;">
 						<?php echo getAreaTitleByAreaid($item['ac_action_id']); ?>
@@ -264,6 +313,40 @@
 	}else{
 		$(".dishvalue").prop("checked",false);
 	}
+ }
+
+ function industry1(obj){
+ 	var check_val = $(obj).val();
+ 	var url = "";
+ 	selectPost(url,check_val,".industry2");
+ }
+  function industry2(obj){
+ 	var check_val = $(obj).val();
+ 	var url = "";
+ 	selectPost(url,check_val,".category1");
+ }
+  function category1(obj){
+ 	var check_val = $(obj).val();
+ 	var url = "";
+ 	selectPost(url,check_val,".category2");
+ }
+
+ function selectPost(url,checkVal,element){
+ 	var option = "";
+ 	var html = "";
+ 	$.post(url,{value:checkVal},function(data){
+ 		if( data.errno == 1 ){
+ 			//服务端接口出来后补上
+ 			$(element).removeClass("hide");
+ 			option = data.option;
+ 			$.each(option,function(){
+ 				html+="<option value='111'></option>"
+ 			})
+ 			$(element).html(html)
+ 		}else{
+
+ 		}
+ 	},'json')
  }
 </script>
 <?php  include page('footer');?>

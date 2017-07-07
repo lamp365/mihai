@@ -131,7 +131,12 @@ class payorderService extends  \service\publicService
                 $pay_total_money = $pay_total_money + $order_data['price'];  //单位是分
                 //更新优惠卷为已经使用
                 if(!empty($bonus_id))
-                    mysqld_update('store_coupon_member',array('status'=>1,'use_time'=>time()),array('scmid'=>$bonus_id));
+                    mysqld_update('store_coupon_member',array(
+                        'status'        => 1,
+                        'use_time'      => time(),
+                        'order_price'   => $order_data['price'],
+                        'ordersn'       => $order_data['ordersn'],
+                    ),array('scmid'=>$bonus_id));
 
                 $dishlist    = $item['dishlist'];
                 $is_action   = 0;
@@ -187,6 +192,11 @@ class payorderService extends  \service\publicService
 
         //移除购物车
         mysqld_delete("shop_cart",array('session_id'=>$openid,'to_pay'=>1));
+        $cart_find = mysqld_select("select id from ".table('shop_cart')." where session_id='{$openid}'");
+        if(empty($cart_find)){
+            //购物车都删除掉了，则清空掉购买最后时间记录
+            mysqld_delete('shop_cart_record',array('session_id' => $openid));
+        }
         return array(
             'pay_orderid'     => $pay_orderid,  //数组型的 订单号
             'pay_total_money' => $pay_total_money,

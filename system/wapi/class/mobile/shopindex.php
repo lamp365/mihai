@@ -93,7 +93,11 @@ class shopindex extends base{
        $sql .=$orderby;
        $list = mysqld_selectall($sql);
        logRecord($sql, 'shopindexDishSql');
-       if (empty($list)) ajaxReturnData(1,'暂无商品');
+       
+       if (empty($list)){ 
+           $returndata = array('status'=>0,'data'=>$list);
+           ajaxReturnData(1,'暂无商品',$returndata);
+       }
        //shop_dish表取商品详情
        $data = array();
        $storeShopModel = new \model\store_shop_model();
@@ -126,7 +130,46 @@ class shopindex extends base{
             }
             $data[] = $temp;
        }
-       if (empty($data)) ajaxReturnData(1,'暂无商品');
-       ajaxReturnData(1,'',$data);
+       $status = 1;
+       if (count($data) < $psize){
+           $status = 0;
+       }else {
+           if (!$this->checkIsData($ac_list_id,$ac_area_id,$jd,$wd,$pindex+1,$psize)) $status = 0;
+       }
+       $returndata = array('status'=>$status,'data'=>$data);
+       ajaxReturnData(1,'',$returndata);
+   }
+   //是否还有数据
+   public function checkIsData($ac_id,$area_id,$longitude,$latitude,$page,$limit){
+       $ac_list_id = $ac_id;//活动id
+       $ac_area_id = $area_id;//区域id
+       if (empty($ac_list_id) || empty($ac_area_id)) return false;
+       $jd = $longitude;//经度
+       $wd = $latitude;//纬度
+       $where = " a.ac_action_id = '$ac_list_id' and a.ac_dish_status=1 and b.status=1 and (a.ac_area_id = '$ac_area_id' or a.ac_area_id=0) ";
+        
+       $sql_where = get_area_condition_sql($jd,$wd);
+       if ($sql_where){
+           $where .= $sql_where;
+       }
+       //获得当前时间的区域id
+       $activityService = new \service\wapi\activityService();
+       $currentId = $activityService->getCurrentArea();
+        
+       $sql = "SELECT a.*,b.title,b.thumb,b.marketprice from ".table('activity_dish')." as a left join ".table('shop_dish')." as b on a.ac_shop_dish = b.id where ";
+       $sql .= $where;
+       if ($currentId && ($currentId != $ac_area_id)){
+           $sql .= " and a.ac_dish_total > 0";
+       }
+       //分页取数据
+       $pindex = $page;
+       $psize = $limit;//默认每页4条数据
+       $limit= ($pindex-1)*$psize;
+       $orderby = " order by a.ac_dish_id DESC LIMIT ".$limit.",".$psize;
+       $sql .=$orderby;
+       $list = mysqld_selectall($sql);
+       if (!empty($list)){
+           return true;
+       }   
    }
 }

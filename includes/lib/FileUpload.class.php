@@ -112,7 +112,8 @@ class FileUpload
         //设置开关是否启用阿里云服务器存储文件
         if($uploadByAli){
 //            $result = $this->uploadByQiniu($file, $extention);
-            $result = $this->uploadByAli($file, $extention);
+            $result = $this->uploadBylocal($file, $extention);  //全部存本地
+//            $result = $this->uploadByAli($file, $extention);
         }else{
             $result = $this->uploadBylocal($file, $extention);
         }

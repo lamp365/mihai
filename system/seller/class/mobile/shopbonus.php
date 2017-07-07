@@ -37,50 +37,13 @@ class shopbonus extends base
         }
         
         $storeCouponListData = $this->shopBonusService->couponList($pindex,$psize,$condition);
-        
-        foreach($storeCouponListData['data'] as $k=>$v)
-        {
-            switch ($v['payment'])
-            {
-                case 1:
-                    $storeCouponListData['data'][$k]['payment'] = '用户';
-                    break;
-                case 2:
-                    $storeCouponListData['data'][$k]['payment'] = '通用';
-                    break;
-                case 3:
-                    $storeCouponListData['data'][$k]['payment'] = '活动';
-                    break;
-            }
-            
-            switch ($v['usage_mode'])
-            {
-                case 1:
-                    $storeCouponListData['data'][$k]['usage_mode'] = '全场';
-                    break;
-                case 2:
-                    $storeCouponListData['data'][$k]['usage_mode']             = '分类';
-                    break;
-                case 3:
-                    $storeCouponListData['data'][$k]['usage_mode'] = '单品';
-                    break;
-            }
-            
-            $storeCouponListData['data'][$k]['coupon_amount']               = FormatMoney($v['coupon_amount'],2);
-            $storeCouponListData['data'][$k]['amount_of_condition']         = FormatMoney($v['amount_of_condition'],2);
-            $storeCouponListData['data'][$k]['receive_start_time']          = date('Y-m-d H:i:s',$v['receive_start_time']);
-            $storeCouponListData['data'][$k]['receive_end_time']            = date('Y-m-d H:i:s',$v['receive_end_time']);
-            $storeCouponListData['data'][$k]['use_start_time']              = date('Y-m-d H:i:s',$v['use_start_time']);
-            $storeCouponListData['data'][$k]['use_end_time']                = date('Y-m-d H:i:s',$v['use_end_time']);
-        }
-        
         $pager = pagination($storeCouponListData['total'], $pindex, $psize);
         
         include page('shopbonus/coupon');
     }
     
     //优惠券添加
-    public function addcoupon(){
+    public function showadd(){
         $storyShopClass = array();
         $types          = 'add';
         $Title        = '添加优惠券';
@@ -107,16 +70,14 @@ class shopbonus extends base
     }
     
     //优惠券表单添加
-    public function addcouponsub(){
+    public function addcoupon(){
         $_GP = $this->request;
         
-        $insertId = $this->shopBonusService->addCoupon($_GP);
-        if($insertId > 0)
-        {
-            ajaxReturnData(0,'优惠券添加成功',mobile_url('shopbonus',array('op'=>'index')));
-        }
-        else{
-            ajaxReturnData(1,'优惠券添加失败','');
+        $res = $this->shopBonusService->addCoupon($_GP,$_GP['id']);
+        if($res) {
+            ajaxReturnData(1,'优惠券操作成功',mobile_url('shopbonus',array('op'=>'index')));
+        } else{
+            ajaxReturnData(0,$this->shopBonusService->getError());
         }
     }
     
@@ -127,10 +88,12 @@ class shopbonus extends base
         $types          = 'update';
         $Title        = '编辑优惠券';
         
-        $coupon = $this->shopBonusService->getOneCoupon($_GP['id']);
-        
-        $coupon['coupon_amount']        = FormatMoney($coupon['coupon_amount'],2);
-        $coupon['amount_of_condition']  = FormatMoney($coupon['amount_of_condition'],2);
+        $coupon = $this->shopBonusService->getOneCoupon($_GP['id'],'',$this->memberData['store_sts_id']);
+        if(!$coupon){
+            message($this->shopBonusService->getError(),refresh(),'error');
+        }
+        $coupon['coupon_amount']        = FormatMoney($coupon['coupon_amount'],1);
+        $coupon['amount_of_condition']  = FormatMoney($coupon['amount_of_condition'],1);
         $coupon['receive_start_time']   = date('Y-m-d H:i:s',$coupon['receive_start_time']);
         $coupon['receive_end_time']     = date('Y-m-d H:i:s',$coupon['receive_end_time']);
         $coupon['use_start_time']       = date('Y-m-d H:i:s',$coupon['use_start_time']);
@@ -144,15 +107,9 @@ class shopbonus extends base
 
         if($coupon['usage_mode']==3)
         {
+            //找出单品  目前 store_shop_dishid 是一个逗号分隔的
             $styleCss  = '';
-            $dishidStr = '';
-            $dishidArr = json_decode($coupon['store_shop_dishid']);
-            foreach($dishidArr as $v)
-            {
-                $dishidStr .= $v.',';
-            }
-            $dishidStr = rtrim($dishidStr,',');
-
+            $dishidStr = $coupon['store_shop_dishid'];
             //left
             $dishData = $this->shopDishService->getDelDishs($coupon['store_category_idone'],$coupon['store_category_idtwo'],$dishidStr);
 
@@ -166,27 +123,16 @@ class shopbonus extends base
         include page('shopbonus/addcoupon');
     }
     
-    //编辑优惠券提交
-    public function upcouponsub(){
-        $_GP = $this->request;
-        
-        $upStatus = $this->shopBonusService->upCoupon($_GP,$_GP['id']);
-        if($upStatus > 0)
-        {
-            ajaxReturnData(0,'优惠券编辑成功',mobile_url('shopbonus',array('op'=>'index')));
-        }
-        else{
-            ajaxReturnData(1,'优惠券编辑失败','');
-        }
-    }
-    
     //查看发放记录
     public function couponmember(){
         //
         $_GP = $this->request;
         $condition = '';
         
-        $oneCoupon = $this->shopBonusService->getOneCoupon($_GP['id'],'usage_mode');
+        $oneCoupon = $this->shopBonusService->getOneCoupon($_GP['id'],'usage_mode',$this->memberData['store_sts_id']);
+        if(!$oneCoupon){
+            message($this->shopBonusService->getError(),refresh(),'error');
+        }
         
         $pindex = max(1, intval($_GP['page']));
         $psize = 10;
@@ -197,11 +143,13 @@ class shopbonus extends base
         }
         
         $couponMemberListData = $this->shopBonusService->couponMemberList($_GP['id'],$pindex,$psize,$condition);
-        
         if($couponMemberListData['total'] > 0)
         {
-            foreach($couponMemberListData['data'] as $k=>$v){                
-                $couponMemberListData['data'][$k]['order_money']  = FormatMoney($v['order_money'],2);
+            foreach($couponMemberListData['data'] as $k=>$v){
+                $memInfo = member_get($v['openid'],'nickname,mobile');
+                $couponMemberListData['data'][$k]['nickname']     = $memInfo['nickname'];
+                $couponMemberListData['data'][$k]['mobile']       = $memInfo['mobile'];
+                $couponMemberListData['data'][$k]['order_price']  = FormatMoney($v['order_price'],2);
                 $couponMemberListData['data'][$k]['receive_time'] = $v['receive_time']>0?date('Y-m-d H:i:s',$v['receive_time']):'';
                 $couponMemberListData['data'][$k]['order_time']   = $v['order_time']>0?date('Y-m-d H:i:s',$v['order_time']):'';
                 $couponMemberListData['data'][$k]['use_time']     = $v['use_time']>0?date('Y-m-d H:i:s',$v['use_time']):'';
@@ -240,7 +188,10 @@ class shopbonus extends base
         }
         
         //判断优惠券是否足够发放
-        $couponData = $this->shopBonusService->getOneCoupon($_GP['id'],'release_quantity');
+        $couponData = $this->shopBonusService->getOneCoupon($_GP['id'],'release_quantity',$this->memberData['store_sts_id']);
+        if(!$couponData){
+            message($this->shopBonusService->getError(),refresh(),'error');
+        }
         
         if($couponData['release_quantity'] <= $_GP['grantnums'])
         {

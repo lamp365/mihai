@@ -181,7 +181,7 @@ class loginService extends \service\publicService
             'pwd'    		  => $pwd,
             'nickname'	      => $wx_info['name'],
             'realname'	      => $wx_info['name'],
-            'avatar'	      => $wx_info['face'],
+            'avatar'	      => $_GP['avatar']!=''?$_GP['avatar']:$wx_info['face'],
             'createtime'       => time(),
             'status'           => 1,
             'istemplate'       => 0,

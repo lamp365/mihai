@@ -154,6 +154,32 @@ class shop extends base
             ajaxReturnData(0,$service->getError());
         }
     }
+    //免邮以及运费价格的设置
+    public function freePrice(){
+        $member = get_member_account();
+        $_GP    = $this->request;
+        $type = $_GP['type'];
+        if ($type == 'update'){
+            $inset_data = array(
+                'free_dispatch' => FormatMoney($_GP['free_dispatch'],1),
+                'express_fee'   => FormatMoney($_GP['express_fee'],1),
+            );
+
+            $return = mysqld_update('store_extend_info',$inset_data,array('store_id'=>$member['store_sts_id']));
+            if ($return)
+                ajaxReturnData(1,'运费设置成功');
+            else
+                ajaxReturnData(0,'运费设置失败');
+        }
+
+        $service        = new \service\seller\StoreShopService();
+        $myFreeDispatch = $service->viewreturnAddress();
+        $res_data       = array();
+        $res_data['free_dispatch']  = FormatMoney($myFreeDispatch['free_dispatch'],0);  //满多少免邮
+        $res_data['express_fee']    = FormatMoney($myFreeDispatch['express_fee'],0);    //运费
+        ajaxReturnData(1,'请求成功！',$res_data);
+    }
+
     /**
      * 退货地址配置
      */

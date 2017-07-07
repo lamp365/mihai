@@ -57,7 +57,7 @@ body{
 			<div class="top-nav-area">
 				<div class="top-nav-div">
 					<ul class="top-nav-left">
-					    <li><img src="<?php echo $cfg['shop_logo']; ?>" height="30" /></li>
+					    <li><a href="index.php"><img src="<?php echo $cfg['shop_logo']; ?>" height="30" /></a></li>
 					</ul>
 					<ul class="top-nav-list">
                         <?php if(empty($h_member)){ ?>

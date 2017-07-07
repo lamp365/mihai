@@ -72,7 +72,8 @@ class limitedTimepurChaseService extends \service\publicService {
        $rsdata['ac_area_id']    = intval($data['ac_area_id'])>0?intval($data['ac_area_id']):0;
        $rsdata['ac_p1_id']      = $data['ac_p1_id'];
        $rsdata['ac_p2_id']      = $data['ac_p2_id'];
-       $rsdata['ac_dish_total'] = $data['ac_dish_total'];
+       $rsdata['ac_dish_total']       = $data['ac_dish_total'];  //库存 会随着 卖出 而改变
+       $rsdata['ac_dish_totalcount '] = $data['ac_dish_total'];  //原始库存  存进去后不会改变
        $rsdata['ac_dish_id']    = $data['ac_dish_id'];
        if($rsdata['ac_dish_id'] <= 0)
        {

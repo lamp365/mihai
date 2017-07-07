@@ -5,7 +5,6 @@
 
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 	<input type="hidden" name="op" value="post">
-
 	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-left"> 视频URL：</label>
 

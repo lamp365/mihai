@@ -345,7 +345,7 @@ class goodsService extends \service\publicService
         $data['page'] = max(1, intval($data['page']));
         $data['limit'] = $data['limit']>0?$data['limit']:10; 
   
-        $wheres = "1 and deleted = 0";
+        $wheres = "industry_p2_id = {$memberData['sts_category_p2_id']} and deleted = 0";
         
         if($gidStr != '')
         {

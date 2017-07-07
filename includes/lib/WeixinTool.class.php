@@ -215,7 +215,7 @@ class WeixinTool
     }
 
     /**
-     * 获取小程序二维码
+     * 获取小程序二维码  传到本地
      * type 1 只能是 $condition  跳转到某一个页面 不能带 ？参数  二维码数量有限
      * type 2 可以带入场景值 默认进入到首页  $condition 【用户member中的openid】就是对应的场景值  适合做推广型扫码 绑定用户上下级  数量无限
      * type 3 只能是 $condition  跳转到某一个页面 可以带 ？参数  二维码数量有限
@@ -224,6 +224,92 @@ class WeixinTool
      * @return array
      */
     public function get_xcx_erweima($condition,$type)
+    {
+        if(empty($condition) || empty($type)){
+            return array('errno'=>0,'message'=>'参数不能为空！');
+        }
+
+        $dir     = "attachment/xcxqrcode/{$type}";
+        $picname = md5($condition).".png";
+        $picfile = $dir."/".$picname;
+
+        if(file_exists($picfile)){
+            //如果存在  直接拼接二维码地址
+            $erweima =  WEBSITE_ROOT.$picfile;
+            return array('errno'=>1,'message'=>$erweima);
+        }
+
+        //否则的上传到本地
+        $seting = globaSetting();
+        $appid  = $seting['xcx_appid'];
+        $secret = $seting['xcx_appsecret'];
+
+        $url     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+        $content = http_get($url);
+
+        if (empty($content)) {
+            return array('errno'=>0,'message'=>'获取微信access token失败, 请稍后重试！');
+        }
+        $token = @json_decode($content, true);
+        if (empty($token) || ! is_array($token)) {
+            return array('errno'=>0,'message'=>'获取微信access token失败, 请稍后重试。');
+        }
+        if (empty($token['access_token']) || empty($token['expires_in'])) {
+            return array('errno'=>0,'message'=>'解析微信公众号授权失败, 请稍后重试！');
+        }
+
+        $access_token = $token['access_token'];
+        if($type == 1){
+            //只能是 $condition  跳转到某一个页面 不能带 ？参数  二维码数量有限
+            $url = "https://api.weixin.qq.com/wxa/getwxacode?access_token=".$access_token;
+            $parame['path']  = $condition;
+            $parame['width'] = 200;
+        }else if($type == 2){
+            //可以带入场景值 默认进入到首页  $condition 【用户member中的openid】就是对应的场景值  适合做推广型扫码 绑定用户上下级  数量无限
+            $url = "http://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=".$access_token;
+            $parame['scene']  = $condition;
+            $parame['width'] = 200;
+        }else if($type == 3){
+            //只能是 $condition  跳转到某一个页面 可以带 ？参数  二维码数量有限
+            $url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=".$access_token;
+            $parame['path']  = $condition;
+            $parame['width'] = 200;
+        }else{
+            return array('errno'=>0,'message'=>'类型参数有误！');
+        }
+
+        $parame = json_encode($parame);
+        $data   = http_post($url,$parame);
+        $result = json_decode($data,true);
+        if(is_array($result)){
+            //说明报错了
+            return array('errno'=>0,'message'=>$result['errmsg']);
+        }
+
+        //将二进制流 写入本地图片
+        if(!is_dir($dir)){
+            mkdirs($dir);
+        }
+        $relat_picfile = WEB_ROOT.'/'.$picfile;
+        $res     = file_put_contents($relat_picfile,$data);
+        if($res){
+            $return_picfile = WEBSITE_ROOT.$picfile;
+            return array('errno'=>1,'message'=>$return_picfile);
+        }else{
+            return array('errno'=>0,'message'=>'网络原因,二维码生成失败！');
+        }
+    }
+
+    /**
+     * 获取小程序二维码  传到阿里上
+     * type 1 只能是 $condition  跳转到某一个页面 不能带 ？参数  二维码数量有限
+     * type 2 可以带入场景值 默认进入到首页  $condition 【用户member中的openid】就是对应的场景值  适合做推广型扫码 绑定用户上下级  数量无限
+     * type 3 只能是 $condition  跳转到某一个页面 可以带 ？参数  二维码数量有限
+     * @param $condition
+     * @param $type
+     * @return array
+     */
+    public function get_xcx_erweima_from_ali($condition,$type)
     {
         if(empty($condition) || empty($type)){
             return array('errno'=>0,'message'=>'参数不能为空！');

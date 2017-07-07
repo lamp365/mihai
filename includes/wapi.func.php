@@ -214,6 +214,29 @@ function getDishIsOnActive($dishid){
      }
  }
  /**
+  * 根据经纬度获取code
+  * 
+  * @param $jd 经度
+  * @param $wd 纬度 */
+ function get_area_code_by_jw($jd,$wd){
+     //经纬度地区
+     if (empty($jd) || empty($wd)){
+         $cityCode = getCityidByIp();
+         return array('status'=>0,'citycode'=>$cityCode);
+     }else{
+         $jdwd = getAreaid($jd,$wd);
+         if (empty($jdwd)) return false;
+         if ($jdwd['status'] == 0) {//取默认城市
+             $cityCode = $jdwd['ac_city'];
+             return array('status'=>0,'citycode'=>$cityCode);
+         }else{
+             $cityCode = $jdwd['ac_city'];
+             $areaCode = $jdwd['ac_city_area'];
+             return array('status'=>1,'citycode'=>$cityCode,'areaCode'=>$areaCode);
+         }
+     }
+ }
+ /**
   * 根据经纬度查询的sql条件封装
   * @param $jd 经度
   * @param $wd 纬度

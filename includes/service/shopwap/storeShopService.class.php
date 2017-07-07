@@ -263,4 +263,29 @@ class storeShopService extends publicService
             return $brandarr;
         }
     }
+    /***
+     * 通过经纬度返回在这个区域配送的店铺
+     *   */
+    public function getStoreByJdAndWd($jd='',$wd=''){
+        //根据经纬度找到城市code和区域code
+        $codeArr = get_area_code_by_jw($jd,$wd);
+        if (is_array($codeArr)){
+            $cityCode = $codeArr['citycode'];
+            $areaCode ='';
+            if ($codeArr['status']==1){
+                $areaCode = $codeArr['areaCode'];
+            }
+        }
+        
+        if ($areaCode){
+            $where = " IF(b.level_type>1,a.sts_city='$cityCode',a.sts_region='$areaCode' )";
+        }else{//如果得到的区域code为空，说明用户没有定位或者高德没有返回区域code,此时取默认城市的code
+            $where = " a.sts_city='$cityCode' ";
+        }
+        
+        $sql = "select a.sts_id,a.sts_province,a.sts_city,a.sts_region,b.level_type from ".table('store_shop')." as a left join ".table('store_shop_level')." as b on a.sts_shop_level=b.rank_level where ".$where;
+        $ShopDishModel = new \model\shop_dish_model();
+        $return = $ShopDishModel->fetchall($sql);
+        return $return;
+    } 
 }

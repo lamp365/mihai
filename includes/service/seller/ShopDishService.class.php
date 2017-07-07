@@ -165,7 +165,8 @@ class ShopDishService extends \service\publicService {
         $dishList = mysqld_selectall($sql);
         
         foreach($dishList as $k=>$v){
-            $dishList[$k]['marketprice']  = FormatMoney($v['marketprice'],2);
+            $dishList[$k]['marketprice']          = FormatMoney($v['marketprice'],2);
+            $dishList[$k]['history_lower_prcie']  = FormatMoney($v['history_lower_prcie'],2);
             if($_GP['is_distribution'] > 0)
             {
                 //squdian_store_extend_info
@@ -363,15 +364,15 @@ class ShopDishService extends \service\publicService {
     
     //分销商品列表
     public function distributionListDish($data,$fields='*',$isAll=0){
-        $data['page'] = max(1, intval($data['page']));
-        $data['limit'] = $data['limit']>0?$data['limit']:10; 
+        //$data['page'] = max(1, intval($data['page']));
+        //$data['limit'] = $data['limit']>0?$data['limit']:10; 
         $where = array();
         if($_GP['store_p1'] > 0){
-            $where .= " and store_p1 = {$_GP['store_p1']}";
+            //$where .= " and store_p1 = {$_GP['store_p1']}";
         }
         
         if($_GP['store_p2'] > 0){
-            $where .= " and store_p2 = {$_GP['store_p2']}";
+            //$where .= " and store_p2 = {$_GP['store_p2']}";
         }
         
         $where = 'is_direct = 1';
@@ -379,7 +380,7 @@ class ShopDishService extends \service\publicService {
         
         if($isAll <= 0)
         {
-            $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+            //$limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
         }
         else{
             $limit = '';

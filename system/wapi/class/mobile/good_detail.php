@@ -50,6 +50,10 @@ class good_detail extends base {
       // 获取详情图
       $contents = explode(",",$goods_piclist['contentpicurl']);
     }
+
+    // 删除购物车方法和统计商品访问量方法
+    check_shop_cart_time();
+    count_dish_visted($good['id']);
     
     $list = array();
     // 商品ID 
@@ -187,6 +191,11 @@ class good_detail extends base {
     $news_com = $this->get_ones_comment($good['id']);
     $list['com_top'] = $news_com['com'];
     $list['com_total'] = $news_com['total'];
+    $list['com_rate'] = $news_com['good_rate'];
+
+    // 帮助说明
+    $settings = globaSetting();
+    $list['help'] = $settings['help'];
 
     // 详情图
     if ($is_contont == 'yes') {
@@ -256,8 +265,12 @@ class good_detail extends base {
       unset($c_v);
     }
 
+    // 数量
+    $totals = $this->get_comment_nums($good['id']);
+
     $result['comments'] = $comments;
-    $result['total'] = $total['total'];
+    $result['total'] = $totals;
+    // dump($result);
     ajaxReturnData(1,'获取成功',$result);
     exit;
   }
@@ -350,8 +363,8 @@ class good_detail extends base {
 
       // 评论图片保存
       for ($i=1; $i < 6; $i++) { 
-        if (!empty($_GP['img'.$i])) {
-          $m = array('comment_id' => $comment_id, 'img' => $_GP['img'.$i]);
+        if (!empty($cmv2['img'.$i])) {
+          $m = array('comment_id' => $comment_id, 'img' => $cmv2['img'.$i]);
           mysqld_insert('shop_comment_img', $m);
         }
         // $this->upload_imgs($i, $comment_id);
@@ -385,7 +398,10 @@ class good_detail extends base {
     $result = array();
     $comment = mysqld_select("SELECT a.*, b.openid, b.realname, b.nickname, b.avatar, b.mobile, b.member_description,c.img FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid LEFT JOIN ".table('shop_comment_img')." as c on a.id=c.comment_id WHERE a.dishid=".$dishid." ORDER BY c.img DESC, (a.wl_rate+a.fw_rate+a.cp_rate) DESC, a.createtime DESC");
     
-    $comment['mobile'] = substr_cut($comment['mobile']);
+    if (!empty($comment['mobile'])) {
+      $comment['mobile'] = substr_cut($comment['mobile']);
+    }
+    
     $c_img = mysqld_selectall("SELECT img FROM ".table('shop_comment_img')." WHERE comment_id=".$comment['id']." ORDER BY id ASC LIMIT 5");
     $comment['img'] = array();
     if (!empty($c_img)) {
@@ -399,9 +415,50 @@ class good_detail extends base {
     // 总记录数
     $total = mysqld_select("SELECT FOUND_ROWS() as total;");
 
+    // 好评率
+    $good_com = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.* FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid WHERE a.dishid=".$dishid." AND (a.wl_rate+a.fw_rate+a.cp_rate)>10 ORDER BY a.createtime DESC LIMIT 1");
+    $gc_total = mysqld_select("SELECT FOUND_ROWS() as total;");
+    $gc_total['total'] = intval($gc_total['total']);
+    $total['total']    = intval($total['total']);
+    $good_rate = empty($total['total']) ? 0 : round($gc_total['total']/$total['total'],3);
+
     $result['com'] = $comment;
     $result['total'] = $total['total'];
+    $result['good_rate'] = (string)($good_rate*100)."%";
 
     return $result;
+  }
+
+  // 评论数量
+  function get_comment_nums($dish_id)
+  {
+    $totals = array();
+
+    for ($i=1; $i < 5; $i++) { 
+      if ($i == 1) {
+        // 好评
+        $where = " AND (a.wl_rate+a.fw_rate+a.cp_rate)>10";
+        $key = 'good_total';
+      }elseif ($i == 2) {
+        // 中评
+        $where = " AND (a.wl_rate+a.fw_rate+a.cp_rate)>5 AND (a.wl_rate+a.fw_rate+a.cp_rate)<=10";
+        $key = 'common_total';
+      }elseif ($i == 3) {
+        // 差评
+        $where = " AND (a.wl_rate+a.fw_rate+a.cp_rate)<=5";
+        $key = 'bad_total';
+      }else{
+        $where = '';
+        $key = 'all_total';
+      }
+
+      $comments = mysqld_selectall("SELECT SQL_CALC_FOUND_ROWS a.*, b.openid, b.realname, b.nickname, b.avatar, b.mobile, b.member_description FROM " . table('shop_goods_comment') . " as a LEFT JOIN ". table('member') ." as b on a.openid=b.openid WHERE a.dishid=".$dish_id.$where." ORDER BY a.createtime DESC LIMIT 1");
+      // 总记录数
+      $total = mysqld_select("SELECT FOUND_ROWS() as total;");
+
+      $totals[$key] = $total['total'];
+    }
+
+    return $totals;
   }
 }

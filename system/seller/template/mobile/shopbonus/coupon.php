@@ -28,7 +28,7 @@
     </div>
     <div class="layui-inline">
         <button class="layui-btn " lay-submit="" lay-filter="demo1">搜索</button>
-        <a class="layui-btn " href="<?php echo mobile_url('shopbonus',array('op'=>'addcoupon')); ?>">添加优惠券</a>
+        <a class="layui-btn " href="<?php echo mobile_url('shopbonus',array('op'=>'showadd')); ?>">添加优惠券</a>
     </div>
   </div>
   <div class="layui-form-item">
@@ -70,24 +70,24 @@
               </thead>
               <tbody>
                 <?php
-                  foreach($storeCouponListData['data'] as $v){
+                  foreach($storeCouponListData['list'] as $v){
                 ?>  
                 <tr>
                   <td><?php echo $v['coupon_name'];?></td>
-                  <td><?php echo $v['payment'];?></td>
-                  <td><?php echo $v['usage_mode'];?></td>
+                  <td><?php echo $v['payment_text'];?></td>
+                  <td><?php echo $v['usage_mode_text'];?></td>
                   <td><?php echo $v['coupon_amount'];?></td>
                   <td><?php echo $v['amount_of_condition'];?></td>
                   <td><?php echo $v['release_quantity'];?></td>
                   <td><?php echo intval($v['inventory']);?></td>
-                  <td><?php echo $v['receive_start_time'];?>~<?php echo $v['receive_end_time'];?></td>
-                  <td><?php echo $v['use_start_time'];?>~<?php echo $v['use_end_time'];?></td>
+                  <td><?php echo date("Y-m-d H:i",$v['receive_start_time']);?>~<?php echo date("Y-m-d H:i",$v['receive_end_time']);?></td>
+                  <td><?php echo date("Y-m-d H:i",$v['use_start_time']);?>~<?php echo date("Y-m-d H:i",$v['use_end_time']);?></td>
                   <td>
                       <a href="<?php echo mobile_url('shopbonus',array('op'=>'upcoupon','id'=>$v['scid'])); ?>" class="layui-btn layui-btn-small" style="text-decoration:none;">编辑</a>
                       <a href="<?php echo mobile_url('shopbonus',array('op'=>'couponmember','id'=>$v['scid'])); ?>" class="layui-btn layui-btn-small" style="text-decoration:none;">查看发放记录</a>
                       <?php
-                        if($v['usage_mode'] == '单品')
-                        {
+                      if($v['payment'] == '1')
+                      {
                       ?>
                       <a href="<?php echo mobile_url('shopbonus',array('op'=>'grantCoupon','id'=>$v['scid'])); ?>"  class="layui-btn layui-btn-small" style="text-decoration:none;">发放</a>
                       <?php

@@ -1,3 +1,16 @@
+.left-span{
+	float: left;
+	line-height: 28px;
+	background-color: #ededed;
+	padding: 0 5px;
+	border: 1px solid #cdcdcd;
+	border-right: 0;
+	font-size: 12px;
+}
+.li-height{
+		    height: 30px;
+		    padding-left: 5px;
+		}
 .memberinto-wrap{
 	margin-top: 20px;
 }

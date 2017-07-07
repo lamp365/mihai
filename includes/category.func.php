@@ -346,3 +346,23 @@ function category_func_getNameByID($cat_id) {
         return $data['name'];
     }
 }
+
+//根据栏目id取栏目名称
+function getCategoryById($id){
+    if (empty($id)) return false;
+    if(class_exists('Memcached')){
+        $memcache = new \Mcache();
+        $key = "category_memcache_Info".$id;
+        $key = md5($key);
+        $return = $memcache->get($key);
+        if (empty($return)){
+            $shopCategory = new \model\shop_category_model();
+            $info = $shopCategory->getOneShopCategory(array('id'=>$id),'id,name,thumb');
+            if (!$info) return false;
+            $memcache->set($key,$info);
+            return $info;
+        }else {
+            return $return;
+        }
+    }
+}

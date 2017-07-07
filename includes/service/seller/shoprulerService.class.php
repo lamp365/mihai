@@ -482,5 +482,47 @@ class shoprulerService extends \service\publicService
         }
         return true;
     }
+    
+    //编辑用户信息
+    public function editMember($data){
+	$redata = array();
+	$redata['nickname'] = $data['nickname'];
+	$redata['mobile'] = $data['mobile'];
+	//$redata['earn_rate'] = $data['earn_rate'];
+	$redata['avatar'] = $data['avatar'];
+	if($data['pwd'] != ''){
+	    $redata['pwd'] = $data['pwd'];
+	}
+	//一直手机号
+	if(strtolower($_SESSION["addUser"][$data['mobile']]) == strtolower($data['checkcode'])) {
+            unset($_SESSION["addUser"]);
+        }else{
+            //验证码有误
+            $this->error = LANG('COMMON_PHONECODE_ERROR');
+            //return false;
+        }
+	
+	//判断手机号码是否已经存在
+	$sql_checkmobile = "select openid from ".table('member').' where openid != "'.$data['openid'].'" and mobile = "'.$data['mobile'].'"';
+	$rs_checkmobile  = mysqld_select($sql_checkmobile);
+	if($rs_checkmobile['openid'] != ''){
+	    $this->error = '该手机号码已经存在';
+            return false;
+	}
+	$setstr = '';
+	if($redata['pwd'] != ''){
+	   $setstr .= ",pwd='{$redata['pwd']}'"; 
+	}
+	if($redata['nickname'] != ''){
+	   $setstr .= ",nickname='{$redata['nickname']}'"; 
+	}
 
+	$up_sql = "update ".table('member')." set mobile = '{$data['mobile']}',earn_reate={$data['earn_reate']}{$setstr} where openid = '{$data['openid']}'";
+	$up_rs  = mysqld_query($up_sql);
+        
+        mysqld_update('seller_rule_relation',array('earn_rate'=>$data['earn_rate']),array('openid'=>$data['openid']));
+	return $up_rs;
+	
+    }
+    
 }

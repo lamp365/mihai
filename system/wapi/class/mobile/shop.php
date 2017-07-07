@@ -10,7 +10,7 @@ class shop extends base{
      *   */
     public function shopList(){
         $_GP = $this->request;
-        $type = intval(isset($_GP['type']))? intval($_GP['type']) : 3;//类型,1是一级栏目，2是二级栏目，3是关键词
+        $type = intval(isset($_GP['type']))? intval($_GP['type']) : 1;//类型,1是一级栏目，2是二级栏目，3是关键词
         if ($type == 3){
             $keyword = $_GP['keyword'];//关键词
             if (empty($keyword)) ajaxReturnData(0,'请填写关键词搜索');
@@ -31,105 +31,71 @@ class shop extends base{
         $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
         $limit= ($pindex-1)*$psize;
         
-        //取出当前活动
-        $list = getCurrentAct();
-        if (empty($list)) ajaxReturnData(0,'暂时没有活动');
-        
-        //取当前的时间区域
-        $actAreaModel = new \model\activity_area_model();
-        $areaList = $actAreaModel->getAllActArea(array('ac_list_id'=>$list['ac_area']));
-        if ($areaList){
-            foreach ($areaList as $v){
-                $startDate = date("Y:m:d")." ".date('H:i:s',$v['ac_area_time_str']);
-                $endDate = date("Y:m:d")." ".date('H:i:s',$v['ac_area_time_end']);
-                $starttime = strtotime($startDate);
-                $endtime = strtotime($endDate);
-                if (time() >= $starttime && time() <= $endtime){
-                    $areaid = $v['ac_area_id'];
-                }else if ($starttime >= time()){
-                    $areaidArr[] =$v['ac_area_id']; 
-                }
-            }
+        //根据经纬度获取在该区域配送的店铺
+        $storeShop = new \service\shopwap\storeShopService();
+        $return = $storeShop->getStoreByJdAndWd($jd,$wd);
+        if (empty($return)) ajaxReturnData('0','抱歉，该地理位置没有找到相关店铺的商品');
+        foreach ($return as $v){
+            $ids[] = " b.sts_id = {$v['sts_id']} ";
         }
+        $ids = implode(' or ' , $ids);
         
-        //查询条件拼接
-        $where = " a.ac_action_id={$list['ac_id']} and a.ac_dish_status=1 and b.status=1 ";
-        //区域和城市id
-        $sql_where = get_area_condition_sql($jd,$wd);
-        if ($sql_where){
-            $where .= $sql_where;
-        }
+        
+        $where = " b.status=1 and b.gid>0 "; 
+        $where .= ' and ('.$ids.') ';
         //栏目或者关键词
-        if ($type == 1){
-            $where .=" and a.ac_p1_id = '$id' ";
-        }elseif($type == 2){
-            $where .=" and a.ac_p2_id = '$id' ";
-        }else if ($type == 3){
+        if ($type == 3){
             if (function_exists('scws_new') ){
                 $word = get_word($keyword);
                 if ( !empty($word) && is_array($word) ){
                     foreach ($word as $word_value ) {
                         $keys[] = " b.title like '%".$word_value."%' ";
                     }
-                    	
+                     
                     $keys = implode(' or ' , $keys);
                     $where .= ' and ('.$keys.')';
                 }
             }else {
                 //$where .=" AND LOCATE('$keyword',b.title) >0";
             }
+        }else{
+            $where .=" and a.ccate='$id' ";
         }
         //价格
         if ($minprice && $maxprice){
             if ($maxprice < $minprice) ajaxReturnData(0,'抱歉，价格输入不正确');
-            $where .= " AND a.ac_dish_price >= '$minprice' AND  a.ac_dish_price <= '$maxprice' ";
+            $where .= " AND b.marketprice >= '$minprice' AND  b.marketprice <= '$maxprice' ";
         }elseif ($minprice){
-            $where .= " AND a.ac_dish_price >= '$minprice' ";
+            $where .= " AND b.marketprice >= '$minprice' ";
         }elseif ($maxprice) {
-            $where .= " AND a.ac_dish_price <= '$maxprice' ";
+            $where .= " AND b.marketprice <= '$maxprice' ";
         }
-        $sql_base = "SELECT a.*,b.title,b.thumb,b.marketprice";
         
+        
+        $sql = "select b.sts_id,b.id,b.title,b.thumb,b.marketprice,b.productprice,b.store_count from ".table('shop_goods')." AS a right join ".table('shop_dish')." AS b on a.id=b.gid ";      
         //搜索的时间区域和自动筛选出来
         if (!empty($timearea)){
+            $active = getCurrentAct();
+            if (empty($active)) ajaxReturnData(0,'暂无限时购活动');
+            $ac_id = $active['ac_id'];
+            $where .=" and c.ac_dish_status = 1 and c.ac_action_id = '$ac_id' ";
             $timeareaArr = explode(",",$timearea);
             $timeareaArr[0] = '0';
             foreach ($timeareaArr as $v){
-                $timeWhere[] = " a.ac_area_id='$v' ";
+                $timeWhere[] = " c.ac_area_id='$v' ";
             }
             $timearea = implode(' or ' , $timeWhere);
-            $where .= ' and ('.$timearea.')';
             //$timeareaStr = to_sqls($timearea,'','a.ac_area_id');
             $where3 = $where.' and ('.$timearea.') ';
-            $sql = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where3;
+            $sql .= " LEFT JOIN ".table('activity_dish')." AS c ON b.id=c.ac_shop_dish  WHERE ".$where3;
         }else{
-            if($areaid) {
-                $where1 = $where." and (a.ac_area_id = '$areaid' or a.ac_area_id=0) ";
-            }else{
-                $where1 = $where." and a.ac_area_id=0 ";
-            }
-            //sql拼接
-            $sql1 = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id WHERE ".$where1;
-            
-            //未开始的活动的id
-            if (!empty($areaidArr)){
-                $areaidStr = to_sqls($areaidArr,'','a.ac_area_id');
-                $where2 = $where." and $areaidStr ";
-                $sql2 = $sql_base." FROM ".table('activity_dish')." AS a LEFT JOIN ".table('shop_dish')." AS b ON a.ac_shop_dish=b.id  WHERE ".$where2;
-            }
-            //$sql1 .= $orderby;
-            if ($sql2){
-                //$sql2 .= $orderby;
-                $sql = "SELECT * FROM ($sql1) as t1 UNION SELECT * FROM ($sql2) as t2";
-            }else{
-                $sql = $sql1 ;
-            }
+            $sql .= " where $where ";
         }
         //排序
         $status = intval(isset($_GP['status'])) ? intval($_GP['status']) : 1;//1表示综合，2表示价格，3表示销量
         $orderby = ' order by ';
         if ($status == 1){
-            $orderby .= " ac_dish_id DESC ";
+            $orderby .= " b.id DESC ";
         }elseif ($status == 2){
             $price_type = $_GP['price_type'] ? $_GP['price_type'] : '1';
             if($price_type == 1){
@@ -137,39 +103,32 @@ class shop extends base{
             }else{
                 $price = ' desc ';
             }
-            $orderby .= " ac_dish_price $price ";
+            $orderby .= " b.marketprice $price ";
         }else {
-            $orderby .= " ac_dish_sell_total DESC ";
+            $orderby .= " b.sales_num DESC ";
         }
         $limit = " limit ".$limit." , ".$psize;
         $sql .= $orderby.$limit;
+        logRecord($sql, "shopList");
         $list = mysqld_selectall($sql);
-
         if (empty($list)) ajaxReturnData(1,'暂时没有商品');
         
         $storeShopModel = new \model\store_shop_model();
         $regionM = new \model\region_model();
         foreach ($list as $key=>$v){
-            if ($v['ac_area_id'] == $areaid){
-                $list[$key]['status'] = 1;
-            }else{
-                $list[$key]['status'] = 0;
+            $list[$key]['ac_dish_price'] = '';
+            $list[$key]['is_active'] = 0;
+            $flag = checkDishIsActive($v['id'],$v['store_count']);
+            if (!empty($flag)){
+                if ($flag['ac_dish_total'] > 0){
+                    $list[$key]['is_active'] = 1;
+                    $list[$key]['ac_dish_price'] = FormatMoney($flag['ac_dish_price'],0);
+                }
             }
-            $list[$key]['flag'] = 0;
-            if ($v['ac_dish_total'] > 0) $list[$key]['flag'] = 1 ;
             $list[$key]['marketprice'] = FormatMoney($v['marketprice'],0);
-            $list[$key]['ac_dish_price'] = FormatMoney($v['ac_dish_price'],0);
-            $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['ac_shop']),'sts_id,sts_name,sts_avatar');
+            $list[$key]['productprice'] = FormatMoney($v['productprice'],0);
+            $store = $storeShopModel->getOneStoreShop(array('sts_id'=>$v['sts_id']),'sts_id,sts_name,sts_avatar');
             $list[$key]['storeInfo'] = $store;
-            if ($v['ac_city'] == 0){
-                $list[$key]['peisong'] = "全国";
-            }elseif ($v['ac_city_area'] == 0){
-                $qu = $regionM->getOneRegion(array('region_code'=>$v['ac_city']),'region_name');
-                if ($qu) $list[$key]['peisong'] = $qu['region_name'];
-            }else{
-                $qu = $regionM->getOneRegion(array('region_code'=>$v['ac_city_area']),'region_name');
-                if ($qu) $list[$key]['peisong'] = $qu['region_name'];
-            }
         }
         ajaxReturnData(1,'',$list);
     }
@@ -200,6 +159,6 @@ class shop extends base{
             $cart_info = mysqld_select("select last_time from ".table('shop_cart_record')." where session_id='{$meminfo['openid']}'");
             $last_time = $cart_info['last_time'] ?: 0;
         }
-        ajaxReturnData(1,'请求成功',array('cart_num'=>$cart_num,'last_time'=>$last_time));
+        ajaxReturnData(1,'请求成功',array('cart_num'=>$cart_num,'last_time'=>$last_time,'now_time'=>time()));
     }
 }

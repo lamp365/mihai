@@ -36,7 +36,6 @@ if(!empty($diff_rule)){
 }
 
 
-
 $module_allow = array(
 	MenuEnum::DATA_REPORT_MANGE	=> 'addon6',
 	MenuEnum::YUN_GOU_MANGE		=> 'addon7',

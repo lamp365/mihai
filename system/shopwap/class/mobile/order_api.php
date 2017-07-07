@@ -8,4 +8,5 @@
 	 foreach( $data[0] as $data_value ){
          $api->check_order($data_value);   
 	 }
+	 $api->update_api_logs();
  }

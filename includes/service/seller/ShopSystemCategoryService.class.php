@@ -101,6 +101,12 @@ class ShopSystemCategoryService extends \service\publicService
        $sql = "SELECT {$fields} FROM ".$this->table." where parentid = 0 and industry_p2_id = {$this->memberData['sts_category_p2_id']} {$where}";
        $one  = mysqld_selectall($sql);
        $ids = '';
+
+       if(empty($one)){
+           $data['oneCategory'] = array();
+           return $data;
+       }
+
        foreach($one as $v)
        {
            $data['oneCategory'][$v['id']] = $v;
@@ -140,6 +146,7 @@ class ShopSystemCategoryService extends \service\publicService
     }
     
     public function count_category_one_goods($ids){
+        if(empty($ids))  return array();
         $where = '';
         
         $sql_gids = "select gid from ".table('shop_dish')." where sts_id = {$this->memberData['store_sts_id']} and gid > 0";
@@ -160,6 +167,7 @@ class ShopSystemCategoryService extends \service\publicService
     }
     
     public function count_category_two_goods($ids){
+        if(empty($ids))  return array();
         $where = '';
         
         $sql_gids = "select gid from ".table('shop_dish')." where sts_id = {$this->memberData['store_sts_id']} and gid > 0";

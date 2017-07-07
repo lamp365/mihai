@@ -11,6 +11,7 @@ class Mcache {
   public $key_pre = 'cbd_';    //设置key前缀，以免同一个机器吗，多套应用导致key相同。
 
   function __construct() {
+      //$this->m = new Memcache();
     $this->m = new Memcached();
     $this->m->addServer($this->host,$this->post);
   }

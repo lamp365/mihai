@@ -31,6 +31,7 @@ class product_bat extends base
         $reData['systemGroup'] = $this->ShopSystemCategory->ShopCateGroupListTwo();
         $onesysids = '';
         $twosysids = '';
+
        foreach($reData['systemGroup']['oneCategory'] as $v)
         {
             $onesysids .= $v['id'].',';
@@ -41,7 +42,6 @@ class product_bat extends base
                }
             }
         }
-        
         $onesysids = rtrim($onesysids,',');
         $twosysids = rtrim($twosysids,',');
         $totalOneSysData = array();

@@ -162,7 +162,7 @@ function update_order_status($id, $status) {
     	}
     	// 反还优惠券
     	if (!empty($order['hasbonus'])) {
-    		mysqld_query("UPDATE ".table('store_coupon_member')." SET status=0,use_time =0 WHERE scmid=".$order['hasbonus']);
+    		mysqld_query("UPDATE ".table('store_coupon_member')." SET status=0,use_time =0,order_price='',ordersn='' WHERE scmid=".$order['hasbonus']);
     	}
     	// 记录订单关闭时间
     	mysqld_query("UPDATE ".table('shop_order')." SET status=-1,closetime=".time()." WHERE id=".$id);
@@ -207,6 +207,8 @@ function update_order_status($id, $status) {
 				'wait_glod'   => $wait_glod,
 			), array('openid' => $order['recommend_openid']));
 		}
+		//paylog的订单 更新为已经收获
+		mysqld_update('member_paylog',array('order_status'=>1),array('openid'=>$order['openid'],'orderid'=>$id));
     }
 }
 
@@ -1376,6 +1378,7 @@ function getRecommendOpenidAndStsid($openid){
 		if($recommend_sts['sts_id'] == $recommend_sts_id){
 			//该推荐人 就属于在该店铺工作
 			$earn_rate  = $recommend_sts['earn_rate'] ?: 0;
+			empty($earn_rate) && $recommend_openid = 0;
 		}else{
 			//该推荐人 已经不再该店铺工作了
 			$recommend_openid = 0;
@@ -1409,10 +1412,34 @@ function operateStoreCount($dishid,$buy_num,$ac_dish_id,$type){
 		$sql1 = "update ".table('shop_dish')." set store_count=store_count+{$buy_num},sales_num=sales_num-{$buy_num}";
 		$sql1.= " where id={$dishid}";
 		mysqld_query($sql1);
+		//当释放库存的时候 活动商品 有一种现象。。活动未开始，但是dish总库存不断少了，会影响到活动商品的库存被更新减少掉
+		//所以当发生 库存再次添加回来，要判断活动商品中的库存是否 加回去 加回去要加多少
 		if($ac_dish_id){
 			$sql = "update ".table('activity_dish')." set ac_dish_total=ac_dish_total+{$buy_num},ac_dish_sell_total=ac_dish_sell_total-{$buy_num}";
 			$sql .= " where ac_dish_id={$ac_dish_id}";
 			mysqld_query($sql);
+		}else{
+			//当为空，可能是活动时间点还没到 可能下午16点的才开始，重新判断一下  取出该活动商品
+			$active = getCurrentAct();
+			if(!empty($active)) {
+				//那么看看本次大场活动时间开始了么
+				if ($active['ac_time_str'] < time()) {
+					//有活动，那么判断该商品是不是属于限时购商品
+					$sql = "select * from " . table('activity_dish');
+					$sql .= " where ac_action_id={$active['ac_id']} and ac_shop_dish={$dishid}";
+					$find = mysqld_select($sql);
+					if(!empty($find)){
+						//原始库存 和 当前库存
+						$ac_dish_totalcount = $find['ac_dish_totalcount'];
+						$ac_dish_total      = $find['ac_dish_total'] +$buy_num ;
+						$buy_total  = min($ac_dish_totalcount,$ac_dish_total);  //库存释放 不能超过原始库存
+						$sell_total = max(0,$find['ac_dish_sell_total']-$buy_num);  //去掉卖出件数，但不能低于0
+						$sql = "update ".table('activity_dish')." set ac_dish_total={$buy_total},ac_dish_sell_total={$sell_total}";
+						$sql .= " where ac_dish_id={$find['ac_dish_id']}";
+						mysqld_query($sql);
+					}
+				}
+			}
 		}
 	}
 }
