@@ -420,7 +420,11 @@ class good_detail extends base {
     $gc_total = mysqld_select("SELECT FOUND_ROWS() as total;");
     $gc_total['total'] = intval($gc_total['total']);
     $total['total']    = intval($total['total']);
-    $good_rate = empty($total['total']) ? 0 : round($gc_total['total']/$total['total'],3);
+    if (empty($gc_total['total']) or empty($total['total'])) {
+      $good_rate = 0;
+    }else{
+      $good_rate = empty($total['total']) ? 0 : round($gc_total['total']/$total['total'],3);
+    }
 
     $result['com'] = $comment;
     $result['total'] = $total['total'];

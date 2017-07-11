@@ -63,9 +63,21 @@ class subaccount extends base
     public function subaccountList(){
         $data   = $this->request;
         $redata = array();
-        $subaccountList = $this->subAccountObj->getProfitList($this->memberInfo['openid'],$data,'fee,friend_openid,createtime');
         
-        //
+        /*
+        //通过关系表获取对应的用户数据
+        $memberInfos = $this->subAccountObj->getChildMember($this->memberInfo['openid'],'openid');
+        $openidStr = '';
+        foreach($memberInfos as $v){
+            $openidStr .= '"'.$v['openid'].'",';
+        }
+        $openidStr = rtrim($openidStr, ',');
+        
+        $redata['subaccountList'] = $this->subAccountObj->getMemberInfoPage($openidStr, 'avatar,createtime,fee,nickname');
+        */
+        
+        //获取下属的所有用户数据
+        $subaccountList = $this->subAccountObj->getProfitList($this->memberInfo['openid'],$data,'fee,friend_openid,createtime');
         $friend_openids = '';
         foreach($subaccountList as $v){
             $friend_openids .= '"'.$v['friend_openid'].'",';
@@ -87,12 +99,14 @@ class subaccount extends base
             
             @$subaccountList[$k]['createtime'] = $v['createtime'];
             
-            unset($subaccountList[$k]['friend_openid']);
+                //unset($subaccountList[$k]['friend_openid']);
+            
         }
         $redata['total'] = $subaccountList['total'];
         unset($subaccountList['total']);
         $subaccountList = array_values($subaccountList);
         $redata['subaccountList'] = $subaccountList;
+        
         ajaxReturnData(1,'获取成功',$redata);
         
     }
@@ -102,7 +116,8 @@ class subaccount extends base
     public function subaccountInfoList(){
         $data   = $this->request;
         $redata = array();
-        $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($this->memberInfo['openid'],'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar,is_sub_status,openid');
+        $openid = $data['openid']!=''?$data['openid']:$this->memberInfo['openid'];
+        $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($openid,'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar,is_sub_status,openid');
         
         $redata['memberInfo']['openid'] = $redata['memberInfo']['openid'];
         $redata['memberInfo']['is_sub_status'] = intval($redata['memberInfo']['is_sub_status']);
@@ -111,14 +126,17 @@ class subaccount extends base
         $redata['memberInfo']['wait_glod'] = FormatMoney($redata['memberInfo']['wait_glod'],2);
         $redata['memberInfo']['outgold'] = FormatMoney($redata['memberInfo']['outgold'],2);
         
-        $result = $this->weixin->get_xcx_erweima($this->memberInfo['openid'],2);
+        $result = $this->weixin->get_xcx_erweima($openid,2);
         
         //获取总收益
-        $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($this->memberInfo['openid']);
+        $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($openid);
         $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
         //结算列表
-        $redata['memberInfo']['cspList'] = $this->subAccountObj->getCspList($this->memberInfo['openid'],$data,'createtime,fee,remark');
+        $redata['memberInfo']['cspList'] = $this->subAccountObj->getCspList($openid,$data,'createtime,fee,remark');
+        foreach($redata['memberInfo']['cspList'] as $k=>$v){
+            $redata['memberInfo']['cspList'][$k]['fee'] = FormatMoney($v['fee'],2);
+        }
         $redata['memberInfo']['total'] = $redata['memberInfo']['cspList']['total'];
         unset($redata['memberInfo']['cspList']['total']);
         ajaxReturnData(1,'获取成功',$redata);
@@ -184,14 +202,15 @@ class subaccount extends base
         $redata['memberInfo']['memberData'] = array();
         foreach($rsData as $k=>$v){
             $redata['memberInfo']['memberData'][$i]           = $this->subAccountObj->getMemberinfo($v['openid'],'wait_glod,nickname,realname,avatar,is_sub_status');
-            $redata['memberInfo']['memberData'][$i]['openid']     = $v['openid'];
+            $redata['memberInfo']['memberData'][$i]['openid']       = $v['openid'];
             $redata['memberInfo']['memberData'][$i]['nickname']     = $redata['memberInfo']['memberData'][$i]['nickname'];
             $redata['memberInfo']['memberData'][$i]['realname']     = $redata['memberInfo']['memberData'][$i]['realname'];
-            $redata['memberInfo']['memberData'][$i]['avatar']     = $redata['memberInfo']['memberData'][$i]['avatar'];
+            $redata['memberInfo']['memberData'][$i]['avatar']       = $redata['memberInfo']['memberData'][$i]['avatar'];
 
             //获取总收益 //
             $redata['memberInfo']['memberData'][$i]['account_fee'] = $this->subAccountObj->getTotalIncome($v['openid']);
             $redata['memberInfo']['memberData'][$i]['account_fee'] = FormatMoney($redata['memberInfo']['memberData'][$i]['account_fee'],2);
+            $redata['memberInfo']['memberData'][$i]['wait_glod']   = FormatMoney($redata['memberInfo']['memberData'][$i]['wait_glod'],2);
             
             //统计所属用户数
             $memberCount = array();
@@ -225,13 +244,12 @@ class subaccount extends base
     public function settlementMoney(){
         $data   = $this->request;
         
-        /*
+
         //测试数据开始
-        $data['receivablesOpenid'] = '2017060116264';
-        $data['money']             = '1000';
-        $data['remark']            = '微信付款';
+        //$data['receivablesOpenid'] = '2017070716755';
+        //$data['money']             = '10';
+        //$data['remark']            = '微信付款';
         //测试数据结束
-        */
         
         $data['money']             = FormatMoney($data['money']);
         
@@ -245,7 +263,7 @@ class subaccount extends base
         //要结算的金额 付款账户 收款账户
         //获取用户信息
         $memberInfo = $this->subAccountObj->getMemberInfos($this->memberInfo['openid'], 'gold');
-        
+
         if($memberInfo[0]['gold'] < $data['money'])
         {
             ajaxReturnData(0,'账户金额不足');
@@ -264,14 +282,14 @@ class subaccount extends base
         $upReceivablesStatus = $this->subAccountObj->upReceivablesMemberInfos($data['receivablesOpenid'], $data['money']);
         
         $receivablesMemberInfo = $this->subAccountObj->getMemberinfo($data['receivablesOpenid'],'gold');
-        
+
         //日志记录
         $insertData = array();
         $insertData['payer_openid']         = $this->memberInfo['openid'];
         $insertData['payee_openid']         = $data['receivablesOpenid'];
-        $insertData['fee']                  = FormatMoney($data['money']);
+        $insertData['fee']                  = $data['money'];
         $insertData['sts_id']               = $this->memberInfo['store_sts_id'];
-        $insertData['account_fee']          = $receivablesMemberInfo['account_fee'];
+        $insertData['account_fee']          = $receivablesMemberInfo['gold'];
         $insertData['remark']               = $data['remark'];
         $insertData = $this->subAccountObj->addPayLog($insertData);
         
@@ -283,7 +301,7 @@ class subaccount extends base
         $data   = $this->request;
         $redata = array();
         //测试数据开始 1
-        //$data['mobile'] = '15806015161';
+        //$data['mobile'] = '18650393557';
         //$data['isCheckMobile'] = 1;
         //$data['isType'] = 1;
         //测试数据结束
@@ -319,6 +337,11 @@ class subaccount extends base
                     }
                 }
                 else{
+                    if($checkData['sts_id'] == $this->memberInfo['store_sts_id'])
+                    {
+                        ajaxReturnData(0,'您已属于该店无需再次绑定');
+                    }
+                    
                     //编辑
                     if($checkData['sts_id'] != $this->memberInfo['store_sts_id'])
                     {
@@ -373,13 +396,13 @@ class subaccount extends base
 	
 	//测试数据开始
         //$data['nickname'] = '林军师';             //验证码
-        //$data['checkcode'] = 10510;             //验证码
-        //$data['mobile'] = '18650393557';                //手机号码
-        //$data['earn_reate'] = 10;            //佣金设置
-        //$data['openid'] = '2017070621665';
+        //$data['checkcode'] = 59650;             //验证码
+        //$data['mobile'] = '15806015164';                //手机号码
+        //$data['earn_rate'] = 16;            //佣金设置
+        //$data['openid'] = '2017070716755';
         //测试数据结束
 
-	if($data['checkcode'] == '' || $data['mobile'] == '' || $data['earn_rate'] == ''|| $data['openid'] == ''){
+	if($data['mobile'] == '' || $data['earn_rate'] == ''|| $data['openid'] == ''){
 	    ajaxReturnData(0,'必要参数不存在');
 	}
 	
@@ -408,19 +431,119 @@ class subaccount extends base
     
     //获取子账户信息
     public function getMemberInfo(){
+        $data   = $this->request;
+        $redata = array();
 	//测试数据开始
-        //$data['openid'] = '2017070621665';
+        //$data['openid'] = '2017070716755';
         //测试数据结束
+        
 	if($data['openid'] == ''){
 	    ajaxReturnData(0,'必要参数不存在');
 	}
 	
-	$memberInfo = $this->subAccountObj->getMemberinfo($data['openid'],'nickname,mobile,earn_rate,avatar');
-	if($memberInfo['mobile'] == ''){
+	$memberInfo['memberInfo'] = $this->subAccountObj->getMemberinfo($data['openid'],'nickname,mobile,avatar,openid');
+	if($memberInfo['memberInfo']['mobile'] == ''){
 	    ajaxReturnData(0,'用户信息不存在');
 	}
+        
+        //获取用户佣金比率
+        $ruleData = $this->subAccountObj->getRuleMember($data['openid']);
+        $memberInfo['memberInfo']['earn_rate'] = intval($ruleData['earn_rate']);
 	ajaxReturnData(1,'获取成功！',$memberInfo);
     }
     
+    //手机号码验证
+    public function checkMobile(){
+        $data   = $this->request;
+        $redata = array();
+        
+        if($data['mobile']  == '')
+        {
+            ajaxReturnData(0,'必要参数不存在');
+        }
+        
+        //
+        
+        $redata['ischeck'] = 0;
+        //判断手机号码是否已经存在 $this->subAccountObj
+        if($data['isCheckMobile'] > 0){
+            $memberInfo = member_get_bymobile($data['mobile']);
+            if($memberInfo['mobile'] != '')
+            { 
+                //
+                $redata['ischeck'] = 1;
+                //判断该手机是否已经绑定过其他店铺
+                $checkData = $this->subAccountObj->checkShop($memberInfo['openid'], '*');
+                
+                if($data['isType'] == 1)
+                {
+                    if($checkData['sts_id'] == $this->memberInfo['store_sts_id'])
+                    {
+                        ajaxReturnData(0,'您已属于该店无需再次绑定');
+                    }
+                    
+                    //添加
+                    if($checkData['id'] > 0)
+                    {
+                        ajaxReturnData(0,'该手机已绑定过其他店铺无法再次绑定');
+                    }
+                }
+                else{
+                    //编辑
+                    if($checkData['sts_id'] != $this->memberInfo['store_sts_id'])
+                    {
+                        ajaxReturnData(0,'该手机已绑定过其他店铺无法再次绑定');
+                    }
+                }
+            }
+        }
+        
+        $res   = $this->rulerservice->send_mobile_code($data['mobile']);
+        if($res){
+            ajaxReturnData(1,'发送成功',$redata);
+        }else{
+            ajaxReturnData(0,$this->rulerservice->getError());
+        }
+    }
+    
+   //手机号码验证
+    public function checkMobileSms(){
+	$data   = $this->request;
+        $redata = array();
+        //测试数据开始 1
+        //$data['mobile'] = '15806015161';
+        //$data['isCheckMobile'] = 1;
+        //$data['isType'] = 1;
+        //$data['checkcode'] = 94319;             //验证码
+        //测试数据结束
+        if($data['mobile']  == '' || $data['checkcode'] == '')
+        {
+            ajaxReturnData(0,'必要参数不存在');
+        }
+       
+	//判断手机号码是否已经存在绑定关系
+	$memberInfo = member_get_bymobile($data['mobile']);
+	if($memberInfo['mobile'] != '')
+	{
+	    //判断该手机是否已经绑定过其他店铺
+            $checkData = $this->subAccountObj->checkShop($memberInfo['openid'], '*');
+	    
+	    if($this->memberInfo['store_sts_id'] == $checkData['sts_id']){
+		ajaxReturnData(0,'已经绑定该店铺无需再次绑定');
+	    }
+	    elseif($this->memberInfo['store_sts_id'] != $checkData['sts_id']){
+		ajaxReturnData(0,'已经绑定其他店铺无法再次绑定');
+	    }
+	}
+	//判断该手机号码是否已经绑定过其他店铺
+	
+       if(strtolower($_SESSION["addUser"][$data['mobile']]) == strtolower($data['checkcode'])) {
+            ajaxReturnData(1,'验证成功');
+        }else{
+           //验证码有误
+           ajaxReturnData(0,'验证失败');
+        }
+    } 
+   
 }
 ?>

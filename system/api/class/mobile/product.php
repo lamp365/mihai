@@ -888,8 +888,7 @@ class product extends base
         //测试数据开始
         //http://local.otoshop.com:801/api/product/dishListPage.html?data={"store_p1":1,"store_p2":2}
         $data = array(
-            'sales_num'      => 'asc',
-            'store_count'    => 'desc',
+            'profit'    => 'desc',
             'is_distribution' => 1
         );
         //价格区间
@@ -906,7 +905,7 @@ class product extends base
             }
             $data['ltcDishIds'] = rtrim($data['ltcDishIds'], ',');
         }
-        $reData['dish']  = $this->shopdish->getDishPage($data,'title,marketprice,sales_num,store_count,id,thumb,status,history_lower_prcie');
+        $reData['dish']  = $this->shopdish->getDishPage($data,'title,marketprice,sales_num,store_count,id,thumb,status,history_lower_prcie,sts_id');
         
         $reData['total'] = $reData['dish']['total'];
         unset($reData['dish']['total']);
@@ -2415,6 +2414,12 @@ class product extends base
         ajaxReturnData(1,'获取成功',$redata); 
     }
     
+    public function getDishAzone(){
+        $redata = array();
+        $redata['azone'] = $this->shopdish->getDishAzone();
+
+        ajaxReturnData(1,'获取成功',$redata); 
+    }
     
     
 }

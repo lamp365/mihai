@@ -406,8 +406,6 @@ class StoreShopService extends \service\publicService {
         $update['sts_locate_add_3']       = $data['sts_locate_add_3'];
         $update['sts_lat']                = $data['sts_lat'];
         $update['sts_lng']                = $data['sts_lng'];
-        $update['commision']                = $data['commision'];
-
         mysqld_update('store_shop',$update,array('sts_id'=>$memInfo['store_sts_id']));
         return true;
     }

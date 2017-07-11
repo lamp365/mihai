@@ -34,7 +34,7 @@ class mycartService extends  \service\publicService
                 $time_price  = $dish['marketprice'];
                 $status      = $dish['status'];
 
-                if(empty($dish) || $store_count ==0 || $status == 0){
+                if(empty($dish) || $status == 0){
                     $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
                     continue;
@@ -51,7 +51,7 @@ class mycartService extends  \service\publicService
                 $dish['store_count'] = $store_count;
                 $dish['status']      = $status;
 
-                if( $store_count ==0 || $status == 0){
+                if($status == 0){
                     //找不到 或者没有库存  已经下架的商品  表示该购物车已经过期了
                     $dish['cart_id']         =  $item['id'];
                     $out_gooslist[]          = $dish;
@@ -183,14 +183,14 @@ class mycartService extends  \service\publicService
         $buy_num = $total;
         $total   = $total + intval($row['total']);
         if($total > $store_count){
-            $this->error = "该产品库存剩下{$store_count}件！";
+            $this->error = "该产品剩下{$store_count}件！";
             return false;
         }
         //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
-        if($store_count <= 30){
+        if($store_count < 30){
             $can_max_buy = 1;
         }else{
-            $can_max_buy = floor($store_count*0.1);
+            $can_max_buy = max(1,floor($store_count*0.1));
         }
         if($total > $can_max_buy){
             $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
@@ -261,10 +261,10 @@ class mycartService extends  \service\publicService
         }
 
         //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
-        if($store_count <= 30){
+        if($store_count < 30){
             $can_max_buy = 1;
         }else{
-            $can_max_buy = floor($store_count*0.1);
+            $can_max_buy = max(1,floor($store_count*0.1));
         }
         if($total > $can_max_buy){
             $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
@@ -341,19 +341,25 @@ class mycartService extends  \service\publicService
         }
 
         if($buy_num > $store_count){
-            $this->error = "库存剩下{$store_count}个！";
+            $this->error = "库存剩下{$store_count}件！";
             return false;
         }
-        //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
-        if($store_count <= 30){
-            $can_max_buy = 1;
-        }else{
-            $can_max_buy = floor($store_count*0.1);
+        //如果数量要添加，则需要判断了。。
+        if($cart['total'] < $buy_num){
+            //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
+            if($store_count <= 30){
+                $can_max_buy = 1;
+            }else{
+                $can_max_buy = max(1,floor($store_count*0.1));
+            }
+            if($buy_num > $can_max_buy){
+                $allow_num   = $buy_num-1;
+                $buy_num - $cart['total'] != 1 && $allow_num = $can_max_buy;
+                $this->error = "该产品一次允许最大购买{$allow_num}件！";
+                return false;
+            }
         }
-        if($buy_num > $can_max_buy){
-            $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
-            return false;
-        }
+
 
         $data = array('total' => $buy_num,'ac_dish_id' => intval($active['ac_dish_id']));
         mysqld_update('shop_cart', $data, array('id' => $cart_id));

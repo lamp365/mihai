@@ -226,7 +226,7 @@
             ,elem:"#file"
             ,method:'post'
             ,success: function(res){
-              layui.jquery('#coupon_img').val(res.data['pic_url']);
+                layui.jquery('#coupon_img').val(res.data['pic_url']);
               layui.jquery('#coupon_img_show').attr('src',res.data['pic_url']);
             }
         });      
@@ -406,8 +406,8 @@
             'receive_end_time':layui.jquery('#receive_end_time').val(),
             'use_start_time':layui.jquery('#use_start_time').val(),
             'use_end_time':layui.jquery('#use_end_time').val(),
-            'oneCategory':layui.jquery('#oneCategory').val(),
-            'twoCategory':layui.jquery('#twoCategory').val(),
+            'store_category_idone':layui.jquery('#oneCategory').val(),
+            'store_category_idtwo':layui.jquery('#twoCategory').val(),
             'get_limit':layui.jquery('#get_limit').val(),
             'coupon_img':layui.jquery('#coupon_img').val(),
             'store_shop_dishid':select_data_dish

@@ -17,14 +17,14 @@ function getCartTotal($type = 1){
 		$field = 'id,title,marketprice,thumb,sts_id,store_count,status';
 		$dish  = mysqld_select("select {$field} from ".table('shop_dish')." where id={$item['goodsid']}");
 
-		if(empty($dish) || $dish['store_count'] ==0 || $dish['status'] == 0){
+		if(empty($dish) || $dish['status'] == 0){
 			unset($list[$key]);
 			continue;
 		}
 
 		//判断商品是否属于活动中的商品
 		$active = checkDishIsActive($dish['id'],$dish['store_count']);
-		if(!empty($active) && ($active['ac_dish_total'] == 0 || $active['ac_dish_status'] == 0)){
+		if(!empty($active) && $active['ac_dish_status'] == 0){
 			unset($list[$key]);
 			continue;
 		}

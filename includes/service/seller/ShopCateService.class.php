@@ -29,7 +29,7 @@ class ShopCateService extends \service\publicService {
    public function twoShopCategory($parentId,$fields='*'){
        //$this->memberData['sts_category_p1_id'] sts_category_p2_id
        $parentId = intval($parentId);
-       $sql = "select {$fields} from " . $this->table . " where parentid = {$parentId}";
+       $sql = "select {$fields} from " . $this->table . " where parentid = {$parentId} and industry_p2_id = {$this->memberData['sts_category_p2_id']}";
        $data = mysqld_selectall($sql);
        return $data;
    }

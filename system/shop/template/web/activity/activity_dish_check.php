@@ -175,6 +175,7 @@
 	<th class="text-center">活动库存</th>
 	<th class="text-center">卖出件数</th>
 	<th class="text-center">时间区间</th>
+	<th class="text-center">区域位置</th>
   </tr>
 
 		<?php if(is_array($au_list)) { foreach($au_list as $item) { ?>
@@ -201,6 +202,10 @@
 					</td>
 					<td style="text-align:center;">
 						<?php echo getAreaTitleByAreaid($item['ac_action_id']); ?>
+					</td>
+					<td style="text-align:center;">
+						<?php echo getRegionName($item['ac_city']); ?>-
+						<?php echo getRegionName($item['ac_city_area']); ?>
 					</td>
 				</tr>
 		<?php  } } ?>

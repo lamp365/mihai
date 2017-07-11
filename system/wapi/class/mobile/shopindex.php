@@ -78,8 +78,9 @@ class shopindex extends base{
        //获得当前时间的区域id
        $activityService = new \service\wapi\activityService();
        $currentId = $activityService->getCurrentArea();
+       $orderParam = '(a.ac_dish_price+(b.marketprice-a.ac_dish_price)*10+b.sales_num*100) as c';
        
-       $sql = "SELECT a.*,b.title,b.thumb,b.marketprice from ".table('activity_dish')." as a left join ".table('shop_dish')." as b on a.ac_shop_dish = b.id where ";
+       $sql = "SELECT a.*,b.title,b.thumb,b.marketprice, $orderParam from ".table('activity_dish')." as a left join ".table('shop_dish')." as b on a.ac_shop_dish = b.id where ";
        $sql .= $where;
        if ($currentId && ($currentId != $ac_area_id)){
            $sql .= " and a.ac_dish_total > 0";
@@ -89,7 +90,7 @@ class shopindex extends base{
        $pindex = max(1, intval($_GP['page']));
        $psize = isset($_GP['limit']) ? $_GP['limit'] : 4;//默认每页4条数据
        $limit= ($pindex-1)*$psize;
-       $orderby = " order by a.ac_dish_id DESC LIMIT ".$limit.",".$psize;
+       $orderby = " order by c DESC LIMIT ".$limit.",".$psize;
        $sql .=$orderby;
        $list = mysqld_selectall($sql);
        logRecord($sql, 'shopindexDishSql');

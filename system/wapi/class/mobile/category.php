@@ -34,7 +34,7 @@ class category extends base{
        logRecord(var_export($industry,1), "categoryone");
        $pcate = array_flip(array_flip($pcate));
        
-        if (count($industry) > 2){
+        if (count($industry) >= 2){
             $industryModel = new \model\industry_model();
             $this->addMemcacheIns($data);
             foreach ($industry as $v){
@@ -81,6 +81,7 @@ class category extends base{
             foreach ($return as $val){
                 $returnP2 = $this->getMemcacheP1($val,$jd,$wd);
                 if ($returnP2){
+                    $tempdata = array();
                     $infoP1 = getCategoryById($val);
                     $tempdata['id'] = $infoP1['id'];
                     $tempdata['title'] = $infoP1['name'];
@@ -90,6 +91,7 @@ class category extends base{
                             $tempdata['list'][] = $info;
                         }
                     }
+                    
                     $returndata[] = $tempdata;
                 }
             }

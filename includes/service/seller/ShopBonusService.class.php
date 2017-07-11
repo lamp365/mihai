@@ -25,7 +25,7 @@ class ShopBonusService extends \service\publicService {
         $insertData = array();
         if($data['usage_mode'] == 2){
             //按照分类
-            if(empty($data['oneCategory'])){
+            if(empty($data['store_category_idone'])){
                 $this->error = '分类不用为空！';
                 return false;
             }
@@ -81,8 +81,8 @@ class ShopBonusService extends \service\publicService {
         $insertData['receive_end_time']     = $receive_end_time;
         $insertData['use_start_time']       = $use_start_time;
         $insertData['use_end_time']         = $use_end_time;
-        $insertData['store_category_idone']  = intval($data['oneCategory']);
-        $insertData['store_category_idtwo']  = intval($data['twoCategory']);
+        $insertData['store_category_idone']  = intval($data['store_category_idone']);
+        $insertData['store_category_idtwo']  = intval($data['store_category_idtwo']);
         $insertData['store_shop_dishid']     = $data['store_shop_dishid'];   //多个用逗号拼接
         $insertData['inventory']     = 0;//被领取数量，开始时为0
         $insertData['get_limit']     = $data['get_limit'];
@@ -106,7 +106,7 @@ class ShopBonusService extends \service\publicService {
     //获取店铺优惠券列表
     public function couponList($pindex,$psize,$wheres='',$fieldstr='',$order='ORDER BY use_end_time asc'){
         if(empty($fieldstr))
-            $fieldstr    = 'scid,payment,coupon_amount,amount_of_condition,release_quantity,create_time,store_category_idone,store_category_idtwo,store_shop_id,usage_mode,receive_start_time,receive_end_time,use_start_time,use_end_time,coupon_name,inventory';
+            $fieldstr    = 'scid,payment,coupon_amount,amount_of_condition,release_quantity,create_time,store_category_idone,store_category_idtwo,store_shop_id,usage_mode,receive_start_time,receive_end_time,use_start_time,use_end_time,coupon_name,inventory,get_limit';
         $result          = array();
         $store_where     = " where store_shop_id = {$this->memberData['store_sts_id']} {$wheres} ";
         $sql = "SELECT {$fieldstr} FROM " . $this->table_c  . $store_where;

@@ -15,6 +15,7 @@ class ShopDishService extends \service\publicService {
        parent::__construct();
        $this->memberData   = get_member_account();
        $this->table        = table('shop_dish');
+       $this->table_dish_azone        = table('shop_dish_azone');
        $this->table_price  = table('dish_spec_price');
    }
    
@@ -154,14 +155,21 @@ class ShopDishService extends \service\publicService {
         elseif($_GP['store_count'] != ''){
             $order = "order by store_count {$_GP['store_count']}";
         }
+        elseif($_GP['profit'] != ''){
+            //查出当前的佣金比例
+            //$sql_yj = 'select earn_rate from '.table('seller_rule_relation').' where openid = '.$this->memberData['openid'].' limit 1';
+            //$rs_yj  = mysqld_select($sql_yj);
+            $fields .= ",IF (promot_price > 0,marketprice - promot_price,((select commision from squdian_store_extend_info where store_id = a.sts_id)/100)*a.marketprice) as profit";
+            $order = "order by profit {$_GP['profit']}";
+        }
         elseif($_GP['promot_price'] != ''){
              $order = "order by promot_price {$_GP['promot_price']}";
         }else{
             $order = 'order by createtime desc,sort asc';
         }
-        
+
         $limit = " LIMIT " . ($_GP['page'] - 1) * $_GP['limit'] . ',' . $_GP['limit'];
-        $sql = "select {$fields} from {$this->table} where 1 {$wheres} {$order} {$limit}";
+        $sql = "select {$fields} from {$this->table} as a where 1 {$wheres} {$order} {$limit}";
         $dishList = mysqld_selectall($sql);
         
         foreach($dishList as $k=>$v){
@@ -388,6 +396,13 @@ class ShopDishService extends \service\publicService {
         
         $order = ' order by createtime desc';
         $sql   = "select {$fields} from {$this->table} where {$where} {$order} {$limit}";
+        $rs    = mysqld_selectall($sql);
+        return $rs;
+    }
+    
+    public function getDishAzone($fields='*'){
+        //$this->table_dish_azone
+        $sql   = "select {$fields} from {$this->table_dish_azone}";
         $rs    = mysqld_selectall($sql);
         return $rs;
     }

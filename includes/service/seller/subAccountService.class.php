@@ -31,7 +31,7 @@ class subAccountService extends \service\publicService {
    
    //获取用户总收益
    public function getTotalIncome($openid){
-       $sql = "SELECT sum(account_fee) as account_fee FROM {$this->table_member_paylog} where openid = '{$openid}' and (type = 3 or type = -3)";
+       $sql = "SELECT sum(fee) as account_fee FROM {$this->table_member_paylog} where openid = '{$openid}' and (type = 3 or type = -3)";
        $data  = mysqld_select($sql);
        return $data['account_fee'];
    }
@@ -54,6 +54,16 @@ class subAccountService extends \service\publicService {
    
    public function getMemberInfos($openids,$fields){
        $sql = "select {$fields} from {$this->table_member} where openid in ({$openids})";
+       $rs = mysqld_selectall($sql);
+       return $rs;
+   }
+   
+   public function getMemberInfoPage($openids,$fields){
+      $data['page'] = max(1, intval($data['page']));
+      $data['limit'] = $data['limit']>0?$data['limit']:10; 
+      $limit = " LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
+       
+       $sql = "select {$fields} from {$this->table_member} where openid in ({$openids}) order by createtime desc {$limit}";
        $rs = mysqld_selectall($sql);
        return $rs;
    }
@@ -138,9 +148,9 @@ class subAccountService extends \service\publicService {
 
         $insertData['payer_openid']         = $data['payer_openid'];
         $insertData['payee_openid']         = $data['payee_openid'];
-        $insertData['fee']                  = FormatMoney($data['fee']);
-        $insertData['sts_id']               = $data['payment'];
-        $insertData['create_time']          = time();
+        $insertData['fee']                  = $data['fee'];
+        $insertData['sts_id']               = $data['sts_id'];
+        $insertData['createtime']          = time();
         $insertData['type']                 = 1;
         $insertData['account_fee']          = $data['account_fee'];
         $insertData['remark']               = $data['remark'];
@@ -155,6 +165,15 @@ class subAccountService extends \service\publicService {
       $rs  = mysqld_select($sql);
       return $rs; 
    }
+   
+   //获取用户佣金比率
+   public function getRuleMember($openid,$fields='earn_rate'){
+       $sql = "select {$fields} from {$this->table_seller_rule_relation} where openid = {$openid}";
+       $rs = mysqld_select($sql);
+       return $rs;
+   }
+   
+   
    
    
 } 

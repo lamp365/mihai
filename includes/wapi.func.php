@@ -263,9 +263,16 @@ function getDishIsOnActive($dishid){
  }
 
 function getAreaTitleByAreaid($ac_area_id){
+    if(empty($ac_area_id)) return '全时段';
     $ac_area_id = intval($ac_area_id);
     $sql  = "select ac_area_title from ".table('activity_area')." where ac_area_id={$ac_area_id}";
     $area = mysqld_select($sql);
     return $area['ac_area_title'];
+}
+
+function getRegionName($region_code){
+    if(empty($region_code)) return '';
+    $region = mysqld_select('select region_name from '.table('region')." where region_code='{$region_code}'");
+    return $region['region_name'];
 }
 ?>

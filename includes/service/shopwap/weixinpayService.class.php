@@ -107,7 +107,6 @@ class weixinpayService extends \service\publicService
         );
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') || $this->is_xcx) {
             $parameters['notify_url'] =  WEBSITE_ROOT . 'notify/weixin_notify.php';   //异步通知
-//            $parameters['notify_url'] =  mobile_url('weixinpay',array('name'=>'shopwap','op'=>'notifyurl'));  //异步通知
             $parameters['trade_type'] = 'JSAPI';
 
             $meminfo    = get_member_account();
@@ -115,8 +114,7 @@ class weixinpayService extends \service\publicService
             $parameters['openid']     = $weixinfans['weixin_openid'];
         } else {
             $parameters['notify_url'] = WEBSITE_ROOT . 'notify/weixin_native_notify.php';  //同步通知
-//            $parameters['notify_url'] = mobile_url('weixinpay',array('name'=>'shopwap','op'=>'native_notify'));  //同步通知
-            $parameters['product_id'] = $pay_ordersn;
+            $parameters['product_id'] = $pay_orderid;
             $parameters['trade_type'] = 'NATIVE';
         }
 

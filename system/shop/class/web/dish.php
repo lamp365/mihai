@@ -894,7 +894,7 @@
                         'username'   => $_GP['username'],
                         'comment'    => $_GP['comment'],
                         'rate'       => $_GP['rate'],
-                        'goodsid'    => $dish['gid'],
+                        'goodsid'    => $dish['id'],
                         'face'       => $face,
                         'ispic'      => $ispic
                     );

@@ -493,6 +493,7 @@ class shoprulerService extends \service\publicService
 	if($data['pwd'] != ''){
 	    $redata['pwd'] = $data['pwd'];
 	}
+        /*
 	//一直手机号
 	if(strtolower($_SESSION["addUser"][$data['mobile']]) == strtolower($data['checkcode'])) {
             unset($_SESSION["addUser"]);
@@ -501,6 +502,8 @@ class shoprulerService extends \service\publicService
             $this->error = LANG('COMMON_PHONECODE_ERROR');
             //return false;
         }
+         * 
+         */
 	
 	//判断手机号码是否已经存在
 	$sql_checkmobile = "select openid from ".table('member').' where openid != "'.$data['openid'].'" and mobile = "'.$data['mobile'].'"';
@@ -516,13 +519,14 @@ class shoprulerService extends \service\publicService
 	if($redata['nickname'] != ''){
 	   $setstr .= ",nickname='{$redata['nickname']}'"; 
 	}
+	if($redata['avatar'] != ''){
+	   $setstr .= ",avatar='{$redata['avatar']}'"; 
+	}
 
-	$up_sql = "update ".table('member')." set mobile = '{$data['mobile']}',earn_reate={$data['earn_reate']}{$setstr} where openid = '{$data['openid']}'";
+	$up_sql = "update ".table('member')." set mobile = '{$data['mobile']}'{$setstr} where openid = '{$data['openid']}'";
 	$up_rs  = mysqld_query($up_sql);
         
         mysqld_update('seller_rule_relation',array('earn_rate'=>$data['earn_rate']),array('openid'=>$data['openid']));
 	return $up_rs;
-	
     }
-    
 }

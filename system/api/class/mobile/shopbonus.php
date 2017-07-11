@@ -70,11 +70,11 @@ class shopbonus extends \api\controller\base
         } else if($coupon['usage_mode']==2){
             //找出分类
             if(!empty($coupon['store_category_idone'])){
-                $cate_info = mysqld_select("select name from ".table('shop_category')." where id={$coupon['store_category_idone']}");
+                $cate_info = mysqld_select("select name from ".table('store_shop_category')." where id={$coupon['store_category_idone']}");
                 $coupon['store_category_idone_text']  = $cate_info['name'] ?: '';
             }
             if(!empty($coupon['store_category_idtwo'])){
-                $cate_info = mysqld_select("select name from ".table('shop_category')." where id={$coupon['store_category_idtwo']}");
+                $cate_info = mysqld_select("select name from ".table('store_shop_category')." where id={$coupon['store_category_idtwo']}");
                 $coupon['store_category_idtwo_text']  = $cate_info['name'] ?: '';
             }
         }

@@ -179,7 +179,7 @@ class loginService extends \service\publicService
         $data = array(
             'mobile' 		  => $_GP['mobile'],
             'pwd'    		  => $pwd,
-            'nickname'	      => $wx_info['name'],
+            'nickname'	      => $_GP['nickname']!=''?$_GP['nickname']:$wx_info['name'],
             'realname'	      => $wx_info['name'],
             'avatar'	      => $_GP['avatar']!=''?$_GP['avatar']:$wx_info['face'],
             'createtime'       => time(),
