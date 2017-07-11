@@ -140,6 +140,12 @@ function send_sms($telphone,$code,$template='SMS_13756414'){
 		return $resp;
 }
 
+/**
+ * 空包我帮你，感谢您是平台的活跃用户，系统已经赠送您${money}元，作为回馈，已存入您的平台账户。感谢有您！
+ * @param $telphone
+ * @param $money
+ * @return mixed|ResultSet|SimpleXMLElement
+ */
 function send_kongbao_sms($telphone,$money){
 	require WEB_ROOT . '/includes/TopSdk.php';
 	$c = new TopClient;
@@ -156,7 +162,12 @@ function send_kongbao_sms($telphone,$money){
 	return $resp;
 }
 
-
+/**
+ * 您已很久没登录了，您的平台账户还有${money}元体验金呢，空包我帮你(kongbao580.cn)诚邀您来体验！
+ * @param $telphone
+ * @param $money
+ * @return mixed|ResultSet|SimpleXMLElement
+ */
 function send_tips_sms($telphone,$money){
 	require WEB_ROOT . '/includes/TopSdk.php';
 	$c = new TopClient;
