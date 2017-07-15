@@ -64,7 +64,7 @@ class confirm extends base
         //插入订单的信息
         $res_data     = $orderservice->insertOrder($_GP);
         if(!$res_data){
-              ajaxReturnData(0,$weixinpay->getError());
+              ajaxReturnData(0,$orderservice->getError());
         }
 
         if($res_data['pay_total_money'] == 0){
