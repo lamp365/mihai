@@ -70,6 +70,10 @@ class AlipayNotify {
      */
     function getSignVeryfy($para_temp, $sign) {
         //除去待签名参数数组中的空值和签名参数
+        if($para_temp['name'])  unset($para_temp['name']);
+        if($para_temp['do'])    unset($para_temp['do']);
+        if($para_temp['op'])    unset($para_temp['op']);
+        if($para_temp['mod'])   unset($para_temp['mod']);
         $para_filter = alipay_paraFilter($para_temp);
         ksort($para_filter);
         reset($para_filter);
