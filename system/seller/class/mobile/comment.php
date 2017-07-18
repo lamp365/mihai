@@ -52,8 +52,15 @@ class comment extends base
     //商家回复评论
     public function addReply(){
         $_GP = $this->request;
-        if (empty($_GP['commentid'])) message('参数有误！',refresh(),'error');
-        $return = $this->commentService->reply($_GP);
+        $commentid = intval($_GP['commentid']);
+        if (empty($commentid) || empty($_GP['reply'])) message('参数有误！',refresh(),'error');
+        $system = get_mobile_type();
+        $data = array(
+            'reply'=>$_GP['reply'],
+            'replytime'=>time(),
+            'system'=>$system,
+        );
+        $return = $this->commentService->reply($data,$commentid);
         if ($return) message('回复成功！',refresh(),'success');
     }
    

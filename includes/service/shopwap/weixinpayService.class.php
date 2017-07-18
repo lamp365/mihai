@@ -92,7 +92,7 @@ class weixinpayService extends \service\publicService
         if(is_array($pay_orderid)){  //如果有多条订单的话  用下划线分隔
             $pay_orderid = implode('_',$pay_orderid);
         }
-
+        $pay_orderid .= "_".uniqid();   //必须具备唯一性，否则微信那边下不了单  且长度32字符内
         $config = $this->alipay_config;
 
         $url    = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
@@ -101,7 +101,7 @@ class weixinpayService extends \service\publicService
             'mch_id'    => $config['mch_id'],//商户号
             'nonce_str' => make_nonceStr(),//随机字符串()
             'body'      => $body,//商品描述
-            'out_trade_no'     => $pay_orderid,  //商户订单号  如果有多条订单id的话  用下划线分隔
+            'out_trade_no'     => $pay_orderid,  //商户订单号必须具备唯一性。  如果有多条订单id的话  用下划线分隔
             'total_fee'        => $total_fee,//总金额 单位 分
             'spbill_create_ip' => $_SERVER['REMOTE_ADDR'],//终端IP
         );
@@ -127,13 +127,13 @@ class weixinpayService extends \service\publicService
         if($return['return_code'] == 'FAIL'){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
-            logRecord("{$memInfo['mobile']}用户支付错误---{$return['return_msg']}",'payError');
+            logRecord("{$memInfo['mobile']}用户支付错误1---{$return['return_msg']}",'payError');
             $this->error = '出错了,请重新再试!';
             return false;
         }else if($return['result_code'] == 'FAIL'){
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
-            logRecord("{$memInfo['mobile']}用户支付错误---{$return['err_code_des']}",'payError');
+            logRecord("{$memInfo['mobile']}用户支付错误2---{$return['err_code_des']}",'payError');
             $this->error = '出错了,'.$return['err_code_des'];
             return false;
         }
@@ -228,7 +228,7 @@ class weixinpayService extends \service\publicService
             $error = curl_errno($ch);
             $member  = get_member_account();
             $memInfo = member_get($member['openid'],'mobile');
-            logRecord("{$memInfo['mobile']}用户支付错误!",'payError');
+            logRecord("{$memInfo['mobile']}用户支付错误3!",'payError');
             curl_close($ch);
             ajaxReturnData(0,'出错了,请重新再试!');
         }
@@ -256,9 +256,10 @@ class weixinpayService extends \service\publicService
             $this->error = "支付异步错误2---{$array_data['return_msg']}";
             return false;
         } else{
-            // 订单号
+            // 订单号   5_6_1204454545   5和6表示订单id  最后一个是为了表示唯一性，加的一个标识
             $orderid     = $array_data['out_trade_no'];
             $orderid_arr = explode('_',$orderid);   //多商家导致，可能有多个订单号
+            array_pop($orderid_arr);   //去除最后一个
             $settings    = globaSetting();
             /**
              * 支付完毕 处理账单 佣金提成，卖家所得，平台费率
@@ -289,9 +290,10 @@ class weixinpayService extends \service\publicService
             $this->error = "支付异步错误4---{$array_data['return_msg']}";
             return false;
         } else{
-            // 订单号
+            // 订单号   5_6_1204454545   5和6表示订单id  最后一个是为了表示唯一性，加的一个标识  只能32位数以内
             $ordersn     = $array_data['out_trade_no'];
             $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
+            array_pop($ordersn_arr);
             $settings    = globaSetting();
             /**
              * 支付完毕 处理账单 佣金提成，卖家所得，平台费率

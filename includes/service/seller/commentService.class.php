@@ -55,10 +55,49 @@ class commentService extends publicService
             return $result;
         }
     }
+    /**
+     * APP返回店铺评价列表
+     * @param $type类型 1表示好评，2表示差评
+     * */
+    public function getStoreCommentListAPP($_GP){
+    
+        $pindex = max(1, intval($_GP['page']));
+        $psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
+        $limit= ($pindex-1)*$psize;
+        $status = isset($_GP['status'])?intval($_GP['status']):'-1';
+        $sql = "SELECT id,sts_id,openid,orderid,ordersn,dishid,wl_rate,fw_rate,cp_rate,comment,reply,createtime,replytime,type,status from " .table('shop_goods_comment'). " where sts_id=:sts_id";
+        $listNum = mysqld_selectall($sql,array('sts_id'=>$this->sts_id));
+        $total = count($listNum);
+        if ($status >=0){
+            $sql .= " and status=$status ";
+        }
+        if ($_GP['fen']){
+            $fen = $_GP['fen'];
+            $sql .= " and cp_rate=$fen ";
+        }
+        $sql .= " ORDER BY createtime DESC LIMIT ".$limit.",".$psize;
+        $lists = mysqld_selectall($sql,array('sts_id'=>$this->sts_id));
+        if (!empty($lists)) {
+            foreach ($lists as $key=>$val){
+                $shopInfo = mysqld_select("SELECT id,thumb from ".table('shop_dish')." where id=:dishid",array('dishid'=>$val['dishid']));
+                $lists[$key]['thumb'] = $shopInfo['thumb'];
+                $commentName = mysqld_select("SELECT nickname,mobile from " .table('member'). "where openid=:openid",array('openid'=>$val['openid']));
+                $lists[$key]['nickname'] = $commentName['nickname'];
+                $lists[$key]['mobile'] = $commentName['mobile'];
+            }
+            $result = array(
+                'lists' => $lists,
+                'total' => $total,
+            );
+            return $result;
+        }
+    }
+    
     /**根据评论id获取评论标记列表
      * @param $commentid 评论id
      *   */
     public function getCommentSign($commentid){
+        $list = array();
         if ($commentid){
             $list = mysqld_selectall("SELECT a.*,b.nickname FROM ".table('shop_goods_comment_sign')." as a LEFT JOIN ".table('member')." as b on a.openid=b.openid WHERE a.commentid=:commentid order by createtime desc",array('commentid'=>$commentid));
             foreach ($list as $key=>$v){
@@ -98,8 +137,52 @@ class commentService extends publicService
     /**
      *商家回复评论 
      * */
-    public function reply($data){
-        $return = mysqld_update('shop_goods_comment',array('reply'=>$data['reply'],'replytime'=>time()),array('id'=>$data['commentid'],'sts_id'=>$this->sts_id));
+    public function reply($insertdata = array(),$commentid){
+        if (!empty($insertdata) && is_array($insertdata) && $commentid >0) {
+            $return = mysqld_update('shop_goods_comment',$insertdata,array('id'=>$commentid,'sts_id'=>$this->sts_id));
+        }
         return $return;
+    }
+    /**根据评论id获取评论最新的标记
+     * @param $commentid 评论id
+     *   */
+    public function getCommentNewSign($commentid){
+        if ($commentid){
+            $info = mysqld_select("SELECT a.content,a.createtime,b.nickname FROM ".table('shop_goods_comment_sign')." as a LEFT JOIN ".table('member')." as b on a.openid=b.openid WHERE a.commentid=:commentid order by createtime desc",array('commentid'=>$commentid));
+            return $info;
+        }
+    }
+    /**根据评论id获取评论的图片
+     * @param $commentid 评论id
+     *   */
+    public function getCommentImg($commentid){
+        $info = $data = array();
+        if ($commentid){
+            $info = mysqld_selectall("SELECT id,img FROM ".table('shop_comment_img')." WHERE comment_id=:commentid order by id desc",array('commentid'=>$commentid));
+        }
+        if ($info){
+            foreach ($info as $v){
+                $data[] = $v['img'];
+            }
+        }
+        return $data;
+    }
+    /**
+     * 返回评价详情
+     * @param $id  评论id
+     * */
+    public function getCommentDetail($id){
+        if (empty($id)) return array();
+        $sql = "SELECT * from " .table('shop_goods_comment'). " where id=:id and sts_id=:sts_id";
+        $info = mysqld_select($sql,array('id'=>$id,'sts_id'=>$this->sts_id));
+        if (!empty($info)) {
+            $shopInfo = mysqld_select("SELECT id,thumb,title from ".table('shop_dish')." where id=:dishid",array('dishid'=>$info['dishid']));
+            $info['thumb'] = $shopInfo['thumb'];
+            $info['title'] = $shopInfo['title'];
+            $commentName = mysqld_select("SELECT nickname,mobile,avatar from " .table('member'). "where openid=:openid",array('openid'=>$info['openid']));
+            $info['nickname'] = $commentName['nickname'];
+            $info['avatar'] = $commentName['avatar'];
+        }
+        return $info;
     }
 }

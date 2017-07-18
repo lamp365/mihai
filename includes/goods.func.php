@@ -103,6 +103,49 @@ function get_good($array=array()){
 	return $result;
 }
 
+/**
+ * 获取商品规格
+ * @param $dishid
+ * @return array
+ */
+function get_dish_spec($dishid){
+	$dishid        = intval($dishid);
+	$spec_item_key = mysqld_select("select GROUP_CONCAT(`spec_key` SEPARATOR '_') as item_id  from ".table('dish_spec_price')." where dish_id={$dishid}");
+	if(empty($spec_item_key)){
+		return array();
+	}
+	$spec_item_key_arr = explode('_',$spec_item_key['item_id']);
+	$spec_item_key_arr = array_unique($spec_item_key_arr);
+	$spec_item_key     = implode(',',$spec_item_key_arr);
+
+	$spec_sql  = "SELECT a.spec_name,b.* FROM ".table('goodstype_spec')." AS a INNER JOIN ".table('goodstype_spec_item')." AS b ";
+	$spec_sql .= " ON a.spec_id = b.spec_id WHERE b.status=1 and b.id IN({$spec_item_key}) ORDER BY b.id";
+	$spec_list = mysqld_selectall($spec_sql);
+
+	$result_spec_list = array();
+	foreach ($spec_list as $key => $val) {
+		$result_spec_list[$val['spec_name']][] = $val;
+	}
+	return $result_spec_list;
+}
+
+/**
+ * 获取商品规格以及对应的价格
+ * @param $result
+ * @param $dishid
+ * @return array
+ */
+function get_dish_spec_price($dishid){
+	$dishid    = intval($dishid);
+	$spec_info = mysqld_selectall("select spec_key,marketprice,productprice,store_count from ".table('dish_spec_price')." where dish_id={$dishid}");
+	$result_spec_info = array();
+	foreach($spec_info as $item){
+		$spec_key            = 'spec_'.$item['spec_key'];
+		$result_spec_info[$spec_key] = $item;
+	}
+	return $result_spec_info;
+}
+
 // 监察库存
 function check_stock($id,$stock){
     $count = mysqld_select("select sum(count) as nums from ".table('addon7_request')." where award_id = ".$id);
@@ -742,6 +785,8 @@ function count_dish_visted($dishid){
 		$the_data['modifytime'] = time();
 		mysqld_update('shop_dish_visted',$the_data,array('id'=>$find['id']));
 	}else{
+		//是否有往期的数据
+		$see_old = mysqld_select("select dish_id from ".table('shop_dish')." where dish_id={$dishid}");
 		//没有新添加的
 		$dish = mysqld_select("select sts_id from ".table('shop_dish')." where id={$dishid}");
 		$the_data['dish_id'] = $dishid;
@@ -752,7 +797,8 @@ function count_dish_visted($dishid){
 		$the_data['zero_time']  = $zero_time;
 		mysqld_insert('shop_dish_visted',$the_data);
 
-		mysqld_query("delete from ".table('shop_dish_visted')." where  dish_id={$dishid} and zero_time<={$before_time}");
+		if($see_old)
+			mysqld_query("delete from ".table('shop_dish_visted')." where  dish_id={$dishid} and zero_time<={$before_time}");
 	}
 }
 

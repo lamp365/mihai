@@ -133,7 +133,7 @@ function update_cart_record_time(){
  */
 function check_shop_cart_time(){
 	//尽量处理当前有请求了，其他请求不用再挤进来操作
-	$file = WEB_ROOT."/logs/cart_file.txt";
+	$file = WEB_ROOT."/logreport/cart_file.txt";
 	if(!file_exists($file)){
 		return '';
 	}

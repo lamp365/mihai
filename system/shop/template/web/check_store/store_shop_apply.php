@@ -67,11 +67,25 @@
 		padding-right: 18px;
 		text-align: center;
 	}
+	.big-img-show{
+		display: none;
+		position: absolute;
+		top: -200px;
+		left: -600px;
+		width: 600px;
+		height: 600px;
+		cursor: pointer;
+		overflow: hidden;
+		z-index: 9;
+	}
+	.big-img-show img{
+		max-width: 100%;
+		max-height: 100%;
+	}
 </style>
 <br/>
 <ul class="nav nav-tabs" >
-	<li style="" <?php  if( $_GP['op'] == 'index') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('store_shop_manage',  array('op' => 'index'))?>">申核通过</a></li>
-	<li style="" <?php  if( $_GP['op'] == 'apply') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('store_shop_manage',  array('op' => 'apply'))?>">正处理中</a></li>
+	<li style="" <?php  if( $_GP['op'] == 'apply') { ?> class="active"<?php  } ?>><a href="Javascript:;">正处理中</a></li>
 </ul>
 <br/>
 <table class="table table-striped table-bordered table-hover">
@@ -105,20 +119,29 @@
 						<br/>
 						<?php echo getIndustryByid($item['sts_category_p1_id']).'——'.getIndustryByid($item['sts_category_p2_id']); ?>
                     </td>
-					<td style="text-align:center;">    
-                        <p style="text-align:center;padding:0;margin:0;"> 				                          
-				        <img src="<?php  echo $item['ssi_yingyezhizhao'];?>" height="120" width="120">	
+					<td style="text-align:center;position:relative">    
+                        <p class="small-img" style="text-align:center;padding:0;margin:0;"> 				                          
+					        <img src="<?php  echo $item['ssi_yingyezhizhao'];?>" height="120" width="120">	
 				        </p>
+						<div class="big-img-show">
+							<img src="">
+						</div>
                     </td>
-                	<td style="text-align:center;" class="product-title">
-                		<p style="text-align:center;padding:0;margin:0;"> 				                          
-				        <img src="<?php  echo $item['ssi_xukezheng'];?>" height="120" width="120">		
+                	<td style="text-align:center;position:relative" class="product-title">
+                		<p class="small-img" style="text-align:center;padding:0;margin:0;"> 				                          
+					        <img src="<?php  echo $item['ssi_xukezheng'];?>" height="120" width="120">
 				        </p>
+				        <div class="big-img-show">
+							<img src="">
+						</div>	
                 	</td>
-                    <td style="text-align:center;" >
-                        <p style="text-align:center;padding:0;margin:0;"> 				                          
-                            <img src="<?php  echo $item['ssi_dianmian'];?>" height="120" width="120">	
+                    <td style="text-align:center;position:relative" >
+                        <p class="small-img" style="text-align:center;padding:0;margin:0;"> 				                          
+                            <img src="<?php  echo $item['ssi_dianmian'];?>" height="120" width="120">
 				        </p>
+				        <div class="big-img-show">
+							<img src="">
+						</div>	
                     </td>
 					
 					<td style="text-align:center;">
@@ -163,5 +186,16 @@
     });
     var url = $(obj).data('url');
 }
+ $(function(){
+ 	$(".small-img").on("click",function(){
+ 		var bigImg = $(this).find("img").attr("src");
+ 		$(".big-img-show").hide();
+ 		$(this).siblings(".big-img-show").fadeIn();
+		$(this).siblings(".big-img-show").find("img").attr("src",bigImg);
+ 	})
+ 	$(".big-img-show").on("click",function(){
+		$(this).fadeOut();
+	});
+ })
 </script>
 <?php  include page('footer');?>

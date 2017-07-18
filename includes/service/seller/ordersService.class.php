@@ -88,11 +88,12 @@ class ordersService extends publicService
         //已收货
         $has_get = mysqld_select("SELECT count(*) as num from ".table('shop_order')." where sts_id=:sts_id and status=3",array('sts_id'=>$this->storeid));
         //退换单处理中
-        $returning = mysqld_select("SELECT count(distinct orderid) as num from ".table('shop_order_goods')." where sts_id=:sts_id and (status=2 or status=3)",array('sts_id'=>$this->storeid));
+        $returning = mysqld_select("SELECT count(*) as num from ".table('shop_order_goods')." where sts_id=:sts_id and (status=2 or status=3)",array('sts_id'=>$this->storeid));
         //退换单完成
-        $returned = mysqld_select("SELECT count(distinct orderid) as num from ".table('shop_order_goods')." where sts_id=:sts_id and (status=-1 or status=4)",array('sts_id'=>$this->storeid));
+        $returned = mysqld_select("SELECT count(*) as num from ".table('shop_order_goods')." where sts_id=:sts_id and (status=-1 or status=4)",array('sts_id'=>$this->storeid));
         //退单待处理
-        $return_wait = mysqld_select("SELECT count(distinct orderid) as num from ".table('shop_order_goods')." where sts_id=:sts_id and status=1",array('sts_id'=>$this->storeid));
+        $return_wait = mysqld_select("SELECT count(*) as num from ".table('shop_order_goods')." where sts_id=:sts_id and status=1",array('sts_id'=>$this->storeid));
+        $comment = mysqld_select("SELECT count(*) as num from ".table('shop_goods_comment')." where sts_id=:sts_id ",array('sts_id'=>$this->storeid));
         return array(
             'all_order' => $all_order['num'],
             'wait_pay' => $wait_pay['num'],
@@ -102,6 +103,7 @@ class ordersService extends publicService
             'returning' => $returning['num'],
             'returned' => $returned['num'],
             'return_wait' => $return_wait['num'],
+            'comment' => $comment['num'],
         );
     }
     /**
@@ -112,20 +114,20 @@ class ordersService extends publicService
         $psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
         $limit= ($pindex-1)*$psize;
         $status = !isset($_GP['status']) ? '' : $_GP['status'];
-        $sql = "SELECT a.id,a.sts_id,a.openid,a.ordersn,a.price,a.status,a.paytypecode,a.dispatchprice,c.nickname,a.createtime,a.balance_sprice,a.remark,a.retag,c.mobile FROM " . table('shop_order') . " a LEFT JOIN " . table('member') ." c ON a.openid=c.openid  WHERE a.sts_id=:sts_id";
-        $sqlNum = "SELECT count(*) as num from ".table('shop_order')." as a where a.sts_id=:sts_id";
-        $condition='';
+        $sql = "SELECT a.id,a.sts_id,a.openid,a.ordersn,a.price,a.status,a.paytypecode,a.dispatchprice,a.store_earn_price,c.nickname,a.createtime,a.balance_sprice,a.remark,a.retag,c.mobile FROM " . table('shop_order') . " a LEFT JOIN " . table('member') ." c ON a.openid=c.openid  WHERE a.sts_id=:sts_id";
+        //$sqlNum = "SELECT count(*) as num from ".table('shop_order')." as a where a.sts_id=:sts_id";
         //默认显示全部
         
         if(!empty($status) || $status == '0'){
-            $condition .= " and a.status=".$status;
-            $sqlNum .=$condition;
+            $sql .= " and a.status=".$status;
+            //$sqlNum .=$condition;
         }
-        $condition .= " ORDER BY a.createtime DESC LIMIT ".$limit.",".$psize;
-        $sql .=$condition;
+        $order_num = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
+        $total = empty($order_num)? 0 : count($order_num);
+        $sql .= " ORDER BY a.createtime DESC LIMIT ".$limit.",".$psize;
         $order_lists = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
-        $total = mysqld_select($sqlNum,array('sts_id'=>$this->storeid));
-        $pager = pagination($total['num'], $pindex, $psize);
+        //$total = mysqld_select($sqlNum,array('sts_id'=>$this->storeid));
+        $pager = pagination($total, $pindex, $psize);
         foreach ($order_lists as $key=>$v){
             $retagInfo = json_decode($v['retag'],1);
             unset($order_lists[$key]['retag']);
@@ -137,7 +139,7 @@ class ordersService extends publicService
         }
         $result = array(
             'order_lists' => $order_lists,
-            'total' => $total['num'],
+            'total' => $total,
             'pager' => $pager,
         );
         return $result;
@@ -182,18 +184,19 @@ class ordersService extends publicService
         $pindex = max(1, intval($_GP['page']));
         $psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
         $limit= ($pindex-1)*$psize;
-        $sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
+        $sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num,og.shop_type from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
         if ($_GP['status'] == 4){
             $sql .=" and (og.status=-1 or og.status=4)";//退单完成 退单失败
-        }elseif ($_GP['status'] == 1){
-            $sql .=" and og.status=1 ";//待处理
+        }elseif ($_GP['status'] == 1){//正在申请
+            $sql .=" and og.status=1 ";
         }elseif($_GP['status'] == -2){//进行中
             $sql .= " and (og.status=2 or og.status=3) ";
         }else {
             $sql .= " and (og.status=1 or og.status=2 or og.status=3) ";//pc端待处理和进行中在一起
             
         }
-        $total = count(mysqld_selectall($sql,array('sts_id'=>$this->storeid)));
+        $return_total = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
+        $total = empty($return_total) ? 0 : count($return_total);
         $sql .= " ORDER BY og.createtime DESC LIMIT ".$limit.",".$psize;
         $returnList = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
         if ($returnList){
@@ -284,11 +287,17 @@ class ordersService extends publicService
     /**
      *根据订单id，在shop_order_goods表和shop_dish表获取该订单的所有商品详细信息
      * @param intval $orderid orderid
+     * @param $type !=1 过滤退单的商品
      **/
-    public function getOrderGoodsDetail($orderid){
+    public function getOrderGoodsDetail($orderid ,$type=1){
         if ($orderid){
-            $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
-                . " WHERE o.orderid=:orderid and o.sts_id=:sts_id",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
+            if ($type == 1){
+                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
+                    . " WHERE o.orderid=:orderid and o.sts_id=:sts_id ",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
+            }else {
+                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
+                    . " WHERE o.orderid=:orderid and o.sts_id=:sts_id and o.type=4 and o.status=0 ",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
+            }
             if ($goods){
                 foreach ($goods as $key=>$v){
                     $goods[$key]['status_name'] = ordersService::$status_name_og[$v['order_status']];
@@ -344,7 +353,7 @@ class ordersService extends publicService
      *   */
     public function getAftersalesByCon($condition,$param="*"){
         if (!empty($condition)){
-            $info = getOne('aftersales',$param,$condition);
+            $info = getOne('aftersales',$condition,$param);
             if ($info) return $info;
         }
     }
@@ -355,7 +364,18 @@ class ordersService extends publicService
      *   */
     public function getAftersalesLogByCon($condition,$param="*"){
         if (!empty($condition)){
-            $info = getOne('aftersales_log',$param,$condition);
+            $info = getOne('aftersales_log',$condition,$param);
+            if ($info) return $info;
+        }
+    }
+    /**
+     * 根据条件获得售后日志表的信息,获取一条
+     * $condition
+     * $param 参数
+     *   */
+    public function getAftersalesLogByConAll($condition,$param="*"){
+        if (!empty($condition)){
+            $info = getAll('aftersales_log',$condition,$param);
             if ($info) return $info;
         }
     }
@@ -366,8 +386,125 @@ class ordersService extends publicService
      *   */
     public function getOrderGoodsByCon($condition,$param="*"){
         if (!empty($condition)){
-            $info = getOne('shop_order_goods',$param,$condition);
+            $info = getOne('shop_order_goods',$condition,$param);
             if ($info) return $info;
+        }
+    }
+    /**
+     * 判断是否可以退单
+     *   */
+    public function checkIsCanReturn($_GP){
+        $odgid = intval($_GP['id']);
+        //订单商品表的状态是申请中的才可以退货
+        $odginfo = $this->getOrderGoodsByCon(array('id'=>$odgid),'id,orderid,status,type,isreback,reply_return_time');
+        if (empty($odginfo)) return array('status'=>-1,'mes'=>'暂时不能退单,订单商品不存在');
+        if ($odginfo['status'] != 1) return array('status'=>-2,'mes'=>'暂时不能退单,订单商品的状态不为申请状态');
+        if (!in_array($odginfo['type'], array(1,2,3))) return array('status'=>-3,'mes'=>'暂时不能退单,订单商品的类型不对');
+        //订单表的状态是已发货或者已付款的才可以退货
+        $orderinfo = $this->getOrderInfo($odginfo['orderid'],'status,id');
+        if (empty($orderinfo) || (!in_array($orderinfo['status'], array(1,2)))) return array('status'=>-4,'mes'=>'暂时不能退单，订单状态不为已付款或者已发货状态或者已完成状态');
+        //退单表数据不为空和退单日志表状态为正在申请才可以退货
+        $aftersale = $this->getAftersalesByCon(array('order_goods_id'=>$odgid));
+        if (empty($aftersale)) return array('status'=>-5,'mes'=>'暂时不能退单，退单表查无数据');
+        
+        $aftersalelog = $this->getAftersalesLogByCon(array('order_goods_id'=>$odgid,'aftersales_id'=>$aftersale['aftersales_id'],'status'=>1));
+        if (empty($aftersalelog)) return array('status'=>-6,'mes'=>'暂时不能退单，退单日志表查无数据');
+        $data = array_merge($odginfo,$aftersale);
+        return array('status'=>1,'mes'=>'','data'=>$data);
+    }
+    /**
+     * 根据order_goods的type和同意或者拒绝的状态，封装对话内容的title,
+     *   */
+    public function getTitleByOdgType($type,$status){
+        $title = '';
+        $des = '';
+        if ($type == 1){//退货
+            if($status == 2){//同意
+                $title  = "掌门，您好！卖家同意本次退款退货申请";
+                $des = "请将商品打包寄回，在卖家收货确认后，系统将钱款打回到您的账户中";
+            }elseif ($status == -1){//拒绝
+                $title  = "掌门，很遗憾...您的退货退款申请被拒绝";
+            }elseif ($status == 4){//确认
+                $title = '卖家确认退款';
+                $des = '卖家收到商品确认退货无误，钱款将在1-2个工作日内退回到买家账户';
+            }
+        }elseif ($type == 2){//换货
+            if($status == 2){
+                $title  = "掌门，您好！卖家同意本次换货申请";
+                $des = "请将商品打包寄回，在卖家收货确认后，将给您办理换货";
+            }elseif ($status == -1){
+                $title  = "掌门，很遗憾...您的换货申请被拒绝";
+            }elseif ($status == 4){//确认
+                $title = '卖家确认换货';
+                $des = '卖家收到商品确认退货无误，并给买家重新发货，请耐心等待';
+            }
+        }if($type == 3) {  //表示退款
+            if ($status == 2){//同意
+                $title  = "掌门，您好！卖家同意本次退款申请";
+                $des = "钱款将在1-2个工作日内退回买家账户";
+            }elseif ($status == -1){//拒绝
+                $title  = "掌门，很遗憾...您的退款申请被拒绝";
+        
+            }elseif ($status == 4){//确认
+                $title = '退款成功';
+            }
+        }
+        return array('title'=>$title,'des'=>$des);
+    }
+    /**
+     * 订单列表页面封装
+     * */
+    public function OrderListsSearchPage($_GP){
+        $pindex = max(1, intval($_GP['page']));
+        $psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
+        $limit= ($pindex-1)*$psize;
+        $search = $_GP['search'];
+        $sql = "SELECT a.id,a.sts_id,a.openid,a.ordersn,a.price,a.status,a.paytypecode,a.dispatchprice,a.store_earn_price,c.nickname,a.createtime,a.balance_sprice,a.remark,a.retag,c.mobile FROM " . table('shop_order') . " a LEFT JOIN " . table('member') ." c ON a.openid=c.openid  WHERE a.sts_id=:sts_id";
+        $sqlNum = "SELECT count(*) as num from ".table('shop_order')." as a LEFT JOIN " . table('member') ." c ON a.openid=c.openid where a.sts_id=:sts_id";
+        $condition='';
+        //默认显示全部
+    
+        if(!empty($search)){
+            $condition .=" AND (LOCATE('$search',a.ordersn) >0 or LOCATE('$search',a.expresssn) >0 or LOCATE('$search',c.nickname) >0)";
+            $sqlNum .=$condition;
+        }
+        $condition .= " ORDER BY a.createtime DESC LIMIT ".$limit.",".$psize;
+        $sql .=$condition;
+        $order_lists = mysqld_selectall($sql,array('sts_id'=>$this->storeid));
+        $total = mysqld_select($sqlNum,array('sts_id'=>$this->storeid));
+        $pager = pagination($total['num'], $pindex, $psize);
+        foreach ($order_lists as $key=>$v){
+            $retagInfo = json_decode($v['retag'],1);
+            unset($order_lists[$key]['retag']);
+            $order_lists[$key]['beizhu'] = $retagInfo['beizhu'];
+            $order_lists[$key]['status_name'] = ordersService::$status_name_order[$v['status']];
+            $order_lists[$key]['paytype_name'] = ordersService::$pay_name_map[$v['paytypecode']];
+            $order_lists[$key]['price'] = FormatMoney($v['price'],0);
+            $order_lists[$key]['dispatchprice'] = FormatMoney($v['dispatchprice'],0);
+        }
+        $result = array(
+            'order_lists' => $order_lists,
+            'total' => $total['num'],
+            'pager' => $pager,
+        );
+        return $result;
+    }
+    /**
+     * 判断是否需要关闭订单
+     *   */
+    public function checkIsCloseOrder($orderid){
+        if (empty($orderid)) return false;
+        $list = mysqld_selectall("SELECT id,status FROM ".table('shop_order_goods')." WHERE orderid = $orderid");
+        if ($list && is_array($list)){
+            $flag = true;
+            foreach ($list as $v){
+                if ($v['status'] != 4){
+                    $flag = false;
+                }
+            }
+            if ($flag){
+                mysqld_update('shop_order',array('status'=>-1),array('id'=>$orderid));
+            }
         }
     }
 }

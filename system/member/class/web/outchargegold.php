@@ -32,14 +32,10 @@
 				//审核失败，退回钱
 				if(!empty($gold_teller['sts_id'])){
 					//退回店铺   不用再次打下 paylog
-					mysqld_update('store_shop', array( 'recharge_money' => $money), array(
-						'sts_id' => $gold_teller['sts_id']
-					));
+					mysqld_query("update ".table('store_shop')." set recharge_money=recharge_money+{$money} where sts_id={$gold_teller['sts_id']}");
 				}else{
 					//退给个人
-					mysqld_update('member', array( 'gold' => $money), array(
-						'openid' => $gold_teller['openid']
-					));
+					mysqld_query("update ".table('member')." set gold=gold+{$money} where openid='{$gold_teller['openid']}'");
 				}
 				//把账单记录也更新过来
 				mysqld_update('member_paylog',array('check_step'=>2),array('cash_id'=>$id));

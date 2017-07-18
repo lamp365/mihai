@@ -17,7 +17,7 @@ function createOrdersns()
 
 // 获取多个订单
 function get_orders($where='', $pindex=1, $psize = 10) {
-	if (where=='') {
+	if ($where=='') {
 		return false;
 	}
 	$result = mysqld_selectall("SELECT a.* FROM ".table('shop_order')." as a left join ".table('shop_order_goods')." as b on a.id=b.orderid WHERE ".$where." GROUP BY a.id ORDER BY a.createtime DESC LIMIT ".($pindex - 1) * $psize . ',' . $psize);
@@ -172,43 +172,50 @@ function update_order_status($id, $status) {
 		if($order['price']>0)
 		{
 			$setting = globaSetting();
-			//商家所得去除费率  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
-			$pay_rate    = $setting['pay_rate']/100;
-			$store_money = intval($order['price'] - $pay_rate*$order['price']);  //单位是分
-			$store = member_store_getById($order['sts_id'],'freeze_money,recharge_money');
+			//商家所得去除费率 以及佣金  冻结资金转余额 退款要扣掉
+			$pay_rate    = intval($setting['pay_rate'])/100;
+			$store_money = intval($order['price'] - $pay_rate*$order['price'] - $order['store_earn_price']);  //单位是分
+			$store = member_store_getById($order['sts_id'],'freeze_money,recharge_money,totalearn_monry');
 			$freeze_money    = max(0,$store['freeze_money'] - $store_money);  //冻结扣除
 			$recharge_money  = $store['recharge_money'] + $store_money;       //余额添加
+			$totalearn_monry = $store['totalearn_monry'] + $store_money;       //总收益添加
 			mysqld_update('store_shop', array(
-				'freeze_money'   => $freeze_money,
-				'recharge_money' => $recharge_money
+				'freeze_money'    => $freeze_money,
+				'recharge_money'  => $recharge_money,
+				'totalearn_monry' => $totalearn_monry
 			), array('sts_id' => $order['sts_id']));
 		}
 
-		//推荐人所属的店铺 得到一笔冻结的推广佣金    退款要扣掉  完成收货要变成余额
+		//推荐人所属的店铺 冻结的推广佣金 转为余额   退款要扣掉
 		if(!empty($order['recommend_sts_id']) && !empty($order['store_earn_price'])){
 			$earn_price = $order['store_earn_price']; //单位分
-			$store = member_store_getById($order['recommend_sts_id'],'freeze_money,recharge_money');
+			$store = member_store_getById($order['recommend_sts_id'],'freeze_money,recharge_money,totalearn_monry');
         	$freeze_money    = max(0,$store['freeze_money'] - $earn_price);  //冻结扣除
 			$recharge_money  = $store['recharge_money'] + $earn_price;       //余额添加
+			$totalearn_monry = $store['totalearn_monry'] + $earn_price;       //总收益添加
         	mysqld_update('store_shop', array(
-				'freeze_money'   => $freeze_money,
-				'recharge_money' => $recharge_money
+				'freeze_money'    => $freeze_money,
+				'recharge_money'  => $recharge_money,
+				'totalearn_monry' => $totalearn_monry
 			), array('sts_id' => $order['recommend_sts_id']));
 		}
-		//推荐人得到跟店铺 所承诺的 提成收入 冻结收入   退款要扣掉  完成收货要变成未结算
+		//推荐人得到跟店铺 所承诺的 提成收入 冻结收入转为待结算   退款要扣掉
 		if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
 			$earn_price  = $order['member_earn_price']; //单位分
-			$member = member_get($order['recommend_openid'],'freeze_gold,wait_glod');
+			$member = member_get($order['recommend_openid'],'freeze_gold,wait_glod,totalearn_gold');
 			//以免扣掉时为负数
-        	$freeze_gold  = max(0,$member['freeze_gold'] - $earn_price);  //冻结扣除
-        	$wait_glod    = $member['wait_glod'] + $earn_price;           //未结算添加
+        	$freeze_gold    = max(0,$member['freeze_gold'] - $earn_price);  //冻结扣除
+        	$wait_glod      = $member['wait_glod'] + $earn_price;           //未结算添加
+			$totalearn_gold = $member['totalearn_gold'] + $earn_price;      //总收入添加
         	mysqld_update('member', array(
-				'freeze_gold' => $freeze_gold,
-				'wait_glod'   => $wait_glod,
+				'freeze_gold'      => $freeze_gold,
+				'wait_glod'        => $wait_glod,
+				'totalearn_gold'   => $totalearn_gold,
 			), array('openid' => $order['recommend_openid']));
 		}
 		//paylog的订单 更新为已经收获
 		mysqld_update('member_paylog',array('order_status'=>1),array('openid'=>$order['openid'],'orderid'=>$id));
+		mysqld_update('member_paylog',array('order_status'=>1),array('sts_id'=>$order['sts_id'],'orderid'=>$id));
     }
 }
 
@@ -233,21 +240,35 @@ function paySuccessProcess($orderid,$setting)
 	if($order['price']>0)
 	{
 		//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
-		$mark = LANG('LOG_SHOPBUY_TIP','paylog');
+		$mark = LANG('LOG_SHOPBUY_TIP','paylog');  //现金支付
 		member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
 
-		//商家所得去除费率  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
-		$pay_rate    = $setting['pay_rate']/100;
-		$store_money = intval($order['price'] - $pay_rate*$order['price']);  //单位是分
-		$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
-		store_freeze_gold($order['sts_id'],$store_money,1,$mark);
+		//商家所得去除费率 以及 去除 佣金部分  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
+		$pay_rate    = intval($setting['pay_rate'])/100;
+		$store_money = intval($order['price'] - $pay_rate*$order['price'] - $order['store_earn_price']);  //单位是分
+		if($order['store_earn_price'] > 0)
+			$mark = LANG('LOG_SHOPBUY_HASCOMM_TIP_SELLER','paylog');   //商品收入已扣佣金
+		else
+			$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');           //商品收入
+		store_freeze_gold($order['sts_id'],$store_money,1,$order['id'],$mark);
+	}else{
+		//没有实付金额 则不用扣除费率
+		//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
+		$mark = LANG('LOG_BALANCE_TIP','paylog');  //使用其他金额抵用
+		member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
+
+		//商家所得去除 佣金部分 从余额中扣除  退款要退回  完成收货不用处理
+		$store_money = intval($order['store_earn_price']);      //单位是分
+		$mark = LANG('LOG_SHOPCOMMISION_TIP_SELLER','paylog');  //商品佣金 扣除
+		if($store_money > 0)
+			store_gold($order['sts_id'],$store_money,-1,$mark,$order['id']);
 	}
 
 	//推荐人所属的店铺 得到一笔冻结的推广佣金    退款要扣掉  完成收货要变成余额
 	if(!empty($order['recommend_sts_id']) && !empty($order['store_earn_price'])){
 		$earn_price = $order['store_earn_price']; //单位分
 		$remark     = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');
-		store_commisiongold($order['recommend_sts_id'],$order['recommend_openid'],$earn_price,3,$order['id'],$remark);
+		store_commisiongold($order['recommend_sts_id'],$order['openid'],$earn_price,3,$order['id'],$remark);
 	}
 	//推荐人得到跟店铺 所承诺的 提成收入 冻结收入   退款要扣掉  完成收货要变成未结算
 	if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
@@ -258,168 +279,70 @@ function paySuccessProcess($orderid,$setting)
 	}
 }
 
-
-#############################################订单生成前的信息  start#############################################
-
 /**
- * app 1.0 返回从购物车下单的订单信息
- *
- * @param $cart_ids : array 购物车ID
- * @param $openid : 用户ID
- * @param $orderBy : 购物车排序SQL(库存不足时，该商品分配给最早添加到购物车的店铺使用)
- *
+ * 卖家确认退款后，操作佣金、记录账单，平台费率 等处理
+ * 佣金抽的是商品的 已经计算好了  就是order_goods中的商品价 - 推广价
+ * 费率是总支付中抽的 那么去除费率后，剩下的就是 商家所得
+ * 商家会自行看到佣金提成，会自己打款给推广用户
  */
-function getConfirmOrderInfoByCart($cart_ids, $openid,$orderBy) {
+function returnProcess($odgid,$setting)
+{
+    $odginfo   = mysqld_select("SELECT * FROM " . table('shop_order_goods') . " WHERE id=:odgid", array(':odgid'=>$odgid));
+    if(empty($odginfo['id'])) {
+        return '';
+    }
+    if($odginfo['status'] !=4 ) {
+        return '';
+    }
+    $order = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id=:orderid", array(':orderid'=>$odginfo['orderid']));
+    $aftersales = mysqld_select("SELECT * FROM " . table('aftersales') . " WHERE order_goods_id=:order_goods_id", array(':order_goods_id'=>$odgid));
+	/**
+	 * 1、退款后的金额  买家添加金额 记录账单
+	 * 2、退款后的金额 商品的对应商家 扣除金额 记录账单
+	 * 3、推荐人所属店铺按照 该商品的原来订单order_goods存的价格 乘以 佣金比例  扣除掉金额 记录账单
+	 * 4、推荐人按照 该商品的原来订单order_goods 存的价格 乘以 佣金比例  扣除掉金额 记录账单
+	 */
+    
+    //有实付金额（这里从数据库取出来的单位是分）  记录用户支付的账单
+    if($order['price']>0)
+    {
+        //买家增加账单记录  增加一笔资金 不是真真的增加 只是记录账单，因为增加发生在第三方如支付宝
+        $mark = LANG('LOG_SHOP_RETURN_TIP','paylog');  //现金支付
+        member_gold($order['openid'],$aftersales['refund_price'],'1',$mark,0,$order['id']);
 
-	$goodsprice = 0; 			// 商品总金额
-	$taxtotal 	= 0; 			// 税收总额
-	$ships 		= 0; 			// 运费总额
-	$allgoods 	= array (); 	// 商品列表
-	$result 	= array (); 	// 返回值数组
-	$issendfree	= 0;			// 是否免邮
-	$ifcustoms  = 0;			// 是否需要清关材料
+        //商家所得去除费率 以及 去除 佣金部分  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
+        $pay_rate    = intval($setting['pay_rate'])/100;
+        $store_money = intval($aftersales['refund_price'] - $pay_rate*$aftersales['refund_price'] - $odginfo['store_earn_price']);  //单位是分
+		$mark        = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
+		store_freeze_gold($order['sts_id'],$store_money,-1,$order['id'],$mark);
+    }else{
+        //没有实付金额 则不用扣除费率
+        //卖家增加账单记录  增加一笔资金 不是真增加余额 只是记录账单，因为增加发生在第三方如支付宝
+        $mark = LANG('LOG_SHOP_RETURN_TIP','paylog');  //使用其他金额抵用
+        member_gold($order['openid'],$aftersales['refund_price'],'1',$mark,0,$order['id']);
 
-	$cartSql =  "SELECT c.id,c.goodsid,c.total,c.seller_openid,s.id as shop_id,s.shopname FROM " . table ( 'shop_cart' ) . " c ";
-	$cartSql.= " left join " . table('openshop') . " s on s.openid=c.seller_openid ";
-	$cartSql.= " WHERE c.id in(" . implode ( ',', $cart_ids ) . ") and c.session_id='" . $openid . "' ";
-	$cartSql.= $orderBy;
+        //退款时，商家增加余额
+        $store_money = intval($odginfo['store_earn_price']);      //单位是分
+		$mark        = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
+		if($store_money > 0)
+        	store_gold($order['sts_id'],$store_money,1,$mark,$order['id']);
+    }
 
-	$list = mysqld_selectall ( $cartSql );
-
-	if (! empty ( $list )) {
-
-		$total 		= 0;			//商品件数
-		$arrOutStock= array();		//超出库存的商品ID数组
-
-		foreach ( $list as $g ) {
-			$item = get_good (array('table' => 'shop_dish',
-					'where' => 'a.id=' . $g ['goodsid'] . ' and a.deleted=0 and a.status=1 and a.total>0 ',
-					'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
-			) );
-
-			if (empty ( $item )) {
-				continue;
-			}
-			//同一个商品所属不同店家超出库存时
-			elseif(in_array($item['id'], $arrOutStock))
-			{
-				continue;
-			}
-
-			// 初始化税率金额
-			$taxprice = 0;
-
-			// 对购买数量进行处理，如果购买数量大于库存，则将购买数量设置为库存
-			if ($g ['total'] > $item ['quantity']) {
-				$g ['total'] = $item ['quantity'];
-
-				$arrOutStock[] = $item ['id'];
-			}
-			// 有设置限购件数并且大于限购件数
-			elseif ($item ['max_buy_quantity'] > 0 && $g ['total'] > $item ['max_buy_quantity']) {
-				$g ['total'] = $item ['max_buy_quantity'];
-
-				$arrOutStock[] = $item ['id'];
-			}
-
-			$item ['total'] = $g ['total'];
-				
-				
-			switch($item['type'])
-			{
-				case '1':		//团购商品
-				case '2':		//秒杀商品
-						
-					$item ['marketprice'] = $item ['marketprice'];		//以一般商品价格购买
-
-					break;
-						
-				case '3':		//今日特价
-				case '4':		//限时促销
-
-					// 获取商品的下单价格
-					if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
-						$item ['marketprice'] = $item ['timeprice'];
-					}
-						
-					break;
-						
-				default:		//一般商品
-						
-					$item ['marketprice'] = $item ['timeprice'];
-					break;
-			}
-				
-			// 获得单品总价
-			$item ['totalprice'] = $item ['total'] * $item ['marketprice'];
-			// 打包税率费用初始化
-			$taxarray = array (
-					array (
-							'taxid' => $item ['taxid'],
-							'id' 	=> $item ['id'],
-							'count' => $item ['total'],
-							'price' => $item ['marketprice']
-					)
-			);
-			$taxprice = get_taxs ( $taxarray );
-			$taxprice = $taxprice ['all_sum_tax'];
-			$item ['taxprice'] = $taxprice;
-			$taxtotal += $taxprice; // 税收总额
-				
-			// 设置积分
-			$item ['credit'] 		= $item ['total'] * $item ['credit_cost'];
-			//设置卖家openid
-			$item['seller_openid'] 	= $g['seller_openid'];
-			//卖家店铺名
-			$item['shopname'] 		= $g['shopname'];
-				
-			// 商品列表
-			$allgoods [] = $item;
-			// 获得订单总额
-			$goodsprice += $item ['totalprice'];
-			//订单商品总件数
-			$total += $item ['total'];
-		}
-
-		if (! empty ( $allgoods )) {
-				
-			########### 获取运费     start ################
-			$issendfree = $item['issendfree'];
-			if (empty ( $issendfree )) {
-				$issendfree = isPromotionFreeShips($goodsprice,$total);
-			}
-			// 获取运费
-			$shipCost = shipcost($allgoods);
-				
-			//非免邮
-			if(empty ( $issendfree ))
-			{
-				$ships = $shipCost['price'];
-			}
-			########### 获取运费     end  ################
-				
-			//清关材料
-			$ifcustoms = $shipCost['ifcustoms'];
-				
-				
-			$result ['data'] ['dish_list'] 	= $allgoods; 		// 商品列表
-			$result ['data'] ['goodsprice'] = $goodsprice; 		// 商品总金额(不含税和运费)
-			$result ['data'] ['taxtotal'] 	= $taxtotal; 		// 税收总额
-			$result ['data'] ['ships'] 		= $ships; 			// 运费总额
-			$result ['data'] ['ifcustoms'] 	= $ifcustoms; 		// 清关材料
-			$result ['code'] 				= 1;
-		} else {
-			$result ['message'] = "没有可以购买的商品!";
-			$result ['code'] 	= 0;
-		}
-	} else {
-
-		$result ['message'] = "购物车商品不存在!";
-		$result ['code'] 	= 0;
-	}
-
-	return $result;
+    //退款时，推荐人所属的店铺 得到一笔冻结的推广佣金 要扣掉 
+    if(!empty($order['recommend_sts_id']) && !empty($odginfo['store_earn_price'])){
+        $earn_price = $odginfo['store_earn_price']; //单位分
+        $remark     = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
+        store_commisiongold($order['recommend_sts_id'],$order['openid'],$earn_price,-3,$order['id'],$remark);
+    }
+    //退款时，推荐人得到跟店铺 所承诺的 提成收入 冻结收入   要扣掉 
+    if(!empty($order['recommend_openid']) && !empty($odginfo['member_earn_price'])){
+        $earn_price  = $odginfo['member_earn_price']; //单位分
+        $remark      = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
+        //注意该方法的使用  推荐人要加入佣金，第一个参数是 推荐人的openid
+        member_commisiongold($order['recommend_openid'],$order['openid'],$earn_price,-3,$order['id'],$remark);
+    }
 }
+#############################################订单生成前的信息  start#############################################
 
 /**
  * app3.0 返回从购物车下单的订单信息
@@ -584,142 +507,6 @@ function getConfirmOrderInfoByCart3($cart_ids, $openid,$orderBy) {
 
 
 /**
- * app1.0 返回立即购买时的订单信息
- *
- * @param $dish_id 商品ID
- * @param $total 购买的商品件数
- * @param $buy_type 购买方式(0:单独购买  1:团购)
- * @param $seller_openid 卖家openid
- *
- * @return $result: array
- */
-function getConfirmOrderInfoByNow($dish_id, $total,$buy_type,$seller_openid) {
-
-	$goodsprice = 0; 			// 商品总金额
-	$taxtotal 	= 0; 			// 税收总额
-	$ships 		= 0; 			// 运费总额
-	$allgoods 	= array (); 	// 商品列表
-	$result 	= array (); 	// 返回值数组
-	$issendfree	= 0;			// 是否免邮
-	$ifcustoms  = 0;			// 是否需要清关材料
-
-	// 获得产品信息
-	$item = get_good (array('table' => 'shop_dish',
-			'where' => 'a.id=' . $dish_id . ' and a.deleted=0 ',
-			'field' => 'a.id,a.gid,a.taxid,a.title,a.productprice,a.marketprice,a.thumb,a.istime,a.timeprice,a.type,a.timestart,a.timeend,a.team_buy_count,a.max_buy_quantity,a.status,a.total as quantity,a.issendfree,a.pcate,a.commision,b.title as btitle,b.thumb as imgs,b.productprice as price, b.marketprice as market, b.description as desc2'
-	) );
-
-	//店铺信息
-	$shop = mysqld_select ( "SELECT shopname FROM " . table ( 'openshop' ) . " WHERE openid='" . $seller_openid . "' " );
-
-	if (empty ( $item )) {
-		$result ['message'] = "抱歉，该商品不存在!";
-		$result ['code'] = 0;
-
-	} elseif (empty($item ['quantity'])) {
-
-		$result ['message'] = "库存不足，无法购买！";
-		$result ['code'] = 0;
-
-	} elseif (! $item ['status']) {
-
-		$result ['message'] = "抱歉，该商品已经下架，无法购买了！";
-		$result ['code'] = 0;
-	} else {
-		// 获取数量如果为空则数量为1
-		if (empty ( $total )) {
-			$total = 1;
-		}
-
-		// 对购买数量进行处理，如果购买数量大于库存，则将购买数量设置为库存
-		if ($total > $item ['quantity']) {
-			$total = $item ['quantity'];
-		}
-		// 有设置限购件数并且大于限购件数
-		elseif ($item ['max_buy_quantity'] > 0 && $total > $item ['max_buy_quantity']) {
-			$total = $item ['max_buy_quantity'];
-		}
-		$item ['total'] = $total;
-
-		// 进行促销价格和正常价格的比对
-		if ((empty ( $item ['timeend'] ) || (TIMESTAMP < $item ['timeend'])) && (TIMESTAMP >= $item ['timestart'])) {
-
-			//团购商品时
-			if($item ['type']==1)
-			{
-				//以团购方式购买时
-				if($buy_type)
-				{
-					$item ['marketprice'] = $item ['timeprice'];
-				}
-			}
-			else{
-				$item ['marketprice'] = $item ['timeprice'];
-			}
-		}
-		//app端一般商品也用timeprice字段
-		elseif($item ['type']==0)
-		{
-			$item ['marketprice'] = $item ['timeprice'];
-		}
-
-		// 获得单品总价
-		$item ['totalprice'] = $total * $item ['marketprice'];
-		// 打包税率费用初始化
-		$taxarray = array (
-				array (
-						'taxid' => $item ['taxid'],
-						'id' 	=> $item ['id'],
-						'count' => $total,
-						'price' => $item ['marketprice']
-				)
-		);
-		$taxprice = get_taxs ( $taxarray );
-		$taxprice = $taxprice ['all_sum_tax'];
-		$item ['taxprice'] = $taxprice;
-		$taxtotal = $taxprice;
-		// 设置积分
-		$item ['credit'] 		= $total * $item ['credit_cost'];
-		//设置卖家openid
-		$item['seller_openid']	= $seller_openid;
-		//卖家店铺名
-		$item['shopname']		= !empty($shop) ? $shop['shopname'] : null;
-
-		// 商品列表
-		$allgoods [] = $item;
-		// 获得订单总额
-		$goodsprice += $item ['totalprice'];
-
-		########### 获取运费     start ################
-		$issendfree = $item['issendfree'];
-		if (empty ( $issendfree )) {
-			$issendfree = isPromotionFreeShips($goodsprice,$total);
-		}
-		// 获取运费
-		$shipCost = shipcost($allgoods);
-
-		//非免邮
-		if(empty ( $issendfree ))
-		{
-			$ships = $shipCost['price'];
-		}
-		########### 获取运费     end  ################
-
-		//清关材料
-		$ifcustoms = $shipCost['ifcustoms'];
-
-		$result ['data'] ['dish_list'] 		= $allgoods; 		// 商品列表
-		$result ['data'] ['goodsprice'] 	= $goodsprice; 		// 商品总金额(不含税和运费)
-		$result ['data'] ['taxtotal'] 		= $taxtotal; 		// 税收总额
-		$result ['data'] ['ships'] 			= $ships; 			// 运费总额
-		$result ['data'] ['ifcustoms'] 		= $ifcustoms; 		// 清关材料
-		$result ['code'] 					= 1;
-	}
-
-	return $result;
-}
-
-/**
  * app3.0 返回立即购买时的订单信息
  *
  * @param $dish_id 商品ID
@@ -860,28 +647,7 @@ function getConfirmOrderInfoByNow3($dish_id, $total,$buy_type,$seller_openid) {
  */
 function isPromotionFreeShips($totalprice,$total)
 {
-	$issendfree = 0;
-	
-	// ========促销活动===============
-	$promotion = mysqld_selectall ( "select * from " . table ( 'shop_pormotions' ) . " where starttime<=:starttime and endtime>=:endtime", array (':starttime' => TIMESTAMP,':endtime' => TIMESTAMP) );
-	
-	
-	foreach ( $promotion as $pro ) {
-		//满额免运费
-		if ($pro ['promoteType'] == 1) {
-			if ($totalprice >= $pro ['condition']) {
-					$issendfree = 1;
-			}
-		} 
-		//满件免运费
-		else if ($pro ['promoteType'] == 0) {
-			if ($total >= $pro ['condition']) {
-					$issendfree = 1;
-			}
-		}
-	}
-	
-	return $issendfree;
+	//有需要逻辑请重写   或者该方法直接都删掉
 }
 
 #############################################订单生成前的信息  end#############################################
@@ -1026,7 +792,7 @@ function isSureGetGoods($orderGoodInfo,$type='type',$status='status'){
  */
 function isSureSendGoods($orderGoodInfo,$type='type',$status='status'){
 	$backmoney   = 0;
-	$arr2 = array(1,2,3);
+	$arr2 = array(1);
 	foreach($orderGoodInfo as $item){
 		if(in_array($item[$status],$arr2)){ //退款中的
 			$backmoney ++;
@@ -1163,7 +929,7 @@ function group_buy_aftersale($orderGoodInfo,$orderInfo){
  */
 function order_auto_close(){
 	//尽量处理当前有请求了，其他请求不用再挤进来操作
-	$file = WEB_ROOT."/logs/order_file.txt";
+	$file = WEB_ROOT."/logreport/order_file.txt";
 	if(!file_exists($file)){
 		return '';
 	}
@@ -1323,17 +1089,6 @@ function setOrderRetagInfo($order_retag,$reason){
 	return json_encode($retag);
 }
 
-/**
- * 更新第三方平台订单的所有者
- * 
- * @param $mobile:手机号码
- * @param $openid:用户ID
- */
-function updateThirdOrderOwner($mobile,$openid)
-{
-	//更改第三方订单的openid，只能更改openid值为空的记录
-	return mysqld_query("UPDATE ".table('third_order')." SET openid='{$openid}' WHERE address_mobile = '{$mobile}' and (openid='' or openid IS NULL) and status=3 ");
-}
 
 /**
  * 确认收货方法提取  统一调用
@@ -1370,12 +1125,15 @@ function getRecommendOpenidAndStsid($openid){
 	$recommend        = mysqld_select("select p_openid,p_sid from ".table('member_blong_relation')." where m_openid='{$openid}' and type=2");
 	$recommend_openid = $recommend['p_openid'] ?: 0;
 	$recommend_sts_id = $recommend['p_sid'] ?: 0;
-
 	//根据推荐人的openidz 再次找到该用户当前管理的 店铺id  判断是否已经换店铺了
 	$earn_rate = 0;
 	if(!empty($recommend_openid)){
-		$recommend_sts    = mysqld_select("select sts_id,earn_rate from ".table('seller_rule_relation')." where openid='{$recommend_openid}'");
-		if($recommend_sts['sts_id'] == $recommend_sts_id){
+		$meminfo        = member_get($recommend_openid,'is_sub_status');
+		$recommend_sts  = mysqld_select("select sts_id,earn_rate from ".table('seller_rule_relation')." where openid='{$recommend_openid}'");
+		if($meminfo['is_sub_status'] == 2){
+			//该推荐人已经被暂停了。
+			$recommend_openid = 0;
+		}else if($recommend_sts['sts_id'] == $recommend_sts_id){
 			//该推荐人 就属于在该店铺工作
 			$earn_rate  = $recommend_sts['earn_rate'] ?: 0;
 			empty($earn_rate) && $recommend_openid = 0;
@@ -1396,7 +1154,7 @@ function getRecommendOpenidAndStsid($openid){
  * @param $dishid
  * @param $buy_num
  * @param $ac_dish_id
- * @param $type  1 表示卖出扣掉库存  2表示 关闭 等 库存回放回去
+ * @param $type  1 表示卖出扣掉库存  2表示 关闭 退款 等 库存回放回去
  */
 function operateStoreCount($dishid,$buy_num,$ac_dish_id,$type){
 	if($type == 1){

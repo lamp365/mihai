@@ -82,6 +82,9 @@ class login extends base {
      */
     public function grantFailLogin()
     {
+        //删除掉5天前 无用的数据
+        $time = time()-3600*24*5;
+        mysqld_query("delete from ".table('member')." where istemplate = 1 and createtime<{$time}");
         $device_code = get_sessionid();
         $data = array(
             'nickname'	  => '小城市'.rand(100,999),
@@ -109,8 +112,8 @@ class login extends base {
      */
     public function pc_login()
     {
-        $file  = WEB_ROOT."/logs/cart_file.txt";
-        $file2 = WEB_ROOT."/logs/order_file.txt";
+        $file  = WEB_ROOT."/logreport/cart_file.txt";
+        $file2 = WEB_ROOT."/logreport/order_file.txt";
         file_put_contents($file,1);
         file_put_contents($file2,1);
         $_GP = $this->request;

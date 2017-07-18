@@ -130,32 +130,51 @@
 											  }
 
 											  $(function(){
-												  $(".cat").each(function(){
+												 /* $(".cat").each(function(){
 													  var obj = this;
 													  $(this).closest(".showlist").find(".son").each(function(){
 														  if(this.checked){
 															  obj.checked = true;
 														  }
 													  })
-												  })
+												  })*/
 
-												  $(".son").click(function(){
-													  if(this.checked){
-														  var obj = $(this).closest('.pre_level').find(".parent")[0];
-														  var obj2 = $(this).closest('.show_roles').find('.cat')[0];
-														  obj.checked = true;
-														  obj2.checked = true;
+												  $(".third-nav .son").click(function(){
+													  var gouparent = true;
+													  $(this).closest('.pre_level').find(".third-nav .son").each(function(){
+														  if(this.checked == false){
+															  gouparent = false;
+														  }
+													  });
+													  if(gouparent){
+														  $(this).closest('.pre_level').find(".parent").prop('checked',true);
 													  }
-												  })
+
+
+													  var goucat = true;
+													  $(this).closest('.show_roles').find(".parent").each(function(){
+														  if(this.checked == false){
+															  goucat = false;
+														  }
+													  });
+													  if(goucat){
+														  $(this).closest('.show_roles').find('.cat').prop('checked',true);
+													  }
+												  });
 												  $(".parent").click(function(){
-													  if(this.checked){
-														  var obj2 = $(this).closest('.show_roles').find('.cat')[0];
-														  obj2.checked = true;
-													  }
 													  var isCheck = this.checked;
 													  $(this).closest(".pre_level").find('.son').each(function(){
 														  this.checked = isCheck;
-													  })
+													  });
+													  var goucat = true;
+													  $(this).closest('.show_roles').find(".parent").each(function(){
+															if(this.checked == false){
+																goucat = false;
+															}
+													  });
+													  if(goucat){
+														  $(this).closest('.show_roles').find('.cat').prop('checked',true);
+													  }
 												  })
 												  $(".cat").click(function(){
 													  var isCheck = this.checked;

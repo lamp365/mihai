@@ -18,7 +18,6 @@ class shopindex extends base{
        $_GP = $this->request;
        $jd = isset($_GP['longitude']) ? $_GP['longitude'] : '';//经度
        $wd = isset($_GP['latitude']) ? $_GP['latitude'] : '';//纬度
-       logRecord(var_export($_GP,1), 'shopIndexarea');
        if (empty($area)) ajaxReturnData('1','暂无分配时间区域');
        
        foreach ($area as $key=>$val){
@@ -28,7 +27,6 @@ class shopindex extends base{
                continue;
            }
        }
-       logRecord(var_export($area,1), 'shopIndexarea1');
        if (empty($area)) ajaxReturnData('1','暂无数据');
        $return =array();
        if (empty($area)) $area = array();
@@ -95,9 +93,10 @@ class shopindex extends base{
        $list = mysqld_selectall($sql);
        logRecord($sql, 'shopindexDishSql');
        
+       
        if (empty($list)){ 
            $returndata = array('status'=>0,'data'=>$list);
-           ajaxReturnData(1,'暂无商品',$returndata);
+           ajaxReturnData(1,'暂无商品');
        }
        //shop_dish表取商品详情
        $data = array();
@@ -138,6 +137,7 @@ class shopindex extends base{
            if (!$this->checkIsData($ac_list_id,$ac_area_id,$jd,$wd,$pindex+1,$psize)) $status = 0;
        }
        $returndata = array('status'=>$status,'data'=>$data);
+       logRecord(var_export($returndata,1), 'shopindexDishSql');
        ajaxReturnData(1,'',$returndata);
    }
    //是否还有数据

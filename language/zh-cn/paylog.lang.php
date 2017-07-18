@@ -6,7 +6,7 @@ return array(
     'LOG_FREEORDER_TIP'       => '获得@@@分类免单',
 
     'LOG_SHOPBUY_TIP'        => '购买了商品,现金支付',
-    'LOG_BALANCE_TIP'        => '购买了商品,余额抵用',
+    'LOG_BALANCE_TIP'        => '购买了商品,其他金额抵扣',
 
     'LOG_BACK_CASH_TIP'      => '退款成功至现金余额',
     'LOG_BACK_THIRD_TIP'     => '退款成功至支付账户',
@@ -35,5 +35,12 @@ return array(
     'LOG_BUY_SHOP_LEVEL_REMARK'=> '购买店铺等级',
 
     //商家的账单信息  推广员得到的提成记录   店铺得到的佣金记录
-    'LOG_SHOPBUY_TIP_SELLER'   => '商品收入',
+    'LOG_SHOPBUY_TIP_SELLER'          => '商品收入',
+    'LOG_SHOPBUY_HASCOMM_TIP_SELLER'  => '商品收入已扣佣金',
+    'LOG_SHOPCOMMISION_TIP_SELLER'    => '商品佣金扣除',
+    
+    //退单
+    'LOG_SHOP_RETURN_TIP'      =>'申请退单退还现金',
+    'LOG_SHOPRETURN_TIP_SELLER'=>'买家退单扣除金额',
+
 );

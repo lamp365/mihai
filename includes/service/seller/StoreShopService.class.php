@@ -612,4 +612,12 @@ class StoreShopService extends \service\publicService {
             return $info;
         }
     }
+    
+    //获取店铺信息
+    public function getShopStore($openid,$fields='*'){
+        $sql = "select {$fields} from ".table('store_shop')." where sts_openid = {$openid}";
+        $rs = mysqld_select($sql);
+        return $rs;
+    }
+    
 }

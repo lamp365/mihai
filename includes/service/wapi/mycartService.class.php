@@ -150,6 +150,11 @@ class mycartService extends  \service\publicService
     }
 
 
+    /**
+     * @param $dishid
+     * @param $total  total 添加购物车的时候，这个total就是当前要新增的数量
+     * @return bool|int|string
+     */
     public function addCart($dishid,$total)
     {
         $member = get_member_account();
@@ -186,14 +191,10 @@ class mycartService extends  \service\publicService
             $this->error = "该产品剩下{$store_count}件！";
             return false;
         }
-        //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
-        if($store_count < 30){
-            $can_max_buy = 1;
-        }else{
-            $can_max_buy = max(1,floor($store_count*0.1));
-        }
-        if($total > $can_max_buy){
-            $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
+
+        //判断能够允许所买的最大件数
+        $res = $this->canAllowBuyNum($row['total'],$total,$store_count,$dishid,$active['ac_dish_id']);
+        if(!$res){
             return false;
         }
 
@@ -233,6 +234,10 @@ class mycartService extends  \service\publicService
     public function lijiBuyCart($dishid,$total)
     {
         $member = get_member_account();
+        $row    = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid ", array(
+            ':session_id' =>  $member['openid'],
+            ':goodsid'    =>  $dishid
+        ));
 
         $dish   = mysqld_select("select id,sts_id,deleted,status,store_count from ".table('shop_dish')." where id={$dishid}");
         if(empty($dishid) || $dish['deleted'] == 1){
@@ -260,24 +265,16 @@ class mycartService extends  \service\publicService
             return false;
         }
 
-        //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
-        if($store_count < 30){
-            $can_max_buy = 1;
-        }else{
-            $can_max_buy = max(1,floor($store_count*0.1));
-        }
-        if($total > $can_max_buy){
-            $this->error = "该产品一次允许最大购买{$can_max_buy}件！";
+
+        //判断能够允许所买的最大件数
+        $res = $this->canAllowBuyNum($row['total'],$total,$store_count,$dishid,$active['ac_dish_id']);
+        if(!$res){
             return false;
         }
 
         //移除掉所有商品的打钩状态
         mysqld_update("shop_cart",array('to_pay'=>0),array('session_id'=>$member['openid']));
 
-        $row = mysqld_select("SELECT id, total FROM " . table('shop_cart') . " WHERE session_id = :session_id  AND goodsid = :goodsid ", array(
-            ':session_id' =>  $member['openid'],
-            ':goodsid'    =>  $dishid
-        ));
 
         if(empty($row)){
             // 不存在
@@ -302,9 +299,18 @@ class mycartService extends  \service\publicService
             $u_data = array('total' => $total,'to_pay'=>1,'ac_dish_id'=> intval($active['ac_dish_id']));
             mysqld_update('shop_cart', $u_data, array('id' => $row['id']));
         }
+
         //库存的操作减掉 卖出数量加1
         $ac_dish_id = intval($active['ac_dish_id']);
-        operateStoreCount($dishid,$total,$ac_dish_id,1);
+        $up_num     = $total-intval($row['total']);  //数量是添加还是减少
+        if($up_num > 0){
+            //添加的 扣掉库存
+            operateStoreCount($dishid,$up_num,$ac_dish_id,1);
+        }else if($up_num < 0){
+            //减少的 去掉库存
+            $up_num = abs($up_num);
+            operateStoreCount($dishid,$up_num,$ac_dish_id,2);
+        }
         return $total;
     }
 
@@ -344,22 +350,12 @@ class mycartService extends  \service\publicService
             $this->error = "库存剩下{$store_count}件！";
             return false;
         }
-        //如果数量要添加，则需要判断了。。
-        if($cart['total'] < $buy_num){
-            //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
-            if($store_count <= 30){
-                $can_max_buy = 1;
-            }else{
-                $can_max_buy = max(1,floor($store_count*0.1));
-            }
-            if($buy_num > $can_max_buy){
-                $allow_num   = $buy_num-1;
-                $buy_num - $cart['total'] != 1 && $allow_num = $can_max_buy;
-                $this->error = "该产品一次允许最大购买{$allow_num}件！";
-                return false;
-            }
-        }
 
+        //判断能够允许所买的最大件数
+        $res = $this->canAllowBuyNum($cart['total'],$buy_num,$store_count,$cart['goodsid'],$active['ac_dish_id']);
+        if(!$res){
+            return false;
+        }
 
         $data = array('total' => $buy_num,'ac_dish_id' => intval($active['ac_dish_id']));
         mysqld_update('shop_cart', $data, array('id' => $cart_id));
@@ -428,6 +424,44 @@ class mycartService extends  \service\publicService
         return true;
     }
 
+    /**
+     * 所能允许购买的最大件数
+     * @param $curt_num
+     * @param $buy_num
+     * @param $store_count
+     * @return bool
+     */
+    public function canAllowBuyNum($curt_num,$buy_num,$store_count,$dishid,$ac_dish_id)
+    {
+        $mem = get_member_account();
+        $curt_num     = intval($curt_num);     //可能会为空  故做一个类型转换
+        $dishid       = intval($dishid);       //可能会为空  故做一个类型转换
+        $ac_dish_id   = intval($ac_dish_id);   //可能会为空  故做一个类型转换
+        //如果数量要添加，则需要判断了。。
+        if($curt_num < $buy_num){
+            //每个用户最多能购买件数有限 库存少于30件，每人可以买一件。。否则每人可以买（库存*10%）
+            if($store_count <= 30){
+                $can_max_buy = 1;
+            }else{
+                $can_max_buy = max(1,floor($store_count*0.1));
+            }
+            //查找该用户同款产品 是否存在未支付，未支付的话，限制数量要并进来。
+            if(!empty($dishid)){
+                $wait_pay_order = mysqld_selectall("select id from ".table('shop_order')." where status=0 and openid='{$mem['openid']}'");
+                foreach($wait_pay_order as $item){
+                    $find = mysqld_select("select total from ".table('shop_order_goods')." where orderid={$item['id']} and dishid={$dishid} and ac_dish_id={$ac_dish_id}");
+                    if(!empty($find)) $buy_num += intval($find['total']);
+                }
+            }
+            if($buy_num > $can_max_buy){
+                $allow_num   = $buy_num-1;
+                $buy_num - $curt_num != 1 && $allow_num = $can_max_buy;
+                $this->error = "该产品本次允许最大购买{$allow_num}件！";
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * 从购物车中的店铺 得到对应的行业，如果有一个行业属于全球购的，那么本次结算页需要地址中带有身份证
      * @param $sts_id_arr

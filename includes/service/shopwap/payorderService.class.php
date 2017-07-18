@@ -157,6 +157,7 @@ class payorderService extends  \service\publicService
                     $o_good['member_earn_price']     = empty($recommend_openid) ? 0 : $member_earn_price;   //单个商品 提成 单位 分
                     $o_good['total']                 = $one_dish['buy_num'];
                     $o_good['createtime']            = time();
+                    $o_good['isreback']              = $one_dish['isreason'];
                     $res2 = mysqld_insert('shop_order_goods',$o_good);
                     if(!$res2){
                         //如果不成功  把提交给第三方的总额中去除该商品的价格

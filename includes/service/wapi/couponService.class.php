@@ -15,22 +15,23 @@ class couponService extends \service\publicService
         $couponModel = new \model\store_coupon_model();
         $couponsList = $couponModel->getAllCoupon(" `payment` != 1 and {$mytime} >=`receive_start_time` and {$mytime} <=`receive_end_time`");
         if ($couponsList){
-            if (empty($openid)){//如果没有获得openid则取所有未过期的
+            if ($openid){//取可以领取的
                 $data['openid'] = $openid;
+                $list = array();
                 foreach ($couponsList as $key=>$v){
                     $data['scid'] = $v['scid'];
                     $data['stsid'] = $v['store_shop_id'];
                     $res = $this->IsCanGetCoupon($data);
-                    $list = array();
                     if ($res['status'] == 1){
                         $list[$key] = $v;
                         $list[$key]['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
                         $list[$key]['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);
+                        
                     }
-                    return $list;
-                } 
+                }
+                return $list;
                 
-            }else{//取可以领取的
+            }else{//如果没有获得openid则取所有未过期的
                 foreach ($couponsList as $key=>$v){
                     $couponsList[$key]['coupon_amount'] = FormatMoney($v['coupon_amount'],0);
                     $couponsList[$key]['amount_of_condition'] = FormatMoney($v['amount_of_condition'],0);

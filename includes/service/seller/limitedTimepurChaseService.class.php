@@ -12,6 +12,7 @@ class limitedTimepurChaseService extends \service\publicService {
     private $table_area;
     private $table_dish;
     private $table_list;
+    private $table_activity_aulist;
     private $dishObj;           //时间戳
     private $nowtime;           //时间戳
     private $nowHour;           //当前小时
@@ -23,6 +24,7 @@ class limitedTimepurChaseService extends \service\publicService {
        $this->table_area   = table('activity_area');
        $this->table_dish   = table('activity_dish');
        $this->table_list   = table('activity_list');
+       $this->table_activity_aulist   = table('activity_aulist');
        $this->nowtime      = time();
        $this->dishObj      = new ShopDishService();
        $this->storeObj     = new shopStoreService();
@@ -551,6 +553,14 @@ class limitedTimepurChaseService extends \service\publicService {
    public function dayAction($dateTime,$fields='*'){
        $sql = "select {$fields} from {$this->table_list} where ac_time_str <= {$dateTime} and ac_time_end >= {$dateTime} and ac_status = 1 order by ac_time_end asc limit 1";
        $rs  = mysqld_select($sql);
+       return $rs;
+   }
+   
+   //获取对应的审核内容
+   public function getAulist($ac_dish_id,$fields){
+       //$this->table_activity_aulist
+       $sql = "select {$fields} from {$this->table_activity_aulist} where au_dish_id = {$ac_dish_id}";
+       $rs = mysqld_select($sql);
        return $rs;
    }
    

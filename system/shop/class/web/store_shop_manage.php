@@ -421,6 +421,9 @@ class store_shop_manage extends basecontroller {
             if($_GP['pay_rate'] > 10){
                 message('支付费率过高！');
             }
+            if(!is_numeric($_GP['draw_money'])){
+                message('手续费必须是数字！');
+            }
             $data['comment_exchange'] = $_GP['comment_exchange'];
             $data['bid_exchange'] = $_GP['bid_exchange'];
             $data['order_num_exchange'] = $_GP['order_num_exchange'];
@@ -523,5 +526,20 @@ class store_shop_manage extends basecontroller {
         $picData['contentpicurl'] = explode(',',$picData['contentpicurl']);
         
         include page('check_store/dish_content');
+    }
+
+    public function getQrcode()
+    {
+        $_GP = $this->request;
+        if(empty($_GP['openid'])){
+            ajaxReturnData(0,'参数有误！');
+        }
+        $weixin = new \WeixinTool();
+        $result = $weixin->get_xcx_erweima($_GP['openid'],2);
+        if($result['errno'] == 0){
+            ajaxReturnData(0,$result['message']);
+        }else{
+            ajaxReturnData(1,'请求成功！',$result['message']);
+        }
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec0701418078835bd3488063bbb3742d",
+    "content-hash": "e955bcf885a108f840c158775e591132",
     "packages": [
         {
             "name": "jaeger/curlmulti",
@@ -234,6 +234,36 @@
             ],
             "description": "weixin mini program helper",
             "time": "2017-01-18T06:09:29+00:00"
+        },
+        {
+            "name": "yinjiang/qqlogin",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ychmrx/qqlogin.git",
+                "reference": "d1bfe37d59428877985a6b7b194d94d9a691720f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/ychmrx/qqlogin/d1bfe37d59428877985a6b7b194d94d9a691720f.zip",
+                "reference": "d1bfe37d59428877985a6b7b194d94d9a691720f",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Yinjiang\\Qqlogin\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Yinjiang",
+                    "email": "php361@php361.cn"
+                }
+            ],
+            "description": "Qq login for web",
+            "time": "2017-03-30T03:25:51+00:00"
         }
     ],
     "packages-dev": [],

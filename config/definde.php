@@ -41,6 +41,7 @@ define('IM_WEALTH_FROM_USER','admin_wealth');				//发送财富消息时，即�
 define('WRITE_LOG',true);									//是否记录日志
 define('API_MAINTAIN',false);								//app接口访问暂停配置项；为true时，app接口无法访问
 define('IM_ICON_URL','http://odozak4lg.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720161125151517.png'); //im客户默认头像
+//http://restapi.amap.com/v3/geocode/geo?address=北京市朝阳区阜通东大街6号&output=XML&key=447e9b30f3af97fbb075e55a9863fef2
 define('GD_KEY','447e9b30f3af97fbb075e55a9863fef2');//高德地图的key
 define('AL_CODE','http://restapi.amap.com/v3/geocode/regeo?');//逆地理编码API服务地址
 define('GD_IP','http://restapi.amap.com/v3/ip?');//IP定位API服务地址

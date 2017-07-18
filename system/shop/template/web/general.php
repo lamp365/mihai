@@ -44,7 +44,7 @@
 		<div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 提款手续费：</label>
 			<div class="col-sm-9">
-				  <input type="number" step="10" name="draw_money" class="col-xs-10 col-sm-2" value="<?php if ($settings['draw_money']) echo FormatMoney($settings['draw_money'],0);?>" />
+				  <input type="text"  name="draw_money" class="col-xs-10 col-sm-2" value="<?php if ($settings['draw_money']) echo FormatMoney($settings['draw_money'],0);?>" />
 			</div>
 		</div>
 

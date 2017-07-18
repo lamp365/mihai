@@ -282,7 +282,7 @@ class storeShopService extends publicService
         }else{//如果得到的区域code为空，说明用户没有定位或者高德没有返回区域code,此时取默认城市的code
             $where = " a.sts_city='$cityCode' ";
         }
-        
+        $where .=" and a.is_ban=1 ";
         $sql = "select a.sts_id,a.sts_province,a.sts_city,a.sts_region,b.level_type from ".table('store_shop')." as a left join ".table('store_shop_level')." as b on a.sts_shop_level=b.rank_level where ".$where;
         $ShopDishModel = new \model\shop_dish_model();
         $return = $ShopDishModel->fetchall($sql);

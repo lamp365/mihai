@@ -66,15 +66,22 @@
 	.webuploader-pick{
 		height: 24px;
 	}
+	.tab-up,.tab-down{
+		width: 16px;
+		margin-left: 10px;
+	}
+	.tab-up{
+		display: none;
+	}
 	</style>
 <h3 class="header smaller lighter blue" style="display: inline-block">会员管理</h3> &nbsp; &nbsp;<a href="javascript:;" style="margin-top: -10px;" data-toggle="modal" data-target="#addModal" class="btn btn-md btn-info">添加会员</a>
-<form action="" method="get" class="form-horizontal" enctype="multipart/form-data" >
+<form action="" method="get" class="form-horizontal form-table" enctype="multipart/form-data" >
 				<input type="hidden" name="act" value="module" />
 				<input type="hidden" name="name" value="member" />
 				<input type="hidden" name="do" value="list" />
 				<input type="hidden" name="mod" value="site"/>					
 				<input type="hidden" name="status" value="<?php echo isset($_GP['status'])? $_GP['status']: 1;?>"/>
-
+				<input type="hidden" value="0" class="hidden-up-down" name="upDown">
 				<table class="table vip-table-list"  align="center">
 					<tbody>
 						<tr>
@@ -95,9 +102,9 @@
 		              	            </select>
 								</li>
 								<li>
-									<span class="left-span">会员等级</span>
+									<span class="left-span">城市</span>
 									<select name="rank_level">
-		     							<option value="0">选择会员等级</option>   
+		     							<option value="0">选择城市</option>   
 		     							<?php foreach($rank_model_list as $rank_model){?>
 		     				  				<option value="<?php echo $rank_model['rank_level']?>" <?php if($rank_model['rank_level']==$_GP['rank_level']){?>selected=""<?php }?>><?php echo $rank_model['rank_name']?></option> 
 		     							<?php }?>
@@ -108,8 +115,8 @@
 									<input name="weixinname" class="li-height" placeholder="微信昵称" type="text" value="<?php  echo $_GP['weixinname'];?>" />
 								</li>
 								<li>
-									<span class="left-span">支付宝昵称</span>
-									<input name="alipayname" class="li-height" placeholder="支付宝昵称" type="text" value="<?php  echo $_GP['alipayname'];?>" />
+									<span class="left-span">店铺名称</span>
+									<input name="alipayname" class="li-height" placeholder="店铺名称" type="text" value="<?php  echo $_GP['alipayname'];?>" />
 								</li>
 								<li style="display: none;"><span>按食堂筛选：</span></li>
 								<li style="display: none;">
@@ -173,21 +180,25 @@
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
 		<ul class="nav nav-tabs" >
 	<li style="width:7%" <?php  if($vc == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 1))?>">商城会员</a></li>
-	<li style="width:7%" <?php  if($vc == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 2))?>">特殊会员</a></li>
-	<li style="width:7%" <?php  if($vc == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => -1))?>">全部会员</a></li>
+	<li style="width:7%" <?php  if($vc == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 2))?>">禁用会员</a></li>
+<!-- 	<li style="width:7%" <?php  if($vc == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => -1))?>">全部会员</a></li> -->
 			</ul>
-					<table class="table table-striped table-bordered table-hover">
+			
+			<table class="table table-striped table-bordered table-hover">
 			<thead >
 				<tr>
 					<th style="text-align:center;">手机号码</th>
 						<th style="text-align:center;">微信昵称</th>
-						<th style="text-align:center;">支付宝昵称</th>
+						<th style="text-align:center;">店铺名称</th>
 					<th style="text-align:center;">用户名</th>
 					<th style="text-align:center;">注册时间</th>
 					<th style="text-align:center;">会员等级</th>
 					<th style="text-align:center;">状态</th>
-					<th style="text-align:center;">积分</th>
-					<th style="text-align:center;">余额</th>
+					<th style="text-align:center;" class="td-price down">消费金额
+					<img class="tab-up" src="<?php echo RESOURCE_ROOT;?>/addons/common/image/up.png">
+					<img class="tab-down" src="<?php echo RESOURCE_ROOT;?>/addons/common/image/down.png">
+					</th>
+
 					<th style="text-align:center;">操作</th>
 				</tr>
 			</thead>
@@ -229,9 +240,7 @@
 										<td class="text-center">
 												<?php  echo $v['credit'];?>
 									</td>
-									<td class="text-center">
-										<?php  echo $v['gold'];?>
-									</td>
+
 									<td class="text-center">
 											<?php  if($v['status']==1) { ?>
 									<a class="btn btn-xs btn-danger" href="<?php  echo web_url('delete',array('name'=>'member','openid' => $v['openid'],'status' => 0));?>" onclick="return confirm('确定要禁用该账户吗？');"><i class="icon-edit"></i>禁用账户</a>
@@ -241,8 +250,8 @@
 										
 									<?php  } ?>
 										&nbsp;<a  class="btn btn-xs btn-info" href="<?php  echo web_url('detail',array('name'=>'member','openid' => $v['openid']));?>"><i class="icon-edit"></i>账户编辑</a>&nbsp;
-										<a class="btn btn-xs btn-info" href="<?php  echo web_url('recharge',array('name'=>'member','openid' => $v['openid'],'op'=>'credit'));?>"><i class="icon-edit"></i>积分管理</a>&nbsp;
-										<a class="btn btn-xs btn-info" href="<?php  echo web_url('recharge',array('name'=>'member','openid' => $v['openid'],'op'=>'gold'));?>"><i class="icon-edit"></i>余额管理</a>	
+<!-- 										<a class="btn btn-xs btn-info" href="<?php  echo web_url('recharge',array('name'=>'member','openid' => $v['openid'],'op'=>'credit'));?>"><i class="icon-edit"></i>积分管理</a>&nbsp;
+										<a class="btn btn-xs btn-info" href="<?php  echo web_url('recharge',array('name'=>'member','openid' => $v['openid'],'op'=>'gold'));?>"><i class="icon-edit"></i>余额管理</a>	 -->
 									</td>
 								</tr>
 								<?php  } } ?>
@@ -455,5 +464,21 @@ uploader.on('uploadError', function(file) {
 function del(ele){
 	$(ele).parent('.upload_pic').remove();
 }
+// 消费金额排序
+$(".td-price").on("click",function(){
+	if($(this).hasClass("down")){
+		$(this).removeClass("down");
+		$(".tab-down").hide();
+		$(".tab-up").show();
+		$(".hidden-up-down").val(1);
+		$("form").submit();
+	}else{
+		$(this).addClass("down");
+		$(".tab-down").show();
+		$(".tab-up").hide();
+		$(".hidden-up-down").val(0);
+		$("form").submit();
+	}
+})
 	</script>
 <?php  include page('footer');?>

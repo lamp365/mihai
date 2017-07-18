@@ -203,6 +203,28 @@ class shop extends base
         if ($flag) ajaxReturnData(1,'设置成功！');
     }
 
+    public function getCommision()
+    {
+        $mem = get_member_account();
+        $res = mysqld_select("select commision from ".table('store_extend_info')." where store_id={$mem['store_sts_id']}");
+        $data['commision'] = $res['commision'];
+        ajaxReturnData(1,'请求成功！',$data);
+    }
+
+    public function setCommision()
+    {
+        $mem = get_member_account();
+        $_GP = $this->request;
+        if(empty($_GP['commision'])){
+            ajaxReturnData(0,'佣金不能为空');
+        }
+        if(!is_numeric($_GP['commision'])){
+            ajaxReturnData(0,'佣金必须是数字');
+        }
+        mysqld_update('store_extend_info',array('commision'=>$_GP['commision']),array('store_id'=>$mem['store_sts_id']));
+        ajaxReturnData(1,'操作成功！');
+    }
+
     /**
      * 查看退货地址
      *   */

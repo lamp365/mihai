@@ -144,4 +144,121 @@ class order extends base {
     }
     ajaxReturnData(1,'订单获取成功',$order);
   }
+
+  // 申请售后
+  public function create_refund()
+  {
+    $_GP = $this->request;
+    $member = get_member_account(true, true);
+    if (empty($member['openid'])) {
+      ajaxReturnData(0,'用户信息获取失败');
+    }
+
+    $order_good_id = intval($_GP['order_good_id']);
+    if (empty($order_good_id)) {
+      ajaxReturnData(0,'订单商品ID为空');
+    }
+    $refund_type = intval($_GP['refund_type']);
+    if (empty($refund_type)) {
+      ajaxReturnData(0,'售后类型为空');
+    }
+
+    $order_good = mysqld_select("SELECT * FROM ".table('shop_order_goods')." WHERE id=".$order_good_id);
+    if (empty($order_good)) {
+      ajaxReturnData(0,'订单商品获取失败');
+    }
+    if (intval($order_good['status']) != 0 AND intval($order_good['status']) != -1) {
+      ajaxReturnData(0,'该商品已在售后流程中');
+    }
+
+    $af_ary = array();
+    $af_ary['order_goods_id'] = $order_good_id;
+    // 售后原因
+    if (empty($_GP['reason'])) {
+      ajaxReturnData(0,'售后原因不能为空');
+    }
+    $af_ary['reason'] = $_GP['reason'];
+    // 说明
+    if (!empty($_GP['description'])) {
+      $af_ary['description'] = $_GP['description'];
+    }
+    if (!empty($_GP['evidence_pic'])) {
+      $af_ary['evidence_pic'] = $_GP['evidence_pic'];
+    }
+    $af_ary['createtime'] = time();
+    $af_ary['modifiedtime'] = time();
+
+    if ($refund_type == 1) {
+      // 退款退货
+      if (intval($order_good['isreback']) == 0) {
+        ajaxReturnData(0,'该商品不支持7天退换');
+      }else{
+        if ((intval($order_good['createtime'])+(24*60*60*7))<time()) {
+          ajaxReturnData(0,'该商品已超过7天退换期');
+        }
+      }
+      if (empty($_GP['refund_price'])) {
+        ajaxReturnData(0,'售后金额不能为空');
+      }
+      $rf_price = FormatMoney((float)$_GP['refund_price']);
+      $rf_total = intval($_GP['refund_total'] ? $_GP['refund_total'] : 1);
+      if ($rf_total > intval($order_good['total'])) {
+        ajaxReturnData(0,'数量超过上限');
+      }
+      if (($rf_price*$rf_total)>($order_good['price']*$rf_total)) {
+        ajaxReturnData(0,'金额超过上限');
+      }
+      $af_ary['refund_price'] = $rf_price;
+      $af_ary['refund_num'] = $rf_total;
+    }elseif ($refund_type == 2) {
+      // 换货
+      $rf_total = intval($_GP['refund_total'] ? $_GP['refund_total'] : 1);
+      if ($rf_total > intval($order_good['total'])) {
+        ajaxReturnData(0,'数量超过上限');
+      }
+      $af_ary['refund_num'] = $rf_total;
+    }elseif ($refund_type == 3) {
+      // 仅退款
+      if (empty($_GP['refund_price'])) {
+        ajaxReturnData(0,'售后金额不能为空');
+      }
+      $rf_price = FormatMoney((float)$_GP['refund_price']);
+      if ($rf_price>($order_good['price']*intval($order_good['total']))) {
+        ajaxReturnData(0,'金额超过上限');
+      }
+      $af_ary['refund_price'] = $rf_price;
+    }else{
+      ajaxReturnData(0,'售后类型错误');
+    }
+
+    // 创建售后申请
+    mysqld_insert('aftersales', $af_ary);
+    $after_id = mysqld_insertid();
+
+    // 生成售后记录
+    $log_ary = array();
+    $log_ary['aftersales_id'] = $after_id;
+    $log_ary['order_goods_id'] = $order_good_id;
+    $log_ary['status'] = 1;
+    if ($refund_type == 1) {
+        $t_type = '退款退货';
+    }elseif ($refund_type == 2) {
+        $t_type = '换货';
+    }elseif ($refund_type == 3) {
+        $t_type = '仅退款';
+    }
+    $log_ary['title'] = "买家发起了".$t_type."申请";
+    $log_ary['content'] = serialize($af_ary);
+    $log_ary['createtime'] = time();
+    $log_ary['type'] = 2;
+
+    // 创建售后记录
+    mysqld_insert('aftersales_log', $log_ary);
+
+    // 更新订单商品状态
+    mysqld_update('shop_order_goods',array('status'=>1,'type'=>$refund_type),array('id'=>$order_good_id));
+
+    ajaxReturnData(1,'申请售后成功');
+  }
+
 }

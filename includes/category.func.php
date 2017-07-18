@@ -366,3 +366,89 @@ function getCategoryById($id){
         }
     }
 }
+//根据商品id，判读是否需要删掉缓存，是的话删掉缓存
+function isDelMemcache($dishid){
+    if (!$dishid) return false;
+    //根据店铺找行业名称
+    $ShopDishModel = new \model\shop_dish_model();
+    $table1 = $ShopDishModel->table_name;
+    $table2 = 'shop_goods';
+    
+    $where1 = " a.status=1 and a.store_count > 0 and a.gid > 0 and a.id=$dishid ";
+    
+    $sql = "SELECT a.sts_id,b.pcate,b.ccate, b.industry_p2_id from ".table($table1)." AS a LEFT JOIN ".table($table2)." AS b ON a.gid = b.id where ".$where1;
+    $res = $ShopDishModel->fetch($sql);
+    if ($res){
+        $sql = "select a.sts_province,a.sts_city,a.sts_region,b.level_type from ".table('store_shop')." as a left join ".table('store_shop_level')." as b on a.sts_shop_level=b.rank_level where a.sts_id = {$res['sts_id']}";
+        $return = $ShopDishModel->fetch($sql);
+        if ($return){
+            $regionModel = new \model\region_model();
+            switch ($return['level_type']){
+                case 1:
+                    //区代理,删除该区域的（ 行业===》一级栏目id   一级栏目===》二级栏目id）
+                    $connect = $return['sts_region'];
+                    $key = md5("industry_memcache_category1_".$connect."_".$res['industry_p2_id']);
+                    $key1 = md5("category1_memcache_category2_".$connect."_".$res['pcate']);
+                    $key_time = md5("industry_memcache_category1_".$connect."_".$res['industry_p2_id']."_time");
+                    deleteMemCache($key);
+                    deleteMemCache($key1);
+                    deleteMemCache($key_time);
+                    break;
+                case 2:
+                    //市代理 删除该市及市下的区的（ 行业===》一级栏目id   一级栏目===》二级栏目id）
+                    //删除市的。。。。。。缓存
+                    $sts_city = $return['sts_city'];
+                    $key = md5("industry_memcache_category1_".$sts_city."_".$res['industry_p2_id']);
+                    $key1 = md5("category1_memcache_category2_".$sts_city."_".$res['pcate']);
+                    $key_time = md5("industry_memcache_category1_".$sts_city."_".$res['industry_p2_id']."_time");
+                    deleteMemCache($key);
+                    deleteMemCache($key1);
+                    deleteMemCache($key_time);
+                    
+                    //删除该市下的区的 。。。。。。缓存
+                    $regionP = $regionModel->getOneRegion(array('region_code'=>$sts_city));
+                    $regionAll = $regionModel->getAllRegion(array('region_id'=>$regionP['parent_id']));
+                    if ($regionAll){
+                        foreach ($regionAll as $v){
+                            $key = md5("industry_memcache_category1_".$v['region_code']."_".$res['industry_p2_id']);
+                            $key1 = md5("category1_memcache_category2_".$v['region_code']."_".$res['pcate']);
+                            $key_time = md5("industry_memcache_category1_".$v['region_code']."_".$res['industry_p2_id']."_time");
+                            deleteMemCache($key);
+                            deleteMemCache($key1);
+                            deleteMemCache($key_time);
+                        }
+                    }
+                    break;
+                case 3:
+                    //省代理 删除该省地下的所有市所有地区的（ 行业===》一级栏目id   一级栏目===》二级栏目id）缓存
+                    $sts_province = $return['sts_province'];
+                    $regionP = $regionModel->getOneRegion(array('region_code'=>$sts_province));
+                    $regionSityAll = $regionModel->getAllRegion(array('region_id'=>$regionP['parent_id']));
+                    if ($regionSityAll){
+                        foreach ($regionSityAll as $v){
+                            //删除该省下的市的。。。。。。缓存
+                            $key = md5("industry_memcache_category1_".$v['region_code']."_".$res['industry_p2_id']);
+                            $key1 = md5("category1_memcache_category2_".$v['region_code']."_".$res['pcate']);
+                            $key_time = md5("industry_memcache_category1_".$v['region_code']."_".$res['industry_p2_id']."_time");
+                            deleteMemCache($key);
+                            deleteMemCache($key1);
+                            deleteMemCache($key_time);
+                            $regionAreaAll = $regionModel->getAllRegion(array('region_id'=>$v['parent_id']));
+                            if ($regionAreaAll){
+                                //删除该省下的所有区的......缓存
+                                foreach ($regionSityAll as $v){
+                                    $key = md5("industry_memcache_category1_".$v['region_code']."_".$res['industry_p2_id']);
+                                    $key1 = md5("category1_memcache_category2_".$v['region_code']."_".$res['pcate']);
+                                    $key_time = md5("industry_memcache_category1_".$v['region_code']."_".$res['industry_p2_id']."_time");
+                                    deleteMemCache($key);
+                                    deleteMemCache($key1);
+                                    deleteMemCache($key_time);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+}

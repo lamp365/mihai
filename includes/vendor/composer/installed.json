@@ -239,5 +239,37 @@
             }
         ],
         "description": "weixin mini program helper"
+    },
+    {
+        "name": "yinjiang/qqlogin",
+        "version": "v1.1.2",
+        "version_normalized": "1.1.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ychmrx/qqlogin.git",
+            "reference": "d1bfe37d59428877985a6b7b194d94d9a691720f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/ychmrx/qqlogin/d1bfe37d59428877985a6b7b194d94d9a691720f.zip",
+            "reference": "d1bfe37d59428877985a6b7b194d94d9a691720f",
+            "shasum": ""
+        },
+        "time": "2017-03-30T03:25:51+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Yinjiang\\Qqlogin\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Yinjiang",
+                "email": "php361@php361.cn"
+            }
+        ],
+        "description": "Qq login for web"
     }
 ]

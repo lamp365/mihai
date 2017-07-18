@@ -11,6 +11,10 @@ class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
         array (
             'wlt\\wxmini\\' => 11,
         ),
+        'Y' => 
+        array (
+            'Yinjiang\\Qqlogin\\' => 17,
+        ),
         'Q' => 
         array (
             'QL\\Ext\\Lib\\' => 11,
@@ -23,6 +27,10 @@ class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
         'wlt\\wxmini\\' => 
         array (
             0 => __DIR__ . '/..' . '/xxh/think-wxminihelper/src',
+        ),
+        'Yinjiang\\Qqlogin\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yinjiang/qqlogin/src',
         ),
         'QL\\Ext\\Lib\\' => 
         array (

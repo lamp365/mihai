@@ -197,11 +197,25 @@
 										</div>
 									</div>
 									
-									      <div class="form-group">
+								    <div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > 冻结资金:</label>
+
+										<div class="col-sm-9">
+											<?php  echo FormatMoney($member['freeze_gold'],0);?>
+										</div>
+									</div>
+	 								<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-left" > 未结算资金:</label>
+
+										<div class="col-sm-9">
+											<?php  echo FormatMoney($member['wait_glod'],0);?>
+										</div>
+									</div>
+	 								<div class="form-group">
 										<label class="col-sm-2 control-label no-padding-left" > 余额:</label>
 
 										<div class="col-sm-9">
-														<?php  echo $member['gold'];?>
+														<?php  echo FormatMoney($member['gold'],0);?>
 										</div>
 									</div>
 									

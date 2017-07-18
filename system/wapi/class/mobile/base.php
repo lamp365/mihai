@@ -29,11 +29,9 @@ class base extends \common\controller\basecontroller
      */
     public function check_devicecode()
     {
-        if($_GET['do'] == 'login' && $_GET['name'] == 'wapi'){
-            //登陆操作 没有设备号  小程序中的设备号是服务端在登录通信后生成的
-            return '';
-        }
-        if($_GET['do'] == 'shopindex' && $_GET['name'] == 'wapi'){
+        $allow_model = array('login','shopindex','good_detail');
+        if(in_array($_GET['do'],$allow_model)){
+           //允许直接通过！
             return '';
         }
         $fromURL= $_SERVER['HTTP_REFERER'];
@@ -56,7 +54,8 @@ class base extends \common\controller\basecontroller
         }
 
         if(empty($memInfo)){
-            ajaxReturnData(0,'用户已过期,刷新页面再试！');
+            //让前端重新登录
+            ajaxReturnData(5,'用户已过期,刷新页面再试！');
         }
     }
 }

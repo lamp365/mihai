@@ -17,6 +17,7 @@ class subaccount extends base
     private $weixin         = array();
     private $shopDish       = array();
     private $shopCate       = array();
+    private $storeShopService = array();
 
     public function __construct()
     {
@@ -28,19 +29,39 @@ class subaccount extends base
         $this->shopDish         = new \service\seller\ShopDishService();
         $this->shopCate         = new \service\seller\ShopStoreCategoryService();
         $this->rulerservice     = new \service\seller\shoprulerService();
+        $this->storeShopService = new \service\seller\StoreShopService();
         parent::__construct();
         
     }
     
     public function index(){
-
+        
+    }
+    
+    //获取商户信息
+    public function shopInfo(){
+        $redata = array();
+        $redata['memberInfo'] = $this->storeShopService->getShopStore($this->memberInfo['openid'],'sts_avatar as avatar,freeze_money as freeze_gold,recharge_money as gold,sts_name as nickname,sts_openid as openid,totalearn_monry as account_fee');
+        
+        $redata['memberInfo']['gold']    = FormatMoney($redata['memberInfo']['gold'],2);
+        $redata['memberInfo']['freeze_gold']    = FormatMoney($redata['memberInfo']['freeze_gold'],2);
+        $redata['memberInfo']['recharge_money'] = FormatMoney($redata['memberInfo']['recharge_money'],2);
+        
+        //二维码
+        $result = $this->weixin->get_xcx_erweima($this->memberInfo['openid'],2);
+        $redata['memberInfo']['qrcode'] = $result['message'];
+        
+        //获取总收益
+        $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
+        
+        ajaxReturnData(1,'获取成功',$redata);
     }
     
     //子账户信息
     public function subaccountInfo(){
         $data   = $this->request;
         $redata = array();
-        $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($this->memberInfo['openid'],'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar');
+        $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($this->memberInfo['openid'],'gold,freeze_gold,wait_glod,realname,nickname,avatar,totalearn_gold as account_fee');
         
         $redata['memberInfo']['openid'] = $this->memberInfo['openid'];
         $redata['memberInfo']['gold'] = FormatMoney($redata['memberInfo']['gold'],2);
@@ -48,12 +69,11 @@ class subaccount extends base
         $redata['memberInfo']['wait_glod'] = FormatMoney($redata['memberInfo']['wait_glod'],2);
         $redata['memberInfo']['outgold'] = FormatMoney($redata['memberInfo']['outgold'],2);
         
-        $result = $this->weixin->get_xcx_erweima($this->memberInfo['openid'],2);
         
         //获取总收益
-        $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($this->memberInfo['openid']);
         $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
+        $result = $this->weixin->get_xcx_erweima($this->memberInfo['openid'],2);
         $redata['memberInfo']['qrcode'] = $result['message'];
         
         ajaxReturnData(1,'获取成功',$redata);
@@ -63,9 +83,8 @@ class subaccount extends base
     public function subaccountList(){
         $data   = $this->request;
         $redata = array();
-        
         /*
-        //通过关系表获取对应的用户数据
+        //通过关系表获取对应的用户数据 1
         $memberInfos = $this->subAccountObj->getChildMember($this->memberInfo['openid'],'openid');
         $openidStr = '';
         foreach($memberInfos as $v){
@@ -76,8 +95,13 @@ class subaccount extends base
         $redata['subaccountList'] = $this->subAccountObj->getMemberInfoPage($openidStr, 'avatar,createtime,fee,nickname');
         */
         
+        /*
         //获取下属的所有用户数据
         $subaccountList = $this->subAccountObj->getProfitList($this->memberInfo['openid'],$data,'fee,friend_openid,createtime');
+        
+        $redata['total'] = $subaccountList['total'];
+        unset($subaccountList['total']);
+        
         $friend_openids = '';
         foreach($subaccountList as $v){
             $friend_openids .= '"'.$v['friend_openid'].'",';
@@ -96,17 +120,30 @@ class subaccount extends base
         foreach($subaccountList as $k=>$v){
             @$subaccountList[$k]['nickname'] = $memberArr[$v['friend_openid']]['nickname']!=''?$memberArr[$v['friend_openid']]['nickname']:'';
             @$subaccountList[$k]['avatar']   = $memberArr[$v['friend_openid']]['avatar']!=''?$memberArr[$v['friend_openid']]['avatar']:'';
-            
-            @$subaccountList[$k]['createtime'] = $v['createtime'];
+            @$subaccountList[$k]['fee'] = FormatMoney($v['fee'],2);
             
                 //unset($subaccountList[$k]['friend_openid']);
             
         }
-        $redata['total'] = $subaccountList['total'];
-        unset($subaccountList['total']);
+        
         $subaccountList = array_values($subaccountList);
         $redata['subaccountList'] = $subaccountList;
+        */
         
+        //获取下属所有用户数
+	if($this->memberInfo['store_is_admin'] == 1){
+	    $storeType = 1;
+	}
+	else{
+	    $storeType = 2;
+	}
+        $memberChildData = $this->subAccountObj->getStoreChildrenMember($this->memberInfo['store_sts_id'],$this->memberInfo['openid'],$storeType,$fields='b.nickname,b.avatar,a.createtime,m_openid');
+
+        foreach($memberChildData['subaccountList'] as $k=>$v){
+            //分别统计金额
+	    $memberChildData['subaccountList'][$k]['fee'] = FormatMoney($this->subAccountObj->getMemberCommMoney(1,$v['m_openid']),2);
+        }
+	$redata = $memberChildData;
         ajaxReturnData(1,'获取成功',$redata);
         
     }
@@ -117,8 +154,7 @@ class subaccount extends base
         $data   = $this->request;
         $redata = array();
         $openid = $data['openid']!=''?$data['openid']:$this->memberInfo['openid'];
-        $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($openid,'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar,is_sub_status,openid');
-        
+        $redata['memberInfo'] = $this->subAccountObj->getMemberinfo($openid,'gold,freeze_gold,wait_glod,realname,nickname,avatar,is_sub_status,openid,totalearn_gold as account_fee');
         $redata['memberInfo']['openid'] = $redata['memberInfo']['openid'];
         $redata['memberInfo']['is_sub_status'] = intval($redata['memberInfo']['is_sub_status']);
         $redata['memberInfo']['gold'] = FormatMoney($redata['memberInfo']['gold'],2);
@@ -129,7 +165,6 @@ class subaccount extends base
         $result = $this->weixin->get_xcx_erweima($openid,2);
         
         //获取总收益
-        $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($openid);
         $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
         //结算列表
@@ -183,38 +218,37 @@ class subaccount extends base
     public function subAccountAdmin(){
         $data   = $this->request;
         $redata = array();
-        $redata['memberInfo']           = $this->subAccountObj->getMemberinfo($this->memberInfo['openid'],'gold,freeze_gold,wait_glod,outgold,realname,nickname,avatar');
-        $redata['memberInfo']['gold']   = FormatMoney($redata['memberInfo']['gold'],2);
-        $redata['memberInfo']['freeze_gold'] = FormatMoney($redata['memberInfo']['freeze_gold'],2);
-        $redata['memberInfo']['wait_glod']   = FormatMoney($redata['memberInfo']['wait_glod'],2);
-        $redata['memberInfo']['outgold']     = FormatMoney($redata['memberInfo']['outgold'],2);
+        //
+        $redata['memberInfo'] = $this->storeShopService->getShopStore($this->memberInfo['openid'],'sts_avatar as avatar,freeze_money as freeze_gold,recharge_money as gold,sts_name as nickname,sts_openid as openid,totalearn_monry as account_fee');
+        
+        $redata['memberInfo']['freeze_gold']    = FormatMoney($redata['memberInfo']['freeze_gold'],2);
+        $redata['memberInfo']['gold'] = FormatMoney($redata['memberInfo']['gold'],2);
         
         //获取总收益
-        $redata['memberInfo']['account_fee'] = $this->subAccountObj->getTotalIncome($this->memberInfo['openid']);
         $redata['memberInfo']['account_fee'] = FormatMoney($redata['memberInfo']['account_fee'],2);
         
         //判断下属用户
         $rsData = $this->subAccountObj->getParentIdAccount($data,$this->memberInfo['openid']);
 
-        $rsTotalData = $this->subAccountObj->getParentIdAccountCount($this->memberInfo['openid'],'count(0) as countnum');
+        $rsTotalData = $this->subAccountObj->getStoreChildrenCount($this->memberInfo['store_sts_id'],'count(0) as countnum');
         $redata['memberInfo']['total'] = $rsTotalData['countnum'];
+        
         $i = 0;
         $redata['memberInfo']['memberData'] = array();
         foreach($rsData as $k=>$v){
-            $redata['memberInfo']['memberData'][$i]           = $this->subAccountObj->getMemberinfo($v['openid'],'wait_glod,nickname,realname,avatar,is_sub_status');
+            $redata['memberInfo']['memberData'][$i]           = $this->subAccountObj->getMemberinfo($v['openid'],'wait_glod,nickname,realname,avatar,is_sub_status,totalearn_gold as account_fee');
             $redata['memberInfo']['memberData'][$i]['openid']       = $v['openid'];
             $redata['memberInfo']['memberData'][$i]['nickname']     = $redata['memberInfo']['memberData'][$i]['nickname'];
             $redata['memberInfo']['memberData'][$i]['realname']     = $redata['memberInfo']['memberData'][$i]['realname'];
             $redata['memberInfo']['memberData'][$i]['avatar']       = $redata['memberInfo']['memberData'][$i]['avatar'];
 
             //获取总收益 //
-            $redata['memberInfo']['memberData'][$i]['account_fee'] = $this->subAccountObj->getTotalIncome($v['openid']);
             $redata['memberInfo']['memberData'][$i]['account_fee'] = FormatMoney($redata['memberInfo']['memberData'][$i]['account_fee'],2);
             $redata['memberInfo']['memberData'][$i]['wait_glod']   = FormatMoney($redata['memberInfo']['memberData'][$i]['wait_glod'],2);
             
             //统计所属用户数
             $memberCount = array();
-            $memberCount = $this->subAccountObj->getChildrenCount($openid, $sts_id,'count(0) as total');
+            $memberCount = $this->subAccountObj->getChildrenCount($v['openid'], $v['sts_id'],'count(0) as total');
             $redata['memberInfo']['memberData'][$i]['memberTotal'] = intval($memberCount['total']);
             
             $i++;
@@ -244,10 +278,9 @@ class subaccount extends base
     public function settlementMoney(){
         $data   = $this->request;
         
-
         //测试数据开始
         //$data['receivablesOpenid'] = '2017070716755';
-        //$data['money']             = '10';
+        //$data['money']             = '100';
         //$data['remark']            = '微信付款';
         //测试数据结束
         
@@ -260,15 +293,6 @@ class subaccount extends base
             ajaxReturnData(0,'该用户不是您的子账户');
         }
         
-        //要结算的金额 付款账户 收款账户
-        //获取用户信息
-        $memberInfo = $this->subAccountObj->getMemberInfos($this->memberInfo['openid'], 'gold');
-
-        if($memberInfo[0]['gold'] < $data['money'])
-        {
-            ajaxReturnData(0,'账户金额不足');
-        }
-        
         $memberReceivablesInfo = $this->subAccountObj->getMemberInfos($data['receivablesOpenid'], 'wait_glod');
         if($data['money'] > $memberReceivablesInfo[0]['wait_glod'])
         {
@@ -277,11 +301,8 @@ class subaccount extends base
         
         //payment 付 Receivables 收
         //扣除付款金额
-        $upPaymentStatus = $this->subAccountObj->upPaymentMemberInfos($this->memberInfo['openid'], $data['money']);
         
         $upReceivablesStatus = $this->subAccountObj->upReceivablesMemberInfos($data['receivablesOpenid'], $data['money']);
-        
-        $receivablesMemberInfo = $this->subAccountObj->getMemberinfo($data['receivablesOpenid'],'gold');
 
         //日志记录
         $insertData = array();
@@ -289,7 +310,6 @@ class subaccount extends base
         $insertData['payee_openid']         = $data['receivablesOpenid'];
         $insertData['fee']                  = $data['money'];
         $insertData['sts_id']               = $this->memberInfo['store_sts_id'];
-        $insertData['account_fee']          = $receivablesMemberInfo['gold'];
         $insertData['remark']               = $data['remark'];
         $insertData = $this->subAccountObj->addPayLog($insertData);
         

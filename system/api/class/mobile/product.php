@@ -718,13 +718,27 @@ class product extends base
         $dishData['marketprice']   = FormatMoney($dishData['marketprice'], 2);
         $dishData['productprice']  = FormatMoney($dishData['productprice'], 2);
         $dishData['history_lower_prcie']  = FormatMoney($dishData['history_lower_prcie'], 2);
-
+        
         $picData                   = $this->shopPic->getDishPic($data['dish_id']);
         
         //通过品牌ID获取品牌名称
         $brand = $this->shopBrand->getBrandName($dishData['brand']);
         $dishData['brand_id'] = intval($brand['id']);
         $dishData['brand_name'] = $brand['brand']!=''?$brand['brand']:'';
+        
+        
+        //activity_type 1
+        switch($dishData['activity_type']){
+            case 1:
+                $dishData['activity_name'] = '折扣专区';
+                break;
+            case 2:
+                $dishData['activity_name'] = '店长推荐';
+                break;
+            default :
+                $dishData['activity_name'] = '两者都不是';
+                break;
+        }
         
         if($picData['picurl'] != '')
         {
@@ -2253,7 +2267,7 @@ class product extends base
         $redata = array();
         
         //测试数据开始
-        //$data['ac_dish_id'] = 90;
+        //$data['ac_dish_id'] = 1;
         //测试数据结束
         if($data['ac_dish_id'] <= 0)
         {
@@ -2282,7 +2296,10 @@ class product extends base
             $redata['dish']['store_count']   = $dishData['store_count'];
             //审核
             $redata['dish']['ac_dish_status']       = $acti_dish['ac_dish_status'];
-            $redata['dish']['ac_dish_deti']         = $acti_dish['ac_dish_deti']!=''?$acti_dish['ac_dish_deti']:'';     
+            
+            //获取审核的详情
+            $auListData = $this->ltcObj->getAulist($acti_dish['ac_dish_id'], 'au_reason as ac_dish_deti');
+            $redata['dish']['ac_dish_deti']         = $auListData['ac_dish_deti']!=''?$auListData['ac_dish_deti']:'';     
             
             //获取参与的活动和时段信息 ac_action_id ac_area_id
             $listInfo = $this->ltcObj->getActiInfo($acti_dish['ac_action_id'],'ac_title',0);

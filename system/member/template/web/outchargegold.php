@@ -13,7 +13,7 @@
 			<thead >
 				<tr>
 					<th style="width:50px;">序号</th>
-					<th style="width:100px;">昵称</th>
+					<th style="width:100px;">手续费</th>
 					<th style="width:120px;">手机号</th>
 					<th style="width:130px;">商家</th>
 					<th >账户类型</th>

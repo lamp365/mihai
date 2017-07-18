@@ -119,17 +119,15 @@ function member_gold($openid, $fee, $type, $remark,$update=1,$orderid='')
  * @param $remark
  * @return bool
  */
-function member_commisiongold($openid, $friend_openid,$fee, $type, $orderid='',$remark='')
+function  member_commisiongold($openid, $friend_openid,$fee, $type, $orderid='',$remark='')
 {
     $add_arr = array('3');
     $use_arr = array('-3');
     $member = member_get($openid);
 
-    if(empty($remark)){
-        $friend_member =  member_get($friend_openid,'nickname');
-        $remark = Lang('LOG_BUYORDER_TIP','paylog',$friend_member['nickname']);
-    }
-
+    //获取推荐人所属店铺
+    $recommend_sts = mysqld_select("select sts_id from ".table('member_store_relation')." where openid='{$openid}'");
+    $sts_id = intval($recommend_sts['sts_id']);
     if (! empty($member['openid'])) {
         if (! is_numeric($fee)) {
             return false;
@@ -148,7 +146,9 @@ function member_commisiongold($openid, $friend_openid,$fee, $type, $orderid='',$
             'createtime'    => TIMESTAMP,
             'openid'        => $openid,
             'friend_openid' => $friend_openid,
+            'sts_id'        => $sts_id,
             'orderid'       => $orderid,
+            'to_who'        => 2,
         );
         //以免扣掉时为负数
         $freeze_gold  = max(0,$member['freeze_gold'] + $fee);
@@ -217,7 +217,7 @@ function store_credit($sts_id, $fee, $type, $remark)
  * 有些地方不一定要更新店铺金额  预留 update参数
  * @return bool
  */
-function store_gold($sts_id, $fee, $type, $remark,$update=1)
+function store_gold($sts_id, $fee, $type,$remark,$orderid='',$update=1)
 {
     $add_arr = array('1');
     $use_arr = array('-1');
@@ -238,6 +238,7 @@ function store_gold($sts_id, $fee, $type, $remark,$update=1)
             'fee'    => $fee,
             'account_fee' => $store['recharge_money'] + $fee,
             'createtime' => TIMESTAMP,
+            'orderid'    => intval($orderid),
             'sts_id'     => $sts_id,
         );
         $recharge_money  = max(0,$store['recharge_money'] + $fee);
@@ -263,7 +264,7 @@ function store_gold($sts_id, $fee, $type, $remark,$update=1)
  * 有些地方不一定要更新店铺金额  预留 update参数
  * @return bool
  */
-function store_freeze_gold($sts_id, $fee, $type, $remark,$update=1)
+function store_freeze_gold($sts_id, $fee, $type, $orderid='',$remark,$update=1)
 {
     $add_arr = array('1');
     $use_arr = array('-1');
@@ -284,6 +285,7 @@ function store_freeze_gold($sts_id, $fee, $type, $remark,$update=1)
             'fee'    => $fee,
             'account_fee' => $store['freeze_money'] + $fee,
             'createtime' => TIMESTAMP,
+            'orderid'    => intval($orderid),
             'sts_id'     => $sts_id,
         );
         $freeze_money  = max(0,$store['freeze_money'] + $fee);
@@ -312,7 +314,7 @@ function store_commisiongold($sts_id, $friend_openid,$fee, $type, $orderid='',$r
 {
     $add_arr = array('3');
     $use_arr = array('-3');
-    $store   = member_store_getById($sts_id,'freeze_money');
+    $store   = member_store_getById($sts_id,'freeze_money,sts_openid');
 
     if (! empty($store)) {
         if (! is_numeric($fee)) {
@@ -331,8 +333,10 @@ function store_commisiongold($sts_id, $friend_openid,$fee, $type, $orderid='',$r
             'account_fee'   => $store['freeze_money'] + $fee,
             'createtime'    => TIMESTAMP,
             'sts_id'        => $sts_id,
+            'openid'        => $store['sts_openid'],
             'friend_openid' => $friend_openid,
-            'orderid'       => $orderid,
+            'orderid'       => intval($orderid),
+            'to_who'        => 1,
         );
         //以免扣掉时为负数
         $freeze_money  = max(0,$store['freeze_money'] + $fee);
@@ -358,7 +362,7 @@ function get_paylog_icon($data){
         $sql = "select d.thumb as icon  from ".table('shop_order_goods')." as g left join ".table('shop_dish')." as d";
         $sql.= " on d.id = g.dishid where g.orderid={$data['orderid']}";
         $dish = mysqld_select($sql);
-        $icon = download_pic($dish['icon'],100,100);
+        $icon = $dish['icon'];
     }else{
         $icon = WEBSITE_ROOT."themes/default/__RESOURCE__/recouse/images/paylog_money.png";
     }

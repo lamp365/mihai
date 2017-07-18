@@ -11,7 +11,6 @@ class good_detail extends base {
     $dish_id = intval($_GP['dish_id']);
     $is_contont = $_GP['is_contont'];
     $member = get_member_account(true, false);
-
     if (empty($dish_id)) {
       ajaxReturnData(0,'商品ID不能为空');
     }
@@ -24,7 +23,9 @@ class good_detail extends base {
 
     // 现在进行中的活动
     $now_ac = getCurrentAct();
-    $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']." AND ac_action_id=".$now_ac['ac_id']);
+    if (!empty($now_ac)) {
+      $activity_dish = mysqld_select("SELECT * FROM ".table('activity_dish')." WHERE ac_shop_dish=".$good['id']." AND ac_action_id=".$now_ac['ac_id']);
+    }
     // if (empty($activity_dish)) {
     //   ajaxReturnData(0,'该商品不在限时购之内');
     // }

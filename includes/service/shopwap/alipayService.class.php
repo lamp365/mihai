@@ -10,12 +10,12 @@ namespace service\shopwap;
 class alipayService extends \service\publicService
 {
     private $alipay_config = array(
-        'sign_type'     => 'MD5',
-        'input_charset' => 'utf-8',
-        'cacert'        => '',
-        'transport'     => 'http',
-        'payment_type'  => '1',
-        'service'       => 'create_direct_pay_by_user',
+        'sign_type'      => 'MD5',
+        '_input_charset' => 'utf-8',
+        'cacert'         => '',
+        'transport'      => 'http',
+        'payment_type'   => '1',
+        'service'        => 'create_direct_pay_by_user',
         'anti_phishing_key' => '',
         'exter_invoke_ip'   => '',
     );
@@ -91,8 +91,10 @@ class alipayService extends \service\publicService
         if ($result = $alipayNotify->verifyNotify()) {
             //验签成功
             if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
+                // 订单号   5_6_1204454545   5和6表示订单id  最后一个是为了表示唯一性，加的一个标识  只能32位数以内
                 $ordersn     = $_POST['out_trade_no'];
                 $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
+                array_pop($ordersn_arr);
                 //成功后的后续操作/**
                 // 支付完毕 处理账单 佣金提成，卖家所得，平台费率
                 $settings = globaSetting();
@@ -153,8 +155,10 @@ class alipayService extends \service\publicService
         if ($verify_result) {
             //验证成功
             if ($_GET['trade_status'] == 'TRADE_FINISHED' || $_GET['trade_status'] == 'TRADE_SUCCESS') {
+                // 订单号   5_6_1204454545   5和6表示订单id  最后一个是为了表示唯一性，加的一个标识  只能32位数以内
                 $ordersn     = $_GET['out_trade_no'];
                 $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
+                array_pop($ordersn_arr);
                 //成功后的后续操作/**
                 // 支付完毕 处理账单 佣金提成，卖家所得，平台费率
                 $settings = globaSetting();

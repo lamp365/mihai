@@ -1,0 +1,17 @@
+{
+  "name": "yinjiang/qqlogin",
+  "description": "Qq login for web",
+  "authors": [
+    {
+      "name": "Yinjiang",
+      "email": "php361@php361.cn"
+    }
+  ],
+  "minimum-stability": "beta",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Yinjiang\\Qqlogin\\": "src/"
+    }
+  }
+}
