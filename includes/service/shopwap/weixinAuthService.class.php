@@ -169,7 +169,12 @@ class weixinAuthService extends \service\publicService
 
     public function weixinUserLogin($userInfo)
     {
-        $info = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$userInfo['unionid']}'");
+        $userInfo['weixin_openid'] = $userInfo['openid'];
+        if(!empty($userInfo['unionid']))
+            $info = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$userInfo['unionid']}'");
+        else
+            $info = mysqld_select("select * from ".table('weixin_wxfans')." where weixin_openid='{$userInfo['weixin_openid']}'");
+
         if(empty($info)){
             //插入
             $mem_openid  = date("YmdH",time()).rand(100,999);
@@ -178,7 +183,7 @@ class weixinAuthService extends \service\publicService
                 $mem_openid = date("YmdH",time()).rand(100,999);
             }
             $insert_data['openid'] = $mem_openid;
-            $insert_data['weixin_openid'] = $userInfo['openid'];
+            $insert_data['weixin_openid'] = $userInfo['weixin_openid'];
             $insert_data['follow']        = $userInfo['subscribe'];
             $insert_data['nickname']      = $userInfo['nickname'];
             $insert_data['avatar']        = $userInfo['headimgurl'];
@@ -213,12 +218,16 @@ class weixinAuthService extends \service\publicService
             $userInfo = $info;
         }
 
+        $old_member   = get_session_account();
+        $oldsessionid = $old_member['openid'] ?: get_sessionid();
+        integration_session_account($mem_data['openid'],$oldsessionid);
+
         //完成登录
         $_SESSION[MOBILE_ACCOUNT]       = $mem_data;
-        $_SESSION[MOBILE_WEIXIN_OPENID] = $userInfo['openid'];
+        $_SESSION[MOBILE_WEIXIN_OPENID] = $userInfo['weixin_openid'];
         $sessionAccount = array(
             'openid'         => $mem_data['openid'],
-            'weixin_openid'  => $userInfo['openid'],
+            'weixin_openid'  => $userInfo['weixin_openid'],
             'unionid'        => $userInfo['unionid']
         );
         $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;
