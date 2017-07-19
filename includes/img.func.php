@@ -212,3 +212,63 @@ function base64Toimg($base64_image_content){
 function getFullPicUrl($picurl){
     return WEBSITE_ROOT.$picurl;
 }
+
+
+ /**
+  * 图片合成
+  * @param $bigImgPath
+  * @param $qCodePath
+  * @param int $w_pos
+  * @param int $h_pos
+  */
+ function mergeImgs($bigImgPath,$qCodePath,$w_pos = 200,$h_pos = 300,$qr_w = '',$qr_h=''){
+     if(!empty($qr_w) || !empty($qr_h)){
+         //二维码裁减一下大小
+         $qCodePath  = download_pic($qCodePath,$qr_w,$qr_h);
+     }
+     $bigImg     = imagecreatefromstring(file_get_contents($bigImgPath));
+     $qCodeImg   = imagecreatefromstring(file_get_contents($qCodePath));
+
+
+     list($qCodeWidth, $qCodeHight, $qCodeType) = getimagesize($qCodePath);
+
+     imagecopy($bigImg, $qCodeImg, $w_pos, $h_pos, 0, 0, $qCodeWidth, $qCodeHight);
+
+     list($bigWidth, $bigHight, $bigType) = getimagesize($bigImgPath);
+
+     if(!is_dir('attachment/qcode')){
+         mkdirs('attachment/qcode');
+     }
+     $path = 'attachment/qcode/'.date('YmdHi',time()).uniqid();
+     switch ($bigType) {
+         //如果需要输出到页面显示，则加入head   前面不能有任何输出 和head
+         case 1: //gif
+//             header('Content-Type:image/gif');
+             $mergePath = $path.'.gif';
+             imagegif($bigImg,$mergePath);
+             break;
+         case 2: //jpg
+//             header('Content-Type:image/jpg');
+             $mergePath = $path.'.jpg';
+             imagejpeg($bigImg,$mergePath);
+             break;
+         case 3: //jpg
+//             header('Content-Type:image/png');
+             $mergePath = $path.'.png';
+             imagepng($bigImg,$mergePath);
+             break;
+         default:
+             $mergePath = '';
+             # code...
+             break;
+     }
+
+     imagedestroy($bigImg);
+     imagedestroy($qCodeImg);
+     $imgPathArr = explode('attachment',$qCodePath);
+     if(count($imgPathArr) == 2){
+         //说明缩小后的图片在本地上，删除掉无用
+         @unlink($qCodePath);
+     }
+     return WEBSITE_ROOT.$mergePath;
+ }
