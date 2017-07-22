@@ -33,7 +33,7 @@ class weixinAuthService extends \service\publicService
         if(strstr($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') == false){
             return '';
         }
-        if(!empty($_SESSION[MOBILE_WEIXIN_OPENID]) || !empty($_SESSION[MOBILE_SESSION_ACCOUNT]))
+        if(!empty($_SESSION[MOBILE_WEIXIN_OPENID]) && !empty($_SESSION[MOBILE_ACCOUNT]))
             return  $_SESSION[MOBILE_WEIXIN_OPENID];
         //通过code获得openid
         if (!isset($_GET['code'])){
