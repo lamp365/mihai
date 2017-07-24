@@ -1,4 +1,18 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
+<script type="text/javascript" src="<?php echo WEBSITE_ROOT;?>/themes/wap/__RESOURCE__/recouse/js/jquery.qrcode.min.js"></script>
+<style type="text/css">
+	.code{
+		display: none;
+		position: absolute;
+		top: 0;
+		left: -200px;
+	    border-radius: 4px;
+	    border: 1px solid #ececec;
+	    padding: 10px;
+	    background-color: #fff;
+	    z-index: 9;
+	}
+</style>
 <h3 class="header smaller lighter blue" style="display: inline-block;margin-right: 15px;">用户列表</h3> <a  class="btn btn-primary" href="<?php  echo create_url('site', array('name' => 'user','do' => 'user','op' => 'adduser'))?>" >新增用户</a>
 		<table class="table table-striped table-bordered table-hover">
 			<tbody>
@@ -40,10 +54,13 @@
 				<tr>
 					<td style="text-align:center;"><?php  echo $item['username'];?></td>
 					<td style="text-align:center;"><?php  echo getAdminRolers($item['id']);?></td>
-							<td style="text-align:center;">
-									<?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
+					<td style="text-align:center;"><?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
 					<td style="text-align:center;"><?php  echo $item['mobile'];?></td>
-						<td style="text-align:center;">
+					<td style="text-align:center;position:relative">
+						<div class="code"></div>
+						<?php  if($item['isAgent']) { ?>
+							<a class="btn btn-xs btn-info look-ewm" qrcode="<?php  echo $item['qrcode'];?>" href="javascript:;"><i class="icon-edit"></i>查看邀请码</a>
+						<?php  } ?>
 						<a class="btn btn-xs btn-info fenpei_rolers"  href="javascript:;"  data-uid="<?php echo $item['id'];?>"><i class="icon-edit"></i>分配角色</a>
 						<a class="btn btn-xs btn-info"  href="<?php  echo web_url('user', array('op'=>'changepwduser','id' => $item['id']))?>"><i class="icon-edit"></i>修改资料</a>&nbsp;&nbsp;
 						<a class="btn btn-xs btn-danger" href="<?php  echo web_url('user', array('op'=>'deleteuser','id' => $item['id']))?>" onclick="return confirm('此操作不可恢复，确认删除？');return false;"><i class="icon-edit"></i>&nbsp;删&nbsp;除&nbsp;</a>
@@ -99,5 +116,18 @@
 		var url = url+"&id="+id;
 		window.location.href=url;
 	}
+
+	$(".look-ewm").on("click",function(){
+		var qrcode = $(this).attr("qrcode");
+		$(".code").hide();
+		$(this).siblings(".code").show();
+		if($(this).siblings(".code").hasClass("addcode")){
+			return false;
+		}
+		$(this).siblings(".code").html("<img src='"+qrcode+"' />").addClass("addcode");
+	})
+	$(".code").on("click",function(){
+		$(this).hide();
+	})
 </script>
 <?php  include page('footer');?>

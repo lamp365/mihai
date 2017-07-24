@@ -6,10 +6,19 @@ namespace Composer\Autoload;
 
 class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
 {
+    public static $files = array (
+        '0f066c7cf996f26fedf8f5e90a916a95' => __DIR__ . '/..' . '/houdunwang/config/src/helper.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'w' => 
         array (
             'wlt\\wxmini\\' => 11,
+        ),
+        'h' => 
+        array (
+            'houdunwang\\image\\' => 17,
+            'houdunwang\\config\\' => 18,
         ),
         'Y' => 
         array (
@@ -27,6 +36,14 @@ class ComposerStaticInita03732d71b5d719fd173028dfd41b5c2
         'wlt\\wxmini\\' => 
         array (
             0 => __DIR__ . '/..' . '/xxh/think-wxminihelper/src',
+        ),
+        'houdunwang\\image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/houdunwang/image/src',
+        ),
+        'houdunwang\\config\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/houdunwang/config/src',
         ),
         'Yinjiang\\Qqlogin\\' => 
         array (

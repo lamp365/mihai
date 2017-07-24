@@ -136,15 +136,10 @@
 
 					}
 					?>
-						<?php  if($order['status'] == 2) { ?><span class="label label-warning">待收货</span><?php  } ?>
+						<?php  if($order['status'] == 2) { ?><span class="label label-warning">已发货</span><?php  } ?>
 						<?php  if($order['status'] == 3) { ?><span class="label label-success" >已完成</span><?php  } ?>
 						<?php  if($order['status'] == -1) { ?><span class="label label-success">已关闭</span><?php  } ?>
-						<?php  if($order['status'] == -2) { ?><span class="label label-danger">退款中</span><?php  } ?>
-						<?php  if($order['status'] == -3) { ?><span class="label label-danger">换货中</span><?php  } ?>
-						<?php  if($order['status'] == -4) { ?><span class="label label-danger">退货中</span><?php  } ?>
-						<?php  if($order['status'] == -5) { ?><span class="label label-success">已退货</span><?php  } ?>
-						<?php  if($order['status'] == -6) { ?><span class="label label-success">已退款</span><?php  } ?>
-						<?php  if($order['status'] == -7) { ?><span class="label label-success">付款审核</span><?php  } ?>
+						<?php  if($order['status'] == 1) { ?><span class="label label-danger">已付款</span><?php  } ?>
 				</td>
 			</tr>
 			<tr>
@@ -167,20 +162,24 @@
 				</td>
 				<th ><label for="">配送方式:</label></th>
 				<td >
-							<?php  echo $dispatchdata[$order['dispatch']]['dispatchname'];?>
+						<?php if ($order['is_dispatch'] == 1){
+						    echo $order['expresscom'];
+						}elseif ($order['is_dispatch'] ==2){
+						    echo "线下配送";
+						}?>
 				</td>
 			</tr>
 			<?php  if($order['hasbonus']>0) { ?>
 			<tr>
 				<th ><label for="">	优惠卷抵消金额：</label></th>
 				<td >
-						<?php  echo $order['bonusprice']?>
+						<?php  echo FormatMoney($order['bonusprice'],0);?>元
 				</td>
-				<th ><label for="">优惠卷编号：</label></th>
+				<th ><label for="">优惠卷名称：</label></th>
 				<td>
 				<?php  
 				foreach ($bonuslist as $bonus) {
-				echo $bonus['type_name']."(".$bonus['bonus_sn'].")<br/>";
+				echo $bonus['coupon_name']."(优惠券id:".$bonus['scmid'].")<br/>";
 			}?>
 				</td>
 			</tr>
@@ -249,34 +248,6 @@
 
 		</table>
 
-	<?php
-	if(!empty($order['retag'])){
-		$retag = json_decode($order['retag'],true);
-		if(!empty($retag['recoder'])){
-			$retagArr = explode(';',$retag['recoder']);
-
-	 ?>
-		<table class="table table-striped table-bordered table-hover" style="width: 60%">
-			<thead>
-			<tr>
-				<th>管理员</th>
-				<th>订单操作日志</th>
-				<th>操作时间</th>
-			</tr>
-			</thead>
-			<?php  foreach($retagArr as $onetag) {
-						echo '<tr>';
-						$onetagArr = explode('-',$onetag);
-						$admin = getAdminName($onetagArr[0]);
-						$time  = date("Y-m-d H:i:s",$onetagArr[2]);
-						echo "<td style='width:150px'>{$admin}</td><td>{$onetagArr[1]}</td><td style='width:200px'>{$time}</td>";
-						echo '</tr>';
-			       }
-			?>
-		</table>
-
-	<?php }} ?>
-
 
 
 <table class="table table-striped table-bordered table-hover">
@@ -319,17 +290,25 @@
 					   if($goods['order_type'] == 3 && $goods['order_status'] == 4)  echo "退款成功";
 					   if($goods['order_type'] == 3 && $goods['order_status'] == -1)  echo "退款审核驳回";
 					   if($goods['order_type'] == 3 && $goods['order_status'] == -2)  echo "买家撤销退款";
-
+					   if($goods['order_type'] == 2 && $goods['order_status'] == 1)  echo "换货申请中";
+					   if($goods['order_type'] == 2 && $goods['order_status'] == 2)  echo "换货审核通过";
+					   if($goods['order_type'] == 2 && $goods['order_status'] == 3)  echo "买家换货中";
+					   if($goods['order_type'] == 2 && $goods['order_status'] == 4)  echo "换货成功";
+					   if($goods['order_type'] == 2 && $goods['order_status'] == -1)  echo "换货审核驳回";
+					   if($goods['order_type'] == 2 && $goods['order_status'] == -2)  echo "买家撤销换货";
 					   ?>
 				     </span>
 				</td>
 				<td>
 					<?php
+					   //退款详情页面未处理
 						if($goods['order_type'] ==3){
 							$url = web_url('order',array('op'=>'aftersale_detail','order_good_id'=>$goods['order_id'],'type'=>'money','orderid'=>$order['id']));
+							$url = '#';
 							echo "<a href='{$url}' class='label label-warning'>退款详情</a>";
 						}else if($goods['order_type'] ==1){
 							$url = web_url('order',array('op'=>'aftersale_detail','order_good_id'=>$goods['order_id'],'type'=>'good','orderid'=>$order['id']));
+							$url = '#';
 							echo "<a href='{$url}' class='label label-warning'>退货详情</a>";
 						}else{
 							echo '无';

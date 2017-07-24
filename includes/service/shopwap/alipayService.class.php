@@ -96,10 +96,9 @@ class alipayService extends \service\publicService
                 $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
                 array_pop($ordersn_arr);
                 //成功后的后续操作/**
-                // 支付完毕 处理账单 佣金提成，卖家所得，平台费率
-                $settings = globaSetting();
+                // 支付完毕 处理账单 佣金提成，卖家所得，平台抽佣
                 foreach($ordersn_arr as $ordersn){
-                    paySuccessProcess($ordersn,$settings);
+                    paySuccessProcess($ordersn);
                 }
                 return true;
             }else{
@@ -160,10 +159,10 @@ class alipayService extends \service\publicService
                 $ordersn_arr = explode('_',$ordersn);   //多商家导致，可能有多个订单号
                 array_pop($ordersn_arr);
                 //成功后的后续操作/**
-                // 支付完毕 处理账单 佣金提成，卖家所得，平台费率
+                // 支付完毕 处理账单 佣金提成，卖家所得，平台抽佣
                 $settings = globaSetting();
                 foreach($ordersn_arr as $ordersn){
-                    paySuccessProcess($ordersn,$settings);
+                    paySuccessProcess($ordersn);
                 }
                 return true;
             } else {

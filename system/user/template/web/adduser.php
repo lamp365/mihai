@@ -45,7 +45,7 @@
 			margin-left: 10px;
 		}
 	</style>
- <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" >
+ <form action="" method="post" class="form-horizontal" enctype="multipart/form-data" onsubmit="return subCheck()" >
         <input type="hidden" name="id" value="<?php  echo $adv['id'];?>" />
 	 <h3 class="header smaller lighter blue">新增用户</h3>
 	 <div class="alert alert-info" style="margin:10px 0; width:auto;">
@@ -95,7 +95,7 @@
 		 <label class="col-sm-2 control-label no-padding-left" for="form-field-1"> <font color="red">*</font>角色分组：</label>
 
 		 <div class="col-sm-3">
-			 <select  name="rolers_id" class="form-control" >
+			 <select  name="rolers_id" class="form-control rolers_id" >
 				 <option value="0">选择角色分组</option>
 				 <?php
 				 foreach($all_rolers as $one){
@@ -165,4 +165,14 @@
 			}
 		}
 	})
+	function subCheck(){
+		var rolers_id = $(".rolers_id").val();
+		if(rolers_id==1){
+			if($(".mobile-input").val()==""){
+				alert("请填写手机号");
+				return false
+			}
+		}
+		
+	}
 </script>

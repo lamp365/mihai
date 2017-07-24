@@ -4,7 +4,7 @@
 		<input type="hidden" name="id" class="col-xs-10 col-sm-2" value="<?php echo $fansindex_menu['id'];?>" />
 		<input type="hidden" name="menu_type" class="col-xs-10 col-sm-2" value="fansindex" />
       <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 图标</label>
+										<label class="col-sm-1 control-label no-padding-left" > 图标</label>
 
 										<div class="col-sm-9">
 							                            <div class="fileupload fileupload-new" data-provides="fileupload">
@@ -23,7 +23,7 @@
 									</div>
 		
 		 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 名称</label>
+										<label class="col-sm-1 control-label no-padding-left" > 名称</label>
 
 										<div class="col-sm-9">
 													<input type="text" name="tname" class="col-xs-10 col-sm-2" value="<?php echo $fansindex_menu['tname'];?>" />
@@ -33,7 +33,7 @@
 								
 		
 				 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 链接</label>
+										<label class="col-sm-1 control-label no-padding-left" > 链接</label>
 
 										<div class="col-sm-9">
 																   		<span id="urltr2" >
@@ -47,7 +47,7 @@
 									</div>
 
 									<div class="form-group">
-		<label class="col-sm-2 control-label no-padding-left"> 说明</label>
+		<label class="col-sm-1 control-label no-padding-left"> 说明</label>
 
 		<div class="col-sm-9">
 			<textarea style="height: 150px; margin: 0px; width: 379px;" id="remark" name="remark" cols="50"><?php echo $fansindex_menu['remark'];?></textarea>
@@ -55,7 +55,7 @@
 	</div>
 		
 										 <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 排序</label>
+										<label class="col-sm-1 control-label no-padding-left" > 排序</label>
 
 										<div class="col-sm-9">
 													<input type="text" name="torder" class="col-xs-10 col-sm-2" value="<?php echo $fansindex_menu['torder'];?>" />
@@ -64,26 +64,26 @@
 									</div>
 
 									<div class="form-group">
-											<label class="col-sm-2 control-label no-padding-left" > WAP:</label>
+											<label class="col-sm-1 control-label no-padding-left" > WAP:</label>
 											<div class="checkbox-div">
 												<input type="checkbox" name="wap" class="wap" <?php if($fansindex_menu['wap_use']=='1'){echo 'checked="checked"';}?>>
 											</div>
 									</div>
 									<div class="form-group">
-											<label class="col-sm-2 control-label no-padding-left" > WEB:</label>
+											<label class="col-sm-1 control-label no-padding-left" > WEB:</label>
 											<div class="checkbox-div">
 												<input type="checkbox" name="web" class="web" <?php if($fansindex_menu['web_use']=='1'){echo 'checked="checked"';}?>>
 											</div>
 										</div>
 									<div class="form-group">
-											<label class="col-sm-2 control-label no-padding-left" > APP:</label>
+											<label class="col-sm-1 control-label no-padding-left" > APP:</label>
 											<div class="checkbox-div">
 												<input type="checkbox" name="app" class="app" <?php if($fansindex_menu['app_use']=='1'){echo 'checked="checked"';}?>>
 											</div>
 									</div>
 									
 												  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" for="form-field-1"> </label>
+										<label class="col-sm-1 control-label no-padding-left" for="form-field-1"> </label>
 
 										<div class="col-sm-9">
 										<input name="submit" type="submit" value=" 提 交 " class="btn btn-info"/>

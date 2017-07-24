@@ -171,10 +171,8 @@ function update_order_status($id, $status) {
     	mysqld_query("UPDATE ".table('shop_order')." SET status=3,completetime=".time()." WHERE id=".$id);
 		if($order['price']>0)
 		{
-			$setting = globaSetting();
-			//商家所得去除费率 以及佣金  冻结资金转余额 退款要扣掉
-			$pay_rate    = intval($setting['pay_rate'])/100;
-			$store_money = intval($order['price'] - $pay_rate*$order['price'] - $order['store_earn_price']);  //单位是分
+			//商家所得去除抽佣 以及佣金  冻结资金转余额 退款要扣掉
+			$store_money = intval($order['price'] - $order['plate_money'] - $order['store_earn_price']);  //单位是分
 			$store = member_store_getById($order['sts_id'],'freeze_money,recharge_money,totalearn_monry');
 			$freeze_money    = max(0,$store['freeze_money'] - $store_money);  //冻结扣除
 			$recharge_money  = $store['recharge_money'] + $store_money;       //余额添加
@@ -225,7 +223,7 @@ function update_order_status($id, $status) {
  * 费率是总支付中抽的 那么去除费率后，剩下的就是 商家所得
  * 商家会自行看到佣金提成，会自己打款给推广用户
  */
-function paySuccessProcess($orderid,$setting)
+function paySuccessProcess($orderid)
 {
 	$order   = mysqld_select("SELECT * FROM " . table('shop_order') . " WHERE id=:orderid", array(':orderid'=>$orderid));
 	if(empty($order['id'])) {
@@ -243,16 +241,15 @@ function paySuccessProcess($orderid,$setting)
 		$mark = LANG('LOG_SHOPBUY_TIP','paylog');  //现金支付
 		member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
 
-		//商家所得去除费率 以及 去除 佣金部分  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
-		$pay_rate    = intval($setting['pay_rate'])/100;
-		$store_money = intval($order['price'] - $pay_rate*$order['price'] - $order['store_earn_price']);  //单位是分
+		//商家所得去平台抽佣 以及 去除 佣金部分  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
+		$store_money = intval($order['price'] - $order['plate_money'] - $order['store_earn_price']);  //单位是分
 		if($order['store_earn_price'] > 0)
 			$mark = LANG('LOG_SHOPBUY_HASCOMM_TIP_SELLER','paylog');   //商品收入已扣佣金
 		else
 			$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');           //商品收入
 		store_freeze_gold($order['sts_id'],$store_money,1,$order['id'],$mark);
 	}else{
-		//没有实付金额 则不用扣除费率
+		//没有实付金额
 		//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
 		$mark = LANG('LOG_BALANCE_TIP','paylog');  //使用其他金额抵用
 		member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
@@ -285,7 +282,7 @@ function paySuccessProcess($orderid,$setting)
  * 费率是总支付中抽的 那么去除费率后，剩下的就是 商家所得
  * 商家会自行看到佣金提成，会自己打款给推广用户
  */
-function returnProcess($odgid,$setting)
+function returnProcess($odgid)
 {
     $odginfo   = mysqld_select("SELECT * FROM " . table('shop_order_goods') . " WHERE id=:odgid", array(':odgid'=>$odgid));
     if(empty($odginfo['id'])) {
@@ -298,7 +295,7 @@ function returnProcess($odgid,$setting)
     $aftersales = mysqld_select("SELECT * FROM " . table('aftersales') . " WHERE order_goods_id=:order_goods_id", array(':order_goods_id'=>$odgid));
 	/**
 	 * 1、退款后的金额  买家添加金额 记录账单
-	 * 2、退款后的金额 商品的对应商家 扣除金额 记录账单
+	 * 2、退款后的金额 商品的对应商家 扣除金额 回收佣金 记录账单
 	 * 3、推荐人所属店铺按照 该商品的原来订单order_goods存的价格 乘以 佣金比例  扣除掉金额 记录账单
 	 * 4、推荐人按照 该商品的原来订单order_goods 存的价格 乘以 佣金比例  扣除掉金额 记录账单
 	 */
@@ -310,13 +307,18 @@ function returnProcess($odgid,$setting)
         $mark = LANG('LOG_SHOP_RETURN_TIP','paylog');  //现金支付
         member_gold($order['openid'],$aftersales['refund_price'],'1',$mark,0,$order['id']);
 
-        //商家所得去除费率 以及 去除 佣金部分  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
-        $pay_rate    = intval($setting['pay_rate'])/100;
-        $store_money = intval($aftersales['refund_price'] - $pay_rate*$aftersales['refund_price'] - $odginfo['store_earn_price']);  //单位是分
-		$mark        = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
+        //商家所得  减去退款的钱  直接用 订单应该收的钱 乘以退款数量 从冻结资金中移除
+		$store_money  = ($odginfo['price']-$odginfo['plate_money']-$odginfo['store_earn_price'])*$aftersales['refund_num'];
+		$order_price  = $odginfo['price'] * $aftersales['refund_num'];
+		$r_price      = 0;
+		if($aftersales['refund_price'] < $order_price){
+			//如果退款的钱，小于 物品的钱，则卖家不能以 物品价格全部扣
+			$r_price = $order_price - $aftersales['refund_price'];
+		}
+		$store_money = $store_money - $r_price;  //单位是分
+		$mark        = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');  //扣款的钱
 		store_freeze_gold($order['sts_id'],$store_money,-1,$order['id'],$mark);
     }else{
-        //没有实付金额 则不用扣除费率
         //卖家增加账单记录  增加一笔资金 不是真增加余额 只是记录账单，因为增加发生在第三方如支付宝
         $mark = LANG('LOG_SHOP_RETURN_TIP','paylog');  //使用其他金额抵用
         member_gold($order['openid'],$aftersales['refund_price'],'1',$mark,0,$order['id']);
@@ -330,13 +332,13 @@ function returnProcess($odgid,$setting)
 
     //退款时，推荐人所属的店铺 得到一笔冻结的推广佣金 要扣掉 
     if(!empty($order['recommend_sts_id']) && !empty($odginfo['store_earn_price'])){
-        $earn_price = $odginfo['store_earn_price']; //单位分
+        $earn_price = $odginfo['store_earn_price']*$aftersales['refund_num']; //单位分
         $remark     = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
         store_commisiongold($order['recommend_sts_id'],$order['openid'],$earn_price,-3,$order['id'],$remark);
     }
     //退款时，推荐人得到跟店铺 所承诺的 提成收入 冻结收入   要扣掉 
     if(!empty($order['recommend_openid']) && !empty($odginfo['member_earn_price'])){
-        $earn_price  = $odginfo['member_earn_price']; //单位分
+        $earn_price  = $odginfo['member_earn_price']*$aftersales['refund_num']; //单位分
         $remark      = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');
         //注意该方法的使用  推荐人要加入佣金，第一个参数是 推荐人的openid
         member_commisiongold($order['recommend_openid'],$order['openid'],$earn_price,-3,$order['id'],$remark);
@@ -957,6 +959,7 @@ function order_auto_close(){
 		}
 	}
 	file_put_contents($file,'请不要删除该文件，用于订单整站更新，防止并发处理');
+	@chmod($file,0777);
 }
 
 /**

@@ -205,7 +205,7 @@ class order extends base {
       if ($rf_total > intval($order_good['total'])) {
         ajaxReturnData(0,'数量超过上限');
       }
-      if (($rf_price*$rf_total)>($order_good['price']*$rf_total)) {
+      if ($rf_price>($order_good['price']*$rf_total)) {
         ajaxReturnData(0,'金额超过上限');
       }
       $af_ary['refund_price'] = $rf_price;

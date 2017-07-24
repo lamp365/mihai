@@ -30,7 +30,7 @@ class datareportService extends \service\publicService
         $store_money = FormatMoney($store_info['recharge_money'],0);
   
         //等待收货(已经支付 或者 已经发货的 )  的金额 与单数
-        $wait_order = mysqld_select("SELECT count(id) as order_num, sum(price) as price FROM ".table('shop_order')." WHERE sts_id={$sts_id} and (status = 1 or status =2)");
+        $wait_order = mysqld_select("SELECT count(id) as order_num, sum(price-store_earn_price-plate_money) as price FROM ".table('shop_order')." WHERE sts_id={$sts_id} and (status = 1 or status =2)");
         $wait_price = FormatMoney($wait_order['price'],0);
         return array(
             'store_money'  => $store_money,
@@ -132,12 +132,12 @@ class datareportService extends \service\publicService
                 break;
         }
         //获取收益 与已经支付订单量
-        $pay_info = mysqld_select("SELECT count(id) as order_num, sum(price) as price FROM ".table('shop_order')." WHERE sts_id={$sts_id} and status >= 1 and paytime >=".$s_time." and paytime<=".$e_time);
+        $pay_info = mysqld_select("SELECT count(id) as order_num, sum(price-store_earn_price-plate_money) as price FROM ".table('shop_order')." WHERE sts_id={$sts_id} and status >= 1 and paytime >=".$s_time." and paytime<=".$e_time);
         $money    = FormatMoney($pay_info['price'],0);
         $pay_num  = $pay_info['order_num'];
 
         //获取收益 与等待支付订单量
-        $wait_info  = mysqld_select("SELECT count(id) as order_num, sum(price) as price FROM ".table('shop_order')." WHERE sts_id={$sts_id} and status = 0 and paytime >=".$s_time." and paytime<=".$e_time);
+        $wait_info  = mysqld_select("SELECT count(id) as order_num, sum(price-store_earn_price-plate_money) as price FROM ".table('shop_order')." WHERE sts_id={$sts_id} and status = 0 and paytime >=".$s_time." and paytime<=".$e_time);
         $wait_money = FormatMoney($wait_info['price'],0);
         $wait_num   = $wait_info['order_num'];
         

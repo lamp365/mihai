@@ -42,5 +42,6 @@ return array(
     //退单
     'LOG_SHOP_RETURN_TIP'      =>'申请退单退还现金',
     'LOG_SHOPRETURN_TIP_SELLER'=>'买家退单扣除金额',
+    'LOG_SHOPRETURN_COM_TIP_SELLER'=>'买家退单已回收佣金所扣金额',
 
 );

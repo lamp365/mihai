@@ -9,6 +9,12 @@
 
 class Qrcodeimg
 {
+    /**
+     * @param $url 要生成的二维码包含的信息  一般是一串url地址
+     * @param string $logoUrl   是否需要一个logo
+     * @param string $name
+     * @return string
+     */
     public function getImgQcode($url,$logoUrl = '',$name='')
     {
         include_once 'phpqrcode/phpqrcode.php';

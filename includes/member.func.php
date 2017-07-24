@@ -103,7 +103,7 @@ function member_login($mobile, $pwd)
         ':mobile' => $mobile
     ));  
     if (! empty($member['openid'])) {
-        if ($member['status'] != 1) {
+        if ($member['status'] != 1 || $member['is_sub_status'] == 2) {
             //用户被禁用
             return - 1;
         }
@@ -293,6 +293,13 @@ function checkSellerLoginStatus(){
         }else{
             message( LANG('COMMON_PLEASE_LOGIN'), WEBSITE_ROOT, 'error');
         }
+    }else if($memInfo['is_ban'] == 2){
+        if( $_GET['name'] == 'api' ){
+            //2表示 app需要跳转登录的标记
+            ajaxReturnData(2,'该店铺已经被禁用' );
+        }else{
+            message('该店铺已经被禁用', WEBSITE_ROOT, 'error');
+        }
     }else if($memInfo['member_type'] != 2 || empty($store_info)){
         //如果不是卖家 强行进来
         if( $_GET['name'] == 'api' ){
@@ -407,14 +414,16 @@ function getAllAgent(){
  * @return bool
  * 是否是一个业务员管理员
  */
-function isAgentAdmin(){
-    $amdin_uid = $_SESSION['account']['id'];
+function isAgentAdmin($uid = ''){
+    $amdin_uid = $uid ?: $_SESSION['account']['id'];
     $info = mysqld_select("select rolers_id from ".table('rolers_relation')." where uid={$amdin_uid}");
     if(empty($info)){  //说明还没分配过
         return false;
     }
+
     //获取业务员角色
     $rolers = mysqld_select("select id from ".table('rolers')." where isdelete=0 and type=1");
+
     if($rolers['id'] == $info['rolers_id']){
         //如果是该业务员
         return true;
@@ -442,6 +451,20 @@ function isSelfAgent($str,$uid){
     return $str;
 }
 
+//
+function getAgentQrcode($mobile){
+    if(empty($mobile)) return '';
+    $url     = "http://".$_SERVER['HTTP_HOST']."?mobile={$mobile}";
+    $qr_path = 'attachment/qcode/'.md5($mobile).'.png';
+    if(file_exists($qr_path)){
+        return WEBSITE_ROOT.$qr_path;
+    }else{
+        //生成该二维码
+        $qr = new \Qrcodeimg();
+        $qr_img = $qr->getImgQcode($url,'',$mobile);
+        return $qr_img;
+    }
+}
 /**
  * @return int
  * @return int

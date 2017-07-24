@@ -262,10 +262,10 @@ class weixinpayService extends \service\publicService
             array_pop($orderid_arr);   //去除最后一个
             $settings    = globaSetting();
             /**
-             * 支付完毕 处理账单 佣金提成，卖家所得，平台费率
+             * 支付完毕 处理账单 佣金提成，卖家所得，平台抽佣
              */
             foreach($orderid_arr as $orderid){
-                paySuccessProcess($orderid,$settings);
+                paySuccessProcess($orderid);
             }
         }
         return true;
@@ -296,10 +296,10 @@ class weixinpayService extends \service\publicService
             array_pop($ordersn_arr);
             $settings    = globaSetting();
             /**
-             * 支付完毕 处理账单 佣金提成，卖家所得，平台费率
+             * 支付完毕 处理账单 佣金提成，卖家所得，平台抽佣
              */
             foreach($ordersn_arr as $ordersn){
-                paySuccessProcess($ordersn,$settings);
+                paySuccessProcess($ordersn);
             }
         }
         return true;

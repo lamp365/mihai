@@ -82,26 +82,6 @@ function integration_session_account($loginid, $oldsessionid)
         'openid' => $oldsessionid
     ));
 
-
-
-    if (! empty($_SESSION[MOBILE_QQ_OPENID])) {
-        $qqlogin = mysqld_select("SELECT * FROM " . table('thirdlogin') . " WHERE enabled=1 and `code`='qq'");
-        if (! empty($qqlogin) && ! empty($qqlogin['id'])) {
-            $qqfans = mysqld_select("SELECT * FROM " . table('qq_qqfans') . " WHERE qq_openid=:qq_openid", array(
-                ':qq_openid' => $_SESSION[MOBILE_QQ_OPENID]
-            ));
-
-            if (! empty($qqfans['qq_openid'])) {
-                mysqld_update('qq_qqfans', array(
-                    'openid' => $loginid
-                ), array(
-                    'qq_openid' => $_SESSION[MOBILE_QQ_OPENID]
-                ));
-            }
-        }
-    }
-
-    // unset($_SESSION[MOBILE_SESSION_ACCOUNT]);
 }
 function get_session_account($useAccount = true)
 {

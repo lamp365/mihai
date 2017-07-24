@@ -473,12 +473,12 @@
 						<span id="selectimage" tabindex="-1" class="btn btn-primary"><i class="icon-plus"></i> 上传照片</span><span style="color:red;">
                     <input name="piclist" type="hidden" value="<?php  echo $item['piclist'];?>" /></span>
 						<div id="file_upload-queue" class="uploadify-queue"></div>
-						<ul class="ipost-list ui-sortable" id="fileList">
+						<ul class="ipost-list ui-sortable" id="fileList" style="padding:0">
 							<?php  if(is_array($piclist)) { foreach($piclist as $v_pic) { ?>
-								<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 125px;  height: 130px;">
+								<li class="imgbox" style="list-style-type:none;display:inline;  float: left;  position: relative;   width: 125px;  height: 130px;margin-right:0">
                         <span class="item_box">
                             <img src="<?php  echo$v_pic;?>" style="width:50px;height:50px">    </span>
-									<a  href="javascript:;" onclick="deletepic(this, 0);" title="删除">删除</a>
+									<a  href="javascript:;" style="display: block;margin-top: 8px;width: 30px;" onclick="deletepic(this, 0);" title="删除">删除</a>
 
 									<input type="hidden" value="<?php  echo $v_pic;?>" name="attachment-new[]">
 								</li>

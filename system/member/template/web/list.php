@@ -1,6 +1,9 @@
 <?php defined('SYSTEM_IN') or exit('Access Denied');?><?php  include page('header');?>
 <script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>/addons/common/laydate/laydate.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo RESOURCE_ROOT;?>/addons/common/webuploader/webuploader.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo RESOURCE_ROOT;?>addons/common/css/select2.min.css" />
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/select2.min.js"></script>
+<script type="text/javascript" src="<?php echo RESOURCE_ROOT;?>addons/common/js/zh-CN.js"></script>
 <script src="<?php echo RESOURCE_ROOT;?>/addons/common/webuploader/webuploader.js" type="text/javascript" charset="utf-8"></script>
 	<style>
 		.modal-body i{
@@ -73,6 +76,13 @@
 	.tab-up{
 		display: none;
 	}
+	.js-data-example-ajax{
+		padding-right: 20px;
+	}
+	.select2-container--default .select2-selection--single{
+		border-radius: 0;
+		height: 30px;
+	}
 	</style>
 <h3 class="header smaller lighter blue" style="display: inline-block">会员管理</h3> &nbsp; &nbsp;<a href="javascript:;" style="margin-top: -10px;" data-toggle="modal" data-target="#addModal" class="btn btn-md btn-info">添加会员</a>
 <form action="" method="get" class="form-horizontal form-table" enctype="multipart/form-data" >
@@ -115,8 +125,11 @@
 									<input name="weixinname" class="li-height" placeholder="微信昵称" type="text" value="<?php  echo $_GP['weixinname'];?>" />
 								</li>
 								<li>
+									<input type="hidden" value="<?php echo $storeInfo['sts_name'];?>" id="brand_name" name="brand_name">
 									<span class="left-span">店铺名称</span>
-									<input name="alipayname" class="li-height" placeholder="店铺名称" type="text" value="<?php  echo $_GP['alipayname'];?>" />
+									<select class="js-data-example-ajax" name="sts_id" id="sts_id">
+                                        <option value="<?php echo $storeInfo['id'];?>" selected="selected"><?php if ($storeInfo) {echo $storeInfo['sts_name'];}else{ echo "请选择店铺名称";}?></option>
+                                    </select>
 								</li>
 								<li style="display: none;"><span>按食堂筛选：</span></li>
 								<li style="display: none;">
@@ -177,6 +190,7 @@
 					</tbody>
 				</table>
 			</form>
+
 <h3 class="blue">	<span style="font-size:18px;"><strong>会员总数：<?php echo $total ?></strong></span></h3>
 		<ul class="nav nav-tabs" >
 	<li style="width:7%" <?php  if($vc == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'member','do'=>'list','status' => 1))?>">商城会员</a></li>
@@ -215,9 +229,7 @@
 						<?php  }?>
 									</td>
 										<td class="text-center">
-										<?php foreach($v['alipay'] as $alifans) { ?>
-						<?php echo $alifans['nickname']; ?><br/>
-						<?php  }?>
+										<?php echo $v['sts_name'];?>
 									</td>
 									<td class="text-center">
 										<?php  echo $v['realname'];?>
@@ -481,4 +493,60 @@ $(".td-price").on("click",function(){
 	}
 })
 	</script>
+	<script>
+		//select2下拉框初始化
+	    $(".js-data-example-ajax").select2({
+	        placeholder: '请选择店铺名称',
+	        language: 'zh-CN',
+	        allowClear: true,
+	        ajax: {
+	          url: "<?php echo web_url('list', array('op' => 'store_search'));?>",
+	          dataType: 'json',
+	          delay: 250,
+	          data: function (params) {
+	            return {
+	              sts_name: params.term,// search term
+	              page: params.page
+	            };
+	          },
+	          processResults: function (data, params) {
+	            params.page = params.page || 1;
+	            return {
+	              results: data.store,
+	              pagination: {
+	               more: (params.page * 30) < data.total_count
+	              }
+	            };
+	          },
+	          cache: true
+	        },
+	        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+			minimumInputLength: 1,
+			templateResult: formatRepoDefault, // omitted for brevity, see the source of this page
+        	templateSelection: formatRepoProvince // omitted for brevity, see the source of this page
+	    });
+		function formatRepoDefault(repo){
+			if($('#brand_name').val() != ''){
+                var markup = "<div>"+$('#brand_name').val()+"</div>";
+            }else{
+                var markup = "<div>请选择店铺名称</div>";
+            }
+	        return repo.sts_name;
+	    }
+
+	    function formatRepoProvince(repo) {
+	    	console.log($('#brand_name').val())
+	    	if(repo.sts_name != undefined){
+            	var markup = "<div>"+repo.sts_name+"</div>";
+        	}else{
+            	if($('#brand_name').val() != ''){
+
+                	var markup = "<div>"+$('#brand_name').val()+"</div>";
+	            }else{
+	                var markup = "<div>请选择店铺名称</div>";
+	            }
+        	}
+        	return markup;
+	    }
+			</script>
 <?php  include page('footer');?>

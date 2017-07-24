@@ -134,16 +134,20 @@
 							<?php  } ?>
 						</select>
 						</li>
+                                                <?php
+                                                  if($isAgentAdmin <= 0){
+                                                ?>
 						<li >
-						   <select name="type" >
-							   <option value="-1" selected>请选择业务员</option>
-							   <option value="0" <?php if($_GP['type']===0){?>selected="selected"<?php  } ?>>业务员1</option>
-                               <option value="1" <?php if($_GP['type']==1){?>selected="selected"<?php  } ?> >业务员2</option>
-                               <option value="2" <?php if($_GP['type']==2){?>selected="selected"<?php  } ?>>业务员3</option>
-                               <option value="3" <?php if($_GP['type']==3){?>selected="selected"<?php  } ?>>业务员4</option>
-						       <option value="4" <?php if($_GP['type']==4){?>selected="selected"<?php  } ?>>业务员5</option>
+						   <select name="invitation_code" >
+							    <option value="" >请选择业务员</option>
+                                                    <?php foreach($rsAgentData as $v){?>
+                                                            <option value="<?php echo $v['mobile'];?>" <?php if($_GP['invitation_code']==$v['mobile']){?>selected="selected"<?php  } ?>><?php echo $v['nickname'];?></option>
+                                                    <?php }?>
 						   </select>
 						</li>
+                                                <?php
+                                                  }
+                                                ?>
 						<li>
 							<span class="left-span">起始日期</span>
 							<input type="text" class="li-height" placeholder="起始日期" id="datepicker_timestart" name="timestart" value="<?php echo $_GP['timestart']; ?>" readonly="readonly" />
@@ -177,7 +181,7 @@
 						</li>
 						<li style="margin-left:10px;">
 						<button class="btn btn-primary btn-sm" ><i class="icon-search icon-large"></i> 搜索</button>
-						<span style="margin-left:10px;">商家数量：1086</span>
+						<span style="margin-left:10px;">商家数量：<?php echo $total;?></span>
 						</li>
 					</td>
 				</tr>
@@ -253,9 +257,21 @@
 					</td>
 					<td style="text-align:center;position:relative">
 						<div class="label label-success look-erweima" openid="<?php  echo $item['sts_openid'];?>">查看二维码</div>
-						<div class="erweima">
-							<img src="">
-						</div>
+                                                <div class="label label-success look-prohibit" openid="<?php  echo $item['sts_openid'];?>" is_ban="<?php  echo $item['is_ban'];?>" sts_id="<?php  echo $item['sts_id'];?>" style="cursor: pointer;">
+                                                    <?php
+                                                        if($item['is_ban'] > 1){
+                                                            echo '禁止';
+                                                        }
+                                                        else{
+                                                            echo '启用';
+                                                        }
+                                                    ?>
+                                                </div>
+                                                
+                                                <div class="label label-success look-logistics" openid="<?php  echo $item['sts_openid'];?>" style="margin-left: 5px;">
+                                                    <a href="<?php  echo web_url('photo_apply',array('op'=>'spec','sts_id'=>$item['sts_id']));?>" style="color:white;">物料管理</a>
+                                                </div>
+						<div class="erweima"><img src=""></div>
 					</td>
 				</tr>
 				<?php  } } ?>
@@ -263,6 +279,50 @@
 		</table>
 </form>
 		<?php  echo $pager;?>
+
+<!-- <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="<?php  echo web_url('photo_apply',array('op'=>'add_photo_apply_sub'));?>" method="post" class="form-horizontal" enctype="multipart/form-data" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">添加物料管理</h4>
+                </div>
+                <div class="modal-body" style="overflow: hidden">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email 小型</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                  </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Email 小型</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                  </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Email 小型</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                  </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Email 小型</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                  </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Email 小型</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                  </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Email 小型</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">确认添加</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div>
+    </form>
+</div> -->
+
 <script language="javascript">
  //全选
  function selectAll(){
@@ -273,6 +333,26 @@
 	}
  }
  $(function(){
+        $('.look-prohibit').on("click",function(){
+            var url    = "<?php echo web_url('store_shop_manage',array('op'=>'shopProhibit'));?>";
+            var openid = $(this).attr("openid");
+            var is_ban = parseInt($(this).attr("is_ban"));
+            var sts_id = parseInt($(this).attr("sts_id"));
+
+            var _this  = $(this);
+            $.post(url,{openid:openid,is_ban:is_ban,sts_id:sts_id},function(res){
+                if(is_ban == 1)
+                {
+                    _this.attr("is_ban",2);
+                    _this.html("禁用");
+                }
+                else{
+                    _this.attr("is_ban",1);
+                    _this.html("启用");
+                }
+            },"json");
+ 	});
+     
  	$(".small-img").on("click",function(){
  		var bigImg = $(this).find("img").attr("src");
  		$(".big-img-show").hide();

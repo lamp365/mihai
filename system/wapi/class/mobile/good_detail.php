@@ -355,6 +355,9 @@ class good_detail extends base {
       if (!empty($comment)) {
         $d['comment'] = $comment;
       }
+      if ($cp_rate == 5 OR $cp_rate == '5') {
+        $d['status'] = 3;
+      }
       $d['system'] = getSystemType();
       mysqld_insert('shop_goods_comment', $d);
       $comment_id = mysqld_insertid();

@@ -72,7 +72,7 @@
 							</select>
 						</li>
 						<li>
-							<select name="status" style="margin-right:10px;width: 100px; height:30px; line-height:28px; padding:2px 0">
+							<select name="status" style="margin-right:10px;height:30px; line-height:28px; padding:2px 0">
 								<option value="" selected>请选择上下架</option>
 								<option value="1" >上架中</option>
 								<option value="0" >已下架</option>

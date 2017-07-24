@@ -82,8 +82,8 @@ class login extends base {
      */
     public function grantFailLogin()
     {
-        //删除掉5天前 无用的数据
-        $time = time()-3600*24*5;
+        //删除掉1天前 无用的数据
+        $time = time()-3600*24;
         mysqld_query("delete from ".table('member')." where istemplate = 1 and createtime<{$time}");
         $device_code = get_sessionid();
         $data = array(

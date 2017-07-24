@@ -179,12 +179,12 @@ class accountService extends \service\publicService
 
         //今天的订单金额  订单量  已经下单的
         $today_zero    = strtotime(date("Y-m-d"));   //今天凌晨时间点
-        $today_order   = mysqld_select("SELECT count(id) as order_num, sum(price) as price FROM ".table('shop_order')." WHERE {$where} and status >= 1 and paytime >=".$today_zero);
+        $today_order   = mysqld_select("SELECT count(id) as order_num, sum(price-store_earn_price-plate_money) as price FROM ".table('shop_order')." WHERE {$where} and status >= 1 and paytime >=".$today_zero);
         $today_price   = FormatMoney($today_order['price'],0);   //钱转为元 页面显示一定要用元
 
         //昨天的订单金额 订单量  已经下单的
         $yestoday_zero  = strtotime(date("Y-m-d",strtotime("-1 day")));   //昨天的凌晨时间点
-        $yestoday_order = mysqld_select("SELECT count(id) as order_num, sum(price) as price FROM ".table('shop_order')." WHERE {$where} and status >= 1 and paytime >=".$yestoday_zero." and paytime<=".$today_zero);
+        $yestoday_order = mysqld_select("SELECT count(id) as order_num, sum(price-store_earn_price-plate_money) as price FROM ".table('shop_order')." WHERE {$where} and status >= 1 and paytime >=".$yestoday_zero." and paytime<=".$today_zero);
         $yestoday_price   = FormatMoney($yestoday_order['price'],0);    //钱转为元 页面显示一定要用元
 
         //今天昨天 访问量
@@ -254,7 +254,7 @@ class accountService extends \service\publicService
         foreach($time_arr as $time){
             $s_time = $time;
             $e_time = $time+3600*24;
-            $price_total = mysqld_select("SELECT sum(price) as price FROM ".table('shop_order')." WHERE {$where} and status >= 1 and paytime >=".$s_time." and paytime<=".$e_time);
+            $price_total = mysqld_select("SELECT sum(price-store_earn_price-plate_money) as price FROM ".table('shop_order')." WHERE {$where} and status >= 1 and paytime >=".$s_time." and paytime<=".$e_time);
             $price_data[] = FormatMoney($price_total['price'],0);
         }
         $y_data['销售额'] = $price_data;

@@ -292,10 +292,10 @@ class ordersService extends publicService
     public function getOrderGoodsDetail($orderid ,$type=1){
         if ($orderid){
             if ($type == 1){
-                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
+                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type,o.store_earn_price FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
                     . " WHERE o.orderid=:orderid and o.sts_id=:sts_id ",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
             }else {
-                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
+                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type,o.store_earn_price FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
                     . " WHERE o.orderid=:orderid and o.sts_id=:sts_id and o.type=4 and o.status=0 ",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
             }
             if ($goods){
@@ -308,11 +308,11 @@ class ordersService extends publicService
         return $goods;
     }
     /**
-     * 根据订单id，获取退单的信息
+     * 根据订单商品id，获取退单的信息
      * @param $orderid 订单id  */
-    public function afterReturn($orderid) {
-        if ($orderid){
-            $info = mysqld_select("SELECT * FROM ".table('aftersales')." where order_goods_id=:order_goods_id",array('order_goods_id'=>$orderid));
+    public function afterReturn($odgid) {
+        if ($odgid){
+            $info = mysqld_select("SELECT * FROM ".table('aftersales')." where order_goods_id=:order_goods_id",array('order_goods_id'=>$odgid));
             if (!empty($info)) return $info;
         }
     }

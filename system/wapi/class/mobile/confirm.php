@@ -69,9 +69,8 @@ class confirm extends base
 
         if($res_data['pay_total_money'] == 0){
             //不用发起微信支付 用户支付金额为0  直接程序完成支付
-            $seting = globaSetting();
             foreach($res_data['pay_orderid'] as $orderid){
-                paySuccessProcess($orderid,$seting);
+                paySuccessProcess($orderid);
             }
             //告诉前端不用向微信发起支付
             ajaxReturnData(1,'操作成功!',array('nopay'=>1));
@@ -126,8 +125,7 @@ class confirm extends base
         if(empty($orderid)){
             ajaxReturnData(0,'参数有误！');
         }
-        $set     = globaSetting();
-        paySuccessProcess($orderid,$set);
+        paySuccessProcess($orderid);
         ajaxReturnData(1,'已确认支付！');
     }
 }

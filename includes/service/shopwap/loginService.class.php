@@ -266,11 +266,13 @@ class loginService extends \service\publicService
             $store_info  = mysqld_select("select * from ".table('store_shop_apply')." where sts_openid={$member_info['openid']}");
             $store_id    = intval($store_info['sts_id']);
             $store_identity = mysqld_select("select * from ".table('store_shop_identity_apply')." where ssi_id={$store_id}");
+            $store_info['is_ban']        = 0;   //未审核之前没有禁用说法
             $member_info['store_sts_id'] = $store_info['sts_id'];
             $member_info['store_sts_name'] = $store_info['sts_name'];
             $member_info['store_sts_id'] = $store_info['sts_id'];
             $member_info['sts_category_p1_id'] = $store_info['sts_category_p1_id'];
             $member_info['sts_category_p2_id'] = $store_info['sts_category_p2_id'];
+
             if($member_info['openid'] == $store_info['sts_openid'])
                 $member_info['store_is_admin'] = 1;
             else
@@ -314,6 +316,11 @@ class loginService extends \service\publicService
             $store_info['sts_locate_add_1_text'] = $sts_locate_add_1['region_name'];
             $store_info['sts_locate_add_2_text'] = $sts_locate_add_2['region_name'];
             $store_info['sts_locate_add_3_text'] = $sts_locate_add_3['region_name'];
+
+            //返回店铺的等级
+            $level_info = array('rank_name'=>'');
+            $store_info['sts_shop_level'] && $level_info    = mysqld_select("select rank_name from ".table('store_shop_level')." where rank_level={$store_info['sts_shop_level']}");
+            $store_info['sts_shop_level_text']   = $level_info['rank_name'];
         }else{
             $store_info = new \stdClass();
         }

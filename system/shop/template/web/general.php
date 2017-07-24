@@ -6,7 +6,15 @@
 		width:100%;
 		}
 	.choose_kefu span{margin-right: 10px;cursor: pointer}
+	.nav-tabs li a{
+		padding: 6px 22px;
+	}
 	</style>
+	<ul class="nav nav-tabs" >
+		<li style="" <?php  if($_GP['op'] == 'general') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('store_shop_manage',  array('op' => 'general'))?>">常规设置</a></li>
+		<li style="" <?php  if($_GP['op'] == 'list_photo_apply') { ?> class="active"<?php  } ?>><a href="<?php  echo web_url('photo_apply',  array('op'=>'list_photo_apply'))?>">物料列表</a></li>
+	</ul><br/>
+
 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" >
 	   <div class="form-group">
 			<label class="col-sm-2 control-label no-padding-left" > 每评分可兑换积分：</label>
@@ -49,7 +57,7 @@
 		</div>
 
 		<div class="form-group">
-			<label class="col-sm-2 control-label no-padding-left" > 支付费率(%)：</label>
+			<label class="col-sm-2 control-label no-padding-left" > 平台抽佣(%)：</label>
 			<div class="col-sm-9">
 				  <input type="number" step="1" name="pay_rate" class="col-xs-10 col-sm-2" value="<?php if ($settings['pay_rate']) echo $settings['pay_rate'];?>" />
 			</div>

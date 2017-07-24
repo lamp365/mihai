@@ -19,7 +19,7 @@ class weixinloginService extends \service\publicService
         $this->return_url = "http://".$_SERVER['HTTP_HOST']."/thirdlogin/callback.html?oauth=weixin";
 
     }
-    //构造要请求的参数数组，无需改动
+    //构造要请求的参数数组，无需改动   snsapi_login需要微信开放平台，开通该权限，才可以pc端扫码登录
     public function login(){
         $url = "https://open.weixin.qq.com/connect/qrconnect?appid={$this->appid}&redirect_uri=".urlencode($this->return_url)."&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";
         echo("<script> top.location.href='" . $url . "'</script>");
@@ -117,7 +117,12 @@ class weixinloginService extends \service\publicService
 
     public function thirdUserLogin($userInfo)
     {
-        $info = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$userInfo['unionid']}'");
+        $userInfo['weixin_openid'] = $userInfo['openid'];
+        if(!empty($userInfo['unionid']))
+            $info = mysqld_select("select * from ".table('weixin_wxfans')." where unionid='{$userInfo['unionid']}'");
+        else
+            $info = mysqld_select("select * from ".table('weixin_wxfans')." where weixin_openid='{$userInfo['weixin_openid']}'");
+
         if(empty($info)){
             //插入
             $mem_openid  = date("YmdH",time()).rand(100,999);
@@ -126,7 +131,7 @@ class weixinloginService extends \service\publicService
                 $mem_openid = date("YmdH",time()).rand(100,999);
             }
             $insert_data['openid'] = $mem_openid;
-            $insert_data['weixin_openid'] = $userInfo['openid'];
+            $insert_data['weixin_openid'] = $userInfo['weixin_openid'];
             $insert_data['follow']        = $userInfo['subscribe'];
             $insert_data['nickname']      = $userInfo['nickname'];
             $insert_data['avatar']        = $userInfo['headimgurl'];
@@ -167,10 +172,10 @@ class weixinloginService extends \service\publicService
 
         //完成登录
         $_SESSION[MOBILE_ACCOUNT]       = $mem_data;
-        $_SESSION[MOBILE_WEIXIN_OPENID] = $userInfo['openid'];
+        $_SESSION[MOBILE_WEIXIN_OPENID] = $userInfo['weixin_openid'];
         $sessionAccount = array(
             'openid'         => $mem_data['openid'],
-            'weixin_openid'  => $userInfo['openid'],
+            'weixin_openid'  => $userInfo['weixin_openid'],
             'unionid'        => $userInfo['unionid']
         );
         $_SESSION[MOBILE_SESSION_ACCOUNT] = $sessionAccount;

@@ -320,269 +320,14 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
     border: 1px solid #ddd;
     text-align: left;
 }
+.nav-tabs li a{
+	padding: 6px 22px;
+}
 </style>
-<script>
-	function cleartime()
-	{
-	document.getElementById("begintime").value='';
-	document.getElementById("endtime").value='';
-	}
-	</script>
-	<h3 class="header smaller lighter blue">订单管理</h3>
-	
-<form action="" target="_blank">
-	<input type="hidden" name="name" value="addon16" />
-	<input type="hidden" name="do"  value="print" />
-	<input type="hidden" name="op"  value="normal_print" />
-		<input type="hidden" name="mod"  value="site" />
-	
-	<input type="hidden" name="print_orderid" id="print_orderid" value="" />
-		<div id="modal-normalprint" class="modal  fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">快递单打印</h4>
-      </div>
-      <div class="modal-body">
-      	
-      		  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 打印模板：</label>
 
-										<div class="col-sm-9">
-														<select name="print_modle_id"  >
-																	<?php  foreach($normal_order_list as $item){?>
-										<option value="<?php echo $item['id'];?>" data-name=""><?php echo $item['name'];?></option>
-										
-													<?php } ?>
-                                        </select>
-										</div>
-									</div>
-      	
-      	
-      	  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > </label>
+<h3 class="header smaller lighter blue">待打款订单</h3>
 
-										<div class="col-sm-9">
-      								</div>
-									</div>
-      </div>
-      <div class="modal-footer">
-      	<button type="submit" class="btn btn-primary" name="do_normal_print" value="yes">打印</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</form>
-
-<form action="" target="_blank">
-		<input type="hidden" name="name" value="addon16" />
-	<input type="hidden" name="do"  value="print" />
-	<input type="hidden" name="op"  value="express_print" />
-			<input type="hidden" name="mod"  value="site" />
-	<input type="hidden" name="print_express_orderid" id="print_express_orderid" value="" />
-		<div  id="modal-expressprint"  class="modal  fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">发货单打印</h4>
-      </div>
-      <div class="modal-body">
-      	
-      		  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > 打印模板：</label>
-
-										<div class="col-sm-9">
-														<select name="print_modle_id"  >
-																	<?php  foreach($express_order_list as $item){?>
-										<option value="<?php echo $item['id'];?>" data-name=""><?php echo $item['name'];?></option>
-										
-													<?php } ?>
-                                        </select>
-										</div>
-									</div>
-									
-									  <div class="form-group">
-										<label class="col-sm-2 control-label no-padding-left" > </label>
-
-										<div class="col-sm-9">
-      								</div>
-									</div>
-      </div>
-      <div class="modal-footer">
-      	<button type="submit" class="btn btn-primary" name="do_normal_print" value="yes">打印</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-</form>
-	
-
-<div class="panel with-nav-tabs panel-default">	
-    <div class="panel-heading">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab1primary" data-toggle="tab">基础查询</a></li>
-                <li><a href="#tab2primary" data-toggle="tab">批量退款
-                 </a></li>
-            </ul>
-    </div>
- 	<div class="panel-body">
-        <div class="tab-content">
-            <div class="tab-pane fade in active" id="tab1primary">
-            <form action="" method="get">
-			<input type="hidden" name="mod" value="site"/>
-			<input type="hidden" name="name" value="shop"/>
-			<input type="hidden" name="do" value="order"/>
-			<input type="hidden" name="op" value="display"/>
-			<input type="hidden" name="status" value="<?php  echo $_GP['status'];?>"/>
-            	<table  class="table dummy-table-list" align="center">
-					<tbody>
-						<tr>
-							<td>
-
-								<li>
-									<span class="left-span">订单编号</span>
-									<input class="li-height" name="ordersn" type="text" value="<?php  echo $_GP['ordersn'];?>" placeholder="订单编号"/> 
-								</li>	
-								<li >
-									<span class="left-span">起始日期</span>
-									<input class="li-height" name="begintime" id="begintime" type="text" value="<?php  echo $_GP['begintime'];?>" readonly="readonly"  placeholder="起始日期"/>
-								</li>	
-								<li> - </li>
-								<li>
-									<span class="left-span">终止日期</span>
-									<input class="li-height" id="endtime" name="endtime" type="text" value="<?php  echo $_GP['endtime'];?>" readonly="readonly" placeholder="终止日期" /> <a href="javascript:;" onclick="cleartime()">清空</a>
-								</li>
-									<script type="text/javascript">
-										laydate({
-										 	elem: '#begintime',
-										 	istime: true, 
-										 	event: 'click',
-										 	format: 'YYYY-MM-DD hh:mm:ss',
-										 	istoday: true, //是否显示今天
-										 	start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-										});
-										laydate({
-										 	elem: '#endtime',
-										 	istime: true, 
-										 	event: 'click',
-										 	format: 'YYYY-MM-DD hh:mm:ss',
-										 	istoday: true, //是否显示今天
-										 	start: laydate.now(0, 'YYYY-MM-DD hh:mm:ss')
-										});
-										laydate.skin("molv"); 
-									</script> 
-								<li>
-								<span class="left-span">支付方式</span>
-									<select  id="paytype" name="paytype" > 
-									 <option value="" <?php  echo empty($_GP['paytype'])?'selected':'';?>>--未选择--</option>
-									<?php  if(is_array($payments)) { foreach($payments as $item) { ?>
-					                 <option value="<?php  echo $item["code"];?>" <?php  echo $item['code']==$_GP['paytype']?'selected':'';?>><?php  echo $item['name']?></option>
-					                  	<?php  } } ?>
-				                   	</select>
-				                   
-								</li>
-								<li >
-									<span class="left-span">收货人姓名</span>
-									<input class="li-height" name="address_realname" type="text" placeholder="收货人姓名" value="<?php  echo $_GP['address_realname'];?>"/>
-								</li>
-								<li>	
-								<div class="btn-group">
-								  <input type="submit" name="submit" value=" 查 询 " class="btn btn-primary btn-sm">
-								  <button type="button" class="btn btn-primary dropdown-toggle add-more-btn btn-sm" data-toggle="dropdown">
-								    <span class="caret"></span>
-								    <span class="sr-only">Toggle Dropdown</span>
-								  </button>
-								</div>
-								</li>
-							</td>
-						</tr>
-						<tr class="hide-tr">
-							<td >
-								<li >
-									<span class="left-span">收货人手机</span>
-									<input class="li-height" name="mobile" type="text" value="<?php  echo $_GP['mobile'];?>" placeholder="收货人手机"/>
-								</li>
-								<li>
-									<span class="left-span">产品名称</span>
-									<input class="li-height" name="goodsname" type="text" value="<?php  echo $_GP['title'];?>" placeholder="产品名称"/>
-								</li>
-								<li >
-									<span class="left-span">导出模板</span>
-				                    <select name="template" class="li-height">
-				                          <option value="2" <?php  echo $_GP['template']==2?'selected':'';?>>彩虹快递发货</option>
-										  <option value="1" <?php  echo $_GP['template']==1?'selected':'';?>>平潭保税区发货</option>
-									</select>
-								</li>	
-								<li >
-									<span class="left-span">标记</span>
-				                  	<select name="tag" class="li-height">
-									  <option value="-1" selected>--未选择--</option>
-				                      <option value="0" <?php  echo $_GP['tag']==0?'selected':'';?>>灰色</option>
-									  <option value="1" <?php  echo $_GP['tag']==1?'selected':'';?>>红色</option>
-									  <option value="2" <?php  echo $_GP['tag']==2?'selected':'';?>>黄色</option>
-									  <option value="3" <?php  echo $_GP['tag']==3?'selected':'';?>>绿色</option>
-									  <option value="4" <?php  echo $_GP['tag']==4?'selected':'';?>>蓝色</option>
-									  <option value="5" <?php  echo $_GP['tag']==5?'selected':'';?>>紫色</option>
-								  	</select>			
-								</li>	
-								<li>
-									
-									<button type="submit" name="report" value="report" class="btn btn-warning btn-sm">导出excel</button>&nbsp;&nbsp;
-									<a  href="<?php echo $_SERVER['REQUEST_URI'] ?>&print=print" class="btn btn-info btn-sm" target="_blank">打印订单</a>
-								</li>
-							</td>
-
-						</tr>	
-					</tbody>
-				</table>
-				</form>
-            </div>
-            <div class="tab-pane fade" id="tab2primary">
-            	<form action="" method="post" class="form-horizontal refund_form" enctype="multipart/form-data">
-					<table  class="table dummy-table-list" align="center">
-					<tbody>
-						<tr>
-							<td>
-								<li style="line-height: 26px;">退款表单：</li>
-								<li >
-									<input style="line-height: 26px;" name="myxls" type="file"   value="" />
-								</li>
-								<li >
-									<button type="button" class="refund btn btn-md btn-warning btn-sm">批量退款</button>
-								</li>
-							</td>
-						</tr>	
-					</tbody>		
-					</table>
-				</form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-			
-
-			
 <h3 class="blue">	<span style="font-size:18px;"><strong>订单总数：<?php echo $total ?></strong></span></h3>
-			<ul class="nav nav-tabs" >
-	<li style="width:7%" <?php  if($status == -99) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -99))?>">全部</a></li>
-	<li style="width:7%" <?php  if($status == 0) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 0))?>">待付款</a></li>
-	<li style="width:7%" <?php  if($status == 1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 1))?>">待发货</a></li>
-	<li style="width:7%" <?php  if($status == 2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 2))?>">待收货</a></li>
-	<li style="width:7%" <?php  if($status == 3) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 3))?>">已完成</a></li>
-	<li style="width:7%" <?php  if($status == -1) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -1))?>">已关闭</a></li>
-		<li style="width:7%" <?php  if($status == -2) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -2))?>">退款中</a></li>
-		<li style="width:7%" <?php  if($status == -4) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -4))?>">退货中</a></li>
-		<li style="width:7%" <?php  if($status == 34) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 34))?>">退款完成</a></li>
-		<li style="width:7%" <?php  if($status == 14) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => 14))?>">退货完成</a></li>
-		<li style="width:7%" <?php  if($status == -321) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -321))?>">退款关闭</a></li>
-		<li style="width:7%" <?php  if($status == -121) { ?> class="active"<?php  } ?>><a href="<?php  echo create_url('site',  array('name' => 'shop','do'=>'order','op' => 'display', 'status' => -121))?>">退货关闭</a></li>
-			</ul>
 		
 
 <table class="table  table-bordered table-hover">
@@ -593,39 +338,37 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 					<th style="width:80px;text-align:center;">数量</th>
 					
 					<th style="width:100px;text-align:center;">售后状态</th>
-					<th style="width:50px;text-align:center;">买家</th>
-					<th style="width:150px;text-align:center;">下单时间</th>
-					<th style="width:80px;text-align:center;">支付方式</th>
+					<th style="width:95px;text-align:center;">收货人</th>
+					<th style="width:95px;text-align:center;">下单时间</th>
+					<th style="width:70px;text-align:center;">支付方式</th>
 					<th style="width:120px;text-align:center;" >订单状态</th>
-					<th style="width:150px;text-align:center;">实收款</th>     
+					<th style="width:150px;text-align:center;">退款金额</th>
 					<th style="width:50px;text-align:center;">标记</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php  if(is_array($list)) { foreach($list as $item) { ?>
-				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;<?php echo $item['relation_uid']>0?'<span class="label label-primary">一件代发</span>':''; ?><?php echo $item['relation_uid']>0?'&nbsp;&nbsp;<span class="label label-primary">业务员:'.$item['relation_name'].'</span>':''; ?></td></tr>
+				<?php  foreach($list_data as $item) { ?>
+				<tr><td align="left" colspan="10" style="background:#E9F8FF;margin-top:10px;"><?php  echo $item['ordersn'];?>&nbsp;&nbsp;[<?php echo $item['sts_name']; ?>]</td></tr>
 				<tr class="order_info">
 				    <td  colspan="4">
 					<?php 
-					    if ( is_array($item['goods']) ){
-                               foreach ( $item['goods'] as $goods ){
+					    if ( !empty($item['goods']) ){
+							$goods = $item['goods'];
 					?>
 					    <div class="items">
 						      <ul>
-							      <li class="img"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>"><img src="<?php echo getGoodsThumb($goods['gid']); ?>" height="40" /></a></li>
-								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['aid']))?>" class="tab_title"><?php echo $goods['title']; ?></a></div>
+							      <li class="img"><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['goodsid']))?>"><img src="<?php echo download_pic($goods['thumb'],40,40,2); ?>" height="40" /></a></li>
+								  <li class="title"><div><a target="_blank" href="<?php  echo mobile_url('detail', array('name'=>'shopwap','id' => $goods['goodsid']))?>" class="tab_title"><?php echo $goods['title']; ?></a></div>
 									  <div>
-										  <div class="name"><?php echo getGoodsProductPlace($goods['pcate']); ?></div>
-										  &nbsp;&nbsp;&nbsp;<span style="padding: 0 3px; border: 1px solid #fe3d53;color: #fe3d53;font-size: 10px;display:inline-block;"><?php  echo getGoodsCategory($goods['p1']);?></span>
 								  		  <?php if($item['isdraw'] == 1) { ?>
 										   &nbsp;&nbsp; <span class="label label-success">抽奖团</span>
 										  <?php }else{  ?>
 										   &nbsp;&nbsp; <span class="label label-success"><?php echo getGoodsType($goods['shop_type']); ?></span>
 										  <?php } ?>
 								      </div>
-									  <div class="sn">商家编码: <?php echo $goods['goodssn']; ?></div>
+									  <div class="sn">商品货号: <?php echo $goods['goodssn']; ?></div>
 								  </li>
-								  <li class="price"><?php echo $goods['orderprice']; ?></li>
+								  <li class="price"><?php echo FormatMoney($goods['orderprice'],0); ?></li>
 								  <li class="tot"><?php echo $goods['total']; ?></li>
 								  <li class="tot">
 									  <span class="shouhou_status">
@@ -641,20 +384,19 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 									   if($goods['order_type'] == 3 && $goods['order_status'] == 4)  echo getOrderAfterSlaseUrl("退款成功",$goods['order_id'],$item['id'],'money');
 									   if($goods['order_type'] == 3 && $goods['order_status'] == -1)  echo getOrderAfterSlaseUrl("退款审核驳回",$goods['order_id'],$item['id'],'money');
 									   if($goods['order_type'] == 3 && $goods['order_status'] == -2)  echo getOrderAfterSlaseUrl("买家撤销退款",$goods['order_id'],$item['id'],'money');
-
+										$order_goods_id = $goods['order_id'];
 								   ?>
 										  </span>
 								   </li>
 							  </ul>
 						</div>
-					<?php
-							   }
-					    }?>
+
+					<?php } ?>
 					</td>
 			       
-					<td align="center" valign="middle" style="vertical-align: middle;">
-				       <div>收货人：<?php  echo $item['address_realname'];?></div>
-					   <div>电话：<?php  echo $item['address_mobile'];?></div>
+					<td align="" valign="middle" style="vertical-align: middle;">
+				       <div>姓名: <?php  echo $item['address_realname'];?></div>
+					   <div>电话: <?php  echo $item['address_mobile'];?></div>
 					   <?php if ( !empty($item['remark'])){ ?>
 					   <div class="remark-btn-div">
 					   		<a class="remark-modal" type="button" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="<?php echo $item['remark']; ?>">
@@ -667,7 +409,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 					   
 					   <?php } ?>
 					</td>
-					<td align="center" valign="middle" style="vertical-align: middle;"><?php  echo date('Y-m-d H:i:s', $item['createtime'])?></td>
+					<td align="center" valign="middle" style="vertical-align: middle;"><?php  echo date('Y-m-d H:i', $item['createtime'])?></td>
 		           <td align="center" valign="middle" style="vertical-align: middle;">
 						<?php  if($item['paytypecode']=='bank'){?>	<span class="label label-danger" ><?php } ?><?php  echo $item['paytypename'];?><?php  if($item['paytypecode']=='bank'){?>	</span><?php } ?>
 					   <?php
@@ -675,7 +417,7 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 						   $retag = json_decode($item['retag'],true);
 						   if(!empty($retag['recoder'])){
 							   echo "<input type='hidden' value='{$item['retag']}' class='hide_order_log'/>";
-							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><span class='glyphicon glyphicon-pushpin show_order_log'></span></span>";
+							   echo "<span style='display:block;font-weight: bolder;color: #00D20D;cursor: pointer'><img src='images/tag.png' class='show_order_log' /></span>";
 						   }
 					   }
 					   ?>
@@ -704,28 +446,18 @@ width:100%;margin-bottom: 0;border: 1px solid #ddd;
 						<?php  if($item['status'] == -7) { ?><span class="label  label-success">付款审核</span><?php  } ?>
 						</div>
 						<div><a  href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看详情</a></div>
-						<div><a  href="<?php  echo web_url('order', array('op' => 'identity', 'id' => $item['id']))?>"><i class="icon-edit"></i>查看清关材料</a></div>
-						<?php  if($hasaddon11) { ?>
-						&nbsp;<a class="btn btn-xs btn-info"  href="<?php  echo create_url('site',array('name' => 'addon11','do' => 'orderPrint','orderid' =>$item['id']))?>"><i class="icon-print"></i>小票打印</a>
-						<?php  } ?>
-					<?php  if($hasaddon16) { ?>
-						&nbsp;<a class="btn btn-xs btn-info"   onclick="document.getElementById('print_orderid').value='<?php  echo $item['id']?>';$('#modal-normalprint').modal()" href="javascript:;">发货单打印</a>
-						&nbsp;
-						<a  class="btn btn-xs btn-info"  onclick="document.getElementById('print_express_orderid').value='<?php  echo $item['id']?>';$('#modal-expressprint').modal()" href="javascript:;">快递单打印</a>
-					<?php  } ?>
-				&nbsp;&nbsp;
-						</td>
-						<td align="center" valign="middle" style="vertical-align: middle;"><div><?php  echo $item['price']+$item['balance_sprice']+$item['freeorder_price'];?> 元 </div><?php  if($item['hasbonus']>0) { ?><div class="label label-success">惠<?php echo $item['bonusprice'];?></div><?php  }?><div style="font-size:10px;color:#999;">(含运费:<?php  echo $item['dispatchprice'];?> 元)</div><div style="font-size:10px;color:#999;">(含进口税:<?php  echo $item['taxprice'];?> 元)</div></td>
-						<td align="center" valign="middle" style="vertical-align: middle;">
-							<div style="position:relative">
-								<a class="tag-remark" type="button" href="<?php  echo web_url('order', array('op' => 'detail', 'id' => $item['id']))?>"><img src="images/btag<?php echo $item['tag']; ?>.png" /></a>
-								<div class="tag-remark-detail">
-									<?php if(!empty($item['retag'])){ $retag_json = json_decode($item['retag'],true); echo $retag_json['beizhu'];}else{ echo '没有标注信息'; } ?>
-								</div>
-							</div>
-						</td>
+<!--						<div><a  href="--><?php // echo web_url('order', array('op' => 'identity', 'id' => $item['id']))?><!--"><i class="icon-edit"></i>查看清关材料</a></div>-->
+					</td>
+					<td align="center" valign="middle" style="vertical-align: middle;">
+						<div><?php  echo $item['return_money'];?> 元 </div>
+					</td>
+					<td align="center" valign="middle" style="vertical-align: middle;">
+						<div style="position:relative">
+							<a href="<?php  echo web_url('order', array('op' => 'sure_return', 'ogood_id' => $order_goods_id))?>">确认打款</a>
+						</div>
+					</td>
 				</tr>
-				<?php  } } ?>
+				<?php  } ?>
 			</tbody>
 		</table>
 

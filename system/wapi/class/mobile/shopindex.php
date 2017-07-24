@@ -137,7 +137,6 @@ class shopindex extends base{
            if (!$this->checkIsData($ac_list_id,$ac_area_id,$jd,$wd,$pindex+1,$psize)) $status = 0;
        }
        $returndata = array('status'=>$status,'data'=>$data);
-       logRecord(var_export($returndata,1), 'shopindexDishSql');
        ajaxReturnData(1,'',$returndata);
    }
    //是否还有数据

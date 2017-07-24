@@ -115,9 +115,24 @@ class regionService extends \service\publicService
     }
     
     //获取省信息
+    public function getProvinceData($field='*'){
+        $sql = "select {$field} from ".table('region')." where parent_id = 1";
+        $rs  = mysqld_selectall($sql);
+        return $rs;
+    }
     
     //获取市信息
+    public function getCityData($parentid=0,$field='*'){
+        $sql = "select {$field} from ".table('region')." where parent_id = {$parentid}";
+        $rs  = mysqld_selectall($sql);
+        return $rs;
+    }
     
     //获取区信息
+    public function getCountyData($parentid=0,$field='*'){
+        $sql = "select {$field} from ".table('region')." where parent_id = {$parentid}";
+        $rs  = mysqld_selectall($sql);
+        return $rs;
+    }
     
 }

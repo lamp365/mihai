@@ -62,7 +62,7 @@
                             } ?>
                             </select>
 				<button class="btn btn-primary  btn-sm" style="margin-right:10px;"><i class="icon-search icon-large"></i> 搜索</button>
-				<button class="btn btn-primary" style="margin-right:10px;" id="bat_addgoods" data-cate2="<?php echo $dish['sts_category_p2_id']; ?>">全部加入产品库</button>
+				<button class="btn btn-primary  btn-sm" style="margin-right:10px;" id="bat_addgoods" data-cate2="<?php echo $dish['sts_category_p2_id']; ?>">全部加入产品库</button>
 			</div>
 		<table class="table table-striped table-bordered table-hover" style="margin-top: 15px;">
 			<thead>

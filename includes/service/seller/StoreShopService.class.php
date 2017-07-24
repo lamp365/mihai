@@ -620,4 +620,18 @@ class StoreShopService extends \service\publicService {
         return $rs;
     }
     
+    public function getShopStores($sts_str,$fields='*'){
+        $sql = "select {$fields} from ".table('store_shop')." where sts_id in ({$sts_str})";
+        $rs = mysqld_selectall($sql);
+        return $rs;
+    }
+    
+    
+    public function getShopStoresByStsid($sts_str,$fields='*'){
+        $sql = "select {$fields} from ".table('store_shop')." where sts_id={$sts_str}";
+        $rs = mysqld_select($sql);
+        return $rs;
+    }
+    
+    
 }

@@ -27,11 +27,11 @@ function img2thumb($src_img, $dst_img, $width = 75, $height = 75, $cut = 0, $pro
     $src_h = $srcinfo[1];
     $type  = strtolower(substr(image_type_to_extension($srcinfo[2]), 1));
     $createfun = 'imagecreatefrom' . ($type == 'jpg' ? 'jpeg' : $type);
- 
+
     $dst_h = $height;
     $dst_w = $width;
     $x = $y = 0;
- 
+
     /**
      * 缩略图不超过源图尺寸（前提是宽或高只有一个）
      */
@@ -47,7 +47,7 @@ function img2thumb($src_img, $dst_img, $width = 75, $height = 75, $cut = 0, $pro
     {
         $dst_h = $height = $src_h;
     }*/
- 
+
     if(!$width && !$height && !$proportion)
     {
         return false;
@@ -150,18 +150,18 @@ function imgThumb($file,$width=310,$height=310){
 }
 
 // 下载远程图片函数
-function GrabImage($url,$filename="") {  
+function GrabImage($url,$filename="") {
     if($url==""){
         return false;
     }
-    if($filename=="") { 
+    if($filename=="") {
         $typearr=array("jpg","gif","png","jpeg");
         $ext = trim(strtolower(substr(strrchr($url,'.'),1,10)));
         if(!in_array($ext,$typearr)){
             return false;
         }
-        $filename=md5(uniqid(mt_rand(), true)).substr(microtime(),2,8).".".$ext; 
-    } 
+        $filename=md5(uniqid(mt_rand(), true)).substr(microtime(),2,8).".".$ext;
+    }
     $ch = curl_init ($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
@@ -171,17 +171,17 @@ function GrabImage($url,$filename="") {
     if ($size<1) {
         return false;
     }
-    $dir = "attachment/goods/".date("Y")."/".date("m")."/".date("d")."/";
+    $dir = "attachment/".date("Ymd")."/";
     mkdirs(WEB_ROOT.'/'.$dir);
-    $fp2=fopen(SYSTEM_WEBROOT.'/'.$dir.$filename, "a"); 
+    $fp2=fopen(SYSTEM_WEBROOT.'/'.$dir.$filename, "a");
     if ($fp2) {
-        fwrite($fp2,$img); 
-        fclose($fp2); 
+        fwrite($fp2,$img);
+        fclose($fp2);
     }else{
         return false;
     }
-    $img_dir = $dir.$filename;
-    return $img_dir; 
+    $img_dir = SYSTEM_WEBROOT.$dir.$filename;
+    return $img_dir;
 }
 
 
@@ -206,3 +206,62 @@ function base64Toimg($base64_image_content){
     }
     return $res;
 }
+
+ /**
+  * 图片合成
+  * @param $bigImgPath
+  * @param $qCodePath
+  * @param int $w_pos
+  * @param int $h_pos
+  */
+function mergeImgs($bigImgPath,$qCodePath,$w_pos = 200,$h_pos = 300,$qr_w = '',$qr_h=''){
+    if(!empty($qr_w) || !empty($qr_h)){
+        //二维码裁减一下大小
+        $qCodePath  = download_pic($qCodePath,$qr_w,$qr_h);
+    }
+     $bigImg     = imagecreatefromstring(file_get_contents($bigImgPath));
+     $qCodeImg   = imagecreatefromstring(file_get_contents($qCodePath));
+
+
+     list($qCodeWidth, $qCodeHight, $qCodeType) = getimagesize($qCodePath);
+
+     imagecopy($bigImg, $qCodeImg, $w_pos, $h_pos, 0, 0, $qCodeWidth, $qCodeHight);
+
+     list($bigWidth, $bigHight, $bigType) = getimagesize($bigImgPath);
+
+    if(!is_dir('attachment/qcode')){
+        mkdirs('attachment/qcode');
+    }
+    $path = 'attachment/qcode/'.date('YmdHi',time()).uniqid();
+     switch ($bigType) {
+         //如果需要输出到页面显示，则加入head   前面不能有任何输出 和head
+         case 1: //gif
+//             header('Content-Type:image/gif');
+             $mergePath = $path.'.gif';
+             imagegif($bigImg,$mergePath);
+             break;
+         case 2: //jpg
+//             header('Content-Type:image/jpg');
+             $mergePath = $path.'.jpg';
+             imagejpeg($bigImg,$mergePath);
+             break;
+         case 3: //jpg
+//             header('Content-Type:image/png');
+             $mergePath = $path.'.png';
+             imagepng($bigImg,$mergePath);
+             break;
+         default:
+             $mergePath = '';
+             # code...
+             break;
+     }
+
+     imagedestroy($bigImg);
+     imagedestroy($qCodeImg);
+    $imgPathArr = explode('attachment',$qCodePath);
+    if(count($imgPathArr) == 2){
+        //说明缩小后的图片在本地上，删除掉无用
+        @unlink($qCodePath);
+    }
+    return WEBSITE_ROOT.$mergePath;
+ }

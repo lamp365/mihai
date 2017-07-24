@@ -108,6 +108,7 @@ class order extends base
                 $temp['type_name'] = $v['type_name'];
                 $temp['nickname'] = $v['nickname'];
                 $goodsInfo['total'] = $v['goods_num'];
+                
                 if ($v['shop_type'] == 4){
                     $goodsInfo['marketprice'] = $v['price'];//促销价
                     $goodsInfo['productprice'] = FormatMoney($shopInfo['marketprice'],0);//市场价
@@ -126,6 +127,7 @@ class order extends base
                     $temp['return_price'] = FormatMoney($info['refund_price'],0);
                     $temp['reason'] = $info['reason'];
                     $temp['reply_return_time'] = $info['createtime'];
+                    $temp['refund_num'] = $info['refund_num'];
                 }
                 $temp['goodsInfo'] = $goodsInfo;
                 $return[] = $temp;
@@ -150,6 +152,7 @@ class order extends base
             //商品信息
             $setting = globaSetting();
             $returnprice = 0;
+            $store_earn_price = 0;
             foreach ($info['goods'] as $key=>$v){
                 $goodsInfo[$key]['title'] = $v['title'];
                 $goodsInfo[$key]['thumb'] = $v['thumb'];
@@ -170,6 +173,7 @@ class order extends base
                 if ($v['order_status'] == 4 && in_array($v['order_type'], array(1,3))){
                     $aftersales = mysqld_select("select * from ".table('aftersales')." where order_goods_id={$v['order_shop_id']}");
                     $returnprice += $aftersales['refund_price'];
+                    $store_earn_price += $v['store_earn_price'];
                 }
                 $spec_key_name = json_decode($v['spec_key_name'],1);
                 if (!empty($spec_key_name)) $goodsInfo[$key]['spec_key_name'] = array_values($spec_key_name);
@@ -190,13 +194,18 @@ class order extends base
             $return['sendtime'] = $info['sendtime'];
             $return['completetime'] = $info['completetime'];
             //佣金抽成
-            $return['store_earn_price'] = FormatMoney($info['store_earn_price'],0);
+            $store_earn_price = $info['store_earn_price']-$store_earn_price;
+            $return['store_earn_price'] = FormatMoney($store_earn_price,0);
             //平台抽成
             $pay_rate    = intval($setting['pay_rate'])/100;
             $price = FormatMoney($info['price'],1);
-            $return['platform_price'] = FormatMoney($pay_rate*$price,0);
-            $return['price'] = FormatMoney($price-$info['store_earn_price']-$pay_rate*$price-$returnprice,0);//订单实收
+            //$return['platform_price'] = FormatMoney($pay_rate*$price,0);
+            $return['platform_price'] = FormatMoney($info['plate_money'],0);
+            //订单金额
+            $return['price'] = FormatMoney($price-$store_earn_price-$info['plate_money']-$returnprice,0);//订单实收
+            //退款金额
             $return['return_price'] = FormatMoney($returnprice,0);
+            
             //收货人信息
             $address['address_realname'] = $info['address_realname'];
             $address['address_mobile'] = $info['address_mobile'];
@@ -207,7 +216,7 @@ class order extends base
             $return['address'] = $address;
             ajaxReturnData(1,'',$return);
         }else {
-            ajaxReturnData(0,'','订单id无效');
+            ajaxReturnData(0,'订单id无效');
         }
     }
     //添加备注
@@ -508,8 +517,7 @@ class order extends base
         );
         mysqld_insert('aftersales_log',$data);
         if ($odginfo['type'] == 1 || $odginfo['type'] == 3){
-            $seting = globaSetting();
-            returnProcess($odgid,$seting);
+            returnProcess($odgid);
             //库存释放
             operateStoreCount($odginfo['dishid'],$odginfo['ac_dish_id'],$odginfo['ac_dish_id'],2);
         }

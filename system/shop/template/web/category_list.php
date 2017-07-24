@@ -57,7 +57,7 @@
 	</tbody>
 </table>
 
-		<form action="" class="form-horizontal" method="post" onsubmit="return formcheck(this)">
+		<form action="" class="form-horizontal" method="post" onsubmit="return formcheck(this)" style="border-top:1px solid #ddd">
 				<table class="table table-bordered table-hover">
   <tr>
 				<tr>

@@ -159,5 +159,6 @@ function check_shop_cart_time(){
 		mysqld_delete('shop_cart_record',array('id'=>$item['id']));
 	}
 	file_put_contents($file,'请不要删除该文件，用于购物车整站更新，防止并发处理');
+	@chmod($file,0777);
 }
 ?>

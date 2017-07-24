@@ -93,5 +93,5 @@
 
 		 	$dispatchlist = mysqld_selectall("SELECT * FROM " . table('dispatch')." where sendtype=0" );
 					
-		     include page('orderbat');
+		     include page('order/orderbat');
 		}

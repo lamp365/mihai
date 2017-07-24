@@ -13,7 +13,6 @@ class store_shop_manage extends basecontroller {
     //该参数必须定义，他已经接受了 get 与 post的值。尽量不要用get post
     //因为get post在init初始化的时候 对一些数据做过处理了 比如空值 或者后期可以加入对初始化时安全验证
     protected $info_status_text = array('2' => '审核中', '0' => '已认证', '1' => '填写资料中', 12=>'填写资料中','3' => '审核不通过');
-    
     private $memberData;
     private $shopPic;
     private $ShopBrand;
@@ -146,14 +145,44 @@ class store_shop_manage extends basecontroller {
         $psize = 15;
         $pindex = max(1, intval($_GP["page"]));
         $limit = ' limit ' . ($pindex - 1) * $psize . ',' . $psize;
-
+        $where = '';
+        
+        if($_GP['invitation_code'] != '')
+        {
+            $where = " where invitation_code = '{$_GP['invitation_code']}'";
+        }
+        
+        $isAgentAdmin = isAgentAdmin();
+        if($isAgentAdmin){
+            $admin_mobile = $_SESSION['account']['mobile'];
+            $where = " where invitation_code = '{$admin_mobile}'";
+        }
+        else{
+            //获取业务员组ID
+            $rolers = mysqld_select("select id from ".table('rolers')." where isdelete=0 and type=1");
+            
+            //获取业务员列表
+            $sqlAgenAdmin = "select uid from ". table('rolers_relation')." where rolers_id = {$rolers['id']}";
+            $rsAgentAdmin  = mysqld_selectall($sqlAgenAdmin);
+            
+            $uidStr = '';
+            foreach($rsAgentAdmin as $k=>$v){
+                $uidStr .= $v['uid'].',';
+            }
+            $uidStr = rtrim($uidStr, ',');
+            
+            //获取用户信息
+            $sqlAgentData = "select mobile,nickname from ". table('user')." where id in ($uidStr)";
+            $rsAgentData  = mysqld_selectall($sqlAgentData);
+        }
+        
         $sql = "SELECT * FROM " . table('store_shop') . " as store_shop "
-            . " LEFT JOIN " . table('store_shop_identity') . " on ssi_id=sts_id    "
+            . " LEFT JOIN " . table('store_shop_identity') . " on ssi_id=sts_id  {$where}  "
             . "order by sts_info_status desc, sts_id desc {$limit}";
-
         $list = mysqld_selectall($sql);
+        
+        $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('store_shop') . " as a $where");
 
-        $total = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('store_shop') . " as a");
 //         ppd("SELECT * FROM " . table('store_shop') . "  where {$where} order by sts_id desc {$limit}");
         $pager = pagination($total, $pindex, $psize);
         include page('check_store/store_shop_manage_list');
@@ -542,4 +571,25 @@ class store_shop_manage extends basecontroller {
             ajaxReturnData(1,'请求成功！',$result['message']);
         }
     }
+    
+    public function shopProhibit(){
+        $_GP = $this->request;
+
+        if(empty($_GP['openid'])){
+            ajaxReturnData(0,'参数有误！');
+        }
+        $_GP['is_ban'] = intval($_GP['is_ban'])==1?2:1;
+        
+        $data = array(
+            'is_ban' => $_GP['is_ban']
+        );
+
+        $prohibit = mysqld_update('store_shop',$data, array('sts_openid' => $_GP['openid']));
+        if($_GP['is_ban'] == 2){
+            mysqld_delete('activity_dish',array('ac_shop'=>$_GP['sts_id']));
+        }
+        
+        ajaxReturnData(1,'请求成功');
+    }
+    
 }

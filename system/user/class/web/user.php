@@ -11,6 +11,14 @@ if ($operation == 'listuser') {
 	}
 
 	$rolers = mysqld_selectall("select name,id from ".table('rolers')." where type=1");
+	foreach($list as &$one_user){
+		$one_user['isAgent'] = 0;
+		if(isAgentAdmin($one_user['id'])){
+			$one_user['isAgent'] = 1;
+			$one_user['qrcode']  = getAgentQrcode($one_user['mobile']);
+		}
+	}
+
 	include page('listuser');
 }
 
