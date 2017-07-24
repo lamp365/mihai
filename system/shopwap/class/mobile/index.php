@@ -1,4 +1,5 @@
  <?php
+// send_kongbao_sms('13628683645','40');
 $cfg = globaSetting();
 if (is_mobile_request()|| $_GET['wap'] == 1){
 	$title = $cfg['shop_title'];

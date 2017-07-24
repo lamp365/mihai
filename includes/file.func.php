@@ -30,6 +30,7 @@ function mkdirs($path)
     if (! is_dir($path)) {
         mkdirs(dirname($path));
         mkdir($path);
+        @chmod($path,0777);
     }
     return is_dir($path);
 }

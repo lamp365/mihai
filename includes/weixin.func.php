@@ -1,4 +1,107 @@
 <?php
+
+function get_weixin_fans_byopenid($openid, $weixin_openid)
+{
+    $weixin_wxfans = mysqld_select("SELECT * FROM " . table('weixin_wxfans') . " where openid=:openid or weixin_openid=:weixin_openid", array(
+        ':openid' => $openid,
+        ':weixin_openid' => $weixin_openid
+    ));
+    return $weixin_wxfans;
+}
+
+function get_js_ticket()
+{
+    $configs = globaSetting();
+
+    $jsapi_ticket = $configs['jsapi_ticket'];
+    $jsapi_ticket_exptime = intval($configs['jsapi_ticket_exptime']);
+
+    $weixin_access_token = unserialize($configs['weixin_access_token']);
+
+    //加入 对token的过期验证，，可能是token的过期，导致 分享js 报错 config invalid signature
+    if (empty($jsapi_ticket) || $jsapi_ticket_exptime < time() || empty($weixin_access_token['expire']) || $weixin_access_token['expire'] < TIMESTAMP) {
+
+        $accessToken = get_weixin_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
+        $content = http_get($url);
+        $res = @json_decode($content, true);
+        $ticket = $res['ticket'];
+
+        if (! empty($ticket)) {
+            $cfg = array(
+                'jsapi_ticket' => $ticket,
+                'jsapi_ticket_exptime' => time() + intval($res['expires_in'])
+            );
+            refreshSetting($cfg);
+            return $ticket;
+        }
+        return '';
+    } else {
+        return $jsapi_ticket;
+    }
+}
+
+function get_weixin_token($refresh = false)
+{
+    if ($refresh) {
+        save_weixin_access_token('');
+    }
+    $configs = globaSetting(array(
+        "weixin_access_token",
+        "weixin_appId",
+        "weixin_appSecret"
+    ));
+    $weixin_access_token = unserialize($configs['weixin_access_token']);
+    if (is_array($weixin_access_token) && ! empty($weixin_access_token['token']) && $weixin_access_token['expire'] > TIMESTAMP) {
+        return $weixin_access_token['token'];
+    } else {
+
+        $appid = $configs['weixin_appId'];
+        $secret = $configs['weixin_appSecret'];
+
+        if (empty($appid) || empty($secret)) {
+            message('请填写公众号的appid及appsecret！');
+        }
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+        $content = http_get($url);
+
+        if (empty($content)) {
+            logRecord("微信授权失败！当前appid：{$appid}",'weixin_server');
+            message('获取微信公众号授权失败, 请稍后重试！');
+        }
+        $token = @json_decode($content, true);
+        if (empty($token) || ! is_array($token)) {
+            logRecord("微信获取token失败！",'weixin_server');
+            message('获取微信公众号授权失败, 请稍后重试！ 公众平台返回原始数据为:' . $token);
+        }
+        if (empty($token['access_token']) || empty($token['expires_in'])) {
+            message('解析微信公众号授权失败, 请稍后重试！');
+        }
+        /**
+         * {
+        "access_token": "NU7Kr6v9L9TQaqm5NE3OTPctTZx797Wxw4Snd2WL2HHBqLCiXlDVOw2l-Se0I-WmOLLniAYLAwzhbYhXNjbLc_KAA092cxkmpj5FpuqNO0IL7bB0Exz5s5qC9Umypy-rz2y441W9qgfnmNtIZWSjSQ",
+        "expires_in": 7200
+        }
+         */
+        $record = array();
+        $record['token'] = $token['access_token'];
+        $record['expire'] = TIMESTAMP + $token['expires_in'];
+        $seriaze_access_token = serialize($record);
+        save_weixin_access_token($seriaze_access_token);
+        return $record['token'];
+    }
+}
+
+function weixin_send_custom_message($from_user, $msg)
+{
+    $access_token = get_weixin_token();
+    $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={$access_token}";
+    $msg = str_replace('"', '\\"', $msg);
+    $post = '{"touser":"' . $from_user . '","msgtype":"text","text":{"content":"' . $msg . '"}}';
+
+    http_post($url, $post);
+}
+
 function make_nonceStr()
 {
 	$codeSet = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
