@@ -184,7 +184,7 @@ class ordersService extends publicService
         $pindex = max(1, intval($_GP['page']));
         $psize = isset($_GP['limit'])?$_GP['limit']:10;//默认每页10条数据
         $limit= ($pindex-1)*$psize;
-        $sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num,og.shop_type from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
+        $sql = "select o.ordersn,o.id as orderid,o.openid,o.createtime,og.id as odgid,og.price,og.type,og.status,og.reply_return_time,og.dishid,og.spec_key_name,og.total as goods_num,og.shop_type,og.return_num,og.store_earn_price,og.plate_money from ". table('shop_order_goods') ." as og left join ".table('shop_order') ." as o on og.orderid=o.id where og.sts_id=:sts_id ";
         if ($_GP['status'] == 4){
             $sql .=" and (og.status=-1 or og.status=4)";//退单完成 退单失败
         }elseif ($_GP['status'] == 1){//正在申请
@@ -292,10 +292,10 @@ class ordersService extends publicService
     public function getOrderGoodsDetail($orderid ,$type=1){
         if ($orderid){
             if ($type == 1){
-                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type,o.store_earn_price FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
+                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type,o.store_earn_price,o.return_num,o.plate_money FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
                     . " WHERE o.orderid=:orderid and o.sts_id=:sts_id ",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
             }else {
-                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type,o.store_earn_price FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
+                $goods = mysqld_selectall("SELECT g.title,g.thumb,g.marketprice,g.productprice,g.goodssn,o.id as order_shop_id,o.total,o.price as orderprice,o.status as order_status, o.type as order_type,o.spec_key_name,o.shop_type,o.store_earn_price,o.return_num,o.plate_money FROM " . table('shop_order_goods') . " as o left join " . table('shop_dish') . " g on o.dishid=g.id "
                     . " WHERE o.orderid=:orderid and o.sts_id=:sts_id and o.type=4 and o.status=0 ",array('orderid'=>$orderid,'sts_id'=>$this->storeid));
             }
             if ($goods){
@@ -503,7 +503,9 @@ class ordersService extends publicService
                 }
             }
             if ($flag){
+                //订单关闭
                 mysqld_update('shop_order',array('status'=>-1),array('id'=>$orderid));
+                return true;
             }
         }
     }

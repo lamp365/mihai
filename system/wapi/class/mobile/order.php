@@ -255,8 +255,13 @@ class order extends base {
     // 创建售后记录
     mysqld_insert('aftersales_log', $log_ary);
 
+    $update_shop_order_goods = array(
+        'status'=>1,
+        'type'=>$refund_type,
+        'return_num'=>intval($_GP['refund_total'] ? $_GP['refund_total'] : 0)
+    );
     // 更新订单商品状态
-    mysqld_update('shop_order_goods',array('status'=>1,'type'=>$refund_type),array('id'=>$order_good_id));
+    mysqld_update('shop_order_goods',$update_shop_order_goods,array('id'=>$order_good_id));
 
     ajaxReturnData(1,'申请售后成功');
   }

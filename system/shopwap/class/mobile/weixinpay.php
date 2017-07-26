@@ -14,7 +14,7 @@ class weixinpay extends \common\controller\basecontroller
      * @param string $ordersn 订单号
      */
     public function pay() {
-        $pay_ordersn = 'sn54654864'.uniqid();
+        $pay_ordersn = 'sn54654864';
         $pay_money   = '1';
         $pay_title   = str_replace("'", '‘', '测试商品');
 
@@ -29,6 +29,7 @@ class weixinpay extends \common\controller\basecontroller
             message($pay->getError());
         }
 
+        $orderid = $pay_ordersn;
         $cfg = globaSetting();
         //如果是PC端那么返回的是一段 扫码地址  如果是小程序或者微信端返回一个数组参数
         include themePage('weixinpay');

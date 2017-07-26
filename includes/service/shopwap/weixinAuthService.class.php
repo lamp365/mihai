@@ -30,7 +30,7 @@ class weixinAuthService extends \service\publicService
     // 网页授权登录获取 OpendId
     public function GetOpenid()
     {
-        if(strstr($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') == false){
+        if(strstr($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') == false || $this->appid == ''){
             return '';
         }
         if(!empty($_SESSION[MOBILE_WEIXIN_OPENID]) && !empty($_SESSION[MOBILE_ACCOUNT]))

@@ -19,9 +19,79 @@
 </ul><br/>
 
 <h3 class="header smaller lighter blue">
-        物料列表&nbsp;&nbsp;&nbsp;
-        <a href="<?php  echo web_url('photo_apply',array('op'=>'photo_config'))?>" class="btn btn-primary">添加物料类型</a>
-    </h3>
+    物料列表&nbsp;&nbsp;&nbsp;
+    <a href="<?php  echo web_url('photo_apply',array('op'=>'photo_config'))?>" class="btn btn-primary">添加物料类型</a>
+</h3>
+<form action="<?php  echo web_url('photo_apply', array('op' => 'list_photo_apply'))?>" method="post" name="myform">
+    <input type="hidden" value="1" name="is_search">
+    <table class="table table-striped table-bordered table-hover">
+        <tbody>
+            <tr class="shop-list-tr">
+                <td style="width:20%">
+                    <li>
+                        <select name="ms_province" id="ms_province" class="form-control">
+                            <option>请选择区域</option>
+                            <?php
+                              foreach($provinceData as $v){
+                            ?>
+                            <option value="<?php echo $v['region_id'];?>|<?php echo $v['region_name'];?>|<?php echo $v['region_code'];?>" <?php echo $v['region_id']==$ms_province[0]?'selected':'';?>><?php echo $v['region_name'];?></option>
+                            <?php
+                              }
+                            ?>
+                        </select>
+                    </li>
+                </td>
+                <td style="width:20%;display:none">
+                    <li id="li_city">
+                        <?php
+                          if($_GP['ms_city'] != '' || $_GP['ms_province'] != '')
+                          {
+                            echo '<select name="ms_city" id="ms_city" class="form-control"><option>请选择市级</option>';
+                            foreach($cityData as $v)
+                            {
+                        ?>
+                            <option value="<?php echo $v['region_id'];?>|<?php echo $v['region_name'];?>|<?php echo $v['region_code'];?>" <?php echo $v['region_id']==$ms_city[0]?'selected':'';?>><?php echo $v['region_name'];?></option>
+                        <?php
+                            }
+                            echo '</select>';
+                          }
+                        ?>
+                    </li>
+                </td>
+                <td style="width:20%;display:none">
+                    <li id="li_county">
+                        <?php
+                          if($_GP['ms_county'] != '' || $_GP['ms_city'] != '')
+                          {
+                            echo '<select name="ms_county" id="ms_county" class="form-control"><option>请选择区级</option>';
+                            foreach($countyData as $v)
+                            {
+                        ?>
+                            <option value="<?php echo $v['region_id'];?>|<?php echo $v['region_name'];?>|<?php echo $v['region_code'];?>" <?php echo $v['region_id']==$ms_county[0]?'selected':'';?>><?php echo $v['region_name'];?></option>
+                        <?php
+                            }
+                            echo '</select>';
+                          }
+                        ?>
+                    </li>
+                </td>
+    <td style="width:20%">
+            <li>
+                <select name="ms_is_default" id="ms_is_default" class="form-control">
+                    <option value=''>请选择</option>
+                    <option value="1">非默认</option>
+                    <option value="2">默认</option>
+                </select></td>
+    </td>
+                <td>
+                    <li style="margin-left:10px;">
+                        <button class="btn btn-primary btn-sm"><i class="icon-search icon-large"></i> 搜索</button>
+                    </li>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
 
     <table class="table table-striped table-bordered table-hover">
         <thead>
@@ -71,6 +141,33 @@
 </div>
 <script>
 $(function(){
+    $('#ms_province').on('change',function(){
+        var url = "<?php  echo web_url('photo_apply', array('op' => 'photo_city'))?>";
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: "parentid="+$(this).val(),
+            success:function(data){
+                $('#li_city').parent().show()
+                $('#li_city').html(data);
+                $('#li_county').html('');
+            }
+        });
+    });
+
+    $('body').on('change',"#ms_city",function(){
+        var url = "<?php  echo web_url('photo_apply', array('op' => 'photo_county'))?>";
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: "parentid="+$(this).val(),
+            success:function(data){
+                $('#li_county').parent().show()
+                $('#li_county').html(data);
+            }
+        });
+    });
+    
     $('.ms_status').on("click",function(){
         var url    = "<?php echo web_url('photo_apply',array('op'=>'materialTypeStatus'));?>";
         var ms_status = parseInt($(this).data("status"));

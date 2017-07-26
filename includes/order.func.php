@@ -167,54 +167,75 @@ function update_order_status($id, $status) {
     	// 记录订单关闭时间
     	mysqld_query("UPDATE ".table('shop_order')." SET status=-1,closetime=".time()." WHERE id=".$id);
     }elseif ($status == 3) {
-    	// 确认收货
+    	// 确认收货  可能出现，物品种 退了个别，但是个别还可以确认收货
     	mysqld_query("UPDATE ".table('shop_order')." SET status=3,completetime=".time()." WHERE id=".$id);
-		if($order['price']>0)
-		{
-			//商家所得去除抽佣 以及佣金  冻结资金转余额 退款要扣掉
-			$store_money = intval($order['price'] - $order['plate_money'] - $order['store_earn_price']);  //单位是分
-			$store = member_store_getById($order['sts_id'],'freeze_money,recharge_money,totalearn_monry');
-			$freeze_money    = max(0,$store['freeze_money'] - $store_money);  //冻结扣除
-			$recharge_money  = $store['recharge_money'] + $store_money;       //余额添加
-			$totalearn_monry = $store['totalearn_monry'] + $store_money;       //总收益添加
-			mysqld_update('store_shop', array(
-				'freeze_money'    => $freeze_money,
-				'recharge_money'  => $recharge_money,
-				'totalearn_monry' => $totalearn_monry
-			), array('sts_id' => $order['sts_id']));
-		}
 
-		//推荐人所属的店铺 冻结的推广佣金 转为余额   退款要扣掉
-		if(!empty($order['recommend_sts_id']) && !empty($order['store_earn_price'])){
-			$earn_price = $order['store_earn_price']; //单位分
-			$store = member_store_getById($order['recommend_sts_id'],'freeze_money,recharge_money,totalearn_monry');
-        	$freeze_money    = max(0,$store['freeze_money'] - $earn_price);  //冻结扣除
-			$recharge_money  = $store['recharge_money'] + $earn_price;       //余额添加
-			$totalearn_monry = $store['totalearn_monry'] + $earn_price;       //总收益添加
-        	mysqld_update('store_shop', array(
-				'freeze_money'    => $freeze_money,
-				'recharge_money'  => $recharge_money,
-				'totalearn_monry' => $totalearn_monry
-			), array('sts_id' => $order['recommend_sts_id']));
-		}
-		//推荐人得到跟店铺 所承诺的 提成收入 冻结收入转为待结算   退款要扣掉
-		if(!empty($order['recommend_openid']) && !empty($order['member_earn_price'])){
-			$earn_price  = $order['member_earn_price']; //单位分
-			$member = member_get($order['recommend_openid'],'freeze_gold,wait_glod,totalearn_gold');
-			//以免扣掉时为负数
-        	$freeze_gold    = max(0,$member['freeze_gold'] - $earn_price);  //冻结扣除
-        	$wait_glod      = $member['wait_glod'] + $earn_price;           //未结算添加
-			$totalearn_gold = $member['totalearn_gold'] + $earn_price;      //总收入添加
-        	mysqld_update('member', array(
-				'freeze_gold'      => $freeze_gold,
-				'wait_glod'        => $wait_glod,
-				'totalearn_gold'   => $totalearn_gold,
-			), array('openid' => $order['recommend_openid']));
-		}
-		//paylog的订单 更新为已经收获
-		mysqld_update('member_paylog',array('order_status'=>1),array('openid'=>$order['openid'],'orderid'=>$id));
-		mysqld_update('member_paylog',array('order_status'=>1),array('sts_id'=>$order['sts_id'],'orderid'=>$id));
+		sureGetGoods($order,$order_goods);
+
     }
+}
+
+function sureGetGoods($order,$order_goods){
+	if($order['price']>0)
+	{
+		//商家所得去除抽佣 以及佣金  冻结资金转余额 退款要扣掉
+		$store_money = intval($order['price'] - $order['plate_money'] - $order['store_earn_price'] - $order['return_money']);  //单位是分
+		$store = member_store_getById($order['sts_id'],'freeze_money,recharge_money,totalearn_monry');
+		$freeze_money    = max(0,$store['freeze_money'] - $store_money);  //冻结扣除
+		$recharge_money  = $store['recharge_money'] + $store_money;       //余额添加
+		$totalearn_monry = $store['totalearn_monry'] + $store_money;       //总收益添加
+		mysqld_update('store_shop', array(
+			'freeze_money'    => $freeze_money,
+			'recharge_money'  => $recharge_money,
+			'totalearn_monry' => $totalearn_monry
+		), array('sts_id' => $order['sts_id']));
+	}
+
+	$store  = member_store_getById($order['recommend_sts_id'],'freeze_money,recharge_money,totalearn_monry');
+	$member = member_get($order['recommend_openid'],'freeze_gold,wait_glod,totalearn_gold');
+
+	$store_earn_price = $member_earn_price = 0;
+	if($order['return_money'] == 0){
+		$store_earn_price   = $order['store_earn_price']; //单位分
+		$member_earn_price  = $order['member_earn_price']; //单位分
+	}else{
+		//个别发生了退款
+		foreach($order_goods as $ogoods){
+			$life_num = $ogoods['total']-$ogoods['return_num'];
+			//退款后剩下的个数
+			if($life_num != 0){
+				$store_earn_price   += $ogoods['store_earn_price']*$life_num; //单位分
+				$member_earn_price  += $ogoods['member_earn_price']*$life_num; //单位分
+			}
+		}
+	}
+
+	if(!empty($order['recommend_sts_id']) && !empty($store_earn_price)){
+		$freeze_money    = max(0,$store['freeze_money'] - $store_earn_price);  //冻结扣除
+		$recharge_money  = $store['recharge_money'] + $store_earn_price;       //余额添加
+		$totalearn_monry = $store['totalearn_monry'] + $store_earn_price;       //总收益添加
+		mysqld_update('store_shop', array(
+			'freeze_money'    => $freeze_money,
+			'recharge_money'  => $recharge_money,
+			'totalearn_monry' => $totalearn_monry
+		), array('sts_id' => $order['recommend_sts_id']));
+
+	}
+
+	if(!empty($order['recommend_openid']) && !empty($member_earn_price)){
+		$freeze_gold    = max(0,$member['freeze_gold'] - $member_earn_price);  //冻结扣除
+		$wait_glod      = $member['wait_glod'] + $member_earn_price;           //未结算添加
+		$totalearn_gold = $member['totalearn_gold'] + $member_earn_price;      //总收入添加
+		mysqld_update('member', array(
+			'freeze_gold'      => $freeze_gold,
+			'wait_glod'        => $wait_glod,
+			'totalearn_gold'   => $totalearn_gold,
+		), array('openid' => $order['recommend_openid']));
+	}
+
+	//paylog的订单 更新为已经收获
+	mysqld_update('member_paylog',array('order_status'=>1),array('openid'=>$order['openid'],'orderid'=>$order['id']));
+	mysqld_update('member_paylog',array('order_status'=>1),array('sts_id'=>$order['sts_id'],'orderid'=>$order['id']));
 }
 
 /**
@@ -241,13 +262,12 @@ function paySuccessProcess($orderid)
 		$mark = LANG('LOG_SHOPBUY_TIP','paylog');  //现金支付
 		member_gold($order['openid'],$order['price'],'-1',$mark,0,$order['id']);
 
+		$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');//商品收入
+		store_freeze_gold($order['sts_id'],$order['price'],1,$order['id'],$mark,0); //记录paylog
+
 		//商家所得去平台抽佣 以及 去除 佣金部分  录入一笔冻结资金  退款要扣掉  完成收货要变成余额
 		$store_money = intval($order['price'] - $order['plate_money'] - $order['store_earn_price']);  //单位是分
-		if($order['store_earn_price'] > 0)
-			$mark = LANG('LOG_SHOPBUY_HASCOMM_TIP_SELLER','paylog');   //商品收入已扣佣金
-		else
-			$mark = LANG('LOG_SHOPBUY_TIP_SELLER','paylog');           //商品收入
-		store_freeze_gold($order['sts_id'],$store_money,1,$order['id'],$mark);
+		mysqld_query("update ".table('store_shop')." set freeze_money=freeze_money+{$store_money} where sts_id={$order['sts_id']}");
 	}else{
 		//没有实付金额
 		//增加账单记录  扣除一笔资金 不是真扣余额 只是记录账单，因为扣款发生在第三方如支付宝
@@ -307,18 +327,21 @@ function returnProcess($odgid)
         $mark = LANG('LOG_SHOP_RETURN_TIP','paylog');  //现金支付
         member_gold($order['openid'],$aftersales['refund_price'],'1',$mark,0,$order['id']);
 
+		$mark        = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');  //扣款的钱
+		store_freeze_gold($order['sts_id'],$aftersales['refund_price'],-1,$order['id'],$mark,0);
+
         //商家所得  减去退款的钱  直接用 订单应该收的钱 乘以退款数量 从冻结资金中移除
 		$store_money  = ($odginfo['price']-$odginfo['plate_money']-$odginfo['store_earn_price'])*$aftersales['refund_num'];
 		$order_price  = $odginfo['price'] * $aftersales['refund_num'];
 		$r_price      = 0;
 		if($aftersales['refund_price'] < $order_price){
-			//如果退款的钱，小于 物品的钱，则卖家不能以 物品价格全部扣
+			//如果退款的钱，小于 物品的钱，则卖家不能以 物品价格全部扣。。 要少扣
 			$r_price = $order_price - $aftersales['refund_price'];
 		}
 		$store_money = $store_money - $r_price;  //单位是分
-		$mark        = LANG('LOG_SHOPRETURN_TIP_SELLER','paylog');  //扣款的钱
-		store_freeze_gold($order['sts_id'],$store_money,-1,$order['id'],$mark);
-    }else{
+		mysqld_query("update ".table('store_shop')." set freeze_money=freeze_money-{$store_money} where sts_id={$order['sts_id']}");
+    	mysqld_query("update ".table('shop_order')." set return_money=return_money+{$store_money} where id={$order['id']}");
+	}else{
         //卖家增加账单记录  增加一笔资金 不是真增加余额 只是记录账单，因为增加发生在第三方如支付宝
         $mark = LANG('LOG_SHOP_RETURN_TIP','paylog');  //使用其他金额抵用
         member_gold($order['openid'],$aftersales['refund_price'],'1',$mark,0,$order['id']);
@@ -344,6 +367,70 @@ function returnProcess($odgid)
         member_commisiongold($order['recommend_openid'],$order['openid'],$earn_price,-3,$order['id'],$remark);
     }
 }
+
+/*
+关闭订单的时候确认退款
+$odginfo array 订单商品信息
+$return_price 退款金额
+$num 该订单商品未进行退款的数量
+$buy_openid 买家id
+*/
+function returnConfirmGoods($odginfo,$return_price,$num,$buy_openid){
+    if (empty($odginfo) || (!is_array($odginfo)) || empty($return_price) || ($num <= 0) || empty($buy_openid)) return false;
+    //需要释放的金额
+    //退款数量
+    $return_num = $odginfo['total']-$num;
+    //退店铺抽的佣金
+    $return_store_earn_price = $odginfo['store_earn_price']*$return_num;
+    //退平台抽的佣金
+    $return_plate_money = $odginfo['plate_money']*$return_num;
+    $price = intval($odginfo['price']*$odginfo['total']-$return_store_earn_price-$return_plate_money - $return_price);
+    
+    $store = member_store_getById($odginfo['sts_id'],'freeze_money,recharge_money,totalearn_monry');
+    $freeze_money    = max(0,$store['freeze_money'] - $price);  //冻结扣除
+    $recharge_money  = $store['recharge_money'] + $price;       //余额添加
+    $totalearn_monry = $store['totalearn_monry'] + $price;       //总收益添加
+    mysqld_update('store_shop', array(
+        'freeze_money'    => $freeze_money,
+        'recharge_money'  => $recharge_money,
+        'totalearn_monry' => $totalearn_monry
+    ), array('sts_id' => $odginfo['sts_id']));
+    
+    
+    //推荐人所属的店铺 冻结的推广佣金 转为余额   退款要扣掉
+    if(!empty($odginfo['recommend_sts_id']) && !empty($odginfo['store_earn_price'])){
+        $earn_price = $odginfo['store_earn_price']*$num; //单位分
+        $store = member_store_getById($odginfo['recommend_sts_id'],'freeze_money,recharge_money,totalearn_monry');
+        $freeze_money    = max(0,$store['freeze_money'] - $earn_price);  //冻结扣除
+        $recharge_money  = $store['recharge_money'] + $earn_price;       //余额添加
+        $totalearn_monry = $store['totalearn_monry'] + $earn_price;       //总收益添加
+        mysqld_update('store_shop', array(
+            'freeze_money'    => $freeze_money,
+            'recharge_money'  => $recharge_money,
+            'totalearn_monry' => $totalearn_monry
+        ), array('sts_id' => $odginfo['recommend_sts_id']));
+    }
+    //推荐人得到跟店铺 所承诺的 提成收入 冻结收入转为待结算   退款要扣掉
+    if(!empty($odginfo['recommend_openid']) && !empty($odginfo['member_earn_price'])){
+        $earn_price  = $odginfo['member_earn_price']*$num; //单位分
+        $member = member_get($odginfo['recommend_openid'],'freeze_gold,wait_glod,totalearn_gold');
+        //以免扣掉时为负数
+        $freeze_gold    = max(0,$member['freeze_gold'] - $earn_price);  //冻结扣除
+        $wait_glod      = $member['wait_glod'] + $earn_price;           //未结算添加
+        $totalearn_gold = $member['totalearn_gold'] + $earn_price;      //总收入添加
+        mysqld_update('member', array(
+            'freeze_gold'      => $freeze_gold,
+            'wait_glod'        => $wait_glod,
+            'totalearn_gold'   => $totalearn_gold,
+        ), array('openid' => $odginfo['recommend_openid']));
+    }
+    //paylog的订单 更新为已经收获
+    mysqld_update('member_paylog',array('order_status'=>1),array('openid'=>$buy_openid,'orderid'=>$odginfo['orderid']));
+    mysqld_update('member_paylog',array('order_status'=>1),array('sts_id'=>$odginfo['sts_id'],'orderid'=>$odginfo['orderid']));
+}
+
+
+
 #############################################订单生成前的信息  start#############################################
 
 /**
@@ -937,21 +1024,11 @@ function order_auto_close(){
 	}
 	//删掉 不让其他请求 一起来操作，当前操作过一次就行了
 	unlink($file);
-	$normal = 72 * 60 * 60;
-	$where = ' status = 0 and ordertype !=4 and createtime <= '.(time()-$normal);
-	$sql   = "select id,ordertype from ".table('shop_order')." where {$where}";
-	$data  = mysqld_selectall($sql);
 
 	$active = 15*60;
-	$where2 = ' status = 0 and ordertype =4 and createtime <= '.(time()-$active);
+	$where2 = ' status = 0 and createtime <= '.(time()-$active);
 	$sql2   = "select id,ordertype from ".table('shop_order')." where {$where2}";
 	$data2  = mysqld_selectall($sql2);
-	if($data){
-		//每条每条 进行关闭，并退回优惠卷和余额
-		foreach($data as $orderid){
-			update_order_status($orderid['id'],-1);
-		}
-	}
 	if($data2){
 		//每条每条 进行关闭，并退回优惠卷和余额
 		foreach($data2 as $orderid2){

@@ -30,13 +30,14 @@ class order extends base
         $res = $this->ordersService->OrderListsPage($_GP);
         if($res){
             $order_lists=$res['order_lists'];
-            $allPrice = '';
-            $setting = globaSetting();
+            //订单实收总价
+            $allPrice = 0;
+            
             foreach ($order_lists as $key=>$v){
                 $goodinfo = $this->ordersService->getOrderGoodsDetail($v['id']);
                 if (!empty($goodinfo)){
-                    $goods_total = 0;
                     $data = array();
+                     $goods_total = $store_earn_price = $return_all_price = 0;
                     foreach ($goodinfo as $k=>$val){
                         $data[$k]['thumb'] = $val['thumb'];
                         $data[$k]['title'] = $val['title'];
@@ -54,6 +55,27 @@ class order extends base
                             $data[$k]['marketprice'] = FormatMoney($val['orderprice'],0);
                             $data[$k]['productprice'] = FormatMoney($val['productprice'],0);
                         }
+                        
+                        //默认店铺抽成
+                        $store_earn_price1= $val['store_earn_price']*$val['total'];
+                        
+                        //有发生退款
+                        if (in_array($val['order_type'], array(1,3)) && $val['order_status'] == 4){
+                            //根据order_shop_id查退单总价
+                            $return_order = $this->ordersService->getAftersalesByCon(array('order_goods_id'=>$val['order_shop_id']));
+                            if ($return_order) $return_all_price += $return_order['refund_price'];
+                            
+                            if ($val['order_type'] == 1){//退款退货
+                                //有发生退款时，店铺抽成=退款后剩余数量*单个物品店铺抽成
+                                $num = $val['total'] - $val['return_num'];
+                                $store_earn_price1 = $num*$val['store_earn_price'];
+                            }else {//仅退款（一定是全退），则佣金不收
+                                $store_earn_price1 =0;
+                            }
+                            
+                        }
+                        $store_earn_price+=$store_earn_price1;
+                    
                     }
                     $temp['goodinfo'] = $data;
                     $temp['orderid'] = $v['id'];
@@ -63,15 +85,21 @@ class order extends base
                     $temp['status_name'] = $v['status_name'];
                     $temp['createtime'] = $v['createtime'];
                     $temp['nickname'] = $v['nickname'];
-                    //实收
+                    
+                    //平台抽佣：获取平台抽佣比例
+                    $setting = globaSetting();
                     $pay_rate    = intval($setting['pay_rate'])/100;
-                    $price = FormatMoney($v['price'],1);
-                    $temp['price'] = FormatMoney($price-$v['store_earn_price']-$pay_rate*$price,0);//订单实收
-                    //$temp['price'] = $v['price'];
+                    //平台抽成=（订单总金额-退款金额）* 平台抽成比例
+                    $price = FormatMoney($v['price'],1);//因为总后台转过，所以要转回来
+                    $plate_money = $pay_rate*($price-$return_all_price);
+                    
+                    //应收金额
+                    $temp['price'] = FormatMoney($price-$return_all_price-$store_earn_price-$plate_money,0);//订单实收
+                    
                     $temp['dispatchprice'] = $v['dispatchprice'];
                     $temp['status'] = $v['status'];
                     $temp['goods_total'] = $goods_total;
-                    $allPrice = $allPrice+$temp['price'];
+                    $allPrice += $temp['price'];
                     $return[]=$temp;
                 }
             }
@@ -150,9 +178,7 @@ class order extends base
         $info = $this->ordersService->OrderDetailPage($orderid);
         if (!empty($info) && !empty($info['goods']) && is_array($info['goods'])){
             //商品信息
-            $setting = globaSetting();
-            $returnprice = 0;
-            $store_earn_price = 0;
+            $store_earn_price = $returnprice =0;
             foreach ($info['goods'] as $key=>$v){
                 $goodsInfo[$key]['title'] = $v['title'];
                 $goodsInfo[$key]['thumb'] = $v['thumb'];
@@ -163,18 +189,33 @@ class order extends base
                     $goodsInfo[$key]['marketprice'] = FormatMoney($v['orderprice'],0);
                     $goodsInfo[$key]['productprice'] = FormatMoney($v['productprice'],0);
                 }
-                /* $goodsInfo[$key]['marketprice'] = FormatMoney($v['marketprice'],0);
-                $goodsInfo[$key]['productprice'] = FormatMoney($v['productprice'],0); */
+                
                 $goodsInfo[$key]['type'] = $v['order_type'];
                 $goodsInfo[$key]['type_name'] = $v['type_name'];
                 $goodsInfo[$key]['status_name'] = $v['status_name'];
                 $goodsInfo[$key]['goods_status'] = $v['order_status'];
                 $goodsInfo[$key]['total'] = $v['total'];
+                
+                //默认店铺抽成
+                $store_earn_price1= $v['store_earn_price']*$v['total'];
+                
+                //有发生退货退款
                 if ($v['order_status'] == 4 && in_array($v['order_type'], array(1,3))){
                     $aftersales = mysqld_select("select * from ".table('aftersales')." where order_goods_id={$v['order_shop_id']}");
-                    $returnprice += $aftersales['refund_price'];
-                    $store_earn_price += $v['store_earn_price'];
+                    if ($aftersales) $returnprice += $aftersales['refund_price'];
+                   
+                    if ($v['order_type'] == 1){//退款退货
+                        //有发生退款时，店铺抽成=退款后剩余数量*单个物品店铺抽成
+                        $num = $v['total'] - $v['return_num'];
+                        $store_earn_price1 = $num*$v['store_earn_price'];
+                    }else {//仅退款（一定是退全额），则佣金不收
+                        $store_earn_price1 =0;
+                    }
+                    
                 }
+                $store_earn_price+=$store_earn_price1;
+                
+                //规格
                 $spec_key_name = json_decode($v['spec_key_name'],1);
                 if (!empty($spec_key_name)) $goodsInfo[$key]['spec_key_name'] = array_values($spec_key_name);
             }
@@ -193,16 +234,21 @@ class order extends base
             $return['paytime'] = $info['paytime'];
             $return['sendtime'] = $info['sendtime'];
             $return['completetime'] = $info['completetime'];
+            
             //佣金抽成
-            $store_earn_price = $info['store_earn_price']-$store_earn_price;
             $return['store_earn_price'] = FormatMoney($store_earn_price,0);
-            //平台抽成
-            $pay_rate    = intval($setting['pay_rate'])/100;
+            
+            //平台抽成:获取平台抽成比例
+            $setting = globaSetting();
+            $pay_rate = intval($setting['pay_rate'])/100;
+            //平台抽成=（订单总金额-退款金额）* 平台抽成比例
             $price = FormatMoney($info['price'],1);
-            //$return['platform_price'] = FormatMoney($pay_rate*$price,0);
-            $return['platform_price'] = FormatMoney($info['plate_money'],0);
+            $plate_money = $pay_rate*($price-$returnprice);
+            $return['platform_price'] = FormatMoney($plate_money,0);
+            
             //订单金额
-            $return['price'] = FormatMoney($price-$store_earn_price-$info['plate_money']-$returnprice,0);//订单实收
+            $return['price'] = FormatMoney($price-$store_earn_price-$plate_money-$returnprice,0);//订单实收
+            
             //退款金额
             $return['return_price'] = FormatMoney($returnprice,0);
             
@@ -399,6 +445,7 @@ class order extends base
         $data0['refund_price'] = FormatMoney($aftersale['refund_price'],0);
         //$data0['createtime'] = $aftersale['createtime'];
         $data0['createtime'] = $aftersale['createtime'];
+        $data0['is_get_goods'] = $aftersale['is_get_goods'];
         $data0['status'] = $odginfo['status'];
         if ($odginfo['type'] == 1){
             $tt = "退货退款";
@@ -472,35 +519,31 @@ class order extends base
         $odgid = intval($_GP['id']);//订单商品id
         if (empty($odgid)) ajaxReturnData(0,'订单商品id有误');
         //订单商品表的状态是申请中的才可以退货
-        if (empty($odgid)) ajaxReturnData(0,'订单商品id有误');
-        $odginfo = $this->ordersService->getOrderGoodsByCon(array('id'=>$odgid),'id,orderid,dishid,ac_dish_id,status,type,reply_return_time');
+        $odginfo = $this->ordersService->getOrderGoodsByCon(array('id'=>$odgid));
         if (empty($odginfo)) ajaxReturnData(0,'暂时不能退单,订单商品不存在');
-        /* if ($odginfo['type'] == 1 || $odginfo['type'] == 2){
-            if ($odginfo['status'] != 3){
-                ajaxReturnData(0,'订单还未处理完，不能确认退单');
-            }
-            $aftersalelog = $this->ordersService->getAftersalesLogByCon(array('order_goods_id'=>$odgid,'status'=>3));
-            if (empty($aftersalelog)) ajaxReturnData(0,'订单还未处理完，不能确认退单');
-        }else{
-            $aftersalelog = $this->ordersService->getAftersalesLogByCon(array('order_goods_id'=>$odgid,'status'=>2));
-            if (empty($aftersalelog)) ajaxReturnData(0,'订单还未处理完，不能确认退单');
-        } */
+        
         if ($odginfo['status'] == 4){
             ajaxReturnData(0,'订单已经确认，不能重复确认');
         }
-        $aftersalelog = $this->ordersService->getAftersalesLogByCon(array('order_goods_id'=>$odgid,'status'=>2));
-        if (empty($aftersalelog)) ajaxReturnData(0,'订单还未处理完，不能确认退单');
-        //订单表的状态是已发货或者已付款的才可以退货
-        $orderinfo = $this->ordersService->getOrderInfo($odginfo['orderid'],'status,id');
-        //if (empty($orderinfo) || (!in_array($orderinfo['status'], array(1,2)))) ajaxReturnData(0,'暂时不能退单，订单状态不为已付款或者已发货状态');
+        
         //退单表数据不为空和退单日志表状态为正在申请才可以退货
         $aftersale = $this->ordersService->getAftersalesByCon(array('order_goods_id'=>$odgid));
         if (empty($aftersale)) ajaxReturnData(0,'暂时不能确认退单，退单表无数据');
         
+        //判断退单日志表是否有审核通过数据
+        $aftersalelog = $this->ordersService->getAftersalesLogByCon(array('order_goods_id'=>$odgid,'status'=>2,'aftersales_id'=>$aftersale['aftersales_id']));
+        if (empty($aftersalelog)) ajaxReturnData(0,'订单日志表数据不对，不能确认退单');
+        
+        //获取订单信息
+        $orderinfo = $this->ordersService->getOrderInfo($odginfo['orderid'],'status,id,openid');
+        
+        //开始进行操作
         //更改shop_order_goods表状态
         mysqld_update('shop_order_goods',array('status'=>4),array('id'=>$odgid));
+        
         //更改日志表的状态
         $tip = $this->ordersService->getTitleByOdgType($odginfo['type'],4);
+        
         $title = $tip['title'];
         $des = $tip['des'];
         //插入一条log记录
@@ -516,13 +559,35 @@ class order extends base
             'type' 	 => 1,
         );
         mysqld_insert('aftersales_log',$data);
+        
+        //如果是退货退款或者仅退款，要进行金额计算
         if ($odginfo['type'] == 1 || $odginfo['type'] == 3){
             returnProcess($odgid);
             //库存释放
-            operateStoreCount($odginfo['dishid'],$odginfo['ac_dish_id'],$odginfo['ac_dish_id'],2);
+            operateStoreCount($odginfo['dishid'],$aftersale['refund_num'],$odginfo['ac_dish_id'],2);
+            //如果会关闭订单，则有几种情况。
+            //商品只有一个，但有多件，而且"退货退款"或者"仅退款"了其中的一件
+            //商品有多个，而且每一个都有一件"退货退款"或者"仅退款"
+            if ($this->ordersService->checkIsCloseOrder($odginfo['orderid'])){
+                //找出该订单的所有“退货退款”和“仅退款”的商品，因为只有“退货退款”和“仅退款”的商品才需要判断是否要释放冻结资金
+                $orderAll = mysqld_selectall("select * from ".table('shop_order_goods')." where orderid={$odginfo['orderid']} and (type=1 or type=3)");
+                $order = mysqld_select("select * from ".table('shop_order')." where id={$odginfo['orderid']}");
+                sureGetGoods($order,$orderAll);
+                /* if (!empty($orderAll)){
+                    foreach ($orderAll as $v){
+                        //一个商品一个商品的的判断是否需要释放冻结资金，相当于C端的确认收货逻辑
+                        $aftersaleInfo = $this->ordersService->getAftersalesByCon(array('order_goods_id'=>$v['id']));
+                        if ($aftersaleInfo){
+                            $num = $v['total'] - $aftersaleInfo['refund_num'];//未退的数量
+                            if ($num > 0){
+                                returnConfirmGoods($v,$aftersaleInfo['refund_price'],$num,$orderinfo['openid']);
+                            }
+                        }
+                        
+                    }
+                } */ 
+            }
         }
-        //关闭订单
-        $this->ordersService->checkIsCloseOrder($odginfo['orderid']);
         
         
         ajaxReturnData(1,'确认成功');
@@ -534,12 +599,11 @@ class order extends base
         $res = $this->ordersService->OrderListsSearchPage($_GP);
         if($res){
             $order_lists=$res['order_lists'];
-            //$allPrice = '';
             $setting = globaSetting();
             foreach ($order_lists as $key=>$v){
                 $goodinfo = $this->ordersService->getOrderGoodsDetail($v['id']);
                 if (!empty($goodinfo)){
-                    $goods_total = 0;
+                    $goods_total = $store_earn_price = $return_all_price = 0;
                     foreach ($goodinfo as $k=>$val){
                         $data[$k]['thumb'] = $val['thumb'];
                         $data[$k]['title'] = $val['title'];
@@ -557,6 +621,26 @@ class order extends base
                             $data[$k]['marketprice'] = FormatMoney($val['marketprice'],0);
                             $data[$k]['productprice'] = FormatMoney($val['productprice'],0);
                         }
+                        
+                        //默认店铺抽成
+                        $store_earn_price1= $val['store_earn_price']*$val['total'];
+                        
+                        //有发生退款
+                        if (in_array($val['order_type'], array(1,3)) && $val['order_status'] == 4){
+                            //根据order_shop_id查退单总价
+                            $return_order = $this->ordersService->getAftersalesByCon(array('order_goods_id'=>$val['order_shop_id']));
+                            if ($return_order) $return_all_price += $return_order['refund_price'];
+                        
+                            if ($val['order_type'] == 1){//退款退货
+                                //有发生退款时，店铺抽成=退款后剩余数量*单个物品店铺抽成
+                                $num = $val['total'] - $val['return_num'];
+                                $store_earn_price1 = $num*$val['store_earn_price'];
+                            }else {//仅退款（一定是全退），则佣金不收
+                                $store_earn_price1 =0;
+                            }
+                        
+                        }
+                        $store_earn_price+=$store_earn_price1;
                     }
                     $temp['goodinfo'] = $data;
                     $temp['orderid'] = $v['id'];
@@ -566,22 +650,26 @@ class order extends base
                     $temp['status_name'] = $v['status_name'];
                     $temp['createtime'] = $v['createtime'];
                     $temp['nickname'] = $v['nickname'];
-                    //实收
+
+                    //平台抽佣：获取平台抽佣比例
+                    $setting = globaSetting();
                     $pay_rate    = intval($setting['pay_rate'])/100;
-                    $price = FormatMoney($v['price'],1);
-                    $temp['price'] = FormatMoney($price-$v['store_earn_price']-$pay_rate*$price,0);//订单实收
-                    //$temp['price'] = $v['price'];
+                    //平台抽成=（订单总金额-退款金额）* 平台抽成比例
+                    $price = FormatMoney($v['price'],1);//因为总后台转过，所以要转回来
+                    $plate_money = $pay_rate*($price-$return_all_price);
+                    
+                    //应收金额
+                    $temp['price'] = FormatMoney($price-$return_all_price-$store_earn_price-$plate_money,0);//订单实收
+                    
                     $temp['dispatchprice'] = $v['dispatchprice'];
                     $temp['status'] = $v['status'];
                     $temp['goods_total'] = $goods_total;
-                    //$allPrice = $allPrice+$temp['price'];
                     $return[]=$temp;
                 }
             }
             if (empty($return)) $return=array();
             $returnAll = array(
                 'total'=>$res['total'],
-                //'allPrice'=>$allPrice,
                 'data'=>$return,
             );
             ajaxReturnData(1,'',$returnAll);

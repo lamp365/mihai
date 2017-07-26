@@ -220,7 +220,7 @@
 						<?php echo getIndustryByid($item['sts_category_p1_id']).'——'.getIndustryByid($item['sts_category_p2_id']); ?>
 					</td>
 					<td style="text-align:center;">
-                    	998
+                    	<?php echo FormatMoney($item['totalearn_monry'],0);?>
                     </td>
 					<td style="text-align:center;position:relative">    
                         <p class="small-img" style="text-align:center;padding:0;margin:0;"> 				                          
@@ -269,7 +269,7 @@
                                                 </div>
                                                 
                                                 <div class="label label-success look-logistics" openid="<?php  echo $item['sts_openid'];?>" style="margin-left: 5px;">
-                                                    <a href="<?php  echo web_url('photo_apply',array('op'=>'spec','sts_id'=>$item['sts_id']));?>" style="color:white;">物料管理</a>
+                                                    <a href="<?php  echo web_url('photo_apply',array('op'=>'spec','sts_id'=>$item['sts_id']));?>" style="color:white;">物料申请</a>
                                                 </div>
 						<div class="erweima"><img src=""></div>
 					</td>

@@ -121,6 +121,7 @@ class confirm extends base
     public function surepay()
     {
         $_GP =  $this->request;
+        ajaxReturnData(0,'该接口已经关闭！');
         $orderid = $_GP['orderid'];
         if(empty($orderid)){
             ajaxReturnData(0,'参数有误！');

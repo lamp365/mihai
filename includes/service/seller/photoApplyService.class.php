@@ -35,14 +35,28 @@ class photoApplyService extends \service\publicService
        {
            $where .= " and ms_province_code = {$data['sts_province']} and ms_city_code = {$data['sts_city']} and ms_county_code = {$data['sts_region']}";
        }
-
+       
+       if($data['ms_province'] > 0)
+       {
+           $where .= " and ms_province_id = {$data['ms_province']}";
+       }
+       if($data['ms_city'] > 0)
+       {
+           $where .= " and ms_city_id = {$data['ms_city']}";
+       }
+       if($data['ms_county'] > 0)
+       {
+           $where .= " and ms_county_id = {$data['ms_county']}";
+       }
+       
        if($data['is_page'] > 0)
        {
             $limit = "order by ms_type_id desc LIMIT " . ($data['page'] - 1) * $data['limit'] . ',' . $data['limit'];
        }
        
-       if($data['ms_is_default'] !== null)
+       if($data['ms_is_default'] > 0)
        {
+           $data['ms_is_default'] = $data['ms_is_default']==1?0:1;
            $where .= " and ms_is_default = {$data['ms_is_default']}";
        }
        
@@ -149,6 +163,13 @@ class photoApplyService extends \service\publicService
         $where = array('id' => $id);
         $updateStatus = mysqld_update('store_material_management', $data,$where);
         return $updateStatus;
+    }
+    
+    //$this->table_store_material_management
+    public function getMaterialManagementTypeByArea($data,$fields){
+        $sql = "select {$fields} from ".table('store_material_type')." where ms_is_default = 0 and ms_province_id = {$data['ms_province_id']} and ms_city_id = {$data['ms_city_id']} and ms_county_id = {$data['ms_county_id']}";
+        $rs = mysqld_select($sql);
+        return $rs;
     }
     
 }

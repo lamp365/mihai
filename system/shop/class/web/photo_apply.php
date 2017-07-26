@@ -131,11 +131,24 @@ class photo_apply extends \common\controller\basecontroller
         $ms_city     = explode('|', $_GP['ms_city']);
         $ms_county   = explode('|', $_GP['ms_county']);
         
+        //判断是否已经存在对应的区域
+        $areaData = array();
+        $areaData['ms_province'] = $ms_province[0];
+        $areaData['ms_city'] = $ms_city[0];
+        $areaData['ms_county'] = $ms_county[0];
+        $materialManagementType = $this->photo_apply->getMaterialManagementTypeByArea($areaData);
+        
+        if($_GP['ms_is_default'] == 1)
+        {
+            //移除默认状态
+            $del = $this->photo_apply->delMaterialManagementDefault($_GP['ms_category']); 
+        }
+        
         if($_GP['id'] > 0)
         {
             $id = $_GP['id'];
             $msg = '更新';
-            
+            //
             $data = array(
                 'ms_category'=>$_GP['ms_category'],
                 'ms_type'=>$_GP['ms_category']==1?'小型':'中型',
@@ -143,6 +156,7 @@ class photo_apply extends \common\controller\basecontroller
                 'ms_type_url'=>implode(',', $_GP['attachment-new']),
                 'edit_time'=>time(),
                 'ms_status'=>$_GP['ms_status'],
+                'ms_is_default'=>$_GP['ms_is_default'],
                 'ms_province_id'=>$ms_province[0],
                 'ms_city_id'=>$ms_city[0],
                 'ms_county_id'=>$ms_county[0],
@@ -155,6 +169,9 @@ class photo_apply extends \common\controller\basecontroller
             );
         }
         else{
+            //判断该种类是否已经存在 存在则不需要再次添加
+            
+            
             $id = 0;
             $msg = '添加';
             
@@ -165,6 +182,7 @@ class photo_apply extends \common\controller\basecontroller
                 'ms_type_url'=>implode(',', $_GP['attachment-new']),
                 'create_time'=>time(),
                 'ms_status'=>$_GP['ms_status'],
+                'ms_is_default'=>$_GP['ms_is_default'],
                 'ms_province_id'=>$ms_province[0],
                 'ms_city_id'=>$ms_city[0],
                 'ms_county_id'=>$ms_county[0],
@@ -198,15 +216,50 @@ class photo_apply extends \common\controller\basecontroller
     public function list_photo_apply(){
         $_GP = $this->request;
         
+        //省 市 县
+        $provinceData = $this->region->getProvinceData();
         
         $data = array();
         $data['is_page']    = 1;
+        if($_GP['ms_is_default'] > 0)
+        {
+            $data['ms_is_default']    = $_GP['ms_is_default'];
+        }
         $data['page'] = max(1, intval($_GP['page']));
         $data['limit'] = $_GP['limit']>0?$_GP['limit']:10; 
+        
+        
+        //判断是否存在搜索
+        if($_GP['is_search'] > 0)
+        {
+            if($_GP['ms_province'] != '')
+            {
+                $ms_province = array();
+                $ms_province = explode('|', $_GP['ms_province']);
+                $data['ms_province'] = $ms_province[0];
+                
+                $ms_city = array();
+                $ms_city = explode('|', $_GP['ms_city']);
+                $data['ms_city'] = $ms_city[0];
+                
+                $cityData = $this->region->getCityData($ms_province[0]);
+            }
+            
+            if($_GP['ms_city'] != ''){
+                $ms_county = array();
+                $ms_county = explode('|', $_GP['ms_county']);
+                $data['ms_county'] = $ms_county[0];
+                
+                $countyData = $this->region->getCountyData($ms_city[0]);
+            }
+        }
+        
         $list = $this->photo_apply->listMaterialType($data);
         
         $pager = pagination($list['total']['total'], $data['page'], $data['limit']);
         unset($list['total']);
+        
+        
         include page('photo_apply/list_photo_apply');
     }
     

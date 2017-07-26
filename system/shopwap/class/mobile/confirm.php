@@ -18,7 +18,7 @@ class confirm extends \shopwap\controller\base
 	}
 
 	//结算页
-	public function info()
+	public function index()
 	{
 
 	}
@@ -26,7 +26,7 @@ class confirm extends \shopwap\controller\base
 	/**
 	 * 提交结算支付
 	 */
-	public function index()
+	public function pay()
 	{
 		$_GP =  $this->request;
 		if(empty($_GP['paytype'])){
@@ -41,7 +41,7 @@ class confirm extends \shopwap\controller\base
 
 		/***  数据格式
 		 $res_data = array(
-			'out_trade_no'  => '', //订单号
+			'out_trade_no'  => '', //订单id  组成的数组
 			'total_fee'     => '', //订单金额
 			'body'          => '',
 		);
@@ -73,7 +73,7 @@ class confirm extends \shopwap\controller\base
 		$pay_title        = str_replace("'", '‘', $pay_title);
 		$pay_title        = str_replace(" ", '', $pay_title);
 
-		$res_data['pay_ordersn']     = $order['ordersn'];
+		$res_data['pay_orderid']     = $order['id'];
 		$res_data['pay_total_money'] = $order['price'];
 		$res_data['pay_title']       = $pay_title;
 
@@ -84,7 +84,7 @@ class confirm extends \shopwap\controller\base
 	{
 		if($paytype == 'weixin'){
 			$pay_data = array(
-				'out_trade_no'  => $res_data['pay_ordersn'], //订单号
+				'out_trade_no'  => $res_data['pay_orderid'], //订单号
 				'total_fee'     => $res_data['pay_total_money']*100, //订单金额，单位为分
 				'body'          => $res_data['pay_title'],
 			);
@@ -94,17 +94,27 @@ class confirm extends \shopwap\controller\base
 				message($payobj->getError(),refresh(),'error');
 			}else{
 				$cfg = globaSetting();
-				//如果是PC端那么返回的是一段 扫码地址  如果是小程序或者微信端返回一个数组参数
+				// $result 如果是PC端那么返回的是一段 扫码地址  如果是小程序或者微信端返回一个数组参数
+				if(is_array($res_data['pay_orderid'])){
+					$orderid = array_pop($res_data['pay_orderid']);
+				}else{
+					$orderid = $res_data['pay_orderid'];
+				}
 				include themePage('weixinpay');
 			}
 		}else if($paytype == 'ali'){
+			$pay_orderid = $res_data['pay_orderid'];
+			if(is_array($pay_orderid)){  //如果有多条订单的话  用下划线分隔
+				$pay_orderid = implode('_',$pay_orderid);
+			}
+			$pay_orderid .= "_".uniqid();   //必须具备唯一性，否则微信那边下不了单  且长度32字符内
 			$pay_data = array(
 //            'notify_url'  => WEBSITE_ROOT.'notify/alipay_notify.php',      //服务器异步通知页面路径
 				'notify_url'    => mobile_url('alipay',array('name'=>'shopwap','op'=>'notifyurl')),        //服务器异步通知页面路径
 //            'return_url'  => WEBSITE_ROOT.'notify/alipay_return_url.php', //页面跳转同步通知页面路径
 				'return_url'    => mobile_url('alipay',array('name'=>'shopwap','op'=>'returnurl')), //页面跳转同步通知页面路径
-				'out_trade_no'  => $res_data['pay_ordersn'], //订单号
-				'subject'       => $res_data['pay_ordersn'],  //标题
+				'out_trade_no'  => $pay_orderid, //订单号
+				'subject'       => $pay_orderid,  //标题
 				'total_fee'     => $res_data['pay_total_money'], //订单金额，单位为元
 				'body'          => $res_data['pay_title'],
 				'show_url'      => WEBSITE_ROOT,  //商品展示地址 通过支付页面的表单进行传递
