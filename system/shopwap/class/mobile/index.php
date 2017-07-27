@@ -1,4 +1,11 @@
  <?php
+ /**
+  * drop table `squdian_shop_goods`;
+ drop table `squdian_shop_goods_option`;
+ drop table `squdian_shop_goods_piclist`;
+ drop table `squdian_shop_goods_spec`;
+ drop table `squdian_shop_goods_spec_item`;
+  */
 // send_kongbao_sms('13628683645','40');
 $cfg = globaSetting();
 if (is_mobile_request()|| $_GET['wap'] == 1){

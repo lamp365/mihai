@@ -33,8 +33,7 @@
 			$member['gold'] = getMemberBalance($member['gold'],$member['freeorder_gold'],$member['freeorder_gold_endtime']);
 
 			$fansindex_menu_list = mysqld_selectall("SELECT * FROM " . table('shop_diymenu') . " where menu_type='fansindex' order by torder desc");
-			$cart_list = mysqld_selectall("SELECT a.*,b.id as bid , c.thumb,c.id as cid FROM " . table('shop_cart') . " a left join " . table('shop_dish') . " b on a.goodsid = b.id left join " . table('shop_goods') . " c on c.id = b.gid WHERE  session_id = '" . $openid . "'");
-			$totlist = count($cart_list);
+            $totlist = getCartTotal(2);
 			$state99 = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_order') . " WHERE status >= 0 and openid=:beid ", array(':beid' => $openid));
 			$state0 = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_order') . " WHERE status = 0 and openid=:beid ", array(':beid' => $openid));
 			$state1 = mysqld_selectcolumn('SELECT COUNT(*) FROM ' . table('shop_order') . " WHERE status = 1 and openid=:beid ", array(':beid' => $openid));
